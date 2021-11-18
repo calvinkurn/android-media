@@ -97,25 +97,22 @@ class PlaySearchSuggestionsFragment @Inject constructor(
      * Observe
      */
     private fun observeSearchSuggestions() {
-        viewModel.observableSuggestionList.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.observableSuggestionList.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is NetworkResult.Success -> {
                     dismissToaster()
                     searchSuggestionsAdapter.setItemsAndAnimateChanges(result.data)
                 }
                 is NetworkResult.Fail -> {
-                    etalaseSetupCoordinator.showToaster(
-                            message = result.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
+                    etalaseSetupCoordinator.showErrorToaster(
+                            err = result.error,
                             duration = Toaster.LENGTH_LONG,
                             actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener {
-                                result.onRetry()
-                            }
+                            actionListener = { result.onRetry() }
                     )
                 }
             }
-        })
+        }
     }
 
     /**

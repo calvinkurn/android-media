@@ -30,7 +30,7 @@ class AddressListPresenter @Inject constructor(
         mView = null
     }
 
-    override fun getAddress(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+    override fun getAddress(prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean) {
         usecase.execute(EMPTY_STRING, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
@@ -40,7 +40,7 @@ class AddressListPresenter @Inject constructor(
                 .subscribe(getAddressHandler(EMPTY_STRING))
     }
 
-    override fun searchAddress(query: String, prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+    override fun searchAddress(query: String, prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean) {
          usecase.execute(query, prevState, localChosenAddrId, isWhitelistChosenAddress)
                 .doOnSubscribe { mView?.showLoading() }
                 .doOnTerminate {
@@ -50,7 +50,7 @@ class AddressListPresenter @Inject constructor(
                 .subscribe(getAddressHandler(query))
     }
 
-    override fun loadMore(prevState: Int, localChosenAddrId: Int, isWhitelistChosenAddress: Boolean) {
+    override fun loadMore(prevState: Int, localChosenAddrId: Long, isWhitelistChosenAddress: Boolean) {
         // Always true until has_next property is ready from backend, still works fine
         // if (!mHasNext) return
         usecase.loadMore(mCurrentQuery, mCurrentPage + 1, prevState, localChosenAddrId, isWhitelistChosenAddress)

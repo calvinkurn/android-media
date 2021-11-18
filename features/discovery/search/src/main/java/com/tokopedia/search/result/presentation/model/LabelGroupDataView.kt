@@ -13,6 +13,8 @@ data class LabelGroupDataView(
 
     fun isLabelIntegrity() = position == LABEL_INTEGRITY
 
+    fun getPositionTitle(): String = "$position.$title"
+
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readString() ?: "",

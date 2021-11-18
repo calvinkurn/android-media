@@ -83,6 +83,15 @@ class DiscoveryPlayWidgetViewModel(val application: Application, val components:
         }
     }
 
+    fun updatePlayWidgetReminder(channelId: String, isReminder: Boolean) {
+        if (channelId.isNotEmpty()) {
+            updateWidget {
+                val reminderType = if(isReminder) PlayWidgetReminderType.Reminded else PlayWidgetReminderType.NotReminded
+                playWidgetTools.updateActionReminder(it, channelId, reminderType)
+            }
+        }
+    }
+
     fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
         if (UserSession(application).isLoggedIn)
             updatePlayWidgetToggleReminder(channelId, reminderType)

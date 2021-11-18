@@ -16,9 +16,10 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmGradeBenefitBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.GradeBenefitPagerAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetGradeBenefitUiModel
-import kotlinx.android.synthetic.main.widget_pm_grade_benefit.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import timber.log.Timber
 
 /**
@@ -31,6 +32,8 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         val RES_LAYOUT = R.layout.widget_pm_grade_benefit
     }
 
+    private val binding: WidgetPmGradeBenefitBinding? by viewBinding()
+
     override fun bind(element: WidgetGradeBenefitUiModel) {
         setupView(element)
         setupTabLayout(element)
@@ -38,9 +41,9 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         selectDefaultTab(element)
     }
 
-    private fun setupView(element: WidgetGradeBenefitUiModel) = with(itemView) {
+    private fun setupView(element: WidgetGradeBenefitUiModel) = binding?.run {
         tvPmLearMorePowerMerchant.setOnClickListener {
-            RouteManager.route(context, element.ctaApplink)
+            RouteManager.route(root.context, element.ctaApplink)
         }
 
         val isPmPro = element.selectedPmTireType == PMConstant.PMTierType.POWER_MERCHANT_PRO
@@ -60,23 +63,23 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         } else {
             getString(R.string.pm_grade_benefit_widget_title_pm)
         }
-        itemView.tvPmGradeBenefitTitle.text = title
+        binding?.tvPmGradeBenefitTitle?.text = title
     }
 
-    private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) {
+    private fun selectDefaultTab(element: WidgetGradeBenefitUiModel) = binding?.run {
         val selected = element.benefitPages.indexOfFirst { it.isActive }
         if (selected != RecyclerView.NO_POSITION) {
-            itemView.rvPmGradeBenefitPager.scrollToPosition(selected)
-            itemView.tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
+            rvPmGradeBenefitPager.scrollToPosition(selected)
+            tabPmGradeBenefit.tabLayout.getTabAt(selected)?.select()
         }
     }
 
     private fun setupTabLayout(element: WidgetGradeBenefitUiModel) {
-        with(itemView.tabPmGradeBenefit) {
+       binding?.tabPmGradeBenefit?.run {
             val isSinglePage = element.benefitPages.size <= 1
             if (isSinglePage) {
                 gone()
-                return@with
+                return@run
             }
 
             visible()
@@ -88,7 +91,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
             tabLayout.tabRippleColor = ColorStateList.valueOf(Color.TRANSPARENT)
             tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    val selectedTabIndex = tabPmGradeBenefit.tabLayout.selectedTabPosition
+                    val selectedTabIndex = tabLayout.selectedTabPosition
                     setOnTabSelected(selectedTabIndex)
                 }
 
@@ -99,12 +102,12 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         }
     }
 
-    private fun setOnTabSelected(position: Int) = with(itemView) {
+    private fun setOnTabSelected(position: Int) = binding?.run {
         rvPmGradeBenefitPager.smoothScrollToPosition(position)
     }
 
     private fun setupPagerView(element: WidgetGradeBenefitUiModel) {
-        with(itemView.rvPmGradeBenefitPager) {
+        binding?.rvPmGradeBenefitPager?.run {
             val mLayoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
                 override fun canScrollVertically(): Boolean = false
             }
@@ -132,7 +135,7 @@ class GradeBenefitWidget(itemView: View) : AbstractViewHolder<WidgetGradeBenefit
         }
     }
 
-    private fun selectTab(mLayoutManager: LinearLayoutManager) = with(itemView) {
+    private fun selectTab(mLayoutManager: LinearLayoutManager) = binding?.run {
         val selectedPage = mLayoutManager.findFirstVisibleItemPosition()
         if (selectedPage != RecyclerView.NO_POSITION) {
             tabPmGradeBenefit.tabLayout.getTabAt(selectedPage)?.select()

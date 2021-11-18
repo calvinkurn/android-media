@@ -2,7 +2,7 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -11,14 +11,16 @@ import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
+import com.tokopedia.power_merchant.subscribe.databinding.ItemBenefitPackageStatusPmProBinding
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetExpandableUiModel
-import kotlinx.android.synthetic.main.item_benefit_package_status_pm_pro.view.*
 
 /**
  * Created By @ilhamsuaib on 07/05/21
  */
 
 class PmProCurrentBenefitSectionView : ConstraintLayout {
+
+    private var binding: ItemBenefitPackageStatusPmProBinding? = null
 
     constructor (context: Context) : super(context)
 
@@ -33,7 +35,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     private var updateInfoCtaClickListener: (() -> Unit)? = null
 
     init {
-        View.inflate(context, R.layout.item_benefit_package_status_pm_pro, this)
+        binding = ItemBenefitPackageStatusPmProBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
     fun show(data: WidgetExpandableUiModel) {
@@ -44,7 +46,7 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
     }
 
     private fun setBenefitPackageClicked() {
-        iconPmProStatus?.setOnClickListener {
+        binding?.iconPmProStatus?.setOnClickListener {
             updateInfoCtaClickListener?.invoke()
         }
     }
@@ -55,21 +57,21 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
 
     private fun setupUpdateInfo(data: WidgetExpandableUiModel) {
         setupDescUpdateDate(data)
-        iconPmProDowngradeStatus?.showWithCondition(data.isDowngradePeriod())
+        binding?.iconPmProDowngradeStatus?.showWithCondition(data.isDowngradePeriod())
     }
 
-    private fun setupDescBenefitSection(data: WidgetExpandableUiModel) {
+    private fun setupDescBenefitSection(data: WidgetExpandableUiModel) = binding?.run {
         if (data.pmStatus == PMStatusConst.IDLE) {
-            containerDescBenefitPackage?.hide()
+            containerDescBenefitPackage.hide()
         } else {
-            containerDescBenefitPackage?.show()
+            containerDescBenefitPackage.show()
         }
     }
 
-    private fun setupDescUpdateDate(data: WidgetExpandableUiModel) {
+    private fun setupDescUpdateDate(data: WidgetExpandableUiModel) = binding?.run {
         val blackColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_96.toString()
 
-        iconPmProDowngradeStatus?.showWithCondition(data.isDowngradePeriod())
+        iconPmProDowngradeStatus.showWithCondition(data.isDowngradePeriod())
         if (data.isDowngradePeriod()) {
             tvNextUpdatePmProStatus.setTextMakeHyperlink(
                 context.getString(
@@ -109,20 +111,20 @@ class PmProCurrentBenefitSectionView : ConstraintLayout {
         }
     }
 
-    private fun showPmGrade(grade: String) {
-        labelPmProStatus?.text = grade.asCamelCase()
+    private fun showPmGrade(grade: String) = binding?.run {
+        labelPmProStatus.text = grade.asCamelCase()
         when {
             PMShopGrade.EXPERT.equals(grade, true) -> {
-                labelPmProStatus?.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_TN400))
-                bgBenefitPackageStatus?.setImageResource(R.drawable.bg_pm_benefit_package_expert)
+                labelPmProStatus.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_TN400))
+                bgBenefitPackageStatus.setImageResource(R.drawable.bg_pm_benefit_package_expert)
             }
             PMShopGrade.ULTIMATE.equals(grade, true) -> {
-                labelPmProStatus?.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400))
-                bgBenefitPackageStatus?.setImageResource(R.drawable.bg_pm_benefit_package_ultimate)
+                labelPmProStatus.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_YN400))
+                bgBenefitPackageStatus.setImageResource(R.drawable.bg_pm_benefit_package_ultimate)
             }
             else -> { //PMShopGrade.ADVANCED
-                labelPmProStatus?.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
-                bgBenefitPackageStatus?.setImageResource(R.drawable.bg_pm_benefit_package_advanced)
+                labelPmProStatus.setBackgroundColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500))
+                bgBenefitPackageStatus.setImageResource(R.drawable.bg_pm_benefit_package_advanced)
             }
         }
     }

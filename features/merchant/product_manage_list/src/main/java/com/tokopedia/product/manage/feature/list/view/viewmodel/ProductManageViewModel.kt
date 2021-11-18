@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
+import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
@@ -25,7 +25,7 @@ import com.tokopedia.product.manage.common.feature.variant.presentation.data.Edi
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
-import com.tokopedia.product.manage.feature.list.domain.PopupManagerAddProductUseCase
+import com.tokopedia.product.manage.feature.list.domain.GetShopManagerPopupsUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToUiModels
@@ -46,7 +46,6 @@ import com.tokopedia.shop.common.data.model.ProductStock
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.ExtraInfo
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.*
@@ -65,24 +64,24 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class ProductManageViewModel @Inject constructor(
-        private val editPriceUseCase: EditPriceUseCase,
-        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-        private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-        private val getProductListUseCase: GQLGetProductListUseCase,
-        private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
-        private val editStatusUseCase: EditStatusUseCase,
-        private val editStockUseCase: UpdateProductStockWarehouseUseCase,
-        private val deleteProductUseCase: DeleteProductUseCase,
-        private val multiEditProductUseCase: MultiEditProductUseCase,
-        private val getProductListMetaUseCase: GetProductListMetaUseCase,
-        private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
-        private val editProductVariantUseCase: EditProductVariantUseCase,
-        private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
-        private val dispatchers: CoroutineDispatchers
+    private val editPriceUseCase: EditPriceUseCase,
+    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val getShopInfoTopAdsUseCase: GetShopInfoTopAdsUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+    private val getShopManagerPopupsUseCase: GetShopManagerPopupsUseCase,
+    private val getProductListUseCase: GQLGetProductListUseCase,
+    private val setFeaturedProductUseCase: SetFeaturedProductUseCase,
+    private val editStatusUseCase: EditStatusUseCase,
+    private val editStockUseCase: UpdateProductStockWarehouseUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
+    private val multiEditProductUseCase: MultiEditProductUseCase,
+    private val getProductListMetaUseCase: GetProductListMetaUseCase,
+    private val getProductManageAccessUseCase: GetProductManageAccessUseCase,
+    private val editProductVariantUseCase: EditProductVariantUseCase,
+    private val getProductVariantUseCase: GetProductVariantUseCase,
+    private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -351,16 +350,18 @@ class ProductManageViewModel @Inject constructor(
 
     fun getProductManageAccess() {
         launchCatchError(block = {
-            access = withContext(dispatchers.io) {
-                if (userSessionInterface.isShopOwner) {
-                    ProductManageAccessMapper.mapProductManageOwnerAccess()
-                } else {
-                    val shopId = userSessionInterface.shopId
-                    val response = getProductManageAccessUseCase.execute(shopId)
-                    ProductManageAccessMapper.mapToProductManageAccess(response)
+            val currentAccess =
+                withContext(dispatchers.io) {
+                    if (userSessionInterface.isShopOwner) {
+                        ProductManageAccessMapper.mapProductManageOwnerAccess()
+                    } else {
+                        val shopId = userSessionInterface.shopId
+                        val response = getProductManageAccessUseCase.execute(shopId)
+                        ProductManageAccessMapper.mapToProductManageAccess(response)
+                    }
                 }
-            }
-            access?.let { _productManageAccess.value = Success(it) }
+            access = currentAccess
+            _productManageAccess.value = Success(currentAccess)
         }) {
             _productManageAccess.value = Fail(it)
         }
@@ -391,7 +392,7 @@ class ProductManageViewModel @Inject constructor(
         showProgressDialog()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
+                editPriceUseCase.setParams(userSessionInterface.shopId, productId, price.toDoubleOrZero())
                 editPriceUseCase.executeOnBackground()
             }
             when {
@@ -479,37 +480,35 @@ class ProductManageViewModel @Inject constructor(
 
     fun getFreeClaim(graphqlQuery: String, shopId: String) {
         val requestParams = TopAdsGetShopDepositGraphQLUseCase.createRequestParams(graphqlQuery, shopId)
-        topAdsGetShopDepositGraphQLUseCase.execute(requestParams,
-                object : Subscriber<DataDeposit>() {
-                    override fun onNext(dataDeposit: DataDeposit) {
-                        _getFreeClaimResult.value = Success(dataDeposit)
-                    }
+        topAdsGetShopDepositGraphQLUseCase
+            .createObservable(requestParams)
+            .subscribe(object : Subscriber<DataDeposit>() {
+                override fun onCompleted() {
 
-                    override fun onCompleted() {
-                    }
+                }
 
-                    override fun onError(e: Throwable) {
-                        _getFreeClaimResult.value = Fail(e)
-                    }
-                })
+                override fun onError(e: Throwable) {
+                    _getFreeClaimResult.value = Fail(e)
+                }
+
+                override fun onNext(dataDeposit: DataDeposit) {
+                    _getFreeClaimResult.value = Success(dataDeposit)
+                }
+            })
     }
 
     fun getPopupsInfo(productId: String) {
-        val shopId = productId.toIntOrZero()
-        popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
-                object : Subscriber<Boolean>() {
-                    override fun onNext(isSuccess: Boolean) {
-                        _getPopUpResult.value = Success(GetPopUpResult(productId, isSuccess))
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        _getPopUpResult.value = Fail(e)
-                    }
-
-                })
+        launchCatchError(
+            block = {
+                val popupResult = withContext(dispatchers.io) {
+                    val shopId = productId.toLongOrZero()
+                    val isSuccess = getShopManagerPopupsUseCase.execute(shopId)
+                    GetPopUpResult(productId, isSuccess)
+                }
+                _getPopUpResult.value = Success(popupResult)},
+            onError = {
+                _getPopUpResult.value = Fail(it)
+            })
     }
 
     fun deleteSingleProduct(productName: String, productId: String) {
@@ -624,7 +623,7 @@ class ProductManageViewModel @Inject constructor(
     fun detachView() {
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
-        popupManagerAddProductUseCase.unsubscribe()
+        getShopManagerPopupsUseCase.cancelJobs()
         getProductListUseCase.cancelJobs()
         setFeaturedProductUseCase.cancelJobs()
     }
@@ -689,7 +688,7 @@ class ProductManageViewModel @Inject constructor(
             when {
                 response.isSuccess -> Success(result)
                 response.header.errorMessage.isNotEmpty() -> {
-                    val message = response.header.errorMessage.lastOrNull().orEmpty()
+                    val message = response.header.errorMessage.last()
                     Fail(MessageErrorException(message))
                 }
                 else -> {
@@ -704,7 +703,9 @@ class ProductManageViewModel @Inject constructor(
     private suspend fun editVariantStock(result: EditVariantResult): Result<EditVariantResult> {
         return withContext(dispatchers.io) {
             val warehouseId = getWarehouseId(userSessionInterface.shopId)
-            val productList = result.variants.map { ProductStock(it.id, it.stock.toString()) }
+            val productList = result.variants.map {
+                ProductStock(it.id, it.stock.toString())
+            }
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
                     userSessionInterface.shopId, warehouseId, productList
             )

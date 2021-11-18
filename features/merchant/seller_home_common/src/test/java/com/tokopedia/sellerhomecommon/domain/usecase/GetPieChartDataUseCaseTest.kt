@@ -59,13 +59,13 @@ class GetPieChartDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetPieChartDataResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = getPieChartDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(!result.isNullOrEmpty())
@@ -77,14 +77,14 @@ class GetPieChartDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetPieChartDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val result = getPieChartDataUseCase.executeOnBackground()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(result.isNullOrEmpty())

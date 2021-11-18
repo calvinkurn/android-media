@@ -22,10 +22,10 @@ data class Data(
         val email: String = "",
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "0",
         @SerializedName("product_id")
         @Expose
-        val productId: Int = 0,
+        val productId: String = "0",
         @SerializedName("status")
         @Expose
         val status: Int = 0,
@@ -34,5 +34,5 @@ data class Data(
         val success: Boolean = false,
         @SerializedName("user_id")
         @Expose
-        val userId: Int = 0
+        val userId: String = "0"
 )

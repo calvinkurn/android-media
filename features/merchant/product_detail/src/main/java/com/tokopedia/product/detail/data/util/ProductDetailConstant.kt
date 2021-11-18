@@ -18,7 +18,6 @@ object ProductDetailConstant {
     const val PDP_P2_OTHER_TRACE = "mp_pdp_p2_other"
     const val PDP_P2_LOGIN_TRACE = "mp_pdp_p2_login"
     const val PDP_P2_DATA_TRACE = "mp_pdp_p2_data"
-    const val PDP_P3_TRACE = "mp_pdp_p3"
 
     const val PDP_RESULT_PLT_PREPARE_METRICS = "pdp_result_plt_prepare_metrics"
     const val PDP_RESULT_PLT_NETWORK_METRICS = "pdp_result_plt_network_metrics"
@@ -67,6 +66,8 @@ object ProductDetailConstant {
     const val VARIANT = "variant"
     const val PDP_3 = "pdp_3"
     const val PDP_7 = "pdp_7"
+    const val PDP_K2K = "k2k_pdp"
+    const val SHOPADS_CAROUSEL = "shopads_carousel"
     const val PRODUCT_VARIANT_INFO = "variant"
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
@@ -80,7 +81,6 @@ object ProductDetailConstant {
     const val VALUE_PROP = "value_prop"
     const val PRODUCT_CONTENT = "product_content"
     const val MEDIA = "product_media"
-    const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
     const val REPORT = "report"
     const val MVC = "mvc"
@@ -90,6 +90,7 @@ object ProductDetailConstant {
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
+    const val PRODUCT_BUNDLING = "product_bundling"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -99,11 +100,11 @@ object ProductDetailConstant {
     const val ARG_TRACKER_ATTRIBUTION = "ARG_TRACKER_ATTRIBUTION"
     const val ARG_TRACKER_LIST_NAME = "ARG_TRACKER_LIST_NAME"
     const val ARG_FROM_DEEPLINK = "ARG_FROM_DEEPLINK"
-    const val ARG_FROM_AFFILIATE = "ARG_FROM_AFFILIATE"
     const val ARG_AFFILIATE_STRING = "ARG_AFFILIATE_STRING"
     const val ARG_AFFILIATE_UNIQUE_ID = "ARG_AFFILIATE_UNIQUE_ID"
     const val ARG_DEEPLINK_URL = "ARG_DEEPLINK_URL"
     const val ARG_LAYOUT_ID= "ARG_LAYOUT_ID"
+    const val ARG_EXT_PARAM = "ARG_EXT_PARAM"
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
 
@@ -135,12 +136,6 @@ object ProductDetailConstant {
     const val HIDE_VALUE = 0F
     const val FADE_IN_VIDEO_THUMBNAIL_DURATION = 200L
 
-
-    //General Ticker
-    const val LAYOUT_FLOATING = "floating"
-    const val PARAMS_PAGE = "page"
-    const val PARAMS_PAGE_PDP = "pdp"
-
     const val ELIGIBLE_TRADE_IN = 1
 
     const val BS_SHIPMENT_ERROR_TAG = "BS_SHIPMENT_ERROR_TAG"
@@ -163,4 +158,7 @@ object ProductDetailConstant {
     const val TOOLBAR_ELEVATION = 10F
 
     const val DEFAULT_PRICE_MINIMUM_SHIPPING = 30000.0
+
+    const val REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING = "android_enable_pdp_custom_sharing"
+    const val REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING = true
 }

@@ -76,7 +76,7 @@ class SectionVerticalBanner11VH(val view: View) : RecyclerView.ViewHolder(view) 
                 return
             }
             if (TextUtils.isEmpty(appLink)) {
-                RouteManager.getIntent(view.context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
+                RouteManager.route(view.context, ApplinkConstInternalGlobal.WEBVIEW, webLink)
             } else {
                 RouteManager.route(view.context, appLink)
             }

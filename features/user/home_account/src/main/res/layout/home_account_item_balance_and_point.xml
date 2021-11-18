@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/unify_space_8"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/home_account_item_balance_and_point_icon"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:padding="@dimen/spacing_lvl1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_account_item_balance_and_point_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textSize="@dimen/fontSize_lvl1"
+        app:lineHeight="@dimen/home_account_dp_14"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Rp10.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/home_account_item_balance_and_point_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_N700_68"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:text="GoPay &amp; GoPayCoins" />
+</LinearLayout>

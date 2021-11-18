@@ -55,7 +55,7 @@ class DigitalTelcoEnquiryViewModelTest {
         val result = HashMap<Type, Any>()
         result[TelcoEnquiryData::class.java] = telcoEnquiryData
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         enquiryViewModel.getEnquiry("", "", "")
@@ -85,7 +85,7 @@ class DigitalTelcoEnquiryViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TelcoEnquiryData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         enquiryViewModel.getEnquiry("", "", "")

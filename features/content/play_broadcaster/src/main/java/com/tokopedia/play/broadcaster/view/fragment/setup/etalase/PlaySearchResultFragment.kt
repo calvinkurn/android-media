@@ -50,7 +50,7 @@ class PlaySearchResultFragment @Inject constructor(
         get() = arguments?.getString(EXTRA_KEYWORD) ?: ""
 
     private val searchProductsAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+        override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
 
@@ -128,7 +128,7 @@ class PlaySearchResultFragment @Inject constructor(
      * Observe
      */
     private fun observeSearchProducts() {
-        viewModel.observableSearchedProducts.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSearchedProducts.observe(viewLifecycleOwner) {
             when (it.state) {
                 is PageResultState.Success -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
@@ -151,17 +151,16 @@ class PlaySearchResultFragment @Inject constructor(
                     } else searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue + ProductLoadingUiModel)
                 }
                 is PageResultState.Fail -> {
-                    etalaseSetupCoordinator.showToaster(
-                            message = it.state.error.localizedMessage,
-                            type = Toaster.TYPE_ERROR,
-                            duration = Toaster.LENGTH_LONG
+                    etalaseSetupCoordinator.showErrorToaster(
+                        err = it.state.error,
+                        duration = Toaster.LENGTH_LONG
                     )
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
                     scrollListener.setHasNextPage(true)
                     scrollListener.updateState(false)
                 }
             }
-        })
+        }
     }
     //endregion
 

@@ -167,7 +167,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, getPromoRequestParam)
-            graphqlRepository.getReseponse(listOf(request))
+            graphqlRepository.response(listOf(request))
                     .getSuccessData<CouponListRecommendationResponse>()
         }
         PromoCheckoutIdlingResource.decrement()
@@ -634,7 +634,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, applyPromoRequestParam)
-            graphqlRepository.getReseponse(listOf(request))
+            graphqlRepository.response(listOf(request))
                     .getSuccessData<ValidateUseResponse>()
         }
         PromoCheckoutIdlingResource.decrement()
@@ -913,7 +913,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
-            graphqlRepository.getReseponse(listOf(request))
+            graphqlRepository.response(listOf(request))
                     .getSuccessData<ClearPromoResponse>()
         }
         PromoCheckoutIdlingResource.decrement()
@@ -1036,7 +1036,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         PromoCheckoutIdlingResource.increment()
         val response = withContext(dispatcher) {
             val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
-            graphqlRepository.getReseponse(listOf(request))
+            graphqlRepository.response(listOf(request))
                     .getSuccessData<GetPromoSuggestionResponse>()
         }
         PromoCheckoutIdlingResource.decrement()

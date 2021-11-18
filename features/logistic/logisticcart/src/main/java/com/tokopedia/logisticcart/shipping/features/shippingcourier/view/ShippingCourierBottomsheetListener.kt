@@ -10,7 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
  */
 interface ShippingCourierBottomsheetListener {
     fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, courierItemData: CourierItemData, recipientAddressModel: RecipientAddressModel?,
-                         cartPosition: Int, isCod: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean)
+                         cartPosition: Int, isCod: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean, shippingCourierList: List<ShippingCourierUiModel>)
 
     fun onCourierShipmentRecommendationCloseClicked()
 

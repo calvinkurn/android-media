@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -24,7 +25,6 @@ import com.tokopedia.topupbills.telco.common.di.DigitalTelcoComponent
 import com.tokopedia.topupbills.telco.data.FilterTagDataCollection
 import com.tokopedia.topupbills.telco.data.TelcoFilterTagComponent
 import com.tokopedia.topupbills.telco.data.TelcoProduct
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.bottomsheet.DigitalProductBottomSheet
 import com.tokopedia.topupbills.telco.prepaid.bottomsheet.DigitalTelcoFilterBottomSheet
@@ -317,8 +317,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
                     emptyStateProductView.hide()
                     telcoTelcoProductView.show()
 
-                    val hasTitle = it.product.dataCollections.size > 1 && it.label != TelcoComponentName.PRODUCT_PULSA
-                    val showTitle = hasTitle && !telcoFilterData.isFilterSelected()
+                    val showTitle = !telcoFilterData.isFilterSelected()
 
                     renderSortFilter(it.product.id, it.filterTagComponents)
                     telcoTelcoProductView.renderProductList(productType, showTitle,
@@ -355,9 +354,16 @@ class DigitalTelcoProductFragment : BaseDaggerFragment(), DigitalTelcoProductWid
         emptyStateProductView.show()
         telcoTelcoProductView.hide()
         error?.let {
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
             if (!it.message.isNullOrEmpty()) {
-                Toaster.build(requireView(), ErrorHandler.getErrorMessage(requireContext(), error),
-                        Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(requireView(), errorMessage.orEmpty(), Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR).show()
             }
         }
     }

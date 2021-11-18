@@ -71,6 +71,8 @@
     <dimen name="mvc_dimen_100dp">100dp</dimen>
     <dimen name="mvc_dimen_120dp">120dp</dimen>
     <dimen name="mvc_dimen_140dp">140dp</dimen>
+    <dimen name="mvc_dimen_174dp">174dp</dimen>
+    <dimen name="mvc_dimen_215dp">215dp</dimen>
     <dimen name="mvc_dimen_240dp">240dp</dimen>
 
     <!-- font size -->

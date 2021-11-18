@@ -9,6 +9,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.safeCastRupiahToInt
 import com.tokopedia.utils.text.currency.StringUtils
 
@@ -85,7 +86,8 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
                 "dimension90", dimension90,
                 "dimension96", boosterList,
                 "dimension99", System.currentTimeMillis(),
-                "dimension100", sourceEngine
+                "dimension100", sourceEngine,
+                "dimension115", dimension115,
         )
     }
 
@@ -110,6 +112,9 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
 
     val hasLabelGroupFulfillment: Boolean
         get() = labelGroupList?.any { it.position == ProductCardLabel.LABEL_FULFILLMENT } == true
+
+    val dimension115: String
+        get() = labelGroupList.getFormattedPositionName()
 
     fun getProductAsATCObjectDataLayer(cartId: String): Any = DataLayer.mapOf(
             "name", productName,

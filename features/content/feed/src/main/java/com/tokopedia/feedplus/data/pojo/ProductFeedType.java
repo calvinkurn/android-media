@@ -9,7 +9,7 @@ import java.util.List;
 public class ProductFeedType {
   @SerializedName("id")
   @Expose
-  private Integer id;
+  private String id;
 
   @SerializedName("name")
   @Expose
@@ -80,7 +80,7 @@ public class ProductFeedType {
   private List<TagsItem> tags;
 
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -136,7 +136,7 @@ public class ProductFeedType {
     this.rating = rating;
   }
 
-  public Integer getId() {
+  public String getId() {
     return this.id;
   }
 

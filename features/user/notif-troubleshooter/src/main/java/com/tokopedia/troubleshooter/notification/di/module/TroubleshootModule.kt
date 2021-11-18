@@ -37,7 +37,7 @@ import javax.inject.Named
     @Provides
     @TroubleshootScope
     fun provideUserSession(
-            @TroubleshootContext context: Context
+        @TroubleshootContext context: Context
     ): UserSessionInterface {
         return UserSession(context)
     }
@@ -81,8 +81,8 @@ import javax.inject.Named
     @Provides
     @Named(KEY_USER_SETTING)
     fun provideUserSettingUseCase(
-            repository: SettingRepository,
-            @TroubleshootContext context: Context
+        repository: SettingRepository,
+        @TroubleshootContext context: Context
     ): GetUserSettingUseCase {
         return getUseSettingUseCase(repository, context, R.raw.query_push_notif_setting)
     }
@@ -90,29 +90,22 @@ import javax.inject.Named
     @Provides
     @Named(KEY_SELLER_SETTING)
     fun provideSellerSettingUseCase(
-            repository: SettingRepository,
-            @TroubleshootContext context: Context
+        repository: SettingRepository,
+        @TroubleshootContext context: Context
     ): GetUserSettingUseCase {
         return getUseSettingUseCase(repository, context, R.raw.query_seller_notif_setting)
     }
 
     @Provides
     @TroubleshootScope
-    fun provideTroubleshootUseCase(
-            repository: GraphqlRepository,
-            @TroubleshootContext context: Context
-    ): GetTroubleshootStatusUseCase {
-        val query = GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.query_send_notif_troubleshooter
-        )
-        return GetTroubleshootStatusUseCase(repository, query, Dispatchers.IO)
+    fun provideTroubleshootUseCase(repository: GraphqlRepository): GetTroubleshootStatusUseCase {
+        return GetTroubleshootStatusUseCase(repository, Dispatchers.IO)
     }
 
     private fun getUseSettingUseCase(
-            repository: SettingRepository,
-            @TroubleshootContext context: Context,
-            queryRes: Int
+        repository: SettingRepository,
+        @TroubleshootContext context: Context,
+        queryRes: Int
     ): GetUserSettingUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, queryRes)
         return GetUserSettingUseCase(repository, query)

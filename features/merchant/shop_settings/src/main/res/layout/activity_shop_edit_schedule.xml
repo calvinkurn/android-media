@@ -41,9 +41,9 @@
             android:id="@+id/tfShopCloseNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             android:theme="@style/TextDarkMode"
             app:text_field_input_type="text"
             app:text_field_label="@string/shop_close_note"
@@ -55,7 +55,7 @@
             android:textColor="@color/Unify_N700_32"
             app:typographyType="body_2"
             app:typographyWeight="reguler"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_margin="16dp"
             android:text="@string/closed_note_information" />
 
     </LinearLayout>

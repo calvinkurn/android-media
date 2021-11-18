@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantErrorLogger
+import com.tokopedia.power_merchant.subscribe.databinding.FragmentBenefitPackagePageBinding
 import com.tokopedia.power_merchant.subscribe.di.PowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageAdapter
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageAdapterFactoryImpl
@@ -22,7 +23,7 @@ import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageErrorUiMo
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.BenefitPackageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_benefit_package_page.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class BenefitPackageFragment : BaseDaggerFragment(), BenefitPackageDataListener,
@@ -30,6 +31,8 @@ class BenefitPackageFragment : BaseDaggerFragment(), BenefitPackageDataListener,
 
     @Inject
     lateinit var benefitPackageViewModel: BenefitPackageViewModel
+
+    private val binding: FragmentBenefitPackagePageBinding? by viewBinding()
 
     private val benefitPackageAdapterTypeFactory by lazy {
         BenefitPackageAdapterFactoryImpl(
@@ -94,7 +97,7 @@ class BenefitPackageFragment : BaseDaggerFragment(), BenefitPackageDataListener,
     }
 
     private fun setupAdapter() {
-        rvBenefitPackagePage?.apply {
+        binding?.rvBenefitPackagePage?.run {
             layoutManager = context?.let { LinearLayoutManager(it) }
             adapter = benefitPackageAdapter
         }
@@ -111,7 +114,7 @@ class BenefitPackageFragment : BaseDaggerFragment(), BenefitPackageDataListener,
     }
 
     private fun onSwipeRefreshBenefitPackage() {
-        benefitPackageSwipeRefresh?.setOnRefreshListener {
+        binding?.benefitPackageSwipeRefresh?.setOnRefreshListener {
             loadData()
         }
     }
@@ -124,7 +127,7 @@ class BenefitPackageFragment : BaseDaggerFragment(), BenefitPackageDataListener,
 
     private fun showLoading() {
         benefitPackageAdapter.showLoading()
-        benefitPackageSwipeRefresh?.isRefreshing = false
+        binding?.benefitPackageSwipeRefresh?.isRefreshing = false
     }
 
     private fun hideLoading() {
@@ -134,7 +137,7 @@ class BenefitPackageFragment : BaseDaggerFragment(), BenefitPackageDataListener,
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(benefitPackageToolbar)
+            setSupportActionBar(binding?.benefitPackageToolbar)
             supportActionBar?.apply {
                 title = getString(R.string.pm_benefit_package_title_activity)
             }

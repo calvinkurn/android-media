@@ -14,7 +14,7 @@ class ShopModerateRequestStatusUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopModerateRequestData {
         val request = GraphqlRequest(QUERY, ShopModerateRequestData::class.java)
-        val gqlResponse = gqlRepository.getReseponse(
+        val gqlResponse = gqlRepository.response(
                 listOf(request),
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         )

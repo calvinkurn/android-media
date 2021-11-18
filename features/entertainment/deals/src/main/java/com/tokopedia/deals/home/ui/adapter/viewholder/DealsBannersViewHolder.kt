@@ -11,11 +11,11 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.Indicator
 import com.tokopedia.deals.R
+import com.tokopedia.deals.databinding.ItemDealsBannerListBinding
 import com.tokopedia.deals.home.listener.DealsBannerActionListener
 import com.tokopedia.deals.home.ui.dataview.BannersDataView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.item_deals_banner_list.view.*
 
 
 /**
@@ -26,12 +26,14 @@ class DealsBannersViewHolder(itemView: View, private val dealsBannerActionListen
     : BaseViewHolder(itemView) {
 
     fun bind(banners: BannersDataView) {
+
+        val binding = ItemDealsBannerListBinding.bind(itemView)
         if (!banners.isLoaded) {
-            itemView.contentBannerShimmering.show()
-            itemView.bannerDealsHomepage.hide()
+            binding.contentBannerShimmering.root.show()
+            binding.bannerDealsHomepage.hide()
         } else {
-            itemView.contentBannerShimmering.hide()
-            with(itemView.bannerDealsHomepage) {
+            binding.contentBannerShimmering.root.hide()
+            with(binding.bannerDealsHomepage) {
                 this.show()
                 val bannerImageUrls = banners.list.map { it.bannerImageUrl }
                 setPromoList(bannerImageUrls)
@@ -50,11 +52,11 @@ class DealsBannersViewHolder(itemView: View, private val dealsBannerActionListen
                 setOnPromoScrolledListener { position -> dealsBannerActionListener.onBannerScroll(banners.list[position], position) }
 
                 if (banners.list.size == 1) {
-                    itemView.viewTreeObserver.addOnGlobalLayoutListener(
+                    binding.root.viewTreeObserver.addOnGlobalLayoutListener(
                             object : OnGlobalLayoutListener {
                                 override fun onGlobalLayout() {
-                                    itemView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                                    itemView.bannerDealsHomepage.customWidth = itemView.measuredWidth - resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
+                                    binding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                                    binding.bannerDealsHomepage.customWidth = binding.root.measuredWidth - resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl4)
                                     buildView()
                                 }
                             })

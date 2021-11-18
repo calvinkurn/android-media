@@ -6,7 +6,5 @@
 
     <application
         android:label="Checkout Test"
-        tools:replace="android:label">
-
-    </application>
+        tools:replace="android:label" />
 </manifest>

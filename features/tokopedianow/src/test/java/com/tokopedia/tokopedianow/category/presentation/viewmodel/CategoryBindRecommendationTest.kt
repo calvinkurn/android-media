@@ -158,6 +158,13 @@ class CategoryBindRecommendationTest: CategoryTestFixtures() {
     }
 
     @Test
+    fun `bind recommendation success with empty product list should remove recom widget`() {
+        val testHelper = createTestHelper()
+
+        testHelper.`bind recommendation success with empty product list should remove recom widget`()
+    }
+
+    @Test
     fun `bind recommendation with quantity from mini cart`() {
         val testHelper = createTestHelper()
 

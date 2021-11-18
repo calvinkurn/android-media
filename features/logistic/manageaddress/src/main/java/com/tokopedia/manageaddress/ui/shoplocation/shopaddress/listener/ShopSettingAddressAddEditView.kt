@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.address.view.listener
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 

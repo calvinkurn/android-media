@@ -54,12 +54,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
-import com.tokopedia.moengage_wrapper.interfaces.CustomPushDataListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
-import com.tokopedia.moengage_wrapper.util.NotificationBroadcast;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
@@ -81,13 +75,6 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,8 +95,7 @@ import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
  * Created by ricoharisin on 11/11/16.
  */
 
-public abstract class ConsumerMainApplication extends ConsumerRouterApplication implements
-        MoengageInAppListener, MoengagePushListener, CustomPushDataListener {
+public abstract class ConsumerMainApplication extends ConsumerRouterApplication {
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -159,7 +145,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
-        checkAppSignatureAsync();
+        checkAppPackageNameAsync();
 
         Loader.init(this);
         if (getUserSession().isLoggedIn()) {
@@ -167,21 +153,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         }
     }
 
-    private void checkAppSignatureAsync() {
-        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
+    private void checkAppPackageNameAsync() {
+        WeaveInterface checkAppPackageNameWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
-                if (!checkAppSignature()) {
-                    killProcess(android.os.Process.myPid());
-                }
                 if (!checkPackageName()) {
                     killProcess(android.os.Process.myPid());
                 }
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppPackageNameWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, this);
     }
 
     private boolean checkPackageName() {
@@ -195,120 +178,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     }
 
     protected abstract String getOriginalPackageApp();
-    protected abstract void loadSignatureLibrary();
-
-    private boolean checkAppSignature() {
-        try {
-            loadSignatureLibrary();
-            PackageInfo info;
-            boolean signatureValid;
-            byte[] rawCertJava = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
-                if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
-                    rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
-                }
-            } else {
-                info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
-                if (null != info && info.signatures.length > 0) {
-                    rawCertJava = info.signatures[0].toByteArray();
-                }
-            }
-            byte[] rawCertNative = getJniBytes();
-            // handle if the library is failing
-            if (rawCertNative == null) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("rawCertNative", "null");
-                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
-                return true;
-            } else if (rawCertJava == null) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("rawCertJava", "null");
-                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
-                return true;
-            } else {
-                signatureValid = getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-            }
-            if (!signatureValid) {
-                Map<String, String> messageMap = new HashMap<>();
-                messageMap.put("certJava", "!=certNative");
-                ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
-            }
-            return signatureValid;
-        } catch (Throwable e) {
-            Map<String, String> messageMap = new HashMap<>();
-            if (e instanceof PackageManager.NameNotFoundException) {
-                messageMap.put("type", "PackageManager.NameNotFoundException");
-            } else {
-                messageMap.put("type", e.getClass().getName());
-            }
-            ServerLogger.log(Priority.P1, "APP_SIGNATURE_FAILED", messageMap);
-            return false;
-        }
-    }
-
-    protected abstract byte[] getJniBytes();
-
-    private String getInfoFromBytes(byte[] bytes) {
-        if (null == bytes) {
-            return "null";
-        }
-
-        /*
-         * Get the X.509 certificate.
-         */
-        InputStream certStream = new ByteArrayInputStream(bytes);
-        StringBuilder sb = new StringBuilder();
-        try {
-            CertificateFactory certFactory = CertificateFactory.getInstance("X509");
-            X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(certStream);
-
-            sb.append("Certificate subject: ").append(x509Cert.getSubjectDN()).append("\n");
-            sb.append("Certificate issuer: ").append(x509Cert.getIssuerDN()).append("\n");
-            sb.append("Certificate serial number: ").append(x509Cert.getSerialNumber()).append("\n");
-            MessageDigest md;
-            try {
-                md = MessageDigest.getInstance("MD5");
-                md.update(bytes);
-                byte[] byteArray = md.digest();
-                sb.append("MD5: ").append(bytesToString(byteArray)).append("\n");
-                md.reset();
-                md = MessageDigest.getInstance("SHA");
-                md.update(bytes);
-                byteArray = md.digest();
-                sb.append("SHA1: ").append(bytesToString(byteArray)).append("\n");
-                md.reset();
-                md = MessageDigest.getInstance("SHA256");
-                md.update(bytes);
-                byteArray = md.digest();
-                sb.append("SHA256: ").append(bytesToString(byteArray)).append("\n");
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
-
-
-            sb.append("\n");
-        } catch (CertificateException e) {
-
-        }
-        return sb.toString();
-    }
-
-
-    private String bytesToString(byte[] bytes) {
-        StringBuilder md5StrBuff = new StringBuilder();
-        for (int i = 0; i < bytes.length; i++) {
-            if (Integer.toHexString(0xFF & bytes[i]).length() == 1) {
-                md5StrBuff.append("0").append(Integer.toHexString(0xFF & bytes[i]));
-            } else {
-                md5StrBuff.append(Integer.toHexString(0xFF & bytes[i]));
-            }
-            if (bytes.length - 1 != i) {
-                md5StrBuff.append(":");
-            }
-        }
-        return md5StrBuff.toString();
-    }
 
     private void initCacheManager() {
         PersistentCacheManager.init(this);
@@ -422,12 +291,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NotNull
     private Boolean executePostCreateSequence() {
         StethoUtil.initStetho(ConsumerMainApplication.this);
-        MoengageInteractor.INSTANCE.setPushListener(ConsumerMainApplication.this);
-        MoengageInteractor.INSTANCE.setInAppListener(ConsumerMainApplication.this);
         IntentFilter intentFilter1 = new IntentFilter(Constants.ACTION_BC_RESET_APPLINK);
         LocalBroadcastManager.getInstance(ConsumerMainApplication.this).registerReceiver(new ApplinkResetReceiver(), intentFilter1);
         createCustomSoundNotificationChannel();
-        MoengageInteractor.INSTANCE.setMessageListener(this);
 
         initLogManager();
         DevMonitoring devMonitoring = new DevMonitoring(ConsumerMainApplication.this);
@@ -649,26 +515,13 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         try {
             PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
             GlobalConfig.VERSION_CODE = pInfo.versionCode;
-            com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
             GlobalConfig.VERSION_CODE = versionCode();
             com.tokopedia.config.GlobalConfig.VERSION_CODE = versionCode();
         }
     }
 
     public abstract void generateConsumerAppNetworkKeys();
-
-    @Override
-    public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        Timber.d("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
-        return handleClick(screenName, extras, deepLinkUri);
-    }
-
-    @Override
-    public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName, extras, deepLinkUri);
-    }
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         if (deepLinkUri != null) {
@@ -711,22 +564,5 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                 }
             }
         }
-    }
-
-    @NotNull
-    @Override
-    public Intent getPersistentNotificationIntent() {
-        return new Intent(ConsumerMainApplication.this, MainParentActivity.class);
-    }
-
-    @NotNull
-    @Override
-    public Intent getNotificationBroadcastIntent() {
-        return new Intent(ConsumerMainApplication.this, NotificationBroadcast.class);
-    }
-
-    @Override
-    public int getIcStatNotifyWhiteDrawable() {
-        return R.drawable.ic_stat_notify_white;
     }
 }

@@ -72,22 +72,4 @@ object ProductDetailCommonBottomSheetBuilder {
 
         return bottomSheetUnify
     }
-
-    fun getUspTokoNowBottomSheet(context: Context): BottomSheetUnify {
-        val bottomSheetUnify = BottomSheetUnify()
-        val view = View.inflate(context, R.layout.bs_product_usp_tokonow, null)
-        val wordingDynamic = FirebaseRemoteConfigImpl(context).getString(RemoteConfigKey.REMOTE_CONFIG_APP_WORDING_TOKONOW_USP_PDP) ?: ""
-        bottomSheetUnify.apply {
-            isDragable = true
-            isHideable = true
-            isSkipCollapseState = true
-            setTitle(context.getString(R.string.pdp_usp_tokonow_static_title))
-            setChild(view)
-
-            val subtitle3 = view.findViewById<Typography>(R.id.usp_illustration_3_subtitle)
-            subtitle3.text = if (wordingDynamic.isNotEmpty()) HtmlLinkHelper(context, wordingDynamic).spannedString else context.getString(R.string.pdp_usp_tokonow_static_illustration_3_subtitle)
-        }
-
-        return bottomSheetUnify
-    }
 }

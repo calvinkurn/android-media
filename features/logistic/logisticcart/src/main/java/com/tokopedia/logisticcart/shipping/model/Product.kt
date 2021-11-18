@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.model
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Irfan Khoirul on 2019-09-30.

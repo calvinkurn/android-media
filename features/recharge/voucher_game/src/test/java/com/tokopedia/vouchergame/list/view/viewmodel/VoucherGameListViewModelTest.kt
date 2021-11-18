@@ -6,9 +6,9 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.usecase.VoucherGameListUseCase
@@ -56,7 +56,7 @@ class VoucherGameListViewModelTest {
 
     @Test
     fun getVoucherGameOperators_Success() {
-        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = 1)))
+        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = "1")))
         coEvery {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
         } returns Success(useCaseResultSuccess)
@@ -66,7 +66,7 @@ class VoucherGameListViewModelTest {
         assert(actualData is Success)
         val response = actualData as Success
         assert(response.data.operators.isNotEmpty())
-        assertEquals(response.data.operators[0].id, 1)
+        assertEquals(response.data.operators[0].id, "1")
     }
 
     @Test
@@ -83,37 +83,37 @@ class VoucherGameListViewModelTest {
     @Test
     fun getVoucherGameMenuDetail_Success() {
         val telcoCatalogMenuDetailData = TelcoCatalogMenuDetailData(TopupBillsMenuDetail(
-                TopupBillsCatalog(1),
+                TopupBillsCatalog("1"),
                 listOf(TopupBillsRecommendation(title = "recommendation")),
-                listOf(TopupBillsPromo(1)),
+                listOf(TopupBillsPromo("1")),
                 listOf(TopupBillsTicker(1)),
-                listOf(TopupBillsBanner(1))))
+                listOf(TopupBillsBanner("1"))))
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val objectType = TelcoCatalogMenuDetailData::class.java
         result[objectType] = telcoCatalogMenuDetailData
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
         val actualData = voucherGameListViewModel.voucherGameMenuDetail.value
         assert(actualData is Success)
         val response = (actualData as Success).data
-        assertEquals(response.catalog.id, 1)
+        assertEquals(response.catalog.id, "1")
         assert(response.recommendations.isNotEmpty())
         assertEquals(response.recommendations[0].title, "recommendation")
         assert(response.promos.isNotEmpty())
-        assertEquals(response.promos[0].id, 1)
+        assertEquals(response.promos[0].id, "1")
         assert(response.tickers.isNotEmpty())
         assertEquals(response.tickers[0].id, 1)
         assert(response.banners.isNotEmpty())
-        assertEquals(response.banners[0].id, 1)
+        assertEquals(response.banners[0].id, "1")
     }
 
     @Test
     fun getVoucherGameMenuDetail_Fail() {
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         voucherGameListViewModel.getVoucherGameMenuDetail("", mapParams)
         val actualData = voucherGameListViewModel.voucherGameMenuDetail.value

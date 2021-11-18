@@ -12,9 +12,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopProductSearchSuggestionViewBinding
 import com.tokopedia.shop.product.view.datamodel.ShopProductSearchResultSuggestionUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductSearchSuggestionListener
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import java.net.URLDecoder
 
 /**
@@ -30,11 +32,13 @@ class ShopProductSearchResultSuggestionViewHolder(
         val LAYOUT = R.layout.item_shop_product_search_suggestion_view
 
         private const val KEYWORD_PARAMS = "q="
-        private const val QUERY_SPLIT_DELIMITER = "&"
+        private const val QUERY_SPLIT_DELIMITER = "&rf="
         private const val ENCODING_FORMAT = "UTF-8"
+        private const val DEFAULT_FIRST_INDEX = 0
     }
 
-    private val suggestionTextView: Typography? = itemView.findViewById(R.id.suggestion_text)
+    private val viewBinding : ItemShopProductSearchSuggestionViewBinding? by viewBinding()
+    private val suggestionTextView: Typography? = viewBinding?.suggestionText
 
     override fun bind(element: ShopProductSearchResultSuggestionUiModel) {
         suggestionTextView?.text = getClickableSpanText(element.suggestionText, element.queryString)
@@ -71,10 +75,17 @@ class ShopProductSearchResultSuggestionViewHolder(
                 ds.typeface = Typeface.DEFAULT_BOLD
             }
         }
+        val indexOfKeyword = suggestionTextSpannedString.indexOf(keywordWithQuote)
+        val startClickedIndex = indexOfKeyword.takeIf { it.isMoreThanZero() } ?: DEFAULT_FIRST_INDEX
+        val endClickedIndex = if (indexOfKeyword.isMoreThanZero()) {
+            (indexOfKeyword + keywordWithQuote.length)
+        } else {
+            suggestionTextSpannedString.lastIndex
+        }
         suggestionTextSpannedString.setSpan(
                 clickableSpan,
-                suggestionTextSpannedString.indexOf(keywordWithQuote),
-                ((suggestionTextSpannedString.indexOf(keywordWithQuote)) + keywordWithQuote.length),
+                startClickedIndex,
+                endClickedIndex,
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         return suggestionTextSpannedString

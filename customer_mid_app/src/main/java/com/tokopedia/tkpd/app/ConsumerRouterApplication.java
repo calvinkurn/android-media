@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.app;
 
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,15 +20,11 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
-import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
@@ -53,18 +49,14 @@ import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
-import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
@@ -108,9 +100,6 @@ import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
-import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
-
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -124,8 +113,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NetworkRouter,
         OmsModuleRouter,
         TkpdAppsFlyerRouter,
-        LinkerRouter,
-        KYCRouter {
+        LinkerRouter {
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
@@ -151,7 +139,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
     }
 
@@ -403,17 +390,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(appLink);
+        return false;
     }
 
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return new ApplinkUnsupportedImpl(activity);
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance();
     }
 
     @Override
@@ -432,28 +414,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
         if (activity != null) {
-            ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-            Intent intent = activity.getIntent();
-            intent.setData(Uri.parse(applink));
-            intent.putExtras(bundle);
-            deepLinkDelegate.dispatchFrom(activity, intent);
+            RouteManager.route(activity, bundle, applink);
         }
     }
 
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        if (context instanceof Activity) {
-            try {
-                return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
-            } catch (Exception e) {
-
-            }
-        }
-
-        return intent;
+        return RouteManager.getIntent(context, applink);
     }
 
     @Override
@@ -568,28 +535,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
-                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType) {
-        Bundle bundle = new Bundle();
-        BaseDaggerFragment baseDaggerFragment = null;
-        switch (cameraType) {
-            case KYC_CARDID_CAMERA:
-                baseDaggerFragment = FragmentCardIdCamera.newInstance();
-                bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
-                bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
-                baseDaggerFragment.setArguments(bundle);
-                break;
-            case KYC_SELFIEID_CAMERA:
-                baseDaggerFragment = new FragmentSelfieIdCamera();
-                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);
-                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
-                baseDaggerFragment.setArguments(bundle);
-                break;
-        }
-        return baseDaggerFragment;
-    }
 
     @Override
     public IAppNotificationReceiver getAppNotificationReceiver() {

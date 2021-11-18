@@ -123,8 +123,8 @@ class GroupDetailViewModelTest {
 
     @Test
     fun `product stats success`() {
-        val expected = 10
-        var actual = 0
+        val expected = "10"
+        var actual = "0"
         val data = ProductStatisticsResponse(getDashboardProductStatistics = GetDashboardProductStatistics(listOf(WithoutGroupDataItem(adId = expected))))
         val onSuccess: (data: GetDashboardProductStatistics) -> Unit = {
             actual = it.data[0].adId

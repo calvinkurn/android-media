@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
 import com.tokopedia.digital.home.model.RechargeHomepageSectionAction
 import com.tokopedia.digital.home.model.RechargeHomepageSectionSkeleton
 import com.tokopedia.digital.home.model.RechargeHomepageSections
@@ -52,7 +53,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageSectionSkeleton.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSectionSkeleton.Response>().response
 
             mutableRechargeHomepageSectionSkeleton.postValue(Success(data))
@@ -77,7 +78,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageSections.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSections.Response>().response
             data.requestIDs = requestIDs
 
@@ -112,7 +113,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeHomepageSectionAction.Response::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeHomepageSectionAction.Response>().response
 
             mutableRechargeHomepageSectionAction.postValue(Success(data))
@@ -128,7 +129,7 @@ class RechargeHomepageViewModel @Inject constructor(
                     RechargeTickerHomepageModel::class.java, mapParams
             )
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeTickerHomepageModel>()
 
             mutableRechargeTickerHomepageModel.postValue(Success(data))
@@ -173,7 +174,7 @@ class RechargeHomepageViewModel @Inject constructor(
 
     fun getDynamicIconsSectionIds(): ArrayList<String> {
         rechargeHomepageSectionSkeleton.value.let {
-            return if (it is Success){
+            return if (it is Success) {
                 val dynamicIconSectionsIds = arrayListOf<String>()
                 it.data.sections.filter { it.template.equals(SECTION_DYNAMIC_ICONS) }
                         .forEach { dynamicIconSectionsIds.add(it.id) }
@@ -186,6 +187,11 @@ class RechargeHomepageViewModel @Inject constructor(
         rechargeHomepageSectionSkeleton.value.let {
             return if (it is Success) it.data.searchBarPlaceholder else ""
         }
+    }
+
+    fun getSearchBarScreenName(): String = rechargeHomepageSectionSkeleton.value.let {
+        if (it is Success) it.data.searchBarScreenName
+        else RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
     }
 
     companion object {
@@ -217,5 +223,6 @@ class RechargeHomepageViewModel @Inject constructor(
         const val SECTION_PRODUCT_CARD_CUSTOM_BANNER = "PRODUCT_CARD_CUSTOM_BANNER"
         const val SECTION_MINI_CAROUSELL = "MINI_CAROUSELL"
         const val SECTION_TICKER = "TICKER"
+        const val SECTION_SWIPE_BANNER = "SWIPE_BANNER"
     }
 }

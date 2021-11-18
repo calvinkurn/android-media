@@ -30,7 +30,7 @@ class GetReputationPenaltyRewardUseCase @Inject constructor(
             ReputationPenaltyAndRewardResponse.Data::class.java,
             params
         )
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(ReputationPenaltyAndRewardResponse.Data::class.java)
         if (errors.isNullOrEmpty()) {

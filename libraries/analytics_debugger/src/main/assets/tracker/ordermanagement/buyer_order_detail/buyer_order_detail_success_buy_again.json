@@ -1,0 +1,35 @@
+{
+  "readme": "Revamped Buyer Order Detail - click on product action button \"Beli Lagi\"",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "add_to_cart",
+      "eventAction": "click beli lagi success",
+      "eventCategory": "my purchase list detail - mp",
+      "eventLabel": "success - order_id: .+",
+      "businessUnit": "Physical Goods",
+      "currentSite": "Marketplace",
+      "items": [
+        {
+          "category_id": "\\d+",
+          "dimension40": "/order list detail - marketplace",
+          "dimension45": "\\d+",
+          "item_brand": ".*",
+          "item_category": ".+",
+          "item_id": "\\d+",
+          "item_name": ".+",
+          "item_variant": ".*",
+          "price": "\\d+.\\d+",
+          "quantity": "\\d+.\\d+",
+          "shop_id": "\\d{1,}",
+          "shop_name": ".+",
+          "shop_type": "\\d+"
+        }
+      ],
+      "productId": ".+",
+      "userId": "\\d+",
+      "sessionIris": ".+",
+      "clientId": ".+"
+    }
+  ]
+}

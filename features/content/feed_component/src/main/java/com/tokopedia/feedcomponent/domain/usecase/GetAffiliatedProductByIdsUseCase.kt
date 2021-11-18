@@ -64,7 +64,7 @@ class GetAffiliatedProductByIdsUseCase @Inject constructor(
     //endregion
 
     override suspend fun executeOnBackground(): AffiliatedProductByProductIDs {
-        val response = graphqlRepository.getReseponse(
+        val response = graphqlRepository.response(
                 listOf(
                         GraphqlRequest(query, GetAffiliatedProductByProductIDsResponse::class.java, params)
                 ),

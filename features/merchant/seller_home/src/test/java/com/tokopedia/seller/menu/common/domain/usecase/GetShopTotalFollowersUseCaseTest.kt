@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.Matchers.anyInt
+import org.mockito.ArgumentMatchers.anyLong
 
 @ExperimentalCoroutinesApi
 class GetShopTotalFollowersUseCaseTest {
@@ -47,14 +47,14 @@ class GetShopTotalFollowersUseCaseTest {
         val successTotalFollowers = 0L
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
-        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyLong())
         val totalFollowers = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(totalFollowers, successTotalFollowers)
@@ -67,15 +67,15 @@ class GetShopTotalFollowersUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<ShopTotalFollowers>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
-        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyInt())
+        useCase.params = GetShopTotalFollowersUseCase.createRequestParams(anyLong())
         val totalFollowers = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertNull(totalFollowers)

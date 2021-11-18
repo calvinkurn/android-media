@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourierocc
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierAdapterListener
@@ -11,7 +12,6 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottomsheet_shipping_occ.view.*
 
 class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDurationAdapterListener {
 
@@ -38,7 +38,7 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
     }
 
     private fun setupChild(child: View, list: List<RatesViewModelType>) {
-        val rvShipping = child.rv_shipping
+        val rvShipping: RecyclerView = child.findViewById(R.id.rv_shipping)
 
         rvShipping.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
         rvShipping.adapter = ShippingCourierOccAdapter(list, this, this)

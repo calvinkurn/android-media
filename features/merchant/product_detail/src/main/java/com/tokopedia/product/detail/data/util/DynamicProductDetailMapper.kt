@@ -13,9 +13,9 @@ import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
-import com.tokopedia.product.detail.data.model.ticker.GeneralTickerDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant.LAYOUT_FLOATING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
+import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.track.TrackApp
 
 object DynamicProductDetailMapper {
@@ -51,8 +51,8 @@ object DynamicProductDetailMapper {
                     val contentData = component.componentData.firstOrNull()
                     val content = if (contentData?.content?.isEmpty() == true) listOf(Content()) else contentData?.content
                     listOfComponent.add(ProductGeneralInfoDataModel(component.componentName, component.type, contentData?.applink
-                            ?: "", contentData?.title ?: "",
-                            contentData?.isApplink ?: true, contentData?.icon
+                        ?: "", contentData?.title ?: "",
+                        contentData?.isApplink ?: true, contentData?.icon
                             ?: "", content?.firstOrNull()?.subtitle
                             ?: "", content?.firstOrNull()?.icon ?: "")
                     )
@@ -64,6 +64,9 @@ object DynamicProductDetailMapper {
                     when (component.componentName) {
                         PDP_7 ->
                             listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
+                        SHOPADS_CAROUSEL -> {
+                            listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
+                        }
                         else ->
                             listOfComponent.add(ProductRecommendationDataModel(type = component.type, name = component.componentName, position = index))
                     }
@@ -109,7 +112,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.ONE_LINERS -> {
                     listOfComponent.add(
-                            OneLinersDataModel(type = component.type, name = component.componentName)
+                        OneLinersDataModel(type = component.type, name = component.componentName)
                     )
                 }
                 ProductDetailConstant.CATEGORY_CAROUSEL -> {
@@ -118,13 +121,16 @@ object DynamicProductDetailMapper {
 
                     if (carouselData?.categoryCarouselList?.isNotEmpty() == true) {
                         listOfComponent.add(
-                                ProductCategoryCarouselDataModel(type = component.type,
-                                        name = component.componentName,
-                                        titleCarousel = carouselData.titleCarousel,
-                                        linkText = carouselData.linkText,
-                                        applink = carouselData.applink,
-                                        categoryList = carouselData.categoryCarouselList))
+                            ProductCategoryCarouselDataModel(type = component.type,
+                                name = component.componentName,
+                                titleCarousel = carouselData.titleCarousel,
+                                linkText = carouselData.linkText,
+                                applink = carouselData.applink,
+                                categoryList = carouselData.categoryCarouselList))
                     }
+                }
+                ProductDetailConstant.PRODUCT_BUNDLING -> {
+                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
                 }
             }
         }
@@ -149,35 +155,35 @@ object DynamicProductDetailMapper {
         val stockAssuranceComponent = mapToOneLinersComponent(ProductDetailConstant.STOCK_ASSURANCE, data)
 
         val newDataWithMedia = contentData?.copy(media = mediaData.media, youtubeVideos = mediaData.youtubeVideos)
-                ?: ComponentData()
+            ?: ComponentData()
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-                layoutName = data.generalName,
-                basic = data.basicInfo,
-                data = newDataWithMedia,
-                pdpSession = data.pdpSession,
-                bestSellerContent = bestSellerComponent,
-                stockAssuranceContent = stockAssuranceComponent
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent,
+            stockAssuranceContent = stockAssuranceComponent
         )
     }
 
     private fun mapToOneLinersComponent(
-            componentName: String,
-            data: PdpGetLayout
+        componentName: String,
+        data: PdpGetLayout
     ): Map<String, OneLinersContent>? {
         return data.components.find {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                    productID = it.productId,
-                    content = it.oneLinerContent,
-                    linkText = it.linkText,
-                    color = it.color,
-                    applink = it.applink,
-                    separator = it.separator,
-                    icon = it.icon,
-                    isVisible = it.isVisible
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible
             )
         }?.associateBy { it.productID }
     }
@@ -204,12 +210,12 @@ object DynamicProductDetailMapper {
         }?.componentData?.firstOrNull() ?: return null
 
         return ProductVariant(
-                parentId = networkData.parentId,
-                errorCode = networkData.errorCode,
-                sizeChart = networkData.sizeChart,
-                defaultChild = networkData.defaultChild,
-                variants = networkData.variants,
-                children = networkData.children
+            parentId = networkData.parentId,
+            errorCode = networkData.errorCode,
+            sizeChart = networkData.sizeChart,
+            defaultChild = networkData.defaultChild,
+            variants = networkData.variants,
+            children = networkData.children
         )
     }
 
@@ -238,13 +244,13 @@ object DynamicProductDetailMapper {
         if (componentData == null) return null
 
         return ProductCustomInfoDataModel(
-                name = componentName,
-                type = componentType,
-                title = componentData.title,
-                applink = if (componentData.isApplink) componentData.applink else "",
-                description = componentData.description,
-                icon = componentData.icon,
-                separator = componentData.separator)
+            name = componentName,
+            type = componentType,
+            title = componentData.title,
+            applink = if (componentData.isApplink) componentData.applink else "",
+            description = componentData.description,
+            icon = componentData.icon,
+            separator = componentData.separator)
     }
 
     fun generateProductReportFallback(productUrl: String): String {
@@ -257,19 +263,6 @@ object DynamicProductDetailMapper {
         return fallbackUrl
     }
 
-    /**
-     * Ticker is used for show general message like : corona, shipping delay,  etc
-     * since we are using the same GQL as sticky login, we don't want sticky login item so we remove this
-     * LAYOUT_FLOATING should be sticky login
-     * *
-     * update : now it's not used class from sticky login module anymore
-     */
-    fun getTickerInfoData(tickerData: GeneralTickerDataModel.TickerResponse): List<GeneralTickerDataModel.TickerDetailDataModel> {
-        return tickerData.response.tickerDataModels.filter {
-            it.layout != LAYOUT_FLOATING
-        }
-    }
-
     fun generateImageReviewUiData(data: ImageReviewGqlResponse.ProductReviewImageListQuery): ImageReview {
         val result = mutableListOf<ImageReviewItem>()
 
@@ -278,8 +271,8 @@ object DynamicProductDetailMapper {
                 review.reviewId == it.reviewID
             } ?: return@forEach
             result.add(ImageReviewItem(it.reviewID.toString(), review.timeFormat?.dateTimeFmt1,
-                    review.reviewer?.fullName, it.uriThumbnail,
-                    it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
+                review.reviewer?.fullName, it.uriThumbnail,
+                it.uriLarge, review.rating, data.isHasNext, data.detail?.imageCountFmt, data.detail?.imageCount))
         }
 
         return ImageReview(result, data.detail?.imageCount ?: "")
@@ -289,17 +282,17 @@ object DynamicProductDetailMapper {
         val data = productInfoP1?.data
         val basic = productInfoP1?.basic
         return ProductInfoParcelData(basic?.productID ?: "", basic?.shopID
-                ?: "", data?.name ?: "", data?.getProductImageUrl()
-                ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
-                ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
+            ?: "", data?.name ?: "", data?.getProductImageUrl()
+            ?: "", variantGuideLine, productInfoP1?.basic?.stats?.countTalk.toIntOrZero(), data?.youtubeVideos
+            ?: listOf(), productInfoContent, forceRefresh, productInfoP1?.basic?.isTokoNow == true)
     }
 
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-                localData.district_id,
-                localData.address_id,
-                localData.postal_code,
+                localData.district_id.checkIfNumber("district_id"),
+                localData.address_id.checkIfNumber("address_id"),
+                localData.postal_code.checkIfNumber("postal_code"),
                 latlong)
     }
 

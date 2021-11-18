@@ -5,17 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageStockLocationBinding
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_product_manage_stock_location.*
 
 class ProductManageStockLocationBottomSheet: BottomSheetUnify() {
 
     companion object {
 
         private val TAG = ProductManageStockLocationBottomSheet::class.java.canonicalName
-        private val LAYOUT = R.layout.bottom_sheet_product_manage_stock_location
 
         fun newInstance(): ProductManageStockLocationBottomSheet {
             return ProductManageStockLocationBottomSheet()
@@ -23,19 +21,20 @@ class ProductManageStockLocationBottomSheet: BottomSheetUnify() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(LAYOUT, container)
-        setChild(view)
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        stockLocationInfo.apply {
-            setImageUrl(ProductManageUrl.ILLUSTRATION_STOCK_LOCATION)
-            setPrimaryCTAClickListener {
-                dismiss()
+        val binding = BottomSheetProductManageStockLocationBinding.inflate(
+            LayoutInflater.from(context),
+            container,
+            false
+        ).apply {
+            stockLocationInfo.run {
+                setImageUrl(ProductManageUrl.ILLUSTRATION_STOCK_LOCATION)
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
             }
         }
+        setChild(binding.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     fun show(fm: FragmentManager) {

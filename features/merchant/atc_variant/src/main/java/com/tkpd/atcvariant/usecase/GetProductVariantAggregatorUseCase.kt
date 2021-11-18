@@ -257,7 +257,7 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
                 .build()
 
-        val response = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val response = graphqlRepository.response(listOf(request), cacheStrategy)
         val error: List<GraphqlError>? = response.getError(ProductVariantAggregatorResponse::class.java)
         val data = response.getSuccessData<ProductVariantAggregatorResponse>()
 
@@ -284,7 +284,8 @@ class GetProductVariantAggregatorUseCase @Inject constructor(private val graphql
                 rates = data.ratesEstimate,
                 reData = data.restrictionInfo,
                 uspImageUrl = data.uniqueSellingPoint.uspBoe.uspIcon,
-                cashBackPercentage = data.isCashback.percentage
+                cashBackPercentage = data.isCashback.percentage,
+                isCod = data.isCod
         )
     }
 }

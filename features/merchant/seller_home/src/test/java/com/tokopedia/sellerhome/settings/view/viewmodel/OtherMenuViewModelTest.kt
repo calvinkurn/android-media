@@ -209,11 +209,13 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         }
 
     @Test
-    fun `when startToggleTopadsCredit should toggle topads topup with delay`() =
+    fun `when startToggleTopadsCredit and kredit topads is 0f, should toggle topads topup with delay`() =
         coroutineTestRule.runBlockingTest {
-            onGetTopAdsKredit_thenReturn(100f)
+            onGetTopAdsKredit_thenReturn(0f)
 
             mViewModel.getKreditTopAds()
+
+            mViewModel.startToggleTopadsCredit()
 
             advanceTimeBy(2000L)
 
@@ -221,11 +223,65 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 Assert.assertTrue(it == 1)
             }
 
+            mViewModel.startToggleTopadsCredit()
+
             advanceTimeBy(1000L)
 
             mViewModel.numberOfTopupToggleCounts.observeOnce {
                 Assert.assertTrue(it == 2)
             }
+        }
+
+    @Test
+    fun `when startToggleTopadsCredit, kredit topads is 0f, and job is not completed yet, should not toggle topads topup`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+            advanceTimeBy(100L)
+
+            mViewModel.startToggleTopadsCredit()
+
+            Assert.assertTrue(mViewModel.numberOfTopupToggleCounts.value == null)
+        }
+
+    @Test
+    fun `when startToggleTopadsCredit, kredit topads is 0f, and job is completed, should toggle topads topup`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+            advanceTimeBy(3000L)
+
+            mViewModel.startToggleTopadsCredit()
+
+            mViewModel.numberOfTopupToggleCounts.observeOnce {
+                Assert.assertTrue(it == 1)
+            }
+        }
+
+    @Test
+    fun `when startToggleTopadsCredit and kredit topads is not 0f, should not toggle topads topup`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(100f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+
+            Assert.assertTrue(mViewModel.numberOfTopupToggleCounts.value == null)
+        }
+
+    @Test
+    fun `when getAllOtherMenuData should cancel toggle topads job`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTopAdsKredit_thenReturn(0f)
+            mViewModel.getKreditTopAds()
+            mViewModel.startToggleTopadsCredit()
+            advanceTimeBy(100L)
+
+            mViewModel.getAllOtherMenuData()
+            advanceTimeBy(3000L)
+
+            Assert.assertTrue(mViewModel.numberOfTopupToggleCounts.value == null)
         }
 
     @Test
@@ -477,27 +533,56 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         }
 
     @Test
-    fun `when getAllOtherMenuData shop share info value success should set live data success`() =
+    fun `when getShopShareInfoData shop share info value success should set live data success`() =
         runBlocking {
             val shopShareInfo = OtherMenuShopShareData()
             onGetShareInfo_thenReturn(shopShareInfo)
 
-            mViewModel.getAllOtherMenuData()
+            mViewModel.getShopShareInfoData()
 
             verifyGetShareInfoCalled()
             assert(mViewModel.shopShareInfoLiveData.value == shopShareInfo)
         }
 
     @Test
-    fun `when getAllOtherMenuData shop share info value error should set live data null`() =
+    fun `when getShopShareInfoData shop share info value error should set live data null`() =
         runBlocking {
             val error = IllegalStateException()
             onGetShareInfo_thenThrow(error)
 
-            mViewModel.getAllOtherMenuData()
+            mViewModel.getShopShareInfoData()
 
             verifyGetShareInfoCalled()
             assert(mViewModel.shopShareInfoLiveData.value == null)
+        }
+
+    @Test
+    fun `when setErrorStateMapDefaultValue but errorStateMap is already set, should not set values again`() =
+        runBlocking {
+            onGetShopTotalFollowers_thenThrow()
+            onGetUserShopInfo_thenThrow()
+            onGetShopOperational_thenThrow()
+            onGetBalance_thenThrow()
+            onGetTopAdsKredit_thenThrow()
+            onGetFreeShipping_thenThrow()
+            onGetShopBadge_thenThrow()
+            mViewModel.getAllOtherMenuData()
+            val currentValue = mViewModel.shouldShowMultipleErrorToaster.value
+
+            mViewModel.setErrorStateMapDefaultValue()
+
+            Assert.assertTrue(mViewModel.shouldShowMultipleErrorToaster.value == currentValue)
+        }
+
+    @Test
+    fun `when setSuccessStateMapDefaultValue but _secondarySuccessStateMap is already set, should not set values again`() =
+        runBlocking {
+            mViewModel.setSuccessStateMapDefaultValue()
+            val currentValue = mViewModel.shouldSwipeSecondaryInfo.value
+
+            mViewModel.setSuccessStateMapDefaultValue()
+
+            Assert.assertTrue(mViewModel.shouldSwipeSecondaryInfo.value == currentValue)
         }
 
     private suspend fun onGetShopBadge_thenReturn(shopBadge: String) {
@@ -515,7 +600,6 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     private suspend fun verifyGetShopBadgeNotCalled() {
         coVerify(exactly = 0) { getShopBadgeUseCase.executeOnBackground() }
     }
-
     private suspend fun onGetShopTotalFollowers_thenReturn(totalFollowers: Long) {
         coEvery { getShopTotalFollowersUseCase.executeOnBackground() } returns totalFollowers
     }

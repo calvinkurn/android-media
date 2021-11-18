@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.view.model.lastappl
 
 import android.os.Parcelable
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.BenefitSummaryInfoUiModel
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LastApplyUiModel(

@@ -17,12 +17,9 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
-import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
+import com.tokopedia.common.topupbills.data.*
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
+import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.data.prefix_select.RechargePrefix
 import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment.InputNumberActionType
 import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
@@ -41,8 +38,6 @@ import com.tokopedia.topupbills.telco.common.fragment.DigitalBaseTelcoFragment
 import com.tokopedia.topupbills.telco.common.model.TelcoTabItem
 import com.tokopedia.topupbills.telco.common.viewmodel.TelcoTabViewModel
 import com.tokopedia.topupbills.telco.data.TelcoProduct
-import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.data.constant.TelcoProductType
 import com.tokopedia.topupbills.telco.prepaid.viewmodel.SharedTelcoPrepaidViewModel
@@ -250,17 +245,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 it.select()
             }
             val tabs = telcoTabViewModel.getAll()
-            if (showProducts) {
-                sharedModelPrepaid.setPositionScrollToItem(0)
-                categoryId = getIdCategoryCurrentItem()
-                topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
-                sharedModelPrepaid.setVisibilityTotalPrice(false)
-                sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
-                sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
-            } else {
-                setTrackingOnTabMenu(tabs[position].title)
-                if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
-                else sendImpressionRecents()
+            if (!tabs.isNullOrEmpty() && tabs.size > position) {
+                if (showProducts) {
+                    sharedModelPrepaid.setPositionScrollToItem(0)
+                    categoryId = getIdCategoryCurrentItem()
+                    topupAnalytics.eventClickTelcoPrepaidCategory(tabs[position].title)
+                    sharedModelPrepaid.setVisibilityTotalPrice(false)
+                    sharedModelPrepaid.setProductCatalogSelected(getEmptyProduct())
+                    sharedModelPrepaid.setSelectedCategoryViewPager(getLabelActiveCategory())
+                } else {
+                    setTrackingOnTabMenu(tabs[position].title)
+                    if (tabs[position].title == TelcoComponentName.PROMO) sendImpressionPromo()
+                    else sendImpressionRecents()
+                }
             }
         }
     }
@@ -784,8 +781,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val TITLE_PAGE = "telco prepaid"
 
         fun newInstance(
-            telcoExtraParam: TopupBillsExtraParam,
-            rechargeProductFromSlice: String = ""
+                telcoExtraParam: TopupBillsExtraParam,
+                rechargeProductFromSlice: String = ""
         ): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             val bundle = Bundle()

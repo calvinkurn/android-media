@@ -1,7 +1,7 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class OrderPayment(
     val isEnable: Boolean = false,
@@ -118,7 +118,8 @@ data class OrderPaymentInstallmentTerm(
         var isEnable: Boolean = false,
         var isError: Boolean = false,
         var fee: Double = 0.0,
-        var monthlyAmount: Double = 0.0
+        var monthlyAmount: Double = 0.0,
+        var description: String = "",
 )
 
 data class OrderPaymentOvoAdditionalData(

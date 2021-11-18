@@ -74,12 +74,12 @@ import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragmen
 import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
 import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewActivity
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
@@ -646,17 +646,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccGlobalEvent.UpdateLocalCacheAddress -> {
                     updateLocalCacheAddressData(it.addressModel)
                 }
-                is OccGlobalEvent.AdjustAdminFeeError ->  {
-                    progressDialog?.dismiss()
+                is OccGlobalEvent.AdjustAdminFeeError -> {
                     view?.let { v ->
                         Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
                     }
-                    viewModel.resetFlagGetTenorList()
-                }
-                is OccGlobalEvent.AdjustAdminFeeSuccess -> {
-                    progressDialog?.dismiss()
-                    creditCardTenorListData = it.ccData
-                    viewModel.resetFlagGetTenorList()
                 }
             }
         }
@@ -1263,13 +1256,21 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onInstallmentDetailClicked(creditCard: OrderPaymentCreditCard) {
-            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                InstallmentDetailBottomSheet().show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData,
-                    object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
-                        override fun onSelectInstallment(installment: OrderPaymentInstallmentTerm) {
-                            viewModel.chooseInstallment(installment)
-                        }
-                    })
+            val orderTotal = viewModel.orderTotal.value
+            if (orderTotal.buttonState != OccButtonState.LOADING) {
+                InstallmentDetailBottomSheet(viewModel.paymentProcessor.get()).show(this@OrderSummaryPageFragment, creditCard, creditCardTenorListData,
+                        viewModel.orderCart, orderTotal.orderCost, userSession.get().userId,
+                        object : InstallmentDetailBottomSheet.InstallmentDetailBottomSheetListener {
+                            override fun onSelectInstallment(selectedInstallment: OrderPaymentInstallmentTerm, installmentList: List<OrderPaymentInstallmentTerm>) {
+                                viewModel.chooseInstallment(selectedInstallment, installmentList)
+                            }
+
+                            override fun onFailedLoadInstallment() {
+                                view?.let { v ->
+                                    Toaster.build(v, getString(R.string.default_afpb_error), type = Toaster.TYPE_ERROR).show()
+                                }
+                            }
+                        })
             }
         }
 

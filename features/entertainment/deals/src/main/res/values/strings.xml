@@ -58,4 +58,16 @@
     <string name="deals_category_empty_description">Jangan menyerah, lanjutkan perburuan dengan cek kategori lainnya!</string>
     <string name="deals_category_empty_title">Yaah, nggak ada isinya</string>
     <string name="deals_category_empty_desc_filter">Jangan menyerah, lanjutkan perburuan dengan reset filter kamu!</string>
+
+    <string name="deals_brand_detail">Baca Selengkapnya</string>
+    <string name="deals_brand_detail_title_bottom_sheet">Tentang %s</string>
+    <string name="deals_brand_detail_count">Ada %s Voucher</string>
+    <string name="deals_brand_detail_item_valid_until">Berlaku Hingga</string>
+    <string name="deals_brand_detail_item_slash_price">Rp %s</string>
+    <string name="deals_brand_detail_share_web_link">https://www.tokopedia.com/deals/b/%s</string>
+    <string name="deals_brand_detail_share_app_link">tokopedia://deals/brand/%s</string>
+
+    <string name="deals_error_reload">Ulangi</string>
+    <string name="deals_empty_state_button">Ke Homepage</string>
+
 </resources>

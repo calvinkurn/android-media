@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
 
 repositories {
@@ -12,7 +12,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
 
@@ -22,6 +21,10 @@ buildscript {
 }
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
+    
     packagingOptions {
         exclude 'META-INF/**'
     }
@@ -35,6 +38,11 @@ android {
             testLogging.events = ["passed", "skipped", "failed"]
         }
     }
+}
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
 }
 
 dependencies {
@@ -54,6 +62,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.webview)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -90,6 +99,7 @@ dependencies {
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.androidxTest

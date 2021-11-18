@@ -8,10 +8,10 @@ import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
+import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyPdpProductListBinding
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpProductAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.EmoneyPdpProductViewHolder
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_emoney_pdp_product_list.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -22,20 +22,21 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
     : BaseCustomView(context, attrs, defStyleAttr) {
 
     private val adapter = EmoneyPdpProductAdapter()
+    var binding : WidgetEmoneyPdpProductListBinding
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.widget_emoney_pdp_product_list, this, true)
+        binding = WidgetEmoneyPdpProductListBinding.inflate(LayoutInflater.from(context), this, true)
         initView()
     }
 
     private fun initView() {
-        emoneyProductListRecyclerView.layoutManager = LinearLayoutManager(context,
+        binding.emoneyProductListRecyclerView.layoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL, false)
-        emoneyProductListRecyclerView.adapter = adapter
+        binding.emoneyProductListRecyclerView.adapter = adapter
     }
 
     fun setTitle(title: String) {
-        emoneyProductWidgetTitle.text = title
+        binding.emoneyProductWidgetTitle.text = title
     }
 
     fun setProducts(products: List<CatalogProduct>) {
@@ -49,18 +50,18 @@ class EmoneyPdpProductWidget @JvmOverloads constructor(@NotNull context: Context
     }
 
     fun showShimmering() {
-        if (!emoneyProductShimmering.isShown) emoneyProductShimmering.show()
-        if (emoneyProductWidgetTitle.isShown) emoneyProductWidgetTitle.hide()
-        if (emoneyProductListRecyclerView.isShown) emoneyProductListRecyclerView.hide()
+        if (!binding.emoneyProductShimmering.root.isShown) binding.emoneyProductShimmering.root.show()
+        if (binding.emoneyProductWidgetTitle.isShown) binding.emoneyProductWidgetTitle.hide()
+        if (binding.emoneyProductListRecyclerView.isShown) binding.emoneyProductListRecyclerView.hide()
     }
 
     private fun showContent() {
-        if (emoneyProductShimmering.isShown) emoneyProductShimmering.hide()
-        if (!emoneyProductWidgetTitle.isShown) emoneyProductWidgetTitle.show()
-        if (!emoneyProductListRecyclerView.isShown) emoneyProductListRecyclerView.show()
+        if (binding.emoneyProductShimmering.root.isShown) binding.emoneyProductShimmering.root.hide()
+        if (!binding.emoneyProductWidgetTitle.isShown) binding.emoneyProductWidgetTitle.show()
+        if (!binding.emoneyProductListRecyclerView.isShown) binding.emoneyProductListRecyclerView.show()
     }
 
     fun showPaddingBottom(paddingHeight: Int) {
-        emoneyProductListRecyclerView.setPadding(0, 0, 0, paddingHeight)
+        binding.emoneyProductListRecyclerView.setPadding(0, 0, 0, paddingHeight)
     }
 }

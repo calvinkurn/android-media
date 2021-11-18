@@ -9,25 +9,23 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcWidgetTableBinding
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
-import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
-import kotlinx.android.synthetic.main.shc_widget_table.view.*
+import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
  * Created By @ilhamsuaib on 10/06/20
  */
 
 class TableViewHolder(
-    itemView: View?,
+    itemView: View,
     private val listener: Listener
 ) : AbstractViewHolder<TableWidgetUiModel>(itemView) {
 
@@ -36,16 +34,19 @@ class TableViewHolder(
         val RES_LAYOUT = R.layout.shc_widget_table
     }
 
-    private val tableFilter: Typography? = itemView?.findViewById(R.id.filterShcTable)
+    private val binding by lazy { ShcWidgetTableBinding.bind(itemView) }
+    private val errorStateBinding by lazy { binding.shcTableErrorStateView }
+    private val loadingStateBinding by lazy { binding.shcTableLoadingStateView }
 
     override fun bind(element: TableWidgetUiModel) {
         if (!listener.getIsShouldRemoveWidget()) {
             itemView.toggleWidgetHeight(true)
         }
-        itemView.tvTableWidgetTitle.text = element.title
-        itemView.tvTableWidgetTitle.visible()
-        itemView.commonWidgetErrorState.gone()
+        binding.tvTableWidgetTitle.text = element.title
+        binding.tvTableWidgetTitle.visible()
+        errorStateBinding.commonWidgetErrorState.gone()
 
+        setTagNotification(element.tag)
         setupTooltip(element)
 
         val data: TableDataUiModel? = element.data
@@ -60,9 +61,9 @@ class TableViewHolder(
     }
 
     private fun setOnSuccess(element: TableWidgetUiModel) {
-        with(itemView) {
-            commonWidgetErrorState.gone()
-            shimmerTableWidgetWidget.gone()
+        with(binding) {
+            errorStateBinding.commonWidgetErrorState.gone()
+            loadingStateBinding.shimmerTableWidgetWidget.gone()
 
             val dataSet = element.data?.dataSet.orEmpty()
             if (dataSet.isNotEmpty()) {
@@ -83,7 +84,7 @@ class TableViewHolder(
                     shcTableView.setOnSwipeListener { position, maxPosition, isEmpty ->
                         listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
                     }
-                    shcTableView?.addOnHtmlClickListener { url, isEmpty ->
+                    shcTableView.addOnHtmlClickListener { url, isEmpty ->
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
                 }
@@ -104,7 +105,7 @@ class TableViewHolder(
         setupCta(element)
     }
 
-    private fun setOnTableEmpty(element: TableWidgetUiModel) = with(itemView) {
+    private fun setOnTableEmpty(element: TableWidgetUiModel) = with(binding) {
         if (element.emptyState.imageUrl.isNotBlank() && element.emptyState.title.isNotBlank() &&
             element.emptyState.description.isNotBlank() && element.emptyState.ctaText.isNotBlank() &&
             element.emptyState.appLink.isNotBlank()
@@ -140,8 +141,8 @@ class TableViewHolder(
         listener.sendTableImpressionEvent(element, 0, 0, true)
     }
 
-    private fun showLoadingState() = with(itemView) {
-        shimmerTableWidgetWidget.visible()
+    private fun showLoadingState() = with(binding) {
+        loadingStateBinding.shimmerTableWidgetWidget.visible()
         shcTableView.gone()
         tvShcTableOnEmpty.gone()
         imgShcTableEmpty.gone()
@@ -150,9 +151,9 @@ class TableViewHolder(
         btnShcTableEmpty.gone()
     }
 
-    private fun showErrorState() = with(itemView) {
-        shimmerTableWidgetWidget.gone()
-        commonWidgetErrorState.visible()
+    private fun showErrorState() = with(binding) {
+        loadingStateBinding.shimmerTableWidgetWidget.gone()
+        errorStateBinding.commonWidgetErrorState.visible()
         tvTableWidgetTitle.visible()
         shcTableView.gone()
         tvShcTableOnEmpty.gone()
@@ -162,16 +163,16 @@ class TableViewHolder(
         btnShcTableEmpty.gone()
 
         ImageHandler.loadImageWithId(
-            imgWidgetOnError,
+            errorStateBinding.imgWidgetOnError,
             com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
         )
     }
 
     private fun setupCta(element: TableWidgetUiModel) {
-        val isCtaVisible =
-            element.appLink.isNotBlank() && element.ctaText.isNotBlank() && !element.data?.dataSet.isNullOrEmpty()
+        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+                && !element.data?.dataSet.isNullOrEmpty()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
-        with(itemView) {
+        with(binding) {
             btnTableCta.visibility = ctaVisibility
             icTableCta.visibility = ctaVisibility
 
@@ -197,7 +198,7 @@ class TableViewHolder(
         val isFilterAvailable = element.tableFilters.isNotEmpty()
         if (isFilterAvailable) {
             val selectedFilter = element.tableFilters.find { it.isSelected }
-            tableFilter?.run {
+            binding.filterShcTable.run {
                 visible()
                 setupTableFilterImpressionListener(element)
                 text = selectedFilter?.name.orEmpty()
@@ -207,7 +208,7 @@ class TableViewHolder(
                 }
             }
         } else {
-            tableFilter?.gone()
+            binding.filterShcTable.gone()
         }
     }
 
@@ -223,10 +224,24 @@ class TableViewHolder(
         RouteManager.route(itemView.context, element.appLink)
     }
 
-    private fun setupTooltip(element: TableWidgetUiModel) = with(itemView) {
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(binding) {
+            notifTagTable.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagTable.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
+    }
+
+    private fun setupTooltip(element: TableWidgetUiModel) = with(binding) {
         val tooltip = element.tooltip
-        val shouldShowTooltip =
-            (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        val shouldShowTooltip = (tooltip?.shouldShow == true)
+                && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
             tvTableWidgetTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvTableWidgetTitle.setOnClickListener {

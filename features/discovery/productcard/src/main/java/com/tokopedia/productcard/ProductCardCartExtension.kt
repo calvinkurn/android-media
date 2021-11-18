@@ -54,7 +54,7 @@ internal class ProductCardCartExtension(private val productCardView: View) {
             productCardModel.shouldShowAddToCartNonVariantQuantity() ->
                 buttonAddToCart?.configureButtonAddToCartNonVariant(productCardModel)
 
-            productCardModel.hasAddToCartButton ->
+            productCardModel.hasAddToCartButton && !productCardModel.canShowQuantityEditor() ->
                 buttonAddToCart?.configureButtonAddToCart()
 
             else ->

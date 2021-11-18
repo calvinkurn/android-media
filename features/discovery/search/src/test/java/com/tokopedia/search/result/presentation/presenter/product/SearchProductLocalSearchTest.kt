@@ -85,7 +85,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify visitable list contains title`() {
-        val searchProductTitle = visitableList[0]
+        val searchProductTitle = visitableList[1]
         searchProductTitle.shouldBeInstanceOf<SearchProductTitleDataView>()
 
         val searchProductTitleViewModel = searchProductTitle as SearchProductTitleDataView

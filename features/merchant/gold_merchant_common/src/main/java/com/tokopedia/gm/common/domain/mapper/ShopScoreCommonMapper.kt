@@ -21,6 +21,7 @@ class ShopScoreCommonMapper @Inject constructor() {
             shopAge = GoldMerchantUtil.totalDays(
                 dateShopCreated
             ),
+            dateShopCreated = dateShopCreated,
             periodStartDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo
                 ?.periodStartDate.orEmpty(),
             periodEndDate = shopInfoPeriodWrapperResponse.goldGetPMSettingInfo

@@ -24,6 +24,14 @@ class Filter(@SerializedName("title")
              @Expose
              var search: Search = Search(),
 
+             @SerializedName("isNew")
+             @Expose
+             var isNew: Boolean = false,
+
+             @SerializedName("filter_attribute_detail")
+             @Expose
+             var filterAttributeDetail: String = "",
+
              @SerializedName("options")
              @Expose
              var options: List<Option> = ArrayList()) : Parcelable {
@@ -33,6 +41,8 @@ class Filter(@SerializedName("title")
             subTitle: String? = null,
             templateName: String? = null,
             search: Search? = null,
+            isNew: Boolean? = null,
+            filterAttributeDetail: String? = null,
             options: List<Option>? = null,
     ): Filter {
         return Filter(
@@ -40,6 +50,8 @@ class Filter(@SerializedName("title")
                 subTitle = subTitle ?: this.subTitle,
                 templateName = templateName ?: this.templateName,
                 search = search ?: this.search,
+                isNew = isNew ?: this.isNew,
+                filterAttributeDetail = filterAttributeDetail ?: this.filterAttributeDetail,
                 options = options ?: this.options,
         )
     }
@@ -79,6 +91,9 @@ class Filter(@SerializedName("title")
                 || isSizeFilter || isBrandFilter || isLocationFilter
                 || isOtherFilter || options.size > 1)
 
+    val isKeywordFilter: Boolean
+        get() = TEMPLATE_NEGATIVE_KEYWORD == templateName
+
     override fun toString(): String {
         return Gson().toJson(this)
     }
@@ -95,6 +110,6 @@ class Filter(@SerializedName("title")
         const val TEMPLATE_NAME_PRICE = "template_price"
         const val TEMPLATE_NAME_BRAND = "template_brand"
         const val TEMPLATE_NAME_OFFERING = "template_offer"
-
+        const val TEMPLATE_NEGATIVE_KEYWORD = "template_negative_keyword"
     }
 }

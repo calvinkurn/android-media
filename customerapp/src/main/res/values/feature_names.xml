@@ -97,6 +97,7 @@
     <string name="recharge_slice_host">recharge_slice</string>
     <string name="recharge_slice_main_path">/main</string>
     <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
+    <string name="smart_bills_action_bar_title">Bayar Sekaligus</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -159,6 +160,7 @@
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
+    <string name="label_affiliate">Affiliate</string>
 
 
     <!--Contact Us-->
@@ -307,6 +309,7 @@
 
     <!--Play-->
     <string name="title_play_df">Play</string>
+    <string name="title_play_broadcaster_df">Play Broadcaster</string>
 
     <!--Interest Pick-->
     <string name="ip_title">Pilih Inspirasi Kamu</string>
@@ -391,4 +394,8 @@
 
     <!-- Review   -->
     <string name="title_review">Ulasan</string>
+
+    <string name="title_image_picker_insta_df">Media Picker</string>
+
+    <string name="title_feed_create_post">Create Post</string>
 </resources>

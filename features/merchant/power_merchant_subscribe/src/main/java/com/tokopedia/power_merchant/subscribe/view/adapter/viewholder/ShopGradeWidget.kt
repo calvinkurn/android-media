@@ -2,7 +2,6 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.applink.ApplinkConst
@@ -10,17 +9,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.gm.common.constant.PMConstant
 import com.tokopedia.gm.common.constant.PMStatusConst
 import com.tokopedia.gm.common.utils.PMCommonUtils
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.analytics.tracking.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmShopGradeBinding
 import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusInfoUiModel
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetShopGradeUiModel
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.widget_pm_shop_grade.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -38,6 +36,8 @@ class ShopGradeWidget(
         private const val DATE_FORMAT = "dd MMM yyyy"
         val RES_LAYOUT = R.layout.widget_pm_shop_grade
     }
+
+    private val binding: WidgetPmShopGradeBinding? by viewBinding()
 
     override fun bind(element: WidgetShopGradeUiModel) {
         setupShopGrade(element)
@@ -113,13 +113,13 @@ class ShopGradeWidget(
                     }
                 }
             }
-        itemView.imgPmShopGradeIllustration.loadImageWithoutPlaceholder(imgUrl.third)
+        binding?.imgPmShopGradeIllustration?.loadImageWithoutPlaceholder(imgUrl.third)
         setTopedImageSize(Pair(imgUrl.first, imgUrl.second))
     }
 
 
     private fun setTopedImageSize(illustrationSize: Pair<Int, Int>) =
-        with(itemView.imgPmShopGradeIllustration) {
+        binding?.imgPmShopGradeIllustration?.run {
             val imageWidth = context.resources.getDimensionPixelSize(illustrationSize.first)
             val imageHeight = context.resources.getDimensionPixelSize(illustrationSize.second)
             layoutParams.width = imageWidth
@@ -127,7 +127,7 @@ class ShopGradeWidget(
             requestLayout()
         }
 
-    private fun setupShopScore(element: WidgetShopGradeUiModel) = with(itemView) {
+    private fun setupShopScore(element: WidgetShopGradeUiModel) = binding?.run {
         val isPmActive = element.pmStatus == PMStatusConst.ACTIVE
         val isPmPro = element.pmTierType == PMConstant.PMTierType.POWER_MERCHANT_PRO
         val isPmProActive = isPmPro && isPmActive
@@ -141,9 +141,9 @@ class ShopGradeWidget(
         val shopScoreFmt = PMCommonUtils.getShopScoreFmt(element.shopScore)
 
         tvPmShopGradeScore.text =
-            context.getString(labelStringId, getShopScoreTextColor(element), shopScoreFmt)
+            root.context.getString(labelStringId, getShopScoreTextColor(element), shopScoreFmt)
                 .parseAsHtml()
-        tvPmShopGradeScoreTotal.text = context.getString(R.string.power_merchant_max_score)
+        tvPmShopGradeScoreTotal.text = root.context.getString(R.string.power_merchant_max_score)
 
         val shopGradeInfo = getPmShopGradeInfo(element)
         if (isPmProActive) {
@@ -152,10 +152,10 @@ class ShopGradeWidget(
                 tvPmShopGradeThreshold.text = shopGradeInfo.parseAsHtml()
             } else {
                 val layoutParams =
-                    tvPmShopGradeThreshold?.layoutParams as? ConstraintLayout.LayoutParams
+                    tvPmShopGradeThreshold.layoutParams as? ConstraintLayout.LayoutParams
                 layoutParams?.topMargin =
-                    resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-                tvPmShopGradeThreshold?.layoutParams = layoutParams
+                    root.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+                tvPmShopGradeThreshold.layoutParams = layoutParams
             }
             pmProStatusInfoView.visible()
             pmProStatusInfoView.setOnClickListener {
@@ -172,14 +172,14 @@ class ShopGradeWidget(
         icPmShopScoreTips.isVisible = isPmShopScoreTipsVisible
         tvPmShopScoreTips.setOnClickListener {
             if (isPmProIdle) {
-                RouteManager.route(context, Constant.Url.PM_PRO_IDLE)
+                RouteManager.route(root.context, Constant.Url.PM_PRO_IDLE)
             } else {
-                RouteManager.route(context, Constant.Url.SHOP_PERFORMANCE_TIPS)
+                RouteManager.route(root.context, Constant.Url.SHOP_PERFORMANCE_TIPS)
             }
             powerMerchantTracking.sendEventClickTipsToImproveShopScore(element.shopScore.toString())
         }
         wrapperPmShopScore.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.SHOP_SCORE_DETAIL)
+            RouteManager.route(root.context, ApplinkConst.SHOP_SCORE_DETAIL)
         }
     }
 
@@ -243,17 +243,17 @@ class ShopGradeWidget(
         }
     }
 
-    private fun setupShopGrade(element: WidgetShopGradeUiModel) = with(itemView) {
+    private fun setupShopGrade(element: WidgetShopGradeUiModel) = binding?.run {
         tvPmShopGrade.text = getPmTireLabel(element.pmTierType)
         imgPmShopGradeBackground.loadImage(element.gradeBackgroundUrl)
         imgPmShopGrade.loadImageWithoutPlaceholder(element.gradeBadgeImgUrl)
 
         val isPmStatusActive = element.pmStatus == PMStatusConst.ACTIVE
         if (isPmStatusActive) {
-            tvPmShopGradeStatus.setTextColor(context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+            tvPmShopGradeStatus.setTextColor(root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_active)
         } else {
-            tvPmShopGradeStatus.setTextColor(context.getResColor(R.color.pm_static_r600_dms))
+            tvPmShopGradeStatus.setTextColor(root.context.getResColor(R.color.pm_static_r600_dms))
             tvPmShopGradeStatus.setBackgroundResource(R.drawable.bg_pm_status_label_inactive)
         }
         tvPmShopGradeStatus.text = getPMStatusLabel(element.pmStatus)

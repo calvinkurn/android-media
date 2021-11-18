@@ -38,14 +38,12 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -253,10 +251,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
-                        view?.let {
-                            val errMsg = ErrorHandler.getErrorMessage(context, throwable as Throwable)
-                            Toaster.build(it, errMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                        }
+                        showErrorMessage(throwable as Throwable)
                     }
                 }
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
@@ -424,12 +419,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun showErrorMessage(error: Throwable) {
-        view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
-                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
-    }
+    abstract fun showErrorMessage(error: Throwable)
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid

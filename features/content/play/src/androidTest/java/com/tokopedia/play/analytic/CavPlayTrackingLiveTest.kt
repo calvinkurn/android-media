@@ -70,8 +70,8 @@ class CavPlayTrackingLiveTest {
 
     private fun performLike() {
         register(idlResLike)
-        Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // like
-        Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // unlike
+        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // like
+        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // unlike
         unregister(idlResLike)
     }
 
@@ -122,7 +122,7 @@ class CavPlayTrackingLiveTest {
                     override fun getName(): String = "clickLike"
 
                     override fun idleState(): Boolean {
-                        val view = intentsTestRule.activity.findViewById<View>(R.id.v_like_click_area)
+                        val view = intentsTestRule.activity.findViewById<View>(R.id.animation_like)
                         return view.isClickable
                     }
                 }

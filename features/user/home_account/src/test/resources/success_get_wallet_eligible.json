@@ -1,0 +1,10 @@
+{
+  "walletappWalletEligibility": {
+    "code": "code",
+    "message": "message",
+    "data": {
+      "wallet_code": "wallet_code",
+      "is_eligible": true
+    }
+  }
+}

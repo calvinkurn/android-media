@@ -19,8 +19,8 @@
             android:background="@color/Unify_N0"
             android:orientation="vertical"
             app:layout_scrollFlags="enterAlways"
-            android:paddingTop="@dimen/dp_6"
-            android:paddingBottom="@dimen/dp_6"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:showDividers="end">
             <com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView
                 android:id="@+id/filter_review"
