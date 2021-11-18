@@ -53,6 +53,7 @@
             app:layout_constraintBottom_toTopOf="@+id/image_list_container"
             app:layout_constraintStart_toStartOf="parent"
             app:textViewTheme="darkPrimary"
+            android:textColor="@color/Unify_Static_Black_96"
             tools:text="1/6" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
