@@ -567,9 +567,13 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         tvPaymentOvoErrorAction.setOnClickListener {
                             if (profile.enable) {
                                 if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
-                                    listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    if (payment.isOvo) {
+                                        listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    } else {
+                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, getTopUpTitle(payment.walletData.walletType))
+                                    }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
-                                    if (payment.walletErrorData.isOvo) {
+                                    if (payment.isOvo) {
                                         listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
                                     } else {
                                         listener.onWalletActivateClicked(payment.walletData.activation.headerTitle, payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
@@ -590,9 +594,13 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         tvPaymentErrorMessage.setOnClickListener {
                             if (profile.enable) {
                                 if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_TOP_UP) {
-                                    listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    if (payment.isOvo) {
+                                        listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
+                                    } else {
+                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, getTopUpTitle(payment.walletData.walletType))
+                                    }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
-                                    if (payment.walletErrorData.isOvo) {
+                                    if (payment.isOvo) {
                                         listener.onOvoActivateClicked(payment.walletErrorData.callbackUrl)
                                     } else {
                                         listener.onWalletActivateClicked(payment.walletData.activation.headerTitle, payment.walletData.activation.urlLink, payment.walletData.callbackUrl)
@@ -829,6 +837,14 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         return false
     }
 
+    private fun getTopUpTitle(walletType: Int): Int {
+        return when(walletType) {
+            OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY -> R.string.title_one_click_checkout_top_up_gopay
+            OrderPaymentWalletAdditionalData.WALLET_TYPE_OVO -> R.string.title_one_click_checkout_top_up_ovo
+            else -> R.string.title_one_click_checkout_top_up
+        }
+    }
+
     companion object {
         const val VIEW_TYPE = 4
 
@@ -871,5 +887,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String)
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
+
+        fun onWalletTopUpClicked(url: String, callbackUrl: String, title: Int)
     }
 }

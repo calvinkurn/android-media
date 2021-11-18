@@ -68,12 +68,12 @@ import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionI
 import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
-import com.tokopedia.oneclickcheckout.payment.activation.OvoActivationWebViewBottomSheet
+import com.tokopedia.oneclickcheckout.payment.activation.PaymentActivationWebViewBottomSheet
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.payment.creditcard.installment.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.payment.list.view.PaymentListingActivity
-import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewActivity
+import com.tokopedia.oneclickcheckout.payment.topup.view.PaymentTopUpWebViewActivity
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_MINICART
 import com.tokopedia.purchase_platform.common.constant.OccConstant.SOURCE_PDP
@@ -1281,9 +1281,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onOvoActivateClicked(callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
+            PaymentActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
                     getString(R.string.lbl_activate_ovo_now),
-                    object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                    object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
                         override fun onActivationResult(isSuccess: Boolean) {
                             view?.let {
                                 it.post {
@@ -1302,8 +1302,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String) {
-            OvoActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle,
-                    object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+            PaymentActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle,
+                    object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
                         override fun onActivationResult(isSuccess: Boolean) {
                             view?.let {
                                 it.post {
@@ -1318,7 +1318,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
             context?.let {
-                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
+                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, R.string.title_one_click_checkout_top_up_ovo, redirectUrl = callbackUrl, isHideDigital = isHideDigital, customerData = customerData), REQUEST_CODE_OVO_TOP_UP)
+            }
+        }
+
+        override fun onWalletTopUpClicked(url: String, callbackUrl: String, title: Int) {
+            context?.let {
+                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, title, url = url, redirectUrl = callbackUrl), REQUEST_CODE_OVO_TOP_UP)
             }
         }
     }

@@ -31,7 +31,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class OvoTopUpWebViewFragment : BaseDaggerFragment() {
+class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -80,9 +80,13 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         initWebView()
 
-        observeOvoTopUpUrl()
-
-        viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
+        val url = arguments?.getString(EXTRA_URL, "") ?: ""
+        if (url.isNotEmpty()) {
+            loadWebView(url)
+        } else {
+            observeOvoTopUpUrl()
+            viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -106,7 +110,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         viewModel.ovoTopUpUrl.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
-                    loadWebView(it.data)
+                    loadWebView(Uri.parse(it.data).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString())
                 }
                 is OccState.Failed -> {
                     it.getFailure()?.let { failure ->
@@ -126,8 +130,7 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
     private fun loadWebView(url: String) {
         binding?.apply {
-            val newUrl = Uri.parse(url).buildUpon().appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital()).build().toString()
-            webView.loadAuthUrl(newUrl, userSession)
+            webView.loadAuthUrl(url, userSession)
             webView.visible()
             globalError.gone()
         }
@@ -202,13 +205,16 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         private const val QUERY_IS_HIDE_DIGITAL = "is_hide_digital"
 
+        const val EXTRA_TITLE = "title"
+        const val EXTRA_URL = "url"
         const val EXTRA_REDIRECT_URL = "redirect_url"
         const val EXTRA_IS_HIDE_DIGITAL = "is_hide_digital"
         const val EXTRA_CUSTOMER_DATA = "customer_data"
 
-        fun createInstance(redirectUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData): OvoTopUpWebViewFragment {
-            return OvoTopUpWebViewFragment().apply {
+        fun createInstance(url: String, redirectUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData?): PaymentTopUpWebViewFragment {
+            return PaymentTopUpWebViewFragment().apply {
                 arguments = Bundle().apply {
+                    putString(EXTRA_URL, url)
                     putString(EXTRA_REDIRECT_URL, redirectUrl)
                     putInt(EXTRA_IS_HIDE_DIGITAL, isHideDigital)
                     putParcelable(EXTRA_CUSTOMER_DATA, customerData)

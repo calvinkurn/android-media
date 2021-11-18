@@ -12,18 +12,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.URLGenerator
-import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.databinding.BottomSheetWebViewBinding
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.TkpdWebView
 import timber.log.Timber
 
-class OvoActivationWebViewBottomSheet(private val activationUrl: String,
-                                      private val callbackUrl: String,
-                                      private val title: String,
-                                      private val listener: OvoActivationWebViewBottomSheetListener) {
+class PaymentActivationWebViewBottomSheet(private val activationUrl: String,
+                                          private val callbackUrl: String,
+                                          private val title: String,
+                                          private val listener: PaymentActivationWebViewBottomSheetListener) {
 
     private var context: Context? = null
 
@@ -63,7 +61,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                 }
                 setChild(binding?.root)
                 setOnDismissListener {
-                    this@OvoActivationWebViewBottomSheet.context = null
+                    this@PaymentActivationWebViewBottomSheet.context = null
                     binding = null
                 }
                 show(it, null)
@@ -82,13 +80,13 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
             builtInZoomControls = false
             displayZoomControls = true
         }
-        binding?.webView?.webViewClient = OvoActivationWebViewClient()
+        binding?.webView?.webViewClient = PaymentActivationWebViewClient()
         webSettings?.mediaPlaybackRequiresUserGesture = false
 
-        loadOvoActivationWebView(userSession)
+        loadPaymentActivationWebView(userSession)
     }
 
-    private fun loadOvoActivationWebView(userSession: UserSessionInterface) {
+    private fun loadPaymentActivationWebView(userSession: UserSessionInterface) {
         // Load auth only if tokopedia url
         if (activationUrl.contains(TOKOPEDIA_URL)) {
             binding?.webView?.loadAuthUrl(generateUrl(userSession), userSession)
@@ -154,7 +152,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
         }
     }
 
-    inner class OvoActivationWebViewClient : WebViewClient() {
+    inner class PaymentActivationWebViewClient : WebViewClient() {
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
@@ -182,7 +180,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
         }
     }
 
-    interface OvoActivationWebViewBottomSheetListener {
+    interface PaymentActivationWebViewBottomSheetListener {
 
         fun onActivationResult(isSuccess: Boolean)
     }
