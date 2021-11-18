@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="-4dp"
-    android:background="@color/Unify_N0"
     android:orientation="horizontal">
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -70,6 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_lvl2"
+                    android:gravity="center_vertical"
                     android:textColor="@color/Unify_N700_96"
                     app:typographyType="heading_5"
                     tools:text="Cashback Rp100.000" />
@@ -79,6 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="12dp"
+                    android:gravity="center_vertical"
                     android:textColor="@color/Unify_N700_68"
                     app:typographyType="body_3"
                     tools:text="(100.000 GoPay Coins)" />
@@ -268,8 +269,8 @@
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/image_select_promo"
                 android:layout_width="wrap_content"
-                android:layout_marginEnd="12dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
