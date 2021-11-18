@@ -6,6 +6,10 @@ data class CreateReviewProgressBarState(
     var isTextAreaFilled: Boolean = false,
     var isBadRatingReasonSelected: Boolean = false
 ) {
+    companion object {
+        const val PERCENT_MULTIPLIER = 100
+    }
+
     // New Flow
     fun isComplete(): Boolean {
         return if (isGoodRating) isPhotosFilled && isTextAreaFilled else isBadRatingReasonSelected && isTextAreaFilled && isPhotosFilled
@@ -21,17 +25,6 @@ data class CreateReviewProgressBarState(
 
     fun isNeedBadRatingReasonOnly(): Boolean {
         return !isBadRatingReasonSelected && !isGoodRating && (isPhotosFilled || isTextAreaFilled)
-    }
-
-    fun getProgressCount(): Int {
-        if (isGoodRating) {
-            return (listOf(isPhotosFilled, isTextAreaFilled).count { it } + 1) * 100
-        }
-        return (listOf(
-            isPhotosFilled,
-            isTextAreaFilled,
-            isBadRatingReasonSelected
-        ).count { it } + 1) * 100
     }
 
     // Old Flow

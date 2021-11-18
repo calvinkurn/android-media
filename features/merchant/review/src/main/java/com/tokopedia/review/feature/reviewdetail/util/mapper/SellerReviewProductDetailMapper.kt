@@ -24,6 +24,8 @@ import com.tokopedia.user.session.UserSessionInterface
 
 object SellerReviewProductDetailMapper {
 
+    const val PERCENT_MULTIPLIER = 100
+
     fun mapToProductFeedbackDetailUiModel(
         productFeedbackDataPerProduct:
         ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
@@ -49,7 +51,7 @@ object SellerReviewProductDetailMapper {
         productFeedbackDataPerProduct.aggregatedRating.mapIndexed { index, it ->
             ratingBarListUiModel.add(
                 RatingBarUiModel(
-                    ratingProgressBar = if (totalAggregateRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregateRating.toFloat()) * 100,
+                    ratingProgressBar = if (totalAggregateRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregateRating.toFloat()) * PERCENT_MULTIPLIER,
                     ratingLabel = it.rating,
                     ratingCount = it.ratingCount.orZero(),
                     ratingIsChecked = oldData.getOrNull(index)?.ratingIsChecked ?: false
