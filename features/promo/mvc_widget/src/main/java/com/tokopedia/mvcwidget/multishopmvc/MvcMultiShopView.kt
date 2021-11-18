@@ -163,7 +163,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
                 item.AdInfo ?: AdInfo(),
-                0,
+                FIRST_PRODUCT_POSITION,
                 source
             )
         }
@@ -174,7 +174,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
                 item.AdInfo ?: AdInfo(),
-                1,
+                SECOND_PRODUCT_POSITION,
                 source
             )
         }
@@ -220,7 +220,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             item.shopName,
             eventAction,
             item.AdInfo ?: AdInfo(),
-            -1,
+            PRODUCT_POSITION_NA,
             source
         )
     }
@@ -231,7 +231,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             item.shopName,
             CLICK_SHOP_NAME,
             item.AdInfo ?: AdInfo(),
-            -1,
+            PRODUCT_POSITION_NA,
             source
         )
     }
@@ -287,6 +287,11 @@ class MvcMultiShopView @JvmOverloads constructor(
 
     companion object {
         const val className = "com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView"
+        const val FIRST_PRODUCT_POSITION = 0
+        const val SECOND_PRODUCT_POSITION = 1
+//        Since we use same method sendCouponClickEvent() for all events, we send product position
+//        as -1 for all events other than product click events.
+        const val PRODUCT_POSITION_NA = -1
     }
 
     override fun onDetachedFromWindow() {
