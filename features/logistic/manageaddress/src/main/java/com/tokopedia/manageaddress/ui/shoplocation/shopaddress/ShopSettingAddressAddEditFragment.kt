@@ -89,7 +89,10 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
         postal_code.setAdapter(zipCodesAdapter)
 
-        edit_text_district.setOnClickListener { gotoDistrictActivity() }
+        edit_text_district.textFieldInput.run {
+            isFocusable = false
+            isClickable = true
+            setOnClickListener { gotoDistrictActivity() } }
         if (!isAddNew)
             initializeFillData()
     }
@@ -99,7 +102,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             edit_text_name.textFieldInput.setText(it.name)
             edit_text_address.textFieldInput.setText(it.address)
             val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
-            edit_text_district.setText(district)
+            edit_text_district.textFieldInput.setText(district)
             postal_code.setText(it.postalCode.toString())
             if (!TextUtils.isEmpty(it.phone)){
                 edit_text_phone.textFieldInput.setText(it.phone)
@@ -132,9 +135,10 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             edit_text_address.setError(true)
             edit_text_address.setMessage(getString(R.string.shop_address_required))
         }
-        if (TextUtils.isEmpty(edit_text_district.text.toString())){
+        if (TextUtils.isEmpty(edit_text_district.textFieldInput.text.toString())){
             valid = false
-            text_input_layout_district.error = getString(R.string.shop_district_required)
+            edit_text_district.setError(true)
+            edit_text_district.setMessage(getString(R.string.shop_district_required))
         }
         if (TextUtils.isEmpty(postal_code.text.toString())){
             valid = false
@@ -168,7 +172,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 val provinceName = it.getString(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "")
 
                 val fullAddress = "$provinceName, $cityName, $districtName"
-                edit_text_district.setText(fullAddress)
+                edit_text_district.textFieldInput.setText(fullAddress)
 
                 selectedProvinceId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1L)
                 selectedCityId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1L)
