@@ -117,7 +117,7 @@ fun createPlayUpcomingViewModelRobot(
     playAnalytic: PlayNewAnalytic  = mockk(relaxed = true),
     playChannelSSE: PlayChannelSSE  = mockk(relaxed = true),
     repo: PlayViewerRepository  = mockk(relaxed = true),
-    fn: PlayUpcomingViewModelRobot.() -> Unit
+    fn: PlayUpcomingViewModelRobot.() -> Unit = {}
 ): PlayUpcomingViewModelRobot {
     return PlayUpcomingViewModelRobot(
         getChannelStatusUseCase = getChannelStatusUseCase,
