@@ -602,6 +602,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun hidePgRecommendation() {
-        adapter.removePgRecommendation()
+        rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
     }
 }
