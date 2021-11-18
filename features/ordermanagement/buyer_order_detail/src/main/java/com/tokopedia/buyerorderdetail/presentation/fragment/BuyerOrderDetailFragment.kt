@@ -3,6 +3,8 @@ package com.tokopedia.buyerorderdetail.presentation.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +61,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class BuyerOrderDetailFragment : BaseDaggerFragment(),
+open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         ProductViewHolder.ProductViewListener,
         ProductBundlingViewHolder.Listener,
         TickerViewHolder.TickerViewHolderListener,
@@ -90,7 +92,7 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private var toolbarBuyerOrderDetail: HeaderUnify? = null
     private var globalErrorBuyerOrderDetail: GlobalError? = null
     private var emptyStateBuyerOrderDetail: EmptyStateUnify? = null
-    private var loaderBuyerOrderDetail: LoaderUnify? = null
+    protected var loaderBuyerOrderDetail: LoaderUnify? = null
 
     private val viewModel: BuyerOrderDetailViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(BuyerOrderDetailViewModel::class.java)
@@ -106,8 +108,16 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private val cacheManager: SaveInstanceCacheManager by lazy {
         SaveInstanceCacheManager(requireContext(), true)
     }
-    private val typeFactory: BuyerOrderDetailTypeFactory by lazy {
-        BuyerOrderDetailTypeFactory(this, this, navigator, this, digitalRecommendationData, this, this)
+    protected open val typeFactory: BuyerOrderDetailTypeFactory by lazy {
+        BuyerOrderDetailTypeFactory(
+            this,
+            this,
+            digitalRecommendationData,
+            this,
+            this,
+            this,
+            navigator
+        )
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
         BuyerOrderDetailAdapter(typeFactory)
@@ -115,10 +125,10 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private val requestCancelResultDialog: RequestCancelResultDialog by lazy {
         RequestCancelResultDialog(navigator)
     }
-    private val navigator: BuyerOrderDetailNavigator by lazy {
+    protected val navigator: BuyerOrderDetailNavigator by lazy {
         BuyerOrderDetailNavigator(requireActivity(), this)
     }
-    private val digitalRecommendationData: DigitalRecommendationData
+    protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
                 viewModelFactory,
                 viewLifecycleOwner,
@@ -223,7 +233,9 @@ class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun hideDigitalRecommendation() {
-        adapter.removeDigitalRecommendation()
+        Handler(Looper.getMainLooper()).post {
+            adapter.removeDigitalRecommendation()
+        }
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {

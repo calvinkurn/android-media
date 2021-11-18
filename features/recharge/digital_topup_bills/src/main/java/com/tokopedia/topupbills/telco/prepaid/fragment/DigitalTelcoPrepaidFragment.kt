@@ -5,6 +5,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.Fragment
@@ -666,14 +667,19 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCategoryType.CATEGORY_PAKET_DATA -> itemId = 1
             TelcoCategoryType.CATEGORY_ROAMING -> itemId = 2
         }
-        viewPager.setCurrentItem(itemId, true)
 
-        if (autoSelectTabProduct) {
-            tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
-                it.select()
+        viewPager.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                viewPager.setCurrentItem(itemId, false)
+                if (autoSelectTabProduct) {
+                    tabLayout.getUnifyTabLayout().getTabAt(itemId)?.let {
+                        it.select()
+                    }
+                    autoSelectTabProduct = false
+                }
+                viewPager.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
-            autoSelectTabProduct = false
-        }
+        })
     }
 
     private fun getLabelActiveCategory(): String {
