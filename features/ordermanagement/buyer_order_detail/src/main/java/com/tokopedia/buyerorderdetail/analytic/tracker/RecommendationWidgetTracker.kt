@@ -72,7 +72,7 @@ object RecommendationWidgetTracker : BaseTrackerConst() {
                 category = recommendationItem.categoryBreadcrumbs,
                 variant = "None / other",
                 brand = "None / other",
-                isTopAds = true
+                isTopAds = recommendationItem.isTopAds
         )
 
     }
