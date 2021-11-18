@@ -23,6 +23,8 @@ import com.tokopedia.user.session.UserSessionInterface
 
 object InboxReviewMapper {
 
+    private const val REPLY_LENGTH_THRESHOLD = 150
+
     fun mapToInboxReviewUiModel(
         inboxReviewResponse: InboxReviewResponse.ProductGetInboxReviewByShop,
         userSession: UserSessionInterface
@@ -61,7 +63,7 @@ object InboxReviewMapper {
                     replyText = it.replyText.orEmpty(),
                     replyTime = it.replyTime.orEmpty(),
                     reviewText = it.reviewText.orEmpty(),
-                    isMoreReply = it.replyText?.length.orZero() >= 150,
+                    isMoreReply = it.replyText?.length.orZero() >= REPLY_LENGTH_THRESHOLD,
                     reviewTime = it.reviewTime.orEmpty(),
                     userID = it.user.userID,
                     username = it.user.userName.orEmpty(),

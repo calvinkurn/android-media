@@ -26,8 +26,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.*
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
@@ -39,7 +47,12 @@ import com.tokopedia.review.common.ReviewInboxConstants
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringContract
 import com.tokopedia.review.common.analytics.ReviewPerformanceMonitoringListener
 import com.tokopedia.review.common.analytics.ReviewTracking
-import com.tokopedia.review.common.data.*
+import com.tokopedia.review.common.data.Fail
+import com.tokopedia.review.common.data.LoadingView
+import com.tokopedia.review.common.data.ProductrevGetReviewDetail
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailProduct
+import com.tokopedia.review.common.data.ProductrevGetReviewDetailReview
+import com.tokopedia.review.common.data.Success
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.common.util.ReviewUtil
@@ -438,7 +451,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             incentiveHelper,
             createReviewViewModel.isUserEligible()
         )
-        (textAreaBottomSheet as BottomSheetUnify).setTitle(binding?.createReviewTextAreaTitle?.text.toString())
+        (textAreaBottomSheet as? BottomSheetUnify)?.setTitle(binding?.createReviewTextAreaTitle?.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
     }
 

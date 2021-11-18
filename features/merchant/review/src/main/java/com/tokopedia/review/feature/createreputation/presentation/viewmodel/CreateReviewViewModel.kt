@@ -55,6 +55,7 @@ class CreateReviewViewModel @Inject constructor(
     companion object {
         const val CREATE_REVIEW_SOURCE_ID = "bjFkPX"
         const val LOCAL_IMAGE_SOURCE = "storage"
+        const val MAX_IMAGE_COUNT = 5
     }
 
     private var imageData: MutableList<BaseImageReviewUiModel> = mutableListOf()
@@ -202,7 +203,7 @@ class CreateReviewViewModel @Inject constructor(
         }
 
         when (imagesToDisplay.size) {
-            5 -> {
+            MAX_IMAGE_COUNT -> {
                 imageData = (imagesToDisplay.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
@@ -219,7 +220,7 @@ class CreateReviewViewModel @Inject constructor(
 
     fun getImageList(selectedImage: List<ProductrevReviewAttachment>): MutableList<BaseImageReviewUiModel> {
         when (selectedImage.size) {
-            5 -> {
+            MAX_IMAGE_COUNT -> {
                 imageData = (selectedImage.map {
                     ImageReviewUiModel(it.thumbnail, it.fullSize)
                 }).toMutableList()

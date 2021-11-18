@@ -8,7 +8,6 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import java.util.*
 
 object CreateReviewTracking {
 

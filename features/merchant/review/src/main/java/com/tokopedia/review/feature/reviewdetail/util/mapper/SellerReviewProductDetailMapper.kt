@@ -24,7 +24,8 @@ import com.tokopedia.user.session.UserSessionInterface
 
 object SellerReviewProductDetailMapper {
 
-    const val PERCENT_MULTIPLIER = 100
+    private const val PERCENT_MULTIPLIER = 100
+    private const val REPLY_LENGTH_THRESHOLD = 150
 
     fun mapToProductFeedbackDetailUiModel(
         productFeedbackDataPerProduct:
@@ -102,7 +103,7 @@ object SellerReviewProductDetailMapper {
                     replyText = it.replyText,
                     replyTime = it.replyTime,
                     reviewText = it.reviewText,
-                    isMoreReply = it.replyText?.length.orZero() >= 150,
+                    isMoreReply = it.replyText?.length.orZero() >= REPLY_LENGTH_THRESHOLD,
                     reviewTime = it.reviewTime,
                     reviewerName = it.reviewerName,
                     variantName = it.variantName,
