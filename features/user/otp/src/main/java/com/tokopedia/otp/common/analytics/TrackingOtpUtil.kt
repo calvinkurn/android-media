@@ -734,7 +734,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
     fun trackChooseOtherMethod(otpType: Int, modeName: String) {
         val map = TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
-                Category.CATEGORY_SILENT_VERIF_OTP_PAGE,
+                Category.CATEGORY_OTP_PAGE,
                 Action.ACION_CLICK_CHOOSE_OTHER_METHOD,
                 String.format("%s - %s", otpType.toString(), modeName))
 

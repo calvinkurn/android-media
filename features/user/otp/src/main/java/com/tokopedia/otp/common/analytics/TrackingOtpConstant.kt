@@ -108,7 +108,7 @@ object TrackingOtpConstant{
         const val ACTION_AUTO_SUBMIT_OTP = "auto submit otp page"
         const val ACION_CLICK_SILENT_VERIF = "click on masuk dengan silent verif"
         const val ACION_CLICK_TRY_AGAIN = "click on coba lagi"
-        const val ACION_CLICK_CHOOSE_OTHER_METHOD = "click on pilih metode lain"
+        const val ACION_CLICK_CHOOSE_OTHER_METHOD = "click gunakan metode lain"
 
     }
 
