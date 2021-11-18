@@ -82,12 +82,12 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
 
-        postal_code.setOnTouchListener { _, _ -> if (!postal_code.isPopupShowing) postal_code.showDropDown()
+        postal_code.textFieldInput.setOnTouchListener { _, _ -> if (!postal_code.textFieldInput.isPopupShowing) postal_code.textFieldInput.showDropDown()
             false }
-        postal_code.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !postal_code.text.toString()[0].isDigit())
-            postal_code.setText("")}
+        postal_code.textFieldInput.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !postal_code.textFieldInput.text.toString()[0].isDigit())
+            postal_code.textFieldInput.setText("")}
 
-        postal_code.setAdapter(zipCodesAdapter)
+        postal_code.textFieldInput.setAdapter(zipCodesAdapter)
 
         edit_text_district.textFieldInput.run {
             isFocusable = false
@@ -103,7 +103,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             edit_text_address.textFieldInput.setText(it.address)
             val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
             edit_text_district.textFieldInput.setText(district)
-            postal_code.setText(it.postalCode.toString())
+            postal_code.textFieldInput.setText(it.postalCode.toString())
             if (!TextUtils.isEmpty(it.phone)){
                 edit_text_phone.textFieldInput.setText(it.phone)
             }
@@ -140,9 +140,10 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             edit_text_district.setError(true)
             edit_text_district.setMessage(getString(R.string.shop_district_required))
         }
-        if (TextUtils.isEmpty(postal_code.text.toString())){
+        if (TextUtils.isEmpty(postal_code.textFieldInput.text.toString())){
             valid = false
-            text_input_layout_postal_code.error = getString(R.string.shop_postal_code_required)
+            postal_code.setError(true)
+            postal_code.setMessage(getString(R.string.shop_postal_code_required))
         }
         if (!TextUtils.isEmpty(edit_text_email.textFieldInput.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(edit_text_email.textFieldInput.text.toString()).matches()){
             valid = false
@@ -206,7 +207,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             districtId = selectedDistrictId
             cityId = selectedCityId
             stateId = selectedProvinceId
-            postalCode = postal_code.text.toString().toInt()
+            postalCode = postal_code.textFieldInput.text.toString().toInt()
             phone = edit_text_phone.textFieldInput.text.toString()
             email = edit_text_email.textFieldInput.text.toString()
             fax = edit_text_fax.textFieldInput.text.toString()
