@@ -278,7 +278,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
         observeRejectCancelOrder()
         observeValidateOrder()
         observeGetRequestExtensionInfo()
-        observeSendOrderExtensionRequestResult()
     }
 
     override fun onDestroy() {
@@ -914,7 +913,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setActionRequestExtension() {
-        orderExtensionViewModel.getSomRequestExtensionInfoLoadingState()
+        orderExtensionViewModel.getSomOrderExtensionRequestInfoLoadingState()
     }
 
     private fun setActionChangeCourier() {
@@ -1282,29 +1281,11 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observeGetRequestExtensionInfo() {
-        orderExtensionViewModel.requestExtensionInfo.observe(viewLifecycleOwner) { result ->
+        orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
             if (!result.success) {
                 onFailedGetRequestExtensionInfo(result)
             }
             onRequestExtensionInfoChanged(result)
-        }
-    }
-
-    private fun observeSendOrderExtensionRequestResult() {
-        orderExtensionViewModel.requestExtensionResult.observe(viewLifecycleOwner) { result ->
-            when(result) {
-                is Success -> {
-                    if (result.data.success) {
-                        onSuccessSendOrderExtensionRequest(result.data)
-                    } else {
-                        onFailedSendOrderExtensionRequest(result.data.message)
-                    }
-                }
-                is Fail -> {
-                    SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, true)
-                    result.throwable.showErrorToaster(binding?.containerBtnDetail)
-                }
-            }
         }
     }
 

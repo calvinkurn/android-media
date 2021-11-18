@@ -62,7 +62,7 @@ class SomBottomSheetOrderExtensionRequest(
     }
 
     override fun onBottomSheetExpanded() {
-        viewModel.getSomRequestExtensionInfo(orderId)
+        viewModel.getSomOrderExtensionRequestInfo(orderId)
     }
 
     override fun onBottomSheetHidden() {
@@ -96,13 +96,13 @@ class SomBottomSheetOrderExtensionRequest(
 
     override fun onCommentChange(element: OrderExtensionRequestInfoUiModel.CommentUiModel) {
         if (!dismissing) {
-            viewModel.updateOrderRequestExtensionInfoOnCommentChanged(element)
+            viewModel.updateOrderExtensionRequestInfoOnCommentChanged(element)
         }
     }
 
     override fun onOptionChecked(element: OrderExtensionRequestInfoUiModel.OptionUiModel?) {
         if (!dismissing) {
-            viewModel.updateOrderRequestExtensionInfoOnSelectedOptionChanged(element)
+            viewModel.updateOrderExtensionRequestInfoOnSelectedOptionChanged(element)
         }
     }
 
@@ -132,7 +132,7 @@ class SomBottomSheetOrderExtensionRequest(
             }
             setOnClickListener {
                 binding?.root?.hideKeyboard()
-                if (!dismissing && !data.isLoadingRequestExtensionInfo()) {
+                if (!dismissing && !data.isLoadingOrderExtensionRequestInfo()) {
                     binding?.rvRequestExtensionInfo?.focusedChild?.clearFocus()
                     viewModel.sendOrderExtensionRequest(orderId)
                 }

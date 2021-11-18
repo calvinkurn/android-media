@@ -12,8 +12,6 @@ import com.tokopedia.sellerorder.orderextension.presentation.mapper.GetOrderExte
 import com.tokopedia.sellerorder.orderextension.presentation.mapper.OrderExtensionRequestResultResponseMapper
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUpdater
-import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -29,12 +27,8 @@ class SomOrderExtensionViewModel @Inject constructor(
     private val somOrderExtensionRequestResultMapper: OrderExtensionRequestResultResponseMapper,
 ) : BaseViewModel(dispatcher.main) {
     private val _requestExtensionInfo = MutableLiveData<OrderExtensionRequestInfoUiModel>()
-    val requestExtensionInfo: LiveData<OrderExtensionRequestInfoUiModel>
+    val orderExtensionRequestInfo: LiveData<OrderExtensionRequestInfoUiModel>
         get() = _requestExtensionInfo
-
-    private val _requestExtensionResult = MutableLiveData<Result<OrderExtensionRequestResultUiModel>>()
-    val requestExtensionResult: LiveData<Result<OrderExtensionRequestResultUiModel>>
-        get() = _requestExtensionResult
 
     private val orderExtensionRequestInfoUpdates: MutableLiveData<OrderExtensionRequestInfoUpdater> = MutableLiveData()
 
@@ -87,11 +81,11 @@ class SomOrderExtensionViewModel @Inject constructor(
             .OnSuccessSendingOrderExtensionRequest()
     }
 
-    fun getSomRequestExtensionInfoLoadingState() {
+    fun getSomOrderExtensionRequestInfoLoadingState() {
         onLoadSomRequestExtensionInfo()
     }
 
-    fun getSomRequestExtensionInfo(orderId: String) {
+    fun getSomOrderExtensionRequestInfo(orderId: String) {
         launchCatchError(block = {
             val result = somGetOrderExtensionRequestInfoUseCase.execute(orderId, userSession.shopId)
             val mappedResult = somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)
@@ -129,14 +123,14 @@ class SomOrderExtensionViewModel @Inject constructor(
         }
     }
 
-    fun updateOrderRequestExtensionInfoOnCommentChanged(element: OrderExtensionRequestInfoUiModel.CommentUiModel?) {
+    fun updateOrderExtensionRequestInfoOnCommentChanged(element: OrderExtensionRequestInfoUiModel.CommentUiModel?) {
         element?.let {
             orderExtensionRequestInfoUpdates.value =
                 OrderExtensionRequestInfoUpdater.OnCommentChange(it)
         }
     }
 
-    fun updateOrderRequestExtensionInfoOnSelectedOptionChanged(element: OrderExtensionRequestInfoUiModel.OptionUiModel?) {
+    fun updateOrderExtensionRequestInfoOnSelectedOptionChanged(element: OrderExtensionRequestInfoUiModel.OptionUiModel?) {
         element?.let {
             orderExtensionRequestInfoUpdates.value =
                 OrderExtensionRequestInfoUpdater.OnSelectedOptionChange(it)

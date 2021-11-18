@@ -50,7 +50,7 @@ data class OrderExtensionRequestInfoUiModel(
         }.orFalse()
     }
 
-    fun isLoadingRequestExtensionInfo(): Boolean {
+    fun isLoadingOrderExtensionRequestInfo(): Boolean {
         return items.any {
             it is DescriptionShimmerUiModel || it is OptionShimmerUiModel
         }

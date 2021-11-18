@@ -1,15 +1,12 @@
 package com.tokopedia.sellerorder.orderextension.presentation.mapper
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.sellerorder.orderextension.domain.models.SendOrderExtensionRequestResponse
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
+import com.tokopedia.sellerorder.orderextension.presentation.util.ResourceProvider
 import javax.inject.Inject
 
 class OrderExtensionRequestResultResponseMapper @Inject constructor(
-    @ApplicationContext
-    private val context: Context
+    private val resourceProvider: ResourceProvider
 ) {
     fun mapResponseToUiModel(response: SendOrderExtensionRequestResponse.Data.OrderExtensionRequest.OrderExtensionRequestData): OrderExtensionRequestResultUiModel {
         return OrderExtensionRequestResultUiModel(
@@ -19,6 +16,6 @@ class OrderExtensionRequestResultResponseMapper @Inject constructor(
     }
 
     fun mapError(throwable: Throwable): String {
-        return ErrorHandler.getErrorMessage(context, throwable)
+        return resourceProvider.getErrorMessageFromThrowable(throwable)
     }
 }
