@@ -8,8 +8,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.report.data.model.SubmitReportParams
-import com.tokopedia.report.data.model.SubmitReportResult
 import com.tokopedia.report.usecase.SubmitReportUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import java.io.File
 import javax.inject.Inject
 
@@ -25,30 +27,36 @@ class ProductReportSubmitViewModel @Inject constructor(
         private const val KEY_UPLOAD_IDS = "upload_ids"
     }
 
-    private val submitResult = MutableLiveData<SubmitReportResult>()
-    fun getSubmitResult(): LiveData<SubmitReportResult> = submitResult
+    private val submitResult = MutableLiveData<Result<Boolean>>()
+    fun getSubmitResult(): LiveData<Result<Boolean>> = submitResult
+
+    private var currentParams: SubmitReportParams? = null
+    fun getCurrentParams() = currentParams
 
     fun submitReport(productId: Long, categoryId: Int, input: Map<String, Any>) {
-        val mutableInput = input.toMutableMap()
 
         launchCatchError(block = {
-            val uploadIdList = (mutableInput[KEY_PHOTO] as? List<*>)?.map { photo ->
-                uploadImageAndGetId(photo as String).also {
-                    if (it.isBlank()) throw Throwable()
-                }
-            } ?: emptyList()
-            mutableInput[KEY_UPLOAD_IDS] = uploadIdList
-            mutableInput.remove(KEY_PHOTO)
-
-            val params = SubmitReportParams(productId, categoryId, mutableInput)
+            val params = SubmitReportParams(productId, categoryId, processImages(input))
             submitReportUseCase.setParams(params)
+            currentParams = params
 
             val result = submitReportUseCase.executeOnBackground()
-            submitResult.postValue(SubmitReportResult.Success(result.submitReport.isSuccess))
+            submitResult.postValue(Success(result.submitReport.isSuccess))
         }, onError = {
-            submitResult.postValue(SubmitReportResult.Fail(it))
+            submitResult.postValue(Fail(it))
         })
+    }
 
+    private suspend fun processImages(input:Map<String, Any>): Map<String, Any>{
+        val mutableInput = input.toMutableMap()
+        val uploadIdList = (mutableInput[KEY_PHOTO] as? List<*>)?.map { photo ->
+            uploadImageAndGetId(photo as String).also {
+                if (it.isBlank()) throw Throwable()
+            }
+        } ?: emptyList()
+        mutableInput[KEY_UPLOAD_IDS] = uploadIdList
+        mutableInput.remove(KEY_PHOTO)
+        return mutableInput
     }
 
     private suspend fun uploadImageAndGetId(imagePath: String): String {

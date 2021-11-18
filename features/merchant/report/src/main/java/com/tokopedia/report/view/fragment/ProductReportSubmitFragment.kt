@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
-import com.tokopedia.report.data.model.SubmitReportResult
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.databinding.FragmentProductReportBinding
 import com.tokopedia.report.di.MerchantReportComponent
@@ -31,6 +30,9 @@ import com.tokopedia.report.view.adapter.ReportFormAdapter
 import com.tokopedia.report.view.customview.UnifyDialog
 import com.tokopedia.report.view.viewmodel.ProductReportSubmitViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
@@ -70,8 +72,6 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
-
         val cacheId = arguments?.getString(ProductReportFormActivity.REASON_CACHE_ID, "") ?: ""
         val reason: ProductReportReason? = context?.let {
             val cacheManager = SaveInstanceCacheManager(it, cacheId)
@@ -95,7 +95,6 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                             reasonItem.categoryId,
                             adapter.inputs
                         )
-                        adapter.inputs
                     })
                     setSecondaryOnClickListner(View.OnClickListener {
                         tracking.eventReportCancelDisclaimer(reasonItem.value.toLowerCase())
@@ -206,15 +205,20 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
+    }
+
     override fun onDestroy() {
         viewModel.flush()
         super.onDestroy()
     }
 
-    private val observerSubmitResult = Observer<SubmitReportResult> {
+    private val observerSubmitResult = Observer<Result<Boolean>> {
         when (it) {
-            is SubmitReportResult.Success -> onSuccessSubmit(it.success)
-            is SubmitReportResult.Fail -> onFailSubmit(it.throwable)
+            is Success -> onSuccessSubmit(it.data)
+            is Fail -> onFailSubmit(it.throwable)
         }
     }
 
