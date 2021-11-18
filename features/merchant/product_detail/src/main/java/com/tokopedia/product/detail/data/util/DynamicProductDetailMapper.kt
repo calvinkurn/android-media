@@ -347,6 +347,7 @@ object DynamicProductDetailMapper {
     fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
                                    variantData: ProductVariant?): AffiliatePDPInput {
         return AffiliatePDPInput(
+                pageType= "pdp",
                 product = Product(
                         productID = productInfo.basic.productID,
                         catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "",

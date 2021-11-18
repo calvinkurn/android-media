@@ -290,7 +290,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 val affiliateEligibleCommission: EligibleCommission = affiliateUseCase.apply {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
                 }.executeOnBackground()
-                showAffiliateCommission(affiliateEligibleCommission)
+                withContext(Dispatchers.Main) {
+                    showAffiliateCommission(affiliateEligibleCommission)
+                }
             }
         }, onError = {
             it.printStackTrace()
