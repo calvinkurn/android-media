@@ -11,6 +11,7 @@ import com.tokopedia.sellerorder.orderextension.presentation.mapper.OrderExtensi
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.util.ResourceProvider
 import com.tokopedia.sellerorder.util.TestHelper
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -19,6 +20,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkStatic
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
@@ -91,6 +93,8 @@ class SomOrderExtensionViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
+        mockkStatic(TrackApp::class)
+        every { TrackApp.getInstance() } returns mockk(relaxed = true)
         viewModel = SomOrderExtensionViewModel(
             coroutineTestRule.dispatchers,
             userSessionInterface,

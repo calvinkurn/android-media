@@ -106,7 +106,6 @@ import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrappe
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestInfoUiModel
-import com.tokopedia.sellerorder.orderextension.presentation.model.OrderExtensionRequestResultUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.orderextension.presentation.viewmodel.SomOrderExtensionViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
@@ -277,7 +276,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         observingUserRoles()
         observeRejectCancelOrder()
         observeValidateOrder()
-        observeGetRequestExtensionInfo()
+        observeOrderExtensionRequestInfo()
     }
 
     override fun onDestroy() {
@@ -1280,7 +1279,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         })
     }
 
-    protected open fun observeGetRequestExtensionInfo() {
+    protected open fun observeOrderExtensionRequestInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
             if (result.message.isNotBlank()) {
                 if (result.success) {
@@ -1376,18 +1375,6 @@ open class SomDetailFragment : BaseDaggerFragment(),
             showToaster(message, view, TYPE_ERROR, "")
             bottomSheetManager?.getSomBottomSheetSetDelivered()?.onFailedSetDelivered()
         }
-    }
-
-    protected open fun onFailedSendOrderExtensionRequest(errorMessage: String) {
-        SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, false)
-        loadDetail()
-        showErrorToaster(errorMessage)
-    }
-
-    protected open fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {
-        SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, true)
-        loadDetail()
-        showCommonToaster(data.message)
     }
 
     protected open fun showBackButton(): Boolean = true

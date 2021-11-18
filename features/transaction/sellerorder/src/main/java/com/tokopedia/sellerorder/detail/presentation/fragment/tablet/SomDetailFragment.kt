@@ -172,17 +172,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         }
     }
 
-    override fun onFailedSendOrderExtensionRequest(errorMessage: String) {
-        shouldRefreshOrderList = true
-        super.onFailedSendOrderExtensionRequest(errorMessage)
-    }
-
-    override fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {
-        shouldRefreshOrderList = true
-        super.onSuccessSendOrderExtensionRequest(data)
-    }
-
-    override fun observeGetRequestExtensionInfo() {
+    override fun observeOrderExtensionRequestInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
             if (result.message.isNotBlank()) {
                 if (result.success) showCommonToaster(result.message)

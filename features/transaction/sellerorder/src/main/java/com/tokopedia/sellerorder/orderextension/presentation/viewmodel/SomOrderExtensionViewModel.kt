@@ -6,6 +6,7 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.orderextension.domain.usecases.GetOrderExtensionRequestInfoUseCase
 import com.tokopedia.sellerorder.orderextension.domain.usecases.SendOrderExtensionRequestUseCase
 import com.tokopedia.sellerorder.orderextension.presentation.mapper.GetOrderExtensionRequestInfoResponseMapper
@@ -71,12 +72,28 @@ class SomOrderExtensionViewModel @Inject constructor(
             .OnStartSendingOrderExtensionRequest(action)
     }
 
-    private fun onFailedSendingOrderExtensionRequest(errorMessage: String) {
+    private fun onFailedSendingOrderExtensionRequest(
+        errorMessage: String,
+        orderId: String,
+        sendTracker: Boolean
+    ) {
+        if (sendTracker) {
+            SomAnalytics.eventFinishSendOrderExtensionRequest(
+                shopId = userSession.shopId,
+                orderId = orderId,
+                success = false
+            )
+        }
         orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
             .OnFailedSendingOrderExtensionRequest(errorMessage)
     }
 
-    private fun onOrderExtensionRequestCompleted(message: String) {
+    private fun onOrderExtensionRequestCompleted(message: String, orderId: String) {
+        SomAnalytics.eventFinishSendOrderExtensionRequest(
+            shopId = userSession.shopId,
+            orderId = orderId,
+            success = true
+        )
         orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
             .OnSuccessSendingOrderExtensionRequest(message)
     }
@@ -109,16 +126,31 @@ class SomOrderExtensionViewModel @Inject constructor(
                     )
                     val mappedResult = somOrderExtensionRequestResultMapper.mapResponseToUiModel(result)
                     if (!mappedResult.success) {
-                        onFailedSendingOrderExtensionRequest(mappedResult.message)
+                        onFailedSendingOrderExtensionRequest(
+                            errorMessage = mappedResult.message,
+                            orderId = orderId,
+                            sendTracker = true
+                        )
                     } else {
-                        onOrderExtensionRequestCompleted(mappedResult.message)
+                        onOrderExtensionRequestCompleted(
+                            message = mappedResult.message,
+                            orderId = orderId
+                        )
                     }
                 } else {
-                    onFailedSendingOrderExtensionRequest("")
+                    onFailedSendingOrderExtensionRequest(
+                        errorMessage = "",
+                        orderId = orderId,
+                        sendTracker = false
+                    )
                 }
             }, onError = {
                 val mappedError = somOrderExtensionRequestResultMapper.mapError(it)
-                onFailedSendingOrderExtensionRequest(mappedError)
+                onFailedSendingOrderExtensionRequest(
+                    errorMessage = mappedError,
+                    orderId = orderId,
+                    sendTracker = true
+                )
             })
         }
     }
