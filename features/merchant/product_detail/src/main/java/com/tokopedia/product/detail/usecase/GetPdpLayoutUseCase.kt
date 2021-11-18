@@ -229,6 +229,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       parentID
                       defaultChild
                       sizeChart
+                      maxFinalPrice
                       variants {
                         productVariantID
                         variantID

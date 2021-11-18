@@ -222,7 +222,8 @@ object DynamicProductDetailMapper {
                 sizeChart = networkData.sizeChart,
                 defaultChild = networkData.defaultChild,
                 variants = networkData.variants,
-                children = networkData.children
+                children = networkData.children,
+                maxFinalPrice = networkData.maxFinalPrice
         )
     }
 
@@ -343,7 +344,8 @@ object DynamicProductDetailMapper {
         )
     }
 
-    fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?): AffiliatePDPInput {
+    fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
+                                   variantData: ProductVariant?): AffiliatePDPInput {
         return AffiliatePDPInput(
                 product = Product(
                         productID = productInfo.basic.productID,
@@ -351,7 +353,7 @@ object DynamicProductDetailMapper {
                         catLevel2 = productInfo.basic.category.detail.getOrNull(1)?.id ?: "",
                         catLevel3 = productInfo.basic.category.detail.getOrNull(2)?.id ?: "",
                         productPrice = productInfo.data.price.value.toString(),
-                        maxProductPrice = null, //to do
+                        maxProductPrice = getMaxPriceVariant(productInfo, variantData).toString(), //to do
                         productStatus = productInfo.basic.status
                 ),
                 shop = Shop(
@@ -361,5 +363,13 @@ object DynamicProductDetailMapper {
                         shopStatus = shopInfo?.statusInfo?.shopStatus
                 )
         )
+    }
+
+    private fun getMaxPriceVariant(productInfo: DynamicProductInfoP1, variantData: ProductVariant?): Double {
+        return if (productInfo.data.variant.isVariant && variantData != null) {
+            variantData.maxFinalPrice.toDouble()
+        } else {
+            productInfo.finalPrice
+        }
     }
 }
