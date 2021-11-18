@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/iv_thumbnail"
-            android:layout_width="@dimen/dp_topchat_96"
-            android:layout_height="@dimen/dp_topchat_96"
+            android:layout_width="@dimen/dp_topchat_104"
+            android:layout_height="@dimen/dp_topchat_104"
             android:contentDescription="@null"
             android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
@@ -135,7 +135,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-            app:layout_constraintTop_toBottomOf="@+id/ll_variant"
+            app:layout_constraintTop_toBottomOf="@+id/tv_price"
             app:lineHeight="@dimen/dp_topchat_20"
             tools:text="20%"
             tools:visibility="visible" />
@@ -145,7 +145,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginLeft="@dimen/spacing_lvl2"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_44"
             android:visibility="gone"
@@ -161,13 +160,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_topchat_12"
-            android:layout_marginLeft="@dimen/dp_topchat_12"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-            app:layout_constraintTop_toBottomOf="@+id/tv_campaign_discount"
+            app:layout_constraintTop_toBottomOf="@+id/ll_variant"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rp7.999.000" />
@@ -181,7 +179,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_price"
-            app:layout_constraintTop_toBottomOf="@+id/tv_price"
+            app:layout_constraintTop_toBottomOf="@+id/tv_campaign_discount"
             tools:visibility="visible">
 
             <ImageView
@@ -225,18 +223,20 @@
                 app:typographyType="body_3"
                 tools:text="(60)"
                 tools:visibility="visible" />
-
-            <ImageView
-                android:id="@+id/iv_free_shipping"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_topchat_20"
-                android:layout_gravity="center_vertical"
-                android:adjustViewBounds="true"
-                android:contentDescription="@null"
-                android:visibility="gone"
-                tools:src="@drawable/ic_close_default"
-                tools:visibility="visible" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_free_shipping"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_topchat_20"
+            android:layout_gravity="center_vertical"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@+id/tv_price"
+            app:layout_constraintTop_toBottomOf="@+id/ll_status_container"
+            tools:src="@drawable/ic_close_default"
+            tools:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/ll_seller_stock_data"
@@ -247,7 +247,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_price"
-            app:layout_constraintTop_toBottomOf="@+id/ll_status_container"
+            app:layout_constraintTop_toBottomOf="@+id/iv_free_shipping"
             tools:visibility="visible">
 
             <com.tokopedia.unifyprinciples.Typography
