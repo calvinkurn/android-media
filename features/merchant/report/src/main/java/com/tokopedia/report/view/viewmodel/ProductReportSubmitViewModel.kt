@@ -51,7 +51,10 @@ class ProductReportSubmitViewModel @Inject constructor(
         val mutableInput = input.toMutableMap()
         val uploadIdList = (mutableInput[KEY_PHOTO] as? List<*>)?.map { photo ->
             uploadImageAndGetId(photo as String).also {
-                if (it.isBlank()) throw Throwable()
+                when(it){
+                    is UploadResult.Success -> it.uploadId
+                    is UploadResult.Error -> throw Throwable(it.message)
+                }
             }
         } ?: emptyList()
         mutableInput[KEY_UPLOAD_IDS] = uploadIdList
@@ -59,15 +62,12 @@ class ProductReportSubmitViewModel @Inject constructor(
         return mutableInput
     }
 
-    private suspend fun uploadImageAndGetId(imagePath: String): String {
+    private suspend fun uploadImageAndGetId(imagePath: String): UploadResult {
         val filePath = File(imagePath)
         val params = uploaderUseCase.createParams(
             sourceId = SOURCE_ID,
             filePath = filePath
         )
-        return when (val result = uploaderUseCase(params)) {
-            is UploadResult.Success -> result.uploadId
-            is UploadResult.Error -> ""
-        }
+        return uploaderUseCase(params)
     }
 }

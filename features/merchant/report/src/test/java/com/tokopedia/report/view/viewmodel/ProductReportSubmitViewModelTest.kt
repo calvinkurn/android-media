@@ -3,16 +3,15 @@ package com.tokopedia.report.view.viewmodel
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.report.data.model.SubmitReportResponse
 import com.tokopedia.report.data.model.SubmitReportResponseWrapper
-import com.tokopedia.unit.test.ext.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import junit.framework.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.ArgumentMatchers.anyString
 
 class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture() {
 
@@ -37,7 +36,7 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
 
         viewModel.submitReport(productId, categoryId, reportInput)
 
-        viewModel.getSubmitResult().verifyValueEquals(Success(true))
+        viewModel.getSubmitResult().verifySuccessEquals(Success(true))
         coVerify { uploaderUseCase(uploadParam1) }
         coVerify { uploaderUseCase(uploadParam2) }
         coVerify { submitReportUseCase.executeOnBackground() }
@@ -55,13 +54,15 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
     @Test
     fun `when submitReport fail due to upload image should return expected failure`() {
         val uploadParam1 = getUploadParam1()
+        val errorUploadMessage = "some error message"
 
-        coEvery { uploaderUseCase(uploadParam1) } returns UploadResult.Error(anyString())
+        coEvery { uploaderUseCase(uploadParam1) } returns UploadResult.Error(errorUploadMessage)
 
         viewModel.submitReport(anyLong(), anyInt(), reportInput)
 
-        assertTrue(viewModel.getSubmitResult().value is Fail)
+        viewModel.getSubmitResult().verifyErrorEquals(Fail(Throwable(errorUploadMessage)))
         coVerify { uploaderUseCase(uploadParam1) }
+        coVerify(exactly = 0) { submitReportUseCase.executeOnBackground() }
 
     }
 
@@ -83,7 +84,7 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
 
         viewModel.submitReport(anyLong(), anyInt(), reportInput)
 
-        viewModel.getSubmitResult().verifyValueEquals(Fail(expectedThrowable))
+        viewModel.getSubmitResult().verifyErrorEquals(Fail(expectedThrowable))
 
         val currentParams = viewModel.getCurrentParams()
         assert(currentParams != null)
@@ -109,7 +110,7 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
         coEvery { submitReportUseCase.executeOnBackground() } returns wrapper
 
         viewModel.submitReport(anyLong(), anyInt(), reportInputNoPhoto)
-        viewModel.getSubmitResult().verifyValueEquals(Success(true))
+        viewModel.getSubmitResult().verifySuccessEquals(Success(true))
 
         coVerify(exactly = 0) { uploaderUseCase(any()) }
         coVerify { submitReportUseCase.executeOnBackground() }
