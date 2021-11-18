@@ -3,6 +3,7 @@ package com.tokopedia.shop.common.util
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
+import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -30,6 +31,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -142,13 +144,15 @@ object ShopUtil {
         }
     }
 
-    fun getHexColor(context: Context, resColor: Int): String {
-        val hexColor = Integer.toHexString(context.getResColor(resColor))
-        val startIndex = 2
-        return if (hexColor.length > startIndex) {
-            "#" + hexColor.substring(startIndex)
-        } else {
-            "#$hexColor"
+    fun getColorHexString(context: Context, idColor: Int): String {
+        return try {
+            val colorHexInt = ContextCompat.getColor(context, idColor)
+            val startIndex = 2
+            val colorToHexString = Integer.toHexString(colorHexInt).uppercase().substring(startIndex)
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
         }
     }
 }

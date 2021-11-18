@@ -27,7 +27,7 @@ class ShopHeaderBasicInfoWidgetViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_header_basic_info_widget
-        const val COLOR_DEFAULT_SUBSTRING_VALUE = 2
+//        const val COLOR_DEFAULT_SUBSTRING_VALUE = 2
     }
 
     interface Listener {
@@ -105,9 +105,8 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         }
 
         // Handle dark mode - last online status
-        val lastOnlineColor = getColorHexString(R.color.clr_31353B)
-        val lastOnlineUnifyColor = ShopUtil.getHexColor(
-                itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
+        val lastOnlineColor = ShopUtil.getColorHexString(itemView.context, R.color.clr_31353B)
+        val lastOnlineUnifyColor = ShopUtil.getColorHexString(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
         val unifiedShopAdditionalInfo = shopAdditionalInfo.replace(lastOnlineColor, lastOnlineUnifyColor)
         shopBasicInfoAdditionalInfoTextView?.text = MethodChecker.fromHtml(unifiedShopAdditionalInfo)
 
@@ -143,17 +142,17 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         }
     }
 
-    private fun getColorHexString(idColor: Int): String {
-        return try {
-            val colorHexInt = ContextCompat.getColor(itemView.context, idColor)
-            val colorToHexString = Integer.toHexString(colorHexInt).uppercase()
-                    .substring(COLOR_DEFAULT_SUBSTRING_VALUE)
-            return "#$colorToHexString"
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ""
-        }
-    }
+//    private fun getColorHexString(idColor: Int): String {
+//        return try {
+//            val colorHexInt = ContextCompat.getColor(itemView.context, idColor)
+//            val colorToHexString = Integer.toHexString(colorHexInt).uppercase()
+//                    .substring(COLOR_DEFAULT_SUBSTRING_VALUE)
+//            return "#$colorToHexString"
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            ""
+//        }
+//    }
 
     private fun isMatchWidgetIdentifier(
             component: BaseShopHeaderComponentUiModel,
