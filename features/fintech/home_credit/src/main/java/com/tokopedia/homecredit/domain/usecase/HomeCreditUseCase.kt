@@ -16,18 +16,17 @@ import javax.inject.Inject
 
 
 class HomeCreditUseCase @Inject constructor(
-    @ApplicationContext val context: Context
+        @ApplicationContext val context: Context
 ) : UseCase<ImageDetail>() {
 
 
     fun saveDetail(
-        success: (ImageDetail) -> Unit,
-        onFail: (Throwable) -> Unit,
-        imageByte: ByteArray,
+            success: (ImageDetail) -> Unit,
+            onFail: (Throwable) -> Unit,
+            imageByte: ByteArray,
     ) {
 
         useCaseRequestParams = RequestParams().apply { putObject(IMAGE_BYTE_ARRAY, imageByte) }
-
         execute({
             success(it)
         }, {
@@ -36,36 +35,15 @@ class HomeCreditUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): ImageDetail {
-        var bitmap: Bitmap? = null
         val imgByteArray = (useCaseRequestParams.getObject(IMAGE_BYTE_ARRAY)) as ByteArray
-        return try {
-            bitmap = CameraUtils.decodeBitmap(
-                imgByteArray,
-                MAX_IMAGE_DIMEN,
-                MAX_IMAGE_DIMEN
-            )
-            if (bitmap != null) {
-                val cameraResultFile: File? = saveToCacheDirectory(imgByteArray)
-                if (cameraResultFile != null) {
-                    val compressedByteArray = bitmapToByteArray(bitmap)
-                    ImageDetail(
-                        bitmap.height,
-                        bitmap.width,
-                        cameraResultFile.absolutePath,
-                        compressedByteArray.toList()
-                    )
-
-                } else
-                    throw NullPointerException()
-            } else
-                throw NullPointerException()
-        } catch (e: Exception) {
-            throw NullPointerException()
-        } finally {
-            bitmap?.recycle()
-        }
-
-
+        val compressedBitmap = CameraUtils.decodeBitmap(imgByteArray, MAX_IMAGE_DIMEN, MAX_IMAGE_DIMEN)
+        val compressedByteArray = bitmapToByteArray(compressedBitmap)
+        val cameraResultFile = saveToCacheDirectory(compressedByteArray)
+        return ImageDetail(
+                compressedBitmap?.width ?: 0,
+                compressedBitmap?.height ?: 0,
+                cameraResultFile?.absolutePath
+        )
     }
 
     private fun getFileLocationFromDirectory(): File {
@@ -79,9 +57,9 @@ class HomeCreditUseCase @Inject constructor(
         try {
             val stream = ByteArrayOutputStream()
             bitmap?.compress(
-                Bitmap.CompressFormat.JPEG,
-                IMAGE_QUALITY,
-                stream
+                    Bitmap.CompressFormat.JPEG,
+                    IMAGE_QUALITY,
+                    stream
             )
 
             return stream.toByteArray()
@@ -90,7 +68,6 @@ class HomeCreditUseCase @Inject constructor(
         }
 
     }
-
 
     private fun saveToCacheDirectory(imageByte: ByteArray): File? {
         var out: FileOutputStream? = null
