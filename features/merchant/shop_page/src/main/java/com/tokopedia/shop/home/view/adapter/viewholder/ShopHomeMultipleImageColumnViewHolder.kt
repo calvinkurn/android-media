@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -43,8 +44,8 @@ class ShopHomeMultipleImageColumnViewHolder(
     private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
     private val rvShopHomeMultiple: RecyclerView? = viewBinding?.rvShopHomeMultiple
     private val textViewTitle: Typography? = viewBinding?.textViewTitle
-
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
+        setWidgetImpressionListener(element)
         shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener)
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -82,6 +83,12 @@ class ShopHomeMultipleImageColumnViewHolder(
         shopHomeMultipleImageColumnAdapter?.setParentPosition(adapterPosition)
         shopHomeMultipleImageColumnAdapter?.setHeightRatio(getHeightRatio(element))
         shopHomeMultipleImageColumnAdapter?.submitList(element.data)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeDisplayWidgetUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            listener.onDisplayWidgetImpression(model, adapterPosition)
+        }
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {

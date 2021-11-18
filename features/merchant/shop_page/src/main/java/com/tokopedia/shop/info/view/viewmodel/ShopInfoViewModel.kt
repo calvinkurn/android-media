@@ -28,6 +28,8 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 ): BaseViewModel(coroutineDispatcherProvider.main){
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
+    fun userId() : String = userSessionInterface.userId
+
 
     val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopInfo = MutableLiveData<ShopInfoData>()

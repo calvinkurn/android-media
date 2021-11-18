@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
@@ -68,7 +69,16 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
 
     override fun bind(element: ShopHomeShowcaseListSliderUiModel) {
         tvCarouselTitle?.text = element.header.title
+        childWidgetAdapter.setShopHomeShowcaseListSliderUiModel(element)
+        childWidgetAdapter.setParentPosition(adapterPosition)
         childWidgetAdapter.updateDataSet(element.showcaseListItem)
+        setWidgetImpressionListener(element)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeShowcaseListSliderUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            childWidgetAdapter.showcaseListWidgetListener.onShowcaseListWidgetImpression(model, adapterPosition)
+        }
     }
 
     private fun initView() {

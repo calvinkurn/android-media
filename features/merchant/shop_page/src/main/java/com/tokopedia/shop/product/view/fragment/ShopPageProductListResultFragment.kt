@@ -1029,12 +1029,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseType = data.getIntExtra(ShopShowcaseParamConstant.EXTRA_ETALASE_TYPE, SELECTED_ETALASE_TYPE_DEFAULT_VALUE)
                     needReloadData = data.getBooleanExtra(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false)
 
-                    shopPageTracking?.clickEtalaseChip(
-                            isMyShop,
-                            getSelectedEtalaseChip(),
-                            CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
-                    )
-
                     shopPageTracking?.clickMoreMenuChip(
                             isMyShop,
                             getSelectedEtalaseChip(),
@@ -1418,24 +1412,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopProductAdapter.changeProductCardGridType(gridType)
     }
 
-    override fun onChangeProductGridClicked(gridType: ShopProductViewGridType) {
-        val productListName =  shopProductAdapter.shopProductUiModelList.joinToString(","){
-            it.name.orEmpty()
-        }
-        shopPageTracking?.clickProductListToggle(productListName, isMyShop, customDimensionShopPage)
-        changeProductListGridView(gridType)
+    override fun onChangeProductGridClicked(
+            initialGridType: ShopProductViewGridType,
+            finalGridType: ShopProductViewGridType
+    ) {
+        shopPageTracking?.clickProductListToggle(initialGridType, finalGridType, shopId.orEmpty(), userId)
+        changeProductListGridView(finalGridType)
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
-        if (selectedSortName.isNotBlank()) {
-            shopPageTracking?.clickFilterSortBy(productListName, selectedSortName, customDimensionShopPage)
-        }
-        if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
-            shopPageTracking?.clickFilterPrice(productListName, selectedFilterMap[PMIN_PARAM_KEY] ?: "0", selectedFilterMap[PMAX_PARAM_KEY] ?: "0", customDimensionShopPage)
-        }
-        if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
-            shopPageTracking?.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
-        }
+        shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, shopId.orEmpty(), userId)
     }
 
     fun onSearchBarClicked() {

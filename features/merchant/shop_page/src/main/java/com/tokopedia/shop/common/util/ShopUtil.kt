@@ -15,6 +15,7 @@ import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
 import com.tokopedia.remoteconfig.RollenceKey.OLD_REVIEW_SHOP
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
@@ -138,6 +139,14 @@ object ShopUtil {
     fun <E> MutableList<E>.setElement(index: Int, element: E){
         if(index in 0 until size){
             set(index, element)
+        }
+    }
+
+    fun getShopGridViewTypeString(gridType: ShopProductViewGridType) : String {
+        return when (gridType) {
+            ShopProductViewGridType.LIST -> ShopPageTrackingConstant.LIST_VIEW_TYPE
+            ShopProductViewGridType.SMALL_GRID -> ShopPageTrackingConstant.GRID_VIEW_TYPE
+            ShopProductViewGridType.BIG_GRID -> ShopPageTrackingConstant.BIG_GRID_VIEW_TYPE
         }
     }
 }

@@ -27,7 +27,6 @@ import com.tokopedia.shop.analytic.ShopPageShowcaseTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
-import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.databinding.FragmentShopPageShowcaseBinding
@@ -180,7 +179,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         // track click featured showcase item
         shopPageShowcaseTracking.clickFeaturedShowcaseItem(
                 featuredShowcase = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
                 position = position,
                 customDimensionShopPage = customDimensionShopPage,
                 userId = shopPageShowcaseViewModel.userId.orEmpty()
@@ -194,7 +192,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         // track featured showcase item impression
         shopPageShowcaseTracking.featuredShowcaseItemImpressed(
                 featuredShowcase = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
                 position = position,
                 customDimensionShopPage = customDimensionShopPage,
                 userId = shopPageShowcaseViewModel.userId.orEmpty()
@@ -205,7 +202,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         // track click all showcase item
         shopPageShowcaseTracking.clickAllShowcaseItem(
                 allShowcaseItem = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
                 position = position,
                 customDimensionShopPage = customDimensionShopPage,
                 userId = shopPageShowcaseViewModel.userId.orEmpty()
@@ -220,7 +216,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
         // track featured showcase item impression
         shopPageShowcaseTracking.showcaseItemImpressed(
                 showcaseItem = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
                 position = position,
                 customDimensionShopPage = customDimensionShopPage,
                 userId = shopPageShowcaseViewModel.userId.orEmpty()
@@ -248,14 +243,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
         // search showcase icon on click listener
         icShowcaseSearch?.setOnClickListener {
-
-            // track click search icon
-            shopPageShowcaseTracking.clickSearchIcon(
-                    shopPageShowcaseViewModel.isMyShop(shopId),
-                    customDimensionShopPage,
-                    shopPageShowcaseViewModel.userId.orEmpty()
-            )
-
             goToShopShowcaseList()
         }
 

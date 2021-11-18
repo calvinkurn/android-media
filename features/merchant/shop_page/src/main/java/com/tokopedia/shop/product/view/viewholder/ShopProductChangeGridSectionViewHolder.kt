@@ -52,7 +52,7 @@ class ShopProductChangeGridSectionViewHolder(
         }
         setGridIcon(model.gridType)
         ivGridIcon?.setOnClickListener {
-            listener.onChangeProductGridClicked(switchGridLayout(model.gridType))
+            listener.onChangeProductGridClicked(model.gridType, switchGridLayout(model.gridType))
         }
         labelTampilan?.show()
     }
