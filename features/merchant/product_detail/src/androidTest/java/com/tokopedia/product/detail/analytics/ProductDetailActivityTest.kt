@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.analytics
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -81,12 +82,13 @@ class ProductDetailActivityTest {
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         clearLogin()
+        gtmLogDBSource.deleteAll().toBlocking().first()
+
         val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         activityRule.launchActivity(intent)
 
         setUpTimeoutIdlingResource()
         intendingIntent()
-        gtmLogDBSource.deleteAll().toBlocking().first()
     }
 
     @After
@@ -211,7 +213,7 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickThreadDetail() {
         actionTest {
-            fakeLogin()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             clickThreadDetailDiscussion()
         } assertTest {
             performClose(activityRule)
