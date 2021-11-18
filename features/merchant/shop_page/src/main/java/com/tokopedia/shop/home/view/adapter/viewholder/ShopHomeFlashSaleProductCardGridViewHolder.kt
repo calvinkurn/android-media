@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
@@ -21,6 +22,7 @@ class ShopHomeFlashSaleProductCardGridViewHolder(
     fun bindData(uiModel: ShopHomeProductUiModel) {
         this.uiModel = uiModel
         productCardGrid?.applyCarousel()
+        productCardGrid?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         productCardGrid?.setProductModel(
             ShopPageHomeMapper.mapToProductCardCampaignModel(
                 isHasAddToCartButton = false,
