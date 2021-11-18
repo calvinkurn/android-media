@@ -10,7 +10,7 @@ import com.tokopedia.linker.model.AffiliateGenerateLinkInput
 import com.tokopedia.linker.model.GenerateAffiliateLink
 import com.tokopedia.network.exception.MessageErrorException
 
-class AffiliateUseCase constructor(
+class AffiliateLinkGeneratorUseCase constructor(
     private val graphqlRepository: GraphqlRepository
 ): GraphqlUseCase<String>(graphqlRepository) {
 
@@ -47,13 +47,13 @@ class AffiliateUseCase constructor(
                         RegularURL
                         }
                     }
+                }
             }
-        }
-        """
+            """
 
         fun createParam(affiliateGenerateLinkInput: AffiliateGenerateLinkInput): HashMap<String, Any> {
             return hashMapOf(
-                INPUT to affiliateGenerateLinkInput,
+                INPUT to affiliateGenerateLinkInput
             )
         }
     }

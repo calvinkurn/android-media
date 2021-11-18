@@ -403,7 +403,6 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         } else {
             universalShareBottomSheet.affiliateRequestDataReceived()
         }
-
         universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
     }
     //endregion

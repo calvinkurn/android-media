@@ -1,12 +1,9 @@
 package com.tokopedia.universal_sharing.view.bottomsheet
 
-import android.Manifest
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -22,10 +19,7 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -33,11 +27,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
@@ -46,10 +40,15 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.EligibleCommission
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -213,6 +212,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     //loader view
     private var loaderUnify: LoaderUnify? = null
+    //affiliate commission view
+    private var affiliateCommissionTextView: Typography? = null
 
     private var thumbNailTitle = ""
     private var bottomSheetTitleRemoteConfKey = ""
@@ -279,6 +280,26 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     fun affiliateRequestDataReceived(){
         showLoader = false
         loaderUnify?.visibility = View.GONE
+        executeAffiliateEligibilityUseCase()
+    }
+
+    private fun executeAffiliateEligibilityUseCase(){
+        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+                val affiliateEligibleCommission: EligibleCommission = affiliateUseCase.apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
+                }.executeOnBackground()
+                showAffiliateCommission(affiliateEligibleCommission)
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
+    }
+
+    private fun showAffiliateCommission(affiliateEligibleCommission: EligibleCommission){
+        affiliateCommissionTextView?.text = affiliateEligibleCommission.message
+        affiliateCommissionTextView?.visibility = View.VISIBLE
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
@@ -323,6 +344,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             emailImage = findViewById(R.id.email_img)
             emailImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
             loaderUnify = findViewById(R.id.loader)
+            affiliateCommissionTextView = findViewById(R.id.affilate_commision)
             setFixedOptionsClickListeners()
 
             setUserVisualData()
@@ -687,6 +709,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
+        if(affiliateQueryData != null){
+            shareModel.isAffiliate = true
+        }
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 

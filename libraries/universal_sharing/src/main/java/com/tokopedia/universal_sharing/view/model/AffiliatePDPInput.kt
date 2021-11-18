@@ -4,33 +4,33 @@ import com.google.gson.annotations.SerializedName
 
 data class Product (
     @SerializedName("ProductID")
-    var productID: String? = null,
+    var productID: String? = "",
 
     @SerializedName("CatLevel1")
-    var catLevel1: String? = null,
+    var catLevel1: String? = "",
 
     @SerializedName("CatLevel2")
-    var catLevel2: String? = null,
+    var catLevel2: String? = "",
 
     @SerializedName("CatLevel3")
-    var catLevel3: String? = null,
+    var catLevel3: String? = "",
 
     @SerializedName("ProductPrice")
-    var productPrice: String? = null,
+    var productPrice: String? = "",
 
     @SerializedName("MaxProductPrice")
-    var maxProductPrice: String? = null,
+    var maxProductPrice: String? = "",
 
     @SerializedName("ProductStatus")
-    var productStatus: String? = null,
+    var productStatus: String? = "",
 )
 
 data class Shop (
     @SerializedName("ShopID")
-    var shopID: String? = null,
+    var shopID: String? = "",
 
     @SerializedName("ShopStatus")
-    var shopStatus: Int? = null,
+    var shopStatus: Int? = 0,
 
     @SerializedName("IsOS")
     var isOS: Boolean = false,
@@ -41,7 +41,7 @@ data class Shop (
 
 data class AffiliatePDPInput (
     @SerializedName("PageType")
-    var pageType: String? = null,
+    var pageType: String? = "",
 
     @SerializedName("Product")
     var product: Product? = null,
