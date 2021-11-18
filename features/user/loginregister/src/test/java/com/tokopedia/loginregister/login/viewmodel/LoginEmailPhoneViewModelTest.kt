@@ -470,7 +470,7 @@ class LoginEmailPhoneViewModelTest {
         val responseToken = LoginTokenPojo(loginToken = loginToken)
 
         /* When */
-        every { userSession.loginMethod } returns "facebook"
+        every { userSession.loginMethod } returns "phone"
         every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
             secondArg<LoginTokenSubscriber>().onSuccessLoginToken(responseToken)
         }
@@ -488,7 +488,7 @@ class LoginEmailPhoneViewModelTest {
         val validateToken = "asdf123"
 
         /* When */
-        every { userSession.loginMethod } returns "facebook"
+        every { userSession.loginMethod } returns "phone"
         every { loginTokenUseCase.executeLoginAfterSQ(any(), any()) } answers {
             secondArg<LoginTokenSubscriber>().onErrorLoginToken(throwable)
         }
