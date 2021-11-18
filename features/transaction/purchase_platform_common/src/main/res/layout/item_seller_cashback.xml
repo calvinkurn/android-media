@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
     android:paddingTop="16dp"
-    android:paddingBottom="16dp">
+    android:paddingBottom="16dp"
+    tools:viewBindingIgnore="true">
 
     <RelativeLayout
         android:id="@+id/rl_container"
