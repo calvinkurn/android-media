@@ -96,7 +96,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     private fun initializeFillData() {
         shopLocationOldUiModel?.let {
-            edit_text_name.setText(it.name)
+            edit_text_name.textFieldInput.setText(it.name)
             edit_text_address.setText(it.address)
             val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
             edit_text_district.setText(district)
@@ -117,12 +117,14 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private fun isDataValidToSave(): Boolean {
         var valid = true
 
-        if (TextUtils.isEmpty(edit_text_name.text.toString())){
+        if (TextUtils.isEmpty(edit_text_name.textFieldInput.text.toString())){
             valid = false
-            text_input_layout_name.error = getString(R.string.shop_address_name_required)
-        } else if (edit_text_name.text.toString().length > 128){
+            edit_text_name.setError(true)
+            edit_text_name.setMessage(getString(R.string.shop_address_name_required))
+        } else if (edit_text_name.textFieldInput.text.toString().length > 128){
             valid = false
-            text_input_layout_name.error = getString(R.string.shop_address_name_max_length_error)
+            edit_text_name.setError(true)
+            edit_text_name.setMessage(getString(R.string.shop_address_name_max_length_error))
         }
 
         if (TextUtils.isEmpty(edit_text_address.text.toString())){
@@ -193,7 +195,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private fun populateData(): ShopLocationOldUiModel {
         shopLocationOldUiModel = shopLocationOldUiModel ?: ShopLocationOldUiModel()
         return shopLocationOldUiModel!!.apply {
-            name = edit_text_name.text.toString()
+            name = edit_text_name.textFieldInput.text.toString()
             address = edit_text_address.text.toString()
             districtId = selectedDistrictId
             cityId = selectedCityId
