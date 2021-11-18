@@ -444,7 +444,7 @@
 
     <entry>
         <key>android_async_gratification_init</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_async_home_dagger</key>
