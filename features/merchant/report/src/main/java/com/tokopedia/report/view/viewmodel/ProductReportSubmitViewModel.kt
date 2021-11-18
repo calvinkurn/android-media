@@ -50,7 +50,7 @@ class ProductReportSubmitViewModel @Inject constructor(
     private suspend fun processImages(input:Map<String, Any>): Map<String, Any>{
         val mutableInput = input.toMutableMap()
         val uploadIdList = (mutableInput[KEY_PHOTO] as? List<*>)?.map { photo ->
-            uploadImageAndGetId(photo as String).also {
+            uploadImageAndGetId(photo as String).let {
                 when(it){
                     is UploadResult.Success -> it.uploadId
                     is UploadResult.Error -> throw Throwable(it.message)

@@ -5,6 +5,7 @@ import com.tokopedia.report.data.model.SubmitReportResponse
 import com.tokopedia.report.data.model.SubmitReportResponseWrapper
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -60,7 +61,11 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
 
         viewModel.submitReport(anyLong(), anyInt(), reportInput)
 
-        viewModel.getSubmitResult().verifyErrorEquals(Fail(Throwable(errorUploadMessage)))
+
+        assert(viewModel.getSubmitResult().value is Fail)
+        val currentErrorMessage = (viewModel.getSubmitResult().value as Fail).throwable.message
+        assert(currentErrorMessage == errorUploadMessage)
+
         coVerify { uploaderUseCase(uploadParam1) }
         coVerify(exactly = 0) { submitReportUseCase.executeOnBackground() }
 
@@ -84,7 +89,7 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
 
         viewModel.submitReport(anyLong(), anyInt(), reportInput)
 
-        viewModel.getSubmitResult().verifyErrorEquals(Fail(expectedThrowable))
+        viewModel.getSubmitResult().verifyValueEquals(Fail(expectedThrowable))
 
         val currentParams = viewModel.getCurrentParams()
         assert(currentParams != null)
