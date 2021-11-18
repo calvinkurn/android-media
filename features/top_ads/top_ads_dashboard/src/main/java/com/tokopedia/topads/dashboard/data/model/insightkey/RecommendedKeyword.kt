@@ -6,13 +6,13 @@ data class RecommendedKeyword(
     @SerializedName("shop_id")
     var shopId: Int = 0,
     @SerializedName("recommended_keyword_count")
-    var recommendedKeywordCount: Int = 0,
+    var keywordCount: Int = 0,
     @SerializedName("group_count")
     var groupCount: Int = 0,
     @SerializedName("total_impression_count")
     var totalImpressionCount: Int = 0,
     @SerializedName("recommended_keyword_details")
-    var recommendedKeywordDetails: List<RecommendedKeywordDetail> = listOf()
+    var keywordDetails: List<RecommendedKeywordDetail> = listOf()
 )
 
 data class RecommendedKeywordDetail(

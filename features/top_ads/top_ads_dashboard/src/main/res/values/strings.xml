@@ -321,8 +321,17 @@
     <string name="topads_insight_recomm_keyword_cost">Rekomendasi biaya kata kunci (%d)</string>
     <string name="topads_insight_new_recomm_keyword">Rekomendasi kata kunci baru (%d)</string>
     <string name="topads_insight_negative_recomm_keyword">Rekomendasi kata kunci negatif (%d)</string>
-    <string name="topads_insight_recomm_keyword_title">Tambah biaya kata kunci untuk (%d) iklanmu supaya bisa</string>
-    <string name="topads_insight_recomm_keyword_subtitle">tampil lebih banyak hingga +(%s) kali!</string>
+    <string name="topads_insight_recomm_keyword_title">Tambah biaya kata kunci untuk %d iklanmu supaya bisa</string>
+    <string name="topads_insight_recomm_keyword_subtitle">tampil lebih banyak hingga +%s kali!</string>
+
+    <!-- TOPADS INSIGHT KEYWORDS LAYOUT -->
+    <string name="label_select_all">Pilih Semua</string>
+    <string name="label_group">Grup:</string>
+    <string name="per_click_value">%d/klik</string>
+    <string name="per_click_bold_value"><![CDATA["<font color='#000000'><b>+%d</b></font>]]>/klik</string>
+    <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>
+    <string name="title_current_cost">Biaya saat ini</string>
+    <string name="title_new_fee">Biaya baru</string>
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
     <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>
