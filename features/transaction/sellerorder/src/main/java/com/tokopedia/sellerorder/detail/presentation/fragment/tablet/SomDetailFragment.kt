@@ -186,7 +186,7 @@ class SomDetailFragment : com.tokopedia.sellerorder.detail.presentation.fragment
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
             if (result.message.isNotBlank()) {
                 if (result.success) showCommonToaster(result.message)
-                else showErrorToaster(null, result.message)
+                else showErrorToaster(result.message)
             }
             if (result.completed && result.refreshOnDismiss) {
                 shouldRefreshOrderList = true

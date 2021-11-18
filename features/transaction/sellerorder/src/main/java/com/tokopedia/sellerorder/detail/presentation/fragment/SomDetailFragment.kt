@@ -1134,9 +1134,9 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     private fun Throwable.showErrorToaster(anchorView: View?) {
         if (this is UnknownHostException || this is SocketTimeoutException) {
-            showNoInternetConnectionToaster(anchorView)
+            showNoInternetConnectionToaster()
         } else {
-            showServerErrorToaster(anchorView)
+            showServerErrorToaster()
         }
     }
 
@@ -1154,24 +1154,24 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    protected fun showErrorToaster(anchorView: View?, message: String) {
+    protected fun showErrorToaster(message: String) {
         view?.run {
             this@SomDetailFragment.somToaster = Toaster.build(
                 this,
                 message,
                 LENGTH_SHORT,
                 TYPE_ERROR
-            ).setAnchorView(anchorView)
+            ).setAnchorView(binding?.containerBtnDetail)
             this@SomDetailFragment.somToaster?.show()
         }
     }
 
-    private fun showNoInternetConnectionToaster(anchorView: View?) {
-        showErrorToaster(anchorView, getString(R.string.som_error_message_no_internet_connection))
+    private fun showNoInternetConnectionToaster() {
+        showErrorToaster(getString(R.string.som_error_message_no_internet_connection))
     }
 
-    private fun showServerErrorToaster(anchorView: View?) {
-        showErrorToaster(anchorView, getString(R.string.som_error_message_server_fault))
+    private fun showServerErrorToaster() {
+        showErrorToaster(getString(R.string.som_error_message_server_fault))
     }
 
     protected fun showCommonToaster(message: String) {
@@ -1283,8 +1283,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected open fun observeGetRequestExtensionInfo() {
         orderExtensionViewModel.orderExtensionRequestInfo.observe(viewLifecycleOwner) { result ->
             if (result.message.isNotBlank()) {
-                if (result.success) showCommonToaster(result.message)
-                else showErrorToaster(null, result.message)
+                if (result.success) {
+                    showCommonToaster(result.message)
+                }
+                else {
+                    showErrorToaster(result.message)
+                }
             }
             if (result.completed && result.refreshOnDismiss) {
                 loadDetail()
@@ -1377,7 +1381,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     protected open fun onFailedSendOrderExtensionRequest(errorMessage: String) {
         SomAnalytics.eventFinishSendOrderExtensionRequest(userSession.shopId, orderId, false)
         loadDetail()
-        showErrorToaster(binding?.containerBtnDetail, errorMessage)
+        showErrorToaster(errorMessage)
     }
 
     protected open fun onSuccessSendOrderExtensionRequest(data: OrderExtensionRequestResultUiModel) {
