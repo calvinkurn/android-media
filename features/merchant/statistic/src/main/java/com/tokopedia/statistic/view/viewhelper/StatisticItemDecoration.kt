@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.viewhelper
 
+import android.content.Context
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -37,19 +38,22 @@ class StatisticItemDecoration : RecyclerView.ItemDecoration() {
                     val lasTwoItemIndex = parent.adapter?.itemCount.orZero().minus(LAST_TWO_WIDGETS)
                     val isLastTwoItem: Boolean =
                         parent.getChildAdapterPosition(view) == lasTwoItemIndex
-                    if (isLastItem || isLastTwoItem) {
-                        outRect.bottom = view.context.dpToPx(BOTTOM_MARGIN_IN_DP).toInt()
+                    if (isLastTwoItem) {
+                        setBottomMargin(view.context, outRect)
                     }
-                } else {
-                    if (isLastItem) {
-                        outRect.bottom = view.context.dpToPx(BOTTOM_MARGIN_IN_DP).toInt()
-                    }
+                }
+                if (isLastItem) {
+                    setBottomMargin(view.context, outRect)
                 }
             } catch (e: IndexOutOfBoundsException) {
                 if (isLastItem) {
-                    outRect.bottom = view.context.dpToPx(BOTTOM_MARGIN_IN_DP).toInt()
+                    setBottomMargin(view.context, outRect)
                 }
             }
         }
+    }
+
+    private fun setBottomMargin(context: Context, outRect: Rect) {
+        outRect.bottom = context.dpToPx(BOTTOM_MARGIN_IN_DP).toInt()
     }
 }
