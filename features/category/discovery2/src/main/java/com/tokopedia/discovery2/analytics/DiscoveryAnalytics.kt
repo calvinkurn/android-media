@@ -1421,7 +1421,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     private fun trackEventImpressionCalendar(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/${pagePath} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1430,7 +1430,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             EVENT_PROMO_VIEW to mapOf(
                 KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
-            eventAction = CALENDAR_WIDGET_IMPRESSION, eventLabel = removeDashPageIdentifier("${componentsItems.properties?.calendarLayout} layout - ${componentsItems.data?.firstOrNull()?.title}"))
+            eventAction = CALENDAR_WIDGET_IMPRESSION, eventLabel = "${componentsItems.properties?.calendarLayout} layout - ${componentsItems.data?.firstOrNull()?.title}")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_E_COMMERCE] = eCommerce
@@ -1443,7 +1443,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickCalendarWidget(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/${pagePath} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1452,7 +1452,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             EVENT_PROMO_CLICK to mapOf(
                 KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
-            eventAction = CALENDAR_WIDGET_CLICK, eventLabel = removeDashPageIdentifier("${componentsItems.properties?.calendarLayout} layout - p{x} - ${componentsItems.data?.firstOrNull()?.title}"))
+            eventAction = CALENDAR_WIDGET_CLICK, eventLabel = "${componentsItems.properties?.calendarLayout} layout - p{x} - ${componentsItems.data?.firstOrNull()?.title}")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_E_COMMERCE] = eCommerce
@@ -1465,7 +1465,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventClickCalendarCTA(componentsItems: ComponentsItem, userID: String) {
         val list = ArrayList<Map<String, Any>>()
         list.add(mapOf(
-            KEY_NAME to "/${pagePath} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
+            KEY_NAME to "/discovery/${removedDashPageIdentifier} - ${pageType} - ${componentsItems.parentComponentPosition + 1} - ${componentsItems.data?.firstOrNull()?.title} - ${componentsItems.name}",
             KEY_ID to "${componentsItems.position + 1}_${componentsItems.parentComponentId}",
             KEY_POSITION to "${componentsItems.position + 1}",
             KEY_CREATIVE to (componentsItems.data?.firstOrNull()?.creativeName ?: EMPTY_STRING)
@@ -1474,7 +1474,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             EVENT_PROMO_CLICK to mapOf(
                 KEY_PROMOTIONS to list))
         val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
-            eventAction = CALENDAR_WIDGET_CTA_CLICK, eventLabel = removeDashPageIdentifier("${componentsItems.properties?.calendarLayout} layout - p{x} - ${componentsItems.data?.firstOrNull()?.title}"))
+            eventAction = CALENDAR_WIDGET_CTA_CLICK, eventLabel = "${componentsItems.properties?.calendarLayout} layout - p{x} - ${componentsItems.data?.firstOrNull()?.title}")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[KEY_E_COMMERCE] = eCommerce
