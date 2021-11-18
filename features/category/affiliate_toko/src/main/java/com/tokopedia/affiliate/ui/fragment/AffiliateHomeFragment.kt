@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.adapter.AffiliateListItemDecorator
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
@@ -108,6 +109,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         products_rv.layoutManager = layoutManager
+        products_rv.addItemDecoration(AffiliateListItemDecorator())
         swipe_refresh_layout.setOnRefreshListener {
             isSwipeRefresh = true
             resetItems()

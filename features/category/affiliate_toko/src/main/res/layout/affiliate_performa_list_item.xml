@@ -28,6 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/head_top" />
     <com.tokopedia.unifyprinciples.Typography
+        android:layout_marginBottom="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
         android:id="@+id/head"
@@ -35,6 +36,7 @@
         android:layout_height="wrap_content"
         android:text="Products"
         app:layout_constraintTop_toBottomOf="@+id/performaItem_RV"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="bold" />
