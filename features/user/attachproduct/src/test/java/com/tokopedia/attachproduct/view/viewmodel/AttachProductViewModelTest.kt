@@ -49,14 +49,16 @@ class AttachProductViewModelTest {
     }
 
     @Test
-    fun `success load data and cache data` () {
+    fun `success load data and cache data`() {
         //GIVEN
-        val aceSearchProductResponse: AceSearchProductResponse = FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
+        val aceSearchProductResponse: AceSearchProductResponse =
+                FileUtil.parse("/success_ace_search_product.json", AceSearchProductResponse::class.java)
         val expectedValue = aceSearchProductResponse.mapToListProduct().toDomainModelMapper()
         val expectedCacheValue = expectedValue.subList(0, expectedValue.size - 1)
+
         coEvery {
             useCase(any())
-        } returns  aceSearchProductResponse
+        } returns aceSearchProductResponse
 
         //WHEN
         vm.loadProductData("", mockShopId, mockPage, mockWarehouseId)
