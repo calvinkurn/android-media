@@ -14,14 +14,22 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
+import com.tokopedia.play.util.isEqualTo
+import com.tokopedia.play.util.isEqualToIgnoringFields
+import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
 import com.tokopedia.play.view.uimodel.action.ImpressUpcomingChannel
+import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
+import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -65,130 +73,145 @@ class PlayUpcomingTest {
      */
     @Test
     fun `given a upcoming channel, user is open the upcoming page, then app should send impression analytic`() {
+        /** Mock */
         every { mockPlayNewAnalytic.impressUpcomingPage(mockChannelData.id) } returns Unit
 
+        /** Verify */
         val robot = createPlayUpcomingViewModelRobot(
             playAnalytic = mockPlayNewAnalytic
         ) {
             viewModel.initPage(mockChannelData.id, mockChannelData)
         }
 
-        robot.viewModel.submitAction(ImpressUpcomingChannel)
+        robot.use {
+            /** Test */
+            runBlockingTest {
+                robot.submitAction(ImpressUpcomingChannel)
+            }
 
-        verify { mockPlayNewAnalytic.impressUpcomingPage(mockChannelData.id) }
+            /** Verify */
+            verify { mockPlayNewAnalytic.impressUpcomingPage(mockChannelData.id) }
+        }
     }
 
 
     /**
      * Remind Me
      */
-//    @Test
-//    fun `given a upcoming channel, when logged in user click remind me button, then upcoming info should be updated to reminded`() {
-//        val mockPlayChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true)
-//        val mockResponse = PlayReminder(
-//            PlayReminder.ToggleChannelReminder(
-//                header = PlayReminder.Header(
-//                    status = 200
-//                )
-//            )
-//        )
-//        val mockEvent = RemindMeEvent(
-//            message = UiString.Resource(1),
-//            isSuccess = true
-//        )
-//
-//        coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
-//        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
-//
-//        givenPlayViewModelRobot(
-//            playChannelReminderUseCase = mockPlayChannelReminderUseCase,
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(true)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhenExpectEvent  {
-//            submitAction(ClickRemindMeUpcomingChannel)
-//        } thenVerify { event ->
-//            verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
-//
-//            val value = viewModel.observableUpcomingInfo.value
-//            value?.isEqualTo(mockUpcomingInfo.copy(isReminderSet = true)) ?: fail(Exception("No Upcoming Info"))
-//
-//            event.isEqualToIgnoringFields(mockEvent, RemindMeEvent::message)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when logged in user click remind me button and error occur, then upcoming info is still the same`() {
-//        val mockPlayChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true)
-//        val mockResponse = PlayReminder(
-//            PlayReminder.ToggleChannelReminder(
-//                header = PlayReminder.Header(
-//                    status = 403
-//                )
-//            )
-//        )
-//        val mockEvent = RemindMeEvent(
-//            message = UiString.Resource(1),
-//            isSuccess = false
-//        )
-//
-//        coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
-//        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
-//
-//        givenPlayViewModelRobot(
-//            playChannelReminderUseCase = mockPlayChannelReminderUseCase,
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(true)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhenExpectEvent  {
-//            submitAction(ClickRemindMeUpcomingChannel)
-//        } thenVerify { event ->
-//            verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
-//
-//            val value = viewModel.observableUpcomingInfo.value
-//            value?.isEqualTo(mockUpcomingInfo) ?: fail(Exception("No Upcoming Info"))
-//
-//            event.isEqualToIgnoringFields(mockEvent, RemindMeEvent::message)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when user is not logged in and click remind me button, then user cannot set reminder`() {
-//        val mockEvent = OpenPageEvent(
-//            applink = ApplinkConst.LOGIN,
-//            requestCode = 123
-//        )
-//
-//        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
-//
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhenExpectEvent {
-//            submitAction(ClickRemindMeUpcomingChannel)
-//        } thenVerify { event ->
-//            verify { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) }
-//
-//            val value = viewModel.observableUpcomingInfo.value
-//            value?.isReminderSet?.assertFalse() ?: fail(Exception("No Upcoming Info"))
-//
-//            event.isEqualToIgnoringFields(mockEvent, OpenPageEvent::requestCode)
-//        }
-//    }
-//
+    @Test
+    fun `given a upcoming channel, when logged in user click remind me button, then upcoming state should be updated to reminded`() {
+        /** Mock */
+        val mockPlayChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true)
+        val mockResponse = PlayReminder(
+            PlayReminder.ToggleChannelReminder(
+                header = PlayReminder.Header(
+                    status = 200
+                )
+            )
+        )
+        val mockEvent = PlayUpcomingUiEvent.RemindMeEvent(
+            message = UiString.Resource(1),
+            isSuccess = true
+        )
+
+        coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
+        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
+        every { mockUserSession.isLoggedIn } returns true
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            playChannelReminderUseCase = mockPlayChannelReminderUseCase,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test **/
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            /** Verify */
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Reminded)
+            events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when logged in user click remind me button and error occur, then upcoming state is still the same`() {
+        /** Mock */
+        val mockPlayChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true)
+        val mockResponse = PlayReminder(
+            PlayReminder.ToggleChannelReminder(
+                header = PlayReminder.Header(
+                    status = 403
+                )
+            )
+        )
+        val mockEvent = PlayUpcomingUiEvent.RemindMeEvent(
+            message = UiString.Resource(1),
+            isSuccess = false
+        )
+
+        coEvery { mockPlayChannelReminderUseCase.executeOnBackground() } returns mockResponse
+        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
+        every { mockUserSession.isLoggedIn } returns true
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            playChannelReminderUseCase = mockPlayChannelReminderUseCase,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test **/
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            /** Verify */
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when user is not logged in and click remind me button, then user cannot set reminder`() {
+        val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
+            applink = ApplinkConst.LOGIN,
+            requestCode = 123
+        )
+
+        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
+        every { mockUserSession.isLoggedIn } returns false
+
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test **/
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            /** Verify */
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Loading)
+            events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.OpenPageEvent::requestCode)
+        }
+    }
+
 //    /**
 //     * Watch Now
 //     */

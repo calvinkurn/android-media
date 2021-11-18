@@ -7,6 +7,8 @@ import com.tokopedia.play.domain.GetSocketCredentialUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.robot.play.PlayViewModelRobot2
+import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
+import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingUiState
@@ -15,11 +17,8 @@ import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import java.io.Closeable
 
@@ -49,6 +48,10 @@ class PlayUpcomingViewModelRobot(
         playChannelSSE = playChannelSSE,
         repo = repo,
     )
+
+    suspend fun submitAction(action: PlayUpcomingAction) = act {
+        viewModel.submitAction(action)
+    }
 
     fun recordState(fn: suspend PlayUpcomingViewModelRobot.() -> Unit): PlayUpcomingUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
@@ -96,6 +99,11 @@ class PlayUpcomingViewModelRobot(
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState to uiEvents
+    }
+
+    private suspend fun act(fn: () -> Unit) {
+        fn()
+        yield()
     }
 
     fun cancelRemainingTasks() {

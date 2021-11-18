@@ -201,16 +201,24 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleClickUpcomingButton() {
-        when(_upcomingState.value) {
+        val currState = _upcomingState.value
+        _upcomingState.value = PlayUpcomingState.Loading
+
+        when(currState) {
             PlayUpcomingState.WatchNow -> handleWatchNowUpcomingChannel()
             PlayUpcomingState.RemindMe -> handleRemindMeUpcomingChannel(userClick = true)
             PlayUpcomingState.Refresh -> handleRefreshUpcomingChannel()
             else -> {}
         }
-        _upcomingState.value = PlayUpcomingState.Loading
     }
 
     private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
+
+        suspend fun failedRemindMe() {
+            _upcomingState.emit(PlayUpcomingState.RemindMe)
+            _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+        }
+
         if(userClick) playAnalytic.clickRemindMe(mChannelId)
 
         needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
@@ -225,20 +233,20 @@ class PlayUpcomingViewModel @Inject constructor(
                         status = PlayChannelReminderUseCase.checkRequestSuccess(response)
                     }
 
-                    _upcomingState.emit(PlayUpcomingState.Reminded)
-                    _upcomingInfo.setValue { copy(isReminderSet = status) }
+                    if(!status) failedRemindMe()
+                    else {
+                        _upcomingState.emit(PlayUpcomingState.Reminded)
+                        _upcomingInfo.setValue { copy(isReminderSet = status) }
 
-                    _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
-
-                } ?: run {
-                    _upcomingState.emit(PlayUpcomingState.RemindMe)
-                    _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
-                }
+                        _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
+                    }
+                } ?: failedRemindMe()
             }) {
-                _upcomingState.emit(PlayUpcomingState.RemindMe)
-                _uiEvent.emit(PlayUpcomingUiEvent.RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
+                failedRemindMe()
             }
         }
+
+
     }
 
     private fun handleWatchNowUpcomingChannel() {
