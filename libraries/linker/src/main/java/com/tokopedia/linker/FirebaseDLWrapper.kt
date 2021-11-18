@@ -134,11 +134,10 @@ class FirebaseDLWrapper {
     }
 
     private fun getDeeplinkData(data: LinkerData): String? {
-        var uri: String? = null
-        uri = data.uri
-        if (uri == null &&  data.desktopUrl!=null) {
+        var uri = data.uri // FDL require URL starting with https
+        if (uri == null && data.desktopUrl != null) {
             uri = data.desktopUrl
-        }else if(uri == null ){
+        } else if (uri == null) {
             uri = LinkerConstants.WEB_DOMAIN
         }
 
@@ -166,12 +165,13 @@ class FirebaseDLWrapper {
     }
 
     private fun getFallbackUrl(data: LinkerData): Uri {
-        var fallbackUrl = LinkerConstants.WEB_DOMAIN
+        var fallbackUrl = data.desktopUrl
         if (LinkerData.GROUPCHAT_TYPE.equals(data.type, ignoreCase = true)) {
-            fallbackUrl = LinkerConstants.GROUPCHAT
+            fallbackUrl = LinkerConstants.DESKTOP_GROUPCHAT_URL
         } else if (LinkerData.REFERRAL_TYPE.equals(data.type, ignoreCase = true)) {
             fallbackUrl = LinkerConstants.REFERRAL_DESKTOP_URL
         }
+        if (fallbackUrl == null) fallbackUrl = LinkerConstants.WEB_DOMAIN
         return Uri.parse(fallbackUrl)
     }
 
