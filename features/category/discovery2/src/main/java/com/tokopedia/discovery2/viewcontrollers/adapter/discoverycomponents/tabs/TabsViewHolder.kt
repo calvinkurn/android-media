@@ -98,7 +98,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         selectedTab?.position?.let { it ->
             if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
                 CategoryNavBottomSheet.getInstance(
-                    tabsViewModel.components.pageEndPoint,
+                    tabsViewModel.components.data?.get(it)?.id ?: tabsViewModel.components.pageEndPoint,
                     this,
                     this,
                     true).show(fragment.childFragmentManager, "")
