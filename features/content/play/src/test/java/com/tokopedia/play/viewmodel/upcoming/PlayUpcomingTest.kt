@@ -14,10 +14,12 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
+import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
 import com.tokopedia.play.view.uimodel.action.ImpressUpcomingChannel
+import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
@@ -184,6 +186,7 @@ class PlayUpcomingTest {
 
     @Test
     fun `given a upcoming channel, when user is not logged in and click remind me button, then user cannot set reminder`() {
+        /** Mock */
         val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
             applink = ApplinkConst.LOGIN,
             requestCode = 123
@@ -192,6 +195,7 @@ class PlayUpcomingTest {
         every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
         every { mockUserSession.isLoggedIn } returns false
 
+        /** Prepare */
         val robot = createPlayUpcomingViewModelRobot(
             dispatchers = testDispatcher,
             userSession = mockUserSession,
@@ -212,30 +216,42 @@ class PlayUpcomingTest {
         }
     }
 
-//    /**
-//     * Watch Now
-//     */
-//    @Test
-//    fun `given a upcoming channel, when channel already live and user click button, then app should send analytic and close SSE`() {
-//        every { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) } returns Unit
-//
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playAnalytic = mockPlayNewAnalytic,
-//            playChannelSSE = fakePlayChannelSSE
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhen {
-//            submitAction(ClickWatchNowUpcomingChannel)
-//        } thenVerify {
-//            verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
-//            fakePlayChannelSSE.isConnectionOpen().assertFalse()
-//        }
-//    }
-//
+    /**
+     * Watch Now
+     */
+    @Test
+    fun `given a upcoming channel, when channel already live and user click button, then app should send analytic and close SSE`() {
+        /** Mock */
+        every { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) } returns Unit
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+            viewModel.startSSE(mockChannelData.id)
+            fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdatelive", "{ \"channel_id\" : ${mockChannelData.id} }")
+        }
+
+        robot.use {
+            /** Test */
+            val (_, events) = robot.recordStateAndEvent {
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            /** Verify **/
+            fakePlayChannelSSE.isConnectionOpen().assertFalse()
+
+            verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
+
+            assert(events.isNotEmpty())
+            events.last().isEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
+        }
+    }
+
 //    /**
 //     * SSE
 //     */
