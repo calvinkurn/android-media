@@ -524,22 +524,41 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                         shopPerformanceAdapter.list.indexOfFirst { it is SectionRMPotentialPMProUiModel }
                     val itemPMProIndex =
                         shopPerformanceAdapter.list.indexOfFirst { it is ItemStatusPMProUiModel }
+                    val itemHeaderParameterDetailIndex = shopPerformanceAdapter.list.indexOfFirst {
+                        it is ItemHeaderParameterDetailUiModel
+                    }
 
 
                     if (coachMark?.isShowing == true) {
                         when (coachMark?.currentIndex) {
                             COACHMARK_HEADER_POSITION -> {
-                                if (itemHeaderIndex in firstVisiblePosition..lastVisiblePosition) {
-                                    coachMark?.animateShow()
+                                if (DeviceScreenInfo.isTablet(recyclerView.context)) {
+                                    if (itemHeaderParameterDetailIndex in firstVisiblePosition..lastVisiblePosition) {
+                                        coachMark?.animateShow()
+                                    } else {
+                                        coachMark?.animateHide()
+                                    }
                                 } else {
-                                    coachMark?.animateHide()
+                                    if (itemHeaderIndex in firstVisiblePosition..lastVisiblePosition) {
+                                        coachMark?.animateShow()
+                                    } else {
+                                        coachMark?.animateHide()
+                                    }
                                 }
                             }
                             COACHMARK_ITEM_DETAIL_POSITION -> {
-                                if (itemPeriodDetailPerformanceIndex in firstVisiblePosition..lastVisiblePosition) {
-                                    coachMark?.animateShow()
+                                if (DeviceScreenInfo.isTablet(recyclerView.context)) {
+                                    if (itemHeaderParameterDetailIndex in firstVisiblePosition..lastVisiblePosition) {
+                                        coachMark?.animateShow()
+                                    } else {
+                                        coachMark?.animateHide()
+                                    }
                                 } else {
-                                    coachMark?.animateHide()
+                                    if (itemPeriodDetailPerformanceIndex in firstVisiblePosition..lastVisiblePosition) {
+                                        coachMark?.animateShow()
+                                    } else {
+                                        coachMark?.animateHide()
+                                    }
                                 }
                             }
                             COACHMARK_LAST_POSITION_PM_RM -> {
