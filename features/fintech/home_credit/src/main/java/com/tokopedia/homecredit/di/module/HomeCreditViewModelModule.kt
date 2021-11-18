@@ -12,10 +12,10 @@ import dagger.multibindings.IntoMap
 @Module
 abstract class HomeCreditViewModelModule {
     @Binds
-    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory?): ViewModelProvider.Factory?
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(HomeCreditViewModel::class)
-    abstract fun bindsPayLaterViewModel(homeCreditViewModel: HomeCreditViewModel?): ViewModel?
+    abstract fun bindsPayLaterViewModel(homeCreditViewModel: HomeCreditViewModel): ViewModel
 }
