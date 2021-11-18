@@ -3,9 +3,11 @@ package com.tokopedia.inbox.view.activity.notifcenter.buyer
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.inbox.view.activity.base.notifcenter.InboxNotifcenterTest
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
+import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class NotifcenterWidgetTest : InboxNotifcenterTest() {
 
     @Test

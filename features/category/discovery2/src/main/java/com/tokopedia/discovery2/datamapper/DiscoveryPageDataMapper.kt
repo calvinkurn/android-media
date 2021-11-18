@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
 import com.tokopedia.discovery2.Constant.Calendar.STATIC
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
@@ -12,6 +13,7 @@ import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
 import com.tokopedia.discovery2.data.PageInfo
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
@@ -30,11 +32,11 @@ var discoComponentQuery: MutableMap<String, String?>? = null
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
                                    queryParameterMap: MutableMap<String, String?>,
-                                   userAddressData: LocalCacheModel?): DiscoveryPageData {
+                                   userAddressData: LocalCacheModel?,isLoggedIn:Boolean): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData,isLoggedIn)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -53,7 +55,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
 
 class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                               private val queryParameterMap: Map<String, String?>,
-                              private val localCacheModel: LocalCacheModel?) {
+                              private val localCacheModel: LocalCacheModel?,private val isLoggedIn: Boolean) {
     fun getDiscoveryComponentListWithQueryParam(components: List<ComponentsItem>): List<ComponentsItem> {
         val targetCompId = queryParameterMap[TARGET_COMP_ID] ?: ""
         val componentList = getDiscoveryComponentList(filterSaleTimer(components))
@@ -134,7 +136,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 listComponents.add(component)
                 if(component.properties?.calendarType.equals(DYNAMIC)
                     && component.properties?.calendarLayout.equals(GRID))
-                    listComponents.addAll(parseProductVerticalList(component))
+                    listComponents.addAll(parseProductVerticalList(component, false))
                 else if(component.properties?.calendarType == STATIC){
                     if(component.getComponentsItem().isNullOrEmpty()) {
                         component.setComponentsItem(
@@ -168,6 +170,10 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 addAutoPlayController(component)
                 listComponents.add(component)
             }
+            ComponentNames.MerchantVoucherList.componentName -> {
+                if(isLoggedIn)
+                listComponents.addAll(setupMerchantVoucherList(component))
+            }
             else -> listComponents.add(component)
         }
         return listComponents
@@ -193,6 +199,15 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 setComponent(AutoPlayController.AUTOPLAY_ID, component.pageEndPoint, this)
             }
         }
+    }
+
+    private fun setupMerchantVoucherList(component: ComponentsItem): List<ComponentsItem> {
+        component.properties?: kotlin.run {
+            component.properties  = Properties()
+        }
+        component.properties?.template = Constant.ProductTemplate.LIST
+        component.componentsPerPage = 10
+        return parseProductVerticalList(component,false)
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
@@ -316,7 +331,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         return false
     }
 
-    private fun parseProductVerticalList(component: ComponentsItem): List<ComponentsItem> {
+    private fun parseProductVerticalList(component: ComponentsItem,showEmptyState:Boolean = true): List<ComponentsItem> {
         val listComponents: ArrayList<ComponentsItem> = ArrayList()
 
         if (component.verticalProductFailState) {
@@ -336,6 +351,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 listComponents.addAll(List(SHIMMER_ITEMS_LIST_SIZE) {
                     ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
                         properties = component.properties
+                        parentComponentName = component.name
                     }
                 })
             } else {
@@ -349,7 +365,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 }
                 if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
-                } else if (component.getComponentsItem()?.size == 0 && component.name != ComponentNames.CalendarWidgetGrid.componentName) {
+                } else if (component.getComponentsItem()?.size == 0 && showEmptyState) {
                     listComponents.addAll(handleProductState(component, ComponentNames.ProductListEmptyState.componentName, queryParameterMap))
                 }
             }
@@ -363,6 +379,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
         productState.add(ComponentsItem(name = componentName).apply {
             pageEndPoint = component.pageEndPoint
             parentComponentId = component.id
+            parentComponentName = component.name
             rpc_discoQuery = queryParameterMap
             id = componentName
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)

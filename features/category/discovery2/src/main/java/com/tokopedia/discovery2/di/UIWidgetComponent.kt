@@ -14,6 +14,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.clai
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore.LoadMoreViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherListViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.playwidget.DiscoveryPlayWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
@@ -54,6 +56,8 @@ interface UIWidgetComponent {
     fun inject(categoryBestSellerViewModel: CategoryBestSellerViewModel)
     fun inject(topAdsHeadlineViewModel: TopAdsHeadlineViewModel)
     fun inject(discoMerchantVoucherViewModel: DiscoMerchantVoucherViewModel)
+    fun inject(merchantVoucherCarouselViewModel: MerchantVoucherCarouselViewModel)
+    fun inject(merchantVoucherListViewModel: MerchantVoucherListViewModel)
     fun inject(calendarWidgetGridViewModel: CalendarWidgetGridViewModel)
     fun inject(calendarWidgetItemViewModel: CalendarWidgetItemViewModel)
     fun inject(calendarWidgetCarouselViewModel: CalendarWidgetCarouselViewModel)

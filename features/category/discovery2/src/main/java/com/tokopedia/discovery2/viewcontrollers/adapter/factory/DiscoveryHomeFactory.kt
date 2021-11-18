@@ -98,6 +98,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.MerchantVoucherCarouselViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tdnbanner.DiscoveryTDNBannerViewHolder
@@ -185,6 +187,10 @@ class DiscoveryHomeFactory {
 
             initializeComponent(ComponentsList.DiscoTDNBanner, ::DiscoveryTDNBannerViewHolder,::DiscoveryTDNBannerViewModel)
             initializeComponent(ComponentsList.MerchantVoucher, ::DiscoMerchantVoucherViewHolder,::DiscoMerchantVoucherViewModel)
+            initializeComponent(ComponentsList.MerchantVoucherCarousel, ::MerchantVoucherCarouselViewHolder, ::MerchantVoucherCarouselViewModel)
+            initializeComponent(ComponentsList.MerchantVoucherList, ::MerchantVoucherListViewHolder, ::MerchantVoucherListViewModel)
+            initializeComponent(ComponentsList.MerchantVoucherListItem, ::MerchantVoucherCarouselItemViewHolder, ::MerchantVoucherCarouselItemViewModel)
+            initializeComponent(ComponentsList.MerchantVoucherCarouselItem, ::MerchantVoucherCarouselItemViewHolder, ::MerchantVoucherCarouselItemViewModel)
 
             initializeComponent(ComponentsList.CarouselErrorLoad, ::CarouselErrorLoadViewHolder, ::CarouselErrorLoadViewModel)
             initializeComponent(ComponentsList.ProductListErrorLoad, ::ErrorLoadViewHolder, ::ErrorLoadViewModel)
