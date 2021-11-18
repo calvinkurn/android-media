@@ -142,18 +142,6 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         }
     }
 
-//    private fun getColorHexString(idColor: Int): String {
-//        return try {
-//            val colorHexInt = ContextCompat.getColor(itemView.context, idColor)
-//            val colorToHexString = Integer.toHexString(colorHexInt).uppercase()
-//                    .substring(COLOR_DEFAULT_SUBSTRING_VALUE)
-//            return "#$colorToHexString"
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            ""
-//        }
-//    }
-
     private fun isMatchWidgetIdentifier(
             component: BaseShopHeaderComponentUiModel,
             componentType: String,
