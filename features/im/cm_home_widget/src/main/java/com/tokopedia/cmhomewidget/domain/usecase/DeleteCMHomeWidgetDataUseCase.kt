@@ -1,7 +1,7 @@
 package com.tokopedia.cmhomewidget.domain.usecase
 
 
-import com.tokopedia.cmhomewidget.constants.GQL_DELETE_CM_HOME_WIDGET_DATA
+import com.tokopedia.cmhomewidget.domain.query.GQL_DELETE_CM_HOME_WIDGET_DATA
 import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataGqlResponse
 import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataResponse
 import com.tokopedia.gql_query_annotation.GqlQuery

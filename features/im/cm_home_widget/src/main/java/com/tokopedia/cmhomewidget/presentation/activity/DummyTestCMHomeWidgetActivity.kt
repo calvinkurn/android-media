@@ -42,8 +42,8 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWi
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dummy_test_cm_home_widget)
         addObservers()
-//        getCMHomeWidgetData()
-        deleteCMHomeWidgetData()
+        getCMHomeWidgetData()
+//        deleteCMHomeWidgetData()
     }
 
     private fun addObservers() {

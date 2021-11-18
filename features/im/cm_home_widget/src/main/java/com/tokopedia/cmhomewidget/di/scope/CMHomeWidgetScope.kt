@@ -1,4 +1,4 @@
-package com.tokopedia.cmhomewidget.di
+package com.tokopedia.cmhomewidget.di.scope
 
 import javax.inject.Scope
 

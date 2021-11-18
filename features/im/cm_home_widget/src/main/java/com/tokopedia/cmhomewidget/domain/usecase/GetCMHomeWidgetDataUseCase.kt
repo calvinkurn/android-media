@@ -1,6 +1,6 @@
 package com.tokopedia.cmhomewidget.domain.usecase
 
-import com.tokopedia.cmhomewidget.constants.GQL_GET_CM_HOME_WIDGET_DATA
+import com.tokopedia.cmhomewidget.domain.query.GQL_GET_CM_HOME_WIDGET_DATA
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
 import com.tokopedia.cmhomewidget.domain.data.GetCMHomeWidgetDataGqlResponse
 import com.tokopedia.gql_query_annotation.GqlQuery

@@ -1,4 +1,4 @@
-package com.tokopedia.cmhomewidget.constants
+package com.tokopedia.cmhomewidget.domain.query
 
 const val GQL_GET_CM_HOME_WIDGET_DATA = """query{
     notifier_getHtdw(){
@@ -45,7 +45,6 @@ const val GQL_DELETE_CM_HOME_WIDGET_DATA = """
     mutation(${'$'}parentID:Int!, ${'$'}campaignID:Int!) {
     notifier_dismissHtdw(parentID: ${'$'}parentID, campaignID: ${'$'}campaignID){
       status
-      error
     }
 }
 """
