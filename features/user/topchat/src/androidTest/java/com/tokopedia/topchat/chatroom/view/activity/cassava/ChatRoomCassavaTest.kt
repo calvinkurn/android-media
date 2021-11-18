@@ -75,22 +75,16 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
     }
 
     @Test
-    fun chat_order_via_product_card() {
+    fun product_card_impression_tracker_test() {
         // Given
-        val journeyId = "108"
+        val journeyId = "139"
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
         preventOpenOtherActivity()
 
-        // When
-        ProductRobot.clickSingleProductCardAt(1)
-        ProductRobot.clickSingleProductCardAtcButtonAt(1)
-        ProductRobot.clickSingleProductCardBuyButtonAt(1)
-
         // Then
-        // TODO: validate later when success get query Id from thanos
-//        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
+        assertThat(cassavaTestRule.validate(journeyId), hasAllSuccess())
     }
 
     @Test
