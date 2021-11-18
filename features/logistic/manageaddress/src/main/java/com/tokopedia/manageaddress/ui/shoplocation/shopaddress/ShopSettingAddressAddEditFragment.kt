@@ -97,7 +97,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private fun initializeFillData() {
         shopLocationOldUiModel?.let {
             edit_text_name.textFieldInput.setText(it.name)
-            edit_text_address.setText(it.address)
+            edit_text_address.textFieldInput.setText(it.address)
             val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
             edit_text_district.setText(district)
             postal_code.setText(it.postalCode.toString())
@@ -127,9 +127,10 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             edit_text_name.setMessage(getString(R.string.shop_address_name_max_length_error))
         }
 
-        if (TextUtils.isEmpty(edit_text_address.text.toString())){
+        if (TextUtils.isEmpty(edit_text_address.textFieldInput.text.toString())){
             valid = false
-            text_input_layout_address.error = getString(R.string.shop_address_required)
+            edit_text_address.setError(true)
+            edit_text_address.setMessage(getString(R.string.shop_address_required))
         }
         if (TextUtils.isEmpty(edit_text_district.text.toString())){
             valid = false
@@ -196,7 +197,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         shopLocationOldUiModel = shopLocationOldUiModel ?: ShopLocationOldUiModel()
         return shopLocationOldUiModel!!.apply {
             name = edit_text_name.textFieldInput.text.toString()
-            address = edit_text_address.text.toString()
+            address = edit_text_address.textFieldInput.text.toString()
             districtId = selectedDistrictId
             cityId = selectedCityId
             stateId = selectedProvinceId
