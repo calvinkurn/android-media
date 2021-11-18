@@ -30,7 +30,10 @@ object SearchComponentTrackingConst {
 
     object Component {
         const val INITIAL_STATE_CANCEL_SEARCH = "01.09.00.00"
+        const val INITIAL_STATE_MANUAL_ENTER = "01.07.00.00"
+
         const val AUTO_COMPLETE_CANCEL_SEARCH = "02.12.00.00"
+        const val AUTO_COMPLETE_MANUAL_ENTER = "02.01.00.00"
     }
 
     object Options {

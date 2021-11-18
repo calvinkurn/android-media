@@ -24,6 +24,13 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.USER_ID
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -87,6 +94,31 @@ open class AutoCompleteTracking(
         )
     }
 
+    open fun eventClickSubmitInitialState(pageSource: String) {
+        SearchComponentTrackingRollence.click(
+            searchComponentTracking(
+                componentId = INITIAL_STATE_MANUAL_ENTER,
+                dimension90 = pageSource,
+            ),
+            AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
+        ) {
+            eventClickSubmit("")
+        }
+    }
+
+    open fun eventClickSubmitAutoComplete(keyword: String, pageSource: String) {
+        SearchComponentTrackingRollence.click(
+            searchComponentTracking(
+                keyword = keyword,
+                componentId = AUTO_COMPLETE_MANUAL_ENTER,
+                dimension90 = pageSource,
+            ),
+            AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
+        ) {
+            eventClickSubmit(keyword)
+        }
+    }
+
     open fun eventClickSubmit(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             CLICK_SEARCH,
@@ -104,4 +136,19 @@ open class AutoCompleteTracking(
             label
         )
     }
+
+    open fun eventCancelSearch(query: String, pageSource: String) {
+        val componentId = getCancelSearchComponentId(query)
+        val analytics = TrackApp.getInstance().gtm
+
+        searchComponentTracking(
+            keyword = query,
+            componentId = componentId,
+            dimension90 = pageSource,
+        ).clickOtherAction(analytics)
+    }
+
+    private fun getCancelSearchComponentId(query: String) =
+        if (query.isEmpty()) INITIAL_STATE_CANCEL_SEARCH
+        else AUTO_COMPLETE_CANCEL_SEARCH
 }
