@@ -59,8 +59,8 @@ class SSELogger(context: Context): RealtimeNetworkLoggerInterface {
     }
 
     private fun beautifyMessage(message: String): String {
-        return if(message.isEmpty()) return message
-        else gson.toJson(JsonParser.parseString(message))
+        return if(message.isEmpty()) message
+                else gson.toJson(JsonParser.parseString(message))
     }
 
     companion object {
@@ -69,12 +69,8 @@ class SSELogger(context: Context): RealtimeNetworkLoggerInterface {
         @JvmStatic
         fun getInstance(context: Context): RealtimeNetworkLoggerInterface {
             if(instance == null) {
-                if(GlobalConfig.isAllowDebuggingTools()) {
-                    instance = SSELogger(context.applicationContext)
-                }
-                else {
-                    instance = emptyInstance()
-                }
+                instance = if(GlobalConfig.isAllowDebuggingTools()) SSELogger(context.applicationContext)
+                            else emptyInstance()
             }
             return instance as RealtimeNetworkLoggerInterface
         }
@@ -90,7 +86,7 @@ class SSELogger(context: Context): RealtimeNetworkLoggerInterface {
                 }
 
                 override fun send(event: String) {
-                    TODO("Not yet implemented")
+
                 }
             }
         }
