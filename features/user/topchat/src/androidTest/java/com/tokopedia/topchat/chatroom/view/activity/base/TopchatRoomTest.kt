@@ -33,6 +33,8 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
+import com.tokopedia.seamless_login_common.data.KeyPojo
+import com.tokopedia.seamless_login_common.data.KeyResponse
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
@@ -63,8 +65,10 @@ import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Companion.START_TIME_FORMAT
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
@@ -132,7 +136,8 @@ abstract class TopchatRoomTest {
     @Inject
     protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
 
-    //Seamless
+    @Inject
+    protected lateinit var getKeygenUseCase: GetKeygenUseCaseStub
 
     @Inject
     protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
@@ -142,6 +147,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var cacheManager: TopchatCacheManager
+
+    @Inject
+    protected lateinit var userSession: UserSessionInterface
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -159,6 +167,8 @@ abstract class TopchatRoomTest {
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
     protected var existingMessageIdResponse = GetExistingMessageIdPojo()
+    protected var firstPageChatWithBannedProduct = GetExistingChatPojo()
+    protected var keygenResponse = KeyResponse(KeyPojo())
 
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
@@ -191,6 +201,7 @@ abstract class TopchatRoomTest {
     protected open fun setupResponse() {
         firstPageChatAsSeller = getChatUseCase.defaultChatWithSellerResponse
         firstPageChatAsBuyer = getChatUseCase.defaultChatWithBuyerResponse
+        firstPageChatWithBannedProduct= getChatUseCase.bannedProductChatWithBuyerResponse
         chatAttachmentResponse = AndroidFileUtil.parse(
             "success_get_chat_attachments.json",
             ChatAttachmentResponse::class.java
@@ -222,6 +233,10 @@ abstract class TopchatRoomTest {
         orderProgressResponseNotEmpty = AndroidFileUtil.parse(
             "success_get_order_progress.json",
             OrderProgressResponse::class.java
+        )
+        keygenResponse = AndroidFileUtil.parse(
+            "success_get_generated_key.json",
+            KeyResponse::class.java
         )
     }
 

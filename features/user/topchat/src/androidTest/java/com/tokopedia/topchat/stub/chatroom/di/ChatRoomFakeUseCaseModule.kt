@@ -7,6 +7,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.seamless_login_common.domain.usecase.GetKeygenUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
@@ -277,16 +278,33 @@ class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideChatRoomSettingUseCaseUseCase(
+    fun provideChatRoomSettingUseCase(
         stub: GetChatRoomSettingUseCaseStub
     ): GetChatRoomSettingUseCase = stub
 
     @Provides
     @ChatScope
-    fun provideChatRoomSettingUseCaseaseStub(
+    fun provideChatRoomSettingUseCaseStub(
         repository: GraphqlRepositoryStub,
         dispatchers: CoroutineDispatchers
     ): GetChatRoomSettingUseCaseStub {
         return GetChatRoomSettingUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideKeyGenUseCase(
+        stub: GetKeygenUseCaseStub
+    ): GetKeygenUsecase = stub
+
+    @Provides
+    @ChatScope
+    fun provideKeyGenUseCaseStub(
+        @ApplicationContext context: Context,
+        repository: GraphqlRepositoryStub
+    ): GetKeygenUseCaseStub {
+        return GetKeygenUseCaseStub(context.resources, repository)
     }
 }
