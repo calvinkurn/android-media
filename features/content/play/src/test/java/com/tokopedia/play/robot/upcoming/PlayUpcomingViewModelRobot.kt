@@ -50,7 +50,7 @@ class PlayUpcomingViewModelRobot(
         repo = repo,
     )
 
-    fun recordState(fn: suspend PlayViewModelRobot2.() -> Unit): PlayUpcomingUiState {
+    fun recordState(fn: suspend PlayUpcomingViewModelRobot.() -> Unit): PlayUpcomingUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayUpcomingUiState
         scope.launch {
@@ -64,7 +64,7 @@ class PlayUpcomingViewModelRobot(
         return uiState
     }
 
-    fun recordEvent(fn: suspend PlayViewModelRobot2.() -> Unit): List<PlayUpcomingUiEvent> {
+    fun recordEvent(fn: suspend PlayUpcomingViewModelRobot.() -> Unit): List<PlayUpcomingUiEvent> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         val uiEvents = mutableListOf<PlayUpcomingUiEvent>()
         scope.launch {
@@ -78,7 +78,7 @@ class PlayUpcomingViewModelRobot(
         return uiEvents
     }
 
-    fun recordStateAndEvent(fn: suspend PlayViewModelRobot2.() -> Unit): Pair<PlayUpcomingUiState, List<PlayUpcomingUiEvent>> {
+    fun recordStateAndEvent(fn: suspend PlayUpcomingViewModelRobot.() -> Unit): Pair<PlayUpcomingUiState, List<PlayUpcomingUiEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayUpcomingUiState
         val uiEvents = mutableListOf<PlayUpcomingUiEvent>()
