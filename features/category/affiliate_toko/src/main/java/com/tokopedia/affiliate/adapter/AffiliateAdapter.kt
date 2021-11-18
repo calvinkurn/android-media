@@ -18,6 +18,7 @@ class AffiliateAdapter(affiliateAdapterFactory: AffiliateAdapterFactory)
     }
     fun resetList(){
         this.visitables.clear()
+        notifyDataSetChanged()
     }
 
     fun removeShimmer(listSize: Int) {

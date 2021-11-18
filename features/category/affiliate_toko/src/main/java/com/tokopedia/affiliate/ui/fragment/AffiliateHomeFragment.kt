@@ -109,7 +109,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         products_rv.layoutManager = layoutManager
-        products_rv.addItemDecoration(AffiliateListItemDecorator())
         swipe_refresh_layout.setOnRefreshListener {
             isSwipeRefresh = true
             resetItems()
@@ -156,7 +155,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     private fun showNoAffiliate() {
-        product_list_group.hide()
+        swipe_refresh_layout.hide()
         affiliate_no_product_iv.show()
         home_global_error.run {
             show()
@@ -223,6 +222,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                         setType(GlobalError.SERVER_ERROR)
                     }
                 }
+                swipe_refresh_layout.hide()
                 show()
                 setActionClickListener {
                     hide()
@@ -232,7 +232,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         })
         affiliateHomeViewModel.getValidateUserdata().observe(this, { validateUserdata ->
             affiliate_progress_bar?.gone()
-            product_list_group.show()
+            swipe_refresh_layout.show()
             affiliateHomeViewModel.getAffiliatePerformance(page = PAGE_ZERO)
         })
 
@@ -261,6 +261,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
         affiliateHomeViewModel.getAffiliateErrorMessage().observe(this,{ error ->
             affiliate_progress_bar?.gone()
+            swipe_refresh_layout.hide()
             home_global_error.run {
                 setActionClickListener {
                     hide()
@@ -284,7 +285,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     }
 
     private fun onGetAnnouncementError() {
-        product_list_group.hide()
+        swipe_refresh_layout.hide()
         setupTickerView(
             getString(R.string.affiliate_system_down_title),
             getString(R.string.affiliate_system_down_description),
@@ -315,7 +316,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     )
                 }
                 ANNOUNCEMENT__TYPE_SERVICE_STATUS -> {
-                    product_list_group.hide()
+                    swipe_refresh_layout.hide()
                     setupTickerView(
                         announcementData.getAffiliateAnnouncement.data.announcementTitle,
                         announcementData.getAffiliateAnnouncement.data.announcementDescription,
@@ -324,11 +325,11 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
                 ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
                     affiliateHomeViewModel.getAffiliateValidateUser()
-                    affiliate_announcement_ticker_cv.hide()
+                    affiliate_announcement_ticker_cv.show()
                 }
             }
         } else{
-            product_list_group.hide()
+            swipe_refresh_layout.hide()
             setupTickerView(
                 getString(R.string.affiliate_system_down_title),
                 getString(R.string.affiliate_system_down_description),
