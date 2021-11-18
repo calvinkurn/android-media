@@ -163,32 +163,32 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
     }
 
     private fun findResourceIds(context: Context) {
-        val resFolders = context.project.resourceFolders.firstOrNull()
+        context.project.resourceFolders.forEach { resFolder ->
+            val layoutDirs = resFolder.listFiles()
+                ?.filter { it.name.contains(SdkConstants.FD_RES_LAYOUT) }
 
-        val layoutDirs = resFolders?.listFiles()
-            ?.filter { it.name.contains(SdkConstants.FD_RES_LAYOUT) }
+            val drawableDirs = resFolder.listFiles()
+                ?.filter { it.name.contains(SdkConstants.FD_RES_DRAWABLE) }
 
-        val drawableDirs = resFolders?.listFiles()
-            ?.filter { it.name.contains(SdkConstants.FD_RES_DRAWABLE) }
+            val valueDirs = resFolder.listFiles()
+                ?.filter { it.name.contains(SdkConstants.FD_RES_VALUES) }
 
-        val valueDirs = resFolders?.listFiles()
-            ?.filter { it.name.contains(SdkConstants.FD_RES_VALUES) }
+            layoutDirs?.forEach { file ->
+                val files = file.listFiles().orEmpty()
+                val drawable = files.map { getBaseName(it.name) }
+                resourceIds.addAll(drawable)
+            }
 
-        layoutDirs?.forEach { file ->
-            val files = file.listFiles().orEmpty()
-            val drawable = files.map { getBaseName(it.name) }
-            resourceIds.addAll(drawable)
-        }
+            drawableDirs?.forEach { file ->
+                val files = file.listFiles().orEmpty()
+                val drawable = files.map { getBaseName(it.name) }
+                resourceIds.addAll(drawable)
+            }
 
-        drawableDirs?.forEach { file ->
-            val files = file.listFiles().orEmpty()
-            val drawable = files.map { getBaseName(it.name) }
-            resourceIds.addAll(drawable)
-        }
-
-        valueDirs?.forEach {
-            val files = it.listFiles()
-            findValueResources(files)
+            valueDirs?.forEach {
+                val files = it.listFiles()
+                findValueResources(files)
+            }
         }
     }
 
