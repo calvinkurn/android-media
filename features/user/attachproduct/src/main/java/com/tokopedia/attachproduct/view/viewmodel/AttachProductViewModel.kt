@@ -40,7 +40,6 @@ class AttachProductViewModel @Inject constructor
             val start = (page * ROW) - ROW
             val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
                     "$shopId&start=$start&user_warehouseId=$warehouseId"))
-
             val resultModel = result.mapToListProduct().toDomainModelMapper()
             _products.value = Success(resultModel)
 

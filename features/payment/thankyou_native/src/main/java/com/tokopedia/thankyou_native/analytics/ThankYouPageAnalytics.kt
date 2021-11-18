@@ -56,7 +56,7 @@ class ThankYouPageAnalytics @Inject constructor(
             appsFlyerPurchaseEvent(thanksPageData)
             sendBranchIOEvent(thanksPageData)
         } else {
-            sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID.toString())
+            sendPushGtmFalseEvent(thanksPageData.profileCode, thanksPageData.paymentID)
         }
     }
 
