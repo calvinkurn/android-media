@@ -33,16 +33,15 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/fragment_silent_verif_success_anim"
-            android:layout_width="180dp"
-            android:layout_height="155dp"
+            android:layout_width="@dimen/silent_verif_lottie_success_width"
+            android:layout_height="@dimen/silent_verif_lottie_success_height"
             android:layout_marginTop="@dimen/unify_space_24"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="false"
-            app:lottie_loop="false" />
+            app:lottie_autoPlay="false" />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/fragment_silent_verif_animation"
