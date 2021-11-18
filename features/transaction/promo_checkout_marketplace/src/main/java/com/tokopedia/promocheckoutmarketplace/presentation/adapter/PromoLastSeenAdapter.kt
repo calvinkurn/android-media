@@ -3,6 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleItemPromoLastSeenBinding
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutLastSeenListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoLastSeenItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.viewholder.PromoLastSeenViewHolder
@@ -12,9 +13,8 @@ class PromoLastSeenAdapter(val actionListener: PromoCheckoutLastSeenListener) : 
     var data = ArrayList<PromoLastSeenItemUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-                .inflate(PromoLastSeenViewHolder.LAYOUT, parent, false)
-        return PromoLastSeenViewHolder(view, actionListener)
+        val viewBinding = PromoCheckoutMarketplaceModuleItemPromoLastSeenBinding.inflate(LayoutInflater.from(parent.context), parent as ViewGroup, false)
+        return PromoLastSeenViewHolder(viewBinding, actionListener)
     }
 
     override fun getItemCount(): Int {

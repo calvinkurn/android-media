@@ -8,49 +8,35 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
+import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class PromoEligibilityHeaderViewHolder(private val view: View,
+class PromoEligibilityHeaderViewHolder(private val viewBinding: PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding,
                                        private val listener: PromoCheckoutActionListener
-) : AbstractViewHolder<PromoEligibilityHeaderUiModel>(view) {
-
-    private val labelPromoEligibilityHeaderTitle by lazy {
-        view.findViewById<Typography>(R.id.label_promo_eligibility_header_title)
-    }
-    private val labelPromoEligibilityHeaderSubtitle by lazy {
-        view.findViewById<Typography>(R.id.label_promo_eligibility_header_subtitle)
-    }
-    private val imageChevron by lazy {
-        view.findViewById<ImageView>(R.id.image_chevron)
-    }
+) : AbstractViewHolder<PromoEligibilityHeaderUiModel>(viewBinding.root) {
 
     companion object {
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_eligibility_header
     }
 
     override fun bind(element: PromoEligibilityHeaderUiModel) {
-        labelPromoEligibilityHeaderTitle.text = element.uiData.title
-        if (element.uiData.subTitle.isNotBlank()) {
-            labelPromoEligibilityHeaderSubtitle.text = element.uiData.subTitle
-            labelPromoEligibilityHeaderSubtitle.show()
-        } else {
-            labelPromoEligibilityHeaderSubtitle.hide()
-        }
-
-        if (element.uiState.isEnabled) {
-            imageChevron.gone()
-            itemView.setOnClickListener { }
-        } else {
-            if (!element.uiState.isCollapsed) {
-                imageChevron.rotation = 180f
+        with(viewBinding) {
+            labelPromoEligibilityHeaderTitle.text = element.uiData.title
+            if (element.uiData.subTitle.isNotBlank()) {
+                labelPromoEligibilityHeaderSubtitle.text = element.uiData.subTitle
+                labelPromoEligibilityHeaderSubtitle.show()
             } else {
-                imageChevron.rotation = 0f
+                labelPromoEligibilityHeaderSubtitle.hide()
             }
-            imageChevron.show()
-            itemView.setOnClickListener {
-                if (adapterPosition != RecyclerView.NO_POSITION) listener.onClickPromoEligibilityHeader(element)
+
+            if (element.uiState.isEnabled) {
+                itemView.setOnClickListener { }
+            } else {
+                itemView.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) listener.onClickPromoEligibilityHeader(element)
+                }
             }
         }
     }

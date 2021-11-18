@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        tools:text="@string/label_title_promo_eligibility_header" />
+        android:text="@string/label_title_promo_eligibility_header" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_promo_eligibility_header_subtitle"
@@ -29,14 +29,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/label_promo_eligibility_header_title"
         app:typographyType="body_3" />
-
-    <ImageView
-        android:id="@+id/image_chevron"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/unify_chips_ic_chevron_normal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
