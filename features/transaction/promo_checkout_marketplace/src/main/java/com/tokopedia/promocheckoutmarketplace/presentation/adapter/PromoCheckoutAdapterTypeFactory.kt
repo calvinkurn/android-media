@@ -78,7 +78,7 @@ class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionL
                 PromoListHeaderDisabledViewHolder(viewBinding, listener)
             }
             PromoListItemViewHolder.LAYOUT -> {
-                val viewBinding = PromoCheckoutMarketplaceModuleItemPromoListItemBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
+                val viewBinding = PromoCheckoutMarketplaceModuleItemPromoCardBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
                 PromoListItemViewHolder(viewBinding, listener)
             }
             PromoEmptyStateViewHolder.LAYOUT -> {
