@@ -622,4 +622,8 @@
         <key>android_main_app_enable_add_bills_sbm</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_main_app_enable_new_recharge_order_detail</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

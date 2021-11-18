@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
+import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
 
@@ -54,6 +55,8 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
                     oldItem.categoryFilterItemList == newItem.categoryFilterItemList
                 } else if (oldItem is QuickFilterDataView && newItem is QuickFilterDataView) {
                     oldItem.quickFilterItemList == newItem.quickFilterItemList
+                } else if (oldItem is ProductCountDataView && newItem is ProductCountDataView) {
+                    oldItem.totalDataText == newItem.totalDataText
                 } else {
                     true
                 }
