@@ -1,6 +1,7 @@
 package com.tokopedia.homecredit.domain.usecase
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.size.Size
@@ -15,24 +16,23 @@ import javax.inject.Inject
 
 
 class HomeCreditUseCase @Inject constructor(
-        @ApplicationContext val context: Context
+    @ApplicationContext val context: Context
 ) : UseCase<ImageDetail>() {
 
     private lateinit var imgByteArray: ByteArray
     var captureSize: Size? = null
-    var file: File? = null
+
 
     fun saveDetail(
-            success: (ImageDetail) -> Unit,
-            onFail: (Throwable) -> Unit,
-            imageByte: ByteArray,
-            mCaptureNativeSize: Size,
-            filePath: File
+        success: (ImageDetail) -> Unit,
+        onFail: (Throwable) -> Unit,
+        imageByte: ByteArray,
+        mCaptureNativeSize: Size,
 
-    ) {
+        ) {
         this.captureSize = mCaptureNativeSize
         this.imgByteArray = imageByte
-        this.file = filePath
+
 
         execute({
             success(it)
@@ -42,45 +42,30 @@ class HomeCreditUseCase @Inject constructor(
     }
 
     override suspend fun executeOnBackground(): ImageDetail {
+        var bitmap: Bitmap? = null
         return try {
-            val bitmap = CameraUtils.decodeBitmap(
-                    imgByteArray,
-                    captureSize?.width ?: 0,
-                    captureSize?.height ?: 0
+            bitmap = CameraUtils.decodeBitmap(
+                imgByteArray,
+                MAX_IMAGE_DIMEN,
+                MAX_IMAGE_DIMEN
             )
             if (bitmap != null) {
                 val cameraResultFile: File? = saveToCacheDirectory(imgByteArray)
                 if (cameraResultFile != null) {
                     val compressedByteArray = bitmapToByteArray(bitmap)
                     ImageDetail(
-                            bitmap.height,
-                            bitmap.width,
-                            cameraResultFile.absolutePath,
-                            compressedByteArray.toList()
+                        bitmap.height,
+                        bitmap.width,
+                        cameraResultFile.absolutePath,
+                        compressedByteArray.toList()
                     )
+
                 } else
                     throw NullPointerException()
             } else
                 throw NullPointerException()
         } catch (e: Exception) {
             throw NullPointerException()
-        }
-
-
-    }
-
-    private fun bitmapToByteArray(bitmap: Bitmap?): ByteArray {
-        try {
-            val stream = ByteArrayOutputStream()
-            bitmap?.compress(
-                    Bitmap.CompressFormat.JPEG,
-                    IMAGE_QUALITY,
-                    stream
-            )
-
-            return stream.toByteArray()
-        } catch (e: Exception) {
-            throw e
         } finally {
             bitmap?.recycle()
         }
@@ -88,10 +73,34 @@ class HomeCreditUseCase @Inject constructor(
 
     }
 
+    private fun getFileLocationFromDirectory(): File {
+        val directory = ContextWrapper(context).getDir(FOLDER_NAME, Context.MODE_PRIVATE)
+        if (!directory.exists()) directory.mkdir()
+        val imageName = System.currentTimeMillis().toString() + FILE_EXTENSIONS
+        return File(directory.absolutePath, imageName)
+    }
+
+    private fun bitmapToByteArray(bitmap: Bitmap?): ByteArray {
+        try {
+            val stream = ByteArrayOutputStream()
+            bitmap?.compress(
+                Bitmap.CompressFormat.JPEG,
+                IMAGE_QUALITY,
+                stream
+            )
+
+            return stream.toByteArray()
+        } catch (e: Exception) {
+            throw e
+        }
+
+    }
+
 
     private fun saveToCacheDirectory(imageByte: ByteArray): File? {
         var out: FileOutputStream? = null
         return try {
+            val file = getFileLocationFromDirectory()
             out = FileOutputStream(file)
             out.write(imageByte)
             file
@@ -110,6 +119,9 @@ class HomeCreditUseCase @Inject constructor(
 
     companion object {
         const val IMAGE_QUALITY = 95
+        const val MAX_IMAGE_DIMEN = 1280
+        const val FOLDER_NAME = "extras"
+        const val FILE_EXTENSIONS = ".jpg"
     }
 
 

@@ -11,7 +11,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import java.io.File
 import javax.inject.Inject
 
 class HomeCreditViewModel @Inject constructor(
@@ -26,12 +25,12 @@ class HomeCreditViewModel @Inject constructor(
     fun computeImageArray(
         imageByte: ByteArray,
         mCaptureNativeSize: Size,
-        filePath: File
+
     ) {
         homeCreditUseCase.saveDetail(
             ::onSuccessSave,
             ::onFailSave,
-            imageByte, mCaptureNativeSize, filePath
+            imageByte, mCaptureNativeSize
 
         )
     }

@@ -6,7 +6,6 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.pm.PackageManager
 import android.os.Build
 import android.view.View
@@ -31,7 +30,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifyprinciples.R
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -186,20 +184,28 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         mCaptureNativeSize?.let { mCaptureNativeSize ->
             homeCreditViewModel?.computeImageArray(
                 imageByte,
-                mCaptureNativeSize, fileLocationFromDirectory
+                mCaptureNativeSize
             )
         }
+        observeViewModel()
+        reset()
+    }
+
+    private fun observeViewModel() {
         homeCreditViewModel?.imageDetailLiveData?.observe(
             this,
             { imageDetail: Result<ImageDetail>? ->
                 captureImage?.isClickable = true
-                if (imageDetail is Success<*> && (imageDetail as Success<ImageDetail>).data.imagePath != null) {
-                    finalCameraResultFilePath = imageDetail.data.imagePath
-                    loadImageFromBitmap(imageCaptured, imageDetail.data)
+                when (imageDetail) {
+                    is Success -> {
+                        finalCameraResultFilePath = imageDetail.data.imagePath ?: ""
+                        loadImageFromBitmap(imageCaptured, imageDetail.data)
+                    }
+
+
                 }
                 hideCameraProp()
             })
-        reset()
     }
 
     private fun loadImageFromBitmap(imageView: ImageView?, data: ImageDetail) {
@@ -327,16 +333,5 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         super.onDestroy()
     }
 
-    private val fileLocationFromDirectory: File
-        private get() {
-            val directory = ContextWrapper(activity).getDir(FOLDER_NAME, Context.MODE_PRIVATE)
-            if (!directory.exists()) directory.mkdir()
-            val imageName = System.currentTimeMillis().toString() + FILE_EXTENSIONS
-            return File(directory.absolutePath, imageName)
-        }
 
-    companion object {
-        private const val FOLDER_NAME = "extras"
-        private const val FILE_EXTENSIONS = ".jpg"
-    }
 }
