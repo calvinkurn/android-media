@@ -2,6 +2,7 @@ package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
 import android.view.View
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
@@ -26,7 +27,6 @@ class ShopHeaderBasicInfoWidgetViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_header_basic_info_widget
-        val lastOnlineColor = "#31353B"
     }
 
     interface Listener {
@@ -104,6 +104,7 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         }
 
         // Handle dark mode - last online status
+        val lastOnlineColor = ContextCompat.getColor(itemView.context, R.color.clr_31353B).toString()
         val lastOnlineUnifyColor = ShopUtil.getHexColor(
                 itemView.context,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700
