@@ -105,7 +105,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onSilentVerificationNotPossible() {
-        Toaster.build(requireView(), "Tidak ada koneksi internet", Toaster.LENGTH_LONG).show()
+        Toaster.build(requireView(), "Tidak ada koneksi internet", Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR).show()
         binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail)
         binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_change_method)
 
@@ -396,7 +396,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun handleBokuResult(resultCode: String) {
         try {
             val result = mapBokuResult(resultCode)
-            Toaster.build(requireView(), resultCode, Toaster.LENGTH_LONG).show()
             if (result[KEY_ERROR_CODE] == "0" &&
                 result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
@@ -430,7 +429,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private fun onVerificationError(throwable: Throwable) {
         throwable.printStackTrace()
-        Toaster.build(requireView(), throwable.message?: "onVerificationError",Toaster.LENGTH_LONG).show()
         showErrorState()
     }
 
@@ -463,7 +461,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                 override fun onResponse(call: Call, response: Response) {
                     val result = response.body()?.string()
                     println("verify:onResponse:$result")
-                    handleBokuResult(result ?: "")
+                    activity?.runOnUiThread {
+                        handleBokuResult(result ?: "")
+                    }
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
