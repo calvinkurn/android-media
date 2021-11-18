@@ -190,7 +190,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
             return true;
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gratiWeave, RemoteConfigKey.ENABLE_ASYNC_GRATIFICATION_INIT, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gratiWeave, RemoteConfigKey.ENABLE_ASYNC_GRATIFICATION_INIT, getApplicationContext(), false);
 
 
     }
