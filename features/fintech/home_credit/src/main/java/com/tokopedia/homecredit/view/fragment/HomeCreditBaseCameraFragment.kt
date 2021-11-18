@@ -183,7 +183,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         }
 
         homeCreditViewModel?.computeImageArray(
-            imageByte
+            imageByte, mCaptureNativeSize
         )
 
         observeViewModel()

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import com.otaliastudios.cameraview.CameraUtils
+import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.homecredit.domain.model.ImageDetail
 import com.tokopedia.usecase.RequestParams
@@ -19,11 +20,16 @@ class HomeCreditUseCase @Inject constructor(
         @ApplicationContext val context: Context
 ) : UseCase<ImageDetail>() {
 
+    /**
+     * @param imageByte this is the image captured in byte
+     * @param mCaptureNativeSize this is the image height and width that is being captured from the camera
+     */
 
     fun saveDetail(
-            success: (ImageDetail) -> Unit,
-            onFail: (Throwable) -> Unit,
-            imageByte: ByteArray,
+        success: (ImageDetail) -> Unit,
+        onFail: (Throwable) -> Unit,
+        imageByte: ByteArray,
+        mCaptureNativeSize: Size?,
     ) {
 
         useCaseRequestParams = RequestParams().apply { putObject(IMAGE_BYTE_ARRAY, imageByte) }
@@ -34,6 +40,10 @@ class HomeCreditUseCase @Inject constructor(
         }, useCaseRequestParams)
     }
 
+    /**
+     * Convert Byte Array To Bitmap MAX_IMAGE_DIMEN= 1280 means image height or weight will be at max 1280.
+     * In method bitmapToByteArray() we are compressing the quality of the Image to 95 percent
+     */
     override suspend fun executeOnBackground(): ImageDetail {
         val imgByteArray = (useCaseRequestParams.getObject(IMAGE_BYTE_ARRAY)) as ByteArray
         val compressedBitmap =
