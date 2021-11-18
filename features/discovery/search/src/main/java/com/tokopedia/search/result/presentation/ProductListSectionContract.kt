@@ -9,6 +9,7 @@ import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
@@ -74,7 +75,7 @@ interface ProductListSectionContract {
         fun startRenderPerformanceMonitoring()
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
         fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView)
-        fun onQuickFilterSelected(option: Option)
+        fun onQuickFilterSelected(filter: Filter, option: Option)
         fun initFilterControllerForQuickFilter(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
         fun setQuickFilter(items: List<SortFilterItem>)
@@ -117,6 +118,7 @@ interface ProductListSectionContract {
         val userId: String
         val isUserLoggedIn: Boolean
         val deviceId: String
+        val dynamicFilterModel: DynamicFilterModel?
         fun onPriceFilterTickerDismissed()
         val isTickerHasDismissed: Boolean
         fun hasNextPage(): Boolean
@@ -148,5 +150,10 @@ interface ProductListSectionContract {
                 clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
                 searchParameter: Map<String, Any>
         )
+        fun updateLastFilter(
+            searchParameter: Map<String, Any>,
+            savedOptionList: List<SavedOption>,
+        )
+        fun closeLastFilter(searchParameter: Map<String, Any>)
     }
 }

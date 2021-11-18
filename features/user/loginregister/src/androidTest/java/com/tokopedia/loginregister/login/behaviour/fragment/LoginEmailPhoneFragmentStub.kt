@@ -36,5 +36,5 @@ class LoginEmailPhoneFragmentStub: LoginEmailPhoneFragment() {
         // do nothing
     }
 
-    override fun isEnableEncryption(): Boolean = true
+    override fun isEnableEncryptConfig(): Boolean = true
 }

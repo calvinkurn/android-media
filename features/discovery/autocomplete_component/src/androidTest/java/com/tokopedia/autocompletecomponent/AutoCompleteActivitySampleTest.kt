@@ -7,9 +7,11 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.autocompletecomponent.searchbar.SearchBarView
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
 
+@UiTest
 class AutoCompleteActivitySampleTest {
 
     @get:Rule

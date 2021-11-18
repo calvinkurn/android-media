@@ -79,6 +79,7 @@
           "dimension40": ".*",
           "dimension45": ".*",
           "dimension54": ".*",
+          "dimension120": ".* \\- .*",
           "category_id": ".*"
         }
       ]

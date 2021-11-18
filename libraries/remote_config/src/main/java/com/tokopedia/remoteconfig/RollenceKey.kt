@@ -3,17 +3,11 @@ package com.tokopedia.remoteconfig
 object RollenceKey {
 
     //    Shop Page
-    const val NAVIGATION_EXP_TOP_NAV = "new_glmenu"
-    const val NAVIGATION_EXP_TOP_NAV2 = "new_glmenu2"
-    const val NAVIGATION_VARIANT_OLD = "Existing Navigation"
+    const val NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT = "Exp_OSbotnav_Android"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_KEY = "shop_follow_aug2021"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD = "follow_white_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
-
-    const val AB_TEST_SHOP_REVIEW = "review_shop"
-    const val OLD_REVIEW_SHOP = "old_review_shop"
-    const val NEW_REVIEW_SHOP = "new_review_shop"
 
     const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
 
@@ -37,24 +31,15 @@ object RollenceKey {
     const val HOME_BEAUTY_FEST = "home_cantik"
 
     //home component rollence section
-    const val HOME_COMPONENT_LEGO4BANNER_EXP = "lego4_test"
-    const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
-    const val HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding"
-    const val HOME_COMPONENT_LEGO2BANNER_EXP = "lego2_bleeding"
-    const val HOME_COMPONENT_LEGO2BANNER_OLD = "lego2_round"
-    const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
+    const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
+    const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
+    const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
     // end of home component rollence section
 
-    const val NAVIGATION_VARIANT_REVAMP = "new_glmenu"
-    const val NAVIGATION_VARIANT_REVAMP2 = "new_glmenu2"
+    const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
     //TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
-
-    const val EXPERIMENT_NAME_REVIEW_PRODUCT_READING = "review_pdp"
-    const val VARIANT_NEW_REVIEW_PRODUCT_READING = "new_review_pdp"
-    const val VARIANT_OLD_REVIEW_PRODUCT_READING = "old_review_pdp"
-
 
     //Recommendation page section
     const val RECOM_PAGE_CPM_EXP = "ShopAdsIM3"
@@ -73,6 +58,8 @@ object RollenceKey {
     const val SBM_ADD_BILLS_FALSE = "sbm_addbills_False"
     const val SBM_ADD_BILLS_TRUE = "sbm_addbills_True"
 
+    //User
+    const val USER_DARK_MODE_TOGGLE = "dark_mode_nakama_v2"
     const val EXPERIMENT_NAME_REVIEW_CREDIBILITY = "review_credibility"
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
