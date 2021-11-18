@@ -15,6 +15,7 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
 import com.tokopedia.play.util.assertFalse
+import com.tokopedia.play.util.assertTrue
 import com.tokopedia.play.util.isEqualTo
 import com.tokopedia.play.util.isEqualToIgnoringFields
 import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
@@ -252,146 +253,106 @@ class PlayUpcomingTest {
         }
     }
 
-//    /**
-//     * SSE
-//     */
-//    @Test
-//    fun `given a upcoming channel, when app displaying upcoming channel, then app should automatically connect to SSE`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } thenVerify {
-//            fakePlayChannelSSE.isConnectionOpen().isEqualTo(true)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a non-upcoming channel, when app displaying upcoming channel, then app should not connect to SSE`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelDataWithNoUpcoming)
-//            focusPage(mockChannelDataWithNoUpcoming)
-//        } thenVerify {
-//            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when channel get message that the channel is already alive, then it should update the channel upcoming info`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhen {
-//            fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdatelive", "{channel_id: 1}")
-//        } thenVerify {
-//            viewModel.observableUpcomingInfo.value?.isAlreadyLive.isEqualTo(true)
-//            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when channel get message that the channel is already active, then it should update the channel upcoming info`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhen {
-//            fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdateactive", "{channel_id: 1}")
-//        } thenVerify {
-//            viewModel.observableUpcomingInfo.value?.isAlreadyLive.isEqualTo(true)
-//            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when channel get unrecognized event, then it should do nothing`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhen {
-//            fakePlayChannelSSE.fakeSendMessage("unrecognizedevent", "{channel_id: 1}")
-//        } thenVerify {
-//            viewModel.observableUpcomingInfo.value?.isEqualTo(mockUpcomingInfo)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when channel get different channel_id alive, then it should do nothing with current channel`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhen {
-//            fakePlayChannelSSE.fakeSendMessage("unrecognizedevent", "{channel_id: 12312}")
-//        } thenVerify {
-//            viewModel.observableUpcomingInfo.value?.isAlreadyLive.isEqualTo(false)
-//            fakePlayChannelSSE.isConnectionOpen().isEqualTo(true)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when channel is defocused, then it should disconnect the SSE`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhen {
-//            defocusPage(true)
-//        } thenVerify {
-//            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
-//        }
-//    }
-//
-//    @Test
-//    fun `given a upcoming channel, when SSE is intended to be closed, then it should reconnect to SSE`() {
-//        givenPlayViewModelRobot(
-//            dispatchers = testDispatcher,
-//            userSession = mockUserSession,
-//            playChannelSSE = fakePlayChannelSSE,
-//            playAnalytic = mockPlayNewAnalytic
-//        ) {
-//            setLoggedIn(false)
-//            createPage(mockChannelData)
-//            focusPage(mockChannelData)
-//        } andWhen {
-//            fakePlayChannelSSE.close()
-//        } thenVerify {
-//            fakePlayChannelSSE.isConnectionOpen().isEqualTo(false)
-//        }
-//    }
+    /**
+     * SSE
+     */
+    @Test
+    fun `given a upcoming channel, when channel get message that the channel is already alive, then it should update the channel upcoming state`() {
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+            viewModel.startSSE(mockChannelData.id)
+        }
+
+        robot.use {
+            /** Test */
+            val (state, _) = robot.recordStateAndEvent {
+                fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdatelive", "{ \"channel_id\" : ${mockChannelData.id} }")
+            }
+
+            /** Verify **/
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
+            fakePlayChannelSSE.isConnectionOpen().assertFalse()
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel get message that the channel is already active, then it should update the channel upcoming state`() {
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+            viewModel.startSSE(mockChannelData.id)
+        }
+
+        robot.use {
+            /** Test */
+            val (state, _) = robot.recordStateAndEvent {
+                fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdateactive", "{ \"channel_id\" : ${mockChannelData.id} }")
+            }
+
+            /** Verify **/
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
+            fakePlayChannelSSE.isConnectionOpen().assertFalse()
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel get unrecognized event, then it should do nothing`() {
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+            viewModel.startSSE(mockChannelData.id)
+        }
+
+        robot.use {
+            /** Test */
+            val (state, _) = robot.recordStateAndEvent {
+                fakePlayChannelSSE.fakeSendMessage("unrecognizedevent", "{ \"channel_id\" : ${mockChannelData.id} }")
+            }
+
+            /** Verify **/
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            fakePlayChannelSSE.isConnectionOpen().assertTrue()
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when channel get different channel_id alive, then it should do nothing with current channel`() {
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+            viewModel.startSSE(mockChannelData.id)
+        }
+
+        robot.use {
+            /** Test */
+            val (state, _) = robot.recordStateAndEvent {
+                fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdatelive", "{ \"channel_id\" : 123123 }")
+            }
+
+            /** Verify **/
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
+            fakePlayChannelSSE.isConnectionOpen().assertTrue()
+        }
+    }
 }
