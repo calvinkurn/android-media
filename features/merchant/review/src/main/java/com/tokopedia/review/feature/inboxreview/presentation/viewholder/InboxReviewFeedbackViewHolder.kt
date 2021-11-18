@@ -26,7 +26,7 @@ class InboxReviewFeedbackViewHolder(view: View,
                                     private val feedbackInboxReviewListener: FeedbackInboxReviewListener): AbstractViewHolder<FeedbackInboxUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_inbox_review
+        val LAYOUT = com.tokopedia.review.R.layout.item_inbox_review
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         const val FEEDBACK_MAX_CHAR = 150
     }

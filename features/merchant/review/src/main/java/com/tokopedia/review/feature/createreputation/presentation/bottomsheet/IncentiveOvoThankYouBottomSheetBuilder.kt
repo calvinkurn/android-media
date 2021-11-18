@@ -24,7 +24,7 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         thankYouImageUrl: String
     ): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
-        val child = View.inflate(context, R.layout.incentive_ovo_bottom_sheet_submitted, null)
+        val child = View.inflate(context,  com.tokopedia.review.R.layout.incentive_ovo_bottom_sheet_submitted, null)
         bottomSheetUnify.setChild(child)
         setupThankYouView(
             child,

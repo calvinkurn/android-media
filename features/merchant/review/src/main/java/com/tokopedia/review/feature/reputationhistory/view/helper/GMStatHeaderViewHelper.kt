@@ -182,7 +182,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         periodRangeList.add(
             PeriodRangeModel(
                 startCalendar.timeInMillis, startCalendar.timeInMillis, context?.getString(
-                    R.string.yesterday
+                    com.tokopedia.datepicker.range.R.string.yesterday
                 )
             )
         )
@@ -192,7 +192,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         periodRangeList.add(
             PeriodRangeModel(
                 startCalendar.timeInMillis, endCalendar.timeInMillis, context?.getString(
-                    R.string.seven_days_ago
+                    com.tokopedia.datepicker.range.R.string.seven_days_ago
                 )
             )
         )
@@ -202,7 +202,7 @@ open class GMStatHeaderViewHelper(protected var itemView: View, private val isGm
         periodRangeList.add(
             PeriodRangeModel(
                 startCalendar.timeInMillis, endCalendar.timeInMillis, context?.getString(
-                    R.string.thirty_days_ago
+                    com.tokopedia.datepicker.range.R.string.thirty_days_ago
                 )
             )
         )

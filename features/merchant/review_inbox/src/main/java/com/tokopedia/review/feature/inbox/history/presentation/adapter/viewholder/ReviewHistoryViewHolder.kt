@@ -20,7 +20,7 @@ class ReviewHistoryViewHolder(view: View,
 ) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_review_history
+        val LAYOUT = com.tokopedia.review.inbox.R.layout.item_review_history
     }
 
     private val binding = ItemReviewHistoryBinding.bind(view)

@@ -49,7 +49,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         savedInstanceState: Bundle?
     ): View? {
         val view =
-            View.inflate(context, R.layout.bottomsheet_image_preview_expanded_review_detail, null)
+            View.inflate(context, com.tokopedia.review.R.layout.bottomsheet_image_preview_expanded_review_detail, null)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
     }

@@ -38,7 +38,7 @@ class CreateReviewProgressBar : BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_create_review_progress_bar, this)
+        View.inflate(context,  com.tokopedia.review.R.layout.widget_create_review_progress_bar, this)
         progressBar = findViewById(R.id.review_form_progress_bar)
         progressBarText = findViewById(R.id.review_form_progress_bar_description)
         progressBar?.progressBarHeight = ProgressBarUnify.SIZE_SMALL

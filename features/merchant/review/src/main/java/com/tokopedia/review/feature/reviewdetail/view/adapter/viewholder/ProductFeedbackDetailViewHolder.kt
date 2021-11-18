@@ -26,7 +26,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
     companion object {
         @JvmStatic
-        val LAYOUT = R.layout.item_product_feedback_detail
+        val LAYOUT = com.tokopedia.review.R.layout.item_product_feedback_detail
         const val REPLY_MAX_CHAR = 100
         const val FEEDBACK_MAX_CHAR = 150
         private const val isAutoReply = false

@@ -544,7 +544,7 @@ class SellerReviewReplyFragment : BaseDaggerFragment(),
     }
 
     private fun initViewBottomSheet() {
-        val viewMenu = View.inflate(context, R.layout.bottom_sheet_menu_option_review_reply, null)
+        val viewMenu = View.inflate(context, com.tokopedia.review.R.layout.bottom_sheet_menu_option_review_reply, null)
         bottomSheetReplyReview = BottomSheetUnify()
         optionMenuReplyReview = viewMenu.findViewById(R.id.optionMenuReply)
         bottomSheetReplyReview?.setChild(viewMenu)

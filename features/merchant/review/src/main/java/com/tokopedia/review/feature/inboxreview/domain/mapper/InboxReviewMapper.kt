@@ -24,6 +24,8 @@ import com.tokopedia.user.session.UserSessionInterface
 object InboxReviewMapper {
 
     private const val REPLY_LENGTH_THRESHOLD = 150
+    private const val MIN_RATING_FILTER = 1
+    private const val MAX_RATING_FILTER = 5
 
     fun mapToInboxReviewUiModel(
         inboxReviewResponse: InboxReviewResponse.ProductGetInboxReviewByShop,
@@ -131,7 +133,7 @@ object InboxReviewMapper {
         val maxRatingFilter = 5
 
         itemUnifyList.apply {
-            for (i in 1..maxRatingFilter) {
+            for (i in MIN_RATING_FILTER..MAX_RATING_FILTER) {
                 add(
                     ListItemRatingWrapper(
                         isSelected = false,

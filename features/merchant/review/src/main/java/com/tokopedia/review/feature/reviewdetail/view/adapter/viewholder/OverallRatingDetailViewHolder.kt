@@ -24,7 +24,7 @@ class OverallRatingDetailViewHolder(val view: View,
 
     companion object {
         @JvmStatic
-        val LAYOUT = R.layout.item_overall_review_detail
+        val LAYOUT = com.tokopedia.review.R.layout.item_overall_review_detail
     }
 
     private val ratingStar: Typography = view.findViewById(R.id.rating_star_overall)

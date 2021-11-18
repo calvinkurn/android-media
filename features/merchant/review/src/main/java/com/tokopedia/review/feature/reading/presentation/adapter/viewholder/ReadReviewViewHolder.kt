@@ -14,7 +14,11 @@ import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidg
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
-import com.tokopedia.review.feature.reading.data.*
+import com.tokopedia.review.feature.reading.data.LikeDislike
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
+import com.tokopedia.review.feature.reading.data.ProductReviewResponse
+import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
@@ -31,7 +35,7 @@ class ReadReviewViewHolder(view: View,
 ) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_read_review
+        val LAYOUT = com.tokopedia.review.R.layout.item_read_review
         private const val MAX_CHAR = 140
         private const val ALLOW_CLICK = true
         private const val MAX_LINES_REVIEW = 3

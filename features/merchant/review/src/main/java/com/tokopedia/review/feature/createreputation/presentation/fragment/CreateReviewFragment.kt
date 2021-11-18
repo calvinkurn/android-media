@@ -1,6 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -310,6 +311,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
         })
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         stopPreparePerfomancePageMonitoring()
         startNetworkRequestPerformanceMonitoring()

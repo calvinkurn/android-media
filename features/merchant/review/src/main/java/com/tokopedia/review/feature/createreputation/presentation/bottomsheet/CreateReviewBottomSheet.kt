@@ -167,7 +167,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = View.inflate(context, R.layout.bottomsheet_create_review, null)
+        val view = View.inflate(context, com.tokopedia.review.R.layout.bottomsheet_create_review, null)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
