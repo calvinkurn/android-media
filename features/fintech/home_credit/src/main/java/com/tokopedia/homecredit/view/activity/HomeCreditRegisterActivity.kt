@@ -15,11 +15,10 @@ import com.tokopedia.homecredit.view.fragment.HomeCreditKTPFragment
 import com.tokopedia.homecredit.view.fragment.HomeCreditSelfieFragment
 import java.util.*
 
-class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeCreditComponent?> {
+class HomeCreditRegisterActivity : BaseSimpleActivity() {
     private var permissionsToRequest: MutableList<String>? = null
     private var isPermissionGotDenied = false
     private var showKtp = false
-    private var homeCreditComponent: HomeCreditComponent? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (supportActionBar != null) {
@@ -75,7 +74,7 @@ class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeCredit
     }
 
     @SuppressLint("MissingPermission")
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         val intent = intent
         if (intent != null) {
             val uri = intent.data
@@ -88,20 +87,11 @@ class HomeCreditRegisterActivity : BaseSimpleActivity(), HasComponent<HomeCredit
         }
     }
 
-    override fun getComponent(): HomeCreditComponent {
-        if (homeCreditComponent == null) initInjector()
-        return homeCreditComponent!!
-    }
 
-    private fun initInjector() {
-        homeCreditComponent = DaggerHomeCreditComponent.builder().baseAppComponent(
-            (applicationContext as BaseMainApplication).baseAppComponent
-        ).build()
-    }
 
     companion object {
         const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
-        protected const val REQUEST_CAMERA_PERMISSIONS = 932
+        private const val REQUEST_CAMERA_PERMISSIONS = 932
         private const val SHOW_KTP = "show_ktp"
     }
 }
