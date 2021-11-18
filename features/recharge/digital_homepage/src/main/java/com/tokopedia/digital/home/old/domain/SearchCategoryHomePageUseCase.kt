@@ -34,7 +34,7 @@ class SearchCategoryHomePageUseCase(graphqlRepository: GraphqlRepository): Graph
                 item.searchQuery = searchQuery
                 return@map item
             }
-            return DigitalHomePageSearchNewModel(isFromAutoComplete = false, listSearchResult = filteredData)
+            return DigitalHomePageSearchNewModel(isFromAutoComplete = false, searchQuery= searchQuery, listSearchResult = filteredData)
         }
         throw MessageErrorException("Incorrect data model")
     }

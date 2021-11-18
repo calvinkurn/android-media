@@ -12,7 +12,8 @@ import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListen
 class DigitalHomePageSearchTypeFactory(
         val onSearchCategoryClickListener: DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
         val onSearchDoubleLineClickListener: DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener,
-        val onSearchAutoCompleteListener: SearchAutoCompleteListener
+        val onSearchAutoCompleteListener: SearchAutoCompleteListener,
+        val onEmptySearchListener: DigitalHomePageSearchEmptyStateViewHolder.DigitalHomepageSearchEmptyListener
 )
     : BaseAdapterTypeFactory() {
 
@@ -29,7 +30,7 @@ class DigitalHomePageSearchTypeFactory(
             DigitalHomePageSearchViewHolder.LAYOUT -> return DigitalHomePageSearchViewHolder(parent, onSearchCategoryClickListener, onSearchAutoCompleteListener)
             DigitalHomePageSearchHeaderViewHolder.LAYOUT -> return DigitalHomePageSearchHeaderViewHolder(parent)
             DigitalHomePageSearchDoubleLineViewHolder.LAYOUT -> return DigitalHomePageSearchDoubleLineViewHolder(parent, onSearchDoubleLineClickListener, onSearchAutoCompleteListener)
-            DigitalHomePageSearchEmptyStateViewHolder.LAYOUT -> return DigitalHomePageSearchEmptyStateViewHolder(parent)
+            DigitalHomePageSearchEmptyStateViewHolder.LAYOUT -> return DigitalHomePageSearchEmptyStateViewHolder(parent, onEmptySearchListener)
         }
         return super.createViewHolder(parent, type)
     }

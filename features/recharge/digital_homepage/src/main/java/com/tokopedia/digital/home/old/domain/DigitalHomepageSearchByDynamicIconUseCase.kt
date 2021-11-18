@@ -29,7 +29,7 @@ class DigitalHomepageSearchByDynamicIconUseCase(graphqlRepository: GraphqlReposi
             item.searchQuery = searchQuery
             return@map item
         }
-        return DigitalHomePageSearchNewModel(isFromAutoComplete = false, listSearchResult = filteredData)
+        return DigitalHomePageSearchNewModel(isFromAutoComplete = false, searchQuery = searchQuery, listSearchResult = filteredData)
     }
 
     companion object {

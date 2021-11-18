@@ -73,7 +73,7 @@ class DigitalHomePageSearchViewModel @Inject constructor(
             if (::job.isInitialized && job.isActive){
                 job.cancelAndJoin()
             }
-            mutableSearchCategoryList.postValue(Success(DigitalHomePageSearchNewModel(false, Tracking(), emptyList())))
+            mutableSearchCategoryList.postValue(Success(DigitalHomePageSearchNewModel(false, Tracking(), "", emptyList())))
         }
     }
 

@@ -53,7 +53,7 @@ class DigitalHomePageSearchViewModelTest {
     @Test
     fun getSearchCategoryList_Success() {
         coEvery { searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } returns
-               DigitalHomePageSearchNewModel(false, Tracking(), listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+               DigitalHomePageSearchNewModel(false, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
 
         digitalHomePageSearchViewModel.searchCategoryList("", "test")
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
@@ -78,7 +78,7 @@ class DigitalHomePageSearchViewModelTest {
         //given
         coEvery {
             searchCategoryByDynamicIconUseCase.searchCategoryList(any(), any())
-        } returns DigitalHomePageSearchNewModel(false, Tracking(), listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+        } returns DigitalHomePageSearchNewModel(false, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
 
         //when
         digitalHomePageSearchViewModel.searchByDynamicIconsCategory("", 0, listOf())
@@ -119,7 +119,7 @@ class DigitalHomePageSearchViewModelTest {
         //given
         coEvery {
             searchAutoCompleteHomePageUseCase.searchAutoCompleteList(any(), any())
-        } returns DigitalHomePageSearchNewModel(true, Tracking(), listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
+        } returns DigitalHomePageSearchNewModel(true, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
 
         //when
         digitalHomePageSearchViewModel.searchAutoComplete(mapSearchParam, "paket")

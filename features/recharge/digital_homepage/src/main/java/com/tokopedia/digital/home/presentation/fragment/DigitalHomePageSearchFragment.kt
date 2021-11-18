@@ -30,6 +30,7 @@ import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchDoubleLineViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchEmptyStateViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
@@ -50,6 +51,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
         DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
         DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener,
         SearchAutoCompleteListener,
+        DigitalHomePageSearchEmptyStateViewHolder.DigitalHomepageSearchEmptyListener,
         CoroutineScope
 {
 
@@ -171,7 +173,9 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
             when (it) {
                 is Success -> {
                     clearAllData()
-                    renderList(it.data.listSearchResult)
+                    if (!it.data.searchQuery.isNullOrEmpty()) {
+                        renderList(it.data.listSearchResult)
+                    }
                     if (!it.data.isFromAutoComplete){
                         trackSearchResultCategories(it.data.listSearchResult)
                     } else if (it.data.listSearchResult.isNullOrEmpty() && it.data.isFromAutoComplete) {
@@ -223,7 +227,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageSearchTypeFactory {
-        return DigitalHomePageSearchTypeFactory(this, this, this)
+        return DigitalHomePageSearchTypeFactory(this, this, this, this)
     }
 
     override fun onItemClicked(t: DigitalHomePageSearchCategoryModel?) {
@@ -245,6 +249,11 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
     override fun impressOperatorListener(trackingUser: Tracking, trackingItem: Tracking) {
         rechargeHomepageAnalytics.impressionOperatorAutoComplete(trackingUser, trackingItem, userSession.userId)
+    }
+
+    override fun clearEmptyStateListener() {
+        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.setText("")
+        viewModel.cancelAutoComplete()
     }
 
     private val getSearchListener = object : TextView.OnEditorActionListener {

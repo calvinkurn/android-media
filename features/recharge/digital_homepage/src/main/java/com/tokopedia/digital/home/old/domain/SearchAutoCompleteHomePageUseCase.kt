@@ -22,6 +22,7 @@ class SearchAutoCompleteHomePageUseCase (graphqlRepository: GraphqlRepository): 
         val searchCategoryData = mapSearchAutoCompletetoSearch(searchAutoComplete, searchQuery)
         return DigitalHomePageSearchNewModel(true,
                 searchAutoComplete.digiPersoSearchSuggestion.data.tracking,
+                searchQuery,
                 searchCategoryData)
     }
 
