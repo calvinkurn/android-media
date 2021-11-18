@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -31,7 +32,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -109,6 +109,8 @@ class TokoNowHomeViewModel @Inject constructor(
         get() = _homeAddToCartTracker
     val atcQuantity: LiveData<Result<HomeLayoutListUiModel>>
         get() = _atcQuantity
+    val openScreenTracker: LiveData<String>
+        get() = _openScreenTracker
 
     private val _homeLayoutList = MutableLiveData<Result<HomeLayoutListUiModel>>()
     private val _keywordSearch = MutableLiveData<SearchPlaceholder>()
@@ -119,6 +121,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     private val _homeAddToCartTracker = MutableLiveData<HomeAddToCartTracker>()
     private val _atcQuantity = MutableLiveData<Result<HomeLayoutListUiModel>>()
+    private val _openScreenTracker = MutableLiveData<String>()
 
     private val homeLayoutItemList = mutableListOf<HomeLayoutItemUiModel>()
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -127,12 +130,16 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private var getHomeLayoutJob: Job? = null
 
+    fun trackOpeningScreen(screenName: String) {
+        _openScreenTracker.value = screenName
+    }
+
     fun getLoadingState() {
         channelToken = ""
         homeLayoutItemList.clear()
         homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.LOADING
         )
         _homeLayoutList.postValue(Success(data))
@@ -142,7 +149,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.clear()
         homeLayoutItemList.addEmptyStateIntoList(id)
         val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.HIDE
         )
         _homeLayoutList.postValue(Success(data))
@@ -160,7 +167,7 @@ class TokoNowHomeViewModel @Inject constructor(
             if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
                 homeLayoutItemList.addProductRecomOoc(recommendationWidgets.first())
                 val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.HIDE
                 )
                 _homeLayoutList.postValue(Success(data))
@@ -189,7 +196,7 @@ class TokoNowHomeViewModel @Inject constructor(
             getLayoutComponentData(warehouseId)
 
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
@@ -235,7 +242,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 homeLayoutItemList.removeProgressBar()
 
                 val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.LOAD_MORE
                 )
 
@@ -282,14 +289,14 @@ class TokoNowHomeViewModel @Inject constructor(
             val response = getCategoryList(warehouseId)
             homeLayoutItemList.mapHomeCategoryGridData(item, response)
             val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
         }) {
             homeLayoutItemList.mapHomeCategoryGridData(item, null)
             val data = HomeLayoutListUiModel(
-                    items = homeLayoutItemList,
+                    items = getHomeVisitableList(),
                     state = TokoNowLayoutState.SHOW
             )
             _homeLayoutList.postValue(Success(data))
@@ -342,7 +349,7 @@ class TokoNowHomeViewModel @Inject constructor(
         launchCatchError(block = {
             setMiniCartAndProductQuantity(miniCart)
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.SHOW
             )
             _atcQuantity.postValue(Success(data))
@@ -355,7 +362,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.removeItem(id)
 
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.SHOW
             )
 
@@ -368,7 +375,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.removeItem(id)
 
             val data = HomeLayoutListUiModel(
-                items = homeLayoutItemList,
+                items = getHomeVisitableList(),
                 state = TokoNowLayoutState.UPDATE
             )
 
@@ -393,7 +400,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
             when (val item = it.layout) {
                 is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
-                is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
+                else -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
             }
         }
     }
@@ -420,7 +427,7 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param item TokopediaNOW component item
      * @param warehouseId Id obtained from choose address widget
      */
-    private suspend fun getTokoNowGlobalComponent(item: TokoNowLayoutUiModel, warehouseId: String) {
+    private suspend fun getTokoNowGlobalComponent(item: Visitable<*>?, warehouseId: String) {
         when(item) {
             is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
@@ -511,7 +518,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.updateProductQuantity(productId, quantity, type)
 
         val data = HomeLayoutListUiModel(
-            items = homeLayoutItemList,
+            items = getHomeVisitableList(),
             state = TokoNowLayoutState.SHOW
         )
 
@@ -634,9 +641,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val items: List<HomeLayoutItemUiModel?> = homeLayoutItemList
-        val layoutList = items.filterNotNull().map { it.layout }
-        val isLoading = layoutList.contains(HomeProgressBarUiModel)
+        val isLoading = getHomeVisitableList().contains(HomeProgressBarUiModel)
         val scrolledToBottom = lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
         return scrolledToBottom && !isLoading && !allItemsLoaded
     }
@@ -644,9 +649,13 @@ class TokoNowHomeViewModel @Inject constructor(
     private fun showProgressBar() {
         homeLayoutItemList.addProgressBar()
         val data = HomeLayoutListUiModel(
-            homeLayoutItemList,
+            getHomeVisitableList(),
             TokoNowLayoutState.UPDATE
         )
         _homeLayoutList.postValue(Success(data))
+    }
+
+    private fun getHomeVisitableList(): List<Visitable<*>> {
+        return homeLayoutItemList.mapNotNull { it.layout }
     }
 }

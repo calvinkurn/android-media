@@ -22,8 +22,17 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.haveProductBundle, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
-                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship)
+                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship),
+                pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(buyerOrderDetail.adsPageName, buyerOrderDetail.products)
         )
+    }
+
+    private fun mapToRecommendationWidgetUiModel(adsPageName: String, productsList: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>): PGRecommendationWidgetUiModel {
+        val productIdList = arrayListOf<String>()
+        productsList.forEach { product ->
+            productIdList.add(product.productId)
+        }
+        return PGRecommendationWidgetUiModel(adsPageName, productIdList)
     }
 
     private fun mapActionButtons(button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button, dotMenu: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.DotMenu>): ActionButtonsUiModel {
@@ -69,7 +78,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 if (haveProductBundle) {
                     mapProductBundle(bundleDetail, orderId, orderStatusId)
                 } else {
-                    null
+                    emptyList()
                 }
         return ProductListUiModel(
                 productList = productList,
@@ -273,7 +282,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel>? {
+    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel> {
         return bundleDetail?.bundleList?.map { bundle ->
             ProductListUiModel.ProductBundlingUiModel(
                     bundleName = bundle.bundleName,
@@ -284,7 +293,7 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                         mapProduct(bundleDetail, orderId, orderStatusId)
                     }
             )
-        }
+        }.orEmpty()
     }
 
     private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {
@@ -301,7 +310,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 arrivalEstimation = composeETA(shipment.eta),
                 courierNameAndProductName = shipment.shippingDisplayName,
                 isFreeShipping = meta.isBebasOngkir,
-                boBadgeUrl = meta.boImageUrl
+                boBadgeUrl = meta.boImageUrl,
+                etaChanged = shipment.etaIsUpdated,
+                etaUserInfo = shipment.userUpdatedInfo
         )
     }
 

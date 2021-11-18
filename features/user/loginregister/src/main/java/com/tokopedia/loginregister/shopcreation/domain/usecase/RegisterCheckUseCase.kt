@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.shopcreation.domain.query.MutationUserProfileValidate
+import com.tokopedia.loginregister.shopcreation.domain.query.MutationRegisterCheck
 import javax.inject.Inject
 
 class RegisterCheckUseCase @Inject constructor(
@@ -15,7 +15,7 @@ class RegisterCheckUseCase @Inject constructor(
 ) : CoroutineUseCase<RegisterCheckParam, RegisterCheckPojo>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return MutationUserProfileValidate.getQuery()
+        return MutationRegisterCheck.getQuery()
     }
 
     override suspend fun execute(params: RegisterCheckParam): RegisterCheckPojo {

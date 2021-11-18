@@ -81,7 +81,6 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.login.const.LoginConstants.DiscoverLoginId.FACEBOOK
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -100,7 +99,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -178,7 +176,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var validateToken = ""
     private var isLoginAfterSq = false
 
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
     private var socmedButton: UnifyButton? = null
@@ -564,7 +561,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         resetError()
         if (isValid(email, password)) {
             showLoadingLogin()
-            if (isEnableEncryption() && useHash) {
+            if (isEnableEncryptConfig() && useHash) {
                 viewModel.loginEmailV2(email = email, password = password, useHash = useHash)
             } else {
                 viewModel.loginEmail(email, password)
@@ -753,7 +750,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -799,10 +796,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
             socmedButtonsContainer?.removeAllViews()
             discoverData.providers.forEach { provider ->
-                if (provider.id.equals(FACEBOOK, ignoreCase = true)) {
-                    return@forEach
-                }
-
                 context?.let { context ->
                     val tv = LoginTextView(context, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     tv.setText(provider.name)
@@ -1160,30 +1153,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
-    fun isEnableEncryptRollout(): Boolean {
-        val rolloutKey = if (GlobalConfig.isSellerApp()) {
-            SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION_SELLER
-        } else {
-            SessionConstants.Rollout.ROLLOUT_LOGIN_ENCRYPTION
-        }
-
-        val variant = getAbTestPlatform().getString(rolloutKey)
-        return variant.isNotEmpty()
-    }
-
-    fun isEnableEncryptConfig(): Boolean {
+    open fun isEnableEncryptConfig(): Boolean {
         return isEnableEncryptConfig
-    }
-
-    open fun isEnableEncryption(): Boolean {
-        return isEnableEncryptRollout() && isEnableEncryptConfig()
     }
 
     override fun showNotRegisteredEmailDialog(email: String, isPending: Boolean) {

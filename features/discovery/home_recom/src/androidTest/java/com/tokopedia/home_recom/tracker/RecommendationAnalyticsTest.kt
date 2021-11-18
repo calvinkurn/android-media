@@ -12,6 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_recom.HomeRecommendationActivity
@@ -41,12 +42,13 @@ class RecommendationAnalyticsTest {
     @get:Rule
     var activityRule = ActivityTestRule<HomeRecommendationActivity>(HomeRecommendationActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse(RecommendationMockResponseConfig())
         activityRule.launchActivity(
                 HomeRecommendationActivity.newInstance(InstrumentationRegistry.getInstrumentation().targetContext, "547113763").apply {
@@ -57,18 +59,17 @@ class RecommendationAnalyticsTest {
 
     @After
     fun dispose(){
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     @Test
-    fun testSimilarRecomView() {
-        initTest()
-
-        doActivityTest()
-
-        doCassavaTest()
-
-        addDebugEnd()
+    fun testRecomCassava() {
+        RecommendationCassavaTest {
+            initTest()
+            doActivityTest()
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME)
+        }
     }
 
     private fun initTest() {
@@ -94,13 +95,6 @@ class RecommendationAnalyticsTest {
         }
         activityRule.activity.finish()
         logTestMessage("Done UI Test")
-    }
-
-    private fun doCassavaTest() {
-        waitForData()
-        //worked
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME),
-                hasAllSuccess())
     }
 
     private fun scrollRecyclerViewToPosition(homeRecyclerView: RecyclerView, position: Int) {

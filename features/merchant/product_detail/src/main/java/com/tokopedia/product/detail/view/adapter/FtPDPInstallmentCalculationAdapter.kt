@@ -4,7 +4,11 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,6 +26,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
 
     companion object {
         const val DURATION_ANIMATE_INSTALLMENT = 300L
+        private const val ROTATE_ANIMATE_INSTALLMENT = 180f
     }
 
 
@@ -107,7 +112,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
             }
 
             if (item.expandLayout) {
-                vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
+                vHolder.ivInstallmentToggle.animate().rotation(ROTATE_ANIMATE_INSTALLMENT).duration = DURATION_ANIMATE_INSTALLMENT
                 vHolder.llInstallmentContainer.show()
             } else {
                 vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT
@@ -118,7 +123,7 @@ class FtPDPInstallmentCalculationAdapter(var productPrice: Double?,
                 item.expandLayout = !item.expandLayout
 
                 if (item.expandLayout) {
-                    vHolder.ivInstallmentToggle.animate().rotation(180f).duration = DURATION_ANIMATE_INSTALLMENT
+                    vHolder.ivInstallmentToggle.animate().rotation(ROTATE_ANIMATE_INSTALLMENT).duration = DURATION_ANIMATE_INSTALLMENT
                     vHolder.llInstallmentContainer.show()
                 } else {
                     vHolder.ivInstallmentToggle.animate().rotation(0f).duration = DURATION_ANIMATE_INSTALLMENT

@@ -172,6 +172,7 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
+    public static final String MAINAPP_RECHARGE_NEW_ORDER_DETAIL = "android_main_app_enable_new_recharge_order_detail";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
@@ -244,9 +245,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_SEARCH_TDN = "android_customerapp_enable_search_tdn";
 
     public static final String PRE_OTP_LOGIN_CLEAR = "android_pre_otp_login_clear";
-
-    public static final String ENABLE_NEW_SHOP_SCORE = "android_enable_new_shop_score";
-    public static final String ENABLE_NEW_PENALTY = "android_enable_new_penalty";
 
     public static final String PM_SWITCH_TO_WEB_VIEW = "android_pm_switch_to_web_view";
 

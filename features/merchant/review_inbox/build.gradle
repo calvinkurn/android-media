@@ -91,10 +91,6 @@ dependencies {
         transitive = true
     }
 
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
-
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

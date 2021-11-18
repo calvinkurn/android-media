@@ -17,6 +17,7 @@ import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel;
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel;
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
+import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam;
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel;
 import com.tokopedia.topchat.chatroom.view.uimodel.ReviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
@@ -746,13 +747,13 @@ public class TopChatAnalytics {
     }
 
     public void trackSuccessDoBuyAndAtc(
-            ProductAttachmentUiModel element,
+            AddToCartParam element,
             DataModel data,
             String shopName,
             String eventAction
     ) {
         String dimen83 = "";
-        if (element.hasFreeShipping()) {
+        if (element.getFreeShipping()) {
             dimen83 = EE_VALUE_BEBAS_ONGKIR;
         } else {
             dimen83 = EE_VALUE_NONE_OTHER;
@@ -773,7 +774,7 @@ public class TopChatAnalytics {
         itemBundle.putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(""));
         itemBundle.putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(""));
         itemBundle.putInt(EE_PARAM_QUANTITY, element.getMinOrder());
-        itemBundle.putDouble(EE_PARAM_PRICE, element.getPriceInt());
+        itemBundle.putDouble(EE_PARAM_PRICE, element.getPrice());
         itemBundle.putString(EE_PARAM_PICTURE, element.getProductImage());
         itemBundle.putString(EE_PARAM_URL, element.getProductUrl());
         itemBundle.putString(EE_PARAM_DIMENSION_38, setValueOrDefault(""));
