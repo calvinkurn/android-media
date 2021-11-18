@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.ticker.Ticker android:id="@+id/rating_disclaimer_product_ticker"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:descriptionText="Ada ulasan yang tidak tampil karena kendalanya tidak terkait produk atau toko. Selengkapnya"
-    app:tickerType="announcement"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto" />

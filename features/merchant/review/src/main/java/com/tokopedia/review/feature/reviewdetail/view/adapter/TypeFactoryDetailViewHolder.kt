@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.reviewdetail.view.adapter
 
-import com.tokopedia.review.feature.reviewdetail.view.model.BadRatingReasonTickerUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackErrorUiModel
@@ -13,5 +12,4 @@ interface TypeFactoryDetailViewHolder {
     fun type(topicUiModel: TopicUiModel): Int
     fun type(filterUiModel: ProductReviewFilterUiModel): Int
     fun type(feedbackErrorUiModel: ProductFeedbackErrorUiModel): Int
-    fun type(badRatingReasonTickerUiModel: BadRatingReasonTickerUiModel): Int
 }

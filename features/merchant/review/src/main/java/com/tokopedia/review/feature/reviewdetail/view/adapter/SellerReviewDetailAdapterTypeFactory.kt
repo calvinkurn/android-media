@@ -4,14 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.BadRatingReasonTickerViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.FeedbackErrorViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ProductRatingFilterViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.ShimmerReviewDetailViewHolder
 import com.tokopedia.review.feature.reviewdetail.view.adapter.viewholder.TopicViewHolder
-import com.tokopedia.review.feature.reviewdetail.view.model.BadRatingReasonTickerUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.review.feature.reviewdetail.view.model.ProductFeedbackErrorUiModel
@@ -45,10 +43,6 @@ class SellerReviewDetailAdapterTypeFactory(
         return FeedbackErrorViewHolder.LAYOUT
     }
 
-    override fun type(badRatingReasonTickerUiModel: BadRatingReasonTickerUiModel): Int {
-        return BadRatingReasonTickerViewHolder.LAYOUT
-    }
-
     override fun type(viewModel: LoadingModel?): Int {
         return ShimmerReviewDetailViewHolder.LAYOUT
     }
@@ -70,10 +64,6 @@ class SellerReviewDetailAdapterTypeFactory(
             TopicViewHolder.LAYOUT -> TopicViewHolder(parent, listener)
             FeedbackErrorViewHolder.LAYOUT -> FeedbackErrorViewHolder(parent)
             ShimmerReviewDetailViewHolder.LAYOUT -> ShimmerReviewDetailViewHolder(parent)
-            BadRatingReasonTickerViewHolder.LAYOUT -> BadRatingReasonTickerViewHolder(
-                parent,
-                overallRatingDetailListener
-            )
             else -> super.createViewHolder(parent, type)
         }
     }
