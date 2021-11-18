@@ -16,4 +16,6 @@ import dagger.Component
 interface HomeCreditComponent {
 
     fun inject(homeCreditBaseCameraFragment: HomeCreditBaseCameraFragment)
+
+    fun inject(homeCreditRegisterActivity: HomeCreditRegisterActivity)
 }
