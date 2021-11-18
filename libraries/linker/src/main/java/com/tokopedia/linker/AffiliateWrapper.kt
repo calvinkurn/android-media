@@ -32,7 +32,7 @@ class AffiliateWrapper {
         affiliateGenerateLinkInput.channel?.add(13)
         affiliateGenerateLinkInput.link = ArrayList()
         val linkData = Link()
-        linkData.uRL = data.desktopUrl
+        linkData.uRL = data.uri
         linkData.type = "pdp"
         linkData.identifier = data.id
         linkData.identifierType = 0

@@ -272,19 +272,28 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     fun affiliateRequestDataAwaited(){
        showLoader = true
         Handler(Looper.getMainLooper()).postDelayed({
-            affiliateRequestDataReceived() },
-            DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
+            affiliateRequestDataReceived(false)
+        }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
 
     //call this method if the request data is received
-    fun affiliateRequestDataReceived(){
+    fun affiliateRequestDataReceived(validRequest: Boolean) {
+        if(validRequest){
+            executeAffiliateEligibilityUseCase()
+        }
+        else {
+            clearLoader()
+            affiliateQueryData = null
+        }
+    }
+
+    private fun clearLoader(){
         showLoader = false
         loaderUnify?.visibility = View.GONE
-        executeAffiliateEligibilityUseCase()
     }
 
     private fun executeAffiliateEligibilityUseCase(){
-        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+         val job  = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
                 val affiliateEligibleCommission: EligibleCommission = affiliateUseCase.apply {
@@ -297,10 +306,20 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }, onError = {
             it.printStackTrace()
         })
+        Handler(Looper.getMainLooper()).postDelayed({
+            clearLoader()
+            if(job.isActive) {
+                job.cancel()
+            }
+            if(affiliateCommissionTextView?.visibility != View.VISIBLE) {
+                affiliateQueryData = null
+            }
+        }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
 
     private fun showAffiliateCommission(affiliateEligibleCommission: EligibleCommission){
-        affiliateCommissionTextView?.text = affiliateEligibleCommission.message
+        clearLoader()
+        affiliateCommissionTextView?.text = affiliateEligibleCommission.amountFormatted
         affiliateCommissionTextView?.visibility = View.VISIBLE
     }
 
