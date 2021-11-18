@@ -41,13 +41,31 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWi
         cmHomeWidgetComponent.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dummy_test_cm_home_widget)
+        addObservers()
+//        getCMHomeWidgetData()
+        deleteCMHomeWidgetData()
+    }
 
-        dummyTestCMHomeWidgetViewModel.productDetailLiveData.observe(this, {
-            Log.e("kapil", it.toString())
+    private fun addObservers() {
+        dummyTestCMHomeWidgetViewModel.getCMHomeWidgetDataLiveData.observe(this, {
+            Log.e("GET CM HOME DATA", it.toString())
         }
         )
 
+        dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetDataLiveData.observe(this, {
+            Log.e("DELETE CM HOME DATA", it.toString())
+        }
+        )
+    }
+
+    fun getCMHomeWidgetData() {
         dummyTestCMHomeWidgetViewModel.getCMHomeWidgetData()
     }
+
+    fun deleteCMHomeWidgetData() {
+        dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetData(234, 123)
+    }
+
+//   DeepLink-> tokopedia://dummy-cm-home-widget
 
 }
