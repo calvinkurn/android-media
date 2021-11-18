@@ -130,7 +130,6 @@ object InboxReviewMapper {
 
     fun mapToItemRatingFilterBottomSheet(): ArrayList<ListItemRatingWrapper> {
         val itemUnifyList: ArrayList<ListItemRatingWrapper> = arrayListOf()
-        val maxRatingFilter = 5
 
         itemUnifyList.apply {
             for (i in MIN_RATING_FILTER..MAX_RATING_FILTER) {

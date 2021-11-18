@@ -26,6 +26,7 @@ object SellerReviewProductDetailMapper {
 
     private const val PERCENT_MULTIPLIER = 100
     private const val REPLY_LENGTH_THRESHOLD = 150
+    private const val MAX_ITEM_SORT_FILTER = 6
 
     fun mapToProductFeedbackDetailUiModel(
         productFeedbackDataPerProduct:
@@ -200,9 +201,8 @@ object SellerReviewProductDetailMapper {
         oldData: List<SortFilterItemWrapper>
     ): ArrayList<SortFilterItemWrapper> {
         val itemSortFilterList = ArrayList<SortFilterItemWrapper>()
-        val maxItemSortFilter = 6
         val updatedData = updateNewDataWithOldData(data, oldData)
-        val maxData = updatedData.take(maxItemSortFilter)
+        val maxData = updatedData.take(MAX_ITEM_SORT_FILTER)
         maxData.map {
             val sortFilter = SortFilterItem(
                 title = it.first.formatted.orEmpty(),
