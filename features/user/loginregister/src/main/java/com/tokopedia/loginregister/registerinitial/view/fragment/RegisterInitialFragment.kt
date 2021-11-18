@@ -551,10 +551,6 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         socmedButtonsContainer?.removeAllViews()
 
         discoverData.providers.forEach { provider ->
-//            if (provider.id.equals(FACEBOOK, ignoreCase = true)) {
-//                return@forEach
-//            }
-
             context?.let {
                 val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 loginTextView.setText(provider.name)
