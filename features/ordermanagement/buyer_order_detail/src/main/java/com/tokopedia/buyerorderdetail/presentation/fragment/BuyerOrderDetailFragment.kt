@@ -9,15 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.analytic.performance.BuyerOrderDetailLoadMonitoring
 import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
+import com.tokopedia.buyerorderdetail.analytic.tracker.RecommendationWidgetTracker
 import com.tokopedia.buyerorderdetail.common.constants.*
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
@@ -30,6 +33,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBun
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailContentAnimator
 import com.tokopedia.buyerorderdetail.presentation.animator.BuyerOrderDetailToolbarMenuAnimator
 import com.tokopedia.buyerorderdetail.presentation.bottomsheet.BuyerOrderDetailBottomSheetManager
@@ -52,13 +56,17 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.HashMap
 import javax.inject.Inject
 
 open class BuyerOrderDetailFragment : BaseDaggerFragment(),
@@ -66,7 +74,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         ProductBundlingViewHolder.Listener,
         TickerViewHolder.TickerViewHolderListener,
         DigitalRecommendationViewHolder.ActionListener,
-    CourierInfoViewHolder.CourierInfoViewHolderListener {
+        CourierInfoViewHolder.CourierInfoViewHolderListener,
+        PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
 
     companion object {
         @JvmStatic
@@ -84,6 +93,9 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var containerBuyerOrderDetail: BuyerOrderDetailMotionLayout? = null
     private var stickyActionButton: BuyerOrderDetailStickyActionButton? = null
@@ -116,7 +128,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this,
             this,
             this,
-            navigator
+            navigator,
+                this
         )
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
@@ -371,6 +384,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
+
     private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
         val orderId = viewModel.getOrderId()
         stickyActionButton?.setupActionButtons(
@@ -568,5 +582,26 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         parentFragmentManager?.run {
             delayedEtaBottomSheetFragment.show(this, "")
         }
+    }
+
+    override fun onProductCardClick(recommendationItem: RecommendationItem, applink: String) {
+        RecommendationWidgetTracker.sendClickTracker(recommendationItem, userSession.userId)
+        RouteManager.route(context, applink)
+    }
+
+    override fun onProductCardImpress(recommendationItem: RecommendationItem) {
+        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
+    }
+
+    override fun onSeeAllProductCardClick(appLink: String) {
+        RouteManager.route(context, appLink)
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        viewLifecycleOwner.lifecycle.addObserver(observer)
+    }
+
+    override fun hidePgRecommendation() {
+        rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
     }
 }
