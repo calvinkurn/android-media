@@ -32,12 +32,12 @@ class HomeCreditUseCase @Inject constructor(
             success(it)
         }, {
             onFail(it)
-        })
+        }, useCaseRequestParams)
     }
 
     override suspend fun executeOnBackground(): ImageDetail {
         var bitmap: Bitmap? = null
-        val imgByteArray = useCaseRequestParams.getObject(IMAGE_BYTE_ARRAY) as ByteArray
+        val imgByteArray = (useCaseRequestParams.getObject(IMAGE_BYTE_ARRAY)) as ByteArray
         return try {
             bitmap = CameraUtils.decodeBitmap(
                 imgByteArray,
