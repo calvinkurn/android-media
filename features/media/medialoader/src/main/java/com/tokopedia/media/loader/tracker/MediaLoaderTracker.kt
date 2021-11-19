@@ -36,10 +36,13 @@ object MediaLoaderTracker {
         val mediaSettingIndex = mediaSetting.qualitySettings()
         val qualitySetting = mediaSetting.getQualitySetting(mediaSettingIndex)
 
+        val connectionType = DeviceNetworkInfo.getConnectionType(context)
+
         return mapOf(
             "image_url" to url,
             "image_quality_setting" to qualitySetting,
             "page_name" to pageName,
+            "connection_type" to connectionType,
             "load_time" to loadTime,
             "file_size" to fileSize
         )
