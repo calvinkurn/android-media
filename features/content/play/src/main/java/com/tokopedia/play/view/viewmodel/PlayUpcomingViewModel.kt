@@ -162,10 +162,6 @@ class PlayUpcomingViewModel @Inject constructor(
                 }
                 else {
                     performRefreshWaitingDuration()
-
-                    _upcomingState.emit(PlayUpcomingState.Unknown)
-
-                    _uiEvent.emit(PlayUpcomingUiEvent.ShowInfoWithActionEvent(UiString.Resource(R.string.play_upcoming_channel_not_started)){})
                 }
             }
 
@@ -277,19 +273,18 @@ class PlayUpcomingViewModel @Inject constructor(
     }
 
     private fun handleUpcomingTimerFinish() {
-        viewModelScope.launch {
+        performRefreshWaitingDuration()
+    }
+
+    private fun performRefreshWaitingDuration() {
+        viewModelScope.launchCatchError(dispatchers.computation, block = {
             _upcomingState.emit(PlayUpcomingState.WaitingRefreshDuration)
             _uiEvent.emit(
                 PlayUpcomingUiEvent.ShowInfoEvent(
                     UiString.Resource(R.string.play_upcoming_channel_not_started)
                 )
             )
-        }
-        performRefreshWaitingDuration()
-    }
 
-    private fun performRefreshWaitingDuration() {
-        viewModelScope.launchCatchError(dispatchers.computation, block = {
             delay(_upcomingInfo.value.refreshWaitingDuration.toLong())
 
             val isAlreadyLive = _upcomingState.value == PlayUpcomingState.WatchNow
