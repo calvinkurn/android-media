@@ -84,8 +84,10 @@ class RecentViewViewHolder(
             private var binding: LayoutRecentViewItemAutocompleteBinding? by viewBinding()
 
             fun bind(item: BaseItemInitialStateSearch) {
-                binding?.autocompleteRecentViewItem?.loadImageCircle(itemView.context, item.imageUrl)
-                binding?.autocompleteRecentViewItem?.setOnClickListener {
+                val recentViewItem = binding?.autocompleteRecentViewItem ?: return
+
+                recentViewItem.loadImageCircle(itemView.context, item.imageUrl)
+                recentViewItem.setOnClickListener {
                     recentViewListener.onRecentViewClicked(item)
                 }
             }
