@@ -8,11 +8,7 @@ class MediaSettingPreferences constructor(
 ) : LocalCacheHandler(context, MEDIA_QUALITY_PREF) {
 
     fun qualitySettings(): Int {
-        return if (getInt(KEY_QUALITY_SETTING) == -1) {
-            DEFAULT_VALUE_OF_ADAPTIVE
-        } else {
-            getInt(KEY_QUALITY_SETTING)
-        }
+        return getInt(KEY_QUALITY_SETTING)?: 0
     }
 
     fun toasterVisibility(): Boolean {
@@ -42,8 +38,6 @@ class MediaSettingPreferences constructor(
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"
         private const val KEY_MEDIA_TOASTER = "index_media_toaster_visibility"
         private const val KEY_GLIDE_CLEAR_CACHE = "medialoader_clear_disk_cache"
-
-        private const val DEFAULT_VALUE_OF_ADAPTIVE = 0
     }
 
 }

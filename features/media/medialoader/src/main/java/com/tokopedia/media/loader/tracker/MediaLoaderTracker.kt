@@ -48,7 +48,7 @@ object MediaLoaderTracker {
         )
     }
 
-    fun getQualitySetting(index: Int): String {
+    private fun getQualitySetting(index: Int): String {
         return when(index) {
             0 -> "Automatic"
             1 -> "Low"
