@@ -108,6 +108,18 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private var sseJob: Job? = null
 
+    val latestChannelData: PlayChannelData
+        get() {
+            val channelData = mChannelData ?: error("Channel Data should not be null")
+
+            return channelData.copy(
+                upcomingInfo = channelData.upcomingInfo.copy(
+                    isReminderSet = _upcomingInfo.value.isReminderSet,
+                    isAlreadyLive = _upcomingState.value == PlayUpcomingState.WatchNow
+                )
+            )
+        }
+
     fun initPage(channelId: String, channelData: PlayChannelData) {
         this.mChannelId = channelId
         this.mChannelData = channelData

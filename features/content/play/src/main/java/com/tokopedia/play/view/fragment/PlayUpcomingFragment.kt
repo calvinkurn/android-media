@@ -104,6 +104,13 @@ class PlayUpcomingFragment @Inject constructor(
         playUpcomingViewModel.startSSE(channelId)
     }
 
+    override fun onPause() {
+        super.onPause()
+        playParentViewModel.setLatestChannelStorageData(
+            channelId, playUpcomingViewModel.latestChannelData
+        )
+    }
+
     private fun sendImpression() {
         playUpcomingViewModel.submitAction(ImpressUpcomingChannel)
     }
