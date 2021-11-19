@@ -247,6 +247,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observe(viewModel.isToasterAlreadyShown) {
             canShowErrorToaster = !it
         }
+        viewModel.setIsToasterAlreadyShown(false)
     }
 
     private fun <T : Any> showShopInfo(settingResponseState: SettingResponseState<T>, shopScore: Long = 0, shopAge: Long = 0) {
