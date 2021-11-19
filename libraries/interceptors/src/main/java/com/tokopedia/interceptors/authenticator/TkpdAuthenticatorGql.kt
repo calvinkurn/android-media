@@ -41,13 +41,8 @@ class TkpdAuthenticatorGql(
         return remoteConfigInstance.abTestPlatform
     }
 
-    private fun isRolledOut(): Boolean {
+    private fun isEnableGqlRefreshToken(): Boolean {
         return getAbTestPlatform().getString(ROLLOUT_REFRESH_TOKEN).isNotEmpty()
-    }
-
-    private fun isEnableConfig(): Boolean {
-        val config = FirebaseRemoteConfigImpl(application)
-        return config.getBoolean(CONFIG_KEY_REFRESH_TOKE_GQL, false)
     }
 
     private fun getRefreshQueryPath(finalRequest: Request, response: Response): String {
@@ -88,55 +83,56 @@ class TkpdAuthenticatorGql(
             return if(responseCount(response) == 0)
                 try {
                     val originalRequest = response.request()
-                    if(isEnableConfig() && isRolledOut()) {
+                    if(isEnableGqlRefreshToken()) {
                         val tokenResponse = refreshTokenUseCaseGql.refreshToken(application.applicationContext, userSession, networkRouter)
                         if(tokenResponse != null) {
                             return if(tokenResponse.accessToken.isEmpty()) {
-                                logRefreshTokenEvent(ERROR_GQL_ACCESS_TOKEN_EMPTY, TYPE_REFRESH_WITH_GQL, path, trimToken(userSession.accessToken), isSuccess = false)
-                                return refreshWithOldMethod(response, ERROR_GQL_ACCESS_TOKEN_EMPTY)
+                                logRefreshTokenEvent(ERROR_GQL_ACCESS_TOKEN_EMPTY, TYPE_REFRESH_WITH_GQL, path, trimToken(userSession.accessToken))
+                                return refreshWithOldMethod(response)
                             } else {
-                                logRefreshTokenEvent("", TYPE_REFRESH_WITH_GQL, path, "", isSuccess = true)
                                 onRefreshTokenSuccess(accessToken = tokenResponse.accessToken, refreshToken = tokenResponse.refreshToken, tokenType = tokenResponse.tokenType)
                                 updateRequestWithNewToken(originalRequest)
                             }
                         } else {
-                            logRefreshTokenEvent(ERROR_GQL_ACCESS_TOKEN_NULL, TYPE_REFRESH_WITH_GQL, path, trimToken(userSession.accessToken), isSuccess = false)
-                            return refreshWithOldMethod(response, ERROR_GQL_ACCESS_TOKEN_NULL)
+                            logRefreshTokenEvent(ERROR_GQL_ACCESS_TOKEN_NULL, TYPE_REFRESH_WITH_GQL, path, trimToken(userSession.accessToken))
+                            return refreshWithOldMethod(response)
                         }
                     } else {
                         return refreshWithOldMethod(response)
                     }
                 } catch (ex: Exception) {
-                    logRefreshTokenEvent(formatThrowable(ex), TYPE_FAILED_AUTHENTICATE, path, trimToken(userSession.accessToken), isSuccess = false)
+                    logRefreshTokenEvent(formatThrowable(ex), TYPE_FAILED_AUTHENTICATE, path, trimToken(userSession.accessToken))
                     null
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
-                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "", isSuccess = false)
+                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT, "", "")
                 return null
             }
         } else {
             if(responseCount(response)!=0) {
-                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "", isSuccess = false)
+                logRefreshTokenEvent("", TYPE_RESPONSE_COUNT_NOT_LOGIN, "", "")
                 return null
             }
         }
         return response.request()
     }
 
-    private fun refreshWithOldMethod(response: Response, reason: String = ""): Request? {
+    private fun refreshWithOldMethod(response: Response): Request? {
         return try {
             val newToken = getTokenOld(response)
             if(newToken.isNotEmpty()) {
-                logRefreshTokenEvent(reason, TYPE_RETRY_REFRESH_TOKEN_REST, "", "", true)
+                // to check how many users still using old refresh token even though they are rolled out
+                if(isEnableGqlRefreshToken()) {
+                    logRefreshTokenEvent("", TYPE_SUCCESS_REFRESH_TOKEN_REST, "", accessToken = trimToken(newToken))
+                }
                 networkRouter.doRelogin(newToken)
                 updateRequestWithNewToken(response.request())
             } else {
-                logRefreshTokenEvent(reason, TYPE_RETRY_REFRESH_TOKEN_REST, "", "", false)
                 null
             }
         }catch (e: Exception) {
-            logRefreshTokenEvent(formatThrowable(e), TYPE_RETRY_REFRESH_TOKEN_REST, "", "", false)
+            logRefreshTokenEvent(formatThrowable(e), TYPE_RETRY_REFRESH_TOKEN_REST, "", "")
             null
         }
     }
@@ -189,12 +185,11 @@ class TkpdAuthenticatorGql(
         return newRequest.build()
     }
 
-    private fun logRefreshTokenEvent(error: String, type: String, path: String, accessToken: String, isSuccess: Boolean) {
+    private fun logRefreshTokenEvent(error: String, type: String, path: String, accessToken: String) {
         val messageMap: MutableMap<String, String> = HashMap()
         messageMap["type"] = type
-        messageMap["is_gql"] = isEnableConfig().toString()
+        messageMap["is_gql"] = isEnableGqlRefreshToken().toString()
         messageMap["path"] = path
-        messageMap["success"] = isSuccess.toString()
 
         if(error.isNotEmpty()) {
             messageMap["error"] = error
@@ -228,6 +223,7 @@ class TkpdAuthenticatorGql(
         const val TYPE_FAILED_AUTHENTICATE = "failed_authenticate"
         const val TYPE_RESPONSE_COUNT = "response_count"
         const val TYPE_RESPONSE_COUNT_NOT_LOGIN = "response_count_not_logged_in"
+        const val TYPE_SUCCESS_REFRESH_TOKEN_REST = "retry_refresh_with_rest_api_success"
 
         const val ROLLOUT_REFRESH_TOKEN = "refresh_token_gql"
 
