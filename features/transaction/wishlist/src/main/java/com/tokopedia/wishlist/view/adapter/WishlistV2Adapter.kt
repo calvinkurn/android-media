@@ -3,7 +3,7 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.*
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_EMPTY_NOT_FOUND
@@ -12,8 +12,10 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LOADER_LIST
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_TOPADS
 import com.tokopedia.wishlist.view.adapter.viewholder.*
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 
@@ -31,6 +33,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         const val LAYOUT_RECOMMENDATION_TITLE = 5
         const val LAYOUT_RECOMMENDATION_LIST = 6
         const val LAYOUT_EMPTY_NOT_FOUND = 7
+        const val LAYOUT_TOPADS = 8
+        const val LAYOUT_RECOMMENDATION_CAROUSEL = 9
     }
 
     interface ActionListener {
@@ -71,12 +75,20 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 WishlistV2EmptyStateNotFoundViewHolder(binding, actionListener)
             }
             LAYOUT_RECOMMENDATION_TITLE -> {
-                val binding = WishlistV2TitleItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                val binding = WishlistV2RecommendationTitleItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 WishlistV2TitleViewHolder(binding)
             }
             LAYOUT_RECOMMENDATION_LIST -> {
                 val binding = WishlistV2RecommendationItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
                 WishlistV2RecommendationItemViewHolder(binding, actionListener)
+            }
+            LAYOUT_TOPADS -> {
+                val binding = WishlistV2TdnItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2TdnViewHolder(binding)
+            }
+            LAYOUT_RECOMMENDATION_CAROUSEL -> {
+                val binding = WishlistV2RecommendationCarouselItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
+                WishlistV2RecommendationCarouselViewHolder(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -86,7 +98,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val element = listTypeData[position]
         when (holder) {
             is WishlistV2ListItemViewHolder-> {
-                holder.bind(element, holder.adapterPosition, isShowCheckbox)
+                holder.bind(element, position, isShowCheckbox)
             }
             is WishlistV2GridItemViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
@@ -101,6 +113,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is WishlistV2RecommendationItemViewHolder -> {
+                holder.bind(element)
+            }
+            is WishlistV2TdnViewHolder -> {
+                holder.bind(element)
+            }
+            is WishlistV2RecommendationCarouselViewHolder -> {
                 holder.bind(element)
             }
         }
@@ -120,6 +138,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             TYPE_EMPTY_NOT_FOUND -> LAYOUT_EMPTY_NOT_FOUND
             TYPE_RECOMMENDATION_LIST -> LAYOUT_RECOMMENDATION_LIST
             TYPE_RECOMMENDATION_TITLE -> LAYOUT_RECOMMENDATION_TITLE
+            TYPE_TOPADS -> LAYOUT_TOPADS
+            TYPE_RECOMMENDATION_CAROUSEL -> LAYOUT_RECOMMENDATION_CAROUSEL
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }

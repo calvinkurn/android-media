@@ -1,26 +1,18 @@
 package com.tokopedia.wishlist.domain
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.wishlist.data.model.WishlistV2Params
-import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.util.WishlistV2Consts.PARAMS
 import javax.inject.Inject
 
 class WishlistV2UseCase @Inject constructor(@ApplicationContext private val gqlRepository: GraphqlRepository) {
-    suspend fun executeSuspend(param: WishlistV2Params): Result<WishlistV2Response.Data.WishlistV2> {
-        return try {
-            val request = GraphqlRequest(QUERY, WishlistV2Response.Data::class.java, generateParam(param))
-            val response = gqlRepository.response(listOf(request)).getSuccessData<WishlistV2Response.Data>()
-            Success(response.wishlistV2)
-        } catch (e: Exception) {
-            Fail(e)
-        }
+    suspend fun executeSuspend(param: WishlistV2Params): WishlistV2Response.Data {
+        val request = GraphqlRequest(QUERY, WishlistV2Response.Data::class.java, generateParam(param))
+        val response = gqlRepository.response(listOf(request))
+        return response.getData(WishlistV2Response.Data::class.java)
     }
 
     private fun generateParam(param: WishlistV2Params): Map<String, Any?> {

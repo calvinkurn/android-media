@@ -3,14 +3,11 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistV2ThreeDotsMenuItemBinding
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2ThreeDotsMenuItemViewHolder
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 
-/**
- * Created by fwidjaja on 29/10/21.
- */
 class WishlistV2ThreeDotsMenuBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: WishlistV2ThreeDotsMenuBottomSheet.BottomSheetListener? = null
     var wishlistItem = WishlistV2Response.Data.WishlistV2.Item()
