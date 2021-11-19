@@ -211,8 +211,6 @@ ext {
 
     analyticsDependencies = [
             installRef : "com.android.installreferrer:installreferrer:1.1",
-            moengage   : "com.moengage:moe-android-sdk:9.8.02",
-            moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:5.0.4",
     ]
 
