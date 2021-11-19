@@ -379,20 +379,26 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onButtonClaimClicked(questId: Int) {
-        shopPageTracking?.sendEventMembership(shopId, userId)
+        sendEventMembership()
         lastQuestId = questId
         viewModel.claimMembershipBenefit(questId)
     }
 
+    private fun sendEventMembership() {
+        if(!isOwner) {
+            shopPageTracking?.sendEventMembership(shopId, userId)
+        }
+    }
+
     override fun goToVoucherOrRegister(url: String?, clickOrigin: String?) {
         val intent: Intent = if (url == null) {
-            shopPageTracking?.sendEventMembership(shopId, userId)
+            sendEventMembership()
             RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
         } else {
             if (clickOrigin == GO_TO_MEMBERSHIP_DETAIL) {
-                shopPageTracking?.sendEventMembership(shopId, userId)
+                sendEventMembership()
             } else {
-                shopPageTracking?.sendEventMembership(shopId, userId)
+                sendEventMembership()
             }
             RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         }
@@ -1449,11 +1455,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override fun onEtalaseFilterClicked() {
-        shopPageTracking?.clickEtalaseChip(
-                getSelectedTabName(),
-                shopId,
-                userId
-        )
+        if(!isOwner) {
+            shopPageTracking?.clickEtalaseChip(
+                    getSelectedTabName(),
+                    shopId,
+                    userId
+            )
+        }
         redirectToEtalasePicker()
     }
 
@@ -1519,7 +1527,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             initialGridType: ShopProductViewGridType,
             finalGridType: ShopProductViewGridType
     ) {
-        shopPageTracking?.clickProductListToggle(initialGridType, finalGridType, shopId, userId)
+        if(!isOwner) {
+            shopPageTracking?.clickProductListToggle(initialGridType, finalGridType, shopId, userId)
+        }
         changeProductListGridView(finalGridType)
         scrollToChangeProductGridSegment()
         shopChangeProductGridSharedViewModel?.changeSharedProductGridType(finalGridType)
@@ -1571,7 +1581,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
-        shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, shopId, userId)
+        if(!isOwner) {
+            shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, shopId, userId)
+        }
     }
 
     override fun scrollToTop() {

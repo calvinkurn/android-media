@@ -447,7 +447,9 @@ class NewShopPageFragment :
         if (shopViewModel?.isUserSessionActive == false) initStickyLogin()
         scrollToTopButton?.apply {
             circleMainMenu.setOnClickListener {
-                shopPageTracking?.clickScrollToTop(shopId, userId)
+                if(!isMyShop) {
+                    shopPageTracking?.clickScrollToTop(shopId, userId)
+                }
                 val selectedFragment = viewPagerAdapter?.getRegisteredFragment(viewPager?.currentItem.orZero())
                 (selectedFragment as? InterfaceShopPageClickScrollToTop)?.let {
                     it.scrollToTop()
@@ -1251,7 +1253,9 @@ class NewShopPageFragment :
     private fun clickShopShare() {
         if(isUsingNewShareBottomSheet(requireContext())){
             shopPageTracking?.clickShareButtonNewBottomSheet(customDimensionShopPage, userId)
-            shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
+            if(!isMyShop) {
+                shopPageTracking?.clickGlobalHeaderShareButton(customDimensionShopPage, userId)
+            }
         } else {
             if (isMyShop) {
                 shopPageTracking?.clickShareButtonSellerView(customDimensionShopPage)
@@ -1382,7 +1386,9 @@ class NewShopPageFragment :
 
     private fun sendShopPageTabImpressionTracker() {
         listShopPageTabModel.onEach {
-            shopPageTracking?.sendImpressionShopTab(shopId, it.tabTitle)
+            if(!isMyShop) {
+                shopPageTracking?.sendImpressionShopTab(shopId, it.tabTitle)
+            }
         }
     }
 
@@ -1394,7 +1400,9 @@ class NewShopPageFragment :
         }
         val selectedTabName = getSelectedTabName()
         if (selectedTabName.isNotEmpty()) {
-            shopPageTracking?.sendScreenShopPage(shopId, shopType, isLogin, selectedTabName)
+            if (!isMyShop) {
+                shopPageTracking?.sendScreenShopPage(shopId, shopType, isLogin, selectedTabName)
+            }
         }
     }
 
@@ -1476,7 +1484,9 @@ class NewShopPageFragment :
     }
 
     private fun sendShopPageClickTabTracker(position: Int) {
-        shopPageTracking?.clickTab(listShopPageTabModel[position].tabTitle, shopId, userId)
+        if(!isMyShop) {
+            shopPageTracking?.clickTab(listShopPageTabModel[position].tabTitle, shopId, userId)
+        }
     }
 
     private fun configureTab(totalTab: Int) {
@@ -2473,11 +2483,13 @@ class NewShopPageFragment :
                                     customDimensionShopPage,
                                     userId
                             )
-                            shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
-                                    shareModel.channel.orEmpty(),
-                                    customDimensionShopPage,
-                                    userId
-                            )
+                            if(!isMyShop) {
+                                shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
+                                        shareModel.channel.orEmpty(),
+                                        customDimensionShopPage,
+                                        userId
+                                )
+                            }
                         } else{
                             shopPageTracking?.clickScreenshotShareBottomSheetOption(
                                     shareModel.channel.orEmpty(),

@@ -154,7 +154,8 @@ class ShopPageShowcaseViewModelTest {
         every {
             userSessionInterface.shopId
         } returns mockShopId
-        assert(viewModel?.isMyShop(mockShopId) == true)
+        assert(viewModel?.
+        isMyShop(mockShopId) == true)
     }
 
     @Test

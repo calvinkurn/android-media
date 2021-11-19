@@ -130,7 +130,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     override fun onNoteClicked(position: Long, shopNoteUiModel: ShopNoteUiModel) {
         shopInfo?.run {
-            shopPageTracking?.clickReadNotes(shopId, userId)
+            val isMyShop = shopViewModel?.isMyShop(shopId) ?: false
+            if(!isMyShop) {
+                shopPageTracking?.clickReadNotes(shopId, userId)
+            }
             startActivity(ShopNoteDetailActivity.createIntent(
                     activity,
                     shopId,

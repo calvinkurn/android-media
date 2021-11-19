@@ -885,11 +885,13 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
-        shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
-                data.masterLayoutId.toString(),
-                shopId,
-                userId
-        )
+        if(isOwner) {
+            shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
+                    data.masterLayoutId.toString(),
+                    shopId,
+                    userId
+            )
+        }
         shopHomeAdapter.hideLoading()
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
         checkProductWidgetWishListStatus(data)
@@ -1208,14 +1210,16 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
             widgetId: String,
             position: Int
     ) {
-        shopPageHomeTracking.onImpressionShopHomeWidget(
-                segmentName,
-                widgetName,
-                widgetId,
-                position,
-                shopId,
-                userId
-        )
+        if(!isOwner) {
+            shopPageHomeTracking.onImpressionShopHomeWidget(
+                    segmentName,
+                    widgetName,
+                    widgetId,
+                    position,
+                    shopId,
+                    userId
+            )
+        }
     }
 
     private fun sendShopHomeWidgetClickedTracker(
@@ -1224,14 +1228,16 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
             widgetId: String,
             position: Int
     ) {
-        shopPageHomeTracking.onClickedShopHomeWidget(
-                segmentName,
-                widgetName,
-                widgetId,
-                position,
-                shopId,
-                userId
-        )
+        if(!isOwner) {
+            shopPageHomeTracking.onClickedShopHomeWidget(
+                    segmentName,
+                    widgetName,
+                    widgetId,
+                    position,
+                    shopId,
+                    userId
+            )
+        }
     }
 
     override fun onVoucherReloaded() {
@@ -2302,7 +2308,8 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
             initialGridType: ShopProductViewGridType,
             finalGridType: ShopProductViewGridType
     ) {
-        shopPageHomeTracking.clickProductListToggle(initialGridType, finalGridType, shopId, userId)
+        if(!isOwner)
+            shopPageHomeTracking.clickProductListToggle(initialGridType, finalGridType, shopId, userId)
         changeProductListGridView(finalGridType)
         scrollToEtalaseTitlePosition()
         shopChangeProductGridSharedViewModel?.changeSharedProductGridType(finalGridType)
@@ -2353,7 +2360,8 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
-        shopPageHomeTracking.clickApplyFilter(selectedSortName, selectedFilterMap, shopId, userId)
+        if(!isOwner)
+            shopPageHomeTracking.clickApplyFilter(selectedSortName, selectedFilterMap, shopId, userId)
     }
 
     fun setInitialProductListData(productListData: ShopProduct.GetShopProduct) {

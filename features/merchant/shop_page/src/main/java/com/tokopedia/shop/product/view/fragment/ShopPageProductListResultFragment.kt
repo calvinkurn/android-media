@@ -1416,12 +1416,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             initialGridType: ShopProductViewGridType,
             finalGridType: ShopProductViewGridType
     ) {
-        shopPageTracking?.clickProductListToggle(initialGridType, finalGridType, shopId.orEmpty(), userId)
+        if(!isMyShop) {
+            shopPageTracking?.clickProductListToggle(initialGridType, finalGridType, shopId.orEmpty(), userId)
+        }
         changeProductListGridView(finalGridType)
     }
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
-        shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, shopId.orEmpty(), userId)
+        if(!isMyShop) {
+            shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, shopId.orEmpty(), userId)
+        }
     }
 
     fun onSearchBarClicked() {

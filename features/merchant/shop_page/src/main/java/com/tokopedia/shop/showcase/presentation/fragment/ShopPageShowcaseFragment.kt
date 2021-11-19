@@ -177,12 +177,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseClicked(element: FeaturedShowcaseUiModel, position: Int) {
         // track click featured showcase item
-        shopPageShowcaseTracking.clickFeaturedShowcaseItem(
-                featuredShowcase = element,
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.clickFeaturedShowcaseItem(
+                    featuredShowcase = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
 
         // open showcase product result list page
         goToShowcaseProductListResult(element.id, true)
@@ -190,22 +192,26 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseImpressed(element: FeaturedShowcaseUiModel, position: Int) {
         // track featured showcase item impression
-        shopPageShowcaseTracking.featuredShowcaseItemImpressed(
-                featuredShowcase = element,
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.featuredShowcaseItemImpressed(
+                    featuredShowcase = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
     }
 
     override fun onShowcaseListItemSelected(element: ShopEtalaseUiModel, position: Int) {
         // track click all showcase item
-        shopPageShowcaseTracking.clickAllShowcaseItem(
-                allShowcaseItem = element,
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.clickAllShowcaseItem(
+                    allShowcaseItem = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
 
         // open showcase product result list page
         val showcaseId = if (element.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) element.alias else element.id
@@ -214,12 +220,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onShowcaseListItemImpressed(element: ShopEtalaseUiModel, position: Int) {
         // track featured showcase item impression
-        shopPageShowcaseTracking.showcaseItemImpressed(
-                showcaseItem = element,
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.showcaseItemImpressed(
+                    showcaseItem = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
     }
 
     private fun initView(view: View?) {
