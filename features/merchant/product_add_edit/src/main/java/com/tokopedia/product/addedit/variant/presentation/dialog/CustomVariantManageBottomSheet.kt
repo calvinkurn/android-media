@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,8 +25,8 @@ class CustomVariantManageBottomSheet(
 ) : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<AddEditProductCustomVariantManageBottomSheetContentBinding>()
-    private var onVariantTypeEditedListener: ((variantDetail: VariantDetail) -> Unit)? = null
-    private var onVariantTypeDeletedListener: ((variantDetail: VariantDetail) -> Unit)? = null
+    private var onVariantTypeEditedListener: ((editedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
+    private var onVariantTypeDeletedListener: ((deletedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
 
     init {
         setCloseClickListener {
@@ -50,6 +49,12 @@ class CustomVariantManageBottomSheet(
         dismiss()
     }
 
+    private fun getVariantDetailPosition(variantDetail: VariantDetail): Int? {
+        return variantDetails?.indexOfFirst {
+            it.variantID == variantDetail.variantID && it.name == variantDetail.name
+        }
+    }
+
     private fun initChildLayout() {
         setTitle(getString(R.string.label_variant_custom_manage_bottom_sheet_title))
         binding = AddEditProductCustomVariantManageBottomSheetContentBinding
@@ -67,7 +72,7 @@ class CustomVariantManageBottomSheet(
         }.orEmpty())
         adapter.setOnEditButtonClickedListener {
             selectedVariantDetails?.getOrNull(it)?.let { variantDetail ->
-                showEditConfDialog(variantDetail)
+                showEditVariantBottomSheet(variantDetail)
             }
             dismiss()
         }
@@ -114,27 +119,37 @@ class CustomVariantManageBottomSheet(
             }
             setSecondaryCTAClickListener {
                 dismiss()
-                onVariantTypeDeletedListener?.invoke(variantDetail)
+                val position = getVariantDetailPosition(variantDetail)
+                    ?: return@setSecondaryCTAClickListener
+                onVariantTypeDeletedListener?.invoke(position, variantDetail)
             }
         }.show()
     }
 
-    private fun showEditConfDialog(variantDetail: VariantDetail) {
+    private fun showEditVariantBottomSheet(variantDetail: VariantDetail) {
         val bottomSheet = CustomVariantInputBottomSheet(variantDetail.name, variantDetails.orEmpty())
         bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
-            onVariantTypeEditedListener?.invoke(variantDetail.apply { name = newVariantName })
+            val position = getVariantDetailPosition(variantDetail)
+                ?: return@setOnCustomVariantTypeSubmitted
+            onVariantTypeEditedListener?.invoke(position, variantDetail.apply { name = newVariantName })
         }
         bottomSheet.setOnPredefinedVariantTypeSubmitted {
-            onVariantTypeEditedListener?.invoke(it)
+            val position = getVariantDetailPosition(variantDetail)
+                ?: return@setOnPredefinedVariantTypeSubmitted
+            onVariantTypeEditedListener?.invoke(position, it)
         }
         bottomSheet.show(requireActivity().supportFragmentManager)
     }
 
-    fun setOnVariantTypeEditedListener(listener: (variantDetail: VariantDetail) -> Unit) {
+    fun setOnVariantTypeEditedListener(
+        listener: (editedIndex: Int, variantDetail: VariantDetail) -> Unit
+    ) {
         onVariantTypeEditedListener = listener
     }
 
-    fun setOnVariantTypeDeletedListener(listener: (variantDetail: VariantDetail) -> Unit) {
+    fun setOnVariantTypeDeletedListener(
+        listener: (deletedIndex: Int, variantDetail: VariantDetail) -> Unit
+    ) {
         onVariantTypeDeletedListener = listener
     }
 

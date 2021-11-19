@@ -61,6 +61,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_DETAIL
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_PHOTO_IMAGE
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_COUNT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.dialog.AddEditProductVariantSizechartDialogFragment
@@ -178,7 +179,7 @@ class AddEditProductVariantFragment :
                 com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         setupButtonAddVariantType()
-        setupTitleLayoutVariantType()
+        setupLayoutVariantType()
         setupVariantRecyclerViews()
         setupBaseCancelationDialog()
         setupButtonSave()
@@ -314,7 +315,6 @@ class AddEditProductVariantFragment :
     }
 
     override fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean {
-
         viewModel.isSingleVariantTypeIsSelected = true
         val layoutPosition = viewModel.getVariantValuesLayoutPosition(adapterPosition)
         // if deselected variant type contain unit values show confirmation dialog
@@ -683,15 +683,19 @@ class AddEditProductVariantFragment :
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
     }
 
-    private fun setupTitleLayoutVariantType() {
+    private fun setupLayoutVariantType() {
         titleLayoutVariantType.setActionButtonOnClickListener {
-            val bottomSheet = CustomVariantManageBottomSheet(variantTypeAdapter?.getSelectedItems())
-            bottomSheet.setOnVariantTypeEditedListener {
-                variantTypeAdapter?.deleteItem(it)
-                variantTypeAdapter?.addData(it)
+            val bottomSheet = CustomVariantManageBottomSheet(
+                variantTypeAdapter?.getSelectedItems(), variantTypeAdapter?.getItems())
+            bottomSheet.setOnVariantTypeEditedListener { editedIndex, variantDetail ->
+                variantTypeAdapter?.deleteItem(editedIndex, variantDetail)
+                variantTypeAdapter?.addData(variantDetail)
             }
-            bottomSheet.setOnVariantTypeDeletedListener {
-                variantTypeAdapter?.deleteItem(it)
+            bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->
+                viewModel.isSingleVariantTypeIsSelected = true
+                val layoutPosition = viewModel.getVariantValuesLayoutPosition(deletedIndex)
+                deselectVariantType(layoutPosition, deletedIndex, variantDetail)
+                variantTypeAdapter?.deleteItem(deletedIndex, variantDetail)
             }
             bottomSheet.show(childFragmentManager)
         }
@@ -963,23 +967,25 @@ class AddEditProductVariantFragment :
         }
 
         // update variant selection state
-        if (selectedVariantDetails.size == 1) viewModel.isSingleVariantTypeIsSelected = true
+        if (selectedVariantDetails.size == VARIANT_VALUE_LEVEL_ONE_COUNT)
+            viewModel.isSingleVariantTypeIsSelected = true
 
         // set selected variant unit and values
         displayedVariantDetail.forEachIndexed { index, variantDetail ->
-            val selectedVariantUnit = variantDetail.units.firstOrNull()
-                    ?: Unit()
+            val selectedVariantUnit = variantDetail.units.firstOrNull() ?: Unit()
             val selectedVariantUnitValues = variantDetail.units.firstOrNull()?.unitValues
-                    ?: mutableListOf()
+                ?: mutableListOf()
             val selectedVariantData = variantTypeAdapter?.getSelectedItems()?.getOrNull(index)
                 ?: return@forEachIndexed // break loop if invalid index inputted
+            val adapterPosition = variantTypeAdapter?.getSelectedAdapterPosition()?.
+                getOrNull(index).orZero()
+            val isPredefinedVariant = variantDataList.any { it.variantID == variantDetail.variantID }
 
             // add custom unit values to variant data
-            if (variantDetail.variantID != CUSTOM_VARIANT_TYPE_ID) {
+            if (isPredefinedVariant) {
                 val selectedCustomVariantUnitValues = selectedVariantUnitValues.filter {
                     it.variantUnitValueID == CUSTOM_VARIANT_UNIT_VALUE_ID
                 }
-
                 // add custom variant unit values to variant data
                 if (selectedCustomVariantUnitValues.isNotEmpty()) {
                     // find the unit and add the values
@@ -988,9 +994,6 @@ class AddEditProductVariantFragment :
                     }?.unitValues?.addAll(selectedCustomVariantUnitValues)
                 }
             }
-
-            val adapterPosition = variantTypeAdapter?.getSelectedAdapterPosition()?.
-                getOrNull(index).orZero()
 
             when (index) {
                 VARIANT_VALUE_LEVEL_ONE_POSITION -> {

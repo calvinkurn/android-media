@@ -85,7 +85,10 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     fun deselectItem(adapterPosition: Int) {
         selectedItems[adapterPosition] = ViewHolderState.NORMAL
-        manageUnselectedItems(getSelectedCount())
+        getSelectedCount().let {
+            manageUnselectedItems(it)
+            clickListener.onVariantTypeChanged(it)
+        }
     }
 
     fun getSelectedItems(): List<VariantDetail> {
@@ -129,20 +132,17 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         manageUnselectedItems(getSelectedCount())
     }
 
-    fun deleteItem(variantDetail: VariantDetail) {
+    fun deleteItem(index: Int, variantDetail: VariantDetail) {
         if (variantDetail.variantID == CUSTOM_VARIANT_TYPE_ID) {
-            val deletedIndex = items.indexOfFirst {
-                it.name == variantDetail.name
+            items.removeAt(index)
+            selectedItems.removeAt(index)
+            getSelectedCount().let {
+                manageUnselectedItems(it)
+                clickListener.onVariantTypeChanged(it)
             }
-            items.removeAt(deletedIndex)
-            selectedItems.removeAt(deletedIndex)
         } else {
-            val deletedIndex = items.indexOfFirst {
-                it.variantID == variantDetail.variantID
-            }
-            deselectItem(deletedIndex)
+            deselectItem(index)
         }
-        clickListener.onVariantTypeChanged(getSelectedItems().size)
         notifyDataSetChanged()
     }
 

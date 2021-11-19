@@ -7,7 +7,9 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetProductTitleValida
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
+import com.tokopedia.product.addedit.variant.domain.GetAllVariantUseCase
 import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
+import com.tokopedia.product.addedit.variant.domain.GetVariantDataByIdUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
@@ -37,6 +39,12 @@ abstract class AddEditProductVariantViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var titleValidationUseCase: GetProductTitleValidationUseCase
+
+    @RelaxedMockK
+    lateinit var getAllVariantUseCase: GetAllVariantUseCase
+
+    @RelaxedMockK
+    lateinit var getVariantDataByIdUseCase: GetVariantDataByIdUseCase
 
     @Suppress("UNCHECKED_CAST")
     private val mIsInputValid: MediatorLiveData<Boolean> by lazy {
@@ -140,13 +148,14 @@ abstract class AddEditProductVariantViewModelTestFixture {
 
     protected val spiedViewModel: AddEditProductVariantViewModel by lazy {
         spyk(AddEditProductVariantViewModel(CoroutineTestDispatchersProvider,
-                getVariantCategoryCombinationUseCase, titleValidationUseCase
-        ))
+            getVariantCategoryCombinationUseCase, titleValidationUseCase, getAllVariantUseCase,
+            getVariantDataByIdUseCase))
     }
 
     protected val viewModel: AddEditProductVariantViewModel by lazy {
         AddEditProductVariantViewModel(CoroutineTestDispatchersProvider,
-            getVariantCategoryCombinationUseCase, titleValidationUseCase)
+            getVariantCategoryCombinationUseCase, titleValidationUseCase, getAllVariantUseCase,
+            getVariantDataByIdUseCase)
     }
 
     @Before

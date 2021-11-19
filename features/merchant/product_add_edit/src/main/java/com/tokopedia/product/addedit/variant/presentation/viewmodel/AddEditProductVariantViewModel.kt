@@ -91,14 +91,16 @@ class AddEditProductVariantViewModel @Inject constructor(
                 .orTrue()
             val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
                 .orTrue()
-            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
+            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty,
+                isSingleVariantTypeIsSelected)
         }
         addSource(mSelectedVariantUnitValuesLevel2) {
             val isVariantUnitValuesLevel1Empty = mSelectedVariantUnitValuesLevel1.value?.isEmpty()
                 .orTrue()
             val isVariantUnitValuesLevel2Empty = mSelectedVariantUnitValuesLevel2.value?.isEmpty()
                 .orTrue()
-            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty, isSingleVariantTypeIsSelected)
+            this.value = isInputValid(isVariantUnitValuesLevel1Empty, isVariantUnitValuesLevel2Empty,
+                isSingleVariantTypeIsSelected)
         }
     }
     val isInputValid: LiveData<Boolean> get() = mIsInputValid
@@ -116,7 +118,11 @@ class AddEditProductVariantViewModel @Inject constructor(
     private var mGetVariantDetailResult = MutableLiveData<Result<VariantDetail>>()
     val getVariantDetailResult: LiveData<Result<VariantDetail>> get() = mGetVariantDetailResult
 
-    private fun isInputValid(isVariantUnitValuesLevel1Empty: Boolean, isVariantUnitValuesLevel2Empty: Boolean, isSingleVariantTypeIsSelected: Boolean): Boolean {
+    private fun isInputValid(
+        isVariantUnitValuesLevel1Empty: Boolean,
+        isVariantUnitValuesLevel2Empty: Boolean,
+        isSingleVariantTypeIsSelected: Boolean
+    ): Boolean {
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel1Empty) return true
         if (isSingleVariantTypeIsSelected && !isVariantUnitValuesLevel2Empty) return true
         return !isVariantUnitValuesLevel1Empty && !isVariantUnitValuesLevel2Empty

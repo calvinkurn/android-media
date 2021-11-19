@@ -2,8 +2,9 @@ package com.tokopedia.product.addedit.variant.presentation.constant
 
 class AddEditProductVariantConstants {
     companion object {
-        const val CUSTOM_VARIANT_TYPE_ID = 0
         const val COLOUR_VARIANT_TYPE_ID = 1
+        const val CUSTOM_VARIANT_TYPE_ID = 0
+        const val CUSTOM_VARIANT_UNIT_VALUE_ID = 0
         const val REQUEST_CODE_SIZECHART_IMAGE = 0
         const val REQUEST_CODE_VARIANT_PHOTO_IMAGE = 1
         const val REQUEST_CODE_VARIANT_DETAIL = 2
@@ -21,7 +22,6 @@ class AddEditProductVariantConstants {
         const val VARIANT_TRACKER_ON = "on"
         const val VARIANT_TRACKER_OFF = "off"
         const val DEFAULT_IS_PRIMARY_INDEX = 0
-        const val CUSTOM_VARIANT_UNIT_VALUE_ID = 0
         const val ADD_MODE = "add"
         const val ALL_MODE = "all"
         const val ALL_VARIANT_SEARCH_CATEGORY_ID = 1
