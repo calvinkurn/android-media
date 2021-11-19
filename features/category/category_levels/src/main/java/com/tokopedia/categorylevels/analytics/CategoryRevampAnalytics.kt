@@ -26,9 +26,15 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
 
     private var categoryPageIdentifier : String = pageIdentifier
     private var categoryUrl : String? = null
+    private var oldCategoryPageIdentifier : String = pageIdentifier
 
     private fun changePageIdentifier(pageIdentifier: String){
         categoryPageIdentifier = pageIdentifier
+    }
+
+    override fun setOldTabPageIdentifier(pageIdentifier: String) {
+        oldCategoryPageIdentifier = categoryPageIdentifier
+        changePageIdentifier(pageIdentifier)
     }
 
     private var viewedProductsSet: ArrayList<String> = arrayListOf()
@@ -104,16 +110,36 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_NAVIGATION_CHIPS)
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
+            eventAction = CLICK_NAVIGATION_CHIPS,
+            eventLabel = oldCategoryPageIdentifier)
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackTabsClick(
+        id: String,
+        parentPosition: Int,
+        dataItem: DataItem,
+        tabPosition1: Int
+    ) {
+        dataItem.title = dataItem.name
+        trackClickNavigationChips(dataItem, tabPosition1)
     }
 
     override fun trackClickNavigationDropDown() {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_NAVIGATION_DROPDOWN))
     }
 
+    override fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_NAVIGATION_DROPDOWN))
+    }
+
     override fun trackClickCloseNavigation() {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CLOSE_NAVIGATION))
+    }
+
+    override fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CLOSE_NAVIGATION))
     }
 
@@ -177,10 +203,10 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             }
             productMap[KEY_NAME] = it.name.toString()
             var label = ""
-            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+            getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedFilters?.forEach { map ->
                 label = "$label&${map.key}=${map.value}"
             }
-            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+            getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedSort?.forEach { map ->
                 label = "$label&${map.key}=${map.value}"
             }
             productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
@@ -230,10 +256,10 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_ID] = it.productId.toString()
                 productMap[LIST] = productCardItemList
                 var label = ""
-                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedFilters?.forEach { map ->
                     label = "$label&${map.key}=${map.value}"
                 }
-                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+                getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedSort?.forEach { map ->
                     label = "$label&${map.key}=${map.value}"
                 }
                 productMap[FIELD_DIMENSION_61] = label.removePrefix("&")

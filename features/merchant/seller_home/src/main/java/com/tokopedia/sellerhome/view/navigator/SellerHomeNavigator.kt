@@ -27,11 +27,6 @@ class SellerHomeNavigator(
     private val userSession: UserSessionInterface
 ) {
 
-    companion object {
-        private const val OTHER_MENU_REVAMP_EXPERIMENT = "sa_lainnyarevamp"
-        private const val OTHER_MENU_REVAMP_VALUE = "sa_lainnyarevamp"
-    }
-
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
     private var chatFragment: Fragment? = null
@@ -169,12 +164,7 @@ class SellerHomeNavigator(
             "",
             ""
         )
-        otherSettingsFragment =
-            if (useRevampedOtherMenu()) {
-                OtherMenuFragment.createInstance()
-            } else {
-                com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment.createInstance()
-            }
+        otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
         addPage(productManageFragment, context.getString(R.string.sah_product_list))
@@ -307,16 +297,6 @@ class SellerHomeNavigator(
             pages[homeFragment]
         } else {
             shopName
-        }
-    }
-
-    private fun useRevampedOtherMenu(): Boolean {
-        return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                OTHER_MENU_REVAMP_EXPERIMENT, "")
-            remoteConfigRollenceValue.equals(OTHER_MENU_REVAMP_VALUE, ignoreCase = true)
-        } catch (ex: Exception) {
-            false
         }
     }
 

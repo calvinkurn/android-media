@@ -15,8 +15,8 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
 class AttachProductViewModel @Inject constructor
-    (private val useCase: AttachProductUseCase, private val dispatcher: CoroutineDispatchers)
-    : BaseViewModel(dispatcher.main), AttachProductContract.Presenter {
+    (private val useCase: AttachProductUseCase, dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.main) {
 
     private val _products = MutableLiveData<Result<List<AttachProductItemUiModel>>>()
     private val _cacheList = mutableListOf<AttachProductItemUiModel>()
@@ -35,10 +35,11 @@ class AttachProductViewModel @Inject constructor
     val cacheHasNext: Boolean
         get() = _cacheHasNext
 
-    override fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
+    fun loadProductData(query: String, shopId: String, page: Int, warehouseId: String) {
         launchCatchError(block = {
-            val result = useCase(generateParam(query, shopId, page, warehouseId))
-
+            val start = (page * ROW) - ROW
+            val result = useCase(hashMapOf<String, Any>(PARAM to "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
+                    "$shopId&start=$start&user_warehouseId=$warehouseId"))
             val resultModel = result.mapToListProduct().toDomainModelMapper()
             _products.value = Success(resultModel)
 
@@ -54,45 +55,10 @@ class AttachProductViewModel @Inject constructor
         })
     }
 
-    override fun updateCheckedList(products: List<AttachProductItemUiModel>) {
-        if (_checkedList.isNotEmpty()) {
-            resetCheckedList()
-        }
+    fun updateCheckedList(products: List<AttachProductItemUiModel>) {
+        _checkedList.clear()
         _checkedList.addAll(products)
         _checkedListMutableLiveData.value = _checkedList
-    }
-
-    override fun resetCheckedList() {
-        _checkedList.clear()
-    }
-
-    override fun completeSelection(onFinish: (ArrayList<ResultProduct>) -> Unit) {
-        val products = _checkedList.map { product ->
-            ResultProduct(
-                product.productId,
-                product.productUrl,
-                product.productImage,
-                product.productPrice,
-                product.productName,
-                product.originalPrice,
-                product.discountPercentage,
-                product.isFreeOngkirActive,
-                product.imgUrlFreeOngkir,
-                product.stock
-            )
-        }
-        val resultProduct = arrayListOf<ResultProduct>()
-        resultProduct.addAll(products)
-        onFinish.invoke(resultProduct)
-    }
-
-    private fun generateParam(query: String, shopId: String,
-                              page: Int, warehouseId: String): HashMap<String, Any> {
-        val start = (page * ROW) - ROW
-        return hashMapOf<String, Any>().apply {
-            put(PARAM, "device=android&source=shop_product&rows=$ROW&q=$query&shop_id=" +
-                    "$shopId&start=$start&user_warehouseId=$warehouseId")
-        }
     }
 
     fun clearCache() {
