@@ -57,7 +57,7 @@ class PlayUpcomingTest {
     private val mockChannelData = channelDataBuilder.buildChannelData(
         upcomingInfo = mockUpcomingInfo
     )
-    val mockChannelDataWithBuyerPartner = channelDataBuilder.buildChannelData(
+    private val mockChannelDataWithBuyerPartner = channelDataBuilder.buildChannelData(
         upcomingInfo = mockUpcomingInfo,
         partnerInfo = PlayPartnerInfoModelBuilder().buildPlayPartnerInfo(
             type = PartnerType.Buyer
