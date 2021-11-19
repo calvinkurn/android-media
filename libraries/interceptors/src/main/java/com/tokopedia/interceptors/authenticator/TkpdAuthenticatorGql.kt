@@ -8,7 +8,6 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.network.refreshtoken.EncoderDecoder
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSession
@@ -211,8 +210,6 @@ class TkpdAuthenticatorGql(
         private const val AUTHORIZATION = "authorization"
         private const val BEARER = "Bearer"
         private const val HEADER_PARAM_AUTHORIZATION = "authorization"
-        private const val CONFIG_KEY_REFRESH_TOKE_GQL = "android_user_new_gql"
-
 
         private const val TYPE_RETRY_REFRESH_TOKEN_REST = "retry_refresh_with_rest_api"
         private const val TYPE_REFRESH_WITH_GQL = "refresh_token_with_gql"
