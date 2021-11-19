@@ -11,14 +11,21 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
+import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
+import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.usecase.coroutines.Fail
@@ -32,6 +39,9 @@ class TopChatViewModel @Inject constructor(
     private var getShopFollowingUseCase: GetShopFollowingUseCase,
     private var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
     private var addToCartUseCase: AddToCartUseCase,
+    private var seamlessLoginUsecase: SeamlessLoginUsecase,
+    private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
+    private var orderProgressUseCase: OrderProgressUseCase,
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
     private val dispatcher: CoroutineDispatchers,
@@ -54,6 +64,18 @@ class TopChatViewModel @Inject constructor(
     private val _addToCart = MutableLiveData<Result<AddToCartParam>>()
     val addToCart: LiveData<Result<AddToCartParam>>
         get() = _addToCart
+
+    private val _seamlessLogin = MutableLiveData<String>()
+    val seamlessLogin: LiveData<String>
+        get() = _seamlessLogin
+
+    private val _chatRoomSetting = MutableLiveData<Result<RoomSettingResponse>>()
+    val chatRoomSetting: LiveData<Result<RoomSettingResponse>>
+        get() = _chatRoomSetting
+
+    private val _orderProgress = MutableLiveData<Result<OrderProgressResponse>>()
+    val orderProgress: LiveData<Result<OrderProgressResponse>>
+        get() = _orderProgress
 
     private val _srwTickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
     val srwTickerReminder: LiveData<Result<ReminderTickerUiModel>>
@@ -132,6 +154,41 @@ class TopChatViewModel @Inject constructor(
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT
         )
         addToCartUseCase.addToCartRequestParams = addToCartRequestParams
+    }
+
+    fun onClickBannedProduct(liteUrl: String) {
+        val seamlessLoginSubscriber = createSeamlessLoginSubscriber(liteUrl)
+        seamlessLoginUsecase.generateSeamlessUrl(liteUrl, seamlessLoginSubscriber)
+    }
+
+    private fun createSeamlessLoginSubscriber(liteUrl: String): SeamlessLoginSubscriber {
+        return object : SeamlessLoginSubscriber {
+            override fun onUrlGenerated(url: String) {
+                _seamlessLogin.value = url
+            }
+
+            override fun onError(msg: String) {
+                _seamlessLogin.value = liteUrl
+            }
+        }
+    }
+
+    fun loadChatRoomSettings(messageId: String) {
+        launchCatchError(block = {
+            val result = getChatRoomSettingUseCase(messageId)
+            _chatRoomSetting.value = Success(result)
+        }, onError = {
+            _chatRoomSetting.value = Fail(it)
+        })
+    }
+
+    fun getOrderProgress(messageId: String) {
+        launchCatchError(block = {
+            val result = orderProgressUseCase(messageId)
+            _orderProgress.value = Success(result)
+        }, onError = {
+            _orderProgress.value = Fail(it)
+        })
     }
 
     fun getTickerReminder() {

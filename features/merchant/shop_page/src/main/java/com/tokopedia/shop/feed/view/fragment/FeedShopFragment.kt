@@ -594,19 +594,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onMenuClick(
-        positionInFeed: Int,
-        postId: Int,
-        reportable: Boolean,
-        deletable: Boolean,
-        editable: Boolean,
-        isFollowed: Boolean,
-        id: String,
-        authorType: String,
-        postType: String,
-        isVideo: Boolean,
-        caption: String
-    ) {
+    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean, isFollowed: Boolean, id: String, authorType: String, postType: String, isVideo: Boolean, caption: String, playChannelId: String) {
         context?.let {
             val menus =
                 createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
@@ -642,7 +630,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollowed: Boolean,
         type: Boolean,
         shopId: String,
-        isVideo: Boolean
+        isVideo: Boolean,
+        playChannelId: String
     ) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
@@ -651,15 +640,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(
-        positionInFeed: Int,
-        id: Int,
-        authorType: String,
-        type: String,
-        isFollowed: Boolean,
-        isVideo: Boolean,
-        shopId: String
-    ) {
+    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, isVideo: Boolean, shopId: String, playChannelId: String, onClickIcon: Boolean) {
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
@@ -675,7 +656,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollowed: Boolean,
         shopId: String,
         video: Boolean,
-        isTopads: Boolean
+        isTopads: Boolean,
+        playChannelId: String
     ) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
@@ -703,6 +685,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onPostTagItemBSClick(positionInFeed: Int, redirectUrl: String, postTagItem: FeedXProduct, itemPosition: Int) {
+    }
+
+    override fun onFullScreenCLick(feedXCard: FeedXCard,positionInFeed: Int, redirectUrl: String, currentTime: Long, shouldTrack: Boolean, isFullScreen: Boolean) {
+
+    }
+    override fun addVODView(feedXCard: FeedXCard,playChannelId: String, rowNumber: Int, time:Long, hitTrackerApi: Boolean) {
+
     }
 
     override fun onPostTagBubbleClick(
@@ -963,7 +952,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollowed: Boolean,
         isVideo: Boolean,
-        positionInFeed: Int
+        positionInFeed: Int,
+        playChannelId: String,
+        shopName: String
     ) {
     }
 
@@ -974,7 +965,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     ) {
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean) {
+    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean,  isVOD: Boolean) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
