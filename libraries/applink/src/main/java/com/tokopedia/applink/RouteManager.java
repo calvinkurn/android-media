@@ -251,12 +251,14 @@ public class RouteManager {
      * will do nothing if shared preferences value is false and not in debugging mode.
      */
     private static void showAndCopyApplink(Context context, String applink) {
-        if (context.getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, Context.MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE) && GlobalConfig.isAllowDebuggingTools()) {
-            Toast.makeText(context, applink, Toast.LENGTH_SHORT).show();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            if (context.getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, Context.MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE)) {
+                Toast.makeText(context, applink, Toast.LENGTH_SHORT).show();
 
-            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, applink);
-            clipboard.setPrimaryClip(clip);
+                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(CLIPBOARD_LABEL, applink);
+                clipboard.setPrimaryClip(clip);
+            }
         }
     }
 
