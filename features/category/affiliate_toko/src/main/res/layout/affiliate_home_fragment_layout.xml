@@ -127,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/appbar"
                 android:layout_marginTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/unify_space_48"
                 android:layout_marginBottom="@dimen/unify_space_48"
                 android:visibility="visible"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
