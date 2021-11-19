@@ -225,8 +225,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             }
 
             btnTipping.setOnClickListener {
-                DriverTippingBottomSheet.newInstance(mOrderId, data)
-                DriverTippingBottomSheet().show(parentFragmentManager, "")
+                DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
             }
         }
     }

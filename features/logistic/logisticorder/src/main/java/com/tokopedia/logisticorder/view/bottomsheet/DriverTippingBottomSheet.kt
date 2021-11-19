@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
@@ -14,18 +15,12 @@ import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
-import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
-import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.BottomsheetTippingGojekBinding
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.EXTRA_ORDER_ID
-import com.tokopedia.logisticorder.utils.TrackingPageUtil.EXTRA_TRACKING_DATA_MODEL
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -59,28 +54,16 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            orderId = it.getString(EXTRA_ORDER_ID)
-            trackingDataModel = it.getParcelable(EXTRA_TRACKING_DATA_MODEL)
-        }
-        iniInjector()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        iniInjector()
         initChildLayout()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         setInitialViewState()
         initObserver()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
    private fun iniInjector() {
@@ -97,7 +80,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         binding.progressBar.visibility = View.VISIBLE
         binding.paymentTippingLayout.visibility = View.GONE
         binding.resultTippingLayout.visibility = View.GONE
-        viewModel.getDriverTipsData("167021704")
+        viewModel.getDriverTipsData(orderId)
     }
 
     override fun getComponent(): TrackingPageComponent {
@@ -126,10 +109,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         when (logisticDriverModel.status) {
             100 -> {
                 //driver found
-                setTitle("Beri Tip untuk Driver")
+                setTitle(getString(com.tokopedia.logisticorder.R.string.title_prepayment_tipping))
                 binding.paymentTippingLayout.visibility = View.VISIBLE
                 binding.resultTippingLayout.visibility = View.GONE
-                binding.btnTipping.text = "Pilih Pembayaran"
+                binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_payment)
 
                 val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
@@ -153,15 +136,12 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.etNominalTip.textFieldInput.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textFieldWrapper))
 
                 binding.btnTipping.setOnClickListener {
-                    val paymentLink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.textFieldInput.text.toString())
+                    val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.textFieldInput.text.toString())
 
-                    val checkoutResultData = PaymentPassData()
-                    checkoutResultData.redirectUrl = paymentLink
-
-                    val paymentCheckoutString = ApplinkConstInternalPayment.PAYMENT_CHECKOUT
-                    val intent = RouteManager.getIntent(context, paymentCheckoutString)
-                    intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutResultData)
-                    startActivityForResult(intent, PAYMENT_SUCCESS)
+                    RouteManager.route(
+                        context,
+                        paymentApplink
+                    )
                 }
             }
             150 -> {
@@ -171,12 +151,12 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 //post payment
                 binding.resultTippingLayout.visibility = View.VISIBLE
                 binding.paymentTippingLayout.visibility = View.GONE
-                binding.btnTipping.text = "Mengerti"
+                binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_done)
 
                 binding.apply {
                     imgTipDriver.setImage(R.drawable.ic_succes_tipping_gojek, 0F)
-                    tvTipResult.text = "Tip kamu sudah diberikan!"
-                    tvTipResultDesc.text = "Tip 100% ditransfer ke driver setelah pesanan sampai. Tip akan dikembalikan ke kamu jika pesanan batal"
+                    tvTipResult.text = getString(com.tokopedia.logisticorder.R.string.tipping_result_text)
+                    tvTipResultDesc.text = getString(com.tokopedia.logisticorder.R.string.tipping_result_desc)
                     tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
                     tvDriverNameValue.text = logisticDriverModel.lastDriver.name
                     tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
@@ -199,10 +179,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 val text = binding.etNominalTip.textFieldInput.text.toString()
                 if (s.isNotEmpty() && text.toInt() < 1000) {
-                    setWrapperError(wrapper, "Min. Rp1.000")
+                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.minimum_tipping))
                     binding.btnTipping.isEnabled = false
                 } else if (s.isNotEmpty() && text.toInt() > 20000) {
-                    setWrapperError(wrapper, "Maks. Rp20.000")
+                    setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.maksimum_tipping))
                     binding.btnTipping.isEnabled = false
                 } else {
                     setWrapperError(wrapper, null)
@@ -226,19 +206,14 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(orderId: String?, data: TrackingDataModel): DriverTippingBottomSheet {
-            return DriverTippingBottomSheet().apply {
-                arguments = Bundle().apply {
-                    putString(EXTRA_ORDER_ID, orderId)
-                    putParcelable(EXTRA_TRACKING_DATA_MODEL, data)
-                }
-            }
-        }
-    }
-
     override fun onTippingValueClicked(tippingValue: Int) {
         binding.etNominalTip.textFieldInput.setText(tippingValue.toString())
+    }
+
+
+    fun show(fm: FragmentManager, orderId: String?, trackingDataModel: TrackingDataModel) {
+        this.orderId = orderId
+        this.trackingDataModel = trackingDataModel
+        show(fm, "TAG")
     }
 }
