@@ -170,9 +170,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
             AffiliateShareModel("Twitter", IconUnify.TWITTER,"twitter",10,sheetType,
                     "Contoh: twitter.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled),
             AffiliateShareModel("Website/Blog", IconUnify.GLOBE,"website",11,sheetType,
-                    "Contoh: tokopedia.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled),
-            AffiliateShareModel("Lainnya",null,"others", 0,sheetType,
-                    "Contoh: yourwebiste.com",false, isChecked = false,isLinkGenerationEnabled))
+                    "Contoh: tokopedia.com/tokopedia",false,isChecked = false, isLinkGenerationEnabled))
 
         if(sheetType == SheetType.ADD_SOCIAL){
             contentView?.findViewById<UnifyButton>(R.id.simpan_btn)?.run {
@@ -188,6 +186,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface ,
             (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliateShareModel("Line", IconUnify.LINE,"line",4,sheetType,
                     "",false, isChecked = false,isLinkGenerationEnabled))
         }
+
+        (listVisitable as ArrayList<Visitable<AffiliateAdapterTypeFactory>>).add(AffiliateShareModel("Lainnya",null,"others", 0,sheetType,
+                "Contoh: yourwebiste.com",false, isChecked = false,isLinkGenerationEnabled))
     }
 
     private fun setSelectedCheckBox(){
