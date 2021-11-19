@@ -50,6 +50,7 @@ class FirebaseDLWrapper {
                             RouteManager.route(activity, link)
                             processUtmParams(link, firebaseUrl)
                         }
+                        //scalyr logs
                     }
                 }
 
@@ -124,11 +125,13 @@ class FirebaseDLWrapper {
             if (shortLink != null) {
                 var link = shortLink.toString()
                 shareCallback.urlCreated(LinkerUtils.createShareResult(link, link, link))
+                //scalyr logs
             }
 
         }.addOnFailureListener {
             // Error
             // ...
+            //scalyr logs
         }
 
     }
