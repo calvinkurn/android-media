@@ -11,8 +11,8 @@ object ReplyBubbleBinder {
     fun generateRightBg(view: View?): Drawable? {
         return ViewUtil.generateBackgroundWithShadow(
             view = view,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN100,
-            strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
+            backgroundColor = R.color.topchat_bg_dms_right_bubble_reply,
+            strokeColor = R.color.topchat_bg_dms_right_bubble,
             strokeWidth = R.dimen.dp_topchat_2,
             strokePaddingBottom = 27f.toPx().toInt(),
             topLeftRadius = R.dimen.dp_topchat_20,
