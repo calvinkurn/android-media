@@ -76,21 +76,23 @@ class DimenResourceValueDetector : Detector(), XmlScanner {
     }
 
     private fun findResourceIds(context: Context) {
-        val resFolders = context.project.resourceFolders.firstOrNull()
+        context.project.resourceFolders.forEach { resFolder ->
+            val valueDirs = resFolder.listFiles()
+                ?.filter { it.name.contains(SdkConstants.FD_RES_VALUES) }
 
-        val valueDirs = resFolders?.listFiles()
-            ?.filter { it.name.contains(SdkConstants.FD_RES_VALUES) }
-
-        valueDirs?.forEach {
-            val files = it.listFiles()
-            findValueResources(files)
+            valueDirs?.forEach {
+                val files = it.listFiles()
+                findValueResources(files)
+            }
         }
     }
 
     private fun findValueResources(files: Array<File>?) {
         files?.forEach { file ->
             val ids = file.readLines().filter {
-                it.contains(SdkConstants.ATTR_NAME) && !it.contains(SdkConstants.TAG_ITEM)
+                val nameAttr = "${SdkConstants.ATTR_NAME}="
+                val itemTag = "<${SdkConstants.TAG_ITEM}"
+                it.contains(nameAttr) && !it.contains(itemTag)
             }.map {
                 it.substringAfter("=\"").substringBefore("\"")
             }.filter { it.isNotEmpty() }

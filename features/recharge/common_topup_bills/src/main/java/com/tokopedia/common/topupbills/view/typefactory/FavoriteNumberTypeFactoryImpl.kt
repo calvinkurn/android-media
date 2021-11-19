@@ -7,16 +7,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberBinding
-import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberEmptyStateBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberErrorStateBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberNotFoundBinding
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberShimmerBinding
+import com.tokopedia.common.topupbills.databinding.ItemTopupBillsSavedNumberEmptyStateBinding
 import com.tokopedia.common.topupbills.view.listener.FavoriteNumberEmptyStateListener
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberEmptyDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberErrorDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberNotFoundDataView
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberShimmerDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberEmptyDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberErrorDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberNotFoundDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberShimmerDataView
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberEmptyViewHolder
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder
 import com.tokopedia.common.topupbills.view.viewholder.FavoriteNumberErrorViewHolder.FavoriteNumberErrorStateListener
@@ -69,12 +69,11 @@ class FavoriteNumberTypeFactoryImpl(
     }
 
     private fun createFavoriteNumberEmptyViewHolder(parent: View): AbstractViewHolder<Visitable<*>> {
-        val binding = ItemTopupBillsFavoriteNumberEmptyStateBinding.inflate(
+        val binding = ItemTopupBillsSavedNumberEmptyStateBinding.inflate(
             LayoutInflater.from(parent.context), parent as ViewGroup, false
         )
         return FavoriteNumberEmptyViewHolder(
-            binding,
-            emptyStateListener
+            binding
         ) as AbstractViewHolder<Visitable<*>>
     }
 

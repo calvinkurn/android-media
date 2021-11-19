@@ -2,17 +2,20 @@ package com.tokopedia.checkout.bundle.view.viewholder
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.unifyprinciples.Typography
 
-class ShipmentCostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater) : RecyclerView.ViewHolder(itemView) {
 
     private val mRlShipmentCostLayout: RelativeLayout = itemView.findViewById(R.id.rl_shipment_cost)
     private val mTvTotalItemLabel: TextView = itemView.findViewById(R.id.tv_total_item_label)
@@ -29,6 +32,7 @@ class ShipmentCostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private val mTvPromoOrCouponLabel: TextView = itemView.findViewById(R.id.tv_promo_or_coupon_label)
     private val mTvDonationLabel: TextView = itemView.findViewById(R.id.tv_donation_label)
     private val mTvDonationPrice: TextView = itemView.findViewById(R.id.tv_donation_price)
+    private val mLinearLayoutCrossSell: LinearLayout = itemView.findViewById(R.id.ll_cross_sell)
     private val mTvEmasLabel: TextView = itemView.findViewById(R.id.tv_emas_label)
     private val mTvEmasPrice: TextView = itemView.findViewById(R.id.tv_emas_price)
     private val mTvTradeInLabel: TextView = itemView.findViewById(R.id.tv_trade_in_label)
@@ -48,7 +52,7 @@ class ShipmentCostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     fun bindViewHolder(shipmentCost: ShipmentCostModel) {
         mRlShipmentCostLayout.visibility = View.VISIBLE
         mTvTotalItemLabel.text = getTotalItemLabel(mTvTotalItemLabel.context, shipmentCost.totalItem)
-        mTvTotalItemPrice.setTextAndContentDescription(if (shipmentCost.totalItemPrice == 0.0) "-" else removeDecimalSuffix(convertPriceValueToIdrFormat(shipmentCost.totalItemPrice.toLong(), false)), R.string.content_desc_tv_total_item_price_summary)
+        mTvTotalItemPrice.setTextAndContentDescription(if (shipmentCost.totalItemPrice == 0.0) "-" else convertPriceValueToIdrFormat(shipmentCost.totalItemPrice.toLong(), false).removeDecimalSuffix(), R.string.content_desc_tv_total_item_price_summary)
         mTvShippingFeeLabel.text = mTvShippingFeeLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee)
         mTvShippingFee.setTextAndContentDescription(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.shippingFee), R.string.content_desc_tv_shipping_fee_summary)
         mTvInsuranceFee.setTextAndContentDescription(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.insuranceFee), R.string.content_desc_tv_insurance_fee_summary)
@@ -59,6 +63,23 @@ class ShipmentCostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 getPriceFormat(mTvPromoOrCouponLabel, mTvPromoDiscount, shipmentCost.promoPrice))
         mTvSellerCostAdditionFee.text = getPriceFormat(mTvSellerCostAdditionLabel, mTvSellerCostAdditionFee, shipmentCost.additionalFee)
         mTvDonationPrice.text = getPriceFormat(mTvDonationLabel, mTvDonationPrice, shipmentCost.donation)
+        if (shipmentCost.listCrossSell.isEmpty()) {
+            mLinearLayoutCrossSell.removeAllViews()
+            mLinearLayoutCrossSell.visibility = View.GONE
+        } else {
+            shipmentCost.listCrossSell.forEach { crossSell ->
+                val itemCrossSellView = layoutInflater.inflate(R.layout.item_summary_transaction_cross_sell, null, false) as RelativeLayout
+
+                val crossSellItemLabel = itemCrossSellView.findViewById<Typography>(R.id.tv_cross_sell_label)
+                crossSellItemLabel.text = crossSell.crossSellModel.orderSummary.title
+
+                val crossSellItemPrice = itemCrossSellView.findViewById<Typography>(R.id.tv_cross_sell_price)
+                crossSellItemPrice.text = getPriceFormat(crossSellItemLabel, crossSellItemPrice, crossSell.crossSellModel.price.toDouble())
+                mLinearLayoutCrossSell.removeAllViews()
+                mLinearLayoutCrossSell.addView(itemCrossSellView)
+                mLinearLayoutCrossSell.visibility = View.VISIBLE
+            }
+        }
         mTvEmasPrice.text = getPriceFormat(mTvEmasLabel, mTvEmasPrice, shipmentCost.emasPrice)
         mTvTradeInPrice.text = String.format(mTvTradeInPrice.context.getString(R.string.promo_format),
                 getPriceFormat(mTvTradeInLabel, mTvTradeInPrice, shipmentCost.tradeInPrice))
@@ -136,7 +157,7 @@ class ShipmentCostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         } else {
             textViewLabel.visibility = View.VISIBLE
             textViewPrice.visibility = View.VISIBLE
-            removeDecimalSuffix(convertPriceValueToIdrFormat(price.toLong(), false))
+            convertPriceValueToIdrFormat(price.toLong(), false).removeDecimalSuffix()
         }
     }
 
