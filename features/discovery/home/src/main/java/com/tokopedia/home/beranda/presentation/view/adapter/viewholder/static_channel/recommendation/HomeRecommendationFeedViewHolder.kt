@@ -15,6 +15,7 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeFeedPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.RecommendationTabDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.home.util.HomeServerLogger
 import java.util.*
 
 /**
@@ -71,7 +72,15 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 listener.parentPool)
 
         homeFeedsViewPager?.offscreenPageLimit = DEFAULT_FEED_PAGER_OFFSCREEN_LIMIT
-        homeFeedsViewPager?.adapter = homeFeedPagerAdapter
+        try {
+            homeFeedsViewPager?.adapter = homeFeedPagerAdapter
+        } catch (e: IllegalStateException) {
+            HomeServerLogger.logWarning(
+                    type = HomeServerLogger.TYPE_RECOM_SET_ADAPTER_ERROR,
+                    throwable = e,
+                    reason = e.message.toString()
+            )
+        }
         homeFeedsTabLayout?.setup(homeFeedsViewPager, convertToTabItemDataList(recommendationTabDataModelList!!))
         homeFeedsTabLayout?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {

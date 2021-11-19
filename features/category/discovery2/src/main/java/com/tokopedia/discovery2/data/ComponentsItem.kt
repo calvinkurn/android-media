@@ -59,6 +59,7 @@ data class ComponentsItem(
         var pageEndPoint: String = "",
         var pagePath: String = "",
         var parentComponentId: String = "",
+        var parentComponentName: String? = null,
         var parentComponentPosition: Int = 0,
         var parentFilterComponentId: String? = null,
         var cpmData: CpmModel? = null,
@@ -100,6 +101,7 @@ data class ComponentsItem(
             it.pageEndPoint = this.pageEndPoint
             it.tabName = tabName
             it.data?.firstOrNull()?.tabName = tabName
+            it.parentComponentPosition = position
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
         }
         componentsItem = listComponents

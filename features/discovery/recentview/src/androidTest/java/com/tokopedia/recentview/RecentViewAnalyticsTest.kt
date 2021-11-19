@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.recentview.view.activity.RecentViewActivity
@@ -32,27 +33,19 @@ class RecentViewAnalyticsTest {
     @get:Rule
     var activityRule = ActivityTestRule<RecentViewActivity>(RecentViewActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse(RecentViewMockResponseConfig())
         activityRule.launchActivity(Intent(InstrumentationRegistry.getInstrumentation().targetContext, RecentViewActivity::class.java))
     }
 
     @After
     fun dispose(){
-        gtmLogDBSource.deleteAll().subscribe()
-    }
-
-    @Test
-    fun testRecentView() {
-        initTest()
-        doActivityTest()
-        assertCassava()
-        addDebugEnd()
     }
 
     private fun initTest() {
@@ -80,15 +73,20 @@ class RecentViewAnalyticsTest {
         logTestMessage("Done UI Test")
     }
 
-    private fun assertCassava() {
-        waitForData()
-        //worked
-        MatcherAssert.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECENT_VIEW),
-                hasAllSuccess())
-    }
-
     private fun logTestMessage(message: String) {
         TopAdsVerificationTestReportUtil.writeTopAdsVerificatorLog(activityRule.activity, message)
         Log.d(TAG, message)
+    }
+
+    @Test
+    fun testRecentViewCassava() {
+
+        RecentViewCassavaTest {
+            initTest()
+            doActivityTest()
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECENT_VIEW)
+        }
     }
 }

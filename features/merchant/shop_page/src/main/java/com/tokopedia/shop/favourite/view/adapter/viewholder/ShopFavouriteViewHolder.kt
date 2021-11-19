@@ -1,14 +1,14 @@
 package com.tokopedia.shop.favourite.view.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopPageLabelView
 import com.tokopedia.shop.databinding.ItemShopFavouriteUserBinding
+import com.tokopedia.shop.favourite.view.model.ShopFollowerUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -25,7 +25,7 @@ class ShopFavouriteViewHolder(itemView: View) : AbstractViewHolder<ShopFollowerU
     override fun bind(shopFollowerUiModel: ShopFollowerUiModel?) {
         userLabelView?.title = shopFollowerUiModel?.name.orEmpty()
         userLabelView?.imageView?.show()
-        ImageHandler.loadImageCircle2(userLabelView?.imageView?.context, userLabelView?.imageView, shopFollowerUiModel?.imageUrl.orEmpty())
+        userLabelView?.imageView?.loadImageCircle(shopFollowerUiModel?.imageUrl.orEmpty())
     }
 
     companion object {

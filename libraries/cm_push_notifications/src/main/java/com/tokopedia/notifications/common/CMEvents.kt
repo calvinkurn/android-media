@@ -58,6 +58,7 @@ object IrisAnalyticsEvents {
     private const val CLICKED_ELEMENT_ID = "clicked_element_id"
     private const val INAPP_TYPE = "inapp_type"
     private const val LABEL = "eventlabel"
+    private const val SHOP_ID = "shop_id"
 
     private const val AMPLIFICATION = "amplification"
 
@@ -99,7 +100,7 @@ object IrisAnalyticsEvents {
         if (baseNotificationModel.isAmplification) {
             values[LABEL] = AMPLIFICATION
         }
-
+        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -111,6 +112,7 @@ object IrisAnalyticsEvents {
         if (elementID != null) {
             values[CLICKED_ELEMENT_ID] = elementID
         }
+        checkEventAndAddShopId(eventName,values,baseNotificationModel.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -139,6 +141,7 @@ object IrisAnalyticsEvents {
             return
         val irisAnalytics = IrisAnalytics.Companion.getInstance(context.applicationContext)
         val values = addBaseValues(context, eventName, cmInApp)
+        checkEventAndAddShopId(eventName, values, cmInApp.shopId)
         trackEvent(context, irisAnalytics, values)
 
     }
@@ -151,6 +154,7 @@ object IrisAnalyticsEvents {
         elementID?.let {
             values[CLICKED_ELEMENT_ID] = elementID
         }
+        checkEventAndAddShopId(eventName, values, cmInApp.shopId)
         trackEvent(context, irisAnalytics, values)
     }
 
@@ -220,6 +224,27 @@ object IrisAnalyticsEvents {
         return values
 
     }
+
+    private fun checkEventAndAddShopId(
+        eventName: String,
+        values: HashMap<String, Any>,
+        shopId: String?
+    ) {
+
+        val allowedEvents = listOf(
+            INAPP_RECEIVED,
+            INAPP_CLICKED,
+            INAPP_DISMISSED,
+            PUSH_RECEIVED,
+            PUSH_CLICKED,
+            PUSH_DISMISSED
+        )
+
+        if (!shopId.isNullOrBlank() && (eventName in allowedEvents)) {
+            values[SHOP_ID] = shopId
+        }
+    }
+
 }
 
 object CMEvents {

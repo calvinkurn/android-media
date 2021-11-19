@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
@@ -13,6 +14,7 @@ import com.tokopedia.topchat.stub.common.RemoteConfigStub
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class TopchatRoomTemplateTest : TopchatRoomTest() {
 
     @Test

@@ -3,7 +3,11 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -268,7 +272,7 @@ inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit) 
 fun getIdLocale() = Locale("id", "ID")
 
 fun String.goToWebView(context: Context) {
-    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))
+    RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, this))
 }
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)

@@ -3,7 +3,7 @@ package com.tokopedia.checkout.old.domain.model.cartshipmentform
 import android.os.Parcelable
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class GroupShop(
