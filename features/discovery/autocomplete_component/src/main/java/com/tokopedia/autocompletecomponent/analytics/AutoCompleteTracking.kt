@@ -93,15 +93,16 @@ open class AutoCompleteTracking(
         )
     }
 
-    open fun eventClickSubmitInitialState(pageSource: String) {
+    open fun eventClickSubmitInitialState(keyword: String, pageSource: String) {
         SearchComponentTrackingRollence.click(
             searchComponentTracking(
+                keyword = keyword,
                 componentId = INITIAL_STATE_MANUAL_ENTER,
                 dimension90 = pageSource,
             ),
             AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
         ) {
-            eventClickSubmit("")
+            eventClickSubmit(keyword)
         }
     }
 

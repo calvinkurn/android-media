@@ -239,11 +239,21 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         val queryOrHint = getQueryOrHint(searchParameter)
         val parameter = searchParameter.getSearchParameterMap()
         val pageSource = Dimension90Utils.getDimension90(parameter)
+        val isInitialState = query.isEmpty()
 
         when {
-            isTokoNow(parameter) -> autoCompleteTracking.eventClickSubmitTokoNow(queryOrHint)
-            query.isEmpty() -> autoCompleteTracking.eventClickSubmitInitialState(pageSource)
-            else -> autoCompleteTracking.eventClickSubmitAutoComplete(query, pageSource)
+            isTokoNow(parameter) ->
+                autoCompleteTracking.eventClickSubmitTokoNow(queryOrHint)
+            isInitialState ->
+                autoCompleteTracking.eventClickSubmitInitialState(
+                    queryOrHint,
+                    pageSource,
+                )
+            else ->
+                autoCompleteTracking.eventClickSubmitAutoComplete(
+                    queryOrHint,
+                    pageSource,
+                )
         }
     }
 
