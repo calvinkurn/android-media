@@ -23,9 +23,11 @@ data class PlayUpcomingGeneralInfo(
 
 sealed class PlayUpcomingState {
     object Unknown: PlayUpcomingState()
+
     object RemindMe: PlayUpcomingState()
     object Reminded: PlayUpcomingState()
     object WatchNow: PlayUpcomingState()
+    object WaitingRefreshDuration: PlayUpcomingState()
     object Refresh: PlayUpcomingState()
     object Loading: PlayUpcomingState()
 }

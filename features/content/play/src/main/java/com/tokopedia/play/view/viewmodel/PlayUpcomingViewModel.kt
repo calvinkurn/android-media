@@ -140,13 +140,20 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun updateUpcomingState(upcomingInfo: PlayUpcomingUiModel) {
         viewModelScope.launch {
-            _upcomingState.emit(
-                when {
-                    upcomingInfo.isAlreadyLive -> PlayUpcomingState.WatchNow
-                    upcomingInfo.isReminderSet -> PlayUpcomingState.Reminded
-                    else -> PlayUpcomingState.RemindMe
-                }
-            )
+            val currState = _upcomingState.value
+
+            if(currState == PlayUpcomingState.Unknown) {
+                _upcomingState.emit(
+                    when {
+                        upcomingInfo.isAlreadyLive -> PlayUpcomingState.WatchNow
+                        upcomingInfo.isReminderSet -> PlayUpcomingState.Reminded
+                        else -> PlayUpcomingState.RemindMe
+                    }
+                )
+            }
+            else {
+                if(currState == PlayUpcomingState.WaitingRefreshDuration) performRefreshWaitingDuration()
+            }
         }
     }
 
@@ -276,7 +283,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun handleUpcomingTimerFinish() {
         viewModelScope.launch {
-            _upcomingState.emit(PlayUpcomingState.Unknown)
+            _upcomingState.emit(PlayUpcomingState.WaitingRefreshDuration)
             _uiEvent.emit(
                 PlayUpcomingUiEvent.ShowInfoEvent(
                     UiString.Resource(R.string.play_upcoming_channel_not_started)
