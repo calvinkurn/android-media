@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
+import com.tokopedia.media.common.util.NetworkManager
 
 data class MediaLoaderTrackerParam(
     val url: String,
@@ -36,7 +37,7 @@ object MediaLoaderTracker {
         val mediaSettingIndex = mediaSetting.qualitySettings()
         val qualitySetting = getQualitySetting(mediaSettingIndex)
 
-        val connectionType = DeviceNetworkInfo.getConnectionType(context)
+        val connectionType = NetworkManager.getConnectionType(context)
 
         return mapOf(
             "image_url" to url,
