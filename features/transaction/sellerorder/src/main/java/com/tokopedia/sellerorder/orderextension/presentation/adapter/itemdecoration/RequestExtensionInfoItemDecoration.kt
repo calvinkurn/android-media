@@ -25,5 +25,5 @@ class RequestExtensionInfoItemDecoration : RecyclerView.ItemDecoration() {
         layoutParams.bottomMargin = margin
     }
 
-    fun Float.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
+    private fun Float.toPx(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
 }

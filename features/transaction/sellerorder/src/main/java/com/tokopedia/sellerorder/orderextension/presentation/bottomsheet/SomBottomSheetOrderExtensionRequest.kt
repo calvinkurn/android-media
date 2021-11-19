@@ -26,15 +26,15 @@ class SomBottomSheetOrderExtensionRequest(
     private var data: OrderExtensionRequestInfoUiModel,
     private var viewModel: SomOrderExtensionViewModel
 ) : SomBottomSheet<BottomsheetOrderExtensionRequestInfoBinding>(
-    LAYOUT,
-    true,
-    true,
-    false,
-    true,
-    false,
-    "",
-    context,
-    true
+    childViewsLayoutResourceId = LAYOUT,
+    showOverlay = true,
+    showCloseButton = true,
+    showKnob = false,
+    clearPadding = true,
+    draggable = false,
+    bottomSheetTitle = "",
+    context = context,
+    dismissOnClickOverlay = true
 ), OrderExtensionRequestInfoOptionViewHolder.SomRequestExtensionOptionListener,
     OrderExtensionRequestInfoCommentViewHolder.OrderExtensionRequestInfoCommentListener {
 

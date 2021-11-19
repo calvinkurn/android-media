@@ -12,5 +12,5 @@ abstract class SomOrderExtensionViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SomOrderExtensionViewModel::class)
-    internal abstract fun somDetailViewModel(viewModel: SomOrderExtensionViewModel): ViewModel
+    internal abstract fun somOrderExtensionViewModel(viewModel: SomOrderExtensionViewModel): ViewModel
 }

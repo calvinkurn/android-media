@@ -12,7 +12,7 @@ interface OrderExtensionRequestInfoUpdater {
 
         private fun updateItems(newData: OrderExtensionRequestInfoUiModel) {
             newData.items = newData.items.map {
-                if (isChangedComment(it)) {
+                if (it.isChangedComment()) {
                     changedComment.copy().apply {
                         validateComment()
                     }
@@ -20,11 +20,9 @@ interface OrderExtensionRequestInfoUpdater {
             }
         }
 
-        private fun isChangedComment(
-            item: OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem
-        ): Boolean {
-            return item is OrderExtensionRequestInfoUiModel.CommentUiModel
-                    && item.optionCode == changedComment.optionCode
+        private fun OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem.isChangedComment(): Boolean {
+            return this is OrderExtensionRequestInfoUiModel.CommentUiModel
+                    && this.optionCode == changedComment.optionCode
         }
     }
 
@@ -42,9 +40,9 @@ interface OrderExtensionRequestInfoUpdater {
         private fun updateItems(newData: OrderExtensionRequestInfoUiModel) {
             newData.items = newData.items.map {
                 if (it is OrderExtensionRequestInfoUiModel.OptionUiModel) {
-                    if (isPreviouslySelectedOption(it)) {
+                    if (it.isPreviouslySelectedOption()) {
                         it.copy(selected = false)
-                    } else if (isCurrentlySelectedOption(it)) {
+                    } else if (it.isCurrentlySelectedOption()) {
                         it.copy(selected = true)
                     } else it
                 } else if (it is OrderExtensionRequestInfoUiModel.CommentUiModel) {
@@ -58,16 +56,12 @@ interface OrderExtensionRequestInfoUpdater {
             }
         }
 
-        private fun isPreviouslySelectedOption(
-            item: OrderExtensionRequestInfoUiModel.OptionUiModel
-        ): Boolean {
-            return item.code != selectedOption.code && item.selected
+        private fun OrderExtensionRequestInfoUiModel.OptionUiModel.isPreviouslySelectedOption(): Boolean {
+            return code != selectedOption.code && selected
         }
 
-        private fun isCurrentlySelectedOption(
-            item: OrderExtensionRequestInfoUiModel.OptionUiModel
-        ): Boolean {
-            return item.code == selectedOption.code
+        private fun OrderExtensionRequestInfoUiModel.OptionUiModel.isCurrentlySelectedOption(): Boolean {
+            return code == selectedOption.code
         }
 
         private fun OrderExtensionRequestInfoUiModel.CommentUiModel.isForSelectedOption(): Boolean {
