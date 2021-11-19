@@ -19,7 +19,7 @@ object ReplyBubbleBinder {
             topRightRadius = R.dimen.dp_topchat_0,
             bottomLeftRadius = R.dimen.dp_topchat_0,
             bottomRightRadius = R.dimen.dp_topchat_0,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = R.color.topchat_dms_chat_bubble_shadow,
             elevation = R.dimen.dp_topchat_2,
             shadowRadius = R.dimen.dp_topchat_1,
             shadowGravity = Gravity.CENTER
@@ -37,7 +37,7 @@ object ReplyBubbleBinder {
             topRightRadius = R.dimen.dp_topchat_20,
             bottomLeftRadius = R.dimen.dp_topchat_0,
             bottomRightRadius = R.dimen.dp_topchat_0,
-            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            shadowColor = R.color.topchat_dms_chat_bubble_shadow,
             elevation = R.dimen.dp_topchat_2,
             shadowRadius = R.dimen.dp_topchat_1,
             shadowGravity = Gravity.CENTER
