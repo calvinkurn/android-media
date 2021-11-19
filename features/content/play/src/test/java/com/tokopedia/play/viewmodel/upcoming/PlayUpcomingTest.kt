@@ -17,10 +17,7 @@ import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
 import com.tokopedia.play.util.*
-import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
-import com.tokopedia.play.view.uimodel.action.ImpressUpcomingChannel
-import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
-import com.tokopedia.play.view.uimodel.action.UpcomingTimerFinish
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
@@ -252,6 +249,38 @@ class PlayUpcomingTest {
 
             events.assertNotEmpty()
             events.last().isEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
+        }
+    }
+
+    /**
+     * Share Link
+     */
+    @Test
+    fun `given a upcoming channel, when user click share link, then it should emit copy clipboard & show info event`() {
+        /** Mock */
+        val mockClipboardEvent = PlayUpcomingUiEvent.CopyToClipboardEvent(mockChannelData.channelDetail.shareInfo.content)
+        val mockInfoEvent = PlayUpcomingUiEvent.ShowInfoEvent(UiString.Resource(1))
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val (_, events) = robot.recordStateAndEvent {
+                robot.submitAction(ClickShareUpcomingAction)
+            }
+
+            /** Verify **/
+            events.assertNotEmpty()
+            events[0].isEqualTo(mockClipboardEvent)
+            events[1].isEqualToIgnoringFields(mockInfoEvent, PlayUpcomingUiEvent.ShowInfoEvent::message)
         }
     }
 
