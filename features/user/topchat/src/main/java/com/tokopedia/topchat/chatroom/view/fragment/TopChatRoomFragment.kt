@@ -80,7 +80,9 @@ import com.tokopedia.topchat.chatroom.data.activityresult.ReviewRequestResult
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
@@ -1600,38 +1602,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun blockChat() {
-        presenter.blockChat(messageId, {
-            topchatViewState?.setChatBlockStatus(true)
-            topchatViewState?.onCheckChatBlocked(
-                opponentRole,
-                opponentName,
-                topchatViewState?.blockStatus ?: BlockedStatus()
-            )
-            context?.let {
-                showToasterConfirmation(it.getString(R.string.title_success_block_chat))
-            }
-        }, {
-            val errorMessage = ErrorHandler.getErrorMessage(context, it)
-            showToasterError(errorMessage)
-        })
+        viewModel.toggleBlockChatPromo(messageId, ActionType.BlockChat)
+    }
+
+    private fun onSuccessToggleBlockChat(blockStatus: Boolean, @StringRes toasterText: Int) {
+        topchatViewState?.setChatBlockStatus(blockStatus)
+        topchatViewState?.onCheckChatBlocked(
+            opponentRole,
+            opponentName,
+            topchatViewState?.blockStatus ?: BlockedStatus()
+        )
+        context?.let {
+            showToasterConfirmation(it.getString(toasterText))
+        }
+    }
+
+    private fun onErrorToggleBlockChat(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        showToasterError(errorMessage)
     }
 
     override fun unBlockChat() {
+        viewModel.toggleBlockChatPromo(messageId, ActionType.UnblockChat)
         analytics.trackClickUnblockChat(shopId)
-        presenter.unBlockChat(messageId, {
-            topchatViewState?.setChatBlockStatus(false)
-            topchatViewState?.onCheckChatBlocked(
-                opponentRole,
-                opponentName,
-                topchatViewState?.blockStatus ?: BlockedStatus()
-            )
-            context?.let {
-                showToasterConfirmation(it.getString(R.string.title_success_unblock_chat))
-            }
-        }, {
-            val errorMessage = ErrorHandler.getErrorMessage(context, it)
-            showToasterError(errorMessage)
-        })
     }
 
     override fun onGoToChatSetting() {
@@ -1962,36 +1955,39 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun requestBlockPromo(element: BroadcastSpamHandlerUiModel?) {
-        presenter.requestBlockPromo(messageId, { response ->
-            topchatViewState?.setChatPromoBlockStatus(
-                true,
-                response.chatBlockResponse.chatBlockStatus.validDate
-            )
-            element?.stopBlockPromo()
-            onSuccessBlockPromoFromBcHandler(response)
-            element?.let {
-                adapter.removeBroadcastHandler(it)
-            }
-        }, {
-            element?.stopBlockPromo()
-            onErrorBlockPromoFromBcHandler(it)
-            element?.let {
-                adapter.updateBroadcastHandlerState(it)
-            }
-        })
+        viewModel.toggleBlockChatPromo(messageId, ActionType.BlockPromo)
+    }
+
+    private fun onSuccessBlockPromo(
+        response: ChatSettingsResponse,
+        element: BroadcastSpamHandlerUiModel?
+    ) {
+        topchatViewState?.setChatPromoBlockStatus(
+            true,
+            response.chatBlockResponse.chatBlockStatus.validDate
+        )
+        element?.stopBlockPromo()
+        onSuccessBlockPromoFromBcHandler(response)
+        element?.let {
+            adapter.removeBroadcastHandler(it)
+        }
+    }
+
+    private fun onFailBlockPromo(throwable: Throwable, element: BroadcastSpamHandlerUiModel?) {
+        element?.stopBlockPromo()
+        onErrorBlockPromoFromBcHandler(throwable)
+        element?.let {
+            adapter.updateBroadcastHandlerState(it)
+        }
     }
 
     private fun requestAllowPromo() {
-        presenter.requestAllowPromo(messageId, {
-            topchatViewState?.setChatPromoBlockStatus(false)
-            addBroadCastSpamHandler(topchatViewState?.isShopFollowed ?: false)
-            onSuccessAllowPromoFromBcHandler()
-        }, {
-            onErrorAllowPromoFromBcHandler(it)
-        })
+        viewModel.toggleBlockChatPromo(messageId, ActionType.BlockPromo)
     }
 
     private fun onSuccessAllowPromoFromBcHandler() {
+        topchatViewState?.setChatPromoBlockStatus(false)
+        addBroadCastSpamHandler(topchatViewState?.isShopFollowed ?: false)
         context?.let {
             showToasterConfirmation(it.getString(R.string.title_success_allow_promo))
         }
@@ -2418,6 +2414,41 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
             }
         })
+
+        viewModel.toggleBlock.observe(viewLifecycleOwner, {
+            handleToggleBlock(it)
+        })
+    }
+
+    private fun handleToggleBlock(item: WrapperChatSetting) {
+        when (item.actionType) {
+            ActionType.BlockChat -> {
+                when (item.response) {
+                    is Success -> onSuccessToggleBlockChat(
+                        true, R.string.title_success_block_chat)
+                    is Fail -> onErrorToggleBlockChat((item.response as Fail).throwable)
+                }
+            }
+            ActionType.UnblockChat -> {
+                when (item.response) {
+                    is Success -> onSuccessToggleBlockChat(
+                        false, R.string.title_success_unblock_chat)
+                    is Fail -> onErrorToggleBlockChat((item.response as Fail).throwable)
+                }
+            }
+            ActionType.BlockPromo -> {
+                when (item.response) {
+                    is Success -> onSuccessBlockPromo((item.response as Success).data, item.element)
+                    is Fail -> onFailBlockPromo((item.response as Fail).throwable, item.element)
+                }
+            }
+            ActionType.UnblockPromo -> {
+                when (item.response) {
+                    is Success -> onSuccessAllowPromoFromBcHandler()
+                    is Fail -> onErrorAllowPromoFromBcHandler((item.response as Fail).throwable)
+                }
+            }
+        }
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {

@@ -848,38 +848,6 @@ open class TopChatRoomPresenter @Inject constructor(
         newUnreadMessage = 0
     }
 
-    override fun requestBlockPromo(
-        messageId: String,
-        onSuccess: (ChatSettingsResponse) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        chatToggleBlockChat.blockPromo(messageId, onSuccess, onError)
-    }
-
-    override fun requestAllowPromo(
-        messageId: String,
-        onSuccess: (ChatSettingsResponse) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        chatToggleBlockChat.allowPromo(messageId, onSuccess, onError)
-    }
-
-    override fun blockChat(
-        messageId: String,
-        onSuccess: (ChatSettingsResponse) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        chatToggleBlockChat.blockChat(messageId, onSuccess, onError)
-    }
-
-    override fun unBlockChat(
-        messageId: String,
-        onSuccess: (ChatSettingsResponse) -> Unit,
-        onError: (Throwable) -> Unit
-    ) {
-        chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
-    }
-
     override fun getBackground() {
         chatBackgroundUseCase.getBackground(
             ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
