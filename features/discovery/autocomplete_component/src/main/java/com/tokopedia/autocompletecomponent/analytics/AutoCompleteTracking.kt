@@ -25,7 +25,6 @@ import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstan
 import com.tokopedia.autocompletecomponent.analytics.AutoCompleteTrackingConstant.USER_ID
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Category.SEARCH_COMPONENT
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
@@ -106,17 +105,11 @@ open class AutoCompleteTracking(
         }
     }
 
+    /**
+     * Prepared for next task for auto complete tracking component
+     */
     open fun eventClickSubmitAutoComplete(keyword: String, pageSource: String) {
-        SearchComponentTrackingRollence.click(
-            searchComponentTracking(
-                keyword = keyword,
-                componentId = AUTO_COMPLETE_MANUAL_ENTER,
-                dimension90 = pageSource,
-            ),
-            AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING
-        ) {
-            eventClickSubmit(keyword)
-        }
+        eventClickSubmit(keyword)
     }
 
     open fun eventClickSubmit(label: String) {

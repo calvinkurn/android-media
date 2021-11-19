@@ -2,7 +2,6 @@ package com.tokopedia.autocompletecomponent.util
 
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
@@ -48,14 +47,10 @@ internal fun MutableMap<String, String>.removeKeys(vararg keys: String) {
 
 internal fun MutableMap<String, String>.addComponentId() {
     val query = get(SearchApiConst.Q) ?: ""
-    val componentId = getComponentId(query)
 
-    put(SRP_COMPONENT_ID, componentId)
+    if (query.isEmpty())
+        put(SRP_COMPONENT_ID, INITIAL_STATE_MANUAL_ENTER)
 }
-
-private fun getComponentId(query: String) =
-    if (query.isNotEmpty()) INITIAL_STATE_MANUAL_ENTER
-    else AUTO_COMPLETE_MANUAL_ENTER
 
 internal fun MutableMap<String, String>.addQueryIfEmpty() {
     val query = get(SearchApiConst.Q) ?: ""

@@ -218,11 +218,20 @@ open class BaseAutoCompleteActivity: BaseActivity(),
     override fun onQueryTextSubmit(searchParameter: SearchParameter): Boolean {
         val searchParameterCopy = SearchParameter(searchParameter)
 
+        if (getQueryOrHint(searchParameterCopy).isEmpty()) return true
+
         sendTrackingSubmitQuery(searchParameterCopy)
         clearFocusSearchView()
         moveToSearchPage(searchParameterCopy)
 
         return true
+    }
+
+    private fun getQueryOrHint(searchParameter: SearchParameter): String {
+        val query = searchParameter.getSearchQuery()
+
+        return if (query.isNotEmpty()) query
+        else searchParameter.get(HINT)
     }
 
     private fun sendTrackingSubmitQuery(searchParameter: SearchParameter) {
@@ -236,13 +245,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             query.isEmpty() -> autoCompleteTracking.eventClickSubmitInitialState(pageSource)
             else -> autoCompleteTracking.eventClickSubmitAutoComplete(query, pageSource)
         }
-    }
-
-    private fun getQueryOrHint(searchParameter: SearchParameter): String {
-        val query = searchParameter.getSearchQuery()
-
-        return if (query.isNotEmpty()) query
-        else searchParameter.get(HINT)
     }
 
     private fun clearFocusSearchView() {
