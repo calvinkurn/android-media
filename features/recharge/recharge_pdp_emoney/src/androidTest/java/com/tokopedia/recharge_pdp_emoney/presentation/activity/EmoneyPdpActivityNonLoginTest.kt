@@ -57,14 +57,12 @@ class EmoneyPdpActivityNonLoginTest {
         Intents.init()
         Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK,
                 null))
+        setUpLaunchActivity()
     }
 
     @Test
     fun testNonLoginFlow() {
         //Setup intent cart page & launch activity
-        setupGraphqlMockResponse(EmoneyPdpResponseConfig(isLogin = false))
-        setUpLaunchActivity()
-
         Espresso.onView(withId(R.id.emoneyPdpTicker)).check(matches(not(isDisplayed())))
         clickPromoTabAndSalinPromo()
         scanEmoneyCard()
@@ -80,7 +78,6 @@ class EmoneyPdpActivityNonLoginTest {
         val intent = Intent(context, EmoneyPdpActivity::class.java).setData(
                 Uri.parse("tokopedia://digital/form?category_id=34&menu_id=267&template=electronicmoney")
         )
-        mActivityRule.launchActivity(intent)
         Thread.sleep(2000)
 
         localCacheHandler = LocalCacheHandler(context, EmoneyPdpFragment.EMONEY_PDP_PREFERENCES_NAME)
@@ -88,6 +85,7 @@ class EmoneyPdpActivityNonLoginTest {
             putBoolean(EmoneyPdpFragment.EMONEY_PDP_COACH_MARK_HAS_SHOWN, true)
             applyEditor()
         }
+        mActivityRule.launchActivity(intent)
     }
 
     private fun scanEmoneyCard() {
