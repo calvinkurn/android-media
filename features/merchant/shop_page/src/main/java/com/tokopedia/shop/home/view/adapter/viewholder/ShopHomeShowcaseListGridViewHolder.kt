@@ -8,10 +8,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeEtalaseListGridBinding
 import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * author by Rafli Syam on 09/08/2021
@@ -28,13 +30,13 @@ class ShopHomeShowcaseListGridViewHolder(
         @LayoutRes
         val ITEM_GRID_LAYOUT = R.layout.item_shop_home_etalase_list_grid
     }
-
+    private val viewBinding: ItemShopHomeEtalaseListGridBinding? by viewBinding()
     private var showcaseItemImage: ImageUnify? = null
     private var showcaseItemName: Typography? = null
 
     init {
-        showcaseItemImage = itemView.findViewById(R.id.img_showcase_item_grid)
-        showcaseItemName = itemView.findViewById(R.id.tv_showcase_name_item_grid)
+        showcaseItemImage = viewBinding?.imgShowcaseItemGrid
+        showcaseItemName = viewBinding?.tvShowcaseNameItemGrid
     }
 
     fun bind(element: ShopHomeShowcaseListItemUiModel) {

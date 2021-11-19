@@ -91,8 +91,8 @@ class PlayEtalasePickerViewModel @Inject constructor(
     fun loadEtalaseProducts(etalaseId: String, page: Int) {
         val currentValue = _observableSelectedEtalase.value?.currentValue
         val etalase = etalaseMap[etalaseId]
-        _observableSelectedEtalase.value = PageResult.Loading(
-                if (page == 1 || currentValue == null) EtalaseContentUiModel.Empty(name = etalase?.name.orEmpty())
+        _observableSelectedEtalase.value = PageResult.loading(
+                if (page == 1 || currentValue == null) EtalaseContentUiModel.empty(name = etalase?.name.orEmpty())
                 else currentValue
         )
 
@@ -128,7 +128,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
      */
     fun searchProductsByKeyword(keyword: String, page: Int) {
         val currentValue = _observableSearchedProducts.value?.currentValue.orEmpty()
-        _observableSearchedProducts.value = PageResult.Loading(
+        _observableSearchedProducts.value = PageResult.loading(
                 if (page == 1) emptyList() else currentValue
         )
         viewModelScope.launch {
@@ -146,7 +146,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
     }
 
     fun loadEtalaseList() {
-        _observableEtalase.value = PageResult.Loading(emptyList())
+        _observableEtalase.value = PageResult.loading(emptyList())
         viewModelScope.launch {
             try {
                 val etalaseList = getEtalaseList()
@@ -214,7 +214,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
             }
         } else {
             PageResult(
-                    currentValue = EtalaseContentUiModel.Empty(),
+                    currentValue = EtalaseContentUiModel.empty(),
                     state = PageResultState.Fail(IllegalStateException("Etalase not found"))
             )
         }

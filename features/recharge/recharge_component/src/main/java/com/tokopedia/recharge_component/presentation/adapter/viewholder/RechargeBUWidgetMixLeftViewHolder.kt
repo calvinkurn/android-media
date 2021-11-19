@@ -18,7 +18,10 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselSeeMorePdpDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
-import com.tokopedia.home_component.util.*
+import com.tokopedia.home_component.util.ChannelWidgetUtil
+import com.tokopedia.home_component.util.GravitySnapHelper
+import com.tokopedia.home_component.util.loadImageFitCenter
+import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -98,7 +101,10 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-
+        if(!isCacheData){
+            // Decrement position to account for empty product card
+            listener.onRechargeBUWidgetProductCardImpression(dataModel, position - 1)
+        }
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {

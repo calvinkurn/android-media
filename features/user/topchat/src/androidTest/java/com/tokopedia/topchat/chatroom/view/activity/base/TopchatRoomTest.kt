@@ -65,6 +65,7 @@ import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Companion.START_TIME_FORMAT
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
@@ -121,13 +122,7 @@ abstract class TopchatRoomTest {
     protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
 
     @Inject
-    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
-
-    @Inject
     protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
-
-    @Inject
-    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
@@ -136,7 +131,22 @@ abstract class TopchatRoomTest {
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
     @Inject
+    protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
+
+    @Inject
+    protected lateinit var getKeygenUseCase: GetKeygenUseCaseStub
+
+    @Inject
+    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
+
+    @Inject
+    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
+
+    @Inject
+    protected lateinit var userSession: UserSessionInterface
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -209,6 +219,10 @@ abstract class TopchatRoomTest {
             "success_upload_image_reply.json",
             ChatReplyPojo::class.java
         )
+        chatRoomSettingResponse = AndroidFileUtil.parse(
+            "success_get_chat_setting_fraud_alert.json",
+            RoomSettingResponse::class.java
+        )
     }
 
     private fun setupDaggerComponent() {
@@ -234,6 +248,7 @@ abstract class TopchatRoomTest {
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
         getExistingMessageIdUseCaseNewStub.response = existingMessageIdResponse
+        toggleFavouriteShopUseCaseStub.response = true
     }
 
     private fun setupDummyImageChatService() {
@@ -870,6 +885,10 @@ abstract class TopchatRoomTest {
 
     protected fun waitForIt(timeMillis: Long) {
         Thread.sleep(timeMillis)
+    }
+
+    protected fun clickBroadcastHandlerFollowShop() {
+        onView(withId(R.id.btn_follow_shop)).perform(click())
     }
 }
 

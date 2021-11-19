@@ -8,9 +8,12 @@ class BuyerOrderDetailTrackerValidationTest10 : BuyerOrderDetailTrackerValidatio
     @Test
     fun validateTrackersOnOrder10() {
         setupMock {
-            mockOrderDetail(BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_10)
+            mockOrderDetail(
+                BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_10,
+                graphqlRepositoryStub,
+                context
+            )
         } actionTest {
-            login()
             launchBuyerOrderDetailActivity(activityRule)
             blockAllIntent()
             testClickSeeDetail()
@@ -24,14 +27,15 @@ class BuyerOrderDetailTrackerValidationTest10 : BuyerOrderDetailTrackerValidatio
         } validate {
             clearQueries()
             addQueriesToValidate(
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeSimilarProductQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonChatSellerQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath)
+                BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSeeSimilarProductQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonChatSellerQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonHelpQueryPath
+            )
             hasPassedAnalytics(cassavaTestRule)
         }
     }

@@ -9,6 +9,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
@@ -47,6 +48,7 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
     val addWishListUseCase by memoized<AddWishListUseCase>()
     val sendReportUseCase by memoized<SendReportUseCase>()
+    val feedBroadcastTrackerUseCase by memoized<FeedBroadcastTrackerUseCase>()
 
     return FeedViewModel(
         CoroutineTestDispatchersProvider,
@@ -64,7 +66,9 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
         getDynamicFeedNewUseCase,
         getWhitelistNewUseCase,
         sendReportUseCase,
-        addWishListUseCase
+        addWishListUseCase,
+        feedBroadcastTrackerUseCase
+
     )
 }
 

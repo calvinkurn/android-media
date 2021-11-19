@@ -31,6 +31,8 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_as_seller.json"
     private val chatWithBuyerPath =
         "success_get_chat_first_page_as_buyer.json"
+    private val bannedProductChatWithBuyerPath =
+        "success_get_chat_first_page_with_banned_products.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -45,6 +47,11 @@ class GetChatUseCaseStub @Inject constructor(
 
     val defaultChatWithBuyerResponse: GetExistingChatPojo
         get() = alterResponseOf(chatWithBuyerPath) { response ->
+            alterDateToToday(response)
+        }
+
+    val bannedProductChatWithBuyerResponse: GetExistingChatPojo
+        get() = alterResponseOf(bannedProductChatWithBuyerPath) { response ->
             alterDateToToday(response)
         }
 
