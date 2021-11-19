@@ -27,7 +27,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.*
 import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.affiliate_no_product_iv
 import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.home_global_error

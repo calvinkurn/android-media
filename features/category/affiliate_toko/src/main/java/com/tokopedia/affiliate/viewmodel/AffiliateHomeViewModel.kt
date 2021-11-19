@@ -5,7 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.*
+import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
+import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.pojo.AffiliateUserPerformaData
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
+import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
+import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
+import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.*
@@ -105,9 +111,9 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     fun convertDataToVisitables(
-        data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data?,
-        performanceList: AffiliateUserPerformaListItemData?,
-        page: Int
+            data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data?,
+            performanceList: AffiliateUserPerformaListItemData?,
+            page: Int
     ): ArrayList<Visitable<AffiliateAdapterTypeFactory>>? {
         val tempList: ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
         if (page == PAGE_ZERO) {

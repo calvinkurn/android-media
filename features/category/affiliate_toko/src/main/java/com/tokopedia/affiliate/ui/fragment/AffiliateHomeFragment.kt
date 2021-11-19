@@ -16,14 +16,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
-import com.tokopedia.affiliate.adapter.AffiliateListItemDecorator
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
-import com.tokopedia.affiliate.model.AffiliateAnnouncementData
-import com.tokopedia.affiliate.model.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker

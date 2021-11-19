@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.usecase
 
-import com.tokopedia.affiliate.model.AffiliatePerformanceListData
+import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_Performance_List
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject
@@ -16,7 +16,7 @@ class AffiliatePerformanceDataUseCase @Inject constructor(
     }
 
 
-    suspend fun affiliateItemPerformanceList(dateRangeRequest: String,lastID: String): AffiliatePerformanceListData{
+    suspend fun affiliateItemPerformanceList(dateRangeRequest: String,lastID: String): AffiliatePerformanceListData {
         return repository.getGQLData(
             GQL_Affiliate_Performance_List,
             AffiliatePerformanceListData::class.java,

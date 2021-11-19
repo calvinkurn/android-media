@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.usecase
 
-import com.tokopedia.affiliate.model.AffiliateUserPerformaListItemData
+import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_USER_PERFORMANCE
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import javax.inject.Inject

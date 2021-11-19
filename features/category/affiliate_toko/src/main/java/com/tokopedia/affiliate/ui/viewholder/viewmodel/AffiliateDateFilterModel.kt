@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.ui.viewholder.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.AffiliateDateFilterData
+import com.tokopedia.affiliate.model.pojo.AffiliateDateFilterData
 
 class AffiliateDateFilterModel(val data: AffiliateDateFilterData) : Visitable<AffiliateAdapterTypeFactory> {
 

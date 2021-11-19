@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.model
+package com.tokopedia.affiliate.model.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -12,21 +12,21 @@ data class AffiliateUserPerformaListItemData(
             var `data`: Data?
       ) {
             data class Data(
-                  @SerializedName("Error")
+                    @SerializedName("Error")
                   var error: Error?,
-                  @SerializedName("Data")
+                    @SerializedName("Data")
                   var userData: UserData,
-                  @SerializedName("Status")
+                    @SerializedName("Status")
                   var status: Int?
             ) {
                   data class Error(
-                        @SerializedName("CtaLink")
+                          @SerializedName("CtaLink")
                         var ctaLink: CtaLink?,
-                        @SerializedName("CtaText")
+                          @SerializedName("CtaText")
                         var ctaText: String?,
-                        @SerializedName("ErrorType")
+                          @SerializedName("ErrorType")
                         var errorType: Int?,
-                        @SerializedName("Message")
+                          @SerializedName("Message")
                         var message: String?
                   ) {
                         data class CtaLink(
@@ -68,7 +68,7 @@ data class AffiliateUserPerformaListItemData(
                               @SerializedName("Order")
                               var order: Int?,
                               @SerializedName("Tooltip")
-                              var tooltip :Tooltip?
+                              var tooltip : Tooltip?
                         ){
                               data class Tooltip(
                                     @SerializedName("Description")
