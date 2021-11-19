@@ -1,23 +1,19 @@
-package com.tokopedia.affiliate.model
+package com.tokopedia.affiliate.model.response
 
 
 import com.google.gson.annotations.SerializedName
 
-data class AffiliateValidateUserData(
-        @SerializedName("validateAffiliateUserStatus")
-        var validateAffiliateUserStatus: ValidateAffiliateUserStatus
+data class AffiliateOnBoardingData(
+        @SerializedName("onBoardAffiliate")
+        var onBoardAffiliate: OnBoardAffiliate?
 ) {
-    data class ValidateAffiliateUserStatus(
+    data class OnBoardAffiliate(
             @SerializedName("Data")
             var `data`: Data?
     ) {
         data class Data(
                 @SerializedName("Error")
                 var error: Error?,
-                @SerializedName("IsEligible")
-                var isEligible: Boolean?,
-                @SerializedName("IsRegistered")
-                var isRegistered: Boolean?,
                 @SerializedName("Status")
                 var status: Int?
         ) {

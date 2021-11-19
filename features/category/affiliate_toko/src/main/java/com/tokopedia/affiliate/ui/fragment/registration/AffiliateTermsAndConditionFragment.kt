@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,7 +16,7 @@ import com.tokopedia.affiliate.createListForTermsAndCondition
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnBoardingRequest
 import com.tokopedia.affiliate.viewmodel.AffiliateTermsAndConditionViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -25,7 +24,6 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.affiliate_portfolio_fragment_layout.*
 import kotlinx.android.synthetic.main.affiliate_terms_and_condition_fragment_layout.*
 import javax.inject.Inject
 

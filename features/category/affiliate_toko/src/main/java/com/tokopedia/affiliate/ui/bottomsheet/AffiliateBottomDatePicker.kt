@@ -14,7 +14,7 @@ import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeDiffcal
 import com.tokopedia.affiliate.adapter.dateRangePicker.AffiliateDateRangeTypeFactory
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
-import com.tokopedia.affiliate.model.AffiliateDatePickerData
+import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateRangePickerModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.BottomSheetUnify

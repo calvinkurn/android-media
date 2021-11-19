@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.model
+package com.tokopedia.affiliate.model.pojo
 
 class AffiliatePortfolioButtonData (
     var text : String?,

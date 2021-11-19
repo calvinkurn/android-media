@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.model
+package com.tokopedia.affiliate.model.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -11,41 +11,41 @@ data class AffiliateSearchData(
         var `data`: Data?
     ) {
         data class Data(
-            @SerializedName("cards")
+                @SerializedName("cards")
             var cards: List<Card?>?,
-            @SerializedName("error")
+                @SerializedName("error")
             var error: Error?,
-            @SerializedName("status")
+                @SerializedName("status")
             var status: Int?
         ) {
             data class Card(
-                @SerializedName("hasMore")
+                    @SerializedName("hasMore")
                 var hasMore: Boolean?,
-                @SerializedName("id")
+                    @SerializedName("id")
                 var id: String?,
-                @SerializedName("items")
+                    @SerializedName("items")
                 var items: List<Item?>?,
-                @SerializedName("title")
+                    @SerializedName("title")
                 var title: String?
             ) {
                 data class Item(
-                    @SerializedName("productID")
+                        @SerializedName("productID")
                     var productID: String,
-                    @SerializedName("additionalInformation")
+                        @SerializedName("additionalInformation")
                     var additionalInformation: List<AdditionalInformation?>?,
-                    @SerializedName("cardUrl")
+                        @SerializedName("cardUrl")
                     var cardUrl: String?,
-                    @SerializedName("commission")
+                        @SerializedName("commission")
                     var commission: Commission?,
-                    @SerializedName("footer")
+                        @SerializedName("footer")
                     var footer: List<Footer?>?,
-                    @SerializedName("image")
+                        @SerializedName("image")
                     var image: Image?,
-                    @SerializedName("rating")
+                        @SerializedName("rating")
                     var rating: Int?,
-                    @SerializedName("status")
+                        @SerializedName("status")
                     var status: Status?,
-                    @SerializedName("title")
+                        @SerializedName("title")
                     var title: String?
                 ) {
                     data class AdditionalInformation(
@@ -107,17 +107,17 @@ data class AffiliateSearchData(
             }
 
             data class Error(
-                @SerializedName("errorCta")
+                    @SerializedName("errorCta")
                 var errorCta: List<ErrorCta?>?,
-                @SerializedName("errorImage")
+                    @SerializedName("errorImage")
                 var errorImage: ErrorImage?,
-                @SerializedName("errorStatus")
+                    @SerializedName("errorStatus")
                 var errorStatus: Int?,
-                @SerializedName("errorType")
+                    @SerializedName("errorType")
                 var errorType: Int?,
-                @SerializedName("message")
+                    @SerializedName("message")
                 var message: String?,
-                @SerializedName("title")
+                    @SerializedName("title")
                 var title: String?
             ) {
                 data class ErrorCta (

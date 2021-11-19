@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.model.raw.request
+package com.tokopedia.affiliate.model.request
 
 import com.google.gson.annotations.SerializedName
 

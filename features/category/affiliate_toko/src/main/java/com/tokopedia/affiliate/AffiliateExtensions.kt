@@ -3,8 +3,8 @@ package com.tokopedia.affiliate
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.AffiliateHeaderItemData
-import com.tokopedia.affiliate.model.AffiliateTermsAndConditionData
+import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
+import com.tokopedia.affiliate.model.pojo.AffiliateTermsAndConditionData
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditionModel
