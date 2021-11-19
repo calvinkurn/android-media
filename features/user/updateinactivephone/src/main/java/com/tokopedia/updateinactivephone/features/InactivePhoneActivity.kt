@@ -12,9 +12,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
@@ -43,6 +46,9 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var inactivePhoneUserDataModel: InactivePhoneUserDataModel? = null
 
+    private var rollanceType = ""
+    private var remoteConfigInstance: RemoteConfigInstance? = null
+
     override fun getNewFragment(): Fragment? = null
 
     override fun getComponent(): InactivePhoneComponent {
@@ -60,6 +66,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         component.inject(this)
         initObserver()
         remoteConfig = FirebaseRemoteConfigImpl(this)
+        rollanceType = getAbTestPlatform()?.getString(ROLLANCE_KEY_INACTIVE_PHONE_V2).toString()
 
         intent?.extras?.let {
             inactivePhoneUserDataModel = InactivePhoneUserDataModel(
@@ -133,17 +140,22 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         }
     }
 
+    private fun isInactivePhoneWithPin(): Boolean = rollanceType.contains(ROLLANCE_KEY_INACTIVE_PHONE_V2).orFalse()
+
     private fun onSuccessGetStatus(statusInactivePhoneNumberDataModel: StatusInactivePhoneNumberDataModel) {
         val status = statusInactivePhoneNumberDataModel.statusInactivePhoneNumber
-        if (status.isSuccess && status.isAllowed && status.userIdEnc.isNotEmpty()) {
-            gotoWithPinFlow(InactivePhoneUserDataModel(
-                userIdEnc = status.userIdEnc,
-                oldPhoneNumber = inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
-                email = inactivePhoneUserDataModel?.email.orEmpty(),
-                userIndex = inactivePhoneUserDataModel?.userIndex.orZero()
-            ))
+        if (isInactivePhoneWithPin()) {
+            if (status.isSuccess && status.isAllowed && status.userIdEnc.isNotEmpty()) {
+                gotoWithPinFlow(InactivePhoneUserDataModel(
+                    userIdEnc = status.userIdEnc,
+                    oldPhoneNumber = inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty(),
+                    email = inactivePhoneUserDataModel?.email.orEmpty(),
+                    userIndex = inactivePhoneUserDataModel?.userIndex.orZero()
+                ))
+            } else {
+                gotoRegularRegularFlow()
+            }
         } else {
-            inactivePhoneUserDataModel?.userIndex = 1
             gotoRegularRegularFlow()
         }
     }
@@ -153,10 +165,10 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     private fun gotoRegularRegularFlow() {
-        startActivity(inactivePhoneUserDataModel?.let {
-            InactivePhoneRegularActivity.createIntent(this, it)
-        })
-        finish()
+        inactivePhoneUserDataModel?.let {
+            startActivity(InactivePhoneRegularActivity.createIntent(this, it))
+            finish()
+        }
     }
 
     private fun gotoWithPinFlow(inactivePhoneUserDataModel: InactivePhoneUserDataModel) {
@@ -199,6 +211,13 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         }.show()
     }
 
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = RemoteConfigInstance(application)
+        }
+        return remoteConfigInstance?.abTestPlatform
+    }
+
     private fun gotoPlayStore() {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(APPLINK_PLAY_STORE + getAppPackageName()))
@@ -227,6 +246,8 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
     companion object {
         private const val REQUEST_CODE_CHOOSE_ACCOUNT = 100
+
+        private const val ROLLANCE_KEY_INACTIVE_PHONE_V2 = "inactive_msisdn_v2"
 
         private const val APPLINK_PLAY_STORE = "market://details?id="
         private const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id="
