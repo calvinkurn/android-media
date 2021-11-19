@@ -46,7 +46,7 @@
             app:text_field_label="@string/shop_address_label_district"
             app:text_field_label_static="true"
             android:clickable="true"
-            android:focusable="false" />
+            android:focusable="true" />
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/postal_code"
