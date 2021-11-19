@@ -252,7 +252,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
     }
 
     override fun clearEmptyStateListener() {
-        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.setText("")
+        resetToInitialState()
         viewModel.cancelAutoComplete()
     }
 
@@ -293,6 +293,14 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
             viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
         } else {
             viewModel.cancelAutoComplete()
+        }
+    }
+
+    private fun resetToInitialState(){
+        KeyboardHandler.showSoftKeyboard(activity)
+        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.apply {
+            requestFocus()
+            setText("")
         }
     }
 
