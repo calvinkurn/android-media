@@ -72,6 +72,14 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
             bebas_ongkir_dimension
             is_bbi
             category_id
+            bundle_group_id
+        }
+        bundle_group_data {
+          group_id
+          icon
+          title
+          total_price
+          total_price_str
         }
         shipping_amount
         shipping_amount_str

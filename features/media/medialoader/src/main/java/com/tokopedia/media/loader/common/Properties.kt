@@ -34,7 +34,8 @@ open class Properties(
         internal var transforms: List<Transformation<Bitmap>>? = null,
         internal var centerCrop: Boolean = false,
         internal var centerInside: Boolean = false,
-        internal var fitCenter: Boolean = false
+        internal var fitCenter: Boolean = false,
+        internal var isAdaptiveSizeImageRequest: Boolean = false,
 ) {
 
     /*
@@ -171,6 +172,11 @@ open class Properties(
         this.centerInside = true
     }
 
+    // adaptive image size request
+    fun adaptiveImageSizeRequest(isAdaptive: Boolean) = apply {
+        this.isAdaptiveSizeImageRequest = isAdaptive
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
@@ -195,7 +201,8 @@ open class Properties(
                 transforms == other.transforms &&
                 centerCrop == other.centerCrop &&
                 centerInside == other.centerInside &&
-                fitCenter == other.fitCenter
+                fitCenter == other.fitCenter &&
+                isAdaptiveSizeImageRequest == other.isAdaptiveSizeImageRequest
     }
 
     override fun hashCode(): Int {
@@ -221,6 +228,7 @@ open class Properties(
         result = 3 * result + centerCrop.hashCode()
         result = 3 * result + fitCenter.hashCode()
         result = 3 * result + centerInside.hashCode()
+        result = 3 * result + isAdaptiveSizeImageRequest.hashCode()
         return result
     }
 
