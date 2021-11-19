@@ -23,7 +23,8 @@
     <FrameLayout
         android:id="@+id/scroll_cordinator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/home_navToolbar">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -45,85 +46,90 @@
                     app:expandedTitleMarginStart="48dp"
                     app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
+                    <com.tokopedia.affiliate.ui.custom.DisallowInterceptView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
-                        <com.tokopedia.unifycomponents.ImageUnify
-                            android:id="@+id/user_image"
-                            android:layout_width="@dimen/dp_48"
-                            android:layout_height="@dimen/dp_48"
-                            android:layout_marginHorizontal="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_16"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/affiliate_greeting"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginStart="@dimen/dp_16"
-                            app:layout_constraintBottom_toTopOf="@id/user_name"
-                            app:layout_constraintLeft_toRightOf="@id/user_image"
-                            app:layout_constraintTop_toTopOf="@id/user_image"
-                            app:typographyType="body_2"
-                            app:typographyWeight="reguler"
-                            tools:text="@string/affiliate_morning" />
+                            <com.tokopedia.unifycomponents.ImageUnify
+                                android:id="@+id/user_image"
+                                android:layout_width="@dimen/dp_48"
+                                android:layout_height="@dimen/dp_48"
+                                android:layout_marginHorizontal="@dimen/dp_16"
+                                android:layout_marginTop="@dimen/dp_16"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/user_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginStart="@dimen/dp_16"
-                            android:layout_marginEnd="@dimen/dp_16"
-                            app:layout_constraintBottom_toBottomOf="@id/user_image"
-                            app:layout_constraintLeft_toRightOf="@id/user_image"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/affiliate_greeting"
-                            app:typographyType="heading_3"
-                            app:typographyWeight="bold"
-                            tools:text="Ana Putri" />
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/affiliate_announcement_ticker_cv"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginHorizontal="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_16"
-                            android:visibility="gone"
-                            app:cardCornerRadius="@dimen/dp_8"
-                            app:cardElevation="0dp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/user_name"
-                            tools:visibility="visible">
-
-                            <com.tokopedia.unifycomponents.ticker.Ticker
-                                android:id="@+id/affiliate_announcement_ticker"
-                                android:layout_width="match_parent"
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/affiliate_greeting"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                app:closeButtonVisibility="gone"
-                                app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="@dimen/dp_16"
+                                app:layout_constraintBottom_toTopOf="@id/user_name"
+                                app:layout_constraintLeft_toRightOf="@id/user_image"
+                                app:layout_constraintTop_toTopOf="@id/user_image"
+                                app:typographyType="body_2"
+                                app:typographyWeight="reguler"
+                                tools:text="@string/affiliate_morning" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/user_name"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_marginStart="@dimen/dp_16"
+                                android:layout_marginEnd="@dimen/dp_16"
+                                app:layout_constraintBottom_toBottomOf="@id/user_image"
+                                app:layout_constraintLeft_toRightOf="@id/user_image"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/affiliate_greeting"
+                                app:typographyType="heading_3"
+                                app:typographyWeight="bold"
+                                tools:text="Ana Putri" />
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/affiliate_announcement_ticker_cv"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginHorizontal="@dimen/dp_16"
+                                android:layout_marginTop="@dimen/dp_16"
+                                android:visibility="gone"
+                                app:cardCornerRadius="@dimen/dp_8"
+                                app:cardElevation="0dp"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:tickerType="announcement"
-                                app:titleText="Saat ini lagi ada pemeliharaan sistem" />
-                        </androidx.cardview.widget.CardView>
+                                app:layout_constraintTop_toBottomOf="@id/user_name"
+                                tools:visibility="visible">
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                                <com.tokopedia.unifycomponents.ticker.Ticker
+                                    android:id="@+id/affiliate_announcement_ticker"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    app:closeButtonVisibility="gone"
+                                    app:descriptionText="Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:tickerType="announcement"
+                                    app:titleText="Saat ini lagi ada pemeliharaan sistem" />
+                            </androidx.cardview.widget.CardView>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </com.tokopedia.affiliate.ui.custom.DisallowInterceptView>
                 </com.google.android.material.appbar.CollapsingToolbarLayout>
             </com.google.android.material.appbar.AppBarLayout>
 
             <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-                android:visibility="visible"
                 android:id="@+id/swipe_refresh_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/appbar"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/unify_space_48"
+                android:visibility="visible"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -24,6 +24,7 @@ val GQL_Affiliate_Performance_List: String = """query getAffiliatePerformanceLis
         DayRange
         LastID
         Items {
+          DefaultLinkURL
           ItemID
           ItemType
           ItemTitle

@@ -40,6 +40,8 @@ data class AffiliatePerformanceListData(
                 var startTime: String?
             ) {
                 data class Item(
+                    @SerializedName("DefaultLinkURL")
+                    var defaultLinkURL: String?,
                     @SerializedName("Image")
                     var image: Image?,
                     @SerializedName("ItemID")

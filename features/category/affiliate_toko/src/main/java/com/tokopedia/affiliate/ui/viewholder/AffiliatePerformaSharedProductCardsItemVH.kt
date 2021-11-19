@@ -131,7 +131,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             itemView.setOnClickListener {
                 productClickInterface?.onProductClick(
                     product.itemID!!, product.itemTitle ?: "", product.image?.androidURL
-                        ?: "", "",
+                        ?: "", product.defaultLinkURL ?: "",
                     product.itemID!!, product.status ?: 0
                 )
             }

@@ -325,7 +325,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
                 ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
                     affiliateHomeViewModel.getAffiliateValidateUser()
-                    affiliate_announcement_ticker_cv.show()
+                    affiliate_announcement_ticker_cv.hide()
                 }
             }
         } else{

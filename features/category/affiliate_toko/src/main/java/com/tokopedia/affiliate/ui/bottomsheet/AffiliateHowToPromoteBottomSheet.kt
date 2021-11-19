@@ -24,8 +24,8 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
     private var contentView: View? = null
     private val steps: ArrayList<Pair<String,Boolean>> = arrayListOf()
     private var state = STATE_HOW_TO_PROMOTE
-    private var performaTitle = ""
-    private var performaDesc = ""
+    private var performanceTitle = ""
+    private var performanceDesc = ""
 
     companion object {
         const val TITILE = "title"
@@ -75,11 +75,11 @@ class AffiliateHowToPromoteBottomSheet : BottomSheetUnify() {
             }
             STATE_PERFORMA_INFO -> {
                 arguments?.let {
-                    performaTitle = it.getString(TITILE,"")
-                    performaDesc = it.getString(DESC,"")
+                    performanceTitle = it.getString(TITILE,"")
+                    performanceDesc = it.getString(DESC,"")
                 }
-                setTitle(performaTitle)
-                steps.add(Pair(performaDesc,false))
+                setTitle(performanceTitle)
+                steps.add(Pair(performanceDesc,false))
             }
             else -> {
                 setTitle(getString(R.string.affiliate_beta_info))
