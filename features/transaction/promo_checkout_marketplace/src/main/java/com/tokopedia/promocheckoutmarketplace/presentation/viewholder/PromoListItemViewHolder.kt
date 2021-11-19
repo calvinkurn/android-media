@@ -19,8 +19,12 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
 ) : AbstractViewHolder<PromoListItemUiModel>(viewBinding.root) {
 
     companion object {
-        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_list_item
+        val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_card
     }
+
+    private val colorTextEnabledDefault = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+    private val colorTextEnabledLowEmphasis = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+    private val colorTextDisabled = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32)
 
     override fun bind(element: PromoListItemUiModel) {
         renderPromoState(viewBinding, element)
@@ -48,13 +52,10 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
     }
 
     private fun renderPromoSelected(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+        renderPromoEnabled(viewBinding, element)
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_selected)
-            textPromoHighlightIdentifier.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-            promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled)
-            promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled)
-            textPromoQuantity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            textPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            containerUserValidity.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
         }
     }
 
@@ -65,18 +66,34 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_enabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_enabled)
             textPromoQuantity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-            textPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+            textPromoItemTitle.setTextColor(colorTextEnabledDefault)
+            textPromoItemTitleInfo.setTextColor(colorTextEnabledLowEmphasis)
+            textPromoCodeInfo.setTextColor(colorTextEnabledDefault)
+            textPromoCode.setTextColor(colorTextEnabledDefault)
+            textPaymentRule.setTextColor(colorTextEnabledLowEmphasis)
+            textLogisticRule.setTextColor(colorTextEnabledLowEmphasis)
+            textTimeValidity.setTextColor(colorTextEnabledLowEmphasis)
+            textUserValidity.setTextColor(colorTextEnabledLowEmphasis)
+            containerUserValidity.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
         }
     }
 
     private fun renderPromoDisabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_disabled)
-            textPromoHighlightIdentifier.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            textPromoHighlightIdentifier.setTextColor(colorTextDisabled)
             promoQuantityIdentifierTop.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_top_disabled)
             promoQuantityIdentifierBottom.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_quantity_identifier_bottom_disabled)
-            textPromoQuantity.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            textPromoItemTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            textPromoQuantity.setTextColor(colorTextDisabled)
+            textPromoItemTitle.setTextColor(colorTextDisabled)
+            textPromoItemTitleInfo.setTextColor(colorTextDisabled)
+            textPromoCodeInfo.setTextColor(colorTextDisabled)
+            textPromoCode.setTextColor(colorTextDisabled)
+            textPaymentRule.setTextColor(colorTextDisabled)
+            textLogisticRule.setTextColor(colorTextDisabled)
+            textTimeValidity.setTextColor(colorTextDisabled)
+            textUserValidity.setTextColor(colorTextDisabled)
+            containerUserValidity.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
         }
     }
 
