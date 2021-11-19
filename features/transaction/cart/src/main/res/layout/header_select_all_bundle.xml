@@ -9,7 +9,7 @@
     android:paddingEnd="0dp">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-        android:id="@+id/checkbox_global_old"
+        android:id="@+id/checkbox_global"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -21,9 +21,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_select_all_product"
-        app:layout_constraintBottom_toBottomOf="@+id/checkbox_global_old"
-        app:layout_constraintStart_toEndOf="@+id/checkbox_global_old"
-        app:layout_constraintTop_toTopOf="@+id/checkbox_global_old"
+        app:layout_constraintBottom_toBottomOf="@+id/checkbox_global"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_global"
+        app:layout_constraintTop_toTopOf="@+id/checkbox_global"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
