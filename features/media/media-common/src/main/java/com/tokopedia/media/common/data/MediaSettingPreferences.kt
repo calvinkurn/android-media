@@ -1,7 +1,6 @@
 package com.tokopedia.media.common.data
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 
 class MediaSettingPreferences constructor(
@@ -9,7 +8,11 @@ class MediaSettingPreferences constructor(
 ) : LocalCacheHandler(context, MEDIA_QUALITY_PREF) {
 
     fun qualitySettings(): Int {
-        return getInt(KEY_QUALITY_SETTING)?: 0
+        return if (getInt(KEY_QUALITY_SETTING) == -1) {
+            DEFAULT_VALUE_OF_ADAPTIVE
+        } else {
+            getInt(KEY_QUALITY_SETTING)
+        }
     }
 
     fun toasterVisibility(): Boolean {
@@ -35,19 +38,12 @@ class MediaSettingPreferences constructor(
         applyEditor()
     }
 
-    fun getQualitySetting(index: Int): String {
-        return when(index) {
-            0 -> "Automatic"
-            1 -> "Low"
-            2 -> "High"
-            else -> "Unknown"
-        }
-    }
-
     companion object {
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"
         private const val KEY_MEDIA_TOASTER = "index_media_toaster_visibility"
         private const val KEY_GLIDE_CLEAR_CACHE = "medialoader_clear_disk_cache"
+
+        private const val DEFAULT_VALUE_OF_ADAPTIVE = 0
     }
 
 }

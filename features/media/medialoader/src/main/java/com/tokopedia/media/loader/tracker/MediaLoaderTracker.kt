@@ -34,7 +34,7 @@ object MediaLoaderTracker {
     private fun MediaLoaderTrackerParam.toMap(context: Context): Map<String, String> {
         val mediaSetting = MediaSettingPreferences(context)
         val mediaSettingIndex = mediaSetting.qualitySettings()
-        val qualitySetting = mediaSetting.getQualitySetting(mediaSettingIndex)
+        val qualitySetting = getQualitySetting(mediaSettingIndex)
 
         val connectionType = DeviceNetworkInfo.getConnectionType(context)
 
@@ -46,6 +46,15 @@ object MediaLoaderTracker {
             "load_time" to loadTime,
             "file_size" to fileSize
         )
+    }
+
+    fun getQualitySetting(index: Int): String {
+        return when(index) {
+            0 -> "Automatic"
+            1 -> "Low"
+            2 -> "High"
+            else -> "Unknown"
+        }
     }
 
 }
