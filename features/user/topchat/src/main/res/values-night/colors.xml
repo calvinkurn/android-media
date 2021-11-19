@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="topchat_dms_right_button_pressed">#209155</color>
+    <color name="topchat_bg_dms_left_bubble">#363B45</color>
 </resources>
