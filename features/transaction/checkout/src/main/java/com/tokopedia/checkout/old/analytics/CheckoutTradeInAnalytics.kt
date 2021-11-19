@@ -1,7 +1,10 @@
 package com.tokopedia.checkout.old.analytics
 
 import android.app.Activity
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName.CLICK_TRADEIN
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 
@@ -51,14 +54,14 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
 
     // Trade In
     fun eventViewCheckoutPageTradeIn() {
-        sendEventCategoryAction(EventName.VIEW_TRADEIN,
+        sendGeneralEvent(EventName.VIEW_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.VIEW_CHECKOUYT_PAGE_TRADE_IN
         )
     }
 
     fun eventClickKurirTradeIn(label: String?) {
-        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
+        sendEventCategoryActionLabel(CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_KURIR_TRADE_IN,
                 label
@@ -66,7 +69,7 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     }
 
     fun eventClickBayarTradeInFailed() {
-        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
+        sendGeneralEvent(CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BAYAR,
                 EventLabel.FAILED
@@ -74,7 +77,7 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     }
 
     fun eventClickBayarCourierNotComplete() {
-        sendEventCategoryActionLabel(EventName.CLICK_TRADEIN,
+        sendGeneralEvent(CLICK_TRADEIN,
                 EventCategory.COURIER_SELECTION_TRADE_IN,
                 EventAction.CLICK_BAYAR,
                 EventLabel.COURIER_NOT_COMPLETE
@@ -82,14 +85,14 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
     }
 
     fun eventClickJemputTab() {
-        sendEventCategoryAction(EventName.CLICK_COURIER,
+        sendGeneralEvent(EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_JEMPUT_TAB
         )
     }
 
     fun eventClickDropOffTab() {
-        sendEventCategoryAction(EventName.CLICK_COURIER,
+        sendGeneralEvent(EventName.CLICK_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.CLICK_DROP_OFF_TAB
         )
@@ -122,7 +125,7 @@ class CheckoutTradeInAnalytics constructor(val userId: String) : TransactionAnal
         } else {
             screenName = SCREEN_NAME_NORMAL_ADDRESS
         }
-        
+
         sendScreenName(activity, screenName, gtmData)
     }
 

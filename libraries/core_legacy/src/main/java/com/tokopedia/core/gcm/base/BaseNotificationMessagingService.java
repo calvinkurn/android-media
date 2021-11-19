@@ -21,7 +21,6 @@ import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -87,8 +86,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     public void onNewToken(String newToken) {
         fcmManager.onNewToken(newToken);
         propagateIDtoServer(newToken);
-        //update on the basis of moengage flag
-        updateMoEngageToken(newToken);
         Hansel.setNewToken(this, newToken);
         updateApsFlyerToken(newToken);
         ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(newToken);
@@ -115,10 +112,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
         TrackApp.getInstance().getAppsFlyer().updateFCMToken(refreshedToken);
     }
 
-    public void updateMoEngageToken(String token) {
-        Timber.d("Moengage RefreshedToken: " + token);
-        MoengageInteractor.INSTANCE.refreshToken(token);
-    }
 
     public void propagateIDtoServer(String token) {
         if (!TextUtils.isEmpty(token) && isOldGcmUpdate()) {

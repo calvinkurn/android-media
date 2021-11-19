@@ -46,9 +46,7 @@ import java.util.concurrent.TimeUnit
 @Module(
         includes = arrayOf(
                 ChatNetworkModuleStub::class,
-                MediaUploaderModule::class,
-                MediaUploaderNetworkModule::class,
-                NetworkModule::class
+                MediaUploaderModule::class
         )
 )
 class ChatModuleStub {

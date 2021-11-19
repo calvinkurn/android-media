@@ -1,12 +1,14 @@
 package com.tokopedia.media.loader.common.factory
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.common.data.PARAM_BLURHASH
 import com.tokopedia.media.common.data.toUri
-import com.tokopedia.media.loader.R
 import com.tokopedia.media.loader.common.MediaLoaderFactory
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.data.PLACEHOLDER_RES_UNIFY
@@ -29,6 +31,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
             "ABP?2U~X5J^~"
     )
 
+    @SuppressLint("CheckResult")
     fun build(
             context: Context,
             properties: Properties,
@@ -59,6 +62,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
         }
     }
 
+    @SuppressLint("CheckResult")
     private fun blurHashPlaceHolder(
             context: Context,
             properties: Properties,
@@ -84,7 +88,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 * the blurHash image, but if placeholder is 0 and blurHash is inactive,
                 * the placeholder will render the default of built-in placeholder.
                 * */
-                placeHolder == ZERO -> {
+                placeHolder.isZero() -> {
                     if (blurHash && hash.isNotEmpty()) {
                         placeholder(BitmapDrawable(context.resources, generateBlurHash(
                                 hash = hash,
@@ -97,7 +101,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 }
 
                 // render the custom placeholder that provided by Properties()
-                placeHolder != ZERO && placeHolder > ZERO -> {
+                !placeHolder.isZero() && placeHolder.isMoreThanZero() -> {
                     placeholder(placeHolder)
                 }
             }
@@ -115,10 +119,6 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                 width = ratio.first,
                 height = ratio.second
         )
-    }
-
-    companion object {
-        private const val ZERO = 0
     }
 
 }

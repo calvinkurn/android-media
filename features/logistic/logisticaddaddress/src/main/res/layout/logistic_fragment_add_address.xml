@@ -346,6 +346,15 @@
 
         </LinearLayout>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_user_consent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_3" />
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/save_button"
             android:contentDescription="@string/content_desc_save_button"

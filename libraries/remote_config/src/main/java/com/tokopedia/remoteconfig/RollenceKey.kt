@@ -9,14 +9,7 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
-    const val AB_TEST_SHOP_REVIEW = "review_shop"
-    const val OLD_REVIEW_SHOP = "old_review_shop"
-    const val NEW_REVIEW_SHOP = "new_review_shop"
-
     const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
-
-    //    Add Edit Product
-    const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
 
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
@@ -35,23 +28,15 @@ object RollenceKey {
     const val HOME_BEAUTY_FEST = "home_cantik"
 
     //home component rollence section
-    const val HOME_COMPONENT_LEGO4BANNER_EXP = "lego4_test"
-    const val HOME_COMPONENT_LEGO4BANNER_OLD = "lego_round"
-    const val HOME_COMPONENT_LEGO4BANNER_VARIANT = "lego_bleeding"
-    const val HOME_COMPONENT_LEGO2BANNER_EXP = "lego2_bleeding"
-    const val HOME_COMPONENT_LEGO2BANNER_OLD = "lego2_round"
-    const val HOME_COMPONENT_LEGO2BANNER_VARIANT = "lego2_bleeding"
+    const val HOME_COMPONENT_LEGO24BANNER_EXP = "lego24_new"
+    const val HOME_COMPONENT_LEGO24BANNER_OLD = "lego24_old"
+    const val HOME_COMPONENT_LEGO24BANNER_VARIANT = "lego24_new"
     // end of home component rollence section
 
     const val NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT = "control_variant"
 
     //TBD
     const val EXPERIMENT_NAME_TOKOPOINT = "tokopoints_glmenu"
-
-    const val EXPERIMENT_NAME_REVIEW_PRODUCT_READING = "review_pdp"
-    const val VARIANT_NEW_REVIEW_PRODUCT_READING = "new_review_pdp"
-    const val VARIANT_OLD_REVIEW_PRODUCT_READING = "old_review_pdp"
-
 
     //Recommendation page section
     const val RECOM_PAGE_CPM_EXP = "ShopAdsIM3"

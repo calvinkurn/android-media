@@ -11,7 +11,6 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
@@ -32,9 +31,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     replyChatUseCase: ReplyChatUseCase,
-    getShopFollowingUseCase: GetShopFollowingUseCase,
-    toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-    addToCartUseCase: AddToCartUseCase,
     compressImageUseCase: CompressImageUseCase,
     seamlessLoginUsecase: SeamlessLoginUsecase,
     getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
@@ -61,9 +57,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     topChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase,
     replyChatUseCase,
-    getShopFollowingUseCase,
-    toggleFavouriteShopUseCase,
-    addToCartUseCase,
     compressImageUseCase,
     seamlessLoginUsecase,
     getChatRoomSettingUseCase,

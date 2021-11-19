@@ -6,29 +6,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.addpassword.analytics.AddPasswordAnalytics
 import com.tokopedia.managepassword.addpassword.view.viewmodel.AddPasswordViewModel
+import com.tokopedia.managepassword.databinding.FragmentAddPasswordBinding
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_password.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -39,18 +35,17 @@ import javax.inject.Inject
 
 class AddPasswordFragment : BaseDaggerFragment() {
 
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
-
     private var isEnableEncryption = false
     @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AddPasswordViewModel::class.java) }
 
     private val tracker: AddPasswordAnalytics = AddPasswordAnalytics()
+    private var viewBinding by autoClearedNullable<FragmentAddPasswordBinding>()
 
     override fun getScreenName(): String {
         return SCREEN_ADD_PASSWORD
@@ -79,30 +74,13 @@ class AddPasswordFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
-    fun isEnableEncryptRollout(): Boolean {
-        val rolloutKey = if(GlobalConfig.isSellerApp()) {
-            SessionConstants.Rollout.ROLLOUT_ADD_PASS_ENCRYPTION_SELLER
-        } else {
-            SessionConstants.Rollout.ROLLOUT_ADD_PASS_ENCRYPTION
-        }
-
-        val variant = getAbTestPlatform().getString(rolloutKey)
-        return variant.isNotEmpty()
-    }
-
     private fun isUseEncryption(): Boolean {
-        return isEnableEncryptRollout() && isEnableEncryption
+        return isEnableEncryption
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_password, container, false)
+        viewBinding =  FragmentAddPasswordBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -110,25 +88,25 @@ class AddPasswordFragment : BaseDaggerFragment() {
 
         hasPasswordChecker()
 
-        txtPassword?.textFieldInput?.afterTextChanged {
+        viewBinding?.txtPassword?.textFieldInput?.afterTextChanged {
             viewModel.validatePassword(it)
         }
 
-        txtPasswordConfirmation?.textFieldInput?.afterTextChanged {
+        viewBinding?.txtPasswordConfirmation?.textFieldInput?.afterTextChanged {
             viewModel.validatePasswordConfirmation(it)
         }
 
-        btnSubmit?.setOnClickListener {
-            val password = txtPassword?.textFieldInput?.text?.toString() ?: ""
-            val passwordConfirmation = txtPasswordConfirmation?.textFieldInput?.text?.toString() ?: ""
+        viewBinding?.btnSubmit?.setOnClickListener {
+            val password = viewBinding?.txtPassword?.textFieldInput?.text?.toString().orEmpty()
+            val passwordConfirmation = viewBinding?.txtPasswordConfirmation?.textFieldInput?.text?.toString().orEmpty()
 
             if (password != passwordConfirmation) {
-                txtPasswordConfirmation?.let {
+                viewBinding?.txtPasswordConfirmation?.let {
                     setPasswordFieldError(it, resources.getString(R.string.add_password_confirmation_not_match))
                 }
-            } else if (txtPassword?.isTextFieldError == false && txtPasswordConfirmation?.isTextFieldError == false && password.isNotEmpty()) {
+            } else if (viewBinding?.txtPassword?.isTextFieldError == false && viewBinding?.txtPasswordConfirmation?.isTextFieldError == false && password.isNotEmpty()) {
                 showLoading()
-                btnSubmit?.isEnabled = false
+                viewBinding?.btnSubmit?.isEnabled = false
                 tracker.onClickSubmit()
                 if(isUseEncryption()){
                     viewModel.createPasswordV2(password, passwordConfirmation)
@@ -140,7 +118,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.profileDataModel.observe(this, Observer {
+        viewModel.profileDataModel.observe(this, {
             when(it) {
                 is Success -> {
                     hasPasswordProcess(it.data.profileData.isCreatedPassword)
@@ -156,38 +134,38 @@ class AddPasswordFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.validatePassword.observe(this, Observer {
+        viewModel.validatePassword.observe(this, {
             when (it) {
                 is Success -> {
-                    txtPassword?.let { txtField ->
+                    viewBinding?.txtPassword?.let { txtField ->
                         clearErrorMessage(txtField)
                     }
                 }
                 is Fail -> {
-                    txtPassword?.let { txtField ->
+                    viewBinding?.txtPassword?.let { txtField ->
                         setPasswordFieldError(txtField, it.throwable.message.toString())
                     }
                 }
             }
         })
 
-        viewModel.validatePasswordConfirmation.observe(this, Observer {
+        viewModel.validatePasswordConfirmation.observe(this, {
             when (it) {
                 is Success -> {
-                    txtPasswordConfirmation?.let { txtField ->
+                    viewBinding?.txtPasswordConfirmation?.let { txtField ->
                         clearErrorMessage(txtField)
-                        btnSubmit?.isEnabled = true
+                        viewBinding?.btnSubmit?.isEnabled = true
                     }
                 }
                 is Fail -> {
-                    txtPasswordConfirmation?.let { txtField ->
+                    viewBinding?.txtPasswordConfirmation?.let { txtField ->
                         setPasswordFieldError(txtField, it.throwable.message.toString())
                     }
                 }
             }
         })
 
-        viewModel.response.observe(this, Observer {
+        viewModel.response.observe(this, {
             when (it) {
                 is Success -> {
                     onSuccessAdd()
@@ -235,7 +213,7 @@ class AddPasswordFragment : BaseDaggerFragment() {
     private fun setPasswordFieldError(textFieldUnify: TextFieldUnify, message: String) {
         textFieldUnify.setError(true)
         textFieldUnify.setMessage(message)
-        btnSubmit?.isEnabled = false
+        viewBinding?.btnSubmit?.isEnabled = false
     }
 
     private fun onSuccessAdd() {
@@ -254,18 +232,18 @@ class AddPasswordFragment : BaseDaggerFragment() {
 
     private fun onError(message: String) {
         hideLoading()
-        btnSubmit?.isEnabled = true
+        viewBinding?.btnSubmit?.isEnabled = true
         view?.let {
             Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     private fun showLoading() {
-        loader?.visibility = View.VISIBLE
+        viewBinding?.loader?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        loader?.visibility = View.GONE
+        viewBinding?.loader?.visibility = View.GONE
     }
 
     override fun onDestroy() {
