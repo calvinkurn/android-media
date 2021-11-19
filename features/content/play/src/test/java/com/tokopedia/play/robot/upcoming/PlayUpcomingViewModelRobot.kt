@@ -26,15 +26,15 @@ import java.io.Closeable
  * Created By : Jonathan Darwin on November 18, 2021
  */
 class PlayUpcomingViewModelRobot(
-    private val getChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true),
-    private val playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
-    private val getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
+    getChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true),
+    playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
+    getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
-    private val userSession: UserSessionInterface = mockk(relaxed = true),
-    private val playUiModelMapper: PlayUiModelMapper = mockk(relaxed = true),
-    private val playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
-    private val playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
-    private val repo: PlayViewerRepository = mockk(relaxed = true),
+    userSession: UserSessionInterface = mockk(relaxed = true),
+    playUiModelMapper: PlayUiModelMapper = mockk(relaxed = true),
+    playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
+    playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
+    repo: PlayViewerRepository = mockk(relaxed = true),
 ): Closeable {
 
     val viewModel = PlayUpcomingViewModel(

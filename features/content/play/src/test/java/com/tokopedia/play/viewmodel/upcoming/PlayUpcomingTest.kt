@@ -7,6 +7,7 @@ import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.PlayReminder
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
+import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayChannelSSE
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
@@ -23,6 +24,7 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
+import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,11 +57,18 @@ class PlayUpcomingTest {
     private val mockChannelData = channelDataBuilder.buildChannelData(
         upcomingInfo = mockUpcomingInfo
     )
+    val mockChannelDataWithBuyerPartner = channelDataBuilder.buildChannelData(
+        upcomingInfo = mockUpcomingInfo,
+        partnerInfo = PlayPartnerInfoModelBuilder().buildPlayPartnerInfo(
+            type = PartnerType.Buyer
+        )
+    )
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
     private val mockGetChannelStatus: GetChannelStatusUseCase = mockk(relaxed = true)
     private val mockPlayUiModelMapper: PlayUiModelMapper = mockk(relaxed = true)
+    private val mockRepo: PlayViewerRepository = mockk(relaxed = true)
     private val fakePlayChannelSSE = FakePlayChannelSSE(testDispatcher)
 
     @Before
@@ -139,6 +148,8 @@ class PlayUpcomingTest {
             }
 
             /** Verify */
+            verify { mockPlayNewAnalytic.clickRemindMe(any()) }
+
             state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Reminded)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
@@ -181,6 +192,8 @@ class PlayUpcomingTest {
             }
 
             /** Verify */
+            verify { mockPlayNewAnalytic.clickRemindMe(any()) }
+
             state.upcomingInfo.state.isEqualTo(PlayUpcomingState.RemindMe)
             events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.RemindMeEvent::message)
         }
@@ -194,7 +207,6 @@ class PlayUpcomingTest {
             requestCode = 123
         )
 
-        every { mockPlayNewAnalytic.clickRemindMe(mockChannelData.id) } returns Unit
         every { mockUserSession.isLoggedIn } returns false
 
         /** Prepare */
@@ -326,13 +338,6 @@ class PlayUpcomingTest {
     @Test
     fun `given a upcoming channel, when user click partner name and partner is buyer, then it should emit open page event`() {
         /** Mock */
-        val mockChannelDataWithBuyerPartner = channelDataBuilder.buildChannelData(
-            upcomingInfo = mockUpcomingInfo,
-            partnerInfo = PlayPartnerInfoModelBuilder().buildPlayPartnerInfo(
-                type = PartnerType.Buyer
-            )
-        )
-
         val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
             ApplinkConst.PROFILE,
             listOf(mockChannelDataWithBuyerPartner.partnerInfo.id.toString())
@@ -357,6 +362,93 @@ class PlayUpcomingTest {
             /** Verify **/
             events.assertNotEmpty()
             events.last().isEqualTo(mockEvent)
+        }
+    }
+
+    /**
+     * Follow
+     */
+    @Test
+    fun `given a upcoming channel, when user click follow and user is not logged in yet, then it should emit open page for login`() {
+        /** Mock */
+        every { mockUserSession.isLoggedIn } returns false
+
+        val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
+            applink = ApplinkConst.LOGIN,
+            requestCode = 1
+        )
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE,
+            repo = mockRepo
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val events = robot.recordEvent {
+                robot.submitAction(ClickFollowUpcomingAction)
+            }
+
+            /** Verify **/
+            events.assertNotEmpty()
+            events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.OpenPageEvent::requestCode)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when user click follow and user is logged in and partner is not followed yet, then it should follow the user`() {
+        /** Mock */
+        every { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getIsFollowingPartner(any()) } returns false
+        coEvery { mockRepo.postFollowStatus(any(), any()) } returns true
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE,
+            repo = mockRepo
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val state = robot.recordState {
+                robot.submitAction(ClickFollowUpcomingAction)
+            }
+
+            /** Verify **/
+            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.Followable(true))
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when partner is not shop, then the partner state should be not followable`() {
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE,
+            repo = mockRepo
+        )
+
+        robot.use {
+            /** Test */
+            val state = robot.recordState {
+                viewModel.initPage(mockChannelDataWithBuyerPartner.id, mockChannelDataWithBuyerPartner)
+            }
+
+            /** Verify **/
+            state.partner.followStatus.isEqualTo(PlayPartnerFollowStatus.NotFollowable)
         }
     }
 
