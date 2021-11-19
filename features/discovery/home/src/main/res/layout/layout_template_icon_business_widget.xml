@@ -11,7 +11,7 @@
         android:layout_gravity="center"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_squircle"
-        tools:ignore="ContentDescription" />
+        android:contentDescription="@string/content_desc_background_business" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"

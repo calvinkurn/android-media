@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="4dp"
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
@@ -39,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_1"
-                tools:ignore="ContentDescription"
+                android:contentDescription="@string/content_desc_close_review"
                 android:src="@drawable/ic_action_x" />
 
         </androidx.cardview.widget.CardView>

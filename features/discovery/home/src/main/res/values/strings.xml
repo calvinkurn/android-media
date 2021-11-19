@@ -107,6 +107,16 @@
     <string name="content_desc_error_state_channel">Content error</string>
     <string name="content_desc_home_background">Home background</string>
     <string name="content_desc_home_category_widget">Category widget</string>
+    <string name="content_desc_feed_banner">Feed Banner</string>
+    <string name="content_desc_close_review">Tutup Review</string>
+    <string name="content_desc_background_spotlight">Background spotlight</string>
+    <string name="content_desc_background_business">Background business</string>
+    <string name="content_desc_icon_business">Icon business</string>
+    <string name="content_desc_loading_icon_business">Loading icon business</string>
+    <string name="content_desc_thumbnail_image_play">Thumbnail image Play</string>
+    <string name="content_desc_image_on_boarding">Gambar on boarding</string>
+    <string name="content_desc_reload">Reload</string>
+    <string name="content_desc_image_home_error">Gambar error home</string>
 
     <string name="popular_keyword_error_title">Bagian ini gagal ditampilkan</string>
     <string name="sprint_card_item">Sprint Card Item</string>
