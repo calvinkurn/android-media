@@ -1,10 +1,9 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
-import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2RecommendationCarouselItemBinding
@@ -14,13 +13,11 @@ class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2
         fun bind(element: WishlistV2TypeLayoutData) {
             if (element.dataObject is WishlistV2RecommendationDataModel) {
                 val data = element.dataObject.recommendationData
-                binding.container.visibility = if(data.isEmpty()) View.GONE else View.VISIBLE
-                binding.title.text = "Mungkin kamu juga suka"
                 binding.carousel.bindCarouselProductCardViewGrid(
                     productCardModelList = convertIntoProductDataModel(data),
                     carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
                         override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            val wishlistDataModel = data.firstOrNull()?.recommendationItemList?.getOrNull(carouselProductCardPosition) ?: return
+                            val wishlistDataModel = data.getOrNull(carouselProductCardPosition) ?: return
 
                         }
                     },
@@ -39,8 +36,8 @@ class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2
 
         }
 
-    private fun convertIntoProductDataModel(data: List<RecommendationWidget>): List<ProductCardModel> {
-        return data.firstOrNull()?.recommendationItemList?.map { element ->
+    private fun convertIntoProductDataModel(data: List<RecommendationItem>): List<ProductCardModel> {
+        return data.map { element ->
             ProductCardModel(
                 slashedPrice = element.slashedPrice,
                 productName = element.name,

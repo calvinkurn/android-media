@@ -6,13 +6,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist.data.model.WishlistV2Response
+import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistV2ThreeDotsMenuBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2ThreeDotsMenuBottomSheetAdapter
 
-/**
- * Created by fwidjaja on 29/10/21.
- */
 class WishlistV2ThreeDotsMenuBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistV2ThreeDotsMenuBinding>()
     private var listener: BottomSheetListener? = null

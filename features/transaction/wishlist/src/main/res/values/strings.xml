@@ -22,7 +22,6 @@
     <string name="empty_state_not_found_button">Cari di Tokopedia</string>
     <string name="empty_state_not_found_title">Oops, barang itu nggak ada di Wishlist-mu</string>
     <string name="empty_state_not_found_description">Mau coba cari %1$s di Tokopedia?</string>
-    <string name="recommendation_title">Rekomendasi Untukmu</string>
     <string name="wishlist_v2_delete_msg_default">Barang telah dihapus dari Wishlist.</string>
     <string name="wishlist_v2_bulk_delete_msg_toaster">%d barang telah dihapus dari Wishlist.</string>
     <string name="wishlist_v2_popup_delete_bulk_title">Yakin hapus %d barang ini dari Wishlist?</string>

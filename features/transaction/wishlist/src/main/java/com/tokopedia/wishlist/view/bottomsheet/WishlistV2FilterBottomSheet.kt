@@ -12,9 +12,6 @@ import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
 
-/**
- * Created by fwidjaja on 19/10/21.
- */
 class WishlistV2FilterBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistFilterBinding>()
     private var listener: BottomSheetListener? = null

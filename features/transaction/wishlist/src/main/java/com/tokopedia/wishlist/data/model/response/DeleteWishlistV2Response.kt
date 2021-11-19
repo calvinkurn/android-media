@@ -1,27 +1,27 @@
-package com.tokopedia.wishlist.data.model
+package com.tokopedia.wishlist.data.model.response
 
 import com.google.gson.annotations.SerializedName
 
-data class BulkDeleteWishlistV2Response(
+data class DeleteWishlistV2Response(
         @SerializedName("data")
         val data: Data
 ) {
     data class Data(
-            @SerializedName("wishlist_bulk_remove_v2")
-            val wishlistBulkRemoveV2: WishlistBulkRemoveV2
+            @SerializedName("wishlist_remove_v2")
+            val wishlistRemoveV2: WishlistRemoveV2
     ) {
-        data class WishlistBulkRemoveV2(
-                @SerializedName("id")
-                val id: String,
+        data class WishlistRemoveV2(
+                @SerializedName("button")
+                val button: Button,
 
                 @SerializedName("success")
                 val success: Boolean,
 
-                @SerializedName("message")
-                val message: String,
+                @SerializedName("id")
+                val id: String,
 
-                @SerializedName("button")
-                val button: Button
+                @SerializedName("message")
+                val message: String
         ) {
             data class Button(
                     @SerializedName("action")
