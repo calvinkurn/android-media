@@ -1,17 +1,54 @@
-package com.tokopedia.webview
+package tokopedia
 
-
+import android.content.Context
 import android.net.Uri
-import androidx.test.runner.AndroidJUnit4
+import android.os.Build
+import androidx.test.core.app.ApplicationProvider
+import com.tokopedia.webview.WebViewHelper
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import org.junit.Assert
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
-@RunWith(AndroidJUnit4::class)
-class WebviewUrlParsingTest {
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [Build.VERSION_CODES.O_MR1])
+class WebViewHelperTest {
+
+    protected lateinit var context: Context
+
+    @Before
+    fun setup() {
+        context = ApplicationProvider.getApplicationContext()
+    }
+
+    @Test
+    fun getUrlQueryIfHasSymbol() {
+        assertEquals("https://registeruat.dbank.co.id/web-verification/#/tokopedia/",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/#/tokopedia/")))
+        assertEquals("https://registeruat.dbank.co.id/web-verification/#/tokopedia/?title=123",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/#/tokopedia/?title=123")))
+        assertEquals("https://registeruat.dbank.co.id/web-verification/#/tokopedia/?title=123&a=b",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/#/tokopedia/?title=123&a=b")))
+        assertEquals("https://registeruat.dbank.co.id/web-verification/#/tokopedia/",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/#/tokopedia/&a=b")))
+    }
+
+    @Test
+    fun getUrlQueryIfHasNoSymbol() {
+        assertEquals("https://registeruat.dbank.co.id/web-verification/",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/")))
+        assertEquals("https://registeruat.dbank.co.id/web-verification?title=123",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification?title=123")))
+        assertEquals("https://registeruat.dbank.co.id/web-verification?title=123",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification?title=123&a=b")))
+        assertEquals("https://registeruat.dbank.co.id/web-verification",
+            WebViewHelper.getUrlQuery(Uri.parse("tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification&a=b")))
+    }
 
     @Test
     fun testPlainUrl() {
@@ -75,11 +112,7 @@ class WebviewUrlParsingTest {
     fun redirecturl_instead_url() {
         val url = "tokopedia://webview?url=https%3A%2F%2Ftokopedia.com%2Fovo%2Fapi%2Fv1%2Factivate%3Fredirect_url%3Dtokopedia%3A%2F%2Fback"
         val result = WebViewHelper.getEncodedUrlCheckSecondUrl(Uri.parse(url), url)
-        val resultUri = Uri.parse(result)
-        assertEquals("https", resultUri.scheme)
-        assertEquals("tokopedia.com", resultUri.host)
-        assertEquals("/ovo/api/v1/activate", resultUri.path)
-        assertEquals("tokopedia://back", resultUri.getQueryParameter("redirect_url"))
+        assertEquals("https://tokopedia.com/ovo/api/v1/activate?redirect_url=tokopedia://back", result)
     }
 
     @Test
@@ -107,9 +140,7 @@ class WebviewUrlParsingTest {
         assertEquals("https", resultUri.scheme)
         assertEquals("www.tokopedia.com", resultUri.host)
         assertEquals("/abc", resultUri.path)
-        assertNull(resultUri.getQueryParameter("target"))
-        assertNull(resultUri.getQueryParameter("title"))
+        Assert.assertNull(resultUri.getQueryParameter("target"))
+        Assert.assertNull(resultUri.getQueryParameter("title"))
     }
-
-
 }
