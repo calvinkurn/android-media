@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.ui.viewholder.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.AffiliateRecommendedProductData
+import com.tokopedia.affiliate.model.response.AffiliateRecommendedProductData
 
 class AffiliateStaggeredPromotionCardModel(val product: AffiliateRecommendedProductData.RecommendedAffiliateProduct.Data.Card.Item)  : Visitable<AffiliateAdapterTypeFactory> {
 

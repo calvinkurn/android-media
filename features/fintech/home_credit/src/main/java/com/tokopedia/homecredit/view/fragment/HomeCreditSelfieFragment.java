@@ -1,9 +1,11 @@
 package com.tokopedia.homecredit.view.fragment;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -20,9 +22,6 @@ import com.otaliastudios.cameraview.controls.Facing;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.homecredit.R;
 import com.tokopedia.homecredit.applink.Constants;
-
-import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.homecredit.view.activity.HomeCreditRegisterActivity.HCI_KTP_IMAGE_PATH;
 
 public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
     @SuppressLint("MissingPermission")
@@ -74,18 +73,17 @@ public class HomeCreditSelfieFragment extends HomeCreditBaseCameraFragment {
         });
     }
 
-    private void setCameraOverlayImage(ImageView cameraOverlayImg){
+    private void setCameraOverlayImage(ImageView cameraOverlayImg) {
         Intent intent = getActivity().getIntent();
         String cameraType = intent.getStringExtra(Constants.CAMERA_TYPE);
         String cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL);
         String customHeader = intent.getStringExtra(Constants.CUST_HEADER);
-        if(!TextUtils.isEmpty(customHeader)) {
+        if (!TextUtils.isEmpty(customHeader)) {
             headerText.setText(customHeader);
         }
-        if(Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)){
+        if (Constants.SLFE_NO_OVERLAY.equalsIgnoreCase(cameraType)) {
             cameraOverlayImg.setVisibility(View.GONE);
-        }
-        else if(!TextUtils.isEmpty(cutOutImgUrl)){
+        } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
             ImageHandler.loadImageAndCache(cameraOverlayImg, cutOutImgUrl);
         }
     }

@@ -35,6 +35,7 @@ import com.tokopedia.officialstore.official.presentation.adapter.viewholder.Offi
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelMixTopViewHolder
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
+import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
@@ -110,9 +111,7 @@ class OSTopAdsVerificationTest {
          * This function needed to trigger product recommendation usecase in official store,
          * official store page only hit recommendation usecase on scroll in the end of current list
          */
-        while (!itemAdapter.currentList.any { it is  ProductRecommendationDataModel}) {
-            Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
-        }
+        preloadRecomOnOSPage(recyclerView)
         Espresso.onView(firstView(withId(R.id.os_child_recycler_view))).perform(ViewActions.swipeUp())
 
         waitForData()

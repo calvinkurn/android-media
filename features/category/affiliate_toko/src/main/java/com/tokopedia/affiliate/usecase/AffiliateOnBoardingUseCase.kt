@@ -1,8 +1,8 @@
 package com.tokopedia.affiliate.usecase
 
-import com.tokopedia.affiliate.model.AffiliateOnBoardingData
+import com.tokopedia.affiliate.model.response.AffiliateOnBoardingData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_On_Boarding
-import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnBoardingRequest
 import com.tokopedia.affiliate.repository.AffiliateRepository
 import kotlinx.coroutines.delay
 import javax.inject.Inject

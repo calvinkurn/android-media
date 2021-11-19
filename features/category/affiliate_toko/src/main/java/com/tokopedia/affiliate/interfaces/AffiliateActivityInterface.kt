@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.interfaces
 
-import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnBoardingRequest
 
 interface AffiliateActivityInterface {
 

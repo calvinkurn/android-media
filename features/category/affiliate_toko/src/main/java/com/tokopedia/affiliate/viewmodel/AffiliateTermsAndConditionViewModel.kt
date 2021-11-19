@@ -1,23 +1,14 @@
 package com.tokopedia.affiliate.viewmodel
 
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.AffiliateHeaderItemData
-import com.tokopedia.affiliate.model.AffiliateOnBoardingData
-import com.tokopedia.affiliate.model.AffiliateTermsAndConditionData
-import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditionModel
+import com.tokopedia.affiliate.model.response.AffiliateOnBoardingData
+import com.tokopedia.affiliate.model.request.OnBoardingRequest
 import com.tokopedia.affiliate.usecase.AffiliateOnBoardingUseCase
-import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 

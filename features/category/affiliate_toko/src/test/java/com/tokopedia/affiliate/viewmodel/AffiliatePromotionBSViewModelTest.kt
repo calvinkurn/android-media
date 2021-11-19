@@ -1,8 +1,7 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliate.model.AffiliateGenerateLinkData
-import com.tokopedia.affiliate.model.AffiliateValidateUserData
+import com.tokopedia.affiliate.model.response.AffiliateGenerateLinkData
 import com.tokopedia.affiliate.usecase.AffiliateGenerateLinkUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations

@@ -190,7 +190,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         getLoadingView()?.visible()
         arguments?.let {
             if (it.containsKey(ARG_PAYMENT_ID) && it.containsKey(ARG_MERCHANT)) {
-                thanksPageDataViewModel.getThanksPageData(it.getLong(ARG_PAYMENT_ID),
+                thanksPageDataViewModel.getThanksPageData(it.getString(ARG_PAYMENT_ID, ""),
                         it.getString(ARG_MERCHANT, ""))
             }
         }
@@ -318,7 +318,8 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         thanksPageData.howToPayAPP?.let {
             RouteManager.route(context, thanksPageData.howToPayAPP)
             thankYouPageAnalytics.get().sendOnHowtoPayClickEvent(thanksPageData.profileCode,
-                    thanksPageData.paymentID.toString())
+                thanksPageData.paymentID
+            )
         }
     }
 
@@ -370,7 +371,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         InvoiceFragment.openInvoiceBottomSheet(activity, thanksPageData)
         thankYouPageAnalytics.get().sendLihatDetailClickEvent(thanksPageData.profileCode,
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID.toString())
+                thanksPageData.paymentID)
 
         if (activity is ThankYouPageActivity) {
             (activity as ThankYouPageActivity).cancelGratifDialog()
@@ -381,7 +382,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         RouteManager.route(context, ApplinkConst.HOME, "")
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID.toString())
+                thanksPageData.paymentID)
         activity?.finish()
     }
 
@@ -414,7 +415,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         }
         thankYouPageAnalytics.get().sendBelanjaLagiClickEvent(thanksPageData.profileCode,
                 PaymentPageMapper.getPaymentPageType(thanksPageData.pageType),
-                thanksPageData.paymentID.toString())
+                thanksPageData.paymentID)
         activity?.finish()
     }
 
@@ -435,7 +436,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         try {
             thankYouPageAnalytics.get()
                     .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                            thanksPageData.paymentID.toString())
+                            thanksPageData.paymentID)
             val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
             val orderListListIntent = getOrderListPageIntent()
             orderListListIntent?.let {
@@ -456,7 +457,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
             } else {
                 thankYouPageAnalytics.get()
                         .sendCheckTransactionListEvent(thanksPageData.profileCode,
-                                thanksPageData.paymentID.toString())
+                                thanksPageData.paymentID)
                 val homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME, "")
                 val orderListListIntent = RouteManager.getIntent(context, applink)
                 orderListListIntent?.let {

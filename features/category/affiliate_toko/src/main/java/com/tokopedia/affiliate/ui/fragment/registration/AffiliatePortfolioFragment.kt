@@ -20,13 +20,12 @@ import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
 import com.tokopedia.affiliate.interfaces.PortfolioClickInterface
 import com.tokopedia.affiliate.interfaces.PortfolioUrlTextUpdateInterface
-import com.tokopedia.affiliate.model.AffiliateHeaderItemData
-import com.tokopedia.affiliate.model.AffiliatePortfolioButtonData
-import com.tokopedia.affiliate.model.AffiliatePortfolioUrlInputData
-import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
+import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioButtonData
+import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioUrlInputData
+import com.tokopedia.affiliate.model.request.OnBoardingRequest
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheetInterface
-import com.tokopedia.affiliate.ui.viewholder.AffiliatePortfolioItemVH
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlModel
@@ -39,7 +38,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.affiliate_login_fragment_layout.*
 import kotlinx.android.synthetic.main.affiliate_portfolio_fragment_layout.*
 import javax.inject.Inject
 

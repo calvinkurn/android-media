@@ -24,8 +24,6 @@ import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AddSocialInterface
 import com.tokopedia.affiliate.interfaces.ShareButtonInterface
-import com.tokopedia.affiliate.model.AffiliatePortfolioButtonData
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
 import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
 import com.tokopedia.affiliate_toko.R
@@ -37,7 +35,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.affiliate_promotion_bottom_sheet.*
 import javax.inject.Inject
 
 class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface , AddSocialInterface{

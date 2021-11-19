@@ -16,7 +16,7 @@ import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
-import com.tokopedia.affiliate.model.raw.request.OnBoardingRequest
+import com.tokopedia.affiliate.model.request.OnBoardingRequest
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
 import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
@@ -30,7 +30,6 @@ import com.tokopedia.affiliate.viewmodel.AffiliateViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.user.session.UserSessionInterface

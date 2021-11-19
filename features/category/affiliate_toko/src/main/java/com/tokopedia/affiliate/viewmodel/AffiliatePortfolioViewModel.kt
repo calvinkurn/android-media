@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.model.AffiliateHeaderItemData
-import com.tokopedia.affiliate.model.AffiliatePortfolioButtonData
-import com.tokopedia.affiliate.model.AffiliatePortfolioUrlInputData
+import com.tokopedia.affiliate.model.pojo.AffiliateHeaderItemData
+import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioButtonData
+import com.tokopedia.affiliate.model.pojo.AffiliatePortfolioUrlInputData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlModel

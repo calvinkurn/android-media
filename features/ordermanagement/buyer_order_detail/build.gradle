@@ -83,7 +83,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
 
@@ -99,7 +99,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 
-    androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply from: '../../../jacoco_task.gradle'

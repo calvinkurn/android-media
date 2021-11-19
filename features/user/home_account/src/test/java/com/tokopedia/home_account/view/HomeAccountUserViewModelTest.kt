@@ -16,10 +16,12 @@ import com.tokopedia.navigation_common.model.DebitInstantModel
 import com.tokopedia.navigation_common.model.ProfileModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -228,6 +230,55 @@ class HomeAccountUserViewModelTest {
 
         print(viewModel.getRecommendationData.value)
         Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, expectedResult.recommendationItemList)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data`() {
+        val recomList = listOf(
+                RecommendationItem(1),
+                RecommendationItem(2),
+                RecommendationItem(3),
+                RecommendationItem(4)
+        )
+        val testPage = 1
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+        val topAdsData = TopAdsImageViewModel(imageUrl = "abc123")
+        val mockTopAdsData = arrayListOf(topAdsData)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns mockTopAdsData
+
+        viewModel.getRecommendation(testPage)
+
+        coVerify { topAdsImageViewUseCase.getImageData(any()) }
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data throw error`() {
+        val recomList = listOf(
+                RecommendationItem(1),
+                RecommendationItem(2),
+                RecommendationItem(3),
+                RecommendationItem(4)
+        )
+        val testPage = 1
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+        val topAdsData = TopAdsImageViewModel(imageUrl = "abc123")
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data.tdnBanner, null)
     }
 
     @Test
