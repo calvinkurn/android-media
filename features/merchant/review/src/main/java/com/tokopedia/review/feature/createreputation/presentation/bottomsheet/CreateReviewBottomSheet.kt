@@ -86,7 +86,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         const val GOOD_RATING_THRESHOLD = 2
         const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
         const val TEMPLATES_ROW_COUNT = 2
-        const val BAD_RATING_OTHER_ID = 6
+        const val BAD_RATING_OTHER_ID = "6"
         const val BAD_RATING_FLOW_EXPERIMENT_KEY = "Bad_ReviewForm_AB"
         const val OLD_FORM_VARIANT = "old_form"
         const val BAD_RATING_FORM_VARIANT = "bad_rating_form"
@@ -331,7 +331,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     override fun onBadRatingCategoryClicked(
         title: String,
         isSelected: Boolean,
-        badRatingCategoryId: Int,
+        badRatingCategoryId: String,
         shouldRequestFocus: Boolean
     ) {
         CreateReviewTracking.eventClickBadRatingReason(
@@ -342,7 +342,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             isSelected
         )
         if (isSelected) {
-            createReviewViewModel.addBadRatingCategory(badRatingCategoryId.toString())
+            createReviewViewModel.addBadRatingCategory(badRatingCategoryId)
             if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
                 textArea?.setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
             }

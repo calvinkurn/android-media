@@ -18,7 +18,7 @@ data class ProductrevGetBadRatingCategory(
 data class BadRatingCategory(
     @SerializedName("badRatingCategoryID")
     @Expose
-    val id: Int = 0,
+    val id: String = "",
     @SerializedName("description")
     @Expose
     val description: String = "",

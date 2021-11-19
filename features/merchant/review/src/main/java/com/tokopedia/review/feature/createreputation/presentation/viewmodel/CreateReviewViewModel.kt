@@ -370,11 +370,11 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun isOtherCategoryOnly(): Boolean {
-        return selectedBadRatingCategories.size == 1 && selectedBadRatingCategories.first() == CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString()
+        return selectedBadRatingCategories.size == 1 && selectedBadRatingCategories.first() == CreateReviewBottomSheet.BAD_RATING_OTHER_ID
     }
 
     private fun isOtherCategorySelected(): Boolean {
-        return selectedBadRatingCategories.contains(CreateReviewBottomSheet.BAD_RATING_OTHER_ID.toString())
+        return selectedBadRatingCategories.contains(CreateReviewBottomSheet.BAD_RATING_OTHER_ID)
     }
 
     private fun updateProgressBarFromBadRatingCategory() {
