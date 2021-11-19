@@ -11,6 +11,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.formattedToMB
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
+import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
 import kotlin.math.abs
 import com.tokopedia.media.loader.tracker.PerformanceTracker.postRender as trackPerformancePostRender
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
@@ -61,6 +62,11 @@ object MediaListenerBuilder {
 
             // override the load time into properties
             properties.loadTime = loadTime
+
+            // override target size with adaptive (dynamic)
+            if (properties.isAdaptiveSizeImageRequest) {
+                resource?.adaptiveSizeImageRequest(target)
+            }
 
             listener?.onLoaded(resource, dataSource(dataSource))
             return false
