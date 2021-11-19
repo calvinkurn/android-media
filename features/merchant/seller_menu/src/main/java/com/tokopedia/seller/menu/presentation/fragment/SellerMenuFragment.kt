@@ -164,7 +164,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     override fun onRefreshShopInfo() {
         showShopInfoLoading()
         viewModel.getShopAccountInfo()
-        getAllShopInfo()
     }
 
     private fun initInjector() {
@@ -186,7 +185,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
         observeProductCount()
         observeNotifications()
         observeErrorToaster()
-        getAllShopInfo()
     }
 
     private fun observeShopInfoPeriod() {
@@ -198,6 +196,10 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     getAllShopInfo()
                 }
                 is Fail -> {
+                    if (canShowErrorToaster) {
+                        view?.showToasterError(resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message))
+                    }
+                    adapter.showShopInfoError()
                     ShopScoreReputationErrorLogger.logToCrashlytic(
                             String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
                                     ShopScoreReputationErrorLogger.SHOP_ACCOUNT), it.throwable)
@@ -305,7 +307,6 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
     private fun retryFetchAfterError() {
         showShopInfoLoading()
         viewModel.getShopAccountInfo()
-        viewModel.getAllSettingShopInfo(isToasterRetry = true, shopAge = shopAge)
     }
 
     private fun showShopInfoLoading() {
