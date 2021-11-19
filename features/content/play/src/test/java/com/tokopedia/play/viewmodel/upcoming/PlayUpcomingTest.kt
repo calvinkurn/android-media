@@ -3,7 +3,9 @@ package com.tokopedia.play.viewmodel.upcoming
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.play.analytic.PlayNewAnalytic
+import com.tokopedia.play.data.ChannelStatusResponse
 import com.tokopedia.play.data.PlayReminder
+import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.fake.FakePlayChannelSSE
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
@@ -14,15 +16,14 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
-import com.tokopedia.play.util.assertFalse
-import com.tokopedia.play.util.assertTrue
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isEqualToIgnoringFields
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.action.ClickUpcomingButton
 import com.tokopedia.play.view.uimodel.action.ImpressUpcomingChannel
 import com.tokopedia.play.view.uimodel.action.PlayUpcomingAction
+import com.tokopedia.play.view.uimodel.action.UpcomingTimerFinish
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
 import com.tokopedia.play.view.uimodel.event.UiString
+import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,10 +56,11 @@ class PlayUpcomingTest {
     private val mockChannelData = channelDataBuilder.buildChannelData(
         upcomingInfo = mockUpcomingInfo
     )
-    private val mockChannelDataWithNoUpcoming = channelDataBuilder.buildChannelData()
 
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockPlayNewAnalytic: PlayNewAnalytic = mockk(relaxed = true)
+    private val mockGetChannelStatus: GetChannelStatusUseCase = mockk(relaxed = true)
+    private val mockPlayUiModelMapper: PlayUiModelMapper = mockk(relaxed = true)
     private val fakePlayChannelSSE = FakePlayChannelSSE(testDispatcher)
 
     @Before
@@ -248,8 +250,134 @@ class PlayUpcomingTest {
 
             verify { mockPlayNewAnalytic.clickWatchNow(mockChannelData.id) }
 
-            assert(events.isNotEmpty())
+            events.assertNotEmpty()
             events.last().isEqualTo(PlayUpcomingUiEvent.RefreshChannelEvent)
+        }
+    }
+
+    /**
+     * Refresh
+     */
+    @Test
+    fun `given a upcoming channel, when timer finish, then it will wait for waiting duration and show refresh button`() {
+        /** Mock */
+        val mockStatusResponse = ChannelStatusResponse(
+            playGetChannelsStatus = ChannelStatusResponse.Data(
+                data = listOf(
+                    ChannelStatusResponse.ChannelStatus(
+                        channelId = mockChannelData.id,
+                        status = "FREEZE"
+                    )
+                ),
+                waitingDuration = 1000
+            )
+        )
+
+        val mockEvent = PlayUpcomingUiEvent.ShowInfoEvent(UiString.Resource(1))
+
+        coEvery { mockGetChannelStatus.executeOnBackground() } returns mockStatusResponse
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            getChannelStatusUseCase = mockGetChannelStatus,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(UpcomingTimerFinish)
+            }
+
+            /** Verify **/
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Refresh)
+
+            events.assertNotEmpty()
+            events.last().isEqualToIgnoringFields(mockEvent, PlayUpcomingUiEvent.ShowInfoEvent::message)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when user click refresh and the channel already active, then upcoming state should be watch now`() {
+        /** Mock */
+        val mockStatusResponse = ChannelStatusResponse(
+            playGetChannelsStatus = ChannelStatusResponse.Data(
+                data = listOf(
+                    ChannelStatusResponse.ChannelStatus(
+                        channelId = mockChannelData.id,
+                        status = "ACTIVE"
+                    )
+                ),
+                waitingDuration = 1000
+            )
+        )
+
+        coEvery { mockGetChannelStatus.executeOnBackground() } returns mockStatusResponse
+        coEvery { mockPlayUiModelMapper.mapStatus(any()).isActive } returns true
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            getChannelStatusUseCase = mockGetChannelStatus,
+            playUiModelMapper = mockPlayUiModelMapper,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val (state, _) = robot.recordStateAndEvent {
+                robot.submitAction(UpcomingTimerFinish)
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            /** Verify **/
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.WatchNow)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when user click refresh and get gql error, then upcoming state should be back to refresh again`() {
+        /** Mock */
+        coEvery { mockGetChannelStatus.executeOnBackground() } throws Exception("Network Error")
+
+        val mockEvent = PlayUpcomingUiEvent.ShowInfoWithActionEvent(UiString.Resource(1)) {}
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            getChannelStatusUseCase = mockGetChannelStatus,
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val (state, events) = robot.recordStateAndEvent {
+                robot.submitAction(UpcomingTimerFinish)
+                robot.submitAction(ClickUpcomingButton)
+            }
+
+            /** Verify **/
+            state.upcomingInfo.state.isEqualTo(PlayUpcomingState.Refresh)
+
+            events.assertNotEmpty()
+            events.last().isEqualToIgnoringFields(
+                mockEvent,
+                PlayUpcomingUiEvent.ShowInfoWithActionEvent::message,
+                PlayUpcomingUiEvent.ShowInfoWithActionEvent::action
+            )
         }
     }
 
