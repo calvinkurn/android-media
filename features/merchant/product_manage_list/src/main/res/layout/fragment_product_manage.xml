@@ -7,10 +7,12 @@
     android:layout_height="match_parent">
 
     <include
-        android:id="@+id/stockTicker"
+        android:id="@+id/ticker"
         layout="@layout/layout_stock_location_closable_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/mainContainer"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,20 +34,12 @@
             android:orientation="vertical"
             app:elevation="0dp">
 
-            <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
-                android:id="@+id/topAdsWidgetFreeClaim"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
             <com.tokopedia.unifycomponents.SearchBarUnify
                 android:id="@+id/search_bar_product_manage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="@dimen/spacing_lvl3"
                 app:search_bar_placeholder="@string/product_manage_search_hint"
                 app:search_bar_show_icon="false"/>
@@ -182,7 +176,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/stockTicker" />
+        app:layout_constraintTop_toBottomOf="@id/ticker" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/noAccessPage"
@@ -195,7 +189,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/stockTicker" />
+        app:layout_constraintTop_toBottomOf="@id/ticker" />
 
     <FrameLayout
         android:id="@+id/interceptor"

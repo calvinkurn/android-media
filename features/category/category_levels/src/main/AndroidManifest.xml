@@ -6,7 +6,6 @@
             android:name="com.tokopedia.categorylevels.view.activity.CategoryRevampActivity"
             android:label="@string/label_category"
             android:screenOrientation="portrait"
-            android:exported="false"
             android:theme="@style/Theme.White">
 
             <intent-filter>
