@@ -16,6 +16,8 @@ import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dat
 
 object MediaListenerBuilder {
 
+    private const val PAGE_NAME_NOT_FOUND = "None"
+
     fun callback(
             context: Context,
             properties: Properties,
@@ -39,7 +41,11 @@ object MediaListenerBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
-            val pageName = context.javaClass.name.split(".").last()
+            val pageName = try {
+                context.javaClass.name.split(".").last()
+            } catch (e: Throwable) {
+                PAGE_NAME_NOT_FOUND
+            }
 
             val fileSize = resource?.allocationByteCount?.toString() ?: "0"
             val fileSizeInMb = fileSize.toLong().formattedToMB()
