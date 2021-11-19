@@ -87,14 +87,12 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
                 viewModel.accessToken = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                 viewModel.loginType = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
                 viewModel.isFromRegister = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
-                viewModel.isFacebook = savedInstanceState.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, false)
             }
             arguments != null -> {
                 viewModel.phoneNumber = arguments?.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 viewModel.accessToken = arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID, "")
                 viewModel.loginType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, "")
                 viewModel.isFromRegister = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false) ?: false
-                viewModel.isFacebook = arguments?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FACEBOOK, false) ?: false
             }
             activity != null -> activity?.finish()
         }
@@ -170,45 +168,20 @@ open class ChooseAccountFragment : BaseChooseAccountFragment(), ChooseAccountLis
     }
 
     fun getAccountList() {
-        when (viewModel.loginType) {
-            FACEBOOK_LOGIN_TYPE -> {
-                viewModel.accessToken?.let {
-                    if (it.isNotEmpty())
-                        chooseAccountViewModel.getAccountListFacebook(it)
-                }
-            }
-            else -> {
-                LetUtil.ifLet(viewModel.accessToken, viewModel.phoneNumber) { (accessToken, phoneNumber) ->
-                    chooseAccountViewModel.getAccountListPhoneNumber(accessToken, phoneNumber)
-                }
-            }
+        LetUtil.ifLet(viewModel.accessToken, viewModel.phoneNumber) { (accessToken, phoneNumber) ->
+            chooseAccountViewModel.getAccountListPhoneNumber(accessToken, phoneNumber)
         }
     }
 
     private fun loginToken(account: UserDetailDataModel?, phone: String) {
         account?.let {
-            when (viewModel.loginType) {
-                FACEBOOK_LOGIN_TYPE -> {
-                    if (phone.isNotEmpty()) {
-                        viewModel.accountListDataModel?.key?.let { key ->
-                            chooseAccountViewModel.loginTokenFacebook(
-                                    key,
-                                    it.email,
-                                    phone
-                            )
-                        }
-                    }
-                }
-                else -> {
-                    LetUtil.ifLet(viewModel.accountListDataModel, viewModel.phoneNumber) { (accountList, phoneNumber) ->
-                        if (accountList is AccountListDataModel && phoneNumber is String) {
-                            chooseAccountViewModel.loginTokenPhone(
-                                    accountList.key,
-                                    it.email,
-                                    phoneNumber
-                            )
-                        }
-                    }
+            LetUtil.ifLet(viewModel.accountListDataModel, viewModel.phoneNumber) { (accountList, phoneNumber) ->
+                if (accountList is AccountListDataModel && phoneNumber is String) {
+                    chooseAccountViewModel.loginTokenPhone(
+                        accountList.key,
+                        it.email,
+                        phoneNumber
+                    )
                 }
             }
         }

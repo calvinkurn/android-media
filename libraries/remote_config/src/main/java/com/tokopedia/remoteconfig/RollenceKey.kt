@@ -9,10 +9,6 @@ object RollenceKey {
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL = "follow_green_small"
     const val AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG = "follow_green_big"
 
-    const val AB_TEST_SHOP_REVIEW = "review_shop"
-    const val OLD_REVIEW_SHOP = "old_review_shop"
-    const val NEW_REVIEW_SHOP = "new_review_shop"
-
     const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
 
     //    Add Edit Product

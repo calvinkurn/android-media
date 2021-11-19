@@ -168,7 +168,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
     private var thankYouBottomSheetText = ""
-    private var imagesFedIntoPicker = arrayListOf<String>()
     private var thankYouBottomSheetImage = ""
 
     private var binding by autoClearedNullable<FragmentCreateReviewBinding>()
@@ -420,11 +419,10 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onAddImageClick() {
         clearFocusAndHideSoftInput(view)
-        imagesFedIntoPicker = createReviewViewModel.getSelectedImagesUrl()
         context?.let {
             val builder = ImagePickerBuilder.getSquareImageBuilder(it)
                 .withSimpleEditor()
-                .withSimpleMultipleSelection(initialImagePathList = imagesFedIntoPicker)
+                .withSimpleMultipleSelection(initialImagePathList = createReviewViewModel.getSelectedImagesUrl())
                 .apply {
                     title = getString(R.string.image_picker_title)
                 }
@@ -533,7 +531,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     if (!selectedImage.isNullOrEmpty()) {
                         val imageListData = createReviewViewModel.getAfterEditImageList(
                             selectedImage,
-                            imagesFedIntoPicker
+                            result.imagesFedIntoPicker
                         )
                         imageAdapter.setImageReviewData(imageListData)
                         binding?.rvImgReview?.show()

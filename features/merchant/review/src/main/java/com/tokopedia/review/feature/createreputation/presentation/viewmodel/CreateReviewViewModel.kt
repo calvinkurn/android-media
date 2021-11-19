@@ -193,23 +193,16 @@ class CreateReviewViewModel @Inject constructor(
         imagesFedIntoPicker: MutableList<String>
     ): MutableList<BaseImageReviewUiModel> {
         // Remove old image
-        originalImages =
-            imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
-        val imagesToDisplay = originalImages.toMutableList()
-        imagePickerResult.forEachIndexed { index, s ->
-            if (s.contains(LOCAL_IMAGE_SOURCE) && index > originalImages.lastIndex) {
-                imagesToDisplay.add(s)
-            }
-        }
+        originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
 
-        when (imagesToDisplay.size) {
+        when (imagePickerResult.size) {
             MAX_IMAGE_COUNT -> {
-                imageData = (imagesToDisplay.map {
+                imageData = (imagePickerResult.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(imagesToDisplay.map {
+                imageData.addAll(imagePickerResult.map {
                     ImageReviewUiModel(it)
                 })
                 imageData.add(DefaultImageReviewUiModel())
