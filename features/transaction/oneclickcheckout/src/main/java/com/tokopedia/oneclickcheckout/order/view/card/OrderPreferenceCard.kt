@@ -570,7 +570,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                     if (payment.isOvo) {
                                         listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                                     } else {
-                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, getTopUpTitle(payment.walletData.walletType))
+                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, getTopUpTitle(payment.walletData.walletType))
                                     }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
                                     if (payment.isOvo) {
@@ -597,7 +597,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                     if (payment.isOvo) {
                                         listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                                     } else {
-                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, getTopUpTitle(payment.walletData.walletType))
+                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, getTopUpTitle(payment.walletData.walletType))
                                     }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
                                     if (payment.isOvo) {
@@ -888,6 +888,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
 
-        fun onWalletTopUpClicked(url: String, callbackUrl: String, title: Int)
+        fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: Int)
     }
 }

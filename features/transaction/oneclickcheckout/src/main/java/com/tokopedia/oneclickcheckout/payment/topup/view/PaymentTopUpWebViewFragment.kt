@@ -82,7 +82,11 @@ class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
 
         val url = arguments?.getString(EXTRA_URL, "") ?: ""
         if (url.isNotEmpty()) {
-            loadWebView(url)
+            val finalUrl = Uri.parse(url).buildUpon()
+                    .appendQueryParameter(QUERY_IS_HIDE_DIGITAL, isHideDigital())
+                    .appendQueryParameter(QUERY_BACK_URL, getRedirectUrl())
+                    .build().toString()
+            loadWebView(finalUrl)
         } else {
             observeOvoTopUpUrl()
             viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
@@ -204,6 +208,7 @@ class PaymentTopUpWebViewFragment : BaseDaggerFragment() {
         private const val BACK_APPLINK = "tokopedia://back"
 
         private const val QUERY_IS_HIDE_DIGITAL = "is_hide_digital"
+        private const val QUERY_BACK_URL = "back_url"
 
         const val EXTRA_TITLE = "title"
         const val EXTRA_URL = "url"

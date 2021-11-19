@@ -1322,9 +1322,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun onWalletTopUpClicked(url: String, callbackUrl: String, title: Int) {
+        override fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: Int) {
             context?.let {
-                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, title, url = url, redirectUrl = callbackUrl), REQUEST_CODE_OVO_TOP_UP)
+//                startActivityForResult(RouteManager.getIntentNoFallback(it, url), REQUEST_CODE_OVO_TOP_UP)
+                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, title, url = url, redirectUrl = callbackUrl, isHideDigital = isHideDigital), REQUEST_CODE_OVO_TOP_UP)
             }
         }
     }
