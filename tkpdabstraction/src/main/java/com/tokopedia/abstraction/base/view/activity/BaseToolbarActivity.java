@@ -1,7 +1,10 @@
 package com.tokopedia.abstraction.base.view.activity;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
@@ -18,6 +21,7 @@ import android.view.WindowManager;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
+
 import static com.tokopedia.utils.view.DarkModeUtil.isDarkMode;
 
 /**
@@ -44,8 +48,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected void setupStatusBar() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!isDarkMode(this)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!isDarkMode(this)) {
                 getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
@@ -64,14 +68,14 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected int getCloseButton() {
-        return  com.tokopedia.resources.common.R.drawable.ic_system_close_default;
+        return com.tokopedia.resources.common.R.drawable.ic_system_close_default;
     }
 
     protected boolean isShowCloseButton() {
         return false;
     }
 
-    protected int getToolbarResourceID(){
+    protected int getToolbarResourceID() {
         return R.id.toolbar;
     }
 
@@ -121,22 +125,24 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        tintTextColor(menu);
+        tintTextAndIcon(menu);
         return super.onCreateOptionsMenu(menu);
     }
 
-    public void tintTextColor(Menu menu){
+    public void tintTextAndIcon(Menu menu) {
         try {
             int menuSize = menu.size();
             for (int i = 0; i < menuSize; i++) {
                 MenuItem item = menu.getItem(i);
                 tintTextColorMenuItem(item);
+                tintIcon(item);
                 if (item.hasSubMenu()) {
                     SubMenu subMenu = item.getSubMenu();
                     int subMenuSize = item.getSubMenu().size();
                     for (int j = 0; j < subMenuSize; j++) {
                         MenuItem subMenuItem = subMenu.getItem(j);
                         tintTextColorMenuItem(subMenuItem);
+                        tintIcon(subMenuItem);
                     }
                 }
             }
@@ -145,7 +151,18 @@ abstract class BaseToolbarActivity extends BaseActivity {
         }
     }
 
-    public void tintTextColorMenuItem(MenuItem menuItem){
+    private void tintIcon(MenuItem menuItem) {
+        Drawable drawable = menuItem.getIcon();
+        if (drawable != null) {
+            // If we don't mutate the drawable, then all drawable's with this id will have a color
+            // filter applied to it.
+            drawable.mutate();
+            drawable.setColorFilter(ContextCompat.getColor(this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN900), PorterDuff.Mode.SRC_ATOP);
+        }
+    }
+
+    public void tintTextColorMenuItem(MenuItem menuItem) {
         try {
             SpannableString spanString = new SpannableString(menuItem.getTitle().toString());
             spanString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this,
