@@ -6,9 +6,13 @@ import androidx.annotation.LayoutRes;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -113,5 +117,43 @@ abstract class BaseToolbarActivity extends BaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        tintTextColor(menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public void tintTextColor(Menu menu){
+        try {
+            int menuSize = menu.size();
+            for (int i = 0; i < menuSize; i++) {
+                MenuItem item = menu.getItem(i);
+                tintTextColorMenuItem(item);
+                if (item.hasSubMenu()) {
+                    SubMenu subMenu = item.getSubMenu();
+                    int subMenuSize = item.getSubMenu().size();
+                    for (int j = 0; j < subMenuSize; j++) {
+                        MenuItem subMenuItem = subMenu.getItem(j);
+                        tintTextColorMenuItem(subMenuItem);
+                    }
+                }
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    public void tintTextColorMenuItem(MenuItem menuItem){
+        try {
+            SpannableString spanString = new SpannableString(menuItem.getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN950)),
+                    0, spanString.length(), 0);
+            menuItem.setTitle(spanString);
+        } catch (Exception e) {
+
+        }
     }
 }
