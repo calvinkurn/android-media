@@ -9,6 +9,7 @@ import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.PlayChannelReminderUseCase
 import com.tokopedia.play.fake.FakePlayChannelSSE
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
+import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.andWhenExpectEvent
@@ -16,6 +17,7 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
+import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.*
 import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.PlayUpcomingUiEvent
@@ -281,6 +283,80 @@ class PlayUpcomingTest {
             events.assertNotEmpty()
             events[0].isEqualTo(mockClipboardEvent)
             events[1].isEqualToIgnoringFields(mockInfoEvent, PlayUpcomingUiEvent.ShowInfoEvent::message)
+        }
+    }
+
+    /**
+     * Click Partner Name
+     */
+    @Test
+    fun `given a upcoming channel, when user click partner name and partner is shop, then it should emit open page event`() {
+        /** Mock */
+        val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
+            ApplinkConst.SHOP,
+            listOf(mockChannelData.partnerInfo.id.toString())
+        )
+
+        coEvery { mockPlayNewAnalytic.clickShop(any(), any(), any()) } returns Unit
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelData.id, mockChannelData)
+        }
+
+        robot.use {
+            /** Test */
+            val events = robot.recordEvent {
+                robot.submitAction(ClickPartnerNameUpcomingAction)
+            }
+
+            /** Verify **/
+            verify { mockPlayNewAnalytic.clickShop(any(), any(), any()) }
+
+            events.assertNotEmpty()
+            events.last().isEqualTo(mockEvent)
+        }
+    }
+
+    @Test
+    fun `given a upcoming channel, when user click partner name and partner is buyer, then it should emit open page event`() {
+        /** Mock */
+        val mockChannelDataWithBuyerPartner = channelDataBuilder.buildChannelData(
+            upcomingInfo = mockUpcomingInfo,
+            partnerInfo = PlayPartnerInfoModelBuilder().buildPlayPartnerInfo(
+                type = PartnerType.Buyer
+            )
+        )
+
+        val mockEvent = PlayUpcomingUiEvent.OpenPageEvent(
+            ApplinkConst.PROFILE,
+            listOf(mockChannelDataWithBuyerPartner.partnerInfo.id.toString())
+        )
+
+        /** Prepare */
+        val robot = createPlayUpcomingViewModelRobot(
+            dispatchers = testDispatcher,
+            userSession = mockUserSession,
+            playAnalytic = mockPlayNewAnalytic,
+            playChannelSSE = fakePlayChannelSSE
+        ) {
+            viewModel.initPage(mockChannelDataWithBuyerPartner.id, mockChannelDataWithBuyerPartner)
+        }
+
+        robot.use {
+            /** Test */
+            val events = robot.recordEvent {
+                robot.submitAction(ClickPartnerNameUpcomingAction)
+            }
+
+            /** Verify **/
+            events.assertNotEmpty()
+            events.last().isEqualTo(mockEvent)
         }
     }
 
