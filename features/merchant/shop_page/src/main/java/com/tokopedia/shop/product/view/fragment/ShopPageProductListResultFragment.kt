@@ -73,6 +73,7 @@ import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListe
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
+import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -91,6 +92,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -183,6 +185,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         } else "0"
     var localCacheModel: LocalCacheModel? = null
     private var rvDefaultPaddingBottom = 0
+    private val viewBinding: FragmentShopProductListResultNewBinding? by viewBinding()
+
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
         val userSession = UserSession(context)
         val _shopId = arguments?.getString(ShopParamConstant.EXTRA_SHOP_ID, "") ?: ""
@@ -267,7 +271,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        return view.findViewById(R.id.swipe_refresh_layout)
+        return viewBinding?.swipeRefreshLayout
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -660,6 +664,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun prepareShopFollowersView() {
+        //    we can't use viewbinding for the code below, since the layout from shop_common hasn't implement viewbinding
         partialShopNplFollowersViewLayout = view?.findViewById(R.id.npl_follow_view)
         partialShopNplFollowersViewLayout?.visible()
         view?.let {
@@ -908,20 +913,22 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun showToastSuccess(message: String, ctaText: String = "", ctaAction: View.OnClickListener? = null) {
         activity?.run {
-            ctaAction?.let { ctaClickListener ->
-                Toaster.build(findViewById(android.R.id.content),
+            view?.let{
+                ctaAction?.let { ctaClickListener ->
+                    Toaster.build(it,
+                            message,
+                            Snackbar.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            ctaText,
+                            ctaClickListener
+                    ).show()
+                } ?: Toaster.build(it,
                         message,
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_NORMAL,
-                        ctaText,
-                        ctaClickListener
+                        ctaText
                 ).show()
-            } ?: Toaster.build(findViewById(android.R.id.content),
-                    message,
-                    Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    ctaText
-            ).show()
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.presenter
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
@@ -11,10 +12,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
-import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_INTEREST
+import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
@@ -37,6 +35,7 @@ import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
+import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -76,7 +75,9 @@ class FeedViewModel @Inject constructor(
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
-    private val addWishListUseCase: AddWishListUseCase
+    private val addWishListUseCase: AddWishListUseCase,
+    private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase
+
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
@@ -104,6 +105,7 @@ class FeedViewModel @Inject constructor(
     val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopViewModel>>()
     val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
     val reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
+    val viewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
 
 
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
@@ -172,6 +174,19 @@ class FeedViewModel @Inject constructor(
         }, {
             submitInterestPickResp.value = Fail(it)
         })
+    }
+    fun trackVisitChannel(channelId: String,rowNumber: Int) {
+
+        viewModelScope.launchCatchError(baseDispatcher.io, block = {
+            trackVisitChannelBroadcasterUseCase.setRequestParams(FeedBroadcastTrackerUseCase.createParams(channelId))
+            val trackResponse = trackVisitChannelBroadcasterUseCase.executeOnBackground()
+            val data = ViewsKolModel()
+            data.rowNumber = rowNumber
+            data.isSuccess = trackResponse.reportVisitChannelTracking.success
+            viewTrackResponse.postValue(Success(data))
+        }) {
+            viewTrackResponse.postValue(Fail(it))
+        }
     }
 
     fun getFeedFirstPage() {
