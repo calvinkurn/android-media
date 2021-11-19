@@ -74,9 +74,9 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     }
 
     open fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
-//        startActivityForResult(PromoCheckoutDetailDealsActivity.newInstance(
-//                activity, promoCheckoutListModel?.code
-//                ?: "", false, checkoutData), REQUEST_CODE_PROMO_DETAIL)
+        startActivityForResult(PromoCheckoutDetailDealsActivity.newInstance(
+                activity, promoCheckoutListModel?.code
+                ?: "", false, categoryName, grandTotal, metaData), REQUEST_CODE_PROMO_DETAIL)
     }
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
