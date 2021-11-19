@@ -146,8 +146,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
                     }
                 }
             }
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
     }
 
@@ -169,8 +168,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
                     com.tokopedia.unifyprinciples.R.color.Unify_NN950)),
                     0, spanString.length(), 0);
             menuItem.setTitle(spanString);
-        } catch (Exception e) {
-
+        } catch (Exception ignored) {
         }
     }
 }
