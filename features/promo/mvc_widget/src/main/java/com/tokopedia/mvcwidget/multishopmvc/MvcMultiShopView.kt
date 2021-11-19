@@ -1,5 +1,6 @@
 package com.tokopedia.mvcwidget.multishopmvc
 
+import android.app.Application
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
@@ -15,11 +16,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mvcwidget.MVCActivityCallbacks
 import com.tokopedia.mvcwidget.R
 import com.tokopedia.mvcwidget.multishopmvc.data.AdInfo
 import com.tokopedia.mvcwidget.multishopmvc.data.MultiShopModel
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTracker
+import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_COUPON_TITLE
 import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_PRODUCT_CARD
 import com.tokopedia.mvcwidget.trackers.Tracker.Event.CLICK_SHOP_NAME
@@ -47,6 +50,8 @@ class MvcMultiShopView @JvmOverloads constructor(
     private var tvCouponCount: Typography? = null
     private var tvDealsCouponOne: Typography? = null
     private var tvDealsCouponTwo: Typography? = null
+    private val tracker = MvcTracker()
+    private val mvcActivityCallbacks = MVCActivityCallbacks()
 
     init {
         View.inflate(context, R.layout.mvc_layout_mulitshop_item, this)
@@ -66,8 +71,13 @@ class MvcMultiShopView @JvmOverloads constructor(
         tvDealsCouponTwo = findViewById(R.id.tv_deals_coupon2)
     }
 
-    fun setMultiShopModel(item: MultiShopModel , @MvcSource source: Int) {
+    fun setTracker(mvcTrackerImpl: MvcTrackerImpl){
+        mvcActivityCallbacks.mvcTrackerImpl = mvcTrackerImpl
+        tracker.trackerImpl = mvcTrackerImpl
+    }
 
+    fun setMultiShopModel(item: MultiShopModel , @MvcSource source: Int) {
+        mvcActivityCallbacks.hashCodeForMVC = item.hashCode()
         item.shopIcon.let {
             if (it.isNotEmpty()) {
                 ivShopIcon?.loadImage(it)
@@ -153,6 +163,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
                 item.AdInfo ?: AdInfo(),
+                FIRST_PRODUCT_POSITION,
                 source
             )
         }
@@ -163,6 +174,7 @@ class MvcMultiShopView @JvmOverloads constructor(
                 item.shopName,
                 CLICK_PRODUCT_CARD,
                 item.AdInfo ?: AdInfo(),
+                SECOND_PRODUCT_POSITION,
                 source
             )
         }
@@ -190,19 +202,25 @@ class MvcMultiShopView @JvmOverloads constructor(
         val shopName = item.shopName
         val shopApplink = item.applink
         val shopId = item.id
+        (context.applicationContext as Application).let {app->
+            app.unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
+            app.registerActivityLifecycleCallbacks(mvcActivityCallbacks)
+        }
         context.startActivity(
             TransParentActivity.getIntent(
                 context,
                 shopId,
                 0,
                 shopApplink,
-                shopName
+                shopName,
+                mvcActivityCallbacks.hashCodeForMVC
             )
         )
         sendCouponClickEvent(
             item.shopName,
             eventAction,
             item.AdInfo ?: AdInfo(),
+            PRODUCT_POSITION_NA,
             source
         )
     }
@@ -213,6 +231,7 @@ class MvcMultiShopView @JvmOverloads constructor(
             item.shopName,
             CLICK_SHOP_NAME,
             item.AdInfo ?: AdInfo(),
+            PRODUCT_POSITION_NA,
             source
         )
     }
@@ -234,15 +253,17 @@ class MvcMultiShopView @JvmOverloads constructor(
         shopName: String,
         eventAction: String,
         adInfo: AdInfo,
+        productPosition: Int,
         @MvcSource mvcSource: Int
     ) {
         sendTopadsClick(this.context, adInfo)
-        MvcTracker().mvcMultiShopCardClick(
+        tracker.mvcMultiShopCardClick(
             shopName,
             eventAction,
             mvcSource,
             UserSession(context).userId,
-            "mvc section - $shopName"
+            productPosition,
+            "mvc section - $shopName",
         )
     }
 
@@ -266,5 +287,15 @@ class MvcMultiShopView @JvmOverloads constructor(
 
     companion object {
         const val className = "com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView"
+        const val FIRST_PRODUCT_POSITION = 0
+        const val SECOND_PRODUCT_POSITION = 1
+//        Since we use same method sendCouponClickEvent() for all events, we send product position
+//        as -1 for all events other than product click events.
+        const val PRODUCT_POSITION_NA = -1
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        (context.applicationContext as Application).unregisterActivityLifecycleCallbacks(mvcActivityCallbacks)
     }
 }
