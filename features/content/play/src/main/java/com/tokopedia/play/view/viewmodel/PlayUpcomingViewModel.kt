@@ -140,9 +140,7 @@ class PlayUpcomingViewModel @Inject constructor(
 
     private fun updateUpcomingState(upcomingInfo: PlayUpcomingUiModel) {
         viewModelScope.launch {
-            val currState = _upcomingState.value
-
-            if(currState == PlayUpcomingState.Unknown) {
+            if(_upcomingState.value == PlayUpcomingState.Unknown) {
                 _upcomingState.emit(
                     when {
                         upcomingInfo.isAlreadyLive -> PlayUpcomingState.WatchNow
@@ -150,9 +148,6 @@ class PlayUpcomingViewModel @Inject constructor(
                         else -> PlayUpcomingState.RemindMe
                     }
                 )
-            }
-            else {
-                if(currState == PlayUpcomingState.WaitingRefreshDuration) performRefreshWaitingDuration()
             }
         }
     }
