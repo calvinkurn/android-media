@@ -8,10 +8,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
 import org.hamcrest.CoreMatchers.not
+import org.junit.Before
 import org.junit.Test
 
 @UiTest
@@ -19,6 +22,15 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
 
     private val exShopId = "1231"
     private val exUserId = "1232"
+    private var orderProgressResponseNotEmpty = OrderProgressResponse()
+
+    @Before
+    fun additionalSetup() {
+        orderProgressResponseNotEmpty = AndroidFileUtil.parse<OrderProgressResponse>(
+            "success_get_order_progress.json",
+            OrderProgressResponse::class.java
+        )
+    }
 
     @Test
     fun test_intent_ask_seller_with_custom_msg() {
