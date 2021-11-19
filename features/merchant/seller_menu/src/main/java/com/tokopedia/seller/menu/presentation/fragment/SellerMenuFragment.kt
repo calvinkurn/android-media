@@ -203,6 +203,7 @@ class SellerMenuFragment : Fragment(), SettingTrackingListener, ShopInfoViewHold
                     ShopScoreReputationErrorLogger.logToCrashlytic(
                             String.format(ShopScoreReputationErrorLogger.SHOP_INFO_PM_SETTING_INFO_ERROR,
                                     ShopScoreReputationErrorLogger.SHOP_ACCOUNT), it.throwable)
+                    swipeRefreshLayout?.isRefreshing = false
                 }
             }
         }
