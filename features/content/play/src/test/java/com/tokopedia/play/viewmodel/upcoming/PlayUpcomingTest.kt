@@ -12,11 +12,6 @@ import com.tokopedia.play.fake.FakePlayChannelSSE
 import com.tokopedia.play.model.PlayChannelDataModelBuilder
 import com.tokopedia.play.model.PlayPartnerInfoModelBuilder
 import com.tokopedia.play.model.PlayUpcomingInfoModelBuilder
-import com.tokopedia.play.robot.andWhen
-import com.tokopedia.play.robot.play.andWhenExpectEvent
-import com.tokopedia.play.robot.play.createPlayViewModelRobot
-import com.tokopedia.play.robot.play.givenPlayViewModelRobot
-import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.robot.upcoming.createPlayUpcomingViewModelRobot
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.*
