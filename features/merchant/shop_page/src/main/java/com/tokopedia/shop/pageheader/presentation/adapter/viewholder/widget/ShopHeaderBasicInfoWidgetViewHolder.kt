@@ -27,7 +27,6 @@ class ShopHeaderBasicInfoWidgetViewHolder(
 
     companion object {
         val LAYOUT = R.layout.layout_shop_header_basic_info_widget
-//        const val COLOR_DEFAULT_SUBSTRING_VALUE = 2
     }
 
     interface Listener {
