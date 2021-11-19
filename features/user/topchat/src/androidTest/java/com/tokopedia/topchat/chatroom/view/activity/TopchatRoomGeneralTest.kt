@@ -6,10 +6,10 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
@@ -83,8 +83,11 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         onView(withId(R.id.recycler_view_chatroom)).check(
-            atPositionIsInstanceOf(1, RoomSettingFraudAlertUiModel::class.java)
+            matches(
+                hasViewHolderItemAtPosition(1, RoomSettingFraudAlertViewHolder::class.java)
+            )
         )
+
         onView(withId(R.id.tvText)).check(
             matches(withSubstring("Hati-hati penipuan!"))
         )
