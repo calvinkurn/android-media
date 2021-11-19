@@ -53,6 +53,13 @@ open class Properties(
     // versioning of cache
     internal val cacheVersionNumber = "+v2"
 
+    // flag to check wether icon or not
+    internal var isIcon = false
+
+    fun isIcon(value: Boolean) = apply {
+        isIcon = value
+    }
+
     internal fun setImageSize(width: Int, height: Int) = apply {
         this.imageViewSize = Pair(width, height)
     }
@@ -181,6 +188,7 @@ open class Properties(
         if (this === other) return true
         return other is Properties &&
                 imageViewSize == other.imageViewSize &&
+                isIcon == other.isIcon &&
                 urlHasQualityParam == other.urlHasQualityParam &&
                 renderDelay == other.renderDelay &&
                 loadTime == other.loadTime &&
@@ -208,6 +216,7 @@ open class Properties(
     override fun hashCode(): Int {
         var result = thumbnailUrl.hashCode()
         result = 3 * result + imageViewSize.hashCode()
+        result = 3 * result + isIcon.hashCode()
         result = 3 * result + urlHasQualityParam.hashCode()
         result = 3 * result + renderDelay.hashCode()
         result = 3 * result + loadTime.hashCode()
