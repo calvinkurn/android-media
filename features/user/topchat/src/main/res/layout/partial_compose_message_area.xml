@@ -75,6 +75,7 @@
         android:layout_marginBottom="@dimen/dp_topchat_1"
         android:padding="@dimen/spacing_lvl3"
         app:icon_color_light_enable="@color/topchat_dms_icon_compose"
+        app:icon_color_night_enable="@color/topchat_dms_icon_compose"
         app:icon_name="STICKER"
         app:layout_constraintBottom_toBottomOf="@+id/new_comment"
         app:layout_constraintStart_toStartOf="@+id/new_comment" />
@@ -87,6 +88,7 @@
         android:layout_marginBottom="@dimen/dp_topchat_1"
         android:padding="@dimen/spacing_lvl3"
         app:icon_color_light_enable="@color/topchat_dms_icon_compose"
+        app:icon_color_night_enable="@color/topchat_dms_icon_compose"
         app:icon_name="ADD_CIRCLE"
         app:layout_constraintBottom_toBottomOf="@+id/new_comment"
         app:layout_constraintEnd_toEndOf="@+id/new_comment" />
