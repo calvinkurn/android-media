@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.media.common.data.PARAM_BLURHASH
@@ -35,7 +34,6 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
     fun build(
             context: Context,
             properties: Properties,
-            performanceMonitoring: PerformanceMonitoring? = null,
             request: GlideRequest<Bitmap>
     ) = setup(properties, request).apply {
         // startTimeRequest will use for performance tracking
@@ -56,8 +54,7 @@ class BitmapFactory : MediaLoaderFactory<Bitmap>() {
                     context,
                     properties,
                     startTimeRequest,
-                    loaderListener,
-                    performanceMonitoring
+                    loaderListener
             ))
         }
     }
