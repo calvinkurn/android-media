@@ -22,13 +22,13 @@ class DummyTestCMHomeWidgetViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     private val _getCMHomeWidgetDataLiveData = MutableLiveData<Result<CMHomeWidgetDataResponse>>()
-    val getCMHomeWidgetDataLiveData: LiveData<Result<CMHomeWidgetDataResponse>> =
-        _getCMHomeWidgetDataLiveData
+    val getCMHomeWidgetDataLiveData: LiveData<Result<CMHomeWidgetDataResponse>>
+        get() = _getCMHomeWidgetDataLiveData
 
     private val _deleteCMHomeWidgetDataLiveData =
         MutableLiveData<Result<DeleteCMHomeWidgetDataResponse>>()
-    val deleteCMHomeWidgetDataLiveData: LiveData<Result<DeleteCMHomeWidgetDataResponse>> =
-        _deleteCMHomeWidgetDataLiveData
+    val deleteCMHomeWidgetDataLiveData: LiveData<Result<DeleteCMHomeWidgetDataResponse>>
+        get() = _deleteCMHomeWidgetDataLiveData
 
     fun getCMHomeWidgetData() {
         getCMHomeWidgetDataUseCase.getCMHomeWidgetData(

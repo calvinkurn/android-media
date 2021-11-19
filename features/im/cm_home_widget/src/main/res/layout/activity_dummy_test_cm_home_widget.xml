@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- todo delete cm home widget dummy things-->
+<?xml version="1.0" encoding="utf-8"?><!-- todo delete cm home widget dummy things-->
 
 <com.tokopedia.cmhomewidget.presentation.customview.CMHomeWidget xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/cmHomeWidget"

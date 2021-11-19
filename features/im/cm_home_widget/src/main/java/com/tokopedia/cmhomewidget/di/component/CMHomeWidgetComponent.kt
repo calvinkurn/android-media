@@ -15,6 +15,7 @@ import dagger.Component
 )
 interface CMHomeWidgetComponent {
 
+    // todo delete cm home widget dummy things
     fun inject(dummyTestCMHomeWidgetActivity: DummyTestCMHomeWidgetActivity)
 
 }
