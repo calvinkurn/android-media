@@ -10,7 +10,7 @@
         />
 
     <solid
-        android:color="@color/play_bro_tnc_benefit_bg"
+        android:color="@color/play_bro_tnc_benefit_bg_dms"
         />
 
 </shape>
