@@ -15,11 +15,12 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.databinding.FragmentShopAddressAddBinding
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener.ShopSettingAddressAddEditView
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_shop_address_add.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddressAddEditView {
@@ -33,6 +34,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private val zipCodesAdapter: ArrayAdapter<String>  by lazy {
         ArrayAdapter<String>(requireActivity(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row, com.tokopedia.design.R.id.item, zipCodes)
     }
+    private var binding by autoClearedNullable<FragmentShopAddressAddBinding>()
 
     @Inject lateinit var presenter: ShopSettingAddressAddEditPresenter
 
@@ -65,9 +67,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     override fun getScreenName(): String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_shop_address_add, container, false)
-        v.requestFocus()
-        return v
+        binding = FragmentShopAddressAddBinding.inflate(inflater, container, false)
+        binding?.root?.requestFocus()
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,14 +84,14 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
 
-        postal_code.textFieldInput.setOnTouchListener { _, _ -> if (!postal_code.textFieldInput.isPopupShowing) postal_code.textFieldInput.showDropDown()
+        binding?.postalCode?.textFieldInput?.setOnTouchListener { _, _ -> if (!(binding?.postalCode?.textFieldInput?.isPopupShowing ?: false)) binding?.postalCode?.textFieldInput?.showDropDown()
             false }
-        postal_code.textFieldInput.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !postal_code.textFieldInput.text.toString()[0].isDigit())
-            postal_code.textFieldInput.setText("")}
+        binding?.postalCode?.textFieldInput?.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !binding?.postalCode?.textFieldInput?.text.toString()[0].isDigit())
+            binding?.postalCode?.textFieldInput?.setText("")}
 
-        postal_code.textFieldInput.setAdapter(zipCodesAdapter)
+        binding?.postalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
 
-        edit_text_district.textFieldInput.run {
+        binding?.editTextDistrict?.textFieldInput?.run {
             isFocusable = false
             isClickable = true
             setOnClickListener { gotoDistrictActivity() } }
@@ -99,19 +101,19 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     private fun initializeFillData() {
         shopLocationOldUiModel?.let {
-            edit_text_name.textFieldInput.setText(it.name)
-            edit_text_address.textFieldInput.setText(it.address)
+            binding?.editTextName?.textFieldInput?.setText(it.name)
+            binding?.editTextAddress?.textFieldInput?.setText(it.address)
             val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
-            edit_text_district.textFieldInput.setText(district)
-            postal_code.textFieldInput.setText(it.postalCode.toString())
+            binding?.editTextDistrict?.textFieldInput?.setText(district)
+            binding?.postalCode?.textFieldInput?.setText(it.postalCode.toString())
             if (!TextUtils.isEmpty(it.phone)){
-                edit_text_phone.textFieldInput.setText(it.phone)
+                binding?.editTextPhone?.textFieldInput?.setText(it.phone)
             }
             if (!TextUtils.isEmpty(it.email)){
-                edit_text_email.textFieldInput.setText(it.email)
+                binding?.editTextEmail?.textFieldInput?.setText(it.email)
             }
             if (!TextUtils.isEmpty(it.fax)){
-                edit_text_fax.textFieldInput.setText(it.fax)
+                binding?.editTextFax?.textFieldInput?.setText(it.fax)
             }
         }
 
@@ -120,35 +122,35 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private fun isDataValidToSave(): Boolean {
         var valid = true
 
-        if (TextUtils.isEmpty(edit_text_name.textFieldInput.text.toString())){
+        if (TextUtils.isEmpty(binding?.editTextName?.textFieldInput?.text.toString())){
             valid = false
-            edit_text_name.setError(true)
-            edit_text_name.setMessage(getString(R.string.shop_address_name_required))
-        } else if (edit_text_name.textFieldInput.text.toString().length > 128){
+            binding?.editTextName?.setError(true)
+            binding?.editTextName?.setMessage(getString(R.string.shop_address_name_required))
+        } else if (binding?.editTextName?.textFieldInput?.text.toString().length > 128){
             valid = false
-            edit_text_name.setError(true)
-            edit_text_name.setMessage(getString(R.string.shop_address_name_max_length_error))
+            binding?.editTextName?.setError(true)
+            binding?.editTextName?.setMessage(getString(R.string.shop_address_name_max_length_error))
         }
 
-        if (TextUtils.isEmpty(edit_text_address.textFieldInput.text.toString())){
+        if (TextUtils.isEmpty(binding?.editTextAddress?.textFieldInput?.text.toString())){
             valid = false
-            edit_text_address.setError(true)
-            edit_text_address.setMessage(getString(R.string.shop_address_required))
+            binding?.editTextAddress?.setError(true)
+            binding?.editTextAddress?.setMessage(getString(R.string.shop_address_required))
         }
-        if (TextUtils.isEmpty(edit_text_district.textFieldInput.text.toString())){
+        if (TextUtils.isEmpty(binding?.editTextDistrict?.textFieldInput?.text.toString())){
             valid = false
-            edit_text_district.setError(true)
-            edit_text_district.setMessage(getString(R.string.shop_district_required))
+            binding?.editTextDistrict?.setError(true)
+            binding?.editTextDistrict?.setMessage(getString(R.string.shop_district_required))
         }
-        if (TextUtils.isEmpty(postal_code.textFieldInput.text.toString())){
+        if (TextUtils.isEmpty(binding?.postalCode?.textFieldInput?.text.toString())){
             valid = false
-            postal_code.setError(true)
-            postal_code.setMessage(getString(R.string.shop_postal_code_required))
+            binding?.postalCode?.setError(true)
+            binding?.postalCode?.setMessage(getString(R.string.shop_postal_code_required))
         }
-        if (!TextUtils.isEmpty(edit_text_email.textFieldInput.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(edit_text_email.textFieldInput.text.toString()).matches()){
+        if (!TextUtils.isEmpty(binding?.editTextEmail?.textFieldInput?.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(binding?.editTextEmail?.textFieldInput?.text.toString()).matches()){
             valid = false
-            edit_text_email.setError(true)
-            edit_text_email.setMessage(getString(R.string.shop_email_invalid))
+            binding?.editTextEmail?.setError(true)
+            binding?.editTextEmail?.setMessage(getString(R.string.shop_email_invalid))
         }
 
         return valid
@@ -173,7 +175,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 val provinceName = it.getString(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "")
 
                 val fullAddress = "$provinceName, $cityName, $districtName"
-                edit_text_district.textFieldInput.setText(fullAddress)
+                binding?.editTextDistrict?.textFieldInput?.setText(fullAddress)
 
                 selectedProvinceId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1L)
                 selectedCityId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1L)
@@ -202,15 +204,15 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private fun populateData(): ShopLocationOldUiModel {
         shopLocationOldUiModel = shopLocationOldUiModel ?: ShopLocationOldUiModel()
         return shopLocationOldUiModel!!.apply {
-            name = edit_text_name.textFieldInput.text.toString()
-            address = edit_text_address.textFieldInput.text.toString()
+            name = binding?.editTextName?.textFieldInput?.text.toString()
+            address = binding?.editTextAddress?.textFieldInput?.text.toString()
             districtId = selectedDistrictId
             cityId = selectedCityId
             stateId = selectedProvinceId
-            postalCode = postal_code.textFieldInput.text.toString().toInt()
-            phone = edit_text_phone.textFieldInput.text.toString()
-            email = edit_text_email.textFieldInput.text.toString()
-            fax = edit_text_fax.textFieldInput.text.toString()
+            postalCode = binding?.postalCode?.textFieldInput?.text.toString().toInt()
+            phone = binding?.editTextPhone?.textFieldInput?.text.toString()
+            email = binding?.editTextEmail?.textFieldInput?.text.toString()
+            fax = binding?.editTextFax?.textFieldInput?.text.toString()
 
         }
     }
