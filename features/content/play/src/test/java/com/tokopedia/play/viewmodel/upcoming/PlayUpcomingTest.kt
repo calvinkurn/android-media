@@ -252,7 +252,7 @@ class PlayUpcomingTest {
 
         robot.use {
             /** Test */
-            val (_, events) = robot.recordStateAndEvent {
+            val events = robot.recordEvent {
                 robot.submitAction(ClickUpcomingButton)
             }
 
@@ -287,7 +287,7 @@ class PlayUpcomingTest {
 
         robot.use {
             /** Test */
-            val (_, events) = robot.recordStateAndEvent {
+            val events = robot.recordEvent {
                 robot.submitAction(ClickShareUpcomingAction)
             }
 
@@ -531,7 +531,7 @@ class PlayUpcomingTest {
 
         robot.use {
             /** Test */
-            val (state, _) = robot.recordStateAndEvent {
+            val state = robot.recordState {
                 robot.submitAction(UpcomingTimerFinish)
                 robot.submitAction(ClickUpcomingButton)
             }
@@ -596,7 +596,7 @@ class PlayUpcomingTest {
 
         robot.use {
             /** Test */
-            val (state, _) = robot.recordStateAndEvent {
+            val state = robot.recordState {
                 fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdatelive", "{ \"channel_id\" : ${mockChannelData.id} }")
             }
 
@@ -621,7 +621,7 @@ class PlayUpcomingTest {
 
         robot.use {
             /** Test */
-            val (state, _) = robot.recordStateAndEvent {
+            val state = robot.recordState {
                 fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdateactive", "{ \"channel_id\" : ${mockChannelData.id} }")
             }
 
@@ -646,7 +646,7 @@ class PlayUpcomingTest {
 
         robot.use {
             /** Test */
-            val (state, _) = robot.recordStateAndEvent {
+            val state = robot.recordState {
                 fakePlayChannelSSE.fakeSendMessage("unrecognizedevent", "{ \"channel_id\" : ${mockChannelData.id} }")
             }
 
@@ -671,7 +671,7 @@ class PlayUpcomingTest {
 
         robot.use {
             /** Test */
-            val (state, _) = robot.recordStateAndEvent {
+            val state = robot.recordState {
                 fakePlayChannelSSE.fakeSendMessage("upcommingchannelupdatelive", "{ \"channel_id\" : 123123 }")
             }
 
