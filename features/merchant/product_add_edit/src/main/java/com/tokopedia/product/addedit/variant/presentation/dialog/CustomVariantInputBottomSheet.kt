@@ -160,9 +160,10 @@ class CustomVariantInputBottomSheet (
     }
 
     private fun observeGetVariantDetailResult() {
-        viewModel.getVariantDetailResult.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                onPredefinedVariantTypeSubmitted?.invoke(it.data)
+        viewModel.getVariantDetailResult.observe(viewLifecycleOwner) { result ->
+            if (result is Success) {
+                val variantDetail = result.data.apply { isCustom = true }
+                onPredefinedVariantTypeSubmitted?.invoke(variantDetail)
             }
             dismiss()
         }

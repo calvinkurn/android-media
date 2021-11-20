@@ -55,7 +55,6 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAd
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAdapter
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
@@ -179,7 +178,7 @@ class AddEditProductVariantFragment :
                 com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         setupButtonAddVariantType()
-        setupLayoutVariantType()
+        setupTitleLayoutVariantType()
         setupVariantRecyclerViews()
         setupBaseCancelationDialog()
         setupButtonSave()
@@ -329,7 +328,7 @@ class AddEditProductVariantFragment :
         }
     }
 
-    override fun onVariantTypeChanged(selectedCount: Int) {
+    override fun onCustomVariantTypeCountChanged(selectedCount: Int) {
         buttonAddVariantType.isEnabled = selectedCount < MAX_SELECTED_VARIANT_TYPE
         titleLayoutVariantType.isActionButtonVisible = selectedCount.isMoreThanZero()
     }
@@ -683,10 +682,10 @@ class AddEditProductVariantFragment :
         setRecyclerViewToHorizontal(recyclerViewVariantPhoto)
     }
 
-    private fun setupLayoutVariantType() {
+    private fun setupTitleLayoutVariantType() {
         titleLayoutVariantType.setActionButtonOnClickListener {
             val bottomSheet = CustomVariantManageBottomSheet(
-                variantTypeAdapter?.getSelectedItems(), variantTypeAdapter?.getItems())
+                variantTypeAdapter?.getCustomVariantTypeItems(), variantTypeAdapter?.getItems())
             bottomSheet.setOnVariantTypeEditedListener { editedIndex, variantDetail ->
                 variantTypeAdapter?.deleteItem(editedIndex, variantDetail)
                 variantTypeAdapter?.addData(variantDetail)

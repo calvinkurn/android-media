@@ -15,7 +15,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     interface OnVariantTypeClickListener {
         fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail)
         fun onVariantTypeDeselected(adapterPosition: Int, variantDetail: VariantDetail): Boolean
-        fun onVariantTypeChanged(selectedCount: Int)
+        fun onCustomVariantTypeCountChanged(count: Int)
     }
 
     private var items: MutableList<VariantDetail> = mutableListOf()
@@ -40,11 +40,9 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         // from normal to selected
         selectedItems[position] = ViewHolderState.SELECTED
         // disable unselected items when maximum selected items reached
-        val selectedCount = getSelectedCount()
-        manageUnselectedItems(selectedCount)
+        manageUnselectedItems(getSelectedCount())
         // execute the callback function
         clickListener.onVariantTypeSelected(position, items[position])
-        clickListener.onVariantTypeChanged(selectedCount)
     }
 
     override fun onVariantTypeDeselected(position: Int): Boolean {
@@ -54,9 +52,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         // from selected to normal if confirmed
         if (isConfirmed) selectedItems[position] = ViewHolderState.NORMAL
         // disable unselected items when maximum selected items reached
-        val selectedCount = getSelectedCount()
-        manageUnselectedItems(selectedCount)
-        clickListener.onVariantTypeChanged(selectedCount)
+        manageUnselectedItems(getSelectedCount())
         return isConfirmed
     }
 
@@ -64,6 +60,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         items.add(variantDetail)
         selectedItems.add(ViewHolderState.SELECTED)
         onVariantTypeSelected(selectedItems.lastIndex) // set as selected, trigger onVariantTypeSelected
+        clickListener.onCustomVariantTypeCountChanged(getCustomVariantCount())
         notifyDataSetChanged()
     }
 
@@ -85,16 +82,17 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     fun deselectItem(adapterPosition: Int) {
         selectedItems[adapterPosition] = ViewHolderState.NORMAL
-        getSelectedCount().let {
-            manageUnselectedItems(it)
-            clickListener.onVariantTypeChanged(it)
-        }
+        manageUnselectedItems(getSelectedCount())
     }
 
     fun getSelectedItems(): List<VariantDetail> {
         return items.filterIndexed { index, _ ->
             selectedItems.getOrNull(index) == ViewHolderState.SELECTED
         }
+    }
+
+    fun getCustomVariantTypeItems(): List<VariantDetail> {
+        return items.filter { it.isCustom }
     }
 
     fun getSelectedAdapterPosition(): List<Int> {
@@ -125,7 +123,7 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
                 it.name == variantDetail.name
             }
             if (!isVariantIdExist) {
-                addData(variantDetail)
+                addData(variantDetail.apply { isCustom = true })
             }
         }
         // enable/ disable selection if reached max selection
@@ -133,13 +131,11 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
     }
 
     fun deleteItem(index: Int, variantDetail: VariantDetail) {
-        if (variantDetail.variantID == CUSTOM_VARIANT_TYPE_ID) {
+        if (variantDetail.isCustom) {
             items.removeAt(index)
             selectedItems.removeAt(index)
-            getSelectedCount().let {
-                manageUnselectedItems(it)
-                clickListener.onVariantTypeChanged(it)
-            }
+            manageUnselectedItems(getSelectedCount())
+            clickListener.onCustomVariantTypeCountChanged(getCustomVariantCount())
         } else {
             deselectItem(index)
         }
@@ -153,6 +149,10 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
 
     private fun getSelectedCount(): Int {
         return selectedItems.count { it == ViewHolderState.SELECTED }
+    }
+
+    private fun getCustomVariantCount(): Int {
+        return items.count { it.isCustom }
     }
 
     private fun disableUnselectedItems() {
