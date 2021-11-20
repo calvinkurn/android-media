@@ -589,7 +589,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     override fun reloadSortFilterChip() {
         getFavoriteNumber(
             categoryIds = listOf(TelcoComponentType.FAV_NUMBER_POSTPAID.toString()),
-            oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID
+            oldCategoryId = TelcoComponentType.FAV_NUMBER_POSTPAID,
+            false
         )
     }
 
