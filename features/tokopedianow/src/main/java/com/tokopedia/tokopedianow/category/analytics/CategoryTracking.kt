@@ -28,6 +28,8 @@ import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.T
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOKONOW_DASH_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Category.TOP_NAV_TOKONOW_CATEGORY_PAGE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Event.CLICK_TOP_NAV
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.CATEGORY
+import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.CATEGORY_ID
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.LABEL_GROUP_HALAL
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.NORMAL_PRICE
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.PRODUCT_ID
@@ -46,6 +48,8 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_PHYSICAL_GOODS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
@@ -122,6 +126,8 @@ object CategoryTracking {
     }
 
     object Misc {
+        const val CATEGORY = "category"
+        const val CATEGORY_ID = "categoryId"
         const val PRODUCT_ID = "productId"
         const val TOKONOW_CATEGORY_ORGANIC = "/tokonow - category - %s"
         const val RECOM_LIST_PAGE = "clp_product"
@@ -624,23 +630,21 @@ object CategoryTracking {
         )
     }
 
-    fun sendOpenScreenTracking(slug: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(
-            String.format(TOKONOW_CATEGORY_SCREEN, slug),
-            mapOf<String, String>(
-                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
-                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
+    fun sendOpenScreenTracking(slug: String, id: String, name: String, isLoggedInStatus: Boolean) {
+        TokoNowCommonAnalytics.onOpenScreen(
+            isLoggedInStatus = isLoggedInStatus,
+            screenName =  String.format(TOKONOW_CATEGORY_SCREEN, slug),
+            additionalMap = mutableMapOf(
+                Pair(CATEGORY, name),
+                Pair(CATEGORY_ID, id)
             )
         )
     }
 
-    fun sendOOCOpenScreenTracking() {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(
-            TOKONOW_OOC_SCREEN_NAME,
-            mapOf<String, String>(
-                KEY_BUSINESS_UNIT to BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE,
-                KEY_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
-            )
+    fun sendOOCOpenScreenTracking(isLoggedInStatus: Boolean) {
+        TokoNowCommonAnalytics.onOpenScreen(
+            isLoggedInStatus = isLoggedInStatus,
+            screenName = SCREEN_NAME_TOKONOW_OOC + TOKONOW_OOC_SCREEN_NAME
         )
     }
 }

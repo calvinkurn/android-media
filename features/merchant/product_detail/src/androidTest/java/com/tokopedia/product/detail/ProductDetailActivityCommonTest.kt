@@ -51,7 +51,7 @@ class ProductDetailActivityCommonTest : BaseSimpleActivity(), HasComponent<Produ
 
     override fun getNewFragment(): Fragment? = DynamicProductDetailFragment.newInstance(productId, "", "",
             "", false,
-            isAffiliate = false, trackerAttribution = "",
+            trackerAttribution = "",
             trackerListName = "", affiliateString = "", deeplinkUrl = "", layoutId = "")
 
     fun getPositionViewHolderByName(name: String): Int {

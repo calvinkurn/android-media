@@ -67,7 +67,7 @@ public class SplashScreen extends AppCompatActivity {
                 return fetchRemoteConfig();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, RemoteConfigKey.ENABLE_ASYNC_REMOTECONF_FETCH, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(remoteConfigWeave, RemoteConfigKey.ENABLE_ASYNC_REMOTECONF_FETCH, getApplicationContext(), true);
     }
 
     @NotNull
@@ -98,7 +98,7 @@ public class SplashScreen extends AppCompatActivity {
                 return executeMoveToHomeFlow(status);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(moveToHomeFlowWeave, RemoteConfigKey.ENABLE_ASYNC_MOVETOHOME, SplashScreen.this, true);
         moveToHome();
     }
 
