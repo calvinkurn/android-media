@@ -10,8 +10,9 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 // todo delete cm home widget dummy things
+
 @Module
-abstract class ViewModelModule {
+abstract class DummyTestCMHomeWidgetViewModelModule {
 
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

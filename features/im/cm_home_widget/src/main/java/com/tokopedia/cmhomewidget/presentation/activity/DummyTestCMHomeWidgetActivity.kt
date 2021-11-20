@@ -1,37 +1,41 @@
 package com.tokopedia.cmhomewidget.presentation.activity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cmhomewidget.databinding.ActivityDummyTestCmHomeWidgetBinding
-import com.tokopedia.cmhomewidget.di.component.CMHomeWidgetComponent
-import com.tokopedia.cmhomewidget.di.component.DaggerCMHomeWidgetComponent
+import com.tokopedia.cmhomewidget.di.component.DaggerDummyTestCMHomeWidgetComponent
+import com.tokopedia.cmhomewidget.di.component.DummyTestCMHomeWidgetComponent
+import com.tokopedia.cmhomewidget.di.module.DummyTestCMHomeWidgetModule
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.cmhomewidget.viewmodel.DummyTestCMHomeWidgetViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_dummy_test_cm_home_widget.*
 import timber.log.Timber
-import java.util.logging.Logger
 import javax.inject.Inject
 
 // DeepLink-> tokopedia://dummy-cm-home-widget
+
 // todo delete cm home widget dummy things
-class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWidgetComponent>,
+class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
+    HasComponent<DummyTestCMHomeWidgetComponent>,
     CMHomeWidgetCloseClickListener {
 
-    private lateinit var binding: ActivityDummyTestCmHomeWidgetBinding
-    private val cmHomeWidgetComponent: CMHomeWidgetComponent by lazy { initInjector() }
+    private val dummyTestCMHomeWidgetComponent: DummyTestCMHomeWidgetComponent by lazy { initInjector() }
 
     private fun initInjector() =
-        DaggerCMHomeWidgetComponent.builder()
+        DaggerDummyTestCMHomeWidgetComponent.builder()
             .baseAppComponent(
-                (applicationContext as BaseMainApplication)
-                    .baseAppComponent
-            ).build()
+                (applicationContext as BaseMainApplication).baseAppComponent
+            )
+            .dummyTestCMHomeWidgetModule(DummyTestCMHomeWidgetModule(this))
+            .build()
+
+    @Inject
+    lateinit var binding: ActivityDummyTestCmHomeWidgetBinding
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -43,14 +47,12 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWi
         viewModelProvider.get(DummyTestCMHomeWidgetViewModel::class.java)
     }
 
-    override fun getComponent() = cmHomeWidgetComponent
+    override fun getComponent() = dummyTestCMHomeWidgetComponent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //inject dependencies
-        cmHomeWidgetComponent.inject(this)
+        dummyTestCMHomeWidgetComponent.inject(this)
         super.onCreate(savedInstanceState)
-        //view binding
-        binding = ActivityDummyTestCmHomeWidgetBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         initListener()
@@ -100,6 +102,7 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(), HasComponent<CMHomeWi
     }
 
     override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {
+        //passing 0,0 intensionally to avoid data deletion and adding data again and again.
         dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetData(0, 0)
     }
 }

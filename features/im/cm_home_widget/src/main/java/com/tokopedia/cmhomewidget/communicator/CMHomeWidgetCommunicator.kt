@@ -1,9 +1,9 @@
-package com.tokopedia.cmhomewidget.interactor
+package com.tokopedia.cmhomewidget.communicator
 
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetData
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 
-interface CMHomeWidgetInteractor {
+interface CMHomeWidgetCommunicator {
     fun onCMHomeWidgetDataReceived(cmHomeWidgetData: CMHomeWidgetData)
     fun hideCMHomeWidget()
     fun showCMHomeWidget()

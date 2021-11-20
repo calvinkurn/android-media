@@ -1,7 +1,11 @@
 package com.tokopedia.cmhomewidget.domain.data
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.cmhomewidget.presentation.adapter.factory.CMHomeWidgetViewHolderTypeFactory
+import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 
+@SuppressLint("Invalid Data Type")
 data class GetCMHomeWidgetDataGqlResponse(
     @SerializedName("notifier_getHtdw")
     val cmHomeWidgetDataResponse: CMHomeWidgetDataResponse
@@ -14,6 +18,7 @@ data class CMHomeWidgetDataResponse(
     val cmHomeWidgetData: CMHomeWidgetData?
 )
 
+@SuppressLint("Invalid Data Type")
 data class CMHomeWidgetData(
     @SerializedName("parent_id")
     val parentId: Long,
@@ -24,12 +29,13 @@ data class CMHomeWidgetData(
     @SerializedName("widget_type")
     val widgetType: String?,
     @SerializedName("products")
-    val products: List<Product>?,
+    val CMHomeWidgetProducts: List<CMHomeWidgetProduct>?,
     @SerializedName("card")
-    val card: Card?
+    val CMHomeWidgetCard: CMHomeWidgetCard?
 )
 
-data class Product(
+@SuppressLint("Invalid Data Type")
+data class CMHomeWidgetProduct(
     @SerializedName("id")
     val id: Long,
     @SerializedName("name")
@@ -47,12 +53,17 @@ data class Product(
     @SerializedName("app_link")
     val appLink: String?,
     @SerializedName("shop")
-    val shop: Shop?,
+    val CMHomeWidgetShop: CMHomeWidgetShop?,
     @SerializedName("action_buttons")
-    val actionButtons: List<ActionButton>?
-)
+    val CMHomeWidgetActionButtons: List<CMHomeWidgetActionButton>?
+) : CMHomeWidgetVisitable {
+    override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}
 
-data class Shop(
+@SuppressLint("Invalid Data Type")
+data class CMHomeWidgetShop(
     @SerializedName("id")
     val id: Long,
     @SerializedName("name")
@@ -63,7 +74,8 @@ data class Shop(
     val badgeImageUrl: String?
 )
 
-data class ActionButton(
+@SuppressLint("Invalid Data Type")
+data class CMHomeWidgetActionButton(
     @SerializedName("id")
     val id: Long,
     @SerializedName("icon")
@@ -76,11 +88,15 @@ data class ActionButton(
     val appLink: String?
 )
 
-data class Card(
+data class CMHomeWidgetCard(
     @SerializedName("label")
     val label: String?,
     @SerializedName("description")
     val description: String?,
     @SerializedName("app_link")
     val appLink: String?
-)
+) : CMHomeWidgetVisitable {
+    override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+}

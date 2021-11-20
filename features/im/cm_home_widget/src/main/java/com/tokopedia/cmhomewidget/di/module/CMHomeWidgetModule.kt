@@ -1,29 +1,33 @@
 package com.tokopedia.cmhomewidget.di.module
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.cmhomewidget.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import android.view.LayoutInflater
+import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetBinding
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCardListener
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductListener
+import com.tokopedia.cmhomewidget.presentation.customview.CMHomeWidget
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+
 
 @Module
-class CMHomeWidgetModule {
-    @Provides
-    fun provideGraphqlUseCase(): GraphqlUseCase = GraphqlUseCase()
+class CMHomeWidgetModule(private val cmHomeWidget: CMHomeWidget) {
 
     @Provides
-    @CoroutineMainDispatcher
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideCMHomeWidgetProductListener(): CMHomeWidgetProductListener {
+        return cmHomeWidget
+    }
 
     @Provides
-    fun provideGraphqlRepositoryModule(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
+    fun provideCMHomeWidgetCardListener(): CMHomeWidgetCardListener {
+        return cmHomeWidget
+    }
+
+    @Provides
+    fun provideCMHomeWidgetLayoutBinding(): LayoutCmHomeWidgetBinding {
+        return LayoutCmHomeWidgetBinding.inflate(
+            LayoutInflater.from(cmHomeWidget.context),
+            cmHomeWidget,
+            true
+        )
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.cmhomewidget.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.cmhomewidget.di.scope.DummyTestCMHomeWidgetActivityScope
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
 import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataResponse
 import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetDataUseCase
@@ -15,6 +16,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 // todo delete cm home widget dummy things
+
+@DummyTestCMHomeWidgetActivityScope
 class DummyTestCMHomeWidgetViewModel @Inject constructor(
     private val getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase,
     private val deleteCMHomeWidgetDataUseCase: DeleteCMHomeWidgetDataUseCase,
