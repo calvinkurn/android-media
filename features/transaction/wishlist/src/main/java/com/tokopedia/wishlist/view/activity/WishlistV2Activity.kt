@@ -1,6 +1,7 @@
 package com.tokopedia.wishlist.view.activity
 
 import android.os.Bundle
+import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
@@ -16,5 +17,11 @@ class WishlistV2Activity: BaseSimpleActivity() {
     override fun getNewFragment(): WishlistV2Fragment {
         val bundle = Bundle()
         return WishlistV2Fragment.newInstance(bundle)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
     }
 }

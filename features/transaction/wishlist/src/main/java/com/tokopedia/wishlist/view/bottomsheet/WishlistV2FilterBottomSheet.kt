@@ -71,7 +71,7 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
 
     interface BottomSheetListener {
         fun onRadioButtonSelected(filterItem: WishlistV2Params.WishlistSortFilterParam)
-        fun onCheckboxSelected(filterItem: WishlistV2Params.WishlistSortFilterParam)
+        fun onCheckboxSelected(name: String, optionId: String)
         fun onSaveCheckboxSelection()
     }
 }

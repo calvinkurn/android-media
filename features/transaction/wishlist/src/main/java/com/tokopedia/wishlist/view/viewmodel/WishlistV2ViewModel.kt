@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2Params
@@ -70,7 +71,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             try {
                 val wishlistV2Response = wishlistV2UseCase.executeSuspend(params).wishlistV2
                 _wishlistV2.value = Success(wishlistV2Response)
-                _wishlistV2Data.value = Success(organizeWishlistV2Data(wishlistV2Response, params, typeLayout))
+                _wishlistV2Data.value = Success(organizeWishlistV2Data(wishlistV2Response, typeLayout))
             } catch (e: Exception) {
                 _wishlistV2.value = Fail(e)
                 _wishlistV2Data.value = Fail(e)
@@ -119,7 +120,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    private suspend fun organizeWishlistV2Data(wishlistV2Response: WishlistV2Response.Data.WishlistV2, params: WishlistV2Params, typeLayout: String?) : List<WishlistV2TypeLayoutData> {
+    private suspend fun organizeWishlistV2Data(wishlistV2Response: WishlistV2Response.Data.WishlistV2, typeLayout: String?) : List<WishlistV2TypeLayoutData> {
         val currSizeList = wishlistV2Response.items.size
         sizeList += currSizeList
         val diffArray = arrayListOf<Int>()
@@ -128,11 +129,18 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         var listData = arrayListOf<WishlistV2TypeLayoutData>()
 
         // empty wishlist
-        if (wishlistV2Response.items.isEmpty() && params.page == 1) {
-            if (wishlistV2Response.query.isEmpty()) {
-                listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE))
-            } else {
-                listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
+        if (wishlistV2Response.items.isEmpty() && wishlistV2Response.page == 1) {
+            when {
+                wishlistV2Response.sortFilters.isNotEmpty() -> {
+                    val wishlistV2Empty = WishlistV2EmptyStateData(R.string.empty_state_img, R.string.empty_state_desc_1, R.string.empty_state_title, R.string.empty_state_button)
+                    listData.add(WishlistV2TypeLayoutData(wishlistV2Empty, WishlistV2Consts.TYPE_EMPTY_STATE))
+                }
+                wishlistV2Response.query.isEmpty() -> {
+                    listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL))
+                }
+                else -> {
+                    listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
+                }
             }
             val recommItems = getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME)
             listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
@@ -142,7 +150,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
         } else {
             // only for wishlist size < 4
-            if (params.page == 1 && !wishlistV2Response.hasNextPage) {
+            if (wishlistV2Response.page == 1 && !wishlistV2Response.hasNextPage) {
                 when {
                     // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
                     wishlistV2Response.totalData < topAdsPositionInPage -> {
@@ -173,7 +181,15 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             } else {
                 listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
                 // has next page
-                if (params.page == 1 ) {
+                /*if (params.page == 1 ) {
+                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
+                }*/
+
+                if (wishlistV2Response.totalData >= topAdsPositionInPage && wishlistV2Response.page % 2 == 0) {
+                    val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
+                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
+                    listData.add(topAdsPositionInPage+1, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
+                } else {
                     listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
                 }
 

@@ -198,9 +198,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart?.text = context.getString(R.string.product_card_out_of_stock)
     }
 
-    fun wishlistPage_V2_revamp(btnSecondaryAction: Unit?) {
-        buttonSecondary?.visible()
-        buttonSecondary?.setOnClickListener { btnSecondaryAction }
+    fun setSecondaryButtonVisibility(visible: Boolean) {
+        if (visible) buttonSecondary?.visibility = View.VISIBLE
+        else buttonSecondary?.visibility = View.GONE
+    }
+
+    fun setPrimaryButtonVisibility(visible: Boolean) {
+        if (visible) rlPrimaryButtonWishlist?.visibility = View.VISIBLE
+        else rlPrimaryButtonWishlist?.visibility = View.GONE
     }
 
     fun setSecondaryButtonClickListener(secondaryButtonListener: (View) -> Unit) {

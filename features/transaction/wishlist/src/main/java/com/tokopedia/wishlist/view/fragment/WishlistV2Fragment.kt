@@ -175,8 +175,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             hideLoader()
                             refreshHandler?.finishRefresh()
                             scrollRecommendationListener.setHasNextPage(wishlistV2.hasNextPage)
-                            updateTotalLabel(wishlistV2.totalData)
-                            if (wishlistV2.totalData == 0) isFetchRecommendation = true
+
+                            if (wishlistV2.totalData == 0) {
+                                isFetchRecommendation = true
+                                binding?.run {
+                                    rlWishlistCountManageRow.gone()
+                                }
+                            } else {
+                                updateTotalLabel(wishlistV2.totalData)
+                            }
                             if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
                                 renderChipsFilter(wishlistV2.sortFilters)
                             }
@@ -443,6 +450,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     @SuppressLint("SetTextI18n")
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
+            rlWishlistCountManageRow.visible()
             wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
         }
     }
@@ -450,14 +458,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private fun showLoader() {
         wishlistV2Adapter.showLoader()
         binding?.run {
-            rlWishlistSort.gone()
+            rlWishlistCountManageRow.gone()
+            wishlistSortFilter.gone()
             rlWishlistSortLoader.visible()
         }
     }
 
     private fun hideLoader() {
         binding?.run {
-            rlWishlistSort.visible()
+            rlWishlistCountManageRow.visible()
+            wishlistSortFilter.visible()
             rlWishlistSortLoader.gone()
         }
     }
@@ -496,7 +506,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
         filterBottomSheetAdapter.filterItem = filterItem
 
-        val listFilterOffers = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
+        val listOptionIdSelected = arrayListOf<String>()
+        var nameSelected = ""
 
         filterBottomSheet.setAdapter(filterBottomSheetAdapter)
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
@@ -508,13 +519,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 refreshHandler?.startRefresh()
             }
 
-            override fun onCheckboxSelected(filterItem: WishlistV2Params.WishlistSortFilterParam) {
-                listFilterOffers.add(filterItem)
+            override fun onCheckboxSelected(name: String, optionId: String) {
+                nameSelected = name
+                listOptionIdSelected.add(optionId)
             }
 
             override fun onSaveCheckboxSelection() {
+                val filterItem = WishlistV2Params.WishlistSortFilterParam(name = nameSelected, selected = listOptionIdSelected)
+                val listSortFilter = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
+                listSortFilter.add(filterItem)
+
+                paramWishlistV2.sortFilters = listSortFilter
                 filterBottomSheet.dismiss()
-                paramWishlistV2.sortFilters = listFilterOffers
                 refreshHandler?.startRefresh()
             }
         })
@@ -761,6 +777,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         RouteManager.route(context, url)
     }
 
+    override fun onResetFilter() {
+        binding?.run {
+            wishlistSortFilter.run {
+                resetAllFilters()
+                paramWishlistV2 = WishlistV2Params()
+                refreshHandler?.startRefresh()
+            }
+        }
+    }
+
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
         val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
         dialog?.setTitle(getString(R.string.wishlist_v2_popup_delete_bulk_title, listBulkDelete.size))
@@ -791,7 +817,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             // onLoadMoreRecommendation = false
             currPage = 1
             currRecommendationListPage = 1
-            paramWishlistV2.page = 1
+            paramWishlistV2 = WishlistV2Params()
+            isBulkDeleteShow = false
             loadWishlistV2()
     }
 }

@@ -8,22 +8,20 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 
 class WishlistV2FilterCheckboxViewHolder(private val binding: BottomsheetWishlistFilterCheckboxItemBinding,
                                          private val listener: WishlistV2FilterBottomSheet.BottomSheetListener?) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(parentFilterName: String, title: String, desc: String, optionId: String) {
+    fun bind(parentFilterName: String, title: String, desc: String, optionId: String, selected: Boolean) {
         binding.titleOption.text = title
         binding.descOption.text = desc
+        binding.cbOption.isChecked = selected
         binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
         binding.root.setOnClickListener {
             checkboxListener(parentFilterName, optionId)
         }
     }
 
-    private fun checkboxListener(parentFilterName: String, optionId: String): CompoundButton.OnCheckedChangeListener? {
+    private fun checkboxListener(parentFilterName: String, optionId: String): CompoundButton.OnCheckedChangeListener {
         return CompoundButton.OnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                listener?.onCheckboxSelected(WishlistV2Params.WishlistSortFilterParam(
-                        name = parentFilterName,
-                        selected = optionId
-                ))
+                listener?.onCheckboxSelected(parentFilterName, optionId)
             }
         }
     }

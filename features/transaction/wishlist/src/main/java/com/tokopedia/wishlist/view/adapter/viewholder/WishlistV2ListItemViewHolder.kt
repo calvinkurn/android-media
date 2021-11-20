@@ -20,8 +20,13 @@ class WishlistV2ListItemViewHolder(
         if (isShowCheckbox) {
             binding.wishlistCheckbox.visible()
             binding.wishlistCheckbox.setOnCheckedChangeListener(checkboxListener(item.wishlistItem))
+
+            binding.wishlistItem.setSecondaryButtonVisibility(false)
+            binding.wishlistItem.setPrimaryButtonVisibility(false)
         } else {
             binding.wishlistCheckbox.gone()
+            binding.wishlistItem.setSecondaryButtonVisibility(true)
+            binding.wishlistItem.setPrimaryButtonVisibility(true)
         }
 
         if (item.dataObject.tambahKeranjangButton) {

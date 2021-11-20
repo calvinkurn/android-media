@@ -43,13 +43,15 @@ class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vie
             is WishlistV2FilterRadioButtonViewHolder -> {
                 holder.bind(filterItem.name,
                         filterItem.options[holder.adapterPosition].text,
-                        filterItem.options[holder.adapterPosition].optionId)
+                        filterItem.options[holder.adapterPosition].optionId,
+                        filterItem.options[holder.adapterPosition].isSelected)
             }
             is WishlistV2FilterCheckboxViewHolder -> {
                 holder.bind(filterItem.name,
                         filterItem.options[holder.adapterPosition].text,
                         filterItem.options[holder.adapterPosition].description,
-                        filterItem.options[holder.adapterPosition].optionId)
+                        filterItem.options[holder.adapterPosition].optionId,
+                        filterItem.options[holder.adapterPosition].isSelected)
             }
         }
     }

@@ -173,7 +173,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rlPrimaryButtonWishlist"
         app:layout_constraintBottom_toBottomOf="@id/rlPrimaryButtonWishlist"
-        app:layout_constraintVertical_bias="1.0"
         tools:visibility="visible">
 
         <ImageView
@@ -197,7 +196,7 @@
         android:layout_marginRight="@dimen/dp_8"
         android:visibility="visible"
         app:layout_constraintStart_toEndOf="@id/buttonSecondary"
-        app:layout_constraintTop_toBottomOf="@id/buttonAddVariant"
+        app:layout_constraintTop_toBottomOf="@id/buttonNotify"
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -210,7 +209,7 @@
             android:visibility="gone"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintVertical_bias="1.0"
+            app:layout_goneMarginStart="0dp"
             app:typographyType="heading_6"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
