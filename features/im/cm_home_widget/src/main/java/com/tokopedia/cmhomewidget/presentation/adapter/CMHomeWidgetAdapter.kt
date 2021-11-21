@@ -27,8 +27,6 @@ class CMHomeWidgetAdapter @Inject constructor(
     }
 
     fun loadData(dataList: List<CMHomeWidgetVisitable>) {
-        visitables.clear()
-        visitables.addAll(dataList)
-        notifyDataSetChanged()
+        setElements(dataList)
     }
 }

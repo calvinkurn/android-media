@@ -29,9 +29,9 @@ data class CMHomeWidgetData(
     @SerializedName("widget_type")
     val widgetType: String?,
     @SerializedName("products")
-    val CMHomeWidgetProducts: List<CMHomeWidgetProduct>?,
+    val cmHomeWidgetProducts: List<CMHomeWidgetProduct>?,
     @SerializedName("card")
-    val CMHomeWidgetCard: CMHomeWidgetCard?
+    val cmHomeWidgetCard: CMHomeWidgetCard?
 )
 
 @SuppressLint("Invalid Data Type")

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
@@ -19,8 +18,8 @@ import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
+import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
-import timber.log.Timber
 import javax.inject.Inject
 
 class CMHomeWidget @JvmOverloads constructor(
@@ -66,9 +65,18 @@ class CMHomeWidget @JvmOverloads constructor(
     private fun setUpUi() {
         showCMHomeWidget()
         setHeading()
-        cmHomeWidgetData.CMHomeWidgetProducts?.let {
-            adapter.get().loadData(it)
+        setItemsInRecyclerView()
+    }
+
+    private fun setItemsInRecyclerView() {
+        val itemsList = ArrayList<CMHomeWidgetVisitable>()
+        cmHomeWidgetData.cmHomeWidgetProducts?.let {
+            itemsList.addAll(it)
         }
+        cmHomeWidgetData.cmHomeWidgetCard?.let {
+            itemsList.add(it)
+        }
+        if (itemsList.isNotEmpty()) adapter.get().loadData(itemsList)
     }
 
     private fun setHeading() {

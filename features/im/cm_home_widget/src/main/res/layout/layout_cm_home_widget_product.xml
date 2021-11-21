@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_cm_home_widget_product"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="@dimen/cm_home_widget_dp_144"
+    android:layout_height="@dimen/cm_home_widget_dp_174"
+    android:background="@color/black">
 
 </FrameLayout>
