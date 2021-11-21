@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantManageBottomSheetContentBinding
@@ -20,12 +21,13 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CustomVariantManageBottomSheet(
-    private val selectedVariantDetails: List<VariantDetail>? = null,
-    private val variantDetails: List<VariantDetail>? = null
+        private val selectedVariantDetails: List<VariantDetail>? = null,
+        private val customVariantDetails: List<VariantDetail>? = null,
+        private val variantDetails: List<VariantDetail>? = null
 ) : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<AddEditProductCustomVariantManageBottomSheetContentBinding>()
-    private var onVariantTypeEditedListener: ((editedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
+    private var onVariantTypeEditedListener: ((editedIndex: Int, editedLevel: Int, variantDetail: VariantDetail) -> Unit)? = null
     private var onVariantTypeDeletedListener: ((deletedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
 
     init {
@@ -67,17 +69,18 @@ class CustomVariantManageBottomSheet(
         val adapter = VariantTypeSelectedAdapter()
         binding?.recyclerViewVariantSelected?.adapter = adapter
         binding?.recyclerViewVariantSelected?.layoutManager = LinearLayoutManager(context)
-        adapter.setData(selectedVariantDetails?.map {
+        adapter.setData(customVariantDetails?.map {
             Pair(it.name, it.variantID == CUSTOM_VARIANT_TYPE_ID)
         }.orEmpty())
-        adapter.setOnEditButtonClickedListener {
-            selectedVariantDetails?.getOrNull(it)?.let { variantDetail ->
-                showEditVariantBottomSheet(variantDetail)
+        adapter.setOnEditButtonClickedListener { index ->
+            customVariantDetails?.getOrNull(index)?.let { variantDetail ->
+                val level = selectedVariantDetails?.indexOfLast { it.name == variantDetail.name }.orZero()
+                showEditVariantBottomSheet(level, variantDetail)
             }
             dismiss()
         }
         adapter.setOnDeleteButtonClickedListener {
-            selectedVariantDetails?.getOrNull(it)?.let { variantDetail ->
+            customVariantDetails?.getOrNull(it)?.let { variantDetail ->
                 showDeleteConfDialog(variantDetail)
             }
             dismiss()
@@ -126,23 +129,23 @@ class CustomVariantManageBottomSheet(
         }.show()
     }
 
-    private fun showEditVariantBottomSheet(variantDetail: VariantDetail) {
+    private fun showEditVariantBottomSheet(level: Int, variantDetail: VariantDetail) {
         val bottomSheet = CustomVariantInputBottomSheet(variantDetail.name, variantDetails.orEmpty())
         bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
-            val position = getVariantDetailPosition(variantDetail)
-                ?: return@setOnCustomVariantTypeSubmitted
-            onVariantTypeEditedListener?.invoke(position, variantDetail.apply { name = newVariantName })
+            val position = getVariantDetailPosition(variantDetail) ?: return@setOnCustomVariantTypeSubmitted
+            val newVariantDetail = variantDetail.apply { name = newVariantName }
+            onVariantTypeEditedListener?.invoke(position, level, newVariantDetail)
         }
         bottomSheet.setOnPredefinedVariantTypeSubmitted {
             val position = getVariantDetailPosition(variantDetail)
                 ?: return@setOnPredefinedVariantTypeSubmitted
-            onVariantTypeEditedListener?.invoke(position, it)
+            onVariantTypeEditedListener?.invoke(position, level, it)
         }
         bottomSheet.show(requireActivity().supportFragmentManager)
     }
 
     fun setOnVariantTypeEditedListener(
-        listener: (editedIndex: Int, variantDetail: VariantDetail) -> Unit
+        listener: (editedIndex: Int, editedLevel: Int, variantDetail: VariantDetail) -> Unit
     ) {
         onVariantTypeEditedListener = listener
     }

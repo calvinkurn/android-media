@@ -55,6 +55,7 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.VariantPhotoAd
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeAdapter
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAdapter
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
@@ -245,15 +246,10 @@ class AddEditProductVariantFragment :
             val renderedAdapterPosition = viewModel.getRenderedLayoutAdapterPosition()
 
             if (adapterPosition < renderedAdapterPosition) {
-
-                // render the new variant type values in level one position
-                // move the rendered to level two position
-
                 // get rendered variant detail
                 val renderedVariantDetail = variantTypeAdapter?.getItem(renderedAdapterPosition)
                 // get rendered layout position
                 val layoutPosition = viewModel.getVariantValuesLayoutPosition(renderedAdapterPosition)
-
                 // get rendered selected variant unit values by layout position
                 val renderedSelectedVariantUnitValues = viewModel.getSelectedVariantUnitValues(layoutPosition)
 
@@ -283,7 +279,6 @@ class AddEditProductVariantFragment :
                 viewModel.updateSelectedVariantUnitValuesMap(VARIANT_VALUE_LEVEL_ONE_POSITION, selectedVariantUnitValuesLevel1)
 
             } else {
-
                 // render the new variant type values in level two position
                 // get rendered layout position
                 val layoutPosition = viewModel.getVariantValuesLayoutPosition(renderedAdapterPosition)
@@ -328,9 +323,9 @@ class AddEditProductVariantFragment :
         }
     }
 
-    override fun onCustomVariantTypeCountChanged(selectedCount: Int) {
-        buttonAddVariantType.isEnabled = selectedCount < MAX_SELECTED_VARIANT_TYPE
-        titleLayoutVariantType.isActionButtonVisible = selectedCount.isMoreThanZero()
+    override fun onCustomVariantTypeCountChanged(count: Int) {
+        buttonAddVariantType.isEnabled = count < 10
+        titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
     }
 
     fun onBackPressed() {
@@ -513,12 +508,8 @@ class AddEditProductVariantFragment :
     }
 
     override fun onRemoveButtonClicked(position: Int, layoutPosition: Int, removedUnitValue: UnitValue) {
-
         viewModel.removeSelectedVariantUnitValue(layoutPosition, removedUnitValue)
-
         val variantData = viewModel.getVariantData(layoutPosition)
-
-        // get variant id to manage section visibility status
         val variantId = variantData.variantID
 
         // track remove variant unit value event
@@ -685,10 +676,26 @@ class AddEditProductVariantFragment :
     private fun setupTitleLayoutVariantType() {
         titleLayoutVariantType.setActionButtonOnClickListener {
             val bottomSheet = CustomVariantManageBottomSheet(
-                variantTypeAdapter?.getCustomVariantTypeItems(), variantTypeAdapter?.getItems())
-            bottomSheet.setOnVariantTypeEditedListener { editedIndex, variantDetail ->
-                variantTypeAdapter?.deleteItem(editedIndex, variantDetail)
-                variantTypeAdapter?.addData(variantDetail)
+                    variantTypeAdapter?.getSelectedItems(),
+                    variantTypeAdapter?.getCustomVariantTypeItems(),
+                    variantTypeAdapter?.getItems())
+            bottomSheet.setOnVariantTypeEditedListener { editedIndex, editedLevel, variantDetail ->
+                variantTypeAdapter?.replaceItem(editedIndex, variantDetail)
+                if (variantTypeAdapter?.isItemAtPositionSelected(editedIndex) == false)
+                    return@setOnVariantTypeEditedListener
+                if (variantDetail.variantID == CUSTOM_VARIANT_TYPE_ID) {
+                    when (editedLevel) {
+                        VARIANT_VALUE_LEVEL_ONE_POSITION -> {
+                            typographyVariantValueLevel1Title.text = variantDetail.name
+                        }
+                        VARIANT_VALUE_LEVEL_TWO_POSITION -> {
+                            typographyVariantValueLevel2Title.text = variantDetail.name
+                        }
+                    }
+                } else {
+                    deselectVariantType(editedLevel, editedIndex, variantDetail)
+                    onVariantTypeSelected(editedIndex, variantDetail)
+                }
             }
             bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->
                 viewModel.isSingleVariantTypeIsSelected = true
@@ -948,7 +955,10 @@ class AddEditProductVariantFragment :
         })
     }
 
-    private fun setupAddEditVariantPage(variantDataList: List<VariantDetail>, selectedVariantDetails: List<VariantDetail>) {
+    private fun setupAddEditVariantPage(
+            variantDataList: List<VariantDetail>,
+            selectedVariantDetails: List<VariantDetail>
+    ) {
        // setup variant type section view
         variantTypeAdapter?.setData(variantDataList)
         variantTypeAdapter?.setMaxSelectedItems(MAX_SELECTED_VARIANT_TYPE)

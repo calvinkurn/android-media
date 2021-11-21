@@ -58,15 +58,6 @@ class VariantTypeSelectedAdapter : RecyclerView.Adapter<VariantTypeSelectedViewH
         notifyDataSetChanged()
     }
 
-    fun addData(item: Pair<String, Boolean>) {
-        this.items.add(item)
-        notifyDataSetChanged()
-    }
-
-    fun getItem(position: Int): Pair<String, Boolean> {
-        return items[position]
-    }
-
     fun setOnEditButtonClickedListener(listener: (position: Int) -> Unit) {
         onEditButtonClickedListener = listener
     }
