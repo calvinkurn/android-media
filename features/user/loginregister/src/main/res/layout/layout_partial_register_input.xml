@@ -7,7 +7,7 @@
     android:layout_marginLeft="@dimen/spacing_lvl5"
     android:layout_marginTop="@dimen/spacing_lvl4"
     android:layout_marginRight="@dimen/spacing_lvl5"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <RelativeLayout
         android:id="@+id/email_phone_layout"

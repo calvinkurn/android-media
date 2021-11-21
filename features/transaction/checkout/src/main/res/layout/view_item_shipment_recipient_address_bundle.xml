@@ -5,7 +5,7 @@
     android:id="@+id/rl_shipment_recipient_address_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shipment_address"

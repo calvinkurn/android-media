@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl2"
     android:layout_marginBottom="@dimen/spacing_lvl2"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout

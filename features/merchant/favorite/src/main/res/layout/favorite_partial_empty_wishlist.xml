@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/dp_32" android:paddingStart="@dimen/dp_32"
     android:paddingEnd="@dimen/dp_32" android:paddingRight="@dimen/dp_32"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone"
     android:id="@+id/partial_empty_wishlist"
     android:layout_marginBottom="@dimen/spacing_lvl3">

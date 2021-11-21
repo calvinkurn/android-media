@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:paddingLeft="@dimen/product_manage_campaign_stock_horizontal_margin"
     android:paddingStart="@dimen/product_manage_campaign_stock_horizontal_margin"
     android:paddingRight="@dimen/product_manage_campaign_stock_horizontal_margin"

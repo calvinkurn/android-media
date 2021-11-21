@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     tools:ignore="Overdraw"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"

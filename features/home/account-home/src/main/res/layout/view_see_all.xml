@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:padding="16dp"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     >
 
     <androidx.recyclerview.widget.RecyclerView
