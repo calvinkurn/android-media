@@ -9,11 +9,13 @@ import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductListener
 import timber.log.Timber
 
 class CMHomeWidgetProductViewHolder(
-    binding: LayoutCmHomeWidgetProductBinding,
-    listener: CMHomeWidgetProductListener
+    private val binding: LayoutCmHomeWidgetProductBinding,
+    private val listener: CMHomeWidgetProductListener
 ) : AbstractViewHolder<CMHomeWidgetProduct>(binding.root) {
     override fun bind(item: CMHomeWidgetProduct) {
-        Timber.d("CMHomeWidgetCardViewHolder")
+        binding.root.setOnClickListener {
+            listener.onProductClick(item)
+        }
     }
 
     companion object {

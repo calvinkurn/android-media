@@ -33,7 +33,7 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
     override fun createViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): AbstractViewHolder<CMHomeWidgetVisitable> {
+    ): AbstractViewHolder<*> {
         return when (viewType) {
             CMHomeWidgetProductViewHolder.LAYOUT -> {
                 CMHomeWidgetProductViewHolder(
@@ -43,7 +43,7 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
                         false
                     ),
                     cmHomeWidgetProductListener
-                ) as AbstractViewHolder<CMHomeWidgetVisitable>
+                )
             }
             CMHomeWidgetCardViewHolder.LAYOUT -> {
                 CMHomeWidgetCardViewHolder(
@@ -53,14 +53,14 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
                         false
                     ),
                     cmHomeWidgetCardListener
-                ) as AbstractViewHolder<CMHomeWidgetVisitable>
+                )
             }
             else -> {
                 super.createViewHolder(
                     LayoutInflater
                         .from(parent.context)
                         .inflate(viewType, parent, false), viewType
-                ) as AbstractViewHolder<CMHomeWidgetVisitable>
+                )
             }
         }
     }

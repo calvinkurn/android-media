@@ -5,5 +5,5 @@ import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetCard
 
 @CMHomeWidgetScope
 interface CMHomeWidgetCardListener {
-    fun onCardClick(cmHomeWidgetCard: CMHomeWidgetCard)
+    fun onCardClick(item: CMHomeWidgetCard)
 }

@@ -16,5 +16,5 @@ interface CMHomeWidgetViewHolderTypeFactory : AdapterTypeFactory {
     fun createViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): AbstractViewHolder<CMHomeWidgetVisitable>
+    ): AbstractViewHolder<*>
 }

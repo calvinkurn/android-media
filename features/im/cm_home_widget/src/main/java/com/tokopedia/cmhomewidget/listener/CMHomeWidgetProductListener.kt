@@ -5,5 +5,5 @@ import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProduct
 
 @CMHomeWidgetScope
 interface CMHomeWidgetProductListener {
-    fun onProductClick(cmHomeWidgetProduct: CMHomeWidgetProduct)
+    fun onProductClick(item: CMHomeWidgetProduct)
 }

@@ -4,8 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cmhomewidget.communicator.CMHomeWidgetCommunicator
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetBinding
 import com.tokopedia.cmhomewidget.di.component.DaggerCMHomeWidgetComponent
@@ -18,6 +20,7 @@ import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
+import timber.log.Timber
 import javax.inject.Inject
 
 class CMHomeWidget @JvmOverloads constructor(
@@ -95,11 +98,16 @@ class CMHomeWidget @JvmOverloads constructor(
         binding.ivCmHomeWidgetClose.setOnClickListener(null)
     }
 
-    override fun onCardClick(cmHomeWidgetCard: CMHomeWidgetCard) {
-
+    override fun onCardClick(item: CMHomeWidgetCard) {
+        startRequiredActivity(item.appLink)
     }
 
-    override fun onProductClick(cmHomeWidgetProduct: CMHomeWidgetProduct) {
+    override fun onProductClick(item: CMHomeWidgetProduct) {
+        startRequiredActivity(item.appLink)
+    }
 
+    private fun startRequiredActivity(appLink: String?) {
+        val intent = RouteManager.getIntent(context, appLink)
+        context.startActivity(intent)
     }
 }
