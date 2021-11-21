@@ -711,9 +711,20 @@ class AddEditProductVariantFragment :
                 }
             }
             bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->
+                // deselect variant
                 viewModel.isSingleVariantTypeIsSelected = true
                 val layoutPosition = viewModel.getVariantValuesLayoutPosition(deletedIndex)
                 deselectVariantType(layoutPosition, deletedIndex, variantDetail)
+
+                // update new adapter position to viewmodel's variantValuesLayoutMap
+                val renderedAdapterPosition = viewModel.getRenderedLayoutAdapterPosition()
+                if (deletedIndex < renderedAdapterPosition) {
+                    val renderedLayoutPosition = viewModel.getVariantValuesLayoutPosition(renderedAdapterPosition)
+                    viewModel.removeVariantValueLayoutMapEntry(renderedAdapterPosition)
+                    viewModel.updateVariantValuesLayoutMap(renderedAdapterPosition.dec(), renderedLayoutPosition)
+                }
+
+                // delete variant at adapter
                 variantTypeAdapter?.deleteItem(deletedIndex, variantDetail)
             }
             bottomSheet.show(childFragmentManager)
