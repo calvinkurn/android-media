@@ -15,8 +15,6 @@ import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.ReminderWidgetViewHolder
 import com.tokopedia.home_component.visitable.*
-import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
-
 
 class RechargeHomepageAdapterTypeFactory(
         val listener: RechargeHomepageItemListener,
@@ -74,10 +72,6 @@ class RechargeHomepageAdapterTypeFactory(
 
     fun type(tickerModel: RechargeTickerHomepageModel): Int {
         return RechargeHomepageTickerViewHolder.LAYOUT
-    }
-
-    override fun type(questWidgetModel: QuestWidgetModel): Int {
-        return QuestWidgetViewHolder.LAYOUT
     }
 
     fun type(swipeBannerModel: RechargeHomepageSwipeBannerModel): Int {
