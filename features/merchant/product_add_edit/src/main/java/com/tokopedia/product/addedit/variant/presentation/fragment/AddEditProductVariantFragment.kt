@@ -57,6 +57,7 @@ import com.tokopedia.product.addedit.variant.presentation.adapter.VariantValueAd
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_UNIT_VALUE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_CUSTOM_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_VARIANT_DETAIL
@@ -324,7 +325,7 @@ class AddEditProductVariantFragment :
     }
 
     override fun onCustomVariantTypeCountChanged(count: Int) {
-        buttonAddVariantType.isEnabled = count < 10
+        buttonAddVariantType.isEnabled = count < MAX_CUSTOM_VARIANT_TYPE
         titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
     }
 
@@ -359,6 +360,18 @@ class AddEditProductVariantFragment :
         }
         viewModel.hideProductVariantPhotos(variantDetail)
         viewModel.updateSizechartFieldVisibility()
+    }
+
+    private fun deselectAllVariantType() {
+        val selectedItems = variantTypeAdapter?.getSelectedItems().orEmpty()
+        val selectedAdapterPositions = variantTypeAdapter?.getSelectedAdapterPosition().orEmpty()
+
+        selectedItems.forEachIndexed { position, variantDetail ->
+            val adapterPosition = selectedAdapterPositions.getOrNull(position)
+                    ?: return@forEachIndexed
+            deselectVariantType(position, adapterPosition, variantDetail)
+            variantTypeAdapter?.deselectItem(adapterPosition)
+        }
     }
 
     private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
@@ -713,6 +726,11 @@ class AddEditProductVariantFragment :
                 variantDetails = variantTypeAdapter?.getItems().orEmpty())
             bottomSheet.setOnCustomVariantTypeSubmitted {
                 val customVariantTypeDetail = viewModel.createCustomVariantTypeModel(it)
+                val selectedVariantCount = variantTypeAdapter?.getSelectedItems()?.size.orZero()
+
+                if (selectedVariantCount >= MAX_CUSTOM_VARIANT_TYPE) {
+                    deselectAllVariantType()
+                }
                 variantTypeAdapter?.addData(customVariantTypeDetail)
             }
             bottomSheet.setOnPredefinedVariantTypeSubmitted {

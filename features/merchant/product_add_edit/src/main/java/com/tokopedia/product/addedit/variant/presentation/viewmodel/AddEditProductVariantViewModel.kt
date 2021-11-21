@@ -233,7 +233,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
     fun getRenderedLayoutAdapterPosition(): Int {
         // return index 0 when the key is null
-        return variantValuesLayoutMap.firstEntry()?.key ?: 0
+        return variantValuesLayoutMap.firstEntry()?.key.orZero()
     }
 
     fun getVariantData(layoutPosition: Int): VariantDetail {
