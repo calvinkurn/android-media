@@ -8,12 +8,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.bundle.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.bundle.data.api.CommonPurchaseApiUrl;
 import com.tokopedia.checkout.bundle.data.model.request.changeaddress.DataChangeAddressRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.CheckoutRequestMapper;
+import com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell.CrossSellItemRequestModel;
+import com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell.CrossSellRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.CheckoutRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.EgoldData;
@@ -49,10 +52,12 @@ import com.tokopedia.checkout.bundle.view.subscriber.ClearShipmentCacheAutoApply
 import com.tokopedia.checkout.bundle.view.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.bundle.view.subscriber.ReleaseBookingStockSubscriber;
 import com.tokopedia.checkout.bundle.view.subscriber.SaveShipmentStateSubscriber;
+import com.tokopedia.checkout.bundle.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.checkout.bundle.view.uimodel.EgoldTieringModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
@@ -64,6 +69,7 @@ import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -80,9 +86,8 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
@@ -94,7 +99,9 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.Su
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
@@ -107,6 +114,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -163,6 +171,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentCostModel shipmentCostModel;
     private EgoldAttributeModel egoldAttributeModel;
     private ShipmentDonationModel shipmentDonationModel;
+    private ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel;
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
     private CampaignTimerUi campaignTimer;
@@ -373,6 +382,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel() {
+        if (listShipmentCrossSellModel == null) {
+            listShipmentCrossSellModel = new ArrayList<>();
+        }
+        return listShipmentCrossSellModel;
+    }
+
+    @Override
+    public void setListShipmentCrossSellModel(ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel) {
+        this.listShipmentCrossSellModel = listShipmentCrossSellModel;
+    }
+
+    @Override
     public void setShipmentButtonPaymentModel(ShipmentButtonPaymentModel shipmentButtonPaymentModel) {
         this.shipmentButtonPaymentModel = shipmentButtonPaymentModel;
     }
@@ -400,7 +422,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                               String leasingId,
                                                               String pageSource) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
-                dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
+                dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
+                listShipmentCrossSellModel, leasingId
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource);
         if (eeDataLayer != null) {
@@ -633,6 +656,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setShipmentDonationModel(null);
         }
 
+        if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
+            ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel = shipmentDataConverter.getListShipmentCrossSellModel(cartShipmentAddressFormData);
+            setListShipmentCrossSellModel(listShipmentCrossSellModel);
+        } else {
+            setListShipmentCrossSellModel(null);
+        }
+
         setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
 
         setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
@@ -677,7 +707,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
-                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
+                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
+                listShipmentCrossSellModel, leasingId
         );
 
         if (checkoutRequest != null && checkoutRequest.getData() != null && checkoutRequest.getData().size() > 0) {
@@ -829,7 +860,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         validateUsePromoRequest.setOrders(cloneOrders);
         if (!codes.isEmpty()) {
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), codes);
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, codes);
             compositeSubscription.add(
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
             );
@@ -998,6 +1029,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(userSessionInterface.getUserId(), checkoutRequest.getProtectionAnalyticsData());
                     }
+                    boolean isCrossSellChecked = false;
+                    for(ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
+                        if (shipmentCrossSellModel.isChecked()) isCrossSellChecked = true;
+                    }
+                    if (isCrossSellChecked) triggerCrossSellClickPilihPembayaran();
                     getView().renderCheckoutCartSuccess(checkoutData);
                 } else if (checkoutData.getErrorReporter().getEligible()) {
                     getView().hideLoading();
@@ -1020,6 +1056,42 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         };
+    }
+
+    private void triggerCrossSellClickPilihPembayaran() {
+        List<ShipmentCrossSellModel> shipmentCrossSellModelList = getListShipmentCrossSellModel();
+        String eventLabel = "";
+        String digitalProductName = "";
+
+        if (!shipmentCrossSellModelList.isEmpty()) {
+            for (int i=0; i<shipmentCrossSellModelList.size(); i++) {
+                CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
+                String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
+                String digitalProductId = crossSellModel.getId();
+                eventLabel = digitalCategoryName + " - " + digitalProductId;
+                digitalProductName = crossSellModel.getInfo().getTitle();
+            }
+        }
+
+        List<Object> productList = new ArrayList<>();
+        for (int j=0; j<shipmentCartItemModelList.size(); j++) {
+            for (CartItemModel cartItemModel : shipmentCartItemModelList.get(j).getCartItemModels()) {
+                AnalyticsProductCheckoutData dataAnalytics = cartItemModel.getAnalyticsProductCheckoutData();
+                productList.add(DataLayer.mapOf(
+                        ConstantTransactionAnalytics.Key.BRAND, "",
+                        ConstantTransactionAnalytics.Key.CATEGORY, dataAnalytics.getProductCategoryId(),
+                        ConstantTransactionAnalytics.Key.ID, "",
+                        ConstantTransactionAnalytics.Key.NAME, dataAnalytics.getProductName(),
+                        ConstantTransactionAnalytics.Key.PRICE, dataAnalytics.getProductPrice(),
+                        ConstantTransactionAnalytics.Key.QUANTITY, dataAnalytics.getProductQuantity(),
+                        ConstantTransactionAnalytics.Key.SHOP_ID, dataAnalytics.getProductShopId(),
+                        ConstantTransactionAnalytics.Key.SHOP_NAME, dataAnalytics.getProductShopName(),
+                        ConstantTransactionAnalytics.Key.SHOP_TYPE, dataAnalytics.getProductShopType(),
+                        ConstantTransactionAnalytics.Key.VARIANT, digitalProductName
+                ));
+            }
+        }
+        analyticsActionListener.sendEnhancedEcommerceAnalyticsCrossSellClickPilihPembayaran(eventLabel, userSessionInterface.getUserId(), productList);
     }
 
     public Map<String, Object> generateCheckoutAnalyticsDataLayer(CheckoutRequest checkoutRequest, String step, String pageSource) {
@@ -1273,6 +1345,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
                                                    int isDonation,
+                                                   ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel,
                                                    String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short));
@@ -1306,8 +1379,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             egoldData.setEgoldAmount(egoldAttributeModel.getBuyEgoldValue());
         }
 
+        CrossSellRequest crossSellRequest = new CrossSellRequest();
+        ArrayList<CrossSellItemRequestModel> listCrossSellItemRequest = new ArrayList<>();
+
+        if (!listShipmentCrossSellModel.isEmpty()) {
+            CrossSellItemRequestModel crossSellItemRequestModel = new CrossSellItemRequestModel();
+            for (ShipmentCrossSellModel shipmentCrossSellModel : listShipmentCrossSellModel) {
+                if (shipmentCrossSellModel.isChecked()) {
+                    crossSellItemRequestModel.setId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getId()));
+                    crossSellItemRequestModel.setPrice((int) shipmentCrossSellModel.getCrossSellModel().getPrice());
+                    crossSellItemRequestModel.setAdditionalVerticalId(Utils.toIntOrZero(shipmentCrossSellModel.getCrossSellModel().getAdditionalVerticalId()));
+                    crossSellItemRequestModel.setTransactionType(shipmentCrossSellModel.getCrossSellModel().getTransactionType());
+                    listCrossSellItemRequest.add(crossSellItemRequestModel);
+                }
+            }
+            crossSellRequest.setListItem(listCrossSellItemRequest);
+        }
         CheckoutRequest checkoutRequest = new CheckoutRequest();
         checkoutRequest.setDonation(isDonation);
+        checkoutRequest.setCrossSell(crossSellRequest);
         checkoutRequest.setData(analyticsDataCheckoutRequests != null ? analyticsDataCheckoutRequests : dataCheckoutRequestList);
         checkoutRequest.setEgoldData(egoldData);
 
@@ -1683,7 +1773,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         ArrayList<String> promoCodeList = new ArrayList<>();
         promoCodeList.add(promoCode);
 
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodeList);
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList);
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(new Subscriber<ClearPromoUiModel>() {
                     @Override
@@ -1724,7 +1814,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         if (notEligiblePromoCodes.size() > 0) {
-            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), notEligiblePromoCodes);
+            clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, notEligiblePromoCodes);
             compositeSubscription.add(
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                             .subscribe(new ClearNotEligiblePromoSubscriber(getView(), this, notEligiblePromoHolderdataArrayList))
@@ -1738,7 +1828,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         setCouponStateChanged(true);
         getView().showLoading();
         getView().setHasRunningApiCall(true);
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodesToBeCleared);
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodesToBeCleared);
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
                         new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this)

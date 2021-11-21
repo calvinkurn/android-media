@@ -119,7 +119,7 @@ ext {
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.8'
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
-    unifyTotalAmountVersion = '1.0.3'
+    unifyTotalAmountVersion = '1.0.5'
     unifyExplorePromoVersion = '1.0.2'
     unifyImageGalleryVersion = '1.0.1'
     unifyViewAllCardVersion = '1.0.1'
@@ -210,8 +210,6 @@ ext {
 
     analyticsDependencies = [
             installRef : "com.android.installreferrer:installreferrer:1.1",
-            moengage   : "com.moengage:moe-android-sdk:9.8.02",
-            moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:5.0.4",
     ]
 

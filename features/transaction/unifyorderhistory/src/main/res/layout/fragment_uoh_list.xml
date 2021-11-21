@@ -28,9 +28,10 @@
         app:contentInsetStart="0dp"
         app:toolbarContentType="typeSearchbar"
         app:toolbarBackButton="none"
-        app:toolbarInitialTheme="light"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarInitialFillColor="filled"
         app:toolbarInvertSearchBarColor="true"
-        app:toolbarAlwaysShowShadow="false" />
+        app:toolbarInitialTheme="light"/>
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/uoh_sort_filter"

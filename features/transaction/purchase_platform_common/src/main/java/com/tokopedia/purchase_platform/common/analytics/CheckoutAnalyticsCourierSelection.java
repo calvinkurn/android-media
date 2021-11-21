@@ -7,16 +7,28 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction.CHECK_CROSS_SELL_ICON;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction.CLICK_PAYMENT_OPTION_BUTTON;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN_CROSS_SELL;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction.UNCHECK_CROSS_SELL_ICON;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory.ACTION_FIELD;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory.BU_RECHARGE;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName.CHECKOUT;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key.ID;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key.NAME;
 
 
 /**
@@ -153,12 +165,12 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                                               String eventAction,
                                               String eventLabel) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
-                ConstantTransactionAnalytics.Key.EVENT, EventName.CHECKOUT,
+                ConstantTransactionAnalytics.Key.EVENT, CHECKOUT,
                 ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
                 ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
                 ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
                 ConstantTransactionAnalytics.Key.E_COMMERCE, cartMap,
-                ConstantTransactionAnalytics.Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+                ConstantTransactionAnalytics.Key.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE
         );
         if (tradeInCustomDimension != null && tradeInCustomDimension.size() > 0) {
             dataLayer.putAll(tradeInCustomDimension);
@@ -590,6 +602,68 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendGeneralEvent(gtmMap);
     }
 
+    public void eventViewAutoCheckCrossSell(String userId, String position, String eventLabel, String digitalProductName, ArrayList<Long> childCategoryIds) {
+        List<Object> listPromotions = new ArrayList<>();
+        for (Long childCategoryId : childCategoryIds) {
+            listPromotions.add(DataLayer.mapOf(
+                    ConstantTransactionAnalytics.Key.CREATIVE, digitalProductName,
+                    ID, "",
+                    NAME, childCategoryId.toString(),
+                    ConstantTransactionAnalytics.Key.POSITION, position));
+        }
+
+        sendEnhancedEcommerce(DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.PROMO_VIEW,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, EventAction.IMPRESSION_CROSS_SELL_ICON,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
+                ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT, BU_RECHARGE,
+                ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE,
+                ExtraKey.USER_ID, userId,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, DataLayer.mapOf(
+                        EventName.PROMO_VIEW, DataLayer.mapOf(ConstantTransactionAnalytics.Key.PROMOTIONS, listPromotions))));
+    }
+
+    public void eventClickCheckboxCrossSell(boolean check, String userId, String position, String eventLabel, String digitalProductName, ArrayList<Long> childCategoryIds) {
+        List<Object> listPromotions = new ArrayList<>();
+        for (Long childCategoryId : childCategoryIds) {
+            listPromotions.add(DataLayer.mapOf(
+                    ConstantTransactionAnalytics.Key.CREATIVE, digitalProductName,
+                    ID, "",
+                    NAME, childCategoryId.toString(),
+                    ConstantTransactionAnalytics.Key.POSITION, position));
+        }
+
+        sendEnhancedEcommerce(DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.PROMO_CLICK,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, check ? CHECK_CROSS_SELL_ICON : UNCHECK_CROSS_SELL_ICON,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
+                ConstantTransactionAnalytics.ExtraKey.BUSINESS_UNIT, BU_RECHARGE,
+                ConstantTransactionAnalytics.ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE,
+                ExtraKey.USER_ID, userId,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, DataLayer.mapOf(
+                        EventName.PROMO_CLICK, DataLayer.mapOf(ConstantTransactionAnalytics.Key.PROMOTIONS, listPromotions))));
+    }
+
+    public void sendCrossSellClickPilihPembayaran(String eventLabel, String userId, List<Object> listProducts) {
+        sendEnhancedEcommerce(DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, CHECKOUT,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, CLICK_PILIH_METODE_PEMBAYARAN_CROSS_SELL,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, EventCategory.COURIER_SELECTION,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
+                ExtraKey.BUSINESS_UNIT, BU_RECHARGE,
+                ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE,
+                ExtraKey.USER_ID, userId,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, DataLayer.mapOf(
+                        CHECKOUT, DataLayer.mapOf(
+                                ACTION_FIELD, DataLayer.mapOf(
+                                        EventCategory.OPTION, CLICK_PAYMENT_OPTION_BUTTON,
+                                        EventCategory.STEP, "4"
+                                ),
+                                EventCategory.PRODUCTS, listProducts))));
+    }
+
     public void eventViewCampaignDialog(long productId, String userId) {
         Map<String, Object> gtmMap = TrackAppUtils.gtmData(
                 EventName.VIEW_COURIER_IRIS,
@@ -644,7 +718,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 shopId + " - " + errorMessage
         );
         gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmMap.put(ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE);
         sendGeneralEvent(gtmMap);
     }
 
@@ -656,7 +730,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 shopId + " - " + errorMessage
         );
         gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmMap.put(ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE);
         sendGeneralEvent(gtmMap);
     }
 
@@ -668,7 +742,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 shopId + " - " + errorMessage
         );
         gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmMap.put(ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE);
         sendGeneralEvent(gtmMap);
     }
 
@@ -680,7 +754,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 shopId + " - " + errorMessage
         );
         gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmMap.put(ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE);
         sendGeneralEvent(gtmMap);
     }
 
@@ -692,7 +766,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ""
         );
         gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmMap.put(ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE);
         sendGeneralEvent(gtmMap);
     }
 
@@ -704,7 +778,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 errorMessage
         );
         gtmMap.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
-        gtmMap.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmMap.put(ExtraKey.CURRENT_SITE, DIMENSION_CURRENT_SITE_MARKETPLACE);
         sendGeneralEvent(gtmMap);
     }
 }

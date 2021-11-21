@@ -121,7 +121,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 binding?.bsProductInfoContainer?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
                 binding?.bsProductInfoContainer?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
-        } catch (e: Throwable) {
+        } catch (_: Throwable) {
         }
     }
 
