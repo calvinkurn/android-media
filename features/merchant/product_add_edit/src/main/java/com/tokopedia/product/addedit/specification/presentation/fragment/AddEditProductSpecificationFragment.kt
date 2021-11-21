@@ -79,7 +79,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        requireActivity().window.decorView.setBackgroundColor(getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        requireActivity().window.decorView.setBackgroundColor(getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
         // setup UI
         setupToolbarActions()

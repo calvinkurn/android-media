@@ -274,7 +274,7 @@ class SubscriptionActivity : BaseActivity(), HasComponent<PowerMerchantSubscribe
     }
 
     private fun setupView() {
-        window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
         setSupportActionBar(binding?.toolbarPmSubscription)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         setWhiteStatusBar()

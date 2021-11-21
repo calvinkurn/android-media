@@ -184,7 +184,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
 
     private fun setup() {
         requireActivity().window.decorView.setBackgroundColor(
-                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
 
         tvEmptyTitle = activity?.findViewById(com.tokopedia.baselist.R.id.text_view_empty_title_text)
         tvEmptyContent = activity?.findViewById(com.tokopedia.baselist.R.id.text_view_empty_content_text)

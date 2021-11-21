@@ -55,7 +55,7 @@ class AddEditProductCategoryActivity : BaseSimpleActivity(), HasComponent<AddEdi
     }
 
     private fun setupUi() {
-        window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         huCategory.title = getString(R.string.label_title_category_picker)
         setSupportActionBar(huCategory)
     }

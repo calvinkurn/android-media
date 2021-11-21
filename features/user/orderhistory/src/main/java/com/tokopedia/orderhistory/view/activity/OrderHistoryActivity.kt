@@ -60,7 +60,7 @@ open class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistor
     }
 
     private fun initWindowBackground() {
-        window.decorView.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     private fun setupToolbar() {

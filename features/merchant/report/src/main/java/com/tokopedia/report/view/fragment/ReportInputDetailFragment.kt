@@ -32,7 +32,7 @@ class ReportInputDetailFragment : BaseDaggerFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
         arguments?.let {
             minChar = it.getInt(ARG_MIN_CHAR)
             maxChar = it.getInt(ARG_MAX_CHAR)

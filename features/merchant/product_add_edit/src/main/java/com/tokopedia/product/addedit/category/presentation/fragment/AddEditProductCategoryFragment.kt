@@ -118,7 +118,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         rvCategory.layoutManager = LinearLayoutManager(context)
 
         // set bg color programatically, to reduce overdraw
-        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     private fun observer() {

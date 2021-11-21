@@ -150,7 +150,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
     }
 
     private fun initWindowBackground() {
-        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        val color = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         window.decorView.setBackgroundColor(color)
     }
 

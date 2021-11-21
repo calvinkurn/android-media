@@ -127,7 +127,7 @@ public class InboxReputationActivity extends BaseActivity implements HasComponen
         indicator = findViewById(R.id.indicator_unify);
         toolbar = findViewById(R.id.headerInboxReputation);
         indicator.getUnifyTabLayout().clearOnTabSelectedListeners();
-        getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        getWindow().getDecorView().setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background));
         setupToolbar();
         if (GlobalConfig.isSellerApp()) {
             reviewSellerFragment = RatingProductFragment.Companion.createInstance();

@@ -121,7 +121,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         sendTrackerTrackScreenData()
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)) }
 
         viewModel.setupMultiLocationValue()
 

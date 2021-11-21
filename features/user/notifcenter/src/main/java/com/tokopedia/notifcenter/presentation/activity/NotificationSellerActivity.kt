@@ -39,7 +39,7 @@ class NotificationSellerActivity : BaseSimpleActivity(), InboxFragmentContainer 
 
     private fun setupBackground() {
         val whiteColor = ContextCompat.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
         )
         window.decorView.setBackgroundColor(whiteColor)
     }

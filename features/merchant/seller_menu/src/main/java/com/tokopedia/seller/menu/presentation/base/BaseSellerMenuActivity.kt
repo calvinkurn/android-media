@@ -12,6 +12,6 @@ abstract class BaseSellerMenuActivity: BaseSimpleActivity() {
     }
 
     private fun setBackgroundColor() {
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 }

@@ -87,7 +87,7 @@ class ShopPenaltyPageFragment : BaseListFragment<Visitable<*>, PenaltyPageAdapte
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
         }

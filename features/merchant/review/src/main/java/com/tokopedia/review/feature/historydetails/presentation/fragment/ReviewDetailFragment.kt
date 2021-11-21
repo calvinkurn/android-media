@@ -114,7 +114,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
         activity?.window?.decorView?.setBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         )
     }

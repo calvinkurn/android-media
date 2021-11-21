@@ -71,7 +71,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         val somSubFilterListWrapper: SomSubFilterListWrapper? = cacheManager.get(KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
         somSubFilterList = somSubFilterListWrapper?.somSubFilterList
         super.onCreate(savedInstanceState)
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         btnSaveSubFilter()
         setToolbarSubFilter()
         setToggleResetSubFilter()
