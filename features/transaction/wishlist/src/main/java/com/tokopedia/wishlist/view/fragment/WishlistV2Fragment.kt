@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -31,7 +32,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -58,7 +58,6 @@ import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
 import com.tokopedia.wishlist.util.WishlistUtils
-import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -68,6 +67,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomShee
 import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
 import javax.inject.Inject
 
+@Keep
 class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, WishlistV2Adapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -85,10 +85,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
-    private val listBulkDelete: ArrayList<String> = arrayListOf()
+    private var listBulkDelete: ArrayList<String> = arrayListOf()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var checkpoint1 = false
-    private var checkpoint2 = false
+    private var checkpoint = false
 
     private val wishlistViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
@@ -165,46 +164,43 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     private fun observingWishlistV2() {
-        // if (!checkpoint1) {
-            checkpoint1 = true
-            showLoader()
-            wishlistViewModel.wishlistV2.observe(viewLifecycleOwner, { result ->
-                when (result) {
-                    is Success -> {
-                        result.data.let { wishlistV2 ->
-                            hideLoader()
-                            refreshHandler?.finishRefresh()
-                            scrollRecommendationListener.setHasNextPage(wishlistV2.hasNextPage)
-
-                            if (wishlistV2.totalData == 0) {
-                                isFetchRecommendation = true
-                                binding?.run {
-                                    rlWishlistCountManageRow.gone()
-                                }
-                            } else {
-                                updateTotalLabel(wishlistV2.totalData)
-                            }
-                            if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
-                                renderChipsFilter(wishlistV2.sortFilters)
-                            }
-                            if (wishlistV2.hasNextPage) {
-                                currPage += 1
-                            }
-                        }
-
-                    }
-                    is Fail -> {
+        showLoader()
+        wishlistViewModel.wishlistV2.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    result.data.let { wishlistV2 ->
+                        hideLoader()
                         refreshHandler?.finishRefresh()
-                        showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                        scrollRecommendationListener.setHasNextPage(wishlistV2.hasNextPage)
+
+                        if (wishlistV2.totalData == 0) {
+                            isFetchRecommendation = true
+                            binding?.run {
+                                rlWishlistCountManageRow.gone()
+                            }
+                        } else {
+                            updateTotalLabel(wishlistV2.totalData)
+                        }
+                        if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
+                            renderChipsFilter(wishlistV2.sortFilters)
+                        }
+                        if (wishlistV2.hasNextPage) {
+                            currPage += 1
+                        }
                     }
+
                 }
-            })
-        // }
+                is Fail -> {
+                    refreshHandler?.finishRefresh()
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                }
+            }
+        })
     }
 
     private fun observingWishlistData() {
-        if (!checkpoint2) {
-            checkpoint2 = true
+        if (!checkpoint) {
+            checkpoint = true
             wishlistViewModel.wishlistV2Data.observe(viewLifecycleOwner, { result ->
                 when (result) {
                     is Success -> {
@@ -235,6 +231,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         binding?.run {
             refreshHandler = RefreshHandler(swipeRefreshLayout, this@WishlistV2Fragment)
             refreshHandler?.setPullEnabled(true)
+            activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
 
             statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
             viewLifecycleOwner.lifecycle.addObserver(wishlistNavtoolbar)
@@ -343,8 +340,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     private fun loadWishlistV2() {
-        checkpoint1 = false
-        checkpoint2 = false
+        checkpoint = false
         paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout())
     }
@@ -812,13 +808,19 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     }
 
     override fun onRefresh(view: View?) {
-            onLoadMore = false
-            isFetchRecommendation = false
-            // onLoadMoreRecommendation = false
-            currPage = 1
-            currRecommendationListPage = 1
-            paramWishlistV2 = WishlistV2Params()
-            isBulkDeleteShow = false
-            loadWishlistV2()
+        onLoadMore = false
+        isFetchRecommendation = false
+        // onLoadMoreRecommendation = false
+        currPage = 1
+        currRecommendationListPage = 1
+        paramWishlistV2 = WishlistV2Params()
+        isBulkDeleteShow = false
+        listBulkDelete = arrayListOf()
+        binding?.run {
+            wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
+        }
+        wishlistV2Adapter.hideCheckbox()
+        binding?.containerDelete?.visibility = View.GONE
+        loadWishlistV2()
     }
 }

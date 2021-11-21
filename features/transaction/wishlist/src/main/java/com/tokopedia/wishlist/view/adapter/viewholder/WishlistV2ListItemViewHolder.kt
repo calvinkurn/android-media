@@ -19,6 +19,7 @@ class WishlistV2ListItemViewHolder(
 
         if (isShowCheckbox) {
             binding.wishlistCheckbox.visible()
+            binding.wishlistCheckbox.isChecked = false
             binding.wishlistCheckbox.setOnCheckedChangeListener(checkboxListener(item.wishlistItem))
 
             binding.wishlistItem.setSecondaryButtonVisibility(false)

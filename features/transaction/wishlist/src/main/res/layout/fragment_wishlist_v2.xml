@@ -9,8 +9,8 @@
     android:paddingEnd="16dp">
 
     <View
-        android:visibility="invisible"
         android:id="@+id/statusbar"
+        android:visibility="invisible"
         android:background="@color/Unify_N0"
         android:layout_width="match_parent"
         android:layout_height="25dp"
@@ -85,7 +85,8 @@
                 android:layout_alignTop="@id/wishlist_manage_label"
                 android:layout_alignBottom="@id/wishlist_manage_label"
                 android:background="@color/unify_N75"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"/>
 
             <com.tokopedia.iconunify.IconUnify
                 android:layout_width="wrap_content"

@@ -244,6 +244,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imageProduct"
             layout="@layout/product_card_footer_layout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
