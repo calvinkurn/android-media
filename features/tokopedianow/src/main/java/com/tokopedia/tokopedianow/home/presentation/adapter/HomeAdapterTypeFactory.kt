@@ -19,7 +19,6 @@ import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.tokopedianow.home.presentation.view.listener.DynamicLegoBannerCallback
 import com.tokopedia.tokopedianow.home.presentation.viewholder.*
-import com.tokopedia.home_component.viewholders.QuestWidgetViewHolder
 
 class HomeAdapterTypeFactory(
     private val tokoNowView: TokoNowView? = null,
@@ -58,8 +57,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeSharingEducationWidgetUiModel): Int = HomeSharingEducationWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeEducationalInformationWidgetUiModel): Int = HomeEducationalInformationWidgetViewHolder.LAYOUT
 
-    // Quest Widget ViewHolder
-    override fun type(questWidgetModel: QuestWidgetModel): Int = QuestWidgetViewHolder.LAYOUT
+
 
     override fun type(uiModel: HomeProgressBarUiModel): Int = HomeProgressBarViewHolder.LAYOUT
     // endregion
@@ -98,7 +96,6 @@ class HomeAdapterTypeFactory(
             HomeSharingEducationWidgetViewHolder.LAYOUT -> HomeSharingEducationWidgetViewHolder(view, homeSharingEducationListener)
             HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, tokoNowView, homeEducationalInformationListener)
             HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
-            QuestWidgetViewHolder.LAYOUT -> QuestWidgetViewHolder(view)
             // endregion
 
             // region Global Home Component

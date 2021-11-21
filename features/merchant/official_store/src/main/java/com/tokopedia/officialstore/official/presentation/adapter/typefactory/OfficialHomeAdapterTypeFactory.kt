@@ -127,10 +127,6 @@ class OfficialHomeAdapterTypeFactory(
         return FeaturedBrandViewHolder.LAYOUT
     }
 
-    override fun type(questWidgetModel: QuestWidgetModel): Int {
-        return QuestWidgetViewHolder.LAYOUT
-    }
-
     override fun type(bestSellerDataModel: BestSellerDataModel): Int {
         return BestSellerViewHolder.LAYOUT
     }
