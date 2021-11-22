@@ -13,7 +13,8 @@
         app:layout_constrainedHeight="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/content_desc_shimmering_image" />
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmeringView"
         android:layout_width="match_parent"

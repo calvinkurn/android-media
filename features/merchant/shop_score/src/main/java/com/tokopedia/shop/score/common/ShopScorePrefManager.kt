@@ -9,6 +9,7 @@ class ShopScorePrefManager(@ApplicationContext private val context: Context) {
         private const val SHARED_PREF_NAME = "shop_score_coach_mark_pref"
         private const val HAS_FINISH_COACH_MARK = "finishCoachMarkShopScore"
         private const val IS_SHOW_POP_UP_END_TENURE = "isShowPopupEndTenure"
+        private const val IS_NEED_SHOW_TICKER_REACTIVATED = "isNeedShowTickerReactivated"
     }
 
     private val sharedPref by lazy {
@@ -34,7 +35,13 @@ class ShopScorePrefManager(@ApplicationContext private val context: Context) {
         putBoolean(IS_SHOW_POP_UP_END_TENURE, isShowPopEndTenure)
     }
 
+    fun setIsNeedShowTickerReactivated(value: Boolean) {
+        putBoolean(IS_NEED_SHOW_TICKER_REACTIVATED, value)
+    }
+
     fun getIsShowPopupEndTenure() = getBoolean(IS_SHOW_POP_UP_END_TENURE)
 
     fun getFinishCoachMark() = getBoolean(HAS_FINISH_COACH_MARK, false)
+
+    fun getIsNeedShowTickerReactivated() = getBoolean(IS_NEED_SHOW_TICKER_REACTIVATED)
 }

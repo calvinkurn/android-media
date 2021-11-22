@@ -90,10 +90,6 @@
     <string name="see_your_profile">Lihat Profil Anda</string>
 
     <string name="error_empty_provider">Gagal mendownload provider.</string>
-    <string name="facebook_error_not_authorized">Gagal login facebook. Silahkan coba lagi.</string>
-    <string name="facebook_error_empty_token">Gagal mendapatkan token facebook. Silahkan coba lagi.</string>
-    <string name="error_login_using_facebook">Gagal login menggunakan akun facebook. Silahkan coba lagi.</string>
-    <string name="error_login_using_facebook_with_exception">Gagal login menggunakan akun facebook. </string>
     <string name="default_datepicker">Tanggal / Bulan / Tahun</string>
     <string name="terms_and_conditions">Syarat dan Ketentuan</string>
     <string name="privacy">Kebijakan Privasi</string>

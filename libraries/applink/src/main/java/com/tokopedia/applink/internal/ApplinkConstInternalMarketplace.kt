@@ -62,9 +62,6 @@ object ApplinkConstInternalMarketplace {
     // ReadReviewActivity
     const val SHOP_REVIEW = "$INTERNAL_MARKETPLACE/shop/{id}/review"
 
-    // ReviewProductActivity, "x_prd_nm" = productName
-    const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
-
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
@@ -264,4 +261,6 @@ object ApplinkConstInternalMarketplace {
     const val ARGS_LAYOUT_ID = "layoutID"
 
     const val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
+
+    const val ARGS_IS_UPGRADE = "is_upgrade"
 }
