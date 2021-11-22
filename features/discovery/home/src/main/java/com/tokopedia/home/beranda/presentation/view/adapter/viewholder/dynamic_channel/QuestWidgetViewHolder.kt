@@ -24,6 +24,5 @@ class QuestWidgetViewHolder(
 
     override fun bind(element: QuestWidgetModel) {
         questWidget?.setQuestData(element.questData)
-//        questWidget?.getQuestList(page = QuestWidgetLocations.MY_REWARD)
     }
 }

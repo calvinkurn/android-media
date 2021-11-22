@@ -121,7 +121,9 @@ class QuestWidgetView @JvmOverloads constructor(
         }
 
         tvLihat.setOnClickListener {
-            RouteManager.route(context, data?.widgetData?.questWidgetList?.pageDetail?.cta?.url)
+            data?.widgetData?.questWidgetList?.pageDetail?.cta?.url?.let {
+                RouteManager.route(context, it)
+            }
         }
 
         questWidgetLogin.setOnClickListener {
@@ -139,6 +141,8 @@ class QuestWidgetView @JvmOverloads constructor(
     }
 
     fun setQuestData(questData: QuestData){
+        shimmerQuestWidget.hide()
+        constraintLayoutQuestWidget.show()
         setData(questData)
     }
 

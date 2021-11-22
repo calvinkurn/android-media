@@ -61,7 +61,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
     fun setData(item: QuestWidgetListItem, config: Config) {
 
         this.setOnClickListener {
-            RouteManager.route(context, item.actionButton?.cta?.url)
+            RouteManager.route(context, item.actionButton?.cta?.applink)
         }
 
         tvBannerTitle.text = config.banner_title
@@ -69,6 +69,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         ivBannerIconSecond.loadImage(item.prize?.get(0)?.iconUrl)
 //        val progress = calculateProgress((item.task?.get(0)?.progress))
         val progress = 100F
+        item.questUser?.status = QuestUserStatus.COMPLETED
 
         when(item.questUser?.status){
             QuestUserStatus.ON_PROGRESS ->{
