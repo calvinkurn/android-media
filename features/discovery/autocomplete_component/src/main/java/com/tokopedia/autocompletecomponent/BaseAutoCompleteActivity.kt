@@ -243,11 +243,13 @@ open class BaseAutoCompleteActivity: BaseActivity(),
             ApplinkConstInternalDiscovery.SEARCH_RESULT
         )
 
-        parameter.addComponentId()
-        parameter.addQueryIfEmpty()
-        parameter.removeKeys(BASE_SRP_APPLINK, HINT)
+        val modifiedParameter = parameter.toMutableMap().apply {
+            addComponentId()
+            addQueryIfEmpty()
+            removeKeys(BASE_SRP_APPLINK, HINT)
+        }
 
-        return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(parameter)}"
+        return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(modifiedParameter)}"
     }
 
     private fun sendTrackingSubmitQuery(
