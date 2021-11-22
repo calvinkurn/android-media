@@ -17,7 +17,6 @@ import com.tokopedia.unifycomponents.toPx
 import javax.inject.Inject
 
 class ResourceProvider @Inject constructor(
-    @ApplicationContext
     private val context: Context
 ) {
     private fun createBoldText(text: String): Spannable {
