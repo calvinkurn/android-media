@@ -9,12 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -33,6 +31,8 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.util.LogisticCommonUtil
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.databinding.BottomsheetActionAddressBinding
+import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
 import com.tokopedia.manageaddress.di.ManageAddressComponent
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
@@ -49,16 +49,11 @@ import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_CHOOSE
 import com.tokopedia.manageaddress.util.ManageAddressConstant.SCREEN_NAME_USER_NEW
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.bottomsheet_action_address.view.*
-import kotlinx.android.synthetic.main.empty_manage_address.*
-import kotlinx.android.synthetic.main.fragment_manage_address.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -78,24 +73,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         ViewModelProvider(this, viewModelFactory)[ManageAddressViewModel::class.java]
     }
 
-    private var searchAddress: SearchBarUnify? = null
-    private var addressList: RecyclerView? = null
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var binding by autoClearedNullable<FragmentManageAddressBinding>()
     private var bottomSheetLainnya: BottomSheetUnify? = null
-    private var emptySearchLayout: LinearLayout? = null
-
-    private var buttonAddEmpty: UnifyButton? = null
-    private var emptyStateLayout: LinearLayout? = null
-
-    private var globalErrorLayout: GlobalError? = null
 
     private var manageAddressListener: ManageAddressListener? = null
-
-    private var llButtonChooseAddress: LinearLayout? = null
-    private var buttonChooseAddress: UnifyButton? = null
     private var chooseAddressPref: ChooseAddressSharePref? = null
     private var _selectedAddressItem: RecipientAddressModel? = null
-    private var tickerInfo: Ticker? = null
 
     private var maxItemPosition: Int = -1
     private var isLoading: Boolean = false
@@ -116,9 +99,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_manage_address, container, false)
-        searchAddress = view.findViewById(R.id.search_input_view)
-        return view
+        binding = FragmentManageAddressBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -126,8 +108,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         initHeader()
         initView()
         initViewModel()
-        address_list.adapter = adapter
-        address_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding?.addressList?.adapter = adapter
+        binding?.addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
         isFromCheckoutSnippet = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET)
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
@@ -153,11 +135,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             if (addressDataModel != null) {
                 setChosenAddressANA(addressDataModel)
             } else {
-                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
+                performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
             isFromEditAddress = true
-            performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
+            performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
             viewModel.getStateChosenAddress("address")
             setButtonEnabled(true)
         }
@@ -169,7 +151,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun openSoftKeyboard() {
-        searchAddress?.searchBarTextField?.let {
+        binding?.searchInputView?.searchBarTextField?.let {
             (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager)?.showSoftInput(it, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -191,23 +173,11 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initView() {
-        addressList = view?.findViewById(R.id.address_list)
-        searchAddress = view?.findViewById(R.id.search_input_view)
-        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
-        emptySearchLayout = view?.findViewById(R.id.empty_search)
-        emptyStateLayout = view?.findViewById(R.id.empty_state_manage_address)
-        globalErrorLayout = view?.findViewById(R.id.global_error)
-        buttonAddEmpty = view?.findViewById(R.id.btn_add_empty)
-        tickerInfo = view?.findViewById(R.id.ticker_info)
-
         chooseAddressPref = ChooseAddressSharePref(context)
-
-        llButtonChooseAddress = view?.findViewById(R.id.ll_btn)
-        buttonChooseAddress = view?.findViewById(R.id.btn_choose_address)
         setButtonEnabled(false)
 
-        ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
-        ImageHandler.LoadImage(iv_empty_address, EMPTY_SEARCH_PICT_URL)
+        ImageHandler.LoadImage(binding?.emptyStateManageAddress?.ivEmptyState, EMPTY_STATE_PICT_URL)
+        ImageHandler.LoadImage(binding?.ivEmptyAddress, EMPTY_SEARCH_PICT_URL)
 
         initScrollListener()
 
@@ -217,8 +187,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.addressList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ManageAddressState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    globalErrorLayout?.gone()
+                    binding?.swipeRefresh?.isRefreshing = false
+                    binding?.globalError?.gone()
                     if (viewModel.isClearData) clearData()
                     if (it.data.listAddress.isNotEmpty()) {
                         updateTicker(it.data.pageInfo?.ticker)
@@ -232,7 +202,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 is ManageAddressState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
                     }
@@ -240,7 +210,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 else -> {
-                    swipeRefreshLayout?.isRefreshing = true
+                    binding?.swipeRefresh?.isRefreshing = true
                     isLoading = true
                 }
             }
@@ -314,7 +284,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.setChosenAddress.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    if (buttonChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_SUCCESS)
+                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_SUCCESS)
                     val data = it.data
                     context?.let {
                         context ->
@@ -334,7 +304,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 }
 
                 is Fail -> {
-                    if (buttonChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_NOT_SUCCESS)
+                    if (binding?.btnChooseAddress?.text == getString(R.string.pilih_alamat)) ChooseAddressTracking.onClickButtonPilihAlamat(userSession.userId, IS_NOT_SUCCESS)
                     view?.let { view ->
                         Toaster.build(view, it.throwable.message
                                 ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
@@ -345,7 +315,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initScrollListener() {
-        addressList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding?.addressList?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val adapter = recyclerView.adapter
@@ -368,53 +338,53 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun setEmptyState() {
         if (adapter.addressList.isNotEmpty()) {
-            emptyStateLayout?.gone()
-            searchAddress?.visible()
-            addressList?.visible()
-            emptySearchLayout?.gone()
+            binding?.emptyStateManageAddress?.root?.gone()
+            binding?.searchInputView?.visible()
+            binding?.addressList?.visible()
+            binding?.emptySearch?.gone()
         } else if (viewModel.savedQuery.isEmpty()) {
-            buttonAddEmpty?.setOnClickListener {
+            binding?.emptyStateManageAddress?.btnAddEmpty?.setOnClickListener {
                 openFormAddressView(null)
             }
-            emptyStateLayout?.visible()
-            searchAddress?.gone()
-            addressList?.gone()
-            emptySearchLayout?.gone()
+            binding?.emptyStateManageAddress?.root?.visible()
+            binding?.searchInputView?.gone()
+            binding?.addressList?.gone()
+            binding?.emptySearch?.gone()
         } else {
-            emptySearchLayout?.visible()
-            emptyStateLayout?.gone()
-            searchAddress?.visible()
-            addressList?.gone()
+            binding?.emptySearch?.visible()
+            binding?.emptyStateManageAddress?.root?.gone()
+            binding?.searchInputView?.visible()
+            binding?.addressList?.gone()
         }
     }
 
     private fun initSearch() {
         val searchKey = viewModel.savedQuery
-        searchAddress?.searchBarTextField?.setText(searchKey)
+        binding?.searchInputView?.searchBarTextField?.setText(searchKey)
         performSearch(searchKey, null)
         if (isLocalization == true) ChooseAddressTracking.impressAddressListPage(userSession.userId)
     }
 
     private fun initSearchView() {
-        searchAddress?.searchBarTextField?.setOnClickListener {
-            searchAddress?.searchBarTextField?.isCursorVisible = true
+        binding?.searchInputView?.searchBarTextField?.setOnClickListener {
+            binding?.searchInputView?.searchBarTextField?.isCursorVisible = true
             openSoftKeyboard()
         }
 
-        searchAddress?.searchBarTextField?.setOnEditorActionListener { _, actionId, event ->
+        binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener { _, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                searchAddress?.clearFocus()
-                performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "", null)
+                binding?.searchInputView?.clearFocus()
+                performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
                 return@setOnEditorActionListener true
             }
             return@setOnEditorActionListener false
         }
 
-        searchAddress?.clearListener = {
+        binding?.searchInputView?.clearListener = {
             performSearch("", null)
         }
 
-        searchAddress?.searchBarPlaceholder = "Cari Alamat"
+        binding?.searchInputView?.searchBarPlaceholder = "Cari Alamat"
     }
 
     private fun updateData(data: List<RecipientAddressModel>) {
@@ -424,21 +394,21 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun updateTicker(ticker: String?) {
         ticker?.let {
             if (ticker.isEmpty()) {
-                tickerInfo?.gone()
+                binding?.tickerInfo?.gone()
             } else {
-                tickerInfo?.visible()
-                tickerInfo?.setHtmlDescription(ticker)
+                binding?.tickerInfo?.visible()
+                binding?.tickerInfo?.setHtmlDescription(ticker)
             }
         }
     }
 
     private fun updateButton(btnLabel: String?) {
         btnLabel?.let {
-            llButtonChooseAddress?.visible()
+            binding?.llBtn?.visible()
             if (btnLabel.isEmpty()) {
-                buttonChooseAddress?.text = getString(R.string.pilih_alamat)
+                binding?.btnChooseAddress?.text = getString(R.string.pilih_alamat)
             } else {
-                buttonChooseAddress?.text = btnLabel
+                binding?.btnChooseAddress?.text = btnLabel
             }
         }
     }
@@ -499,26 +469,26 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun openBottomSheetView(data: RecipientAddressModel) {
         bottomSheetLainnya = BottomSheetUnify()
-        val viewBottomSheetLainnya = View.inflate(context, R.layout.bottomsheet_action_address, null).apply {
+        val viewBottomSheetLainnya = BottomsheetActionAddressBinding.bind(View.inflate(context, R.layout.bottomsheet_action_address, null)).apply {
             if (data.addressStatus == 2) {
-                btn_alamat_utama?.gone()
-                divider?.gone()
-                btn_alamat_utama_choose?.gone()
-                divider_utama_choose?.gone()
+                btnAlamatUtama.gone()
+                divider.gone()
+                btnAlamatUtamaChoose.gone()
+                dividerUtamaChoose.gone()
             } else {
                 if (!data.isStateChosenAddress) {
-                    btn_alamat_utama?.gone()
-                    divider?.gone()
-                    btn_alamat_utama_choose?.visible()
-                    divider_utama_choose?.visible()
+                    btnAlamatUtama.gone()
+                    divider.gone()
+                    btnAlamatUtamaChoose.visible()
+                    dividerUtamaChoose.visible()
                 } else {
-                    btn_alamat_utama?.visible()
-                    divider?.visible()
-                    btn_alamat_utama_choose?.gone()
-                    divider_utama_choose?.gone()
+                    btnAlamatUtama.visible()
+                    divider.visible()
+                    btnAlamatUtamaChoose.gone()
+                    dividerUtamaChoose.gone()
                 }
             }
-            btn_alamat_utama?.setOnClickListener {
+            btnAlamatUtama.setOnClickListener {
                 if (isFromCheckoutChangeAddress == true || isLocalization == true) {
                     _selectedAddressItem = data
                 }
@@ -526,12 +496,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 viewModel.setDefaultPeopleAddress(data.id, false, prevState, data.id.toLong(), true)
                 bottomSheetLainnya?.dismiss()
             }
-            btn_hapus_alamat?.setOnClickListener {
+            btnHapusAlamat.setOnClickListener {
                 viewModel.deletePeopleAddress(data.id, prevState, getChosenAddrId(), true)
                 bottomSheetLainnya?.dismiss()
                 isFromDeleteAddress = true
             }
-            btn_alamat_utama_choose?.setOnClickListener {
+            btnAlamatUtamaChoose.setOnClickListener {
                 isStayOnPageState = false
                 context?.let {
                     viewModel.setDefaultPeopleAddress(data.id,true, prevState, data.id.toLong(), true)
@@ -543,7 +513,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         bottomSheetLainnya?.apply {
             setTitle(LABEL_LAINNYA)
             setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetLainnya)
+            setChild(viewBottomSheetLainnya.root)
             setOnDismissListener { dismiss() }
         }
 
@@ -584,17 +554,17 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun showGlobalError(type: Int) {
-        globalErrorLayout?.setType(type)
-        globalErrorLayout?.setActionClickListener {
+        binding?.globalError?.setType(type)
+        binding?.globalError?.setActionClickListener {
             context?.let {
                 viewModel.searchAddress("", prevState, getChosenAddrId(), true)
             }
         }
-        searchAddress?.gone()
-        addressList?.gone()
-        emptyStateLayout?.gone()
-        globalErrorLayout?.visible()
-        emptySearchLayout?.gone()
+        binding?.searchInputView?.gone()
+        binding?.addressList?.gone()
+        binding?.emptyStateManageAddress?.root?.gone()
+        binding?.globalError?.visible()
+        binding?.emptySearch?.gone()
     }
 
     fun setListener(listener: ManageAddressListener) {
@@ -676,12 +646,12 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun setButtonEnabled(isEnabled: Boolean) {
         if (isEnabled) {
             isStayOnPageState = false
-            buttonChooseAddress?.apply {
+            binding?.btnChooseAddress?.apply {
                 setEnabled(true)
                 setOnClickListener { setChosenAddress() }
             }
         } else {
-            buttonChooseAddress?.isEnabled = false
+            binding?.btnChooseAddress?.isEnabled = false
         }
     }
 
