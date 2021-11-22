@@ -11,9 +11,6 @@ object RollenceKey {
 
     const val AB_TEST_SHOP_NEW_HOME_TAB = "shop_layout_engine"
 
-    //    Add Edit Product
-    const val PRODUCT_TITLE_AB_TEST_KEY = "product_title"
-
     const val KEY_AB_INBOX_REVAMP = "ReviewTab_NewInbox"
     const val VARIANT_OLD_INBOX = "ReviewTab_OldInbox"
     const val VARIANT_NEW_INBOX = "ReviewTab_NewInbox"

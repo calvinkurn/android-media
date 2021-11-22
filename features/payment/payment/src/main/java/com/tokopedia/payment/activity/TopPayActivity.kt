@@ -332,7 +332,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun showProgressDialog() {
-        progressDialog?.show()
+        if (!isFinishing)
+            progressDialog?.show()
     }
 
     override fun onGoToOtpPage(transactionId: String, urlOtp: String) {

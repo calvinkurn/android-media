@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_96"
@@ -35,9 +35,10 @@
             android:layout_marginEnd="8dp"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/buttonWishlist"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
@@ -47,7 +48,8 @@
             android:foreground="?attr/selectableItemBackground"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/similar_search_ic_wishlist_inactive" />
+            app:srcCompat="@drawable/similar_search_ic_wishlist_inactive"
+            app:unify_image_corner_radius="0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewProductName"
@@ -130,7 +132,7 @@
             app:layout_constraintTop_toBottomOf="@id/textViewShopLocation"
             tools:visibility="visible">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageViewRating1"
                 android:contentDescription="@string/content_desc_similar_search_imageRating"
                 android:layout_width="12dp"
@@ -138,9 +140,10 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
+                app:unify_image_corner_radius="0"
                 tools:src="@drawable/similar_search_ic_rating_active" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageViewRating2"
                 tools:ignore="ContentDescription"
                 android:layout_width="12dp"
@@ -148,9 +151,10 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
+                app:unify_image_corner_radius="0"
                 tools:src="@drawable/similar_search_ic_rating_active" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageViewRating3"
                 tools:ignore="ContentDescription"
                 android:layout_width="12dp"
@@ -158,9 +162,10 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
+                app:unify_image_corner_radius="0"
                 tools:src="@drawable/similar_search_ic_rating_active" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageViewRating4"
                 tools:ignore="ContentDescription"
                 android:layout_width="12dp"
@@ -168,9 +173,10 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
+                app:unify_image_corner_radius="0"
                 tools:src="@drawable/similar_search_ic_rating_active" />
 
-            <ImageView
+            <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/imageViewRating5"
                 tools:ignore="ContentDescription"
                 android:layout_width="12dp"
@@ -178,6 +184,7 @@
                 android:adjustViewBounds="true"
                 android:gravity="center"
                 android:scaleType="centerCrop"
+                app:unify_image_corner_radius="0"
                 tools:src="@drawable/similar_search_ic_rating_active" />
 
         </LinearLayout>
