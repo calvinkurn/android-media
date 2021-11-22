@@ -320,6 +320,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      */
     private fun showCounterDuration(remainingInMs: Long) {
         viewTimer.showCounter(remainingInMs)
+        viewStatInfo.setCountDown(remainingInMs)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {

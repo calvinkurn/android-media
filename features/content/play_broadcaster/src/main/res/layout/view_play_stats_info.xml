@@ -38,8 +38,6 @@
             android:layout_width="@dimen/spacing_lvl4"
             android:layout_height="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl2"
-            android:layout_marginBottom="@dimen/spacing_lvl2"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -69,5 +67,31 @@
         app:layout_constraintBottom_toBottomOf="@id/cl_bro_total_like"
         app:layout_constraintStart_toEndOf="@id/cl_bro_total_like"
         app:layout_constraintTop_toTopOf="@id/cl_bro_total_like" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_bro_count_down"
+        android:layout_width="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOCK"
+        app:layout_constraintBottom_toBottomOf="@id/v_separator_2"
+        app:layout_constraintStart_toEndOf="@id/v_separator_2"
+        app:layout_constraintTop_toTopOf="@id/v_separator_2"
+        app:srcCompat="@drawable/ic_play_like_white" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_bro_count_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl2"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="@id/ic_bro_count_down"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_bro_count_down"
+        app:layout_constraintTop_toTopOf="@id/ic_bro_count_down"
+        app:typographyType="body_3"
+        tools:text="12:34" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
