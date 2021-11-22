@@ -12,6 +12,10 @@ data class FingerPrint(
     @Expose
     private val device_system: String,
 
+    @SerializedName("user_dname")
+    @Expose
+    private val user_dname: String,
+
     @SerializedName("current_os")
     @Expose
     private val current_os: String,
