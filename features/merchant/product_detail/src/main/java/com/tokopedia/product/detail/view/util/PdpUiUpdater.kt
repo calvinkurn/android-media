@@ -50,6 +50,7 @@ import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -555,7 +556,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateRecommendationData(data: RecommendationWidget) {
         updateData(data.pageName) {
             when (data.pageName) {
-                PDP_7 -> {
+                PDP_7, PDP_9_TOKONOW -> {
                     (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
                         recomWidgetData = data
                         cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)

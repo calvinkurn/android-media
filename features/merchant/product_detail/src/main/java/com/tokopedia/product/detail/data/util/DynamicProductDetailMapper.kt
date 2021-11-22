@@ -48,6 +48,7 @@ import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.track.TrackApp
@@ -96,7 +97,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
                     when (component.componentName) {
-                        PDP_7 ->
+                        PDP_7, PDP_9_TOKONOW ->
                             listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
                         SHOPADS_CAROUSEL -> {
                             listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
