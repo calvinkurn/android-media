@@ -26,10 +26,13 @@
             />
 
         <include
+            android:id="@+id/view_play_action_bar_live"
             layout="@layout/layout_play_action_bar_live"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -48,11 +51,10 @@
         <com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
             android:id="@+id/view_stat_info"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/play_stats_info_height"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_timer"
+            app:layout_constraintStart_toStartOf="@id/view_play_action_bar_live"
+            app:layout_constraintTop_toBottomOf="@+id/view_play_action_bar_live"
             />
 
         <com.tokopedia.play.broadcaster.view.custom.PlayMetricsView

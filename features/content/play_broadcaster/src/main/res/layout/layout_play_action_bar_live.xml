@@ -5,7 +5,6 @@
     android:id="@+id/cl_actionbar_live"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl4"
     tools:background="@color/black">
 
     <com.tokopedia.iconunify.IconUnify

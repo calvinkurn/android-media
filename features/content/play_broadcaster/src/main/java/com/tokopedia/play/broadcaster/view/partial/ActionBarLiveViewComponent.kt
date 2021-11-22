@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography
 class ActionBarLiveViewComponent(
     container: ViewGroup,
     listener: Listener
-) : ViewComponent(container, R.id.cl_actionbar_live) {
+) : ViewComponent(container, R.id.view_play_action_bar_live) {
 
     private val tvChannelTitle = findViewById<Typography>(R.id.tv_bro_channel_title)
     private val ivShopIcon = findViewById<ImageUnify>(R.id.iv_bro_shop_icon)
