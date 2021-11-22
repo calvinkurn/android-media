@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.datamapper.mapDiscoveryResponseToPageData
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
 class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository,@ApplicationContext private val  context: Context) {
@@ -27,7 +28,7 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
 //            component = ComponentsItem(id = "PARENT_ID",pageEndPoint = pageInfo.identifier?:"").apply {
 //                componentMap[id] = this
 //            }
-        }, queryParameterMap, userAddressDataCopy)
+        }, queryParameterMap, userAddressDataCopy,UserSession(context).isLoggedIn)
     }
 
     fun clearPage(pageIdentifier: String) {

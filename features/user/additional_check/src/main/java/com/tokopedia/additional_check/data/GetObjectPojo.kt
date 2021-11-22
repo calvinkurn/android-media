@@ -11,18 +11,18 @@ import kotlinx.android.parcel.Parcelize
 
 data class GetObjectPojo(
         @SerializedName("show_interrupt")
-        val twoFactorResult: TwoFactorResult? = null
+        val twoFactorResult: TwoFactorResult = TwoFactorResult()
 )
 
 @Parcelize
 data class TwoFactorResult(
         @SerializedName("interval")
-        val interval: Int = 0,
+        var interval: Int = 0,
         @SerializedName("show_skip")
-        val showSkipButton: Boolean = false,
+        var showSkipButton: Boolean = false,
         @SerializedName("popup_2fa")
-        val popupType: Int = 0,
+        var popupType: Int = 0,
         @SerializedName("error")
-        val error: String = ""
+        var error: String = ""
 
 ): Parcelable
