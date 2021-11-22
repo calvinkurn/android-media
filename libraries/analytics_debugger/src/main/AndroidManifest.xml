@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.analyticsdebugger">
 
@@ -25,14 +24,12 @@
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".debugger.ui.activity.TopAdsDebuggerActivity"
             android:launchMode="singleTask"
             android:label="Topads Verificator"
             android:taskAffinity="com.tokopedia.analytics.task"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".cassava.debugger.AnalyticsDebuggerActivity"
             android:label="Analytics Debugger"
@@ -54,18 +51,14 @@
         <activity
             android:name=".debugger.ui.activity.FpmDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />
-
         <activity
             android:name=".debugger.ui.activity.TopAdsDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />
-
         <activity
             android:name=".debugger.ui.activity.ApplinkDebuggerDetailActivity"
             android:theme="@style/Theme.Green" />
-
         <activity
             android:name=".debugger.ui.activity.AnalyticsDebuggerDetailActivity"
-            android:theme="@style/Theme.Green"/>
+            android:theme="@style/Theme.Green" />
     </application>
-
 </manifest>

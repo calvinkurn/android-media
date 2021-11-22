@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.interest_pick_common" />
+<manifest package="com.tokopedia.interest_pick_common" />

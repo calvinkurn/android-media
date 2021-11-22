@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.orderhistory">
 
@@ -6,7 +5,8 @@
         <activity
             android:name=".view.activity.OrderHistoryActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AttachCommon">
+            android:theme="@style/Theme.AttachCommon"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -20,5 +20,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

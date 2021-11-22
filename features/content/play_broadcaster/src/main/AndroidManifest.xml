@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.play.broadcaster">
 
@@ -20,7 +19,8 @@
             android:name=".view.activity.PlayBroadcastActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Play.FullScreen"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing">
+            android:windowSoftInputMode="stateAlwaysHidden|adjustNothing"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

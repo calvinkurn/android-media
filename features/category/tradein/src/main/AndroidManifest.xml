@@ -2,47 +2,51 @@
     package="com.tokopedia.tradein">
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <application
-        android:usesCleartextTraffic="true">
-        <activity android:name=".view.viewcontrollers.activity.TradeInInfoActivity"
+    <application android:usesCleartextTraffic="true">
+        <activity
+            android:name=".view.viewcontrollers.activity.TradeInInfoActivity"
             android:launchMode="singleTop"
-            android:theme="@style/Theme.AppCompat.Translucent">
-
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_category"
-                    android:pathPattern="@string/applink_path_tradein_tnc"/>
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_category"
-                    android:pathPattern="@string/applink_path_tradein_black_market"/>
-            </intent-filter>
 
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:pathPattern="@string/applink_path_tradein_tnc" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_category"
+                    android:pathPattern="@string/applink_path_tradein_black_market" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".view.viewcontrollers.activity.TradeInHomeActivity"
             android:label="@string/tukar_tambah"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_category"
-                    android:path="@string/path_tradein"/>
+                    android:path="@string/path_tradein" />
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_category"
-                    android:pathPattern="@string/path_pattern_tradein"/>
+                    android:pathPattern="@string/path_pattern_tradein" />
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_category"
-                    android:path="@string/path_final_price"/>
+                    android:path="@string/path_final_price" />
             </intent-filter>
         </activity>
     </application>

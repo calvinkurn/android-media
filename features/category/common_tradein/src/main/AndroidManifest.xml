@@ -1,5 +1,3 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.common_tradein">
+<manifest package="com.tokopedia.common_tradein">
 
 </manifest>
-

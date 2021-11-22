@@ -1,25 +1,29 @@
-    <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.home_recom">
-    <application>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.home_recom">
 
+    <application>
         <activity
             android:name=".HomeRecommendationActivity"
             android:label="@string/recom_home_recommendation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                        android:scheme="@string/internal_scheme"
-                        android:host="@string/host_home"
-                        android:pathPrefix="/rekomendasi"/>
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_home"
+                    android:pathPrefix="/rekomendasi" />
             </intent-filter>
         </activity>
-        <activity android:name=".SimilarProductRecommendationActivity"
+        <activity
+            android:name=".SimilarProductRecommendationActivity"
             android:label="@string/recom_home_recommendation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
     </application>
 </manifest>

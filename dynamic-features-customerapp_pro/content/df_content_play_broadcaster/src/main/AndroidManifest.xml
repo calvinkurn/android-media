@@ -1,15 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:ns0="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.content.play.broadcaster">
 
-    <dist:module
-        dist:title="@string/title_play_broadcaster_df">
-        <dist:delivery>
-            <dist:on-demand/>
-        </dist:delivery>
-        <dist:fusing dist:include="true" />
-    </dist:module>
-
+    <ns0:module ns0:title="@string/title_play_broadcaster_df">
+        <ns0:delivery>
+            <ns0:on-demand />
+        </ns0:delivery>
+        <ns0:fusing ns0:include="true" />
+    </ns0:module>
     <application android:hasCode="false" />
-
 </manifest>

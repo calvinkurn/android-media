@@ -6,29 +6,29 @@
             <action android:name="com.google.android.youtube.api.service.START" />
         </intent>
     </queries>
-
     <application>
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
             android:value="com.tokopedia.play.cast.PlayCastOptionsProvider" />
-
         <receiver android:name=".cast.PlayCastMediaIntentReceiver" />
-
         <activity
             android:name=".view.activity.PlayActivity"
             android:theme="@style/Play.FullScreen"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden">
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_play"
                     android:pathPattern="@string/path_play_detail"
-                    android:scheme="@string/internal_scheme"/>
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
     </application>

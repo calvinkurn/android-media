@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.buyerorderdetail">
 
@@ -7,7 +6,8 @@
             android:name=".presentation.activity.BuyerOrderDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

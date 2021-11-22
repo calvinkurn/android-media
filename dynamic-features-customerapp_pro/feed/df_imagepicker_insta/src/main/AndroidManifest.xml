@@ -1,21 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:ns0="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.feed.imagepickerinsta">
 
-    <dist:module
-        dist:title="@string/title_image_picker_insta_df">
-        <dist:delivery>
-            <dist:on-demand/>
-            <dist:install-time>
-                <dist:conditions>
-                    <dist:min-sdk dist:value="21"/>
-                    <dist:max-sdk dist:value="23"/>
-                </dist:conditions>
-            </dist:install-time>
-        </dist:delivery>
-        <dist:fusing dist:include="true" />
-    </dist:module>
-
+    <ns0:module ns0:title="@string/title_image_picker_insta_df">
+        <ns0:delivery>
+            <ns0:on-demand />
+            <ns0:install-time>
+                <ns0:conditions>
+                    <ns0:min-sdk ns0:value="21" />
+                    <ns0:max-sdk ns0:value="23" />
+                </ns0:conditions>
+            </ns0:install-time>
+        </ns0:delivery>
+        <ns0:fusing ns0:include="true" />
+    </ns0:module>
     <application android:hasCode="false" />
 </manifest>
-

@@ -5,14 +5,14 @@
         <activity
             android:name="com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="@string/host_payment"
                     android:path="@string/path_thank_you_page"

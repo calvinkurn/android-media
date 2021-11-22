@@ -1,3 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tradein_common">
-</manifest>
+<manifest package="com.example.tradein_common"></manifest>
