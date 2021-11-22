@@ -12,21 +12,25 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_4"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@color/Unify_Static_White"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintEnd_toStartOf="@+id/iv_cm_home_widget_close"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_3"
         tools:text="Ada yang nunggu di Keranjang!" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_cm_home_widget_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/unify_space_16"
-        android:src="@drawable/ic_cm_home_widget_close"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/cm_home_widget_dp_18"
+        android:padding="@dimen/unify_space_4"
+        app:icon_color_light_enable="@color/Unify_N0"
+        app:icon_color_night_enable="@color/Unify_N0"
+        app:icon_name="CLOSE"
         app:layout_constraintBottom_toBottomOf="@+id/tv_cm_home_widget_heading"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_cm_home_widget_heading" />
@@ -35,9 +39,10 @@
         android:id="@+id/rv_cm_home_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/unify_space_12"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@+id/tv_cm_home_widget_heading"
-        tools:itemCount="10" />
+        tools:itemCount="10"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/layout_cm_home_widget_product_card"
+        tools:orientation="horizontal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,23 +11,24 @@ import com.tokopedia.cmhomewidget.communicator.CMHomeWidgetCommunicator
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetBinding
 import com.tokopedia.cmhomewidget.di.component.DaggerCMHomeWidgetComponent
 import com.tokopedia.cmhomewidget.di.module.CMHomeWidgetModule
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetCard
+import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardData
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProduct
-import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCardListener
+import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
-import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductListener
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
+import com.tokopedia.cmhomewidget.presentation.adapter.decorator.HorizontalSpaceItemDecorator
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
 import javax.inject.Inject
 
-class CMHomeWidget @JvmOverloads constructor(
+class CMHomeWidgetCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr), CMHomeWidgetCommunicator,
-    CMHomeWidgetProductListener, CMHomeWidgetCardListener {
+    CMHomeWidgetProductCardListener, CMHomeWidgetViewAllCardListener {
 
     @Inject
     lateinit var adapter: dagger.Lazy<CMHomeWidgetAdapter>
@@ -50,11 +51,14 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     private fun initRecyclerView() {
-        binding.rvCmHomeWidget.layoutManager = LinearLayoutManager(
-            this.context, LinearLayoutManager.HORIZONTAL,
-            false
-        )
-        binding.rvCmHomeWidget.adapter = adapter.get()
+        binding.rvCmHomeWidget.apply {
+            layoutManager = LinearLayoutManager(
+                (this@CMHomeWidgetCard).context, LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            addItemDecoration(HorizontalSpaceItemDecorator(10, 0))
+            adapter = (this@CMHomeWidgetCard).adapter.get()
+        }
     }
 
     override fun onCMHomeWidgetDataReceived(cmHomeWidgetData: CMHomeWidgetData) {
@@ -70,10 +74,10 @@ class CMHomeWidget @JvmOverloads constructor(
 
     private fun setItemsInRecyclerView() {
         val itemsList = ArrayList<CMHomeWidgetVisitable>()
-        cmHomeWidgetData.cmHomeWidgetProducts?.let {
+        cmHomeWidgetData.cmHomeWidgetProductCardData?.let {
             itemsList.addAll(it)
         }
-        cmHomeWidgetData.cmHomeWidgetCard?.let {
+        cmHomeWidgetData.cmHomeWidgetViewAllCardData?.let {
             itemsList.add(it)
         }
         if (itemsList.isNotEmpty()) adapter.get().loadData(itemsList)
@@ -106,12 +110,16 @@ class CMHomeWidget @JvmOverloads constructor(
         binding.ivCmHomeWidgetClose.setOnClickListener(null)
     }
 
-    override fun onCardClick(item: CMHomeWidgetCard) {
-        startRequiredActivity(item.appLink)
+    override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {
+        startRequiredActivity(dataItem.appLink)
     }
 
-    override fun onProductClick(item: CMHomeWidgetProduct) {
-        startRequiredActivity(item.appLink)
+    override fun onProductCardClick(dataItem: CMHomeWidgetProductCardData) {
+        startRequiredActivity(dataItem.appLink)
+    }
+
+    override fun onBuyDirectBtnClick(dataItem: CMHomeWidgetProductCardData) {
+        startRequiredActivity(dataItem.cmHomeWidgetActionButtons?.get(0)?.appLink)
     }
 
     private fun startRequiredActivity(appLink: String?) {

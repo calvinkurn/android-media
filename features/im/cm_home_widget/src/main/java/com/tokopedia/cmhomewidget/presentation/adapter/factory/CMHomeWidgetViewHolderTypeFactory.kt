@@ -3,15 +3,14 @@ package com.tokopedia.cmhomewidget.presentation.adapter.factory
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetCard
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProduct
-import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
+import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardData
+import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
 
 interface CMHomeWidgetViewHolderTypeFactory : AdapterTypeFactory {
 
-    fun type(cmHomeWidgetProduct: CMHomeWidgetProduct): Int
+    fun type(cmHomeWidgetProductCardData: CMHomeWidgetProductCardData): Int
 
-    fun type(cmHomeWidgetCard: CMHomeWidgetCard): Int
+    fun type(cmHomeWidgetViewAllCardData: CMHomeWidgetViewAllCardData): Int
 
     fun createViewHolder(
         parent: ViewGroup,

@@ -29,13 +29,13 @@ data class CMHomeWidgetData(
     @SerializedName("widget_type")
     val widgetType: String?,
     @SerializedName("products")
-    val cmHomeWidgetProducts: List<CMHomeWidgetProduct>?,
+    val cmHomeWidgetProductCardData: List<CMHomeWidgetProductCardData>?,
     @SerializedName("card")
-    val cmHomeWidgetCard: CMHomeWidgetCard?
+    val cmHomeWidgetViewAllCardData: CMHomeWidgetViewAllCardData?
 )
 
 @SuppressLint("Invalid Data Type")
-data class CMHomeWidgetProduct(
+data class CMHomeWidgetProductCardData(
     @SerializedName("id")
     val id: Long,
     @SerializedName("name")
@@ -46,6 +46,8 @@ data class CMHomeWidgetProduct(
     val currentPrice: String?,
     @SerializedName("dropped_percent")
     val droppedPercent: String?,
+    @SerializedName("actual_price")
+    val actualPrice: String?,
     @SerializedName("badge_type")
     val badgeType: String?,
     @SerializedName("badge_image_url")
@@ -53,9 +55,9 @@ data class CMHomeWidgetProduct(
     @SerializedName("app_link")
     val appLink: String?,
     @SerializedName("shop")
-    val CMHomeWidgetShop: CMHomeWidgetShop?,
+    val cmHomeWidgetShop: CMHomeWidgetShop?,
     @SerializedName("action_buttons")
-    val CMHomeWidgetActionButtons: List<CMHomeWidgetActionButton>?
+    val cmHomeWidgetActionButtons: List<CMHomeWidgetActionButton>?
 ) : CMHomeWidgetVisitable {
     override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {
         return typeFactory.type(this)
@@ -88,7 +90,7 @@ data class CMHomeWidgetActionButton(
     val appLink: String?
 )
 
-data class CMHomeWidgetCard(
+data class CMHomeWidgetViewAllCardData(
     @SerializedName("label")
     val label: String?,
     @SerializedName("description")
