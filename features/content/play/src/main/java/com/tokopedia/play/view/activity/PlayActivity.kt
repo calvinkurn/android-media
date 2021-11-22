@@ -104,7 +104,7 @@ class PlayActivity : BaseActivity(),
     }
 
     private val fragmentUpcomingView by viewComponent {
-        FragmentUpcomingViewComponent(it, R.id.fl_upcoming, supportFragmentManager)
+        FragmentUpcomingViewComponent(it, R.id.fcv_upcoming, supportFragmentManager)
     }
 
     /**

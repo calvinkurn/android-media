@@ -39,8 +39,8 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
-    <FrameLayout
-        android:id="@+id/fl_upcoming"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fcv_upcoming"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl0"
         app:layout_constraintStart_toStartOf="parent"
