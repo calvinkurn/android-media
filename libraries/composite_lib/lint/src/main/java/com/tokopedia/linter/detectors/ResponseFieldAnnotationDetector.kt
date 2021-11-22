@@ -12,6 +12,7 @@ import com.android.tools.lint.detector.api.SourceCodeScanner
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UParameter
+import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.kotlin.KotlinConstructorUMethod
 
 class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
@@ -46,10 +47,12 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
             override fun visitParameter(node: UParameter) {
+                val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
+                    ?.containsAll(listOf("equals", "hashCode")) == true
                 val serializedNameAnnotation = node.findAnnotation(SERIALIZED_NAME_ANNOTATION)
                 val exposeAnnotation = node.findAnnotation(EXPOSE_ANNOTATION)
 
-                if(shouldCheckAnnotation(context, node) &&
+                if(shouldCheckAnnotation(context, node) && isDataClass &&
                     (serializedNameAnnotation == null || exposeAnnotation == null)) {
                     reportError(context, node)
                 }
