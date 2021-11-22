@@ -17,7 +17,9 @@ class DeveloperOptionAdapter(
         AccessTokenUiModel(context.getString(R.string.access_token)),
         SystemNonSystemAppsUiModel(context.getString(R.string.system_apps_non_system_apps)),
         ResetOnBoardingUiModel(context.getString(R.string.reset_onboarding)),
-        ForceCrashUiModel(context.getString(R.string.force_crash))
+        ForceCrashUiModel(context.getString(R.string.force_crash)),
+        SendFirebaseCrashExceptionUiModel(context.getString(R.string.send_firebase_exception)),
+        OpenScreenRecorderUiModel(context.getString(R.string.open_screen_recorder))
     )
 
     fun searchItem(text: String) {

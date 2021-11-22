@@ -8,4 +8,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: SystemNonSystemAppsUiModel): Int
     fun type(uiModel: ResetOnBoardingUiModel): Int
     fun type(uiModel: ForceCrashUiModel): Int
+    fun type(uiModel: SendFirebaseCrashExceptionUiModel): Int
+    fun type(uiModel: OpenScreenRecorderUiModel): Int
 }

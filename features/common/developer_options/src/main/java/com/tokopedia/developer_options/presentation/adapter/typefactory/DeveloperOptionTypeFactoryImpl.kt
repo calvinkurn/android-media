@@ -12,7 +12,9 @@ class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
     private val systemNonSystemAppsListener: SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener,
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
-    private val forceCrashListener: ForceCrashViewHolder.ForceCrashListener
+    private val forceCrashListener: ForceCrashViewHolder.ForceCrashListener,
+    private val sendFirebaseCrashExceptionListener: SendFirebaseCrashExceptionViewHolder.SendFirebaseCrashListener,
+    private val openScreenRecorderListener: OpenScreenRecorderViewHolder.OpenScreenRecorderListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -20,6 +22,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: SystemNonSystemAppsUiModel): Int = SystemNonSystemAppsViewHolder.LAYOUT
     override fun type(uiModel: ResetOnBoardingUiModel): Int = ResetOnBoardingViewHolder.LAYOUT
     override fun type(uiModel: ForceCrashUiModel): Int = ForceCrashViewHolder.LAYOUT
+    override fun type(uiModel: SendFirebaseCrashExceptionUiModel): Int = SendFirebaseCrashExceptionViewHolder.LAYOUT
+    override fun type(uiModel: OpenScreenRecorderUiModel): Int = OpenScreenRecorderViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -28,6 +32,8 @@ class DeveloperOptionTypeFactoryImpl(
             SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view, systemNonSystemAppsListener)
             ResetOnBoardingViewHolder.LAYOUT -> ResetOnBoardingViewHolder(view, resetOnBoardingListener)
             ForceCrashViewHolder.LAYOUT -> ForceCrashViewHolder(view, forceCrashListener)
+            SendFirebaseCrashExceptionViewHolder.LAYOUT -> SendFirebaseCrashExceptionViewHolder(view, sendFirebaseCrashExceptionListener)
+            OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view, openScreenRecorderListener)
             else -> super.createViewHolder(view, type)
         }
     }

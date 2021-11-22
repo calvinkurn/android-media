@@ -16,19 +16,17 @@ import android.text.TextWatcher
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.adapter.BaseDeveloperOptionAdapter
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
-import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactory
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
-import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
-import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
 import com.tokopedia.developer_options.presentation.viewholder.*
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -85,7 +83,9 @@ class NewDeveloperOptionActivity : BaseActivity() {
                 accessTokenListener = clickAccessTokenBtn(),
                 systemNonSystemAppsListener = clickSystemNonSystemApps(),
                 resetOnBoardingListener = clickResetOnBoarding(this),
-                forceCrashListener = clickForceCrash()
+                forceCrashListener = clickForceCrash(),
+                sendFirebaseCrashExceptionListener = clickSendFirebaseCrashException(this),
+                openScreenRecorderListener = clickOpenScreenRecorder(this)
             ),
             differ = DeveloperOptionDiffer(),
             context = this
@@ -255,7 +255,23 @@ class NewDeveloperOptionActivity : BaseActivity() {
     }
 
     private fun clickForceCrash() = object : ForceCrashViewHolder.ForceCrashListener {
-        override fun onClickForceCrashBtn() = throw RuntimeException("Throw Runtime Exception")
+        override fun onClickForceCrashBtn() = throw DeveloperOptionException("Throw Runtime Exception")
+    }
+
+    private fun clickSendFirebaseCrashException(context: Context) = object : SendFirebaseCrashExceptionViewHolder.SendFirebaseCrashListener {
+        override fun onClickSendFirebaseCrashBtn(message: String) {
+            if (message.isBlank()) {
+                Toast.makeText(context, "Crash message should not be empty", Toast.LENGTH_SHORT).show()
+            } else {
+                FirebaseCrashlytics.getInstance().recordException(DeveloperOptionException(message))
+            }
+        }
+    }
+
+    private fun clickOpenScreenRecorder(context: Context) = object : OpenScreenRecorderViewHolder.OpenScreenRecorderListener {
+        override fun onClickScreenRecorderBtn() {
+            RouteManager.route(context, ApplinkConstInternalGlobal.SCREEN_RECORDER)
+        }
     }
 
     private fun showToastAndCopySystemOrNonSystemApps(isSystemApps: Boolean) {
@@ -280,4 +296,6 @@ class NewDeveloperOptionActivity : BaseActivity() {
         clipboard.setPrimaryClip(clip)
         Toast.makeText(this, text, Toast.LENGTH_LONG).show()
     }
+
+    private class DeveloperOptionException(message: String?) : RuntimeException(message)
 }
