@@ -6,6 +6,7 @@ package com.tokopedia.wishlist.util
 object WishlistV2Consts {
     const val TYPE_LIST = "list"
     const val TYPE_GRID = "grid"
+    const val TYPE_COUNT_MANAGE_ROW = "count_manage_row"
     const val TYPE_LOADER_LIST = "loader_list"
     const val TYPE_LOADER_GRID = "loader_grid"
     const val TYPE_EMPTY_STATE = "empty_state"

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/wishlist_count_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        tools:text="10 barang"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/wishlist_manage_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="@string/wishlist_manage_label"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="@color/g_500"/>
+
+    <View
+        android:id="@+id/wishlist_divider"
+        android:layout_width="1dp"
+        android:layout_height="24dp"
+        android:layout_toStartOf="@id/wishlist_manage_label"
+        android:layout_alignTop="@id/wishlist_manage_label"
+        android:layout_alignBottom="@id/wishlist_manage_label"
+        android:background="@color/unify_N75"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/wishlist_divider"
+        app:icon_name="VIEW_LIST"
+        android:layout_marginEnd="8dp"
+        android:layout_alignTop="@id/wishlist_manage_label"
+        android:layout_alignBottom="@id/wishlist_manage_label"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"/>
+
+</RelativeLayout>

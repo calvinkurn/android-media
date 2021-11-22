@@ -25,6 +25,7 @@ import com.tokopedia.wishlist.data.model.*
 import com.tokopedia.wishlist.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.WishlistV2UseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
+import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_COUNT_MANAGE_ROW
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_RECOMMENDATION_TITLE
@@ -151,10 +152,14 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         } else {
             // only for wishlist size < 4
             if (wishlistV2Response.page == 1 && !wishlistV2Response.hasNextPage) {
+                listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
+
+                val countManageRowData = WishlistV2CountManageRowData(wishlistV2Response.totalData)
+                listData.add(0, WishlistV2TypeLayoutData(countManageRowData, TYPE_COUNT_MANAGE_ROW))
                 when {
                     // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
                     wishlistV2Response.totalData < topAdsPositionInPage -> {
-                        listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
+                        // listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
                         val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
                         listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
                         listData.add(WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
@@ -162,7 +167,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
                     // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
                     wishlistV2Response.totalData == topAdsPositionInPage -> {
-                        listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
+                        // listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
                         listData.add(WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
                         val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
                         listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
@@ -171,7 +176,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
                     // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
                     wishlistV2Response.totalData > topAdsPositionInPage -> {
-                        listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
+                        // listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
                         listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
                         val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
                         listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
@@ -180,6 +185,11 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 }
             } else {
                 listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
+
+                if (wishlistV2Response.page == 1) {
+                    val countManageRowData = WishlistV2CountManageRowData(wishlistV2Response.totalData)
+                    listData.add(0, WishlistV2TypeLayoutData(countManageRowData, TYPE_COUNT_MANAGE_ROW))
+                }
                 // has next page
                 /*if (params.page == 1 ) {
                     listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))

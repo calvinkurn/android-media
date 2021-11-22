@@ -3,21 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_N0"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
     android:fitsSystemWindows="true">
-
-    <View
-        android:id="@+id/statusbar"
-        android:visibility="invisible"
-        android:background="@color/Unify_N0"
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/wishlist_navtoolbar"
@@ -25,7 +12,7 @@
         android:layout_height="?actionBarSize"
         android:visibility="visible"
         app:toolbarPageName="@string/page_name_wishlist"
-        app:layout_constraintTop_toBottomOf="@+id/statusbar"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:contentInsetLeft="0dp"
@@ -50,117 +37,21 @@
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:layout_marginBottom="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <RelativeLayout
-            android:id="@+id/rl_wishlist_count_manage_row"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/wishlist_sort_filter">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/wishlist_count_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                tools:text="10 barang"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/wishlist_manage_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:text="@string/wishlist_manage_label"
-                android:textColor="@color/g_500"/>
-            
-            <View
-                android:id="@+id/wishlist_divider"
-                android:layout_width="1dp"
-                android:layout_height="24dp"
-                android:layout_toStartOf="@id/wishlist_manage_label"
-                android:layout_alignTop="@id/wishlist_manage_label"
-                android:layout_alignBottom="@id/wishlist_manage_label"
-                android:background="@color/unify_N75"
-                android:layout_marginEnd="8dp"
-                android:visibility="gone"/>
-
-            <com.tokopedia.iconunify.IconUnify
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/wishlist_divider"
-                app:icon_name="VIEW_LIST"
-                android:layout_marginEnd="8dp"
-                android:layout_alignTop="@id/wishlist_manage_label"
-                android:layout_alignBottom="@id/wishlist_manage_label"
-                android:visibility="gone"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_wishlist_sort_loader"
+        <include
+            android:id="@+id/wishlist_loader_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="12dp"
-            android:visibility="gone"
-            tools:visibility="visible">
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/sort_loader_wishlist_1"
-                android:layout_width="86dp"
-                android:layout_height="31dp"
-                app:loader_type="rect"/>
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/sort_loader_wishlist_2"
-                android:layout_width="86dp"
-                android:layout_height="31dp"
-                app:loader_type="rect"
-                android:layout_toEndOf="@id/sort_loader_wishlist_1"
-                android:layout_marginStart="4dp"/>
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/sort_loader_wishlist_3"
-                android:layout_width="86dp"
-                android:layout_height="31dp"
-                android:layout_marginStart="4dp"
-                android:layout_toEndOf="@id/sort_loader_wishlist_2"
-                app:loader_type="rect" />
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/sort_loader_wishlist_4"
-                android:layout_width="86dp"
-                android:layout_height="31dp"
-                app:loader_type="rect"
-                android:layout_toEndOf="@id/sort_loader_wishlist_3"
-                android:layout_marginStart="4dp"/>
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/counter_loader_wishlist"
-                android:layout_width="93dp"
-                android:layout_height="10dp"
-                app:loader_type="rect"
-                android:layout_below="@id/sort_loader_wishlist_1"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="20dp"
-                android:layout_alignParentStart="true"/>
-
-            <com.tokopedia.unifycomponents.LoaderUnify
-                android:id="@+id/atur_loader_wishlist"
-                android:layout_width="76dp"
-                android:layout_height="10dp"
-                app:loader_type="rect"
-                android:layout_below="@id/sort_loader_wishlist_1"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="20dp"
-                android:layout_alignParentEnd="true"/>
-
-        </RelativeLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            layout="@layout/wishlist_v2_loader_header_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -172,14 +63,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_wishlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:visibility="visible"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

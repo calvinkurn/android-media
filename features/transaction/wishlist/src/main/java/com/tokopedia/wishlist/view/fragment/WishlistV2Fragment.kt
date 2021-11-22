@@ -175,12 +175,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
                         if (wishlistV2.totalData == 0) {
                             isFetchRecommendation = true
-                            binding?.run {
-                                rlWishlistCountManageRow.gone()
-                            }
-                        } else {
+                        } /*else {
                             updateTotalLabel(wishlistV2.totalData)
-                        }
+                        }*/
                         if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
                             renderChipsFilter(wishlistV2.sortFilters)
                         }
@@ -233,7 +230,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             refreshHandler?.setPullEnabled(true)
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
 
-            statusbar.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
             viewLifecycleOwner.lifecycle.addObserver(wishlistNavtoolbar)
             wishlistNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                     HintData(getString(R.string.hint_cari_wishlist) )),
@@ -257,11 +253,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             var pageSource = ""
             if(activityWishlistV2 != PARAM_HOME) {
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                statusbar.gone()
             } else {
                 pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                statusbar.gone()
             }
             val icons = IconBuilder(IconBuilderFlag(pageSource = pageSource))
             icons.apply {
@@ -272,7 +266,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             }
             wishlistNavtoolbar.setIcon(icons)
 
-            wishlistManageLabel.setOnClickListener {
+            /*wishlistManageLabel.setOnClickListener {
                 if (!isBulkDeleteShow) {
                     wishlistManageLabel.text = getString(R.string.wishlist_cancel_manage_label)
                     wishlistV2Adapter.showCheckbox()
@@ -282,7 +276,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     binding?.containerDelete?.visibility = View.GONE
                 }
                 isBulkDeleteShow = !isBulkDeleteShow
-            }
+            }*/
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -443,28 +437,30 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         })
     }
 
-    @SuppressLint("SetTextI18n")
+    /*@SuppressLint("SetTextI18n")
     private fun updateTotalLabel(totalData: Int) {
         binding?.run {
             rlWishlistCountManageRow.visible()
             wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
         }
-    }
+    }*/
 
     private fun showLoader() {
         wishlistV2Adapter.showLoader()
         binding?.run {
-            rlWishlistCountManageRow.gone()
+            // rlWishlistCountManageRow.gone()
             wishlistSortFilter.gone()
-            rlWishlistSortLoader.visible()
+            wishlistLoaderLayout.root.visible()
+            // rlWishlistSortLoader.visible()
         }
     }
 
     private fun hideLoader() {
         binding?.run {
-            rlWishlistCountManageRow.visible()
+            // rlWishlistCountManageRow.visible()
             wishlistSortFilter.visible()
-            rlWishlistSortLoader.gone()
+            wishlistLoaderLayout.root.gone()
+            // rlWishlistSortLoader.gone()
         }
     }
 
@@ -780,6 +776,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 paramWishlistV2 = WishlistV2Params()
                 refreshHandler?.startRefresh()
             }
+            searchQuery
+        }
+    }
+
+    override fun onManageClicked(showCheckbox: Boolean) {
+        if (showCheckbox) {
+            wishlistV2Adapter.showCheckbox()
+        } else {
+            wishlistV2Adapter.hideCheckbox()
+            binding?.containerDelete?.visibility = View.GONE
         }
     }
 
@@ -813,12 +819,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         // onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
-        paramWishlistV2 = WishlistV2Params()
+        // paramWishlistV2 = WishlistV2Params()
         isBulkDeleteShow = false
         listBulkDelete = arrayListOf()
-        binding?.run {
+        /*binding?.run {
             wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-        }
+        }*/
         wishlistV2Adapter.hideCheckbox()
         binding?.containerDelete?.visibility = View.GONE
         loadWishlistV2()

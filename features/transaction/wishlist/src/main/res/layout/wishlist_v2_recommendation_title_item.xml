@@ -11,4 +11,6 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:typographyType="heading_4"
     android:paddingTop="24dp"
-    android:paddingBottom="12dp" />
+    android:paddingBottom="12dp"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"/>
