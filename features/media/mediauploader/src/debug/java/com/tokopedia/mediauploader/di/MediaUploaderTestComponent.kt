@@ -5,6 +5,7 @@ import com.tokopedia.mediauploader.MediaUploaderActivity
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.common.di.MediaUploaderNetworkModule
 import com.tokopedia.mediauploader.common.di.NetworkModule
+import com.tokopedia.mediauploader.services.UploaderWorker
 import dagger.Component
 
 @MediaUploaderTestScope
@@ -19,4 +20,5 @@ import dagger.Component
 )
 interface MediaUploaderTestComponent {
     fun inject(activity: MediaUploaderActivity)
+    fun inject(worker: UploaderWorker)
 }
