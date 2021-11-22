@@ -891,7 +891,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
         bottomSheetManager?.getSecondaryActionBottomSheet()?.setOneTimeOnDismiss {
             detailResponse?.button?.forEach {
                 if (key.equals(it.key, true)) {
-                    eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse?.statusCode.toString(), detailResponse?.statusText.orEmpty())
+                    eventClickSecondaryActionInOrderDetail(
+                        it.displayName,
+                        detailResponse?.statusCode.toString(),
+                        detailResponse?.statusText.orEmpty(),
+                        userSession.shopId
+                    )
                     when {
                         key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
                         key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
