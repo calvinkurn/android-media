@@ -1,0 +1,283 @@
+package com.tokopedia.developer_options.presentation.activity
+
+import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Bundle
+import android.os.Handler
+import android.os.Process
+import android.text.Editable
+import android.text.TextWatcher
+import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.presentation.adapter.BaseDeveloperOptionAdapter
+import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
+import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
+import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactory
+import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
+import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
+import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
+import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.PdpDevViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.SystemNonSystemAppsViewHolder
+import com.tokopedia.translator.manager.TranslatorManager
+import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl.Companion.deleteInstance
+import com.tokopedia.url.TokopediaUrl.Companion.init
+import com.tokopedia.url.TokopediaUrl.Companion.setEnvironment
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
+import java.lang.StringBuilder
+
+class NewDeveloperOptionActivity : BaseActivity() {
+
+    companion object {
+        private const val LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle"
+        private const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
+        private const val LEAK_CANARY_DEFAULT_TOGGLE = true
+        private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
+        private const val API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49"
+
+        const val IS_RELEASE_MODE = "IS_RELEASE_MODE"
+        const val REMOTE_CONFIG_PREFIX = "remote_config_prefix"
+        const val SHARED_PREF_FILE = "shared_pref_file"
+        const val STAGING = "staging"
+        const val LIVE = "live"
+        const val CHANGEURL = "changeurl"
+        const val URI_HOME_MACROBENCHMARK = "home-macrobenchmark"
+        const val URI_COACHMARK = "coachmark"
+        const val URI_COACHMARK_ENABLE = "enable"
+        const val URI_COACHMARK_DISABLE = "disable"
+
+        var KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
+        var KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
+        var KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1"
+        var KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2"
+        var KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN"
+        var PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK"
+        var PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV"
+        var PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX"
+        var PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE"
+        var PREFERENCE_NAME = "coahmark_choose_address"
+        var EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
+    }
+
+    private var userSession: UserSession? = null
+    private var rvDeveloperOption: RecyclerView? = null
+    private var sbDeveloperOption: SearchBarUnify? = null
+
+    private val adapter by lazy {
+        DeveloperOptionAdapter(
+            typeFactory = DeveloperOptionTypeFactoryImpl(
+                pdpDevListener = clickPdpDevBtn(this),
+                accessTokenListener = clickAccessTokenBtn(),
+                systemNonSystemAppsListener = clickSystemNonSystemApps(this)
+            ),
+            differ = DeveloperOptionDiffer(),
+            context = this
+        )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        checkDebuggingModeOrNot()
+    }
+
+    override fun getScreenName(): String = getString(R.string.screen_name)
+
+    private fun checkDebuggingModeOrNot() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            userSession = UserSession(this)
+            setIntentData()
+        } else {
+            finish()
+        }
+    }
+
+    private fun setIntentData() {
+        val intent = intent
+        var uri: Uri? = null
+        var isChangeUrlApplink = false
+        var isCoachmarkApplink = false
+        var isHomeMacrobenchmarkApplink = false
+        if (intent != null) {
+            uri = intent.data
+            if (uri != null) {
+                isChangeUrlApplink = uri.pathSegments.size == 3 && uri.pathSegments[1] == CHANGEURL
+                isCoachmarkApplink = uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_COACHMARK
+                isHomeMacrobenchmarkApplink = uri.pathSegments.size == 3 && uri.pathSegments[1] == URI_HOME_MACROBENCHMARK
+            }
+        }
+        when {
+            isChangeUrlApplink -> uri?.apply { handleUri(this) }
+            isHomeMacrobenchmarkApplink -> userSession?.apply { handleHomeMacrobenchmarkUri(this) }
+            isCoachmarkApplink -> uri?.apply { handleCoachmarkUri(this) }
+            else -> {
+                setContentView(R.layout.activity_new_developer_option)
+                setRecyclerView()
+                setSearchBar()
+                initTranslator()
+            }
+        }
+    }
+
+    private fun setSearchBar() {
+        sbDeveloperOption = findViewById(R.id.sbDeveloperOption)
+        sbDeveloperOption?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                s?.toString()?.let {
+                    if (it.isEmpty()) {
+                        adapter.setDefaultItem()
+                    } else {
+                        adapter.searchItem(it)
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no need to implement */ }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* no need to implement */ }
+        })
+    }
+
+    private fun setRecyclerView() {
+        rvDeveloperOption = findViewById(R.id.rvDeveloperOption)
+        rvDeveloperOption?.apply {
+            adapter = this@NewDeveloperOptionActivity.adapter
+            layoutManager = LinearLayoutManager(context)
+            setItemViewCacheSize(20)
+        }
+
+        adapter.setDefaultItem()
+    }
+
+    private fun handleUri(uri: Uri) {
+        if (uri.lastPathSegment?.startsWith(STAGING) == true) {
+            setEnvironment(this, Env.STAGING)
+        } else if (uri.lastPathSegment?.startsWith(LIVE) == true) {
+            setEnvironment(this, Env.LIVE)
+        }
+        deleteInstance()
+        init(this)
+        userSession!!.logoutSession()
+        Handler().postDelayed({ restart(this) }, 500)
+    }
+
+    /**
+     * Call to restart the application process using the specified intents.
+     *
+     *
+     * Behavior of the current process after invoking this method is undefined.
+     */
+    private fun restart(context: Context) {
+        val intent = RouteManager
+            .getIntent(context, ApplinkConst.HOME)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+        if (context is Activity) {
+            context.finish()
+        }
+        Process.killProcess(Process.myPid())
+    }
+
+    private fun handleHomeMacrobenchmarkUri(userSession: UserSessionInterface) {
+        isCoachmmarkShowAllowed = false
+        val sharedPrefs = getSharedPreferences(KEY_FIRST_VIEW_NAVIGATION, MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+            .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+            .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
+            .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
+            .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true)
+        editor.apply()
+        userSession.setFirstTimeUserOnboarding(false)
+    }
+
+    private fun handleCoachmarkUri(uri: Uri) {
+        if (uri.lastPathSegment?.startsWith(URI_COACHMARK_DISABLE) == true) {
+            isCoachmmarkShowAllowed = false
+            val sharedPrefs = getSharedPreferences(KEY_FIRST_VIEW_NAVIGATION, MODE_PRIVATE)
+            val editor = sharedPrefs.edit()
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, false)
+                .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, false)
+                .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, true)
+            editor.apply()
+        }
+        finish()
+    }
+
+    private fun initTranslator() {
+        TranslatorManager.Companion.init(this.application, API_KEY_TRANSLATOR)
+    }
+
+    private fun clickPdpDevBtn(context: Context): PdpDevViewHolder.PdpDevListener {
+        return object : PdpDevViewHolder.PdpDevListener {
+            override fun onClickPdpDevBtn() {
+                val intent = Intent(context, ProductDetailDevActivity::class.java)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun clickAccessTokenBtn(): AccessTokenViewHolder.AccessTokenListener {
+        return object : AccessTokenViewHolder.AccessTokenListener {
+            override fun onClickAccessTokenBtn() {
+                userSession?.accessToken?.apply {
+                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("Copied Text", this)
+                    clipboard.setPrimaryClip(clip)
+                }
+            }
+
+            override fun getAccessToken(): String = userSession?.accessToken.orEmpty()
+        }
+    }
+
+    private fun clickSystemNonSystemApps(context: Context): SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener {
+        return object : SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener {
+            override fun onClickSystemAppsBtn() {
+                showToastAndCopySystemOrNonSystemApps(true)
+            }
+
+            override fun onClickNonSystemAppsBtn() {
+                showToastAndCopySystemOrNonSystemApps(false)
+            }
+        }
+    }
+
+    fun showToastAndCopySystemOrNonSystemApps(isSystemApps: Boolean) {
+        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val apps: List<ApplicationInfo> = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+        val systemApps = StringBuilder()
+        for (applicationInfo in apps) {
+            val check = if (isSystemApps) {
+                applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
+            } else {
+                applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != ApplicationInfo.FLAG_SYSTEM
+            }
+            if (check) {
+                if (systemApps.isNotEmpty()) {
+                    systemApps.append(",")
+                }
+                systemApps.append(applicationInfo.packageName)
+            }
+        }
+        val text = systemApps.toString()
+        val clip = ClipData.newPlainText("Copied Text", text)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
+    }
+}
