@@ -692,7 +692,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohListViewModel.filterCategoryResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
-                    renderChipsFilter(it.data.uohFilterCategoryData)
+                    renderChipsFilter(it.data.uohFilterCategoryData.v2Filters, it.data.uohFilterCategoryData.categories)
                     setDefaultDatesForDatePicker()
                     initialLoadOrderHistoryList()
                 }
@@ -709,6 +709,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             when (it) {
                 is Success -> {
                     orderList = it.data
+                    renderChipsFilter(it.data.v2Filters, it.data.categories)
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
                             currPage += 1
@@ -902,11 +903,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         })
     }
 
-    private fun renderChipsFilter(uohFilterCategoryData: UohFilterCategory.Data.UohFilterCategoryData) {
+    private fun renderChipsFilter(filterDataList: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2>,
+                                  categoryDataList: List<UohFilterCategory.Data.UohFilterCategoryData.Category>) {
         val chips = arrayListOf<SortFilterItem>()
 
-        renderChipsFilterStatus(chips, uohFilterCategoryData)
-        renderChipsFilterCategoryProducts(chips, uohFilterCategoryData)
+        renderChipsFilterStatus(chips, filterDataList)
+        renderChipsFilterCategoryProducts(chips, categoryDataList)
         renderChipsFilterDate(chips)
 
         chipDate?.refChipUnify?.setChevronClickListener { onClickFilterDate() }
@@ -914,9 +916,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         chipCategoryProduct?.refChipUnify?.setChevronClickListener { onClickFilterCategoryProduct() }
     }
 
-    private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>, uohFilterCategoryData: UohFilterCategory.Data.UohFilterCategoryData) {
+    private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>, filterDataList: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2>) {
         _arrayListStatusFilterBundle.clear()
-        uohFilterCategoryData.v2Filters.forEach { v2Filter ->
+        filterDataList.forEach { v2Filter ->
             val type = if (v2Filter.isPrimary) 0 else 1
             _arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
@@ -948,10 +950,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>, uohFilterCategoryData: UohFilterCategory.Data.UohFilterCategoryData) {
+    private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>, categoryDataList: List<UohFilterCategory.Data.UohFilterCategoryData.Category>) {
         _arrayListCategoryProductFilterBundle.clear()
         _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
-        uohFilterCategoryData.categories.forEach { category ->
+        categoryDataList.forEach { category ->
             _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
 
             // update selected categories when one of uoh applink is opened
