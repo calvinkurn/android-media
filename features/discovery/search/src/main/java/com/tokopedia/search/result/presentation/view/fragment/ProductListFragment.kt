@@ -842,27 +842,28 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int) {
         item ?: return
-        val intent = getProductIntent(item.productID, item.warehouseID) ?: return
+        val intent = getProductIntent(item.productID, item.warehouseID, item.applink) ?: return
 
         intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL)
     }
 
-    private fun getProductIntent(productId: String, warehouseId: String): Intent? {
+    private fun getProductIntent(productId: String, warehouseId: String, applink: String = ""): Intent? {
         return context?.let {
-            if (warehouseId.isNotEmpty())
-                RouteManager.getIntent(
-                        it,
-                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID,
-                        productId,
-                        warehouseId
+            when {
+                applink.isNotEmpty() && RouteManager.isSupportApplink(it, applink) -> RouteManager.getIntent(it, applink)
+                warehouseId.isNotEmpty() -> RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID,
+                    productId,
+                    warehouseId
                 )
-            else
-                RouteManager.getIntent(
-                        it,
-                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                        productId
+                else -> RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    productId
                 )
+            }
         }
     }
 
