@@ -220,9 +220,11 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         if (getQueryOrHint(searchParameterCopy).isEmpty()) return true
 
-        sendTrackingSubmitQuery(searchParameterCopy)
+        val searchResultApplink = createSearchResultApplink(searchParameterCopy)
+
+        sendTrackingSubmitQuery(searchParameterCopy, searchResultApplink)
         clearFocusSearchView()
-        moveToSearchPage(searchParameterCopy)
+        moveToSearchPage(searchResultApplink)
 
         return true
     }
@@ -232,38 +234,6 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         return if (query.isNotEmpty()) query
         else searchParameter.get(HINT)
-    }
-
-    private fun sendTrackingSubmitQuery(searchParameter: SearchParameter) {
-        val query = searchParameter.getSearchQuery()
-        val queryOrHint = getQueryOrHint(searchParameter)
-        val parameter = searchParameter.getSearchParameterMap()
-        val pageSource = Dimension90Utils.getDimension90(parameter)
-        val isInitialState = query.isEmpty()
-
-        when {
-            isTokoNow(parameter) ->
-                autoCompleteTracking.eventClickSubmitTokoNow(queryOrHint)
-            isInitialState ->
-                autoCompleteTracking.eventClickSubmitInitialState(
-                    queryOrHint,
-                    pageSource,
-                )
-            else ->
-                autoCompleteTracking.eventClickSubmitAutoComplete(
-                    queryOrHint,
-                    pageSource,
-                )
-        }
-    }
-
-    private fun clearFocusSearchView() {
-        searchBarView?.clearFocus()
-    }
-
-    private fun moveToSearchPage(searchParameter: SearchParameter) {
-        RouteManager.route(this, createSearchResultApplink(searchParameter))
-        finish()
     }
 
     private fun createSearchResultApplink(searchParameter: SearchParameter): String {
@@ -278,6 +248,42 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         parameter.removeKeys(BASE_SRP_APPLINK, HINT)
 
         return "$searchResultApplink?${UrlParamHelper.generateUrlParamString(parameter)}"
+    }
+
+    private fun sendTrackingSubmitQuery(
+        searchParameter: SearchParameter,
+        searchResultApplink: String,
+    ) {
+        val query = searchParameter.getSearchQuery()
+        val queryOrHint = getQueryOrHint(searchParameter)
+        val parameter = searchParameter.getSearchParameterMap()
+        val pageSource = Dimension90Utils.getDimension90(parameter)
+        val isInitialState = query.isEmpty()
+
+        when {
+            isTokoNow(parameter) ->
+                autoCompleteTracking.eventClickSubmitTokoNow(queryOrHint)
+            isInitialState ->
+                autoCompleteTracking.eventClickSubmitInitialState(
+                    queryOrHint,
+                    pageSource,
+                    searchResultApplink
+                )
+            else ->
+                autoCompleteTracking.eventClickSubmitAutoComplete(
+                    queryOrHint,
+                    pageSource,
+                )
+        }
+    }
+
+    private fun clearFocusSearchView() {
+        searchBarView?.clearFocus()
+    }
+
+    private fun moveToSearchPage(applink: String) {
+        RouteManager.route(this, applink)
+        finish()
     }
 
     override fun onQueryTextChange(searchParameter: SearchParameter) {
