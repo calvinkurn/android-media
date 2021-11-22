@@ -3,16 +3,15 @@ package com.tokopedia.shop.common.util
 import android.content.Context
 import android.content.Intent
 import android.text.TextUtils
+import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_NEW_HOME_TAB
-import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_REVIEW
-import com.tokopedia.remoteconfig.RollenceKey.NEW_REVIEW_SHOP
-import com.tokopedia.remoteconfig.RollenceKey.OLD_REVIEW_SHOP
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_KEY
 import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
@@ -29,6 +28,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
+import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -114,14 +114,6 @@ object ShopUtil {
         return TextUtils.join(delimiter, filteredListString)
     }
 
-    fun isUsingNewShopReviewPage(): Boolean {
-        val shopReviewAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                AB_TEST_SHOP_REVIEW,
-                OLD_REVIEW_SHOP
-        )
-        return shopReviewAbTestKey.equals(NEW_REVIEW_SHOP, true)
-    }
-
     fun isUsingNewShopHomeTab(intentData: Intent? = null): Boolean {
         val isBypassNewShopHome = intentData?.extras?.getString(ShopPageConstant.HOME_V2_EXTRA).toBoolean()
         return if (isBypassNewShopHome)
@@ -138,6 +130,18 @@ object ShopUtil {
     fun <E> MutableList<E>.setElement(index: Int, element: E){
         if(index in 0 until size){
             set(index, element)
+        }
+    }
+
+    fun getColorHexString(context: Context, idColor: Int): String {
+        return try {
+            val colorHexInt = ContextCompat.getColor(context, idColor)
+            val startIndex = 2
+            val colorToHexString = Integer.toHexString(colorHexInt).uppercase().substring(startIndex)
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.home.component
 import android.content.Context
+import android.content.SharedPreferences
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
@@ -83,12 +84,18 @@ fun enableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false)
-    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_TOKONOW_COACHMARK, false)
+    setHomeTokonowCoachmarkSharedPrefValue(context, false)
 }
 
 fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
     val sharedPrefs = context.getSharedPreferences(PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(key, value).apply()
+}
+
+fun setHomeTokonowCoachmarkSharedPrefValue(context: Context, value: Boolean) {
+    val sharedPrefs: SharedPreferences = context.getSharedPreferences(
+            PREF_KEY_HOME_TOKONOW_COACHMARK, Context.MODE_PRIVATE)
+    sharedPrefs.edit().putBoolean(PREF_KEY_HOME_TOKONOW_COACHMARK, value).apply()
 }
 
 fun disableChooseAddressCoachmark(context: Context) {
