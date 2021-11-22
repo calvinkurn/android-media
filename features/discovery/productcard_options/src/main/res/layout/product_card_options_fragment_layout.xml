@@ -8,25 +8,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
-        android:id="@+id/productCardOptionsKnob"
-        android:layout_width="40dp"
-        android:layout_height="4dp"
-        android:background="@drawable/product_card_options_bottomsheet_slider_rounded"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/productCardOptionsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/productCardOptionsKnob" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/productCardOptionsLoading"
@@ -34,9 +22,9 @@
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="4dp"
         app:loader_type="circular"
-        app:layout_constraintTop_toBottomOf="@id/productCardOptionsKnob"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
