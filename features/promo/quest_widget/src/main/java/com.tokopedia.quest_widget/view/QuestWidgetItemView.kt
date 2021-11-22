@@ -66,10 +66,8 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         tvBannerTitle.text = config.banner_title
         ivBannerIcon.loadImage(config.banner_icon_url)
-        ivBannerIconSecond.loadImage(item.prize?.get(0)?.iconUrl)
-//        val progress = calculateProgress((item.task?.get(0)?.progress))
-        val progress = 100F
-        item.questUser?.status = QuestUserStatus.COMPLETED
+        ivBannerIconSecond.loadImage(item.widgetPrizeIconURL)
+        val progress = calculateProgress((item.task?.get(0)?.progress))
 
         when(item.questUser?.status){
             QuestUserStatus.ON_PROGRESS ->{

@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.QuestWidgetModel
+import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.view.QuestWidgetView
 
 const val HOMEPAGE_PARAM = "homepag1"
@@ -23,6 +24,7 @@ class QuestWidgetViewHolder(
     }
 
     override fun bind(element: QuestWidgetModel) {
-        questWidget?.setQuestData(element.questData)
+//        questWidget?.setQuestData(element.questData)
+        questWidget?.getQuestList(page = QuestWidgetLocations.MY_REWARD)
     }
 }

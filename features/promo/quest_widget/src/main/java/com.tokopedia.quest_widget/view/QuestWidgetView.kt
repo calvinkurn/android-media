@@ -122,7 +122,11 @@ class QuestWidgetView @JvmOverloads constructor(
 
         tvLihat.setOnClickListener {
             data?.widgetData?.questWidgetList?.pageDetail?.cta?.url?.let {
-                RouteManager.route(context, it)
+                try {
+                    RouteManager.route(context, it)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
 
