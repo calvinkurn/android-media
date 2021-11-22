@@ -192,7 +192,7 @@ class ItemHeaderShopPerformanceViewHolder(
 
     private fun setupDescHeaderShopPerformance(element: HeaderShopPerformanceUiModel?) {
         binding?.run {
-            if (element?.showCardNewSeller == true) {
+            if (element?.showCard == true) {
                 tvHeaderShopService.hide()
                 tvDescShopService.hide()
                 cardDescNewSeller.show()
