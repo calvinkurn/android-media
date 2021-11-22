@@ -9,9 +9,9 @@ class ViolationReasonMapper @Inject constructor() {
     fun mapViolationResponseToUiModel(response: ViolationReasonDetailResponse): ViolationReasonUiModel {
         return with(response.detail) {
             ViolationReasonUiModel(
-                title = title,
-                descTitle = content.description.descDetail,
-                descReason = content.description.descInfo,
+                title = content.title,
+                descTitle = content.description.descInfo,
+                descReason = content.description.descDetail,
                 stepTitle = content.resolution.resolutionInfo,
                 stepList = content.resolution.resolutionSteps,
                 buttonText = content.ctaList.getOrNull(0)?.buttonText.orEmpty(),

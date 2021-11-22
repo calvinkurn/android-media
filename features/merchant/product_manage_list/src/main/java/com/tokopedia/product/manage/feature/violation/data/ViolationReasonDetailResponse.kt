@@ -13,15 +13,15 @@ data class VisionGetPendingReasonDetail(
         @SerializedName("product_id")
         @Expose
         val productId: String = "",
-        @SerializedName("title")
-        @Expose
-        val title: String = "",
         @SerializedName("content")
         @Expose
         val content: PendingReasonContent = PendingReasonContent()
 )
 
 data class PendingReasonContent(
+        @SerializedName("title")
+        @Expose
+        val title: String = "",
         @SerializedName("description")
         @Expose
         val description: PendingReasonDescription = PendingReasonDescription(),

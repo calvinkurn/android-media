@@ -157,9 +157,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
             btnProductManageViolationAction.run {
                 text = uiModel.buttonText
                 setOnClickListener {
-                    context?.let {
-                        RouteManager.route(it, uiModel.buttonApplink)
-                    }
+                    onLinkClicked(uiModel.buttonApplink)
                 }
             }
 

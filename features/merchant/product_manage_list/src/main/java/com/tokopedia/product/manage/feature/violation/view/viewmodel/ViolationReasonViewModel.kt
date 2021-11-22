@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.feature.violation.domain.usecase.ViolationReasonUseCase
 import com.tokopedia.product.manage.feature.violation.view.uimodel.ViolationReasonUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,7 +27,7 @@ class ViolationReasonViewModel @Inject constructor(
         launchCatchError(block = {
             _violationReasonUiModelLiveData.value = Success(
                 withContext(dispatcher.io) {
-                    violationReasonUseCase.execute(productId)
+                    violationReasonUseCase.execute(productId.toLongOrZero())
                 }
             )
         }, onError = {

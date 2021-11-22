@@ -14,11 +14,11 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
 
     companion object {
         private val QUERY = """
-            query getPendingReasonDetail(${'$'}productId: [String]!){
-              visionGetPendingReasonDetail(product_id: ${"$"}filter) {
+            query getPendingReasonDetail(${'$'}productId: Int64!){
+              visionGetPendingReasonDetail(product_id: ${"$"}productId) {
                 product_id
-                title
                 content {
+                  title
                   description {
                     info
                     detail
@@ -38,9 +38,9 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
 
         private const val PRODUCT_ID_KEY = "productId"
 
-        private fun createRequestParam(productId: String): RequestParams {
+        private fun createRequestParam(productId: Long): RequestParams {
             return RequestParams.create().apply {
-                putObject(PRODUCT_ID_KEY, listOf(productId))
+                putLong(PRODUCT_ID_KEY, productId)
             }
         }
     }
@@ -50,7 +50,7 @@ class ViolationReasonUseCase @Inject constructor(graphqlRepository: GraphqlRepos
         setGraphqlQuery(QUERY)
     }
 
-    suspend fun execute(productId: String): ViolationReasonUiModel {
+    suspend fun execute(productId: Long): ViolationReasonUiModel {
         setRequestParams(createRequestParam(productId).parameters)
         val response = executeOnBackground()
         return mapper.mapViolationResponseToUiModel(response)
