@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_N0"
     android:paddingStart="16dp"
-    android:paddingEnd="16dp">
+    android:paddingEnd="16dp"
+    android:fitsSystemWindows="true">
 
     <View
         android:id="@+id/statusbar"
