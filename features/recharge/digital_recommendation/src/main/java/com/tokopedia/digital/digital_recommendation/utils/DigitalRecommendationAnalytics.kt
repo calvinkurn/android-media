@@ -3,6 +3,7 @@ package com.tokopedia.digital.digital_recommendation.utils
 import android.os.Bundle
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.track.TrackApp
 
 /**
@@ -13,11 +14,17 @@ class DigitalRecommendationAnalytics {
     fun impressionDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemModel,
                                              additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
                                              index: Int,
-                                             userId: String) {
+                                             userId: String,
+                                             page: DigitalRecommendationPage?) {
         val bundle = Bundle().apply {
             putString(DigitalRecommendationKeys.EVENT, DigitalRecommendationEvents.VIEW_ITEM_LIST)
             putString(DigitalRecommendationKeys.EVENT_ACTION, DigitalRecommendationActions.IMPRESSION)
-            putString(DigitalRecommendationKeys.EVENT_CATEGORY, DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_MP)
+            putString(DigitalRecommendationKeys.EVENT_CATEGORY,
+                    when (page) {
+                        DigitalRecommendationPage.PHYSICAL_GOODS -> DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_MP
+                        DigitalRecommendationPage.DIGITAL_GOODS -> DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_DG
+                        else -> ""
+                    })
             putString(
                     DigitalRecommendationKeys.EVENT_LABEL,
                     String.format("%s - %s - %s - %d - %s - %s - %s - %s",
@@ -28,7 +35,11 @@ class DigitalRecommendationAnalytics {
                             digitalRecommendationModel.tracking.categoryId,
                             digitalRecommendationModel.tracking.operatorId,
                             digitalRecommendationModel.tracking.productId,
-                            additionalTrackingData.pgCategories.joinToString(separator = ",")
+                            when (page) {
+                                DigitalRecommendationPage.PHYSICAL_GOODS -> additionalTrackingData.pgCategories.joinToString(separator = ",")
+                                DigitalRecommendationPage.DIGITAL_GOODS -> additionalTrackingData.dgCategories.joinToString(separator = ",")
+                                else -> ""
+                            }
                     )
             )
             putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)
@@ -36,12 +47,15 @@ class DigitalRecommendationAnalytics {
             putParcelableArrayList(DigitalRecommendationKeys.ITEMS, arrayListOf(
                     Bundle().also {
                         it.putInt(DigitalRecommendationKeys.INDEX, index + 1)
-                        it.putString(DigitalRecommendationKeys.ITEM_BRAND, digitalRecommendationModel.tracking.productId)
+                        it.putString(DigitalRecommendationKeys.ITEM_BRAND, if (digitalRecommendationModel.tracking.productId.isNotEmpty())
+                            digitalRecommendationModel.tracking.productId else "0")
                         it.putString(DigitalRecommendationKeys.ITEM_CATEGORY, "${digitalRecommendationModel.tracking.categoryId} - ${digitalRecommendationModel.tracking.categoryName}")
-                        it.putString(DigitalRecommendationKeys.ITEM_ID, digitalRecommendationModel.tracking.productId)
+                        it.putString(DigitalRecommendationKeys.ITEM_ID, if (digitalRecommendationModel.tracking.productId.isNotEmpty())
+                            digitalRecommendationModel.tracking.productId else "0")
                         it.putString(DigitalRecommendationKeys.ITEM_NAME, digitalRecommendationModel.productName)
                         it.putString(DigitalRecommendationKeys.ITEM_VARIANT, digitalRecommendationModel.tracking.itemType)
-                        it.putString(DigitalRecommendationKeys.PRICE, digitalRecommendationModel.price)
+                        it.putString(DigitalRecommendationKeys.PRICE, if (digitalRecommendationModel.price.isNotEmpty())
+                            digitalRecommendationModel.price else "0")
                     }
             ))
             putString(DigitalRecommendationKeys.USER_ID, userId)
@@ -53,11 +67,17 @@ class DigitalRecommendationAnalytics {
     fun clickDigitalRecommendationItems(digitalRecommendationModel: DigitalRecommendationItemModel,
                                         additionalTrackingData: DigitalRecommendationAdditionalTrackingData,
                                         index: Int,
-                                        userId: String) {
+                                        userId: String,
+                                        page: DigitalRecommendationPage?) {
         val bundle = Bundle().apply {
             putString(DigitalRecommendationKeys.EVENT, DigitalRecommendationEvents.SELECT_CONTENT)
             putString(DigitalRecommendationKeys.EVENT_ACTION, DigitalRecommendationActions.CLICK)
-            putString(DigitalRecommendationKeys.EVENT_CATEGORY, DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_MP)
+            putString(DigitalRecommendationKeys.EVENT_CATEGORY,
+                    when (page) {
+                        DigitalRecommendationPage.PHYSICAL_GOODS -> DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_MP
+                        DigitalRecommendationPage.DIGITAL_GOODS -> DigitalRecommendationValues.CATEGORY_PURCHASE_LIST_DG
+                        else -> ""
+                    })
             putString(
                     DigitalRecommendationKeys.EVENT_LABEL,
                     String.format("%s - %s - %s - %d - %s - %s - %s - %s",
@@ -68,7 +88,12 @@ class DigitalRecommendationAnalytics {
                             digitalRecommendationModel.tracking.categoryId,
                             digitalRecommendationModel.tracking.operatorId,
                             digitalRecommendationModel.tracking.productId,
-                            additionalTrackingData.pgCategories.joinToString(separator = ",")
+                            when (page) {
+                                DigitalRecommendationPage.PHYSICAL_GOODS -> additionalTrackingData.pgCategories.joinToString(separator = ",")
+                                DigitalRecommendationPage.DIGITAL_GOODS -> additionalTrackingData.dgCategories.joinToString(separator = ",")
+                                else -> ""
+                            }
+
                     )
             )
             putString(DigitalRecommendationKeys.BUSINESS_UNIT, digitalRecommendationModel.tracking.businessUnit)
@@ -129,6 +154,7 @@ class DigitalRecommendationActions {
 class DigitalRecommendationValues {
     companion object {
         const val CATEGORY_PURCHASE_LIST_MP = "my purchase list detail - mp"
+        const val CATEGORY_PURCHASE_LIST_DG = "my purchase list detail - dg"
 
         const val CURRENT_SITE = "tokopediadigital"
     }
