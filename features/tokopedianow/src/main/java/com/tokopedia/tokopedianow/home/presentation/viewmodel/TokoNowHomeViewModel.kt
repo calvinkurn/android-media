@@ -32,7 +32,6 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.analytic.HomeAddToCartTracker
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -401,7 +400,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
             when (val item = it.layout) {
                 is HomeLayoutUiModel -> getTokoNowHomeComponent(item, warehouseId) // TokoNow Home Component
-                is TokoNowLayoutUiModel -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
+                else -> getTokoNowGlobalComponent(item, warehouseId) // TokoNow Common Component
             }
         }
     }
@@ -428,7 +427,7 @@ class TokoNowHomeViewModel @Inject constructor(
      * @param item TokopediaNOW component item
      * @param warehouseId Id obtained from choose address widget
      */
-    private suspend fun getTokoNowGlobalComponent(item: TokoNowLayoutUiModel, warehouseId: String) {
+    private suspend fun getTokoNowGlobalComponent(item: Visitable<*>?, warehouseId: String) {
         when(item) {
             is TokoNowCategoryGridUiModel -> getCategoryGridDataAsync(item, warehouseId).await()
             is TokoNowRepurchaseUiModel -> getRepurchaseDataAsync(item, warehouseId).await()
@@ -642,8 +641,9 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
         val allItemsLoaded = channelToken.isEmpty()
-        val isLoading = getHomeVisitableList().contains(HomeProgressBarUiModel)
-        val scrolledToBottom = lastVisibleItemIndex == homeLayoutItemList.count() - DEFAULT_INDEX
+        val layoutList = homeLayoutItemList.toMutableList()
+        val isLoading = layoutList.firstOrNull { it.layout == HomeProgressBarUiModel } != null
+        val scrolledToBottom = lastVisibleItemIndex == layoutList.count() - DEFAULT_INDEX
         return scrolledToBottom && !isLoading && !allItemsLoaded
     }
 

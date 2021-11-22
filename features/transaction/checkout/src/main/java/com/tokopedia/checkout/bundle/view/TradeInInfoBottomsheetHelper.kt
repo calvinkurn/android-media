@@ -9,7 +9,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.layout_bottomsheet_trade_in_info_bundle.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.TabsUnify
+import com.tokopedia.unifyprinciples.Typography
 
 const val TRADE_IN_NORMAL_IMAGE_URL = "https://ecs7.tokopedia.net/timi/desc-timi.png"
 const val TRADE_IN_DROP_OFF_IMAGE_URL = "https://ecs7.tokopedia.net/timi/Ditukar%20Di%20Indomaret@3x.png"
@@ -31,25 +33,28 @@ fun showTradeInInfoBottomsheet(fragmentManager: FragmentManager, context: Contex
 }
 
 private fun setupContent(view: View, context: Context) {
-    if (view.tab_trade_in_info.getUnifyTabLayout().tabCount == 0) {
-        view.tab_trade_in_info.addNewTab(context.getString(R.string.title_trade_in_default_address))
-        view.tab_trade_in_info.addNewTab(context.getString(R.string.title_trade_in_drop_off_address))
+    val tabTradeInInfo = view.findViewById<TabsUnify>(R.id.tab_trade_in_info)
+    if (tabTradeInInfo.getUnifyTabLayout().tabCount == 0) {
+        tabTradeInInfo.addNewTab(context.getString(R.string.title_trade_in_default_address))
+        tabTradeInInfo.addNewTab(context.getString(R.string.title_trade_in_drop_off_address))
     }
 
-    view.text_trade_in_info.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_default_address_info_description))
-    view.img_trade_in_info.loadImage(TRADE_IN_NORMAL_IMAGE_URL)
-    view.tab_trade_in_info.tabLayout.getTabAt(0)?.select()
+    val textTradeInInfo = view.findViewById<Typography>(R.id.text_trade_in_info)
+    textTradeInInfo.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_default_address_info_description))
+    val imgTradeInInfo = view.findViewById<ImageUnify>(R.id.img_trade_in_info)
+    imgTradeInInfo.loadImage(TRADE_IN_NORMAL_IMAGE_URL)
+    tabTradeInInfo.tabLayout.getTabAt(0)?.select()
 
-    view.tab_trade_in_info.getUnifyTabLayout().addOnTabSelectedListener(object : OnTabSelectedListener {
+    tabTradeInInfo.getUnifyTabLayout().addOnTabSelectedListener(object : OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
             when (tab.position) {
                 0 -> {
-                    view.img_trade_in_info.loadImage(TRADE_IN_NORMAL_IMAGE_URL)
-                    view.text_trade_in_info.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_default_address_info_description))
+                    imgTradeInInfo.loadImage(TRADE_IN_NORMAL_IMAGE_URL)
+                    textTradeInInfo.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_default_address_info_description))
                 }
                 1 -> {
-                    view.img_trade_in_info.loadImage(TRADE_IN_DROP_OFF_IMAGE_URL)
-                    view.text_trade_in_info.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_drop_off_address_info_description))
+                    imgTradeInInfo.loadImage(TRADE_IN_DROP_OFF_IMAGE_URL)
+                    textTradeInInfo.text = MethodChecker.fromHtml(view.resources.getString(R.string.checkout_trade_in_drop_off_address_info_description))
                 }
             }
         }

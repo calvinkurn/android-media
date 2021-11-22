@@ -20,7 +20,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.ShopS
 import com.tokopedia.unifyprinciples.Typography
 
 class ShopStatusViewHolder(itemView: View?,
-                           private val onGoToPowerMerchant: (String?) -> Unit,
+                           private val onGoToPowerMerchant: (String?, Boolean) -> Unit,
                            private val onErrorClicked: () -> Unit,
                            private val onShopStatusImpression: (ShopType) -> Unit) :
     AbstractViewHolder<ShopStatusWidgetUiModel>(itemView) {
@@ -66,6 +66,8 @@ class ShopStatusViewHolder(itemView: View?,
     }
 
     private fun setShopStatusSuccessLayout(shopType: ShopType) {
+        shopStatusDescTextView?.setOnClickListener(null)
+
         when (shopType) {
             is RegularMerchant -> setRegularMerchantLayout()
             is PowerMerchantStatus -> setPowerMerchantLayout(shopType)
@@ -95,7 +97,7 @@ class ShopStatusViewHolder(itemView: View?,
         successOsLayout?.gone()
 
         onItemViewClicked = {
-            onGoToPowerMerchant(TAB_PM)
+            onGoToPowerMerchant(TAB_PM, false)
         }
     }
 
@@ -108,6 +110,9 @@ class ShopStatusViewHolder(itemView: View?,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
                 )
                 warningIcon?.gone()
+                shopStatusDescTextView?.setOnClickListener {
+                    onGoToPowerMerchant(TAB_PM_PRO, true)
+                }
             }
             is PowerMerchantStatus.NotActive -> {
                 setDescription(
@@ -122,7 +127,7 @@ class ShopStatusViewHolder(itemView: View?,
         successOsLayout?.gone()
 
         onItemViewClicked = {
-            onGoToPowerMerchant(TAB_PM_PRO)
+            onGoToPowerMerchant(TAB_PM_PRO, false)
         }
     }
 
@@ -161,7 +166,7 @@ class ShopStatusViewHolder(itemView: View?,
         successOsLayout?.gone()
 
         onItemViewClicked = {
-            onGoToPowerMerchant(TAB_PM_PRO)
+            onGoToPowerMerchant(TAB_PM_PRO, false)
         }
     }
 
@@ -171,7 +176,7 @@ class ShopStatusViewHolder(itemView: View?,
         loadingLayout?.gone()
         errorLayout?.gone()
         onItemViewClicked = {
-            onGoToPowerMerchant(null)
+            onGoToPowerMerchant(null, false)
         }
     }
 

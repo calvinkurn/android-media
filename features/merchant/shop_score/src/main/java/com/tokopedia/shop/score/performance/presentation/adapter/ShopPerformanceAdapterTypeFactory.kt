@@ -75,6 +75,14 @@ class ShopPerformanceAdapterTypeFactory(
         return ItemProtectedParameterSectionViewHolder.LAYOUT
     }
 
+    override fun type(itemReactivatedComebackUiModel: ItemReactivatedComebackUiModel): Int {
+        return ItemReactivatedComebackViewHolder.LAYOUT
+    }
+
+    override fun type(tickerReactivatedUiModel: TickerReactivatedUiModel): Int {
+        return TickerReactivatedViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
 
@@ -130,6 +138,14 @@ class ShopPerformanceAdapterTypeFactory(
                 shopPerformanceListener
             )
             ItemProtectedParameterSectionViewHolder.LAYOUT -> ItemProtectedParameterSectionViewHolder(
+                parent,
+                shopPerformanceListener
+            )
+            TickerReactivatedViewHolder.LAYOUT -> TickerReactivatedViewHolder(
+                parent,
+                shopPerformanceListener
+            )
+            ItemReactivatedComebackViewHolder.LAYOUT -> ItemReactivatedComebackViewHolder(
                 parent,
                 shopPerformanceListener
             )
