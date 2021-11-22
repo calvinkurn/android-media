@@ -1,6 +1,9 @@
 package com.tokopedia.statistic.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.gm.common.constant.PMStatusConst
+import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
+import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.statistic.domain.usecase.CheckWhitelistedStatusUseCase
 import com.tokopedia.statistic.domain.usecase.GetUserRoleUseCase
@@ -15,6 +18,8 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
+import io.mockk.verifyAll
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -35,6 +40,9 @@ class StatisticActivityViewModelTest {
     lateinit var getUserRoleUseCase: GetUserRoleUseCase
 
     @RelaxedMockK
+    lateinit var getPMStatusUseCase: GetPMStatusUseCase
+
+    @RelaxedMockK
     lateinit var checkWhitelistedStatusUseCase: CheckWhitelistedStatusUseCase
 
     @get:Rule
@@ -50,6 +58,7 @@ class StatisticActivityViewModelTest {
             { userSession },
             { checkWhitelistedStatusUseCase },
             { getUserRoleUseCase },
+            { getPMStatusUseCase },
             CoroutineTestDispatchersProvider
         )
     }
@@ -123,7 +132,7 @@ class StatisticActivityViewModelTest {
 
         every {
             userSession.userId
-        } returns userId.toString()
+        } returns userId
 
         coEvery {
             getUserRoleUseCase.executeOnBackground()
@@ -152,7 +161,7 @@ class StatisticActivityViewModelTest {
 
         every {
             userSession.userId
-        } returns userId.toString()
+        } returns userId
 
         coEvery {
             getUserRoleUseCase.executeOnBackground()
@@ -171,6 +180,102 @@ class StatisticActivityViewModelTest {
         }
 
         assert(viewModel.userRole.value is Fail)
+    }
+
+    @Test
+    fun `when fetch shop status is Official Store should update the shop status on userSession`() {
+        runBlocking {
+            val mockShopId = "12345"
+            val mockResponse = PMStatusUiModel(
+                isOfficialStore = true,
+                status = PMStatusConst.ACTIVE
+            )
+
+            every {
+                userSession.shopId
+            } returns mockShopId
+
+            coEvery {
+                getPMStatusUseCase.executeOnBackground()
+            } returns mockResponse
+
+            viewModel.fetchPMStatus()
+
+            verifyAll {
+                userSession.shopId
+                userSession.setIsShopOfficialStore(true)
+                userSession.setIsGoldMerchant(true)
+                userSession.setIsPowerMerchantIdle(false)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch shop status is Power Merchant Active should update the shop status on userSession`() {
+        runBlocking {
+            val mockShopId = "12345"
+            val mockResponse = PMStatusUiModel(
+                isOfficialStore = false,
+                status = PMStatusConst.ACTIVE
+            )
+
+            every {
+                userSession.shopId
+            } returns mockShopId
+
+            coEvery {
+                getPMStatusUseCase.executeOnBackground()
+            } returns mockResponse
+
+            viewModel.fetchPMStatus()
+
+            verifyAll {
+                userSession.shopId
+                userSession.setIsShopOfficialStore(false)
+                userSession.setIsPowerMerchantIdle(false)
+                userSession.setIsGoldMerchant(true)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch shop status is Power Merchant Idle should update the shop status on userSession`() {
+        runBlocking {
+            val mockShopId = "12345"
+
+            val mockResponse = PMStatusUiModel(
+                isOfficialStore = false,
+                status = PMStatusConst.IDLE
+            )
+
+            every {
+                userSession.shopId
+            } returns mockShopId
+
+            coEvery {
+                getPMStatusUseCase.executeOnBackground()
+            } returns mockResponse
+
+            viewModel.fetchPMStatus()
+
+            verifyAll {
+                userSession.shopId
+                userSession.setIsShopOfficialStore(false)
+                userSession.setIsPowerMerchantIdle(true)
+                userSession.setIsGoldMerchant(true)
+            }
+        }
+    }
+
+    @Test
+    fun `when fetch shop status then throws exception should do nothing`() {
+        val throwable = Throwable()
+
+        coEvery {
+            getPMStatusUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.fetchPMStatus()
     }
 
     private fun getMockParams(whiteListName: String): RequestParams {

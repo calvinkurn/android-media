@@ -7,11 +7,13 @@ import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAction
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationOrderListViewHolder
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
 import com.tokopedia.test.application.matcher.hasViewHolderOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class NotifcenterOrderListTest : InboxNotifcenterTest() {
 
     @Test

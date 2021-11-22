@@ -65,7 +65,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         intent.data?.let { uri ->
             url = WebViewHelper.getEncodedUrlCheckSecondUrl(
                 uri,
-                uri.getQueryParameter(KEY_URL)?.decode() ?: url
+                url
             )
 
             showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: showTitleBar

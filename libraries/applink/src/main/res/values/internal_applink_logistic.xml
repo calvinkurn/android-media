@@ -14,4 +14,5 @@
     <string name="path_order_tracking" translatable="false">/shipping/tracking/.*</string>
 
     <string name="path_manage_address" translatable="false">/manageaddress/</string>
+    <string name="path_tnc_webview_logistic" translatable="false">/logistictnc</string>
 </resources>
