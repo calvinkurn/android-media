@@ -86,6 +86,7 @@ ext {
     embraceVersion = '4.8.10'
     newRelicVersion = '6.2.1'
     windowVersion = '1.0.0-alpha07'
+    localBroadcastManagerVersion = '1.0.0'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -286,7 +287,8 @@ ext {
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
             window                : "androidx.window:window:$windowVersion",
-            mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1"
+            mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
+            localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion"
     ]
 
     testDependencies = [
