@@ -19,7 +19,7 @@
         android:layout_width="@dimen/play_circle_separator_width"
         android:layout_height="@dimen/play_circle_separator_height"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_play_circle_separator_white"
+        android:background="@drawable/bg_play_circle_separator"
         app:layout_constraintBottom_toBottomOf="@id/view_bro_total_view_badge"
         app:layout_constraintStart_toEndOf="@id/view_bro_total_view_badge"
         app:layout_constraintTop_toTopOf="@id/view_bro_total_view_badge" />
@@ -65,7 +65,7 @@
         android:layout_width="@dimen/play_circle_separator_width"
         android:layout_height="@dimen/play_circle_separator_height"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:background="@drawable/bg_play_circle_separator_white"
+        android:background="@drawable/bg_play_circle_separator"
         app:layout_constraintBottom_toBottomOf="@id/cl_bro_total_like"
         app:layout_constraintStart_toEndOf="@id/cl_bro_total_like"
         app:layout_constraintTop_toTopOf="@id/cl_bro_total_like" />
