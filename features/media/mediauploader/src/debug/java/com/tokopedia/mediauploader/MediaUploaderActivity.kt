@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -22,9 +24,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.mediauploader.MediaUploaderViewModel.Companion.UploadState
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
+import com.tokopedia.mediauploader.di.MediaUploaderTestModule
+import com.tokopedia.mediauploader.services.UploaderWorker
+import com.tokopedia.mediauploader.services.UploaderWorker.Companion.UNIQUE_WORK_NAME
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
@@ -93,6 +97,14 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
                 is UploadState.Finished -> stateLargeUploadFinished()
             }
         })
+
+        WorkManager
+            .getInstance(applicationContext)
+            .getWorkInfosForUniqueWorkLiveData(UNIQUE_WORK_NAME)
+            .observe(this, {
+                Log.d("MediaUploaderx", it.toString())
+                Log.d("MediaUploaderx", it.firstOrNull().toString())
+            })
     }
 
     private fun stateLargeUploadIdle() {
@@ -156,11 +168,12 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
             btnAbort.setOnClickListener {
                 viewModel.setUploadingStatus(UploadState.Aborted)
+                UploaderWorker.cancelWork(this)
                 launch {
-                    uploaderUseCase.abortUpload {
-                        coroutineContext.cancelChildren()
-                        btnAbort.hide()
-                    }
+//                    uploaderUseCase.abortUpload {
+//                        coroutineContext.cancelChildren()
+//                        btnAbort.hide()
+//                    }
                 }
             }
         }
@@ -172,44 +185,35 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
         abortButtonClicked()
 
-        val param = uploaderUseCase.createParams(
+        viewModel.upload(
+            context = applicationContext,
             sourceId = if (isUploadImage) {
                 "tuOYCg" // sourceId for image upload
             } else {
                 "VsrJDL" // sourceId for video upload (simple and large)
             },
-            filePath = File(mediaFilePath),
-            withTranscode = isVideoTranscodeSupported
+            filePath = mediaFilePath,
+            isSupportTranscode = isVideoTranscodeSupported
         )
 
-        uploaderUseCase.trackProgress { progress ->
-            progressBar.setValue(progress, true)
-        }
-
-        launch {
-            val result = uploaderUseCase(param)
-
-            withContext(Dispatchers.Main) {
-                btnAbort.hide()
-
-                when(result) {
-                    is UploadResult.Success -> {
-                        viewModel.setUploadingStatus(UploadState.Finished)
-                        if (isUploadImage) {
-                            appendInfo("${result.uploadId}\n")
-                            edtUrl.setText(result.uploadId)
-                        } else {
-                            appendInfo("${result.videoUrl}\n")
-                            edtUrl.setText(result.videoUrl)
-                        }
-                    }
-                    is UploadResult.Error -> {
-                        viewModel.setUploadingStatus(UploadState.Stopped)
-                        appendInfo("${result.message}\n")
-                    }
-                }
-            }
-        }
+//        btnAbort.hide()
+//
+//        when(result) {
+//            is UploadResult.Success -> {
+//                viewModel.setUploadingStatus(UploadState.Finished)
+//                if (isUploadImage) {
+//                    appendInfo("${result.uploadId}\n")
+//                    edtUrl.setText(result.uploadId)
+//                } else {
+//                    appendInfo("${result.videoUrl}\n")
+//                    edtUrl.setText(result.videoUrl)
+//                }
+//            }
+//            is UploadResult.Error -> {
+//                viewModel.setUploadingStatus(UploadState.Stopped)
+//                appendInfo("${result.message}\n")
+//            }
+//        }
     }
 
     private fun setPreviewInfo(path: String, isImageOrView: Boolean) {
@@ -299,6 +303,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private fun initInjector() {
         DaggerMediaUploaderTestComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .mediaUploaderTestModule(MediaUploaderTestModule(this))
             .mediaUploaderModule(MediaUploaderModule())
             .build()
             .inject(this)
