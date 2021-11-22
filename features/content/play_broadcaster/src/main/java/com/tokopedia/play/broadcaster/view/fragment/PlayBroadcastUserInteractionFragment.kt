@@ -42,10 +42,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
-import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveSetupViewComponent
-import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
-import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
+import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -89,18 +86,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val debugView: PlayLivePusherDebugView by detachableView(R.id.live_debug_view)
     private val pinnedMessageView: PinnedMessageView by detachableView(R.id.pinned_msg_view)
 
-    private val actionBarView by viewComponent {
-        ActionBarViewComponent(it, object : ActionBarViewComponent.Listener {
+    private val actionBarLiveView by viewComponent {
+        ActionBarLiveViewComponent(it, object: ActionBarLiveViewComponent.Listener {
             override fun onCameraIconClicked() {
                 parentViewModel.switchCamera()
                 analytic.clickSwitchCameraOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             }
 
-            override fun onCloseIconClicked() {
+            override fun onEndStreamClicked() {
                 activity?.onBackPressed()
             }
         })
     }
+
     private val chatListView by viewComponent { ChatListViewComponent(it) }
     private val interactiveView by viewComponent {
         BroadcastInteractiveViewComponent(it, object : BroadcastInteractiveViewComponent.Listener {
@@ -189,7 +187,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        actionBarView.rootView.requestApplyInsetsWhenAttached()
+        actionBarLiveView.rootView.requestApplyInsetsWhenAttached()
         ivShareLink.requestApplyInsetsWhenAttached()
         viewTimer.requestApplyInsetsWhenAttached()
     }
@@ -197,7 +195,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
 
     private fun setupView() {
-        actionBarView.setActionTitle(getString(R.string.play_action_bar_end))
+        actionBarLiveView.setTitle(parentViewModel.channelTitle)
         ivShareLink.setOnClickListener{
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
@@ -224,7 +222,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun setupInsets() {
-        actionBarView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
+        actionBarLiveView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
             v.updatePadding(top = insets.systemWindowInsetTop)
         }
 
