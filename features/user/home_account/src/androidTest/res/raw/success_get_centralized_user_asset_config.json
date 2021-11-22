@@ -22,7 +22,7 @@
         "subtitle":"2.000.000 Points",
         "applink":"tokopedia://webview?url=https://www.tokopedia.com/ovo",
         "icon":"https://images.tokopedia.net/img/user/asset/icon/ovo.png",
-        "is_active":false,
+        "is_active":true,
         "id":"ovo"
       },
       {

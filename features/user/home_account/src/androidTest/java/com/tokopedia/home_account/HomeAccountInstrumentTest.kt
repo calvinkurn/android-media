@@ -1,161 +1,111 @@
 package com.tokopedia.home_account
 
-import androidx.recyclerview.widget.RecyclerView
+import android.app.Activity
+import android.app.Instrumentation
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.home_account.base.HomeAccountTest
 import com.tokopedia.home_account.utils.ViewUtils
-import com.tokopedia.test.application.espresso_component.CommonAssertion
 import org.junit.Test
-
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToHolder
-import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.home_account.stub.data.TestStateParam
-import com.tokopedia.home_account.stub.data.TestStateValue
-import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
-import com.tokopedia.home_account.view.adapter.viewholder.SettingViewHolder
-import org.hamcrest.CoreMatchers.allOf
-
-import org.hamcrest.Matcher
-
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import com.tokopedia.home_account.utils.QueryUtils
 
 class HomeAccountInstrumentTest : HomeAccountTest() {
 
+    //1.Cassava Test ID - 759
     @Test
-    fun check_profile_is_displayed() {
+    fun click_profile() {
         runTest {
-            onView(withId(R.id.home_account_user_fragment_rv)).check(matches(isDisplayed()))
-
-            //Check name
-            onView(withId(R.id.account_user_item_profile_name)).check(matches(withText("Rama Widragama Putra")))
-
-            //Check Phone
-            onView(withId(R.id.account_user_item_profile_phone)).check(matches(withText(userSession.phoneNumber)))
-
-            //Check Email
-            onView(withId(R.id.account_user_item_profile_email)).check(matches(withText(userSession.email)))
-
-            activityTestRule.runOnUiThread {
-                fragment.onProfileClicked()
-
-            }
-        }
-
-//        assertThat(cassavaTestRule.validate("147"), hasAllSuccess())
+            fragment.onProfileClicked()
+        }.validate(
+                QueryUtils.queryProfile()
+        )
     }
 
+    //2.Cassava Test ID - 796
     @Test
-    fun check_gopay_wallet_is_displayed_when_eligible() {
+    fun click_ovo_wallet() {
         runTest {
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
-            val matcher: Matcher<RecyclerView.ViewHolder> = ViewUtils.withTitleBalanceViewHolder("GoPay \u0026 Coins") { item, title ->
-                item.getSubTitle().equals(title, ignoreCase = true)
-            }
-            onView(withId(R.id.home_account_balance_and_point_rv)).perform(scrollToHolder(matcher))
-        }
+            ViewUtils.clickWalletViewHolder("OVO")
+        }.validate(QueryUtils.queryOvo())
     }
 
+    //3.Cassava Test ID - 797
     @Test
-    fun check_tokopoints_is_displayed_when_gopay_not_exists() {
-        repo.mapParam[TestStateParam.WALLET] = TestStateValue.WALLET_NOT_ELIGIBLE
-
+    fun click_saldo() {
         runTest {
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
-            val matcher: Matcher<RecyclerView.ViewHolder> = ViewUtils.withTitleBalanceViewHolder("Tokopoints") { item, title ->
-                item.getSubTitle().equals(title, ignoreCase = true)
-            }
-            onView(withId(R.id.home_account_balance_and_point_rv)).perform(scrollToHolder(matcher))
-        }
+            ViewUtils.clickWalletViewHolder("Saldo Tokopedia")
+        }.validate(QueryUtils.querySaldo())
     }
 
 
+    //4.Cassava Test ID - 798
     @Test
-    fun check_ovo_wallet_is_displayed() {
+    fun click_more_account_settings() {
         runTest {
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
-            val matcher: Matcher<RecyclerView.ViewHolder> = ViewUtils.withTitleBalanceViewHolder("OVO") { item, title ->
-                item.getSubTitle().equals(title, ignoreCase = true)
-            }
-            onView(withId(R.id.home_account_balance_and_point_rv)).perform(scrollToHolder(matcher))
-        }
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+            onView(withId(R.id.home_account_member_layout_member_forward)).check(matches(isDisplayed())).perform(click())
+        }.validate(QueryUtils.queryMoreSettings("Member"))
     }
 
+    //5.Cassava Test ID - 802
     @Test
-    fun check_saldo_is_displayed() {
+    fun click_list_address() {
         runTest {
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_balance_and_point_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
-            val matcher: Matcher<RecyclerView.ViewHolder> = ViewUtils.withTitleBalanceViewHolder("Saldo Tokopedia") { item, title ->
-                item.getSubTitle().equals(title, ignoreCase = true)
-            }
-            onView(withId(R.id.home_account_balance_and_point_rv)).perform(scrollToHolder(matcher))
-        }
+            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS)
+        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_LIST_ADDRESS))
     }
 
+    //6.Cassava Test ID - 803
     @Test
-    fun check_member_status_is_displayed() {
+    fun click_bank_account() {
         runTest {
-            onView(withId(R.id.home_account_user_fragment_rv)).check(matches(isDisplayed()))
-            val matcher: Matcher<RecyclerView.ViewHolder> = ViewUtils.withTitleProfileViewHolder("Member Silver 2")
-            onView(withId(R.id.home_account_user_fragment_rv)).perform(scrollToHolder(matcher))
-            onView(withId(R.id.home_account_member_layout_member_icon)).check(matches(isDisplayed()))
-        }
+            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT)
+        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_BANK_ACCOUNT))
     }
 
+    //7. Cassava Test ID - 804
     @Test
-    fun check_tokomember_shorcutlist_is_displayed() {
+    fun click_instant_payment() {
         runTest {
-            onView(withId(R.id.home_account_member_layout_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_member_layout_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
-            val matcher = ViewUtils.withTitleMemberItemViewHolder("TokoMember")
-            onView(withId(R.id.home_account_member_layout_rv)).perform(scrollToHolder(matcher))
-        }
+            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT)
+        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_INSTANT_PAYMENT))
     }
 
+    //9. Cassava Test ID - 806
     @Test
-    fun check_topquest_shorcutlist_is_displayed() {
+    fun click_account_security() {
         runTest {
-            onView(withId(R.id.home_account_member_layout_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_member_layout_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
-            val matcher = ViewUtils.withTitleMemberItemViewHolder("TopQuest")
-            onView(withId(R.id.home_account_member_layout_rv)).perform(scrollToHolder(matcher))
-        }
+            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY)
+        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY))
     }
 
+    //10. Cassava Test ID - 807
     @Test
-    fun check_mycoupon_shorcutlist_is_displayed() {
+    fun click_notification() {
         runTest {
-            onView(withId(R.id.home_account_member_layout_rv)).check(matches(isDisplayed()))
-            onView(withId(R.id.home_account_member_layout_rv)).check(CommonAssertion.RecyclerViewItemCountAssertion(3))
-            val matcher = ViewUtils.withTitleMemberItemViewHolder("Kupon Saya")
-            onView(withId(R.id.home_account_member_layout_rv)).perform(scrollToHolder(matcher))
-        }
+            ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_NOTIFICATION)
+        }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_NOTIFICATION))
     }
 
+    //11. Cassava Test ID - 808
     @Test
-    fun check_user_setting_is_displayed() {
+    fun click_more_application_setting() {
         runTest {
-            ViewUtils.checkSettingViewIsDisplayed("Pengaturan Akun", 5)
-
-        }
+            ViewUtils.clickSettingMoreView("Pengaturan Aplikasi")
+        }.validate(QueryUtils.queryMoreSettings(AccountConstants.Analytics.Label.LABEL_APP_SETTING))
     }
 
+    //12. Cassava Test ID - 809
     @Test
-    fun check_application_setting_is_displayed() {
+    fun toogle_shake_switch() {
         runTest {
-            ViewUtils.checkSettingViewIsDisplayed("Pengaturan Aplikasi", 5)
-        }
-    }
+            ViewUtils.clickSettingMoreView("Pengaturan Aplikasi")
 
-    @Test
-    fun check_about_setting_is_displayed() {
-        runTest {
-            ViewUtils.checkSettingViewIsDisplayed("Seputar Tokopedia", 5)
-        }
+            ViewUtils.clickSwitchOnApplicationSetting("Shake Shake")
+        }.validate(listOf(QueryUtils.queryShakeCampaign(false), QueryUtils.queryShakeCampaign(true)))
     }
 }

@@ -3,20 +3,27 @@ package com.tokopedia.home_account.base
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_account.common.idling.FragmentTransactionIdle
 import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.di.DaggerFakeBaseAppComponent
 import com.tokopedia.home_account.stub.di.FakeAppModule
 import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
+import com.tokopedia.home_account.test.R
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -29,7 +36,7 @@ abstract class HomeAccountTest {
     )
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(isFromNetwork = true)
+    var cassavaTestRule = CassavaTestRule()
 
     lateinit var repo: GraphqlRepositoryStub
 
@@ -45,6 +52,7 @@ abstract class HomeAccountTest {
         get() = InstrumentationRegistry
             .getInstrumentation().context.applicationContext
 
+    @ExperimentalCoroutinesApi
     @Before
     open fun before() {
         val appComponent = DaggerFakeBaseAppComponent.builder().fakeAppModule(FakeAppModule(applicationContext)).build()
@@ -70,16 +78,37 @@ abstract class HomeAccountTest {
         test.invoke()
     }
 
+    fun Unit.action(action:() -> Unit) {
+        this.apply {
+            action.invoke()
+        }
+    }
+
+    fun Unit.validate(query: List<Map<String, String>>) {
+        Thread.sleep(3000)
+        val queryMatcher = cassavaTestRule.validate(
+                query,  CassavaTestRule.MODE_SUBSET)
+        ViewMatchers.assertThat(queryMatcher, hasAllSuccess())
+    }
+
     protected fun launchDefaultFragment() {
         setupHomeAccountUserActivity {
-//            it.putExtras(Intent(context, HomeAccountUserActivityStub::class.java))
+            it.putExtras(Intent(context, HomeAccountUserActivityStub::class.java))
         }
         inflateTestFragment()
     }
 
+
+
     private fun inflateTestFragment() {
-//        activity.setupTestFragment(otpComponent)
 //        waitForFragmentResumed()
+    }
+
+    protected fun waitForFragmentResumed() {
+        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
+        Espresso.onView(ViewMatchers.withId(R.id.home_account_user_fragment_rv))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
     }
 
     private fun setupHomeAccountUserActivity(
@@ -90,7 +119,12 @@ abstract class HomeAccountTest {
         activityTestRule.activity
         activityTestRule.launchActivity(intent)
         activity = activityTestRule.activity
+        fragmentTransactionIdling = FragmentTransactionIdle(
+                activity.supportFragmentManager,
+                HomeAccountUserActivity.TAG
+        )
         fragment = activity.fragment
+
     }
 
     companion object {
