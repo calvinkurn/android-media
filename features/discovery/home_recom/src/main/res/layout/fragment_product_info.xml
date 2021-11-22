@@ -238,7 +238,9 @@
                                 app:constraint_referenced_ids="review_count,rating,location,badge,product_image"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-                <include layout="@layout/empty_product_info" />
+                <include
+                    android:id="@+id/empty_layout"
+                    layout="@layout/empty_product_info" />
 
         </FrameLayout>
         </androidx.cardview.widget.CardView>

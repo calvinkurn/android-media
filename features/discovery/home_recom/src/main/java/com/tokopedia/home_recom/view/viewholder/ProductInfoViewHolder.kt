@@ -6,20 +6,16 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home_recom.R
-import com.tokopedia.home_recom.databinding.EmptyProductInfoBinding
 import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.utils.view.binding.viewBinding
-import java.lang.Exception
-import java.lang.reflect.InvocationTargetException
 
 
 class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : AbstractViewHolder<ProductInfoDataModel>(view) {
 
     private var binding: FragmentProductInfoBinding? by viewBinding()
-    private var emptyBinding: EmptyProductInfoBinding? by viewBinding()
     
     init {
         view.hide()
@@ -29,16 +25,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
         if (element.productDetailData == null) {
             // show error
             itemView.show()
-            try {
-                emptyBinding?.containerEmpty?.show()
-            } catch ( e: InvocationTargetException) {
-
-                // Answer:
-                e.cause?.printStackTrace();
-            } catch (e: Exception) {
-                // generic exception handling
-                e.printStackTrace();
-            }
+            binding?.emptyLayout?.root?.show()
         } else {
             initView(element)
         }
@@ -97,7 +84,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
         when(productDetailData.status){
             0 or -2 -> {
                 binding?.containerProduct?.hide()
-                emptyBinding?.containerEmpty?.show()
+                binding?.emptyLayout?.root?.show()
             }
             3 -> {
                 binding?.addToCart?.isEnabled = false
