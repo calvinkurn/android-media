@@ -20,8 +20,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class TokoNowHomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun pageInteractionTest() {
-        MacroInteration.basicRecyclerviewInteraction(MacroIntent.TokopediaNowHome.RV_RESOURCE_ID)
+        MacroInteration.basicRecyclerviewInteraction(
+            MacroIntent.TokopediaNow.PACKAGE_NAME,
+            MacroIntent.TokopediaNow.RV_RESOURCE_ID
+        )
     }
 
-    override fun getIntent() = MacroIntent.TokopediaNowHome.getIntent()
+    override fun getIntent() = MacroIntent.TokopediaNow.getHomeIntent()
 }

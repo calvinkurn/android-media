@@ -65,7 +65,10 @@ object MacroIntent {
          */
         const val RV_RESOURCE_ID = "rv_home"
 
-        fun getIntent(): Intent {
+        private const val DF_MODULE_NAME = "df_tokopedianow"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        fun getHomeIntent(): Intent {
             val intent = Intent()
             intent.data = Uri.parse("tokopedia-android-internal://now/home")
             return intent
