@@ -1,6 +1,7 @@
 package com.tokopedia.manageaddress.ui.shoplocation
 
 import android.annotation.SuppressLint
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.databinding.CardShopLocationAddressBinding
 import com.tokopedia.manageaddress.util.ShopLocationConstant
 import com.tokopedia.manageaddress.util.ShopLocationConstant.TICKER_LABEL
 import com.tokopedia.unifycomponents.Label
@@ -31,7 +33,8 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopLocationViewHolder {
-        return ShopLocationViewHolder(parent.inflateLayout(R.layout.card_shop_location_address), listener)
+        val binding = CardShopLocationAddressBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ShopLocationViewHolder(binding, listener)
     }
 
     override fun getItemCount(): Int {
@@ -52,15 +55,15 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
         notifyDataSetChanged()
     }
 
-    inner class ShopLocationViewHolder(itemView: View, private val listener: ShopLocationItemAdapterListener) : RecyclerView.ViewHolder(itemView) {
+    inner class ShopLocationViewHolder(private val binding: CardShopLocationAddressBinding, private val listener: ShopLocationItemAdapterListener) : RecyclerView.ViewHolder(binding.root) {
 
-        private val tvShopName = itemView.findViewById<Typography>(R.id.tv_shop_name)
-        private val tvShopLabel = itemView.findViewById<Typography>(R.id.tv_shop_label)
-        private val iconShopLabel = itemView.findViewById<ImageView>(R.id.img_mark_icon)
-        private val tvAddressDetail = itemView.findViewById<Typography>(R.id.tv_address_detail)
-        private val tvAddressCity = itemView.findViewById<Typography>(R.id.tv_address_city)
-        private val tvAddressZipCode = itemView.findViewById<Typography>(R.id.tv_address_zipcode)
-        private val labelMainShop = itemView.findViewById<Label>(R.id.lbl_main_shop)
+        //private val tvShopName = itemView.findViewById<Typography>(R.id.tv_shop_name)
+        //private val tvShopLabel = itemView.findViewById<Typography>(R.id.tv_shop_label)
+        //private val iconShopLabel = itemView.findViewById<ImageView>(R.id.img_mark_icon)
+        //private val tvAddressDetail = itemView.findViewById<Typography>(R.id.tv_address_detail)
+        //private val tvAddressCity = itemView.findViewById<Typography>(R.id.tv_address_city)
+        //private val tvAddressZipCode = itemView.findViewById<Typography>(R.id.tv_address_zipcode)
+        //private val labelMainShop = itemView.findViewById<Label>(R.id.lbl_main_shop)
         private val imgInfoIcon = itemView.findViewById<ImageView>(R.id.img_info_icon)
         private val imgPinpointState = itemView.findViewById<ImageView>(R.id.img_location_state)
         private val tvPinpointState = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
@@ -78,31 +81,31 @@ class ShopLocationItemAdapter(private val listener: ShopLocationItemAdapterListe
 
         private fun setHeadquarter(shopLocation: Warehouse) {
             if (shopLocation.warehouseType == ShopLocationConstant.WAREHOUSE_STATE_UTAMA) {
-                labelMainShop.visibility = View.VISIBLE
+                binding.lblMainShop.visibility = View.VISIBLE
                 imgInfoIcon.visibility = View.VISIBLE
                 btnSetLocation.visibility = View.GONE
             } else {
-                labelMainShop.visibility = View.GONE
+                binding.lblMainShop.visibility = View.GONE
                 imgInfoIcon.visibility = View.GONE
                 btnSetLocation.visibility = View.VISIBLE
             }
 
             if (shopLocation.status == ShopLocationConstant.SHOP_LOCATION_STATE_ACTIVE) {
-                tvShopLabel.text = itemView.context.getString(R.string.shop_active)
-                tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G600))
-                iconShopLabel.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
+                binding.tvShopLabel.text = itemView.context.getString(R.string.shop_active)
+                binding.tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G600))
+                binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico))
             } else if (shopLocation.status == ShopLocationConstant.SHOP_LOCATION_STATE_INACTIVE) {
-                tvShopLabel.text = itemView.context.getString(R.string.shop_inactive)
-                tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                iconShopLabel.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico_inactive))
+                binding.tvShopLabel.text = itemView.context.getString(R.string.shop_inactive)
+                binding.tvShopLabel.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                binding.imgMarkIcon.setImageDrawable(itemView.context.getResDrawable(R.drawable.ic_mark_ico_inactive))
             }
         }
 
         private fun setItemData(shopLocation: Warehouse) {
-            tvShopName.text = shopLocation.warehouseName
-            tvAddressDetail.text = shopLocation.addressDetail
-            tvAddressCity.text = "${shopLocation.cityName}, ${shopLocation.districtName}"
-            tvAddressZipCode.text = shopLocation.postalCode
+            binding.tvShopName.text = shopLocation.warehouseName
+            binding.tvAddressDetail.text = shopLocation.addressDetail
+            binding.tvAddressCity.text = "${shopLocation.cityName}, ${shopLocation.districtName}"
+            binding.tvAddressZipcode.text = shopLocation.postalCode
 
             if (shopLocation.ticker.textInactive.isNotEmpty()) {
                 tickerAddressInfo.visibility = View.VISIBLE
