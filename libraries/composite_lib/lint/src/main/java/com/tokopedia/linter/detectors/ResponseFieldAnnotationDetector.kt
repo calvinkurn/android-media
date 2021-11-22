@@ -33,6 +33,7 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
         )
 
         private const val RESPONSE_KEYWORD = "Response"
+        private const val PARAM_KEYWORD = "Param"
         private const val DOMAIN_MODEL_PATH= "domain/model"
         private const val SERIALIZED_NAME_ANNOTATION = "com.google.gson.annotations.SerializedName"
         private const val EXPOSE_ANNOTATION = "com.google.gson.annotations.Expose"
@@ -63,8 +64,8 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
     private fun shouldCheckAnnotation(context: JavaContext, node: UParameter): Boolean {
         val fileName = context.file.name
         val filePath = context.file.path
-        return (fileName.contains(RESPONSE_KEYWORD) || filePath.contains(DOMAIN_MODEL_PATH)) &&
-            node.uastParent is KotlinConstructorUMethod
+        return (fileName.contains(RESPONSE_KEYWORD) || fileName.contains(PARAM_KEYWORD) ||
+                filePath.contains(DOMAIN_MODEL_PATH)) && node.uastParent is KotlinConstructorUMethod
     }
 
     private fun reportError(context: JavaContext, node: UElement) {
