@@ -79,6 +79,9 @@ public class PromoStacking {
     @SerializedName("is_bebas_ongkir_extra")
     @Expose
     private boolean isBebasOngkirExtra;
+    @SerializedName("texts")
+    @Expose
+    private Texts texts = new Texts();
 
     public Integer getIsPromo() {
         return isPromo;
@@ -250,5 +253,9 @@ public class PromoStacking {
 
     public boolean isBebasOngkirExtra() {
         return isBebasOngkirExtra;
+    }
+
+    public Texts getTexts() {
+        return texts;
     }
 }
