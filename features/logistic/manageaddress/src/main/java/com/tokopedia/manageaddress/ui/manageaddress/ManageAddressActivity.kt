@@ -5,10 +5,11 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import kotlinx.android.synthetic.main.activity_manage_address.*
+import com.tokopedia.unifyprinciples.Typography
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
 
@@ -36,13 +37,13 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
             bundle.putAll(intent.extras)
         }
         supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance(bundle)).commit()
-        btn_back.setOnClickListener {
+        findViewById<IconUnify>(R.id.btn_back).setOnClickListener {
             onBackPressed()
         }
     }
 
     override fun setAddButtonOnClickListener(onClick: () -> Unit) {
-        btn_add.setOnClickListener {
+        findViewById<Typography>(R.id.btn_add).setOnClickListener {
             onClick()
         }
     }
