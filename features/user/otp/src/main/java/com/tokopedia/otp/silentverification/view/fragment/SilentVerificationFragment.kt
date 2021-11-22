@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
+import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -27,6 +28,7 @@ import com.tokopedia.otp.databinding.FragmentSilentVerificationBinding
 import com.tokopedia.otp.silentverification.di.SilentVerificationComponent
 import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
 import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
+import com.tokopedia.otp.silentverification.view.NetworkRequestListener
 import com.tokopedia.otp.silentverification.view.viewmodel.SilentVerificationViewModel
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
@@ -245,10 +247,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
                         binding?.fragmentSilentVerifSuccessAnim?.show()
                         binding?.fragmentSilentVerifSuccessAnim?.setComposition(result)
                         binding?.fragmentSilentVerifSuccessAnim?.visibility = View.VISIBLE
-                        binding?.fragmentSilentVerifSuccessAnim?.repeatCount = 1
                         binding?.fragmentSilentVerifSuccessAnim?.playAnimation()
-
-                        showSuccessText()
 
                         binding?.fragmentSilentVerifSuccessAnim?.addAnimatorListener(object:
                             Animator.AnimatorListener {
@@ -274,6 +273,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifTitle?.hide()
         binding?.fragmentSilentVerifSubtitle?.hide()
         playLottieAnim(LOTTIE_SUCCESS_ANIMATION) {
+            showSuccessText()
             Handler().postDelayed({
                 onFinishSilentVerif(data)
             }, 600)
@@ -435,18 +435,20 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun verify(url: String) {
         // for testing purpose only, please use later merhod
-        verifyWithoutSwitching(url)
+//        verifyWithoutSwitching(url)
 
-//        context?.run {
-//            networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
-//                override fun onSuccess(network: Network) {
-//                    viewModel.verifyBoku(network, url)
-//                }
-//                override fun onError(throwable: Throwable) {
-//                    onVerificationError(Throwable("Network Unavailable"))
-//                }
-//            })
-//        }
+        // Main method to switch between wifi & cellular data
+        context?.run {
+            networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
+                override fun onSuccess(network: Network) {
+                    viewModel.verifyBoku(network, url)
+                }
+                override fun onError(throwable: Throwable) {
+                    println("verify:onResponse:${throwable.message}")
+                    onValidateFailed(throwable)
+                }
+            })
+        }
     }
 
     // to be deleted, for testing purpose only

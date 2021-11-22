@@ -3,7 +3,11 @@ package com.tokopedia.otp.silentverification.di
 import android.content.Context
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.otp.silentverification.domain.repository.GetEvUrlRepository
 import com.tokopedia.otp.silentverification.domain.repository.GetEvUrlRepositoryImpl
 import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
@@ -59,22 +63,19 @@ class SilentVerificationModule(private val context: Context) {
 
     @Provides
     @ActivityScope
-    fun provideCustomOkHttpBuilder(): OkHttpClient.Builder {
+    fun provideCustomOkHttpBuilder(chuckerInterceptor: ChuckerInterceptor): OkHttpClient.Builder {
         return OkHttpClient.Builder()
             .writeTimeout(NetworkClientHelperImpl.SILENT_VERIF_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(NetworkClientHelperImpl.SILENT_VERIF_TIMEOUT, TimeUnit.SECONDS)
+            .addInterceptor(chuckerInterceptor)
     }
 
-
-//    @Provides
-//    @ActivityScope
-//    fun provideGraphqlRepository(): GraphqlRepository {
-//        return GraphqlInteractor.getInstance().graphqlRepository
-//    }
-
-//    @Provides
-//    @ActivityScope
-//    fun provideOtpTracker(): TrackingOtpUtil {
-//        return TrackingOtpUtil(user)
-//    }
+    @Provides
+    @ActivityScope
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        val collector = ChuckerCollector(
+                context, GlobalConfig.isAllowDebuggingTools())
+        return ChuckerInterceptor(
+                context, collector)
+    }
 }
