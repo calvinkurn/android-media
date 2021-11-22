@@ -400,15 +400,14 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 })
 
-                if(goToAddBills()) {
-                    tv_sbm_add_bills.apply {
-                        show()
-                        setOnClickListener {
-                            smartBillsAnalytics.clickTambahTagihan()
-                            getCatalogData()
-                        }
+
+                tv_sbm_add_bills.apply {
+                    show()
+                    setOnClickListener {
+                         smartBillsAnalytics.clickTambahTagihan()
+                         getCatalogData()
                     }
-                } else tv_sbm_add_bills.hide()
+                }
 
                 // Setup toggle all items listener
                 cb_smart_bills_select_all.setOnClickListener {
@@ -563,7 +562,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     private fun getCatalogData() {
-        if (getRemoteConfigAddBillsEnabler() && goToAddBills()) {
+        if (getRemoteConfigAddBillsEnabler()) {
             showProgressBar()
             viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
         } else {
@@ -823,16 +822,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     private fun hideProgressBar(){
         sbm_progress_bar.hide()
-    }
-
-    protected fun goToAddBills(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    RollenceKey.SBM_ADD_BILLS_KEY, RollenceKey.SBM_ADD_BILLS_FALSE
-            ) == RollenceKey.SBM_ADD_BILLS_TRUE
-        } catch (e: Exception) {
-            false
-        }
     }
 
     companion object {
