@@ -1,0 +1,3 @@
+package com.tokopedia.ovop2p
+
+class WalletBalanceViewModelUnitTest
