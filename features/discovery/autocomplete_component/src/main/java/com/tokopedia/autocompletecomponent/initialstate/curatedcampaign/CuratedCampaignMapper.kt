@@ -7,6 +7,7 @@ fun InitialStateItem.convertToCuratedCampaignDataView(
     featureId: String,
     dimension90: String,
     keyword: String,
+    trackingOption: Int,
 ): CuratedCampaignDataView {
     return CuratedCampaignDataView(
         baseItemInitialState = BaseItemInitialStateSearch(
@@ -24,6 +25,8 @@ fun InitialStateItem.convertToCuratedCampaignDataView(
             dimension90 = dimension90,
             keyword = keyword,
             campaignCode = campaignCode,
+            componentId = componentId,
+            trackingOption = trackingOption,
         )
     )
 }

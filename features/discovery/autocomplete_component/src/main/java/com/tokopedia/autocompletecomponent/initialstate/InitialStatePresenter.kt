@@ -298,6 +298,7 @@ class InitialStatePresenter @Inject constructor(
             initialStateData.featureId,
             getDimension90(),
             getQueryKey(),
+            initialStateData.trackingOption,
         )
         listVisitable.add(curatedCampaignDataView)
         onImpressCuratedCampaignCard(curatedCampaignDataView)
