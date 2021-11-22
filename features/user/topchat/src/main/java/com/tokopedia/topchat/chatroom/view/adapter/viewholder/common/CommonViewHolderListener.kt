@@ -7,4 +7,5 @@ interface CommonViewHolderListener {
     fun isSeller(): Boolean
     fun getAnalytic(): TopChatAnalytics
     fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence)
+    fun getCommonShopId(): Long
 }

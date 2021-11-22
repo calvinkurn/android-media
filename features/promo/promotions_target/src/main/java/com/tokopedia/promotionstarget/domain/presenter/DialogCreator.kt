@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.os.Debug
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.tokopedia.notifications.inApp.external.IExternalInAppCallback
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.notification.GratifNotification
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
@@ -18,7 +19,8 @@ class DialogCreator {
                            gratifPopupCallback: GratificationPresenter.GratifPopupCallback? = null,
                            screenName: String,
                            closeCurrentActivity: Boolean,
-                           inAppId: Long?): BottomSheetDialog? {
+                           inAppId: Long?,
+                           iExternalInAppCallback: IExternalInAppCallback?): BottomSheetDialog? {
         return CmGratificationDialog().show(activity,
                 gratifNotification,
                 couponDetail,
@@ -28,6 +30,6 @@ class DialogCreator {
                         gratifPopupCallback?.onShow(dialog)
                     }
                     Debug.stopMethodTracing()
-                }, screenName, closeCurrentActivity, inAppId)
+                }, screenName, closeCurrentActivity, inAppId, iExternalInAppCallback)
     }
 }

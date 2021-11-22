@@ -12,8 +12,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.search.SearchPageActivity
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.EXTRA_REF
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.allOf
 

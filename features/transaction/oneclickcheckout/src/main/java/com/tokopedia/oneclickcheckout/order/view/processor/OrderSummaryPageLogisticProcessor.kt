@@ -626,13 +626,13 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             }
             if (logisticPromoShipping != null) {
                 shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo?.copy(isApplied = true)
-                val needPinpoint = logisticPromoShipping.productData?.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
+                val needPinpoint = logisticPromoShipping.productData.error?.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED
                 return Pair(
                         shipping.copy(isLoading = false,
                                 shippingRecommendationData = shippingRecommendationData,
                                 isServicePickerEnable = true,
-                                insurance = OrderInsurance(logisticPromoShipping.productData?.insurance),
-                                serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData?.error?.errorMessage,
+                                insurance = OrderInsurance(logisticPromoShipping.productData.insurance),
+                                serviceErrorMessage = if (needPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else logisticPromoShipping.productData.error?.errorMessage,
                                 needPinpoint = needPinpoint,
                                 logisticPromoTickerMessage = null,
                                 isApplyLogisticPromo = true,

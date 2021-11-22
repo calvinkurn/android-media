@@ -1383,5 +1383,17 @@
         "data": []
       }
     }
-  }
+  },
+ {
+   "data": {
+       "fetchLastFilter": {
+           "data": {
+               "title": "",
+               "description": "",
+               "category_id_l2": "",
+               "filters": []
+           }
+       }
+   }
+ }
 ]

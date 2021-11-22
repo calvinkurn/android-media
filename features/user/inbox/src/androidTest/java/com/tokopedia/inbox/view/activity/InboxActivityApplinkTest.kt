@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -17,8 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@LargeTest
-@RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class InboxActivityApplinkTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -36,9 +36,6 @@ class InboxActivityApplinkTest {
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
         applyAbKeyValue(
             RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_NEW_INBOX
-        )
-        applyAbKeyValue(
-            RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_REVAMP
         )
     }
 

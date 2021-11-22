@@ -6,11 +6,9 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.inbox.DeeplinkMapperInbox
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.startsWithPattern
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 
@@ -100,19 +98,7 @@ object DeeplinkMapperMerchant {
     }
 
     fun getRegisteredNavigationShopReview(shopId: String?): String {
-        return if (isUsingNewShopReviewPage()) {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW, shopId)
-        } else {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, shopId)
-        }
-    }
-
-    fun isUsingNewShopReviewPage(): Boolean {
-        val shopReviewAbTestKey = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW,
-                RollenceKey.OLD_REVIEW_SHOP
-        )
-        return shopReviewAbTestKey.equals(RollenceKey.NEW_REVIEW_SHOP, true)
+        return UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_REVIEW, shopId)
     }
 
     fun getRegisteredNavigationProductReview(uri: Uri): String {
@@ -134,15 +120,12 @@ object DeeplinkMapperMerchant {
     fun getRegisteredNavigationProductDetailReview(uri: Uri): String {
         val segments = uri.pathSegments
         val productId = segments.first()
-        val newUri = if(goToNewReadProductReview()) {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW, productId)
-        } else {
-            UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD, productId)
-        }
-        return Uri.parse(newUri)
-                .buildUpon()
-                .build()
-                .toString()
+        return Uri.parse(
+            UriUtil.buildUri(
+                ApplinkConstInternalMarketplace.PRODUCT_REVIEW,
+                productId
+            )
+        ).buildUpon().build().toString()
     }
 
     fun isShopPageDeeplink(uri: Uri?): Boolean {
@@ -330,29 +313,6 @@ object DeeplinkMapperMerchant {
         return deeplink
     }
 
-    fun isProductDetailPageDeeplink(deeplink: String): Boolean {
-        val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.PRODUCT_INFO) && uri.pathSegments.size == 1 && uri.lastPathSegment.toLongOrZero() != 0L
-    }
-
-    fun isProductDetailAffiliatePageDeeplink(deeplink: String): Boolean {
-        val uri = Uri.parse(deeplink)
-        return deeplink.startsWithPattern(ApplinkConst.AFFILIATE_PRODUCT) && uri.pathSegments.size == 2
-    }
-
-    fun getRegisteredProductDetailAffiliate(deeplink: String): String {
-        val parsedUri = Uri.parse(deeplink)
-
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_AFFILIATE, parsedUri.lastPathSegment, "isAffiliate")
-    }
-
-    fun getRegisteredProductDetail(deeplink: String): String {
-        val parsedUri = Uri.parse(deeplink)
-        val segments = parsedUri.pathSegments
-
-        return UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_DETAIL, segments[0])
-    }
-
     fun getRegisteredSellerCenter(): String {
         return UriUtil.buildUri(ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
     }
@@ -383,23 +343,7 @@ object DeeplinkMapperMerchant {
             val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                     RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
             ) == RollenceKey.VARIANT_NEW_INBOX
-            val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP ||
-                    RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
-            useNewInbox && useNewNav
-        } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun goToNewReadProductReview(): Boolean {
-        return try {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.EXPERIMENT_NAME_REVIEW_PRODUCT_READING, RollenceKey.VARIANT_OLD_REVIEW_PRODUCT_READING
-            ) == RollenceKey.VARIANT_NEW_REVIEW_PRODUCT_READING
+            useNewInbox
         } catch (e: Exception) {
             false
         }

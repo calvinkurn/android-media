@@ -10,10 +10,10 @@ import com.tokopedia.cart.bundle.view.ICartListView
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UndoDeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -39,13 +39,13 @@ object CartListPresenterValidateUseTest : Spek({
     val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
-    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
+    val validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription = CompositeSubscription()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
     val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase = mockk()
     val userSessionInterface: UserSessionInterface = mockk()
-    val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase = mockk()
+    val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase = mockk()
     val getRecentViewUseCase: GetRecommendationUseCase = mockk()
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()

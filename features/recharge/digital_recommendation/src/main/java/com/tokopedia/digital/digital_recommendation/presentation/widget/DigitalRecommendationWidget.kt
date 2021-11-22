@@ -63,6 +63,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
                             with(binding) {
                                 tgDigitalRecommendationTitle.show()
+                                tgDigitalRecommendationTitle.text = it.data.title
                                 rvDigitalRecommendation.layoutManager = LinearLayoutManager(context,
                                         LinearLayoutManager.HORIZONTAL, false)
                                 rvDigitalRecommendation.adapter = adapter
@@ -103,7 +104,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     override fun onItemBinding(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.impressionDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId()
+                    element, it, position, digitalRecommendationViewModel.getUserId(), page
             )
         }
     }
@@ -111,7 +112,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
     override fun onItemClicked(element: DigitalRecommendationItemModel, position: Int) {
         additionalTrackingData?.let {
             digitalRecommendationAnalytics.clickDigitalRecommendationItems(
-                    element, it, position, digitalRecommendationViewModel.getUserId()
+                    element, it, position, digitalRecommendationViewModel.getUserId(), page
             )
         }
     }
