@@ -12,6 +12,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Eve
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Event.VIEWSEARCHIRIS
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.KEYWORD
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.KEYWORD_ID_NAME
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.NONE
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.CLICK_ONLY
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.IMPRESSION_AND_CLICK
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.IMPRESSION_ONLY
@@ -48,11 +49,14 @@ internal class SearchComponentTrackingImpl(
         EVENT_LABEL to eventLabel,
         BUSINESSUNIT to SEARCH,
         CURRENTSITE to TOKOPEDIAMARKETPLACE,
-        CAMPAIGNCODE to campaignCode,
-        COMPONENT to componentId,
-        PAGEDESTINATION to applink,
-        PAGESOURCE to dimension90,
+        CAMPAIGNCODE to campaignCode.orNone(),
+        COMPONENT to componentId.orNone(),
+        PAGEDESTINATION to applink.orNone(),
+        PAGESOURCE to dimension90.orNone(),
     )
+
+    private fun String.orNone(): String =
+        if (this.isEmpty()) NONE else this
 
     override fun impress(iris: Iris) {
         if (!impressionEnabled()) return
@@ -61,7 +65,7 @@ internal class SearchComponentTrackingImpl(
             dataLayer(
                 VIEWSEARCHIRIS,
                 IMPRESSION,
-                String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+                impressionClickEventLabel()
             )
         )
     }
@@ -70,6 +74,14 @@ internal class SearchComponentTrackingImpl(
         trackingOption == IMPRESSION_AND_CLICK
             || trackingOption == IMPRESSION_ONLY
 
+    private fun impressionClickEventLabel() =
+        String.format(
+            KEYWORD_ID_NAME,
+            keyword.orNone(),
+            valueId.orNone(),
+            valueName.orNone(),
+        )
+
     override fun click(analytics: Analytics) {
         if (!clickEnabled()) return
 
@@ -77,7 +89,7 @@ internal class SearchComponentTrackingImpl(
             dataLayer(
                 CLICKSEARCH,
                 CLICK,
-                String.format(KEYWORD_ID_NAME, keyword, valueId, valueName)
+                impressionClickEventLabel()
             )
         )
     }
@@ -93,7 +105,7 @@ internal class SearchComponentTrackingImpl(
             dataLayer(
                 CLICKSEARCH,
                 CLICK_OTHER_ACTION,
-                String.format(KEYWORD, keyword)
+                String.format(KEYWORD, keyword.orNone())
             )
         )
     }

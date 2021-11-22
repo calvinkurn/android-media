@@ -12,6 +12,7 @@ object SearchComponentTrackingConst {
     const val TOKOPEDIAMARKETPLACE = "tokopediamarketplace"
     const val KEYWORD_ID_NAME = "keyword:%s | value_id:%s | value_name:%s"
     const val KEYWORD = "keyword:%s"
+    const val NONE = "none"
 
     object Event {
         const val VIEWSEARCHIRIS = "viewSearchIris"

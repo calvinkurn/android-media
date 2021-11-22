@@ -12,6 +12,7 @@ import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Eve
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Event.VIEWSEARCHIRIS
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.KEYWORD
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.KEYWORD_ID_NAME
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.NONE
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.CLICK_ONLY
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.IMPRESSION_AND_CLICK
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Options.IMPRESSION_ONLY
@@ -157,5 +158,36 @@ class SearchComponentTrackingTest {
 
     private fun verifyNotSendAnalytics() {
         verify(exactly = 0) { analytics.sendGeneralEvent(any())}
+    }
+
+    @Test
+    fun `empty value in tracking will be replaced with none`() {
+        val emptyTracking = SearchComponentTrackingImpl(
+            trackingOption = IMPRESSION_AND_CLICK,
+            keyword = "",
+            valueId = "",
+            valueName = "",
+            campaignCode = "",
+            componentId = "",
+            applink = "",
+            dimension90 = "",
+        )
+
+        emptyTracking.impress(iris)
+
+        assertThat(dataLayer, `is`(
+            mapOf(
+                EVENT to VIEWSEARCHIRIS,
+                EVENT_ACTION to IMPRESSION,
+                EVENT_LABEL to String.format(KEYWORD_ID_NAME, NONE, NONE, NONE),
+                EVENT_CATEGORY to SEARCH_COMPONENT,
+                BUSINESSUNIT to SEARCH,
+                CURRENTSITE to TOKOPEDIAMARKETPLACE,
+                CAMPAIGNCODE to NONE,
+                COMPONENT to NONE,
+                PAGEDESTINATION to NONE,
+                PAGESOURCE to NONE,
+            )
+        ))
     }
 }
