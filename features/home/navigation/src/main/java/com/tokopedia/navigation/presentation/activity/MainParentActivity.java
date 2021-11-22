@@ -195,7 +195,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String UOH_SOURCE_FILTER_KEY = "source_filter";
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
-    public static final String PARAM_ACTIVITY_WISHLIST = "activity_wishlist";
+    public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -771,7 +771,7 @@ public class MainParentActivity extends BaseActivity implements
         if (bundleWishlist == null) {
             bundleWishlist = new Bundle();
         }
-        bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST, PARAM_HOME);
+        bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
         bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
 
