@@ -923,6 +923,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 else DEFAULT_BEFORE_LIVE_COUNT_DOWN
     }
 
+    fun getShopIconUrl(): String = userSession.shopAvatar
+
     companion object {
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L

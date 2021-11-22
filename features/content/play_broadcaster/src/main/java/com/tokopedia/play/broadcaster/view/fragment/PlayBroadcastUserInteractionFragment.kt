@@ -196,6 +196,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setupView() {
         actionBarLiveView.setTitle(parentViewModel.channelTitle)
+        actionBarLiveView.setShopIcon(parentViewModel.getShopIconUrl())
+
         ivShareLink.setOnClickListener{
             doCopyShareLink()
             analytic.clickShareIconOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
