@@ -12,6 +12,10 @@ import com.tokopedia.unifycomponents.BaseCustomView
 
 class FilterChip: BaseCustomView, View.OnClickListener {
 
+    companion object {
+        private const val IMAGE_ROUNDED = 4.0f
+    }
+
     private var binding: ChipTokopedianowCategoryFilterBinding? = null
 
     var listener: Listener? = null
@@ -45,7 +49,7 @@ class FilterChip: BaseCustomView, View.OnClickListener {
     }
 
     fun setContent(model: Model) {
-        binding?.tokoNowCategoryFilterImage?.loadImageRounded(model.imageUrl, 4.0f)
+        binding?.tokoNowCategoryFilterImage?.loadImageRounded(model.imageUrl, IMAGE_ROUNDED)
         binding?.tokoNowCategoryFilterTitle?.text = model.title
         state = model.state
 
