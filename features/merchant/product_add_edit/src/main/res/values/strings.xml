@@ -307,6 +307,8 @@
     <string name="action_cancel_exit">Batal</string>
     <string name="action_variant_custom_add">Buat Tipe Varian</string>
     <string name="action_variant_custom_edit">Atur Varian</string>
+    <string name="action_variant_custom_type_add">Tambah Varian</string>
+    <string name="action_variant_custom_type_edit">Simpan Varian</string>
     <string name="label_variant_type">Tipe Varian</string>
     <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
     <string name="label_variant_photo">Foto Varian</string>
@@ -349,7 +351,8 @@
     <string name="label_variant_type_name">Nama tipe varian</string>
     <string name="label_variant_name_recommendation">Rekomendasi Tokopedia</string>
     <string name="label_variant_custom_manage">Hapus atau ubah nama tipe varian yang pernah kamu buat.</string>
-    <string name="label_variant_custom_input_bottom_sheet_title">Buat tipe varian</string>
+    <string name="label_variant_custom_input_bottom_sheet_title_add">Buat tipe varian</string>
+    <string name="label_variant_custom_input_bottom_sheet_title_edit">Ubah tipe varian</string>
     <string name="label_variant_custom_manage_bottom_sheet_title">Atur varian</string>
     <string name="label_variant_value_empty">Belum ada %1s yang bisa dipilih. Tambah pilihan %2s dulu, ya.</string>
     <string name="label_cvt_tips">Beri nama varian atau pakai varian dari kategori lain. Kamu bisa buat maksimum 2 varian, ya.</string>

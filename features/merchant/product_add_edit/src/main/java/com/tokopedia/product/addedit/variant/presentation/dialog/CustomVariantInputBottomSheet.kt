@@ -38,10 +38,12 @@ class CustomVariantInputBottomSheet (
     private var onCustomVariantTypeSubmitted: ((variantTypeName: String) -> Unit)? = null
     private var onPredefinedVariantTypeSubmitted: ((variantDetail: VariantDetail) -> Unit)? = null
     private val variantTypeSuggestionAdapter = VariantTypeSuggestionAdapter()
+    private var isEditMode = false
 
     init {
         isKeyboardOverlap = false
         isFullpage = true
+        isEditMode = variantTypeName.isNotEmpty()
         setCloseClickListener {
             dismiss()
         }
@@ -78,7 +80,11 @@ class CustomVariantInputBottomSheet (
     }
 
     private fun initChildLayout() {
-        setTitle(getString(R.string.label_variant_custom_input_bottom_sheet_title))
+        setTitle( if (isEditMode) {
+            getString(R.string.label_variant_custom_input_bottom_sheet_title_edit)
+        } else {
+            getString(R.string.label_variant_custom_input_bottom_sheet_title_add)
+        })
 
         binding = AddEditProductCustomVariantInputBottomSheetContentBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
@@ -86,6 +92,11 @@ class CustomVariantInputBottomSheet (
     }
 
     private fun setupButtonSave() {
+        binding?.buttonSave?.text = if (isEditMode) {
+            getString(R.string.action_variant_custom_type_edit)
+        } else {
+            getString(R.string.action_variant_custom_type_add)
+        }
         binding?.buttonSave?.setOnClickListener {
             val inputText = binding?.textFieldVariantTypeInput?.getText().orEmpty()
             viewModel.validateVariantTitle(inputText, variantDetails)
