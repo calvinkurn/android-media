@@ -18,11 +18,11 @@ class ActionBarLiveViewComponent(
     private val tvChannelTitle = findViewById<Typography>(R.id.tv_bro_channel_title)
     private val ivShopIcon = findViewById<ImageUnify>(R.id.iv_bro_shop_icon)
     private val icEndStream = findViewById<IconUnify>(R.id.ic_bro_end_stream)
-    private val ivSwitchCamera = findViewById<ImageUnify>(R.id.iv_bro_switch_camera)
+    private val icSwitchCamera = findViewById<IconUnify>(R.id.ic_bro_switch_camera)
 
     init {
         icEndStream.setOnClickListener { listener.onEndStreamClicked() }
-        ivSwitchCamera.setOnClickListener { listener.onCameraIconClicked() }
+        icSwitchCamera.setOnClickListener { listener.onCameraIconClicked() }
     }
 
     fun setTitle(title: String) {
