@@ -38,7 +38,6 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoar
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.PlayMetricsView
 import com.tokopedia.play.broadcaster.view.custom.PlayStatInfoView
-import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
@@ -76,7 +75,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private lateinit var parentViewModel: PlayBroadcastViewModel
 
     private val clInteraction: ConstraintLayout by detachableView(R.id.cl_interaction)
-    private val viewTimer: PlayTimerView by detachableView(R.id.view_timer)
     private val viewStatInfo: PlayStatInfoView by detachableView(R.id.view_stat_info)
     private val ivShareLink: AppCompatImageView by detachableView(R.id.iv_share_link)
     private val flProductTag: FrameLayout by detachableView(R.id.fl_product_tag)
@@ -189,7 +187,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         super.onStart()
         actionBarLiveView.rootView.requestApplyInsetsWhenAttached()
         ivShareLink.requestApplyInsetsWhenAttached()
-        viewTimer.requestApplyInsetsWhenAttached()
     }
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
@@ -226,15 +223,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun setupInsets() {
         actionBarLiveView.rootView.doOnApplyWindowInsets { v, insets, _, _ ->
             v.updatePadding(top = insets.systemWindowInsetTop)
-        }
-
-        viewTimer.doOnApplyWindowInsets { v, insets, _, margin ->
-            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
-            val newTopMargin = margin.top + insets.systemWindowInsetTop
-            if (marginLayoutParams.topMargin != newTopMargin) {
-                marginLayoutParams.updateMargins(top = newTopMargin)
-                v.parent.requestLayout()
-            }
         }
 
         ivShareLink.doOnApplyWindowInsets { v, insets, _, margin ->
@@ -319,7 +307,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * render to ui
      */
     private fun showCounterDuration(remainingInMs: Long) {
-        viewTimer.showCounter(remainingInMs)
         viewStatInfo.setCountDown(remainingInMs)
     }
 
