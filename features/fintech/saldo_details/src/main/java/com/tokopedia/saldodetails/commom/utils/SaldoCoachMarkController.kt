@@ -14,42 +14,55 @@ class SaldoCoachMarkController(val context: Context) {
 
     private val coachMark by lazy { CoachMark2(context) }
     private val toolBarHeight by lazy { NavToolbarExt.getFullToolbarHeight(context) }
-    var anchorViewList: ArrayList<View?>? = null
+    var anchorViewList: ArrayList<View?> = ArrayList()
+    var isSaldoBalanceWidgetReady = false
+    var isSalesTabWidgetReady = false
+    var balancePreConditions = false
 
     private val balanceTitleList = listOf(
         context.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
         context.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller),
     )
 
-    fun startCoachMark(expandAppBar: () -> Unit) {
-        val allCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
-        val showCoachMarkList =
-            allCoachMarkList.filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
-                .map { it.coachMarkItem }
-        coachMark.showCoachMark(ArrayList(showCoachMarkList))
-        // first is shown by and updated
-        // reset coachmark will be updated in onStep callBack
-        val indexOfFirstCoachMark = allCoachMarkList.size - showCoachMarkList.size
-        val firstKey = allCoachMarkList.getOrNull(indexOfFirstCoachMark)?.coachMarkKey
-        updateCoachMarkShown(firstKey)
-        coachMark.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                val key = allCoachMarkList.getOrNull(currentIndex)?.coachMarkKey ?: ""
+    private fun checkIfCoachMarkReady() =
+        isSaldoBalanceWidgetReady && isSalesTabWidgetReady
 
-                if (shouldExpandAppBar(key)) {
-                    expandAppBar.invoke()
-                }
-                if (isSaldoCoachMarkShown(key).not()) {
-                    updateCoachMarkShown(key)
-                }
+    fun startCoachMark(expandAppBar: () -> Unit) {
+        if (checkIfCoachMarkReady()) {
+            val allCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
+
+            // do not show coach mark if balance widget is not visible
+            if (!balancePreConditions)  {
+                return
             }
-        })
+            val showCoachMarkList =
+                allCoachMarkList.filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
+                    .map { it.coachMarkItem }
+            coachMark.showCoachMark(ArrayList(showCoachMarkList))
+            // first is shown by and updated
+            // reset coachmark will be updated in onStep callBack
+            val indexOfFirstCoachMark = allCoachMarkList.size - showCoachMarkList.size
+            val firstKey = allCoachMarkList.getOrNull(indexOfFirstCoachMark)?.coachMarkKey
+            updateCoachMarkShown(firstKey)
+            coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                    val key = allCoachMarkList.getOrNull(currentIndex)?.coachMarkKey ?: ""
+
+                    if (shouldExpandAppBar(key)) {
+                        expandAppBar.invoke()
+                    }
+                    if (isSaldoCoachMarkShown(key).not()) {
+                        updateCoachMarkShown(key)
+                    }
+                }
+            })
+        }
     }
 
 
-    private fun buildSaldoCoachMarkListByKey(anchorViewList: ArrayList<View?>?): ArrayList<SaldoCoachMark> {
+    private fun buildSaldoCoachMarkListByKey(anchorViewList: ArrayList<View?>): ArrayList<SaldoCoachMark> {
         val list = arrayListOf<SaldoCoachMark>()
-        anchorViewList?.getOrNull(0)?.let {
+        anchorViewList.getOrNull(0)?.let {
             val item = SaldoCoachMark(
                 KEY_CAN_SHOW_REFUND_COACHMARK,
                 CoachMark2Item(
@@ -61,7 +74,7 @@ class SaldoCoachMarkController(val context: Context) {
             list.add(item)
         }
 
-        anchorViewList?.getOrNull(1)?.let {
+        anchorViewList.getOrNull(1)?.let {
             val item = SaldoCoachMark(
                 KEY_CAN_SHOW_INCOME_COACHMARK,
                 CoachMark2Item(
@@ -73,7 +86,7 @@ class SaldoCoachMarkController(val context: Context) {
             list.add(item)
         }
 
-        anchorViewList?.getOrNull(2)?.let {
+        anchorViewList.getOrNull(2)?.let {
             val item = SaldoCoachMark(
                 KEY_CAN_SHOW_PENJUALAN_COACHMARK,
                 CoachMark2Item(
@@ -89,7 +102,7 @@ class SaldoCoachMarkController(val context: Context) {
     }
 
     fun updateCoachMarkOnScroll(expandLayout: Boolean) {
-        if (coachMark.isDismissed.not()) {
+        if (coachMark.isDismissed.not() && checkIfCoachMarkReady()) {
             val xOffset = (X_OFFSET).toPx()
             val yOffset = 8.toPx()
             if (checkIfCoachMarkTypeIsBalance()) {
@@ -101,14 +114,14 @@ class SaldoCoachMarkController(val context: Context) {
     }
 
     private fun updateSalesCoachMarkItem(xOffset: Int, yOffset: Int) {
-        val tabView = anchorViewList?.getOrNull(PENJUALAN_TAB_INDEX)
+        val tabView = anchorViewList.getOrNull(PENJUALAN_TAB_INDEX)
         tabView?.post {
             coachMark.update(tabView, xOffset, yOffset, -1, -1)
         }
     }
 
     private fun updateBalanceCoachMarkItem(xOffset: Int, expandLayout: Boolean) {
-        val view = anchorViewList?.getOrNull(coachMark.currentIndex)
+        val view = anchorViewList.getOrNull(coachMark.currentIndex)
         val coordinates = intArrayOf(0, 0)
         view?.getLocationOnScreen(coordinates)
         if (expandLayout && (coordinates.getOrNull(1) ?: 0) >= toolBarHeight) {

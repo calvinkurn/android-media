@@ -209,16 +209,25 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         remoteConfig = FirebaseRemoteConfigImpl(context)
     }
 
-    fun startSaldoCoachMarkFlow(anchorView: View?) {
-        if (activity is SaldoDepositActivity) {
-            val anchorViewList = if (isSellerEnabled) arrayListOf(
-                saldo_buyer_deposit_text,
-                saldo_seller_deposit_text,
-                anchorView
-            )
-            else arrayListOf(anchorView)
+    private fun addBalanceAnchorsForCoachMark(isBalanceShown: Boolean) {
+        if (!saldoCoachMarkController.isSaldoBalanceWidgetReady) {
+            saldoCoachMarkController.anchorViewList.add(0, saldo_buyer_deposit_text)
+            saldoCoachMarkController.anchorViewList.add(1, saldo_seller_deposit_text)
+        }
+        saldoCoachMarkController.isSaldoBalanceWidgetReady = true
+        saldoCoachMarkController.balancePreConditions = isBalanceShown
 
-            saldoCoachMarkController.anchorViewList = anchorViewList
+        prepareSaldoCoachMark()
+    }
+
+    fun startSaldoCoachMarkFlow(anchorView: View?) {
+        saldoCoachMarkController.isSalesTabWidgetReady = true
+        saldoCoachMarkController.anchorViewList.add(anchorView)
+        prepareSaldoCoachMark()
+    }
+
+    private fun prepareSaldoCoachMark() {
+        if (activity is SaldoDepositActivity) {
             saldoCoachMarkController.startCoachMark {
                 sp_app_bar_layout.setExpanded(true)
             }
@@ -235,7 +244,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         }
         setViewModelObservers()
 
-        expandLayout = isSellerEnabled
+        expandLayout = true
 
         totalBalanceTitle = view.findViewById(com.tokopedia.saldodetails.R.id.saldo_deposit_text)
 
@@ -376,6 +385,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun onUserSaldoBalanceLoaded(saldo: Saldo) {
+        addBalanceAnchorsForCoachMark(true)
         cardWithdrawBalance.visible()
         localLoadSaldoBalance.gone()
         setSellerSaldoBalance(
@@ -417,6 +427,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     private fun onSaldoBalanceLoadingError() {
         saldoDetailsAnalytics.sendApiFailureEvents(SaldoDetailsConstants.EventLabel.SALDO_FETCH_BALANCE)
+        addBalanceAnchorsForCoachMark(false)
         cardWithdrawBalance.gone()
         localLoadSaldoBalance.visible()
         localLoadSaldoBalance.refreshBtn?.setOnClickListener {
