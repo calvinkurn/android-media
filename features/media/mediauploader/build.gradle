@@ -56,6 +56,7 @@ dependencies {
         transitive = true
     }
 
+    debugImplementation rootProject.ext.miscDependencies.workManager
     debugImplementation projectOrAar(rootProject.ext.libraries.imagePickerCommon)
     debugImplementation projectOrAar(rootProject.ext.libraries.applink)
     debugImplementation projectOrAar(rootProject.ext.features.medialoader)
