@@ -1,12 +1,16 @@
 package com.tokopedia.media.loader.common
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.*
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.media.loader.module.GlideApp
@@ -56,6 +60,7 @@ abstract class MediaLoaderFactory<T> {
         }
     }
 
+    @SuppressLint("CheckResult")
     fun setup(
             properties: Properties,
             request: GlideRequest<T>
