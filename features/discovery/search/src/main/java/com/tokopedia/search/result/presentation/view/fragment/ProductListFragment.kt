@@ -33,7 +33,6 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -48,12 +47,17 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.SavedOption
+import com.tokopedia.filter.common.helper.getFilterParams
+import com.tokopedia.filter.common.helper.getSortFilterCount
+import com.tokopedia.filter.common.helper.getSortFilterParamsString
+import com.tokopedia.filter.common.helper.isSortHasDefaultValue
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.combinePriceFilterIfExists
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper.generateOptionFromUniqueId
+import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -81,6 +85,7 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProductDataView
 import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
@@ -96,6 +101,7 @@ import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCardListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
+import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
@@ -111,13 +117,6 @@ import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.applyQuickFilterElevation
 import com.tokopedia.search.utils.decodeQueryParameter
-import com.tokopedia.filter.common.helper.getFilterParams
-import com.tokopedia.filter.common.helper.getSortFilterCount
-import com.tokopedia.filter.common.helper.getSortFilterParamsString
-import com.tokopedia.filter.common.helper.isSortHasDefaultValue
-import com.tokopedia.iris.Iris
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
-import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -136,7 +135,8 @@ import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
-import java.util.*
+import java.util.ArrayList
+import java.util.HashMap
 import javax.inject.Inject
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -674,21 +674,6 @@ class ProductListFragment: BaseDaggerFragment(),
                         override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                             handleWishlistAction(productCardOptionsModel)
                         }
-                    },
-                    addToCartCallback = object : ProductCardOptionsResult {
-                        override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
-                            handleAddToCartAction(productCardOptionsModel)
-                        }
-                    },
-                    visitShopCallback = object : ProductCardOptionsResult {
-                        override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
-                            handleVisitShopAction()
-                        }
-                    },
-                    shareProductCallback = object : ProductCardOptionsResult {
-                        override fun onReceiveResult(productCardOptionsModel: ProductCardOptionsModel) {
-                            handleShareProductAction(productCardOptionsModel)
-                        }
                     }
             )
         }
@@ -708,10 +693,6 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.handleWishlistAction(productCardOptionsModel)
     }
 
-    private fun handleAddToCartAction(productCardOptionsModel: ProductCardOptionsModel) {
-        presenter?.handleAddToCartAction(productCardOptionsModel)
-    }
-
     override fun trackSuccessAddToCartEvent(isAds: Boolean, addToCartDataLayer: Any) {
         SearchTracking.trackEventAddToCart(queryKey, isAds, addToCartDataLayer)
     }
@@ -728,10 +709,6 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun handleVisitShopAction() {
-        presenter?.handleVisitShopAction()
-    }
-
     override fun routeToShopPage(shopId: String?) {
         context?.let {
             RouteManager.route(it, ApplinkConst.SHOP, shopId)
@@ -740,10 +717,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackEventGoToShopPage(dataLayer: Any) {
         SearchTracking.trackEventGoToShopPage(queryKey, dataLayer)
-    }
-
-    private fun handleShareProductAction(productCardOptionsModel: ProductCardOptionsModel) {
-        SearchTracking.trackEventShareProduct(queryKey, productCardOptionsModel.productId)
     }
 
     override fun onPause() {
