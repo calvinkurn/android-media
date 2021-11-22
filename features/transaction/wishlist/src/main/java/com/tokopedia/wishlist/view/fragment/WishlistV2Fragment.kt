@@ -261,10 +261,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             } else {
                 pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+                statusbar.gone()
             }
-            val icons = IconBuilder(
-                    IconBuilderFlag(pageSource = pageSource)
-            )
+            val icons = IconBuilder(IconBuilderFlag(pageSource = pageSource))
             icons.apply {
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}

@@ -3,8 +3,6 @@
     android:id="@+id/wishlist_card"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
