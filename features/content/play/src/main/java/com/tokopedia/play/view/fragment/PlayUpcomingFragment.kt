@@ -9,11 +9,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -34,7 +31,9 @@ import com.tokopedia.play.view.viewmodel.PlayUpcomingViewModel
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
 import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -55,8 +54,8 @@ class PlayUpcomingFragment @Inject constructor(
     private val upcomingTimer by viewComponent { UpcomingTimerViewComponent(it, R.id.view_upcoming_timer, this) }
     private val actionButton by viewComponent { UpcomingActionButtonViewComponent(it, R.id.btn_action, this) }
 
-    private lateinit var ivUpcomingCover: AppCompatImageView
-    private lateinit var tvUpcomingTitle: AppCompatTextView
+    private lateinit var ivUpcomingCover: ImageUnify
+    private lateinit var tvUpcomingTitle: Typography
 
     private lateinit var playUpcomingViewModel: PlayUpcomingViewModel
     private lateinit var playParentViewModel: PlayParentViewModel
@@ -210,8 +209,7 @@ class PlayUpcomingFragment @Inject constructor(
     private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
         if(prevState?.generalInfo != currState.generalInfo) {
             currState.generalInfo.let {
-                if(it.coverUrl.isNotEmpty())
-                    Glide.with(requireView()).load(it.coverUrl).into(ivUpcomingCover)
+                if(it.coverUrl.isNotEmpty()) ivUpcomingCover.setImageUrl(it.coverUrl)
 
                 tvUpcomingTitle.text = it.title
 
