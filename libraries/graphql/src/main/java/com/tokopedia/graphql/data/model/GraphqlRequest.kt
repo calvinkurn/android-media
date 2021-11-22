@@ -1,6 +1,5 @@
 package com.tokopedia.graphql.data.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.FingerprintManager
@@ -11,15 +10,12 @@ import java.lang.reflect.Type
  * Object of this class will be dispatch over the network
  */
 class GraphqlRequest {
-    @Expose
     @SerializedName(GraphqlConstant.GqlApiKeys.QUERY)
     var query /*Mandatory parameter*/: String = ""
 
-    @Expose
     @SerializedName(GraphqlConstant.GqlApiKeys.VARIABLES)
     var variables: Map<String, Any?>? = null
 
-    @Expose
     @SerializedName(GraphqlConstant.GqlApiKeys.OPERATION_NAME)
     var operationName: String? = null
         private set
