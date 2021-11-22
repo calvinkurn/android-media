@@ -4,8 +4,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultBannedProductsTickerLayoutBinding
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
-import kotlinx.android.synthetic.main.search_result_banned_products_ticker_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BannedProductsTickerViewHolder(itemView: View): AbstractViewHolder<BannedProductsTickerDataView>(itemView) {
 
@@ -15,10 +16,14 @@ class BannedProductsTickerViewHolder(itemView: View): AbstractViewHolder<BannedP
         val LAYOUT = R.layout.search_result_banned_products_ticker_layout
     }
 
+    private var binding: SearchResultBannedProductsTickerLayoutBinding? by viewBinding()
+
     override fun bind(element: BannedProductsTickerDataView?) {
         if (element == null) return
 
-        itemView.searchResultBannedProductsTicker?.visibility = View.VISIBLE
-        itemView.searchResultBannedProductsTicker?.setHtmlDescription(element.htmlErrorMessage)
+        binding?.searchResultBannedProductsTicker?.let {
+            it.visibility = View.VISIBLE
+            it.setHtmlDescription(element.htmlErrorMessage)
+        }
     }
 }

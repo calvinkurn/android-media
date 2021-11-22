@@ -24,7 +24,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:text="@string/title_parameter_relief_new_seller"
+        tools:text="@string/title_parameter_relief_new_seller"
         app:layout_constraintBottom_toBottomOf="@id/icProtectionCheck"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icProtectionCheck"
@@ -91,7 +91,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/icDescParameterRelief"
                         app:typographyType="body_3"
-                        android:text="@string/desc_new_seller_parameter_relief" />
+                        tools:text="@string/desc_new_seller_parameter_relief" />
 
                     <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/icDescParameterRelief"
