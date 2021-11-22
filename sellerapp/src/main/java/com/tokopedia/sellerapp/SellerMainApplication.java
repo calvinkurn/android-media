@@ -53,6 +53,7 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.SlicePermission;
 
 import org.jetbrains.annotations.NotNull;
