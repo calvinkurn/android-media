@@ -399,6 +399,7 @@ class FlightBookingViewModelTest {
             item.passengerBirthdate shouldBe DUMMY_BOOKING_PASSENGER[index].passengerBirthdate
             item.passengerFirstName shouldBe DUMMY_BOOKING_PASSENGER[index].passengerFirstName
             item.passengerLastName shouldBe DUMMY_BOOKING_PASSENGER[index].passengerLastName
+            item.identificationNumber shouldBe DUMMY_BOOKING_PASSENGER[index].identificationNumber
         }
     }
 
@@ -567,6 +568,7 @@ class FlightBookingViewModelTest {
         currentBookingParam.insurances.size shouldBe flightBookingModel.insurances.size
         currentBookingParam.isDomestic shouldBe flightBookingModel.isDomestic
         currentBookingParam.isMandatoryDob shouldBe flightBookingModel.isMandatoryDob
+        currentBookingParam.isMandatoryIdentificationNumber shouldBe flightBookingModel.isMandatoryIdentificationNumber
         currentBookingParam.returnId shouldBe flightBookingModel.returnId
         currentBookingParam.returnTerm shouldBe flightBookingModel.returnTerm
         currentBookingParam.searchParam.departureDate shouldBe flightBookingModel.searchParam.departureDate
@@ -659,6 +661,7 @@ class FlightBookingViewModelTest {
         viewModel.setCartId(DUMMY_BOOKING_MODEL.cartId)
         val flightPriceModel = viewModel.getFlightPriceModel()
         val mandatoryDob = viewModel.getMandatoryDOB()
+        val mandatoryNIK = viewModel.getMandatoryIdentificationNumber()
         val departureId = viewModel.getDepartureId()
         val returnId = viewModel.getReturnId()
         val departureTerm = viewModel.getDepartureTerm()
@@ -702,6 +705,7 @@ class FlightBookingViewModelTest {
         departureDate shouldBe flightBookingModel.departureDate
         isDomestic shouldBe flightBookingModel.isDomestic
         cartId shouldBe flightBookingModel.cartId
+        mandatoryNIK shouldBe flightBookingModel.isMandatoryIdentificationNumber
     }
 
     @Test
