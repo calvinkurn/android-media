@@ -106,6 +106,9 @@ class QuestWidgetView @JvmOverloads constructor(
 
     private fun setData(data: QuestData?) {
 
+        shimmerQuestWidget.hide()
+        constraintLayoutQuestWidget.show()
+
         tvLabel.text = data?.widgetData?.questWidgetList?.pageDetail?.title
         tvLihat.text = data?.widgetData?.questWidgetList?.pageDetail?.cta?.text
 
