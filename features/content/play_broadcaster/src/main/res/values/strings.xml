@@ -204,4 +204,7 @@
     <string name="play_bro_pinned_msg_form_title">Pin Chat</string>
     <string name="play_bro_pinned_msg_form_placeholder">Tulis Pin Chat</string>
     <string name="play_bro_pinned_msg_form_instruction">Buat pin chat untuk kasih info penting ke penontonmu selama Live berlangsung.</string>
+
+    <!-- Action Bar Live -->
+    <string name="play_bro_mock_room_title">Review Aksesoris Sepeda</string>
 </resources>
