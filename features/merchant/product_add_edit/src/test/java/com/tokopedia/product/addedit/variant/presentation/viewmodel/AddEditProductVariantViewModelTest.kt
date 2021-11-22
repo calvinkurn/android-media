@@ -1,18 +1,22 @@
 package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.detail.domain.model.BlacklistKeyword
+import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidation
+import com.tokopedia.product.addedit.detail.domain.model.GetProductTitleValidationResponse
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
 import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.util.setPrivateProperty
-import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
+import com.tokopedia.product.addedit.variant.data.model.*
 import com.tokopedia.product.addedit.variant.data.model.Unit
-import com.tokopedia.product.addedit.variant.data.model.UnitValue
-import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_ONE_POSITION
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_VALUE_LEVEL_TWO_POSITION
 import com.tokopedia.product.addedit.variant.presentation.model.*
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -21,7 +25,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.util.*
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFixture() {
@@ -436,6 +439,141 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
+    fun `getAllVariantFromKeyword should invoke Success variantTypeSearchResult`() = runBlocking {
+        // given
+        val givenKeywordNotExceed = ""
+        val givenKeywordExceed = "test"
+        coEvery {
+            getAllVariantUseCase.getDataFiltered()
+        } returns emptyList()
+
+        // min keyword test
+        viewModel.getAllVariantFromKeyword(givenKeywordNotExceed)
+        assert(viewModel.variantTypeSearchResult.getOrAwaitValue() is Success)
+
+        // exceed min keyword test
+        viewModel.getAllVariantFromKeyword(givenKeywordExceed)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        coVerify {
+            getAllVariantUseCase.getDataFiltered()
+        }
+        assert(viewModel.variantTypeSearchResult.getOrAwaitValue() is Success)
+    }
+
+    @Test
+    fun `getAllVariantFromKeyword should invoke Error variantTypeSearchResult`() = runBlocking {
+        val givenKeywordExceed = "test"
+        coEvery {
+            getAllVariantUseCase.getDataFiltered()
+        } throws MessageErrorException("error")
+
+        viewModel.getAllVariantFromKeyword(givenKeywordExceed)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        coVerify {
+            getAllVariantUseCase.getDataFiltered()
+        }
+        assert(viewModel.variantTypeSearchResult.getOrAwaitValue() is Fail)
+    }
+
+    @Test
+    fun `getVariantDetailFromVariantId should invoke Success getVariantDetailResult`() = runBlocking {
+        // given
+        val givenVariantId = 123
+        coEvery {
+            getVariantDataByIdUseCase.executeOnBackground()
+        } returns GetVariantDataByIdResponse(GetVariantDataById(VariantDetail()))
+
+        // when
+        viewModel.getVariantDetailFromVariantId(givenVariantId)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        //then
+        coVerify {
+            getVariantDataByIdUseCase.executeOnBackground()
+        }
+        assert(viewModel.getVariantDetailResult.getOrAwaitValue() is Success)
+    }
+
+    @Test
+    fun `getVariantDetailFromVariantId should invoke Error getVariantDetailResult`() = runBlocking {
+        // given
+        val givenVariantId = 123
+        coEvery {
+            getVariantDataByIdUseCase.executeOnBackground()
+        } throws MessageErrorException()
+
+        // when
+        viewModel.getVariantDetailFromVariantId(givenVariantId)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        //then
+        coVerify {
+            getVariantDataByIdUseCase.executeOnBackground()
+        }
+        assert(viewModel.getVariantDetailResult.getOrAwaitValue() is Fail)
+    }
+
+    @Test
+    fun `validateIllegalVariantTitle should invoke NO_ERROR variantTitleValidationStatus`() = runBlocking {
+        // given
+        val givenProductName = "123"
+        coEvery {
+            titleValidationUseCase.executeOnBackground()
+        } returns GetProductTitleValidationResponse()
+
+        // when
+        viewModel.validateIllegalVariantTitle(givenProductName)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        //then
+        coVerify {
+            titleValidationUseCase.executeOnBackground()
+        }
+        assertEquals(viewModel.variantTitleValidationStatus.getOrAwaitValue(),
+                VariantTitleValidationStatus.NO_ERROR)
+    }
+
+    @Test
+    fun `validateIllegalVariantTitle should invoke ILLEGAL_WORD variantTitleValidationStatus`() = runBlocking {
+        // given
+        val givenProductName = "123"
+        coEvery {
+            titleValidationUseCase.executeOnBackground()
+        } returns GetProductTitleValidationResponse(GetProductTitleValidation(
+                blacklistKeyword = listOf(BlacklistKeyword(keyword = "shopee"))
+        ))
+
+        // when
+        viewModel.validateIllegalVariantTitle(givenProductName)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        //then
+        coVerify {
+            titleValidationUseCase.executeOnBackground()
+        }
+        assertEquals(viewModel.variantTitleValidationStatus.getOrAwaitValue(),
+                VariantTitleValidationStatus.ILLEGAL_WORD)
+    }
+
+    @Test
+    fun `validateIllegalVariantTitle should invoke error variantTitleValidationStatus`() = runBlocking {
+        // given
+        val givenProductName = "123"
+        coEvery {
+            titleValidationUseCase.executeOnBackground()
+        } throws MessageErrorException()
+
+        // when
+        viewModel.validateIllegalVariantTitle(givenProductName)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        //then
+        coVerify {
+            titleValidationUseCase.executeOnBackground()
+        }
+    }
+
+    @Test
     fun `custom should be added to respective variant unit inside selected variant data`() {
         val customVuv = UnitValue()
         val variantUnitId = 1
@@ -758,5 +896,38 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
         val result2 = viewModel.callPrivateFunc("mapVariantPhoto", VariantPhoto("", "")) as List<*>
         assert(result2.isEmpty())
+    }
+
+    @Test
+    fun `createCustomVariantTypeModel should return custom VariantDetail`() {
+        val variantNameTest = "WarnaX"
+        val testResult = viewModel.createCustomVariantTypeModel(variantNameTest)
+        assertEquals(testResult.name, variantNameTest)
+    }
+
+    @Test
+    fun `validateVariantTitle should return validation status`() {
+        val variantNameValid = "valid varian"
+        val variantNameMinChar = "aa"
+        val variantNameIllegalString = "<<>>>>"
+        val variantNameUsed = "usedvar"
+        val variantDetailsUsed = listOf(VariantDetail(name = variantNameUsed))
+        val variantDetailsEmpty = listOf<VariantDetail>()
+
+        viewModel.validateVariantTitle(variantNameValid, variantDetailsUsed)
+        coVerify { titleValidationUseCase.executeOnBackground() }
+
+        viewModel.validateVariantTitle(variantNameMinChar, variantDetailsEmpty)
+        val testResultMinChar = viewModel.variantTitleValidationStatus.getOrAwaitValue()
+
+        viewModel.validateVariantTitle(variantNameIllegalString, variantDetailsEmpty)
+        val testResultIllegalString = viewModel.variantTitleValidationStatus.getOrAwaitValue()
+
+        viewModel.validateVariantTitle(variantNameUsed, variantDetailsUsed)
+        val testResultUsedName = viewModel.variantTitleValidationStatus.getOrAwaitValue()
+
+        assertEquals(testResultMinChar, VariantTitleValidationStatus.MINIMUM_CHAR)
+        assertEquals(testResultIllegalString, VariantTitleValidationStatus.SYMBOL_ERROR)
+        assertEquals(testResultUsedName, VariantTitleValidationStatus.USED_NAME)
     }
 }
