@@ -88,19 +88,19 @@
         android:maxLines="2"
         android:ellipsize="end"
         android:text="@string/discovery_calendar_line"
-        app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/calendar_title"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
-    <androidx.constraintlayout.widget.Guideline
+    <View
         android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5" />
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/calendar_desc"
+        app:layout_constraintBottom_toTopOf="@id/calendar_button_parent"/>
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/calendar_image"
@@ -111,7 +111,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/guideline" />
+        app:layout_constraintTop_toBottomOf="@id/calendar_desc" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/calendar_button_parent"
@@ -120,7 +120,8 @@
         android:layout_margin="@dimen/dp_8"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="@dimen/dp_0"
-        app:layout_constraintBottom_toBottomOf="@id/calendar_image"
+        app:layout_constraintTop_toBottomOf="@id/guideline"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 

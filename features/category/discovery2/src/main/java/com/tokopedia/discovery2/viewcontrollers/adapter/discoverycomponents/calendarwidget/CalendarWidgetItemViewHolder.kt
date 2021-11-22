@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -17,6 +18,7 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -43,15 +45,15 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         getSubComponent().inject(calendarWidgetItemViewModel)
 
         calendarWidgetItemViewModel.components.let {
-            setView(it.properties?.calendarLayout)
+            setView(it.properties, it.data?.firstOrNull())
             it.data?.firstOrNull()?.apply {
                 setUpCalendar(this)
             }
         }
     }
 
-    private fun setView(calendarLayout: String?) {
-        when (calendarLayout) {
+    private fun setView(properties: Properties?, dataItem: DataItem?) {
+        when (properties?.calendarLayout) {
             Calendar.SINGLE -> {
                 calendarCardUnify.removeAllViews()
                 calendarCardUnify.addView(
@@ -71,17 +73,17 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                         false
                     )
                 )
-                setLayoutWidth(calendarLayout)
+                setLayoutWidth(properties, dataItem)
             }
         }
     }
 
-    private fun setLayoutWidth(calendarLayout: String?) {
+    private fun setLayoutWidth(properties: Properties?, dataItem: DataItem?) {
         val calendarImage: ImageUnify = itemView.findViewById(R.id.calendar_image)
         val width = Resources.getSystem().displayMetrics.widthPixels
         val layoutParams = calendarCardUnify.layoutParams
         val imageLayoutParams = calendarImage.layoutParams
-        when (calendarLayout) {
+        when (properties?.calendarLayout) {
             Calendar.CAROUSEL -> {
                 layoutParams.width = (width / 2.5).roundToInt()
                 layoutParams.height =
@@ -93,7 +95,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_3)
             }
             Calendar.DOUBLE, Calendar.GRID -> {
-                if(calendarLayout == Calendar.GRID){
+                if(properties?.calendarLayout == Calendar.GRID){
                     layoutParams.width =
                         ((width)/ 2)
                     imageLayoutParams.width =
@@ -123,6 +125,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 itemView.findViewById<Typography>(R.id.calendar_date).setType(Typography.BODY_3)
             }
         }
+        if(dataItem?.imageUrl.isNullOrEmpty()){
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+        }
+        if(dataItem?.maxHeight != 0 && properties?.calendarType == Calendar.DYNAMIC || (properties?.calendarType == Calendar.STATIC && properties.calendarLayout == Calendar.CAROUSEL)){
+            layoutParams.height = dataItem?.maxHeight ?: 0
+        }
         calendarCardUnify.layoutParams = layoutParams
     }
 
@@ -138,7 +146,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val calendarButton: UnifyButton = itemView.findViewById(R.id.calendar_button)
         val calendarButtonParent: CardView = itemView.findViewById(R.id.calendar_button_parent)
         dataItem.apply {
-            calendarImage.loadImage(imageUrl)
+            if(imageUrl.isNullOrEmpty()){
+                calendarImage.gone()
+            } else {
+                calendarImage.show()
+                calendarImage.loadImage(imageUrl)
+            }
             if (!titleLogoUrl.isNullOrEmpty()) {
                 calendarTitle.hide()
                 calendarTitleImage.show()

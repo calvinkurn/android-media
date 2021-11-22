@@ -7,6 +7,7 @@ import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -18,7 +19,7 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 class CalendarWidgetCarouselViewModel(
-    application: Application,
+    val application: Application,
     val components: ComponentsItem,
     val position: Int
 ) : DiscoveryBaseViewModel(), CoroutineScope {
@@ -32,6 +33,7 @@ class CalendarWidgetCarouselViewModel(
     private var isLoading = false
     private val calendarCarouselList: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
     private val calendarLoadError: MutableLiveData<Boolean> = MutableLiveData()
+    private var maxHeight = 0
 
     fun getCalendarCarouselItemsListData(): LiveData<ArrayList<ComponentsItem>> =
         calendarCarouselList
@@ -77,16 +79,30 @@ class CalendarWidgetCarouselViewModel(
         components.pageLoadedCounter = 1
     }
 
-    private fun setCalendarList() {
+    private suspend fun setCalendarList() {
         getCalendarList()?.let {
             if (it.isNotEmpty()) {
                 calendarLoadError.value = false
+                maxHeight = maxOf(reSyncProductCardHeight(it), maxHeight)
+                it.forEach { item->
+                    item.data?.firstOrNull()?.maxHeight = maxHeight
+                }
                 calendarCarouselList.value = addLoadMore(it)
                 syncData.value = true
             } else {
                 calendarLoadError.value = true
             }
         }
+    }
+
+    private suspend fun reSyncProductCardHeight(list: ArrayList<ComponentsItem>) : Int{
+        val calendarCardModelArray = ArrayList<DataItem>()
+        list.forEach {
+            it.data?.firstOrNull()?.let { dataItem ->
+                calendarCardModelArray.add(dataItem)
+            }
+        }
+        return calendarCardModelArray.getMaxHeightForCarouselView(application.applicationContext, Dispatchers.Default, list.firstOrNull()?.properties?.calendarLayout)
     }
 
     fun getCalendarList(): ArrayList<ComponentsItem>? {
@@ -108,6 +124,10 @@ class CalendarWidgetCarouselViewModel(
                 )
             ) {
                 getCalendarList()?.let {
+                    maxHeight = maxOf(reSyncProductCardHeight(it), maxHeight)
+                    it.forEach { item->
+                        item.data?.firstOrNull()?.maxHeight = maxHeight
+                    }
                     isLoading = false
                     calendarCarouselList.value = addLoadMore(it)
                     syncData.value = true

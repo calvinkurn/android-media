@@ -451,6 +451,8 @@ data class DataItem(
 
         var isWishList: Boolean = false,
 
+        var maxHeight : Int = 0,
+
         var wishlistUrl: String? = ""
 ) {
     val leftMargin: Int
