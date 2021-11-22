@@ -103,9 +103,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_HOTEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MP
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.unifyorderhistory.util.UohUtils
@@ -441,27 +439,27 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     PARAM_MARKETPLACE_DALAM_PROSES -> {
                         status = DALAM_PROSES
                         statusLabel = TRANSAKSI_BERLANGSUNG
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_WAITING_CONFIRMATION -> {
                         status = STATUS_MENUNGGU_KONFIRMASI
                         statusLabel = MENUNGGU_KONFIRMASI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_PROCESSED -> {
                         status = STATUS_DIPROSES
                         statusLabel = DIPROSES
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_SENT -> {
                         status = STATUS_DIKIRIM
                         statusLabel = DIKIRIM
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_DELIVERED -> {
                         status = STATUS_TIBA_DI_TUJUAN
                         statusLabel = TIBA_DI_TUJUAN
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_DIGITAL -> {
                         status = ""
@@ -511,7 +509,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     PARAM_TRAVEL_ENTERTAINMENT -> {
                         status = ""
                         statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
+                        paramUohOrder.verticalCategory = CATEGORIES_TRAVELENT
                     }
                     PARAM_UOH_ONGOING -> {
                         status = DALAM_PROSES
