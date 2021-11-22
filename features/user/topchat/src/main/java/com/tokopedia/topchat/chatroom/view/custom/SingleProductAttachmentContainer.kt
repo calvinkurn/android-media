@@ -97,6 +97,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
+    private var isCarousel = false
     private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
     constructor(context: Context?) : super(context) {
@@ -163,6 +164,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                         R.styleable.SingleProductAttachmentContainer_widthMultiplier,
                         DEFAULT_WIDTH_MULTIPLIER
                 )
+                isCarousel = getBoolean(
+                    R.styleable.SingleProductAttachmentContainer_isCarousel,
+                    false
+                )
             } finally {
                 recycle()
             }
@@ -197,6 +202,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindIsLoading(product)
             bindProductClick(product)
             bindImage(product)
+            bindImageSize(product)
             bindImageClick(product)
             bindProductName(product)
             bindVariant(product)
@@ -295,6 +301,20 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindImage(product: ProductAttachmentUiModel) {
         thumbnail?.loadImageRounded(product.productImage, 8f.toPx())
+    }
+
+    private fun bindImageSize(product: ProductAttachmentUiModel) {
+        val thumbnailSize = if (isCarousel) {
+            80f.toPx()
+        } else {
+            104f.toPx()
+        }
+        val lp = thumbnail?.layoutParams
+        lp?.apply {
+            height = thumbnailSize.toInt()
+            width = thumbnailSize.toInt()
+        }
+        thumbnail?.layoutParams = lp
     }
 
     private fun bindProductName(product: ProductAttachmentUiModel) {
