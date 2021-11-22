@@ -22,28 +22,15 @@ class ShopProductsEmptyViewHolder(
         val LAYOUT = R.layout.new_shop_products_empty_state
     }
 
-    init {
-        initLayout()
-    }
-
     interface ShopProductsEmptyViewHolderListener {
         fun chooseProductClicked()
     }
 
     private val viewBinding : NewShopProductsEmptyStateBinding? by viewBinding()
-    private var imageViewEmptyImage: ImageView? = null
-    private var textTitle: Typography? = null
-    private var textDescription: Typography? = null
-    private var buttonChooseProduct: UnifyButton? = null
-
-
-    private fun initLayout() {
-        imageViewEmptyImage = viewBinding?.imageViewEmptyImage
-        textTitle = viewBinding?.textTitle
-        textDescription = viewBinding?.textDescription
-        buttonChooseProduct = viewBinding?.buttonChooseProduct
-    }
-
+    private var imageViewEmptyImage: ImageView? = viewBinding?.imageViewEmptyImage
+    private var textTitle: Typography? = viewBinding?.textTitle
+    private var textDescription: Typography? = viewBinding?.textDescription
+    private var buttonChooseProduct: UnifyButton? = viewBinding?.buttonChooseProduct
 
     override fun bind(element: ShopEmptyProductUiModel) {
         imageViewEmptyImage?.loadImage(URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE) {

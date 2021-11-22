@@ -13,9 +13,7 @@ import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topchat.FileUtil
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -75,12 +73,6 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var compressImageUseCase: CompressImageUseCase
 
     @RelaxedMockK
-    protected lateinit var seamlessLoginUsecase: SeamlessLoginUsecase
-
-    @RelaxedMockK
-    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCase
-
-    @RelaxedMockK
     protected lateinit var addWishListUseCase: AddWishListUseCase
 
     @RelaxedMockK
@@ -88,9 +80,6 @@ abstract class BaseTopChatRoomPresenterTest {
 
     @RelaxedMockK
     protected lateinit var uploadImageUseCase: TopchatUploadImageUseCase
-
-    @RelaxedMockK
-    protected lateinit var orderProgressUseCase: OrderProgressUseCase
 
     @RelaxedMockK
     protected lateinit var groupStickerUseCase: ChatListGroupStickerUseCase
@@ -188,10 +177,6 @@ abstract class BaseTopChatRoomPresenterTest {
         val wsResponseProductAttachmentString = FileUtil.readFileContent(
             "/ws_response_product_attachment.json"
         )
-        val successGetOrderProgressResponse: OrderProgressResponse = FileUtil.parse(
-            "/success_get_order_progress.json",
-            OrderProgressResponse::class.java
-        )
         val successGetChatListGroupSticker: ChatListGroupStickerResponse = FileUtil.parse(
             "/success_chat_list_group_sticker.json",
             ChatListGroupStickerResponse::class.java
@@ -263,12 +248,9 @@ abstract class BaseTopChatRoomPresenterTest {
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
                 compressImageUseCase,
-                seamlessLoginUsecase,
-                getChatRoomSettingUseCase,
                 addWishListUseCase,
                 removeWishListUseCase,
                 uploadImageUseCase,
-                orderProgressUseCase,
                 groupStickerUseCase,
                 chatAttachmentUseCase,
                 chatToggleBlockChat,
