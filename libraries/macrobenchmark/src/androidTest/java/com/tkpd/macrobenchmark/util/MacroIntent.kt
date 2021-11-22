@@ -7,6 +7,7 @@ object MacroIntent {
     /**
      * Target test package
      * In this test class, the target is :testapp with package com.tokopedia.tkpd
+     * Target package for dynamic feature module is com.tokopedia.tkpd.df_${module_name}
      */
     const val TKPD_PACKAGE_NAME = "com.tokopedia.tkpd"
 
@@ -57,7 +58,7 @@ object MacroIntent {
         }
     }
 
-    object TokopediaNowHome {
+    object TokopediaNow {
         /**
          * Target recyclerview
          * Capture view by resource id
