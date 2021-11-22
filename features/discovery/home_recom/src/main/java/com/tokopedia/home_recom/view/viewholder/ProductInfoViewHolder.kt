@@ -12,6 +12,8 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.utils.view.binding.viewBinding
+import java.lang.Exception
+import java.lang.reflect.InvocationTargetException
 
 
 class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : AbstractViewHolder<ProductInfoDataModel>(view) {
@@ -27,7 +29,16 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
         if (element.productDetailData == null) {
             // show error
             itemView.show()
-            emptyBinding?.containerEmpty?.show()
+            try {
+                emptyBinding?.containerEmpty?.show()
+            } catch ( e: InvocationTargetException) {
+
+                // Answer:
+                e.cause?.printStackTrace();
+            } catch (e: Exception) {
+                // generic exception handling
+                e.printStackTrace();
+            }
         } else {
             initView(element)
         }
