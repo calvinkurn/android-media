@@ -150,7 +150,6 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                         )
                     }
                     if(component.properties?.calendarLayout.equals(GRID)) {
-                        listComponents.add(component)
                         component.getComponentsItem()?.let {
                             listComponents.addAll(getDiscoveryComponentList(it))
                         }
