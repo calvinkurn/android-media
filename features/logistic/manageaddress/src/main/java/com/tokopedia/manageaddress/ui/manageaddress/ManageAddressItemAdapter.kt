@@ -61,11 +61,6 @@ class ManageAddressItemAdapter(private val listener: ManageAddressItemAdapterLis
     }
 
     inner class ManageAddressViewHolder(private val binding: ItemManagePeopleAddressBinding, private val listener: ManageAddressItemAdapterListener) : RecyclerView.ViewHolder(binding.root) {
-        //val pinpointText = itemView.findViewById<Typography>(R.id.tv_pinpoint_state)
-        //val imageLocation = itemView.findViewById<IconUnify>(R.id.img_location_state)
-        //val btnPrimary = itemView.findViewById<UnifyButton>(R.id.btn_primary)
-        //val btnSecondary = itemView.findViewById<UnifyButton>(R.id.btn_secondary)
-        //val cardAddress = itemView.findViewById<CardUnify>(R.id.card_address)
         val assetMoreBtn = AppCompatResources.getDrawable(itemView.context, R.drawable.ic_more_horiz)
 
         @SuppressLint("SetTextI18n")
