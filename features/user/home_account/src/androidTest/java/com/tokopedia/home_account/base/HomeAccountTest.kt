@@ -3,9 +3,6 @@ package com.tokopedia.home_account.base
 import android.content.Context
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
@@ -18,7 +15,6 @@ import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
 import com.tokopedia.home_account.stub.di.DaggerFakeBaseAppComponent
 import com.tokopedia.home_account.stub.di.FakeAppModule
 import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
-import com.tokopedia.home_account.test.R
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -78,12 +74,6 @@ abstract class HomeAccountTest {
         test.invoke()
     }
 
-    fun Unit.action(action:() -> Unit) {
-        this.apply {
-            action.invoke()
-        }
-    }
-
     fun Unit.validate(query: List<Map<String, String>>) {
         Thread.sleep(3000)
         val queryMatcher = cassavaTestRule.validate(
@@ -95,20 +85,6 @@ abstract class HomeAccountTest {
         setupHomeAccountUserActivity {
             it.putExtras(Intent(context, HomeAccountUserActivityStub::class.java))
         }
-        inflateTestFragment()
-    }
-
-
-
-    private fun inflateTestFragment() {
-//        waitForFragmentResumed()
-    }
-
-    protected fun waitForFragmentResumed() {
-        IdlingRegistry.getInstance().register(fragmentTransactionIdling)
-        Espresso.onView(ViewMatchers.withId(R.id.home_account_user_fragment_rv))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        IdlingRegistry.getInstance().unregister(fragmentTransactionIdling)
     }
 
     private fun setupHomeAccountUserActivity(
