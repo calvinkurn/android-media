@@ -146,18 +146,23 @@ abstract class BaseToolbarActivity extends BaseActivity {
                     }
                 }
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     private void tintIcon(MenuItem menuItem) {
-        Drawable drawable = menuItem.getIcon();
-        if (drawable != null) {
-            // If we don't mutate the drawable, then all drawable's with this id will have a color
-            // filter applied to it.
-            drawable.mutate();
-            drawable.setColorFilter(ContextCompat.getColor(this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN900), PorterDuff.Mode.SRC_ATOP);
+        try {
+            Drawable drawable = menuItem.getIcon();
+            if (drawable != null) {
+                // If we don't mutate the drawable, then all drawable's with this id will have a color
+                // filter applied to it.
+                drawable.mutate();
+                drawable.setColorFilter(ContextCompat.getColor(this,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN900), PorterDuff.Mode.SRC_ATOP);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -168,7 +173,8 @@ abstract class BaseToolbarActivity extends BaseActivity {
                     com.tokopedia.unifyprinciples.R.color.Unify_NN950)),
                     0, spanString.length(), 0);
             menuItem.setTitle(spanString);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
