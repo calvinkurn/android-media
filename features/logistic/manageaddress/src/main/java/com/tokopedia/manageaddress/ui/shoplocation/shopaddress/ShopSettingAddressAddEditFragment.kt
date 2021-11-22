@@ -30,10 +30,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private var selectedDistrictId = -1L
     private var selectedCityId = -1L
     private var selectedProvinceId = -1L
-    private val zipCodes: MutableList<String> = mutableListOf()
-    private val zipCodesAdapter: ArrayAdapter<String>  by lazy {
-        ArrayAdapter<String>(requireActivity(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row, com.tokopedia.design.R.id.item, zipCodes)
-    }
+    private var zipCodes: List<String> = ArrayList()
     private var binding by autoClearedNullable<FragmentShopAddressAddBinding>()
 
     @Inject lateinit var presenter: ShopSettingAddressAddEditPresenter
@@ -88,8 +85,6 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             false }
         binding?.postalCode?.textFieldInput?.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !binding?.postalCode?.textFieldInput?.text.toString()[0].isDigit())
             binding?.postalCode?.textFieldInput?.setText("")}
-
-        binding?.postalCode?.textFieldInput?.setAdapter(zipCodesAdapter)
 
         binding?.editTextDistrict?.textFieldInput?.run {
             isFocusable = false
@@ -180,19 +175,19 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 selectedProvinceId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1L)
                 selectedCityId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1L)
                 selectedDistrictId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1L)
-                zipCodes.clear()
-                zipCodes.addAll(it.getStringArrayList(
-                    INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES
-                ) ?: listOf())
+                val newZipCodeList = arrayListOf<String>(getString(R.string.header_list_postal_code)).apply {
+                    addAll(it.getStringArrayList(
+                            INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES) ?: arrayListOf())
+                }
+                zipCodes = ArrayList(newZipCodeList)
                 updateAutoTextZipCodes()
             }
         }
     }
 
     private fun updateAutoTextZipCodes() {
-        val hedader = getString(R.string.header_list_postal_code)
-        if (!zipCodes.contains(hedader)) zipCodes.add(0, hedader)
-        zipCodesAdapter.notifyDataSetChanged()
+        val adapter = ArrayAdapter<String>(requireActivity(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row, com.tokopedia.design.R.id.item, zipCodes)
+        binding?.postalCode?.textFieldInput?.setAdapter(adapter)
     }
 
     fun saveAddEditAddress() {
