@@ -5,13 +5,12 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/access_token_btn"
+        android:id="@+id/force_crash_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:text="@string/access_token"
+        android:text="@string/force_crash"
         app:unifyButtonType="main"
         app:unifyButtonSize="medium" />
 

@@ -29,9 +29,7 @@ import com.tokopedia.developer_options.presentation.adapter.typefactory.Develope
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.model.AccessTokenUiModel
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
-import com.tokopedia.developer_options.presentation.viewholder.AccessTokenViewHolder
-import com.tokopedia.developer_options.presentation.viewholder.PdpDevViewHolder
-import com.tokopedia.developer_options.presentation.viewholder.SystemNonSystemAppsViewHolder
+import com.tokopedia.developer_options.presentation.viewholder.*
 import com.tokopedia.translator.manager.TranslatorManager
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.url.Env
@@ -40,6 +38,7 @@ import com.tokopedia.url.TokopediaUrl.Companion.init
 import com.tokopedia.url.TokopediaUrl.Companion.setEnvironment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import java.lang.RuntimeException
 import java.lang.StringBuilder
 
 class NewDeveloperOptionActivity : BaseActivity() {
@@ -84,7 +83,9 @@ class NewDeveloperOptionActivity : BaseActivity() {
             typeFactory = DeveloperOptionTypeFactoryImpl(
                 pdpDevListener = clickPdpDevBtn(this),
                 accessTokenListener = clickAccessTokenBtn(),
-                systemNonSystemAppsListener = clickSystemNonSystemApps(this)
+                systemNonSystemAppsListener = clickSystemNonSystemApps(),
+                resetOnBoardingListener = clickResetOnBoarding(this),
+                forceCrashListener = clickForceCrash()
             ),
             differ = DeveloperOptionDiffer(),
             context = this
@@ -146,9 +147,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
                     }
                 }
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no need to implement */ }
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* no need to implement */ }
         })
     }
@@ -160,7 +159,6 @@ class NewDeveloperOptionActivity : BaseActivity() {
             layoutManager = LinearLayoutManager(context)
             setItemViewCacheSize(20)
         }
-
         adapter.setDefaultItem()
     }
 
@@ -172,7 +170,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
         }
         deleteInstance()
         init(this)
-        userSession!!.logoutSession()
+        userSession?.logoutSession()
         Handler().postDelayed({ restart(this) }, 500)
     }
 
@@ -223,42 +221,44 @@ class NewDeveloperOptionActivity : BaseActivity() {
         TranslatorManager.Companion.init(this.application, API_KEY_TRANSLATOR)
     }
 
-    private fun clickPdpDevBtn(context: Context): PdpDevViewHolder.PdpDevListener {
-        return object : PdpDevViewHolder.PdpDevListener {
-            override fun onClickPdpDevBtn() {
-                val intent = Intent(context, ProductDetailDevActivity::class.java)
-                startActivity(intent)
-            }
+    private fun clickPdpDevBtn(context: Context) = object : PdpDevViewHolder.PdpDevListener {
+        override fun onClickPdpDevBtn() {
+            val intent = Intent(context, ProductDetailDevActivity::class.java)
+            startActivity(intent)
         }
     }
 
-    private fun clickAccessTokenBtn(): AccessTokenViewHolder.AccessTokenListener {
-        return object : AccessTokenViewHolder.AccessTokenListener {
-            override fun onClickAccessTokenBtn() {
-                userSession?.accessToken?.apply {
-                    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("Copied Text", this)
-                    clipboard.setPrimaryClip(clip)
-                }
+    private fun clickAccessTokenBtn() = object : AccessTokenViewHolder.AccessTokenListener {
+        override fun onClickAccessTokenBtn() {
+            userSession?.accessToken?.apply {
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Copied Text", this)
+                clipboard.setPrimaryClip(clip)
             }
+        }
+        override fun getAccessToken(): String = userSession?.accessToken.orEmpty()
+    }
 
-            override fun getAccessToken(): String = userSession?.accessToken.orEmpty()
+    private fun clickSystemNonSystemApps() = object : SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener {
+        override fun onClickSystemAppsBtn() = showToastAndCopySystemOrNonSystemApps(true)
+        override fun onClickNonSystemAppsBtn() = showToastAndCopySystemOrNonSystemApps(false)
+    }
+
+    private fun clickResetOnBoarding(context: Context) = object : ResetOnBoardingViewHolder.ResetOnBoardingListener {
+        override fun onClickOnBoardingBtn() {
+            userSession?.isFirstTimeUser = true
+            val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
+            val editor = sharedPref.edit().clear()
+            editor.apply()
+            Toast.makeText(context,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun clickSystemNonSystemApps(context: Context): SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener {
-        return object : SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener {
-            override fun onClickSystemAppsBtn() {
-                showToastAndCopySystemOrNonSystemApps(true)
-            }
-
-            override fun onClickNonSystemAppsBtn() {
-                showToastAndCopySystemOrNonSystemApps(false)
-            }
-        }
+    private fun clickForceCrash() = object : ForceCrashViewHolder.ForceCrashListener {
+        override fun onClickForceCrashBtn() = throw RuntimeException("Throw Runtime Exception")
     }
 
-    fun showToastAndCopySystemOrNonSystemApps(isSystemApps: Boolean) {
+    private fun showToastAndCopySystemOrNonSystemApps(isSystemApps: Boolean) {
         val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val apps: List<ApplicationInfo> = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
         val systemApps = StringBuilder()
