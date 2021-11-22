@@ -167,7 +167,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
             REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(data)
             REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
-            REQUEST_CODE_OVO_TOP_UP -> refresh()
+            REQUEST_CODE_PAYMENT_TOP_UP -> refresh()
             REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(data)
             REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
             REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
@@ -1318,14 +1318,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
             context?.let {
-                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, R.string.title_one_click_checkout_top_up_ovo, redirectUrl = callbackUrl, isHideDigital = isHideDigital, customerData = customerData), REQUEST_CODE_OVO_TOP_UP)
+                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, it.getString(R.string.title_one_click_checkout_top_up_ovo), redirectUrl = callbackUrl, isHideDigital = isHideDigital, customerData = customerData), REQUEST_CODE_PAYMENT_TOP_UP)
             }
         }
 
-        override fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: Int) {
+        override fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: String) {
             context?.let {
-//                startActivityForResult(RouteManager.getIntentNoFallback(it, url), REQUEST_CODE_OVO_TOP_UP)
-                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, title, url = url, redirectUrl = callbackUrl, isHideDigital = isHideDigital), REQUEST_CODE_OVO_TOP_UP)
+                startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, title, url = url, redirectUrl = callbackUrl, isHideDigital = isHideDigital), REQUEST_CODE_PAYMENT_TOP_UP)
             }
         }
     }
@@ -1403,7 +1402,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_CREDIT_CARD = 15
         const val REQUEST_CODE_CREDIT_CARD_ERROR = 16
 
-        const val REQUEST_CODE_OVO_TOP_UP = 17
+        const val REQUEST_CODE_PAYMENT_TOP_UP = 17
 
         const val REQUEST_CODE_ADD_ADDRESS = 18
 

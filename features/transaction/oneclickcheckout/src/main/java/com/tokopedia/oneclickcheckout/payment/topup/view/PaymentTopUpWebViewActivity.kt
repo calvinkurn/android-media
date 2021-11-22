@@ -17,8 +17,8 @@ class PaymentTopUpWebViewActivity : BaseSimpleActivity(), HasComponent<PaymentCo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val titleResource = intent.getIntExtra(PaymentTopUpWebViewFragment.EXTRA_TITLE, R.string.title_one_click_checkout_top_up)
-        updateTitle(getString(titleResource))
+        val titleResource = intent.getStringExtra(PaymentTopUpWebViewFragment.EXTRA_TITLE) ?: getString(R.string.title_one_click_checkout_top_up)
+        updateTitle(titleResource)
     }
 
     override fun getNewFragment(): Fragment? {
@@ -43,7 +43,7 @@ class PaymentTopUpWebViewActivity : BaseSimpleActivity(), HasComponent<PaymentCo
     companion object {
 
         fun createIntent(context: Context,
-                         title: Int,
+                         title: String,
                          url: String? = null,
                          redirectUrl: String? = null,
                          isHideDigital: Int? = null,

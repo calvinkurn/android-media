@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Typeface.BOLD
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -540,7 +538,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                     if (payment.isOvo) {
                                         listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                                     } else {
-                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, getTopUpTitle(payment.walletData.walletType))
+                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
                                     }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
                                     if (payment.isOvo) {
@@ -567,7 +565,7 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                     if (payment.isOvo) {
                                         listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                                     } else {
-                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, getTopUpTitle(payment.walletData.walletType))
+                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
                                     }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
                                     if (payment.isOvo) {
@@ -807,14 +805,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
         return false
     }
 
-    private fun getTopUpTitle(walletType: Int): Int {
-        return when(walletType) {
-            OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY -> R.string.title_one_click_checkout_top_up_gopay
-            OrderPaymentWalletAdditionalData.WALLET_TYPE_OVO -> R.string.title_one_click_checkout_top_up_ovo
-            else -> R.string.title_one_click_checkout_top_up
-        }
-    }
-
     companion object {
         const val VIEW_TYPE = 4
 
@@ -858,6 +848,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
 
-        fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: Int)
+        fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: String)
     }
 }

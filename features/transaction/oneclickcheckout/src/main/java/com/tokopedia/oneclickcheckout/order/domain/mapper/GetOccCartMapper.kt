@@ -379,13 +379,13 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapPaymentWalletActionData(walletData: WalletData): OrderPaymentWalletActionData {
         return OrderPaymentWalletActionData(
                 isRequired = walletData.isRequired,
-                buttonTitle = "walletData.buttonTitle",
+                buttonTitle = walletData.buttonTitle,
                 successToaster = walletData.successToaster,
                 errorToaster = walletData.errorToaster,
                 errorMessage = walletData.errorMessage,
-                isHideDigital = true,
+                isHideDigital = walletData.isHideDigital,
                 headerTitle = walletData.headerTitle,
-                urlLink = "https://www.tokopedia.com/gopay/top-up"
+                urlLink = walletData.urlLink
         )
     }
 
