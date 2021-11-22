@@ -89,6 +89,7 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             }
         }
         binding?.containerBestSellerWidget?.show()
+        itemView.show()
     }
 
     private fun initFilterChip(element: BestSellerDataModel){
@@ -101,19 +102,19 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
     }
 
     private fun initRecommendation(element: BestSellerDataModel) {
-        binding?.bestSellerChipFilterRecyclerview?.shouldShowWithAction(element.recommendationItemList.isNotEmpty()){
-            if(binding?.bestSellerChipFilterRecyclerview?.adapter == null) {
-                binding?.bestSellerChipFilterRecyclerview?.adapter = recommendationAdapter
+        binding?.bestSellerRecommendationRecyclerView?.shouldShowWithAction(element.recommendationItemList.isNotEmpty()){
+            if(binding?.bestSellerRecommendationRecyclerView?.adapter == null) {
+                binding?.bestSellerRecommendationRecyclerView?.adapter = recommendationAdapter
             }
-            if (binding?.bestSellerChipFilterRecyclerview?.itemDecorationCount == 0) {
-                binding?.bestSellerChipFilterRecyclerview?.addItemDecoration(
+            if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
+                binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
                         CommonMarginStartDecoration(
                                 marginStart = view.context.resources.getDimensionPixelSize(R.dimen.dp_12)
                         )
                 )
             }
-            if (binding?.bestSellerChipFilterRecyclerview?.itemDecorationCount == 0) {
-                binding?.bestSellerChipFilterRecyclerview?.addItemDecoration(
+            if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
+                binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
                         CommonMarginStartDecoration(
                                 marginStart = view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
                         )
