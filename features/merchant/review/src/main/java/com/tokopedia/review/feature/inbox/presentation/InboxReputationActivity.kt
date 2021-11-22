@@ -75,9 +75,11 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
     private var inboxReviewFragment: Fragment? = null
     private var sellerReputationPenaltyFragment: Fragment? = null
     private var viewPager: ViewPager? = null
-    private var indicator: TabsUnify? = null
     private var sectionAdapter: PagerAdapter? = null
     private var toolbar: HeaderUnify? = null
+
+    var fragmentList: MutableList<Fragment> = mutableListOf()
+    var indicator: TabsUnify? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -220,7 +222,7 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
                     super.onTabSelected(tab)
                     val position = tab.position
                     if (position != selectedTabPosition) {
-                        val fragmentList = getFragmentList()
+                        populateFragmentList()
                         for (i in fragmentList.indices) {
                             val fragment = fragmentList[i]
                             if (fragment is InboxReviewFragment) {
@@ -245,10 +247,10 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
         setupTabName()
         sectionAdapter = SectionsPagerAdapter(
             supportFragmentManager,
-            getFragmentList(),
+            fragmentList,
             indicator?.getUnifyTabLayout()
         )
-        viewPager?.offscreenPageLimit = getFragmentList().size
+        viewPager?.offscreenPageLimit = fragmentList.size
         viewPager?.adapter = sectionAdapter
         if (GlobalConfig.isSellerApp()) {
             if (isExistParamTab(tab)) {
@@ -348,13 +350,11 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
         layoutParams.marginEnd = end
     }
 
-    private fun getFragmentList(): List<Fragment> {
-        val fragmentList = mutableListOf<Fragment>()
+    private fun populateFragmentList() {
         reviewSellerFragment?.let { fragmentList.add(it) }
         inboxReviewFragment?.let { fragmentList.add(it) }
         fragmentList.add(createInstance(TAB_BUYER_REVIEW))
         sellerReputationPenaltyFragment?.let { fragmentList.add(it) }
-        return fragmentList
     }
 
     private fun setupToolbar() {
