@@ -133,10 +133,10 @@ class ShopHomeFlashSaleViewHolder(
             Color.parseColor(startBackgroundColor),
             Color.parseColor(endBackgroundColor)
         )
-        val backgroundColor = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
-        singleBackGroundView?.background = backgroundColor
-        doubleBackGroundView?.background = backgroundColor
-        multipleBackGroundView?.background = backgroundColor
+        val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
+        singleBackGroundView?.background = gradientDrawable
+        doubleBackGroundView?.background = gradientDrawable
+        multipleBackGroundView?.background = gradientDrawable
         // reset background visibility
         singleBackGroundView?.hide()
         doubleBackGroundView?.hide()
