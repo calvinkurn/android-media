@@ -176,7 +176,7 @@ class SubmissionOrderExtensionBottomSheet : BottomSheetUnify() {
                     orderExtensionRespondUiModel.message,
                     getRootView()
                 ) {
-                    if (isOrderExtended) {
+                    if (orderExtensionRespondUiModel.actionType == EXTENSION_ACTION) {
                         BuyerOrderExtensionTracker.eventAcceptOrderExtension(
                             getOrderId(),
                             isUoH

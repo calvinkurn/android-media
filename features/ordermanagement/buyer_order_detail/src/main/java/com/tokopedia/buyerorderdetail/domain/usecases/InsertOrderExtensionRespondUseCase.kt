@@ -20,6 +20,7 @@ class InsertOrderExtensionRespondUseCase @Inject constructor(
     private var params = RequestParams.create()
 
     override suspend fun executeOnBackground(): OrderExtensionRespondUiModel {
+        val actionType = params.getInt(ACTION_KEY, 0)
         val orderExtensionRespondRequest = GraphqlRequest(
             QUERY,
             OrderExtensionRespondResponse::class.java,
@@ -32,7 +33,8 @@ class InsertOrderExtensionRespondUseCase @Inject constructor(
                     OrderExtensionRespondResponse::class.java
                 )
             return mapper.mapToOrderExtensionRespond(
-                orderExtensionRespondResponse.data
+                orderExtensionRespondResponse.data,
+                actionType
             )
         } catch (e: IOException) {
             throw IOException(e.message)

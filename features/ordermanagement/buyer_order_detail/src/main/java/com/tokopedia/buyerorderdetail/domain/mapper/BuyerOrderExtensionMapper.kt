@@ -22,9 +22,11 @@ class BuyerOrderExtensionMapper @Inject constructor() {
     )
 
     fun mapToOrderExtensionRespond(
-        data: OrderExtensionRespondResponse.Data
+        data: OrderExtensionRespondResponse.Data,
+        actionType: Int
     ) = OrderExtensionRespondUiModel(
         message = data.message,
-        messageCode = data.messageCode
+        messageCode = data.messageCode,
+        actionType = actionType
     )
 }

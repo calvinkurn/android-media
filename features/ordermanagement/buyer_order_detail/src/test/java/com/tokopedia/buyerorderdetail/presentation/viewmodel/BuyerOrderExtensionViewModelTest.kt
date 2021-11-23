@@ -52,17 +52,20 @@ class BuyerOrderExtensionViewModelTest : BuyerOrderExtensionViewModelTestFixture
     @Test
     fun `when insertOrderExtensionRespond should set live data success`() {
         runBlocking {
+            val actionType = 1
             val orderExtensionRespondUiModel = OrderExtensionRespondUiModel(
                 messageCode = 1,
-                message = "Perpanjang waktu proses pesanan diterima."
+                message = "Perpanjang waktu proses pesanan diterima.",
+                actionType = actionType
             )
             onInsertOrderExtensionRespondUseCase_thenReturn(orderExtensionRespondUiModel)
-            viewModel.requestRespond(orderId, 1)
+            viewModel.requestRespond(orderId, actionType)
             verifyInsertOrderExtensionRespondUseCaseCalled()
             val actualResult = (viewModel.orderExtensionRespond.value as Success).data
             assertEquals(orderExtensionRespondUiModel, actualResult)
             assertEquals(orderExtensionRespondUiModel.message, actualResult.message)
             assertEquals(orderExtensionRespondUiModel.messageCode, actualResult.messageCode)
+            assertEquals(orderExtensionRespondUiModel.actionType, actualResult.actionType)
         }
     }
 
