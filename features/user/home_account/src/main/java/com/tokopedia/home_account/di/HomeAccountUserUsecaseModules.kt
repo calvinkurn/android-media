@@ -29,5 +29,8 @@ class HomeAccountUserUsecaseModules {
     }
 
     @Provides
-    fun provideGetCoroutineRecommendationUseCase(@ApplicationContext context: Context, @ApplicationContext coroutineGqlRepository: GraphqlRepository): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
+    fun provideGetCoroutineRecommendationUseCase(
+        @ApplicationContext context: Context,
+        @ApplicationContext coroutineGqlRepository: GraphqlRepository
+    ): GetRecommendationUseCase = GetRecommendationUseCase(context, coroutineGqlRepository)
 }

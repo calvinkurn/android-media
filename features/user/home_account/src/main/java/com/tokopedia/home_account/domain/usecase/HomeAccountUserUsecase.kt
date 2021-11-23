@@ -1,7 +1,6 @@
 package com.tokopedia.home_account.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -25,19 +24,6 @@ open class HomeAccountUserUsecase @Inject constructor(
     dispatcher: CoroutineDispatcher,
     private val rawQueries: Map<String, String>
 ): CoroutineUseCase<Unit, UserAccountDataModel>(dispatcher) {
-
-//    fun executeUseCase(onSuccess: (UserAccountDataModel) -> Unit, onError: (Throwable) -> Unit){
-//        rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME]?.let { query ->
-//            setTypeClass(UserAccountDataModel::class.java)
-//            setGraphqlQuery(query)
-//            execute({
-//                onSuccess(it)
-//            }, onError)
-//        }
-//    }
-//    override suspend fun executeOnBackground(): UserAccountDataModel {
-//
-//    }
 
     override fun graphqlQuery(): String {
         return rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME] ?: ""
