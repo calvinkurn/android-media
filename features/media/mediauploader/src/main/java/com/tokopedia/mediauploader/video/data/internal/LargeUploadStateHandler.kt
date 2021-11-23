@@ -49,7 +49,7 @@ class LargeUploadStateHandler(
 
     private fun key(sourceId: String, filePath: String): String {
         val filename = File(filePath).name
-        return sourceId + filename
+        return "$sourceId#$filename"
     }
 
     companion object {
