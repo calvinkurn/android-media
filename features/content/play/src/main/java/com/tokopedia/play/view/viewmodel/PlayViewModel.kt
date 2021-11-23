@@ -806,7 +806,7 @@ class PlayViewModel @Inject constructor(
 
             addCastStateListener()
 
-            setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
+            setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext?.castState))
 
             trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
         }
@@ -851,9 +851,11 @@ class PlayViewModel @Inject constructor(
             }
 
             if(channelData.videoMetaInfo.videoPlayer.isGeneral())
-                _observableVideoMeta.value = channelData.videoMetaInfo.copy(
-                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayerHelper.player, channelData.channelDetail.channelInfo.coverUrl)
-                )
+                castPlayerHelper.player?.let {
+                    _observableVideoMeta.value = channelData.videoMetaInfo.copy(
+                        videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(it, channelData.channelDetail.channelInfo.coverUrl)
+                    )
+                }
         }
 
         fun loadPlayer() {

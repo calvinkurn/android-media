@@ -1,6 +1,7 @@
 package com.tokopedia.play.di
 
 import android.content.Context
+import androidx.annotation.Nullable
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -155,10 +156,12 @@ class PlayModule(val mContext: Context) {
         PlayChannelSSEImpl(userSession, dispatchers)
 
     @Provides
-    fun provideCastContext(@ApplicationContext context: Context): CastContext = CastContext.getSharedInstance(context)
+    @Nullable
+    fun provideCastContext(@ApplicationContext context: Context): CastContext? =  try { CastContext.getSharedInstance(context) } catch (e: Exception) { null }
 
     @Provides
-    fun provideCastPlayer(castContext: CastContext) = CastPlayer(castContext)
+    @Nullable
+    fun provideCastPlayer(castContext: CastContext?): CastPlayer? = castContext?.let { CastPlayer(it) }
 
     @PlayScope
     @Provides

@@ -114,8 +114,6 @@ class PlayActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
-
-        CastContext.getSharedInstance(applicationContext)
         
         startPageMonitoring()
         super.onCreate(savedInstanceState)
