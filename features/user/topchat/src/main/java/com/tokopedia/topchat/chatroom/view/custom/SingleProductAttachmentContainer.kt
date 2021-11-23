@@ -575,7 +575,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindBuy(product: ProductAttachmentUiModel) {
         btnBuy?.let {
-            if (product.hasEmptyStock()) {
+            if (product.hasEmptyStock() || product.isUpcomingCampaign) {
                 it.hide()
             } else {
                 it.show()
@@ -594,7 +594,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindAtc(product: ProductAttachmentUiModel) {
         btnAtc?.let {
-            if (product.hasEmptyStock()) {
+            if (product.hasEmptyStock() || product.isUpcomingCampaign) {
                 it.hide()
             } else {
                 it.show()
@@ -606,7 +606,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindWishList(product: ProductAttachmentUiModel) {
-        if (product.hasEmptyStock()) {
+        if (product.hasEmptyStock() || product.isUpcomingCampaign) {
             btnWishList?.show()
             btnWishList?.setOnClickListener {
                 listener?.onClickAddToWishList(product) {
