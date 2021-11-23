@@ -2,7 +2,6 @@ package com.tokopedia.home_account
 
 import android.app.Activity
 import android.app.Instrumentation
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -81,6 +80,7 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_account_security() {
         runTest {
+            onView(withId(R.id.home_account_user_fragment_rv)).perform(ViewActions.swipeUp())
             ViewUtils.clickSettingView("Pengaturan Akun", AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY)
         }.validate(QueryUtils.queryAccountSettings(AccountConstants.Analytics.Label.LABEL_ACCOUNT_SECURITY))
     }
