@@ -6,6 +6,7 @@ import com.google.android.gms.cast.framework.media.MediaIntentReceiver
 import com.google.android.gms.cast.framework.media.NotificationAction
 import com.google.android.gms.cast.framework.media.NotificationActionsProvider
 import com.tokopedia.play.R
+import com.tokopedia.play.util.PlayCastHelper
 import java.lang.Exception
 
 class PlayCastNotificationAction(context: Context) : NotificationActionsProvider(context) {
@@ -43,11 +44,8 @@ class PlayCastNotificationAction(context: Context) : NotificationActionsProvider
         private var isShow = false
 
         fun showRedirectButton(context: Context, isShow: Boolean) {
-            try {
-                this.isShow = isShow
-                CastContext.getSharedInstance(context.applicationContext).mediaNotificationManager.updateNotification()
-            }
-            catch (e: Exception) {}
+            this.isShow = isShow
+            PlayCastHelper.getCastContext(context.applicationContext)?.mediaNotificationManager?.updateNotification()
         }
     }
 }

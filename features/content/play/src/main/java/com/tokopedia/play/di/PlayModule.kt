@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.annotation.Nullable
 import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.google.android.gms.cast.framework.CastContext
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -17,6 +19,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import com.tokopedia.play_common.websocket.PlayWebSocket
@@ -157,7 +160,7 @@ class PlayModule(val mContext: Context) {
 
     @Provides
     @Nullable
-    fun provideCastContext(@ApplicationContext context: Context): CastContext? =  try { CastContext.getSharedInstance(context) } catch (e: Exception) { null }
+    fun provideCastContext(@ApplicationContext context: Context): CastContext? = PlayCastHelper.getCastContext(context)
 
     @Provides
     @Nullable
