@@ -25,7 +25,9 @@ class DeveloperOptionAdapter(
         DeviceIdUiModel(context.getString(R.string.device_id)),
         ForceDarkModeUiModel(context.getString(R.string.force_dark_mode)),
         TopAdsLogOnNotificationUiModel(context.getString(R.string.enable_topads_notif)),
-        ViewTopAdsLogUiModel(context.getString(R.string.view_topads_log))
+        ViewTopAdsLogUiModel(context.getString(R.string.view_topads_log)),
+        ApplinkLogOnNotificationUiModel(context.getString(R.string.enable_applink_notif)),
+        ViewApplinkLogUiModel(context.getString(R.string.view_applink_log))
     )
 
     fun searchItem(text: String) {

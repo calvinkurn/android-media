@@ -32,6 +32,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ForceDarkModeUiModel): Int = ForceDarkModeViewHolder.LAYOUT
     override fun type(uiModel: TopAdsLogOnNotificationUiModel): Int = TopAdsLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewTopAdsLogUiModel): Int = ViewTopAdsLogViewHolder.LAYOUT
+    override fun type(uiModel: ApplinkLogOnNotificationUiModel): Int = ApplinkLogOnNotificationViewHolder.LAYOUT
+    override fun type(uiModel: ViewApplinkLogUiModel): Int = ViewApplinkLogViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -48,6 +50,8 @@ class DeveloperOptionTypeFactoryImpl(
             ForceDarkModeViewHolder.LAYOUT -> ForceDarkModeViewHolder(view)
             TopAdsLogOnNotificationViewHolder.LAYOUT -> TopAdsLogOnNotificationViewHolder(view)
             ViewTopAdsLogViewHolder.LAYOUT -> ViewTopAdsLogViewHolder(view)
+            ApplinkLogOnNotificationViewHolder.LAYOUT -> ApplinkLogOnNotificationViewHolder(view)
+            ViewApplinkLogViewHolder.LAYOUT -> ViewApplinkLogViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
