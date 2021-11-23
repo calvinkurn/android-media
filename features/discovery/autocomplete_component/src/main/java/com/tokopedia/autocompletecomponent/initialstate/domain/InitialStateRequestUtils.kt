@@ -24,6 +24,7 @@ object InitialStateRequestUtils {
               header
               label_action
               feature_id
+              tracking_option
               items{
                 id
                 template
@@ -41,6 +42,7 @@ object InitialStateRequestUtils {
                 discount_percentage
                 original_price
                 campaign_code
+                component_id
               }
             }
           }
