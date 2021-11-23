@@ -248,7 +248,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 listSize += dataList.size
                 adapter.addMoreData(dataList)
                 loadMoreTriggerListener?.updateStateAfterGetData()
-            } else {
+            } else if(totalDataItemsCount == 0) {
                 showNoAffiliate()
             }
         })

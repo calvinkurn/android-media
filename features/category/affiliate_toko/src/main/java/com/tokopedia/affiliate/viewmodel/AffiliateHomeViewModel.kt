@@ -71,6 +71,7 @@ class AffiliateHomeViewModel @Inject constructor(
             if (page == PAGE_ZERO) {
                 dataPlatformShimmerVisibility.value = true
                 lastID = "0"
+                totalItemsCount.value = 0
                 performanceList =
                     affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
                 dataPlatformShimmerVisibility.value = false
@@ -136,7 +137,7 @@ class AffiliateHomeViewModel @Inject constructor(
                         tempList.add(AffiliatePerformaSharedProductCardsModel(product))
                     }
                 }
-            } else {
+            } else if(totalItemsCount.value == 0) {
                 tempList.add(AffiliateNoPromoItemFoundModel())
             }
             return tempList
