@@ -76,9 +76,6 @@ class EventSearchFragment : BaseDaggerFragment(), CoroutineScope,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializePerformance()
-        activity?.run {
-            viewModel.resources = resources
-        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
