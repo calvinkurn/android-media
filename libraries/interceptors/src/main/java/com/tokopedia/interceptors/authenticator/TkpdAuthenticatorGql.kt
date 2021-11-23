@@ -10,7 +10,7 @@ import com.tokopedia.network.refreshtoken.AccessTokenRefresh
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
@@ -26,7 +26,7 @@ import java.util.regex.Pattern
 class TkpdAuthenticatorGql(
     val application: Application,
     val networkRouter: NetworkRouter,
-    val userSession: UserSession,
+    val userSession: UserSessionInterface,
     val refreshTokenUseCaseGql: RefreshTokenGql
 ): Authenticator {
 
@@ -232,7 +232,7 @@ class TkpdAuthenticatorGql(
             }
         }
 
-        fun createAuthenticator(context: Application, networkRouter: NetworkRouter, userSession: UserSession, refreshTokenUseCaseGql: RefreshTokenGql): TkpdAuthenticatorGql {
+        fun createAuthenticator(context: Application, networkRouter: NetworkRouter, userSession: UserSessionInterface, refreshTokenUseCaseGql: RefreshTokenGql): TkpdAuthenticatorGql {
             return TkpdAuthenticatorGql(context, networkRouter, userSession, refreshTokenUseCaseGql)
         }
     }

@@ -59,8 +59,8 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
     private fun initInjector(context: Context) {
         try {
-            val application: BaseMainApplication = (context.applicationContext as BaseMainApplication)
-            val authenticator = TkpdAuthenticatorGql.createAuthenticator(application, context as NetworkRouter, UserSession(context), RefreshTokenGql())
+            val application = context.applicationContext as BaseMainApplication
+            val authenticator = TkpdAuthenticatorGql.createAuthenticator(application, context.applicationContext as NetworkRouter, UserSession(application), RefreshTokenGql())
             GraphqlClient.init(application, authenticator)
             DaggerCMNotificationComponent.builder()
                     .baseAppComponent(application.baseAppComponent)
