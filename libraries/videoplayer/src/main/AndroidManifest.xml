@@ -1,4 +1,5 @@
-<manifest package="com.tokopedia.videoplayer">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.videoplayer">
 
     <application></application>
 </manifest>

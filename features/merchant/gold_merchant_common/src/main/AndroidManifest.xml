@@ -1,5 +1,6 @@
-<manifest package="com.tokopedia.gm.common">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.gm.common" >
     <application>
 
     </application>

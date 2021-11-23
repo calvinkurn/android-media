@@ -2,6 +2,7 @@
     package="com.tokopedia.linker">
 
     <application>
+        <!-- Branch init -->
         <meta-data
             android:name="io.branch.sdk.BranchKey"
             android:value="@string/branch_sdk_key_ma" />

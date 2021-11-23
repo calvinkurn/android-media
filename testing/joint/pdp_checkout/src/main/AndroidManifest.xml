@@ -1,1 +1,3 @@
-<manifest package="com.tokopedia.pdpCheckout.testing" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.pdpCheckout.testing" />

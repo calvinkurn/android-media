@@ -1,1 +1,5 @@
-<manifest package="com.tokopedia.graphql.beta.notif" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.graphql.beta.notif" />
+
+
+

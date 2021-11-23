@@ -1,1 +1,2 @@
-<manifest package="com.tokopedia.collapsing.tab.layout" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.collapsing.tab.layout"/>

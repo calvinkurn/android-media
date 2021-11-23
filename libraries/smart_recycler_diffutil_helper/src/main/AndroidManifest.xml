@@ -1,1 +1,2 @@
-<manifest package="com.tokopedia.smart_recycler_diffutil_helper" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.smart_recycler_diffutil_helper" />

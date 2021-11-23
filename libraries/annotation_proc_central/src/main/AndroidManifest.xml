@@ -1,1 +1,2 @@
-<manifest package="com.tokopedia.analytic_annotation_proc" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.analytic_annotation_proc" />
