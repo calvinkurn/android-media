@@ -39,6 +39,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         private const val PARAM_AUTHOR_ID = "authorID"
         private const val PARAM_AUTHOR_TYPE = "authorType"
         private const val PARAM_IS_WIFI = "isWifi"
+        private const val PARAM_PRODUCT_ID = "productIDs"
+        private const val PARAM_CATEGORY_ID = "categoryIDs"
 
         const val QUERY_NAME = "GetPlayWidgetV2Query"
 
@@ -47,14 +49,18 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             ${'$'}$PARAM_WIDGET_TYPE: String!, 
             ${'$'}$PARAM_AUTHOR_ID: String, 
             ${'$'}$PARAM_AUTHOR_TYPE: String,
-            ${'$'}$PARAM_IS_WIFI: Boolean
+            ${'$'}$PARAM_IS_WIFI: Boolean,
+            ${'$'}$PARAM_PRODUCT_ID: String,
+            ${'$'}$PARAM_CATEGORY_ID: String
         ){
           playGetWidgetV2(
             req: {
               $PARAM_WIDGET_TYPE:${'$'}$PARAM_WIDGET_TYPE,
               $PARAM_AUTHOR_ID: ${'$'}$PARAM_AUTHOR_ID,
               $PARAM_AUTHOR_TYPE: ${'$'}$PARAM_AUTHOR_TYPE,
-              $PARAM_IS_WIFI: ${'$'}$PARAM_IS_WIFI
+              $PARAM_IS_WIFI: ${'$'}$PARAM_IS_WIFI,
+              $PARAM_PRODUCT_ID: ${'$'}$PARAM_PRODUCT_ID,
+              $PARAM_CATEGORY_ID: ${'$'}$PARAM_CATEGORY_ID
             })
           {
             data {
@@ -141,6 +147,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 PARAM_AUTHOR_TYPE to widgetType.authorType,
                 PARAM_WIDGET_TYPE to widgetType.typeKey,
                 PARAM_IS_WIFI to isWifi,
+                PARAM_PRODUCT_ID to widgetType.productIds,
+                PARAM_CATEGORY_ID to widgetType.categoryIds
         )
     }
 
@@ -149,6 +157,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         abstract val typeKey: String
         abstract val authorId: String
         abstract val authorType: String
+        abstract val productIds: String
+        abstract val categoryIds: String
 
         data class ShopPage(val shopId: String) : WidgetType() {
             override val typeKey: String
@@ -159,6 +169,12 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = "shop"
+
+            override val productIds: String
+                get() = ""
+
+            override val categoryIds: String
+                get() = ""
         }
         object Home : WidgetType() {
             override val typeKey: String
@@ -168,6 +184,12 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = ""
 
             override val authorType: String
+                get() = ""
+
+            override val productIds: String
+                get() = ""
+
+            override val categoryIds: String
                 get() = ""
         }
         object Feeds : WidgetType() {
@@ -179,6 +201,12 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = ""
+
+            override val productIds: String
+                get() = ""
+
+            override val categoryIds: String
+                get() = ""
         }
         data class SellerApp(val shopId: String) : WidgetType() {
             override val typeKey: String
@@ -189,6 +217,12 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = "shop"
+
+            override val productIds: String
+                get() = ""
+
+            override val categoryIds: String
+                get() = ""
         }
 
         data class DiscoveryPage(val widgetID: String): WidgetType(){
@@ -200,6 +234,29 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = ""
+
+            override val productIds: String
+                get() = ""
+
+            override val categoryIds: String
+                get() = ""
+        }
+
+        data class PDPWidget(val productIdList: String, val categoryIdList: String): WidgetType(){
+            override val typeKey: String
+                get() = "PDP_WIDGET"
+
+            override val authorId: String
+                get() = ""
+
+            override val authorType: String
+                get() = ""
+
+            override val productIds: String
+                get() = productIdList
+
+            override val categoryIds: String
+                get() = categoryIdList
         }
     }
 }
