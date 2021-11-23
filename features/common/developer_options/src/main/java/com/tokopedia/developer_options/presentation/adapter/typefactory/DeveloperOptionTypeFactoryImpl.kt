@@ -14,7 +14,9 @@ class DeveloperOptionTypeFactoryImpl(
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
     private val forceCrashListener: ForceCrashViewHolder.ForceCrashListener,
     private val sendFirebaseCrashExceptionListener: SendFirebaseCrashExceptionViewHolder.SendFirebaseCrashListener,
-    private val openScreenRecorderListener: OpenScreenRecorderViewHolder.OpenScreenRecorderListener
+    private val openScreenRecorderListener: OpenScreenRecorderViewHolder.OpenScreenRecorderListener,
+    private val tickNetworkLogOnNotificationListener: NetworkLogOnNotificationViewHolder.NetworkLogOnNotificationListener,
+    private val viewNetworkLogListener: ViewNetworkLogViewHolder.ViewNetworkLogListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -24,6 +26,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ForceCrashUiModel): Int = ForceCrashViewHolder.LAYOUT
     override fun type(uiModel: SendFirebaseCrashExceptionUiModel): Int = SendFirebaseCrashExceptionViewHolder.LAYOUT
     override fun type(uiModel: OpenScreenRecorderUiModel): Int = OpenScreenRecorderViewHolder.LAYOUT
+    override fun type(uiModel: NetworkLogOnNotificationUiModel): Int = NetworkLogOnNotificationViewHolder.LAYOUT
+    override fun type(uiModel: ViewNetworkLogUiModel): Int = ViewNetworkLogViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -34,6 +38,8 @@ class DeveloperOptionTypeFactoryImpl(
             ForceCrashViewHolder.LAYOUT -> ForceCrashViewHolder(view, forceCrashListener)
             SendFirebaseCrashExceptionViewHolder.LAYOUT -> SendFirebaseCrashExceptionViewHolder(view, sendFirebaseCrashExceptionListener)
             OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view, openScreenRecorderListener)
+            NetworkLogOnNotificationViewHolder.LAYOUT -> NetworkLogOnNotificationViewHolder(view, tickNetworkLogOnNotificationListener)
+            ViewNetworkLogViewHolder.LAYOUT -> ViewNetworkLogViewHolder(view, viewNetworkLogListener)
             else -> super.createViewHolder(view, type)
         }
     }

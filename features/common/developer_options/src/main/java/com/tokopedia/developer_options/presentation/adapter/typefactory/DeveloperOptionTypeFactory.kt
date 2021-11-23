@@ -10,4 +10,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: ForceCrashUiModel): Int
     fun type(uiModel: SendFirebaseCrashExceptionUiModel): Int
     fun type(uiModel: OpenScreenRecorderUiModel): Int
+    fun type(uiModel: NetworkLogOnNotificationUiModel): Int
+    fun type(uiModel: ViewNetworkLogUiModel): Int
 }

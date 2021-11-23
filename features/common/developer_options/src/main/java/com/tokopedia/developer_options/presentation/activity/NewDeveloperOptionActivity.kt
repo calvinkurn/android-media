@@ -16,6 +16,8 @@ import android.text.TextWatcher
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chuckerteam.chucker.api.Chucker.SCREEN_HTTP
+import com.chuckerteam.chucker.api.Chucker.getLaunchIntent
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
@@ -24,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.config.DevOptConfig
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
@@ -85,7 +88,9 @@ class NewDeveloperOptionActivity : BaseActivity() {
                 resetOnBoardingListener = clickResetOnBoarding(this),
                 forceCrashListener = clickForceCrash(),
                 sendFirebaseCrashExceptionListener = clickSendFirebaseCrashException(this),
-                openScreenRecorderListener = clickOpenScreenRecorder(this)
+                openScreenRecorderListener = clickOpenScreenRecorder(this),
+                tickNetworkLogOnNotificationListener = tickNetworkLogOnNotification(this),
+                viewNetworkLogListener = clickViewNetworkLog()
             ),
             differ = DeveloperOptionDiffer(),
             context = this
@@ -271,6 +276,28 @@ class NewDeveloperOptionActivity : BaseActivity() {
     private fun clickOpenScreenRecorder(context: Context) = object : OpenScreenRecorderViewHolder.OpenScreenRecorderListener {
         override fun onClickScreenRecorderBtn() {
             RouteManager.route(context, ApplinkConstInternalGlobal.SCREEN_RECORDER)
+        }
+    }
+
+    private fun tickNetworkLogOnNotification(context: Context) = object : NetworkLogOnNotificationViewHolder.NetworkLogOnNotificationListener {
+        val sharedPref = context.getSharedPreferences(DevOptConfig.CHUCK_ENABLED, MODE_PRIVATE)
+
+        override fun onTickNetworkLogOnNotificationCheckbox(state: Boolean) {
+            val editor = sharedPref.edit().putBoolean(
+                DevOptConfig.IS_CHUCK_ENABLED,
+                state
+            )
+            editor.apply()
+        }
+
+        override fun isChuckerEnabled(): Boolean {
+            return sharedPref.getBoolean(DevOptConfig.IS_CHUCK_ENABLED, false)
+        }
+    }
+
+    private fun clickViewNetworkLog() = object : ViewNetworkLogViewHolder.ViewNetworkLogListener{
+        override fun onClickNetworkLogBtn() {
+            startActivity(getLaunchIntent(applicationContext, SCREEN_HTTP))
         }
     }
 

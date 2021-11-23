@@ -19,7 +19,9 @@ class DeveloperOptionAdapter(
         ResetOnBoardingUiModel(context.getString(R.string.reset_onboarding)),
         ForceCrashUiModel(context.getString(R.string.force_crash)),
         SendFirebaseCrashExceptionUiModel(context.getString(R.string.send_firebase_exception)),
-        OpenScreenRecorderUiModel(context.getString(R.string.open_screen_recorder))
+        OpenScreenRecorderUiModel(context.getString(R.string.open_screen_recorder)),
+        NetworkLogOnNotificationUiModel(context.getString(R.string.enable_network_log_on_notification)),
+        ViewNetworkLogUiModel(context.getString(R.string.view_network_log))
     )
 
     fun searchItem(text: String) {
