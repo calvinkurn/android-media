@@ -1,33 +1,40 @@
 package com.tokopedia.managepassword.addpassword.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.managepassword.R
+import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GqlParam
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.managepassword.addpassword.domain.data.AddPasswordResponseModel
-import com.tokopedia.managepassword.di.ManagePasswordContext
+import javax.inject.Inject
 
-class AddPasswordUseCase constructor(
-        @ManagePasswordContext private val context: Context,
-        private val graphqlUseCase: GraphqlUseCase<AddPasswordResponseModel>
-) {
-    lateinit var params: Map<String, Any>
+class AddPasswordUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatchers: CoroutineDispatchers
+) : CoroutineUseCase<AddPasswordParam, AddPasswordResponseModel>(dispatchers.io) {
 
-    fun submit(onSuccess: (AddPasswordResponseModel) -> Unit, onError: (Throwable) -> Unit) {
-        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_add_password)
-        graphqlUseCase.apply {
-            setTypeClass(AddPasswordResponseModel::class.java)
-            setGraphqlQuery(rawQuery)
-            setRequestParams(params)
-            execute(onSuccess = {
-                onSuccess(it)
-            }, onError = {
-                onError(it)
-            })
-        }
+    override suspend fun execute(params: AddPasswordParam): AddPasswordResponseModel {
+        return repository.request(graphqlQuery(), params)
     }
 
-    fun cancelJobs() {
-        graphqlUseCase.cancelJobs()
+    override fun graphqlQuery(): String {
+        return """
+            mutation addPassword(${'$'}password: String!, ${'$'}password_confirm: String!) {
+              addPassword(password: ${'$'}password, password_confirm: ${'$'}password_confirm) {
+                is_success
+                error_code
+                error_message
+              }
+            }
+        """.trimIndent()
     }
 }
+
+data class AddPasswordParam(
+    @SerializedName("password")
+    var password: String? = "",
+    @SerializedName("password_confirm")
+    var passwordConfirmation: String? = ""
+) : GqlParam

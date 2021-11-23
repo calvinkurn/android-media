@@ -19,12 +19,13 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardEndGameInterrupt"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardElevation="@dimen/layout_lvl0"
         app:cardPreventCornerOverlap="false"
+        app:cardUseCompatPadding="true"
+        app:cardBackgroundColor="@color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEndGameInterrupt">
@@ -64,7 +65,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_96"
+                android:textColor="@color/gmc_n700_96_static_dms"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iconCardEndGame"
                 app:layout_constraintTop_toTopOf="parent"
@@ -79,7 +80,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
-                android:textColor="@color/Unify_N700_68"
+                android:textColor="@color/gmc_n700_68_static_dms"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iconCardEndGame"

@@ -213,11 +213,11 @@ class Utils {
         }
 
 
-        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String): Boolean {
+        fun isFutureSaleOngoing(saleStartDate: String, saleEndDate: String, timerFormat: String = TIMER_SPRINT_SALE_DATE_FORMAT): Boolean {
             if (saleStartDate.isEmpty() || saleEndDate.isEmpty()) return false
             val currentSystemTime = Calendar.getInstance().time
-            val parsedSaleStartDate = parseData(saleStartDate)
-            val parsedSaleEndDate = parseData(saleEndDate)
+            val parsedSaleStartDate = parseData(saleStartDate, timerFormat)
+            val parsedSaleEndDate = parseData(saleEndDate, timerFormat)
             return if (parsedSaleStartDate != null && parsedSaleEndDate != null) {
                 (parsedSaleStartDate.time <= currentSystemTime.time) && (currentSystemTime.time < parsedSaleEndDate.time)
             } else {

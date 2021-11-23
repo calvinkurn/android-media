@@ -11,5 +11,4 @@ class ChooseAccountViewModel {
         var loginType: String? = ""
         var accountListDataModel: AccountListDataModel? = AccountListDataModel()
         var isFromRegister: Boolean = false
-        var isFacebook: Boolean = false
 }

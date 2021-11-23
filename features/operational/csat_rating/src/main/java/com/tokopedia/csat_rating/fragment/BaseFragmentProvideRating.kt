@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.csat_rating.ProvideRatingContract
 import com.tokopedia.csat_rating.R
+import com.tokopedia.abstraction.R as RAbstraction
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.CsatComponent
 import com.tokopedia.csat_rating.di.CsatModule
@@ -153,7 +154,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
             finishFilter = QuickFilterItem()
             finishFilter.name = filter.message
             finishFilter.type = filter.id.toString()
-            finishFilter.setColorBorder(R.color.tkpd_main_green)
+            finishFilter.setColorBorder(RAbstraction.color.tkpd_main_green)
             filterItems.add(finishFilter)
         }
         mFilterReview.renderFilter(filterItems)
@@ -246,12 +247,12 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     open fun getFilterReviewId():Int = R.id.filter_review
 
     fun disableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context, R.color.grey_500))
+        mTxtFinished.setTextColor(MethodChecker.getColor(context, RAbstraction.color.grey_500))
         mTxtFinished.isEnabled = false
     }
 
     fun enableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context, R.color.white))
+        mTxtFinished.setTextColor(MethodChecker.getColor(context, RAbstraction.color.white))
         mTxtFinished.isEnabled = true
     }
 

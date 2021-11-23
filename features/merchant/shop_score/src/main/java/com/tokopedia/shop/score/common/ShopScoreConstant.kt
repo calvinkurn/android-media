@@ -71,6 +71,9 @@ object ShopScoreConstant {
     const val IL_NEW_SELLER_SHOP_SCORE_URL =
         "https://images.tokopedia.net/img/android/shop_score/illustration_bottom_sheet_new_seller.png"
 
+    const val IMG_REACTIVATED_SELLER_COMEBACK =
+        "https://images.tokopedia.net/img/android/shop_score/img_reactivated_seller_comeback@2x.png"
+
     const val PENALTY_IDENTIFIER = "penalty"
 
     const val minuteText = "menit"
