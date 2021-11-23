@@ -115,7 +115,6 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
         products_rv.adapter = adapter
         loadMoreTriggerListener?.let { products_rv.addOnScrollListener(it) }
-        user_name.text = affiliateHomeViewModel.getUserName()
         home_navToolbar.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
@@ -133,10 +132,14 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 (activity as? AffiliateActivity)?.handleBackButton()
             }
         }
-        ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
-        sendScreenEvent()
-    }
 
+        sendScreenEvent()
+        setUserDetails()
+    }
+    private fun setUserDetails(){
+        ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
+        user_name.text = affiliateHomeViewModel.getUserName()
+    }
     private fun resetItems() {
         loadMoreTriggerListener?.resetState()
         listSize = 0
@@ -374,6 +377,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         when (requestCode) {
             AFFILIATE_LOGIN_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    setUserDetails()
                     affiliateHomeViewModel.getAnnouncementInformation()
                 } else {
                     activity?.finish()
