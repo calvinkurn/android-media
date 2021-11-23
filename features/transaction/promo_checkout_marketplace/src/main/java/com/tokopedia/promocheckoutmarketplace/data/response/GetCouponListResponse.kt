@@ -39,7 +39,9 @@ data class Data(
         @SerializedName("additional_message")
         val additionalMessage: String = "",
         @SerializedName("reward_points_info")
-        val rewardPointsInfo: RewardPointsInfo = RewardPointsInfo()
+        val rewardPointsInfo: RewardPointsInfo = RewardPointsInfo(),
+        @SerializedName("section_tabs")
+        val sectionTabs: List<SectionTab> = emptyList()
 )
 
 data class RewardPointsInfo(
@@ -115,6 +117,8 @@ data class PromoRecommendation(
 )
 
 data class CouponSection(
+        @SerializedName("id")
+        val id: String = "",
         @SerializedName("title")
         val title: String = "",
         @SerializedName("sub_title")
@@ -128,10 +132,21 @@ data class CouponSection(
         @SerializedName("tags")
         val tags: List<String> = emptyList(),
         @SerializedName("sub_sections")
-        val subSections: List<SubSection> = emptyList()
+        val subSections: List<SubSection> = emptyList(),
+        @SerializedName("coupon_groups")
+        val couponGroups: List<CouponGroup> = emptyList()
+)
+
+data class CouponGroup(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("count")
+        val count: Int = 0
 )
 
 data class SubSection(
+        @SerializedName("id")
+        val id: String = "",
         @SerializedName("title")
         val title: String = "",
         @SerializedName("sub_title")
@@ -184,7 +199,24 @@ data class Coupon(
         @SerializedName("currency_details_str")
         val currencyDetailStr: String = "",
         @SerializedName("coachmark")
-        val coachMark: PromoCoachmark = PromoCoachmark()
+        val coachMark: PromoCoachmark = PromoCoachmark(),
+        @SerializedName("is_highlighted")
+        val isHighlighted: Boolean = false,
+        @SerializedName("group_id")
+        val groupId: String = "",
+        @SerializedName("is_group_header")
+        val isGroupHeader: Boolean = false,
+        @SerializedName("promo_infos")
+        val promoInfos: List<PromoInfo> = emptyList()
+)
+
+data class PromoInfo(
+        @SerializedName("type")
+        val type: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("icon")
+        val icon: String = ""
 )
 
 data class ClashingInfo(
@@ -211,4 +243,11 @@ data class AttemptedPromoCodeError(
         val code: String = "",
         @SerializedName("message")
         val message: String = ""
+)
+
+data class SectionTab(
+        @SerializedName("id")
+        val id: String = "",
+        @SerializedName("title")
+        val title: String = ""
 )

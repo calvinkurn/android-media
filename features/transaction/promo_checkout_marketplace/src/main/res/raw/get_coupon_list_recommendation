@@ -37,6 +37,11 @@ mutation coupon_list_recommendation($params: PromoStackRequest, $chosen_address:
                 is_enabled
                 is_collapsed
                 tags
+//                id
+//                coupon_groups {
+//                    id
+//                    count
+//                }
                 coupons {
                     code
                     title
@@ -60,6 +65,11 @@ mutation coupon_list_recommendation($params: PromoStackRequest, $chosen_address:
                     is_enabled
                     is_collapsed
                     tags
+//                    id
+//                    coupon_groups {
+//                        id
+//                        count
+//                    }
                     coupons {
                         code
                         title
@@ -86,6 +96,14 @@ mutation coupon_list_recommendation($params: PromoStackRequest, $chosen_address:
                             title
                             content
                         }
+//                        is_highlighted
+//                        group_id
+//                        is_group_header
+//                        promo_infos {
+//                             type
+//                             title
+//                             icon
+//                        }
                     }
                 }
             }
@@ -104,6 +122,10 @@ mutation coupon_list_recommendation($params: PromoStackRequest, $chosen_address:
                     }
                 }
             }
+//            section_tabs {
+//                id
+//                title
+//            }
         }
     }
 }
