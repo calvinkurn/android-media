@@ -28,7 +28,9 @@ class DeveloperOptionAdapter(
         ViewTopAdsLogUiModel(context.getString(R.string.view_topads_log)),
         ApplinkLogOnNotificationUiModel(context.getString(R.string.enable_applink_notif)),
         ViewApplinkLogUiModel(context.getString(R.string.view_applink_log)),
-        FpmLogOnFileUiModel(context.getString(R.string.enable_fpm_log_file))
+        FpmLogOnFileUiModel(context.getString(R.string.enable_fpm_log_file)),
+        FpmLogOnNotificationUiModel((context.getString(R.string.enable_fpm_log_notif))),
+        ViewFpmLogUiModel((context.getString(R.string.enable_fpm_log)))
     )
 
     fun searchItem(text: String) {

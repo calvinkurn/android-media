@@ -35,6 +35,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ApplinkLogOnNotificationUiModel): Int = ApplinkLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewApplinkLogUiModel): Int = ViewApplinkLogViewHolder.LAYOUT
     override fun type(uiModel: FpmLogOnFileUiModel): Int = FpmLogOnFileViewHolder.LAYOUT
+    override fun type(uiModel: FpmLogOnNotificationUiModel): Int = FpmLogOnNotificationViewHolder.LAYOUT
+    override fun type(uiModel: ViewFpmLogUiModel): Int = ViewFpmLogViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -54,6 +56,8 @@ class DeveloperOptionTypeFactoryImpl(
             ApplinkLogOnNotificationViewHolder.LAYOUT -> ApplinkLogOnNotificationViewHolder(view)
             ViewApplinkLogViewHolder.LAYOUT -> ViewApplinkLogViewHolder(view)
             FpmLogOnFileViewHolder.LAYOUT -> FpmLogOnFileViewHolder(view)
+            FpmLogOnNotificationViewHolder.LAYOUT -> FpmLogOnNotificationViewHolder(view)
+            ViewFpmLogViewHolder.LAYOUT -> ViewFpmLogViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
