@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
-import com.tokopedia.ovop2p.model.WalletDataBase
+import com.tokopedia.ovop2p.domain.model.WalletDataBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.viewStates.WalletBalanceState
 import com.tokopedia.ovop2p.view.viewStates.WalletData

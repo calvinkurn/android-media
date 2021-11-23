@@ -1,13 +1,12 @@
 package com.tokopedia.ovop2p.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
-
-import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrPage
 import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar

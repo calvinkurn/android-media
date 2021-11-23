@@ -10,7 +10,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
-import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 
 class TransactionDetails : BaseDaggerFragment(){
     private lateinit var sucsMsg: TextView
@@ -73,7 +73,7 @@ class TransactionDetails : BaseDaggerFragment(){
         }
         fun newInstance(bundle: Bundle): TransactionDetails {
             val fragmentTxnDetails = newInstance()
-            fragmentTxnDetails.setArguments(bundle)
+            fragmentTxnDetails.arguments = bundle
             return fragmentTxnDetails
         }
     }

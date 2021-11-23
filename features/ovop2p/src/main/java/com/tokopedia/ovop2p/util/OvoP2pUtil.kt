@@ -5,11 +5,11 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -17,15 +17,14 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.ovop2p.Constants
-
 import com.tokopedia.ovop2p.R
-import com.tokopedia.ovop2p.model.OvoP2pTransferConfirmBase
-import com.tokopedia.ovop2p.model.OvoP2pTransferRequestBase
-import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
-import com.tokopedia.ovop2p.model.WalletDataBase
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferConfirmBase
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequestBase
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.domain.model.WalletDataBase
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import java.util.regex.Pattern
 
 
@@ -78,7 +77,7 @@ object OvoP2pUtil {
     fun executeOvoGetWalletData(context: Context, subscriber: Subscriber<GraphqlResponse>) {
         var ovoWalletDataUseCase = GraphqlUseCase()
         val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.ovop2p_wallet_detail),
+                GraphqlHelper.loadRawString(context.resources, R.raw.ovop2p_wallet_detail),
                 WalletDataBase::class.java)
         ovoWalletDataUseCase.addRequest(graphqlRequest)
         ovoWalletDataUseCase.execute(subscriber)

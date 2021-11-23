@@ -1,9 +1,6 @@
 package com.tokopedia.ovop2p.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +8,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
-import com.tokopedia.ovop2p.model.OvoP2pTransferThankyouBase
+import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 import com.tokopedia.ovop2p.util.AnalyticsUtil
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.interfaces.ActivityListener
@@ -113,7 +113,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         if (!::txnThankYouPageVM.isInitialized) {
             if (activity != null) {
                 txnThankYouPageVM = ViewModelProviders.of(this.activity!!).get(OvoP2pTxnThankYouOvoUsrVM::class.java)
-                txnThankYouPageVM.transferThankyouLiveData?.observe(this, getThankYouObsvr(activity as LoaderUiListener))
+                txnThankYouPageVM.transferThankyouLiveData.observe(this, getThankYouObsvr(activity as LoaderUiListener))
             }
         }
     }
@@ -207,7 +207,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
         fun newInstance(bundle: Bundle): TxnSucsOvoUser {
             val fragmentSucsOvoUsr = newInstance()
-            fragmentSucsOvoUsr.setArguments(bundle)
+            fragmentSucsOvoUsr.arguments = bundle
             return fragmentSucsOvoUsr
         }
     }
