@@ -160,8 +160,8 @@ class AffiliateHomeViewModel @Inject constructor(
         return performaTempList
     }
 
-    private var selectedDateRange = AffiliateBottomDatePicker.TODAY
-    private var selectedDateValue = "0"
+    private var selectedDateRange = AffiliateBottomDatePicker.SEVEN_DAYS
+    private var selectedDateValue = "7"
     fun getSelectedDate(): String {
         return selectedDateRange
     }
