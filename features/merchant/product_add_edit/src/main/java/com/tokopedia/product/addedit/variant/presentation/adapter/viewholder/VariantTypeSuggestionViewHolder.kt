@@ -12,9 +12,9 @@ class VariantTypeSuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(
 
     fun bindData(text: String, highlightCharLength: Int) {
         if (highlightCharLength <= text.length) {
-            val boldText = text.take(highlightCharLength)
-            val normalText = text.takeLast(text.length - highlightCharLength)
-            binding?.variantTypeName?.text = MethodChecker.fromHtml("<b>$boldText</b>$normalText")
+            val normalText = text.take(highlightCharLength)
+            val boldText = text.takeLast(text.length - highlightCharLength)
+            binding?.variantTypeName?.text = MethodChecker.fromHtml("$normalText<b>$boldText</b>")
         } else {
             binding?.variantTypeName?.text = text
         }
