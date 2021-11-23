@@ -70,5 +70,15 @@ object Constant {
         const val CATEGORY_HOST_TRACKING_SOURCE = "category page"
     }
 
+    object Calendar{
+        const val CAROUSEL = "carousel"
+        const val DYNAMIC = "dynamic"
+        const val STATIC = "static"
+        const val SINGLE = "single"
+        const val DOUBLE = "double"
+        const val GRID = "grid"
+        const val TRIPLE = "triple"
+    }
+
     const val LABEL_FULFILLMENT = "fulfillment"
 }
