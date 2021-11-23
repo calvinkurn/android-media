@@ -362,8 +362,6 @@ class AddEditProductDetailViewModelTest {
         val resultMessage = listOf("indodax")
         val errorMessage = "error blacklist"
 
-        viewModel.usingNewProductTitleRequest = true
-
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
         } returns TitleValidationModel(
@@ -388,7 +386,6 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runBlockingTest {
         val productNameInput = "indomilk"
-        viewModel.usingNewProductTitleRequest = true
 
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()

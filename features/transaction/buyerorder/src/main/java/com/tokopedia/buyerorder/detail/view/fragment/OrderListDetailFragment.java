@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
@@ -273,6 +274,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(title.label());
         doubleTextView.setBottomText(title.value());
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         statusDetail.addView(doubleTextView);
     }
 
@@ -325,6 +328,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
             DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
             doubleTextView.setTopText(detail.label());
             doubleTextView.setBottomText(detail.value());
+            doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
             detailContent.addView(doubleTextView);
         }
     }
@@ -346,6 +351,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(additionalInfo.label());
         doubleTextView.setBottomText(additionalInfo.value());
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         additionalInfoLayout.addView(doubleTextView);
     }
 
@@ -361,6 +368,8 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.END);
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         infoValue.addView(doubleTextView);
 
     }
@@ -414,8 +423,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
         doubleTextView.setBottomText(paymentData.value());
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
+        else
+            doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.END);
         totalPrice.addView(doubleTextView);

@@ -1887,14 +1887,14 @@ class PlayViewModel @Inject constructor(
                 copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
             }
 
-            viewModelScope.launch {
+            viewModelScope.launchCatchError(block = {
                 repo.postLike(
                     contentId = likeInfo.contentId.toLongOrZero(),
                     contentType = likeInfo.contentType,
                     likeType = likeInfo.likeType,
                     shouldLike = newStatus == PlayLikeStatus.Liked
                 )
-            }
+            }) { }
 
             onNewStatusFn(newStatus)
         }

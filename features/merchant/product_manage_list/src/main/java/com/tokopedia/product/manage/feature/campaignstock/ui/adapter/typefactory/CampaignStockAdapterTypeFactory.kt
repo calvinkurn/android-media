@@ -33,8 +33,10 @@ class CampaignStockAdapterTypeFactory(private val onAccordionStateChange: (Int) 
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ActiveProductSwitchViewHolder.LAYOUT_RES -> ActiveProductSwitchViewHolder(parent, onActiveStockChanged)
-            TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(parent, onTotalStockChanged, onOngoingPromotionClicked)
+            ActiveProductSwitchViewHolder.LAYOUT_RES -> ActiveProductSwitchViewHolder(
+                parent, onActiveStockChanged, source, shopId)
+            TotalStockEditorViewHolder.LAYOUT_RES -> TotalStockEditorViewHolder(
+                parent, onTotalStockChanged, onOngoingPromotionClicked, source, shopId)
             SellableStockProductViewHolder.LAYOUT_RES -> SellableStockProductViewHolder(
                     parent, onVariantStockChanged, onVariantStatusChanged, onOngoingPromotionClicked, source, shopId
             )
