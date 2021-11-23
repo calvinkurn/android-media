@@ -136,7 +136,15 @@ class RechargeBUWidgetProductCardViewHolder(
                     setValue(element.soldPercentage, false)
                     show()
                 } else {
-                    hide()
+//                    hide()
+
+                    setProgressIcon(
+                            icon = ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card),
+                            width = context.resources.getDimension(R.dimen.bu_widget_progress_fire_icon_width).toInt(),
+                            height = context.resources.getDimension(R.dimen.bu_widget_progress_fire_icon_height).toInt()
+                    )
+                    progressBarColorType = ProgressBarUnify.COLOR_RED
+                    setValue(80, false)
                 }
             }
 
@@ -154,7 +162,18 @@ class RechargeBUWidgetProductCardViewHolder(
 
                     show()
                 } else {
-                    hide()
+//                    hide()
+
+                    text = "Segera Habis"
+
+                    val color = try {
+                        Color.parseColor(element.soldPercentageLabelColor)
+                    } catch (throwable: Throwable) {
+                        throwable.printStackTrace()
+                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R600)
+                    }
+                    setTextColor(color)
+
                 }
             }
 

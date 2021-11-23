@@ -39,6 +39,7 @@ import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.abs
 
@@ -70,6 +71,8 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         val LAYOUT = R.layout.home_recharge_bu_widget_mix_left
         const val BU_WIDGET_TYPE_LEFT = "mix-left"
         const val RESET_IMAGE_LAYOUT_VALUE: Int = 0
+
+        private const val EXPIRED_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ssZZZZ"
     }
 
     override fun bind(element: RechargeBUWidgetDataModel) {
@@ -245,12 +248,15 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
 
     private fun setHeaderComponent(element: RechargeBUWidgetDataModel) {
         val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
+        val parser = SimpleDateFormat(EXPIRED_DATE_PATTERN)
+        val expiredTime = Date(element.data.endTime.toLong())
         val channel = element.channel.copy(
                 channelHeader = ChannelHeader(
                         name = element.data.title,
-                        applink = element.data.applink,
-                        url = element.data.textlink,
-                        subtitle = element.data.subtitle
+                        applink = if (element.data.textlink.isNotEmpty()) element.data.applink else "",
+                        subtitle = element.data.subtitle,
+                        expiredTime = parser.format(expiredTime),
+                        serverTimeUnix = element.channel.channelHeader.serverTimeUnix
                 )
         )
         headerView.setChannel(channel, object : HeaderListener {
@@ -259,7 +265,9 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-
+                itemView.recharge_bu_content_shimmering.show()
+                val source = element.channel.widgetParam.removePrefix("?section=")
+                listener.getRechargeBUWidget(WidgetSource.findSourceByString(source))
             }
         })
     }
