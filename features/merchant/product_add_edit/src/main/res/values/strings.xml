@@ -359,6 +359,10 @@
     <string name="label_cvt_tips_title">Sekarang kamu bisa buat varian sendiri</string>
     <string name="label_cvt_edit_conf_title">Hapus tipe varian %1s?</string>
     <string name="label_cvt_edit_conf_desc">Tipe varian ini dan semua pilihannya akan hilang.</string>
+    <string name="label_cvt_message_variant_added">Tipe varian berhasil dibuat.</string>
+    <string name="label_cvt_message_variant_deleted">Tipe varian berhasil dihapus.</string>
+    <string name="label_cvt_message_variant_edited">Nama tipe varian berhasil diubah.</string>
+    <string name="label_cvt_message_variant_cannot_add">Kamu sudah buat 2 tipe varian tambahan, nih.</string>
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
     <string name="error_illegal_variant_name">Nama berisi kata terlarang. Coba nama lain, ya.</string>

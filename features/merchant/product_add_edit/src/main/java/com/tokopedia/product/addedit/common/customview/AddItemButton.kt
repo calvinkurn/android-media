@@ -18,6 +18,9 @@ class AddItemButton : BaseCustomView {
 
     private var typographyAdd: Typography? = null
     private var iconAdd: IconUnify? = null
+    private var isClickEnabled: Boolean = true
+    private var onClickListener: (() -> Unit)? = null
+    private var onDisabledClickListener: (() -> Unit)? = null
 
     constructor(context: Context) : super(context) {
         init(null)
@@ -32,15 +35,22 @@ class AddItemButton : BaseCustomView {
     }
 
     override fun setEnabled(enabled: Boolean) {
-        super.setEnabled(enabled)
         typographyAdd?.isEnabled = enabled
         iconAdd?.isEnabled = enabled
+        isClickEnabled = enabled
     }
 
     private fun init(attrs: AttributeSet?) {
         val view = View.inflate(context, R.layout.add_edit_product_add_item_button_layout, this)
         typographyAdd = view.findViewById(R.id.typography_add)
         iconAdd = view.findViewById(R.id.icon_add)
+        setOnClickListener { view ->
+            if (isClickEnabled) {
+                onClickListener?.invoke()
+            } else {
+                onDisabledClickListener?.invoke()
+            }
+        }
 
         defineCustomAttributes(attrs)
         refreshViews()
@@ -60,5 +70,13 @@ class AddItemButton : BaseCustomView {
 
     private fun refreshViews() {
         typographyAdd?.text = addItemButtonText
+    }
+
+    fun setOnDisabledClickListener(listener: () -> Unit) {
+        onDisabledClickListener = listener
+    }
+
+    fun setOnClickListener(listener: () -> Unit) {
+        onClickListener = listener
     }
 }

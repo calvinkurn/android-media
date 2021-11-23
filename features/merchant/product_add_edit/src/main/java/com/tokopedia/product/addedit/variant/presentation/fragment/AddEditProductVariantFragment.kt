@@ -694,8 +694,10 @@ class AddEditProductVariantFragment :
                     variantTypeAdapter?.getItems())
             bottomSheet.setOnVariantTypeEditedListener { editedIndex, editedLevel, variantDetail ->
                 variantTypeAdapter?.replaceItem(editedIndex, variantDetail)
-                if (variantTypeAdapter?.isItemAtPositionSelected(editedIndex) == false)
+                if (variantTypeAdapter?.isItemAtPositionSelected(editedIndex) == false){
+                    showToaster(getString(R.string.label_cvt_message_variant_edited))
                     return@setOnVariantTypeEditedListener
+                }
                 if (variantDetail.variantID == CUSTOM_VARIANT_TYPE_ID) {
                     when (editedLevel) {
                         VARIANT_VALUE_LEVEL_ONE_POSITION -> {
@@ -726,12 +728,16 @@ class AddEditProductVariantFragment :
 
                 // delete variant at adapter
                 variantTypeAdapter?.deleteItem(deletedIndex, variantDetail)
+                showToaster(getString(R.string.label_cvt_message_variant_deleted))
             }
             bottomSheet.show(childFragmentManager)
         }
     }
 
     private fun setupButtonAddVariantType() {
+        buttonAddVariantType.setOnDisabledClickListener {
+            showToaster(getString(R.string.label_cvt_message_variant_cannot_add))
+        }
         buttonAddVariantType.setOnClickListener {
             val bottomSheet = CustomVariantInputBottomSheet(
                 variantDetails = variantTypeAdapter?.getItems().orEmpty())
@@ -743,9 +749,11 @@ class AddEditProductVariantFragment :
                     deselectAllVariantType()
                 }
                 variantTypeAdapter?.addData(customVariantTypeDetail)
+                showToaster(getString(R.string.label_cvt_message_variant_added))
             }
             bottomSheet.setOnPredefinedVariantTypeSubmitted {
                 variantTypeAdapter?.addData(it)
+                showToaster(getString(R.string.label_cvt_message_variant_added))
             }
             bottomSheet.show(childFragmentManager)
         }
@@ -774,6 +782,13 @@ class AddEditProductVariantFragment :
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
+    }
+
+    private fun showToaster(message: String) {
+        Toaster.build(requireView(), message, Toaster.LENGTH_LONG,
+                actionText = getString(R.string.action_oke))
+                .setAnchorView(R.id.linearLayoutSave)
+                .show()
     }
 
     private fun showVariantDataValuePicker(variantData: VariantDetail,
