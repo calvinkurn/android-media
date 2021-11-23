@@ -88,7 +88,7 @@ class UploaderUseCase @Inject constructor(
     }
 
     // Public Method
-    suspend fun abortUpload(abort: () -> Unit) {
+    suspend fun abortUpload(abort: () -> Unit = {}) {
         try {
             videoUploaderManager.abortUpload { abort() }
         } catch (t: Throwable) {}
