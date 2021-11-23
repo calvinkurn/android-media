@@ -69,7 +69,6 @@ open class ProductAttachmentUiModel protected constructor(
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = 0
     var isFulfillment: Boolean = false
-    var isUpcomingCampaign: Boolean = false
     var urlTokocabang: String = ""
     var parentId: String = "0"
 
@@ -78,6 +77,9 @@ open class ProductAttachmentUiModel protected constructor(
     var colorHexVariant: String = ""
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
+
+    var isUpcomingCampaign: Boolean = false
+        private set
 
     init {
         if (variants.isNotEmpty()) {

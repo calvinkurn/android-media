@@ -549,7 +549,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindEmptyStockLabel(product: ProductAttachmentUiModel) {
         label?.apply {
-            if (product.hasEmptyStock()) {
+            if (product.hasEmptyStock() && !product.isUpcomingCampaign) {
                 show()
                 setText(R.string.title_topchat_empty_stock)
                 unlockFeature = true
