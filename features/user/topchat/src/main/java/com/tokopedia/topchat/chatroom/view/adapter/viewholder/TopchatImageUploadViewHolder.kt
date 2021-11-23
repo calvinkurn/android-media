@@ -5,13 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
 import com.tokopedia.topchat.chatroom.view.custom.message.ReplyBubbleAreaMessage
@@ -22,8 +22,7 @@ class TopchatImageUploadViewHolder(
     itemView: View?,
     listener: ImageUploadListener,
     private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
-)
-    : ImageUploadViewHolder(itemView, listener) {
+) : ImageUploadViewHolder(itemView, listener) {
 
     private val viewContainer: LinearLayout? = itemView?.findViewById(R.id.ll_image_container)
     private var replyBubbleArea: ReplyBubbleAreaMessage? = itemView?.findViewById(
@@ -145,7 +144,7 @@ class TopchatImageUploadViewHolder(
             setVisibility(progressBarSendImage, View.GONE)
         }
         element.imageUrl?.let {
-            ImageHandler.LoadImage(attachmentUnify, it)
+            attachmentUnify?.loadImage(it)
         }
     }
 

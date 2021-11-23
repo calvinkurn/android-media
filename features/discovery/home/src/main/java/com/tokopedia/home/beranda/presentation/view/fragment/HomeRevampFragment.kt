@@ -151,7 +151,6 @@ import com.tokopedia.stickylogin.common.helper.isRegisteredFromStickyLogin
 import com.tokopedia.stickylogin.common.helper.saveIsRegisteredFromStickyLogin
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
-import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -360,11 +359,15 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private var coachMarkIsShowing = false
     private var gopayCoachmarkIsShowing = false
     private var tokopointsCoachmarkIsShowing = false
+    private var tokonowCoachmarkIsShowing = false
     private var useNewInbox = false
     private var coachmark: CoachMark2? = null
     private var coachmarkGopay: CoachMark2? = null
     private var coachmarkTokopoint: CoachMark2? = null
+    private var coachmarkTokonow: CoachMark2? = null
     private var isEligibleGopay: Boolean? = null
+    private var tokonowIconRef: View? = null
+    private var tokonowIconParentPosition: Int = -1
 
     private var bannerCarouselCallback: BannerComponentCallback? = null
 
@@ -806,6 +809,23 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun ArrayList<CoachMark2Item>.buildTokonowCoachmark(tokonowIcon: View?) {
+        context?.let { currentContext ->
+            if (!isHomeTokonowCoachmarkShown(currentContext)) {
+                 tokonowIcon?.let {
+                    this.add(
+                            CoachMark2Item(
+                                    tokonowIcon,
+                                    getString(R.string.home_tokonow_coachmark_title),
+                                    getString(R.string.home_tokonow_coachmark_description),
+                                    position = CoachMark2.POSITION_TOP
+                            )
+                    )
+                }
+            }
+        }
+    }
+
     @Suppress("TooGenericExceptionCaught")
     private fun showCoachMark(
         skipBalanceWidget: Boolean = false,
@@ -822,15 +842,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     coachMarkIsShowing = true
                     coachmark = CoachMark2(ctx)
                     coachmark?.let {
-                        it.setOnDismissListener {
+                        it.onDismissListener = {
                             coachMarkItem.forEach { item ->
                                 item.setCoachmarkShownPref()
                             }
-                            showBalanceWidgetCoachmark(
-                                ctx,
-                                containsNewGopayAndTokopoints,
-                                tokopointsBalanceCoachmark
-                            )
+                            if (getUserSession().isLoggedIn) {
+                                showBalanceWidgetCoachmark(
+                                        ctx,
+                                        containsNewGopayAndTokopoints,
+                                        tokopointsBalanceCoachmark
+                                )
+                            }
                         }
                         try {
                             it.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
@@ -841,11 +863,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     }
                     coachmark
                 } else if (coachMarkItem.isEmpty()) {
-                    showBalanceWidgetCoachmark(
-                        ctx,
-                        containsNewGopayAndTokopoints,
-                        tokopointsBalanceCoachmark
-                    )
+                    if (getUserSession().isLoggedIn) {
+                        showBalanceWidgetCoachmark(
+                                ctx,
+                                containsNewGopayAndTokopoints,
+                                tokopointsBalanceCoachmark
+                        )
+                    }
                     return@let
                 }
             }
@@ -864,8 +888,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             )) {
             if (!isNewWalletAppCoachmarkShown(ctx)) {
                 showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx)) {
+            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
                 showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
+                showTokonowCoachmark()
             }
         }
     }
@@ -885,8 +911,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             coachmarkGopay?.let { gopayCoachmark ->
                 try {
                     if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !gopayCoachmarkIsShowing) {
-                        gopayCoachmark.setOnDismissListener {
-                            showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+                        gopayCoachmark.onDismissListener = {
+                            if (!isNewTokopointCoachmarkShown(it) && tokopointsBalanceCoachmark != null) {
+                                showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+                            } else {
+                                showTokonowCoachmark()
+                            }
                             setNewWalletAppCoachmarkShown(it)
                         }
                         gopayCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
@@ -915,8 +945,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 coachmarkTokopoint?.let { tokopointCoachmark ->
                     try {
                         if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokopointsCoachmarkIsShowing) {
-                            tokopointCoachmark?.setOnDismissListener {
+                            tokopointCoachmark?.onDismissListener = {
                                 setNewTokopointCoachmarkShown(it)
+                                showTokonowCoachmark()
                             }
                             tokopointCoachmark.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
                             tokopointsCoachmarkIsShowing = true
@@ -925,6 +956,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         tokopointsCoachmarkIsShowing = false
                         e.printStackTrace()
                     }
+                }
+            }
+        }
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private fun showTokonowCoachmark() {
+        if (!userVisibleHint) return
+
+        context?.let {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            if (coachmarkTokonow == null) coachmarkTokonow = CoachMark2(it)
+            coachMarkItem.buildTokonowCoachmark(tokonowIconRef)
+            coachmarkTokonow?.let { coachmarkTokonow ->
+                try {
+                    if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark() && !tokonowCoachmarkIsShowing) {
+                        coachmarkTokonow.onDismissListener = {
+                            setHomeTokonowCoachmarkShown(it)
+                        }
+                        coachmarkTokonow.showCoachMark(step = coachMarkItem, index = COACHMARK_FIRST_INDEX)
+                        tokonowCoachmarkIsShowing = true
+                    }
+                } catch (e: Exception) {
+                    tokonowCoachmarkIsShowing = false
+                    e.printStackTrace()
                 }
             }
         }
@@ -1086,6 +1142,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)
         }
+
+        if (tokonowCoachmarkIsShowing) coachmarkTokonow?.dismissCoachMark()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -1233,7 +1291,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutineWithFirebase(sendScrWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, context?.applicationContext)
+        executeWeaveCoRoutineWithFirebase(sendScrWeave, RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, context?.applicationContext, true)
     }
 
     override fun onPause() {
@@ -1396,27 +1454,27 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun observeUpdateNetworkStatusData() {
         getHomeViewModel().updateNetworkLiveData.observe(viewLifecycleOwner, Observer { (status, _, throwable) ->
             resetImpressionListener()
-            val errorString = getErrorString(throwable ?: MessageErrorException(getString(R.string.home_error_connection)))
             when {
                 status === Result.Status.SUCCESS -> {
                     hideLoading()
                 }
                 status === Result.Status.ERROR -> {
                     hideLoading()
-                    showNetworkError(errorString)
+                    showNetworkError(getErrorStringWithDefault(throwable))
                     onPageLoadTimeEnd()
                 }
                 status === Result.Status.ERROR_PAGINATION -> {
                     hideLoading()
-                    showNetworkError(errorString)
+                    showNetworkError(getErrorStringWithDefault(throwable))
                 }
                 status === Result.Status.ERROR_ATF -> {
                     hideLoading()
-                    showNetworkError(errorString)
+                    showNetworkError(getErrorStringWithDefault(throwable))
                     adapter?.resetChannelErrorState()
                     adapter?.resetAtfErrorState()
                 }
                 status == Result.Status.ERROR_GENERAL -> {
+                    val errorString = getErrorStringWithDefault(throwable)
                     showNetworkError(errorString)
                     NetworkErrorHelper.showEmptyState(activity, root, errorString) { onRefresh() }
                     onPageLoadTimeEnd()
@@ -1785,6 +1843,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return showSeeAllCard
     }
 
+    override fun onTokonowViewCaptured(tokonowView: View?, parentPosition: Int) {
+        this.tokonowIconRef = tokonowView
+        this.tokonowIconParentPosition = parentPosition
+    }
+
+    override fun dismissTokonowCoachmark(parentPosition: Int) {
+        if (tokonowIconParentPosition == parentPosition) {
+            coachmarkTokonow?.dismissCoachMark()
+        }
+    }
+
     private fun initEggTokenScrollListener() {
         onEggScrollListener = object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -1816,28 +1885,31 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setupPlayWidgetCoordinator()
         bannerCarouselCallback = BannerComponentCallback(context, this)
         val adapterFactory = HomeAdapterFactory(
-                this,
-                this,
-                this,
-                homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
-                this,
-                HomeComponentCallback(this),
-                DynamicLegoBannerComponentCallback(context, this),
-                RecommendationListCarouselComponentCallback(this),
-                MixLeftComponentCallback(this),
-                MixTopComponentCallback(this),
-                HomeReminderWidgetCallback(RechargeRecommendationCallback(context, this),
-                        SalamWidgetCallback(context, this, getUserSession())),
-                ProductHighlightComponentCallback(this),
-                Lego4AutoBannerComponentCallback(context, this),
-                FeaturedShopComponentCallback(context, this),
-                playWidgetCoordinator,
-                this,
-                CategoryNavigationCallback(context, this),
-                RechargeBUWidgetCallback(context, this),
-                bannerCarouselCallback,
-                DynamicIconComponentCallback(context, this),
-                Lego6AutoBannerComponentCallback(context, this)
+            this,
+            this,
+            this,
+            homeRecyclerView?.recycledViewPool ?: RecyclerView.RecycledViewPool(),
+            this,
+            HomeComponentCallback(this),
+            DynamicLegoBannerComponentCallback(context, this),
+            RecommendationListCarouselComponentCallback(this),
+            MixLeftComponentCallback(this),
+            MixTopComponentCallback(this),
+            HomeReminderWidgetCallback(
+                RechargeRecommendationCallback(context, this),
+                SalamWidgetCallback(context, this, getUserSession())
+            ),
+            ProductHighlightComponentCallback(this),
+            Lego4AutoBannerComponentCallback(context, this),
+            FeaturedShopComponentCallback(context, this),
+            playWidgetCoordinator,
+            this,
+            CategoryNavigationCallback(context, this),
+            RechargeBUWidgetCallback(context, this),
+            bannerCarouselCallback,
+            DynamicIconComponentCallback(context, this),
+            Lego6AutoBannerComponentCallback(context, this),
+            CampaignWidgetComponentCallback(context, this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2102,7 +2174,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData()
-        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
     override fun onChooseAddressUpdated() {
@@ -2155,7 +2226,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
         stickyLoginView?.loadContent()
         loadEggData()
-        fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
     }
 
     private fun resetFeedState() {
@@ -2180,7 +2250,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         homeRecyclerView?.addOneTimeGlobalLayoutListener {
             homePerformanceMonitoringListener?.stopHomePerformanceMonitoring(isCache)
             homePerformanceMonitoringListener = null
-            fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE)
             if (fragmentCreatedForFirstTime) {
                 fragmentCreatedForFirstTime = false
                 conditionalViewModelRefresh()
@@ -2555,6 +2624,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 if (tokopointsCoachmarkIsShowing) {
                     coachmarkTokopoint?.dismiss()
                 }
+                if (tokonowCoachmarkIsShowing) {
+                    coachmarkTokonow?.dismissCoachMark()
+                }
             }
         }
     }
@@ -2724,12 +2796,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         super.onHiddenChanged(hidden)
         userVisibleHint = !hidden
         fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden)
-    }
-
-    private fun fetchTokopointsNotification(type: String) {
-        if (activity != null) {
-            TokoPointsNotificationManager.fetchNotification(activity, type, childsFragmentManager)
-        }
     }
 
     override fun hideEggOnScroll() {
@@ -3134,6 +3200,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             ErrorHandler.getErrorMessage(it, e)
         }?:""
     }
+
+    private fun getErrorStringWithDefault(e: Throwable?): String =
+        getErrorString(e ?: MessageErrorException(getString(R.string.home_error_connection)))
 
     private fun gotoNewUserZonePage() {
         activity?.let {

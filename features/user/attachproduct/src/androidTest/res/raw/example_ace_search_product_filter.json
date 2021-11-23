@@ -1,0 +1,34 @@
+{
+  "ace_search_product":{
+    "data":{
+      "products":[
+        {
+          "id":1307927962,
+          "name":"pr0duct t3st variant 2 100 v4r",
+          "url":"https://www.tokopedia.com/4layshop/pr0duct-t3st-variant-2-100-v4r-putih-0?whid=0",
+          "imageURL":"https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/11/3/a90e560b-7671-4303-b370-1eb2bc038d38.jpg",
+          "price":"Rp1.000",
+          "stock":100,
+          "priceInt":1000,
+          "shop":{
+            "id":9785494,
+            "name":"4L@y3r5sh0p",
+            "isGoldShop":false,
+            "isOfficial":true
+          },
+          "categoryID":62,
+          "categoryBreadcrumb":"olahraga/alat-pancing/kail-pancing",
+          "freeOngkir":{
+            "isActive":true,
+            "imgURL":"https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+          },
+          "originalPrice":"",
+          "discountPercentage":0,
+          "wishlist":false,
+          "minOrder":1,
+          "status":0
+        }
+      ]
+    }
+  }
+}

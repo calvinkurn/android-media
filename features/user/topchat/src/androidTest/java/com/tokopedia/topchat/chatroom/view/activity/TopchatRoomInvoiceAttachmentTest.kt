@@ -10,6 +10,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.matchers.withTotalItem
@@ -17,6 +18,7 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matchers
 import org.junit.Test
 
+@UiTest
 class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
 
     private val goodId = "770851031"

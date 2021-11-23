@@ -1,36 +1,31 @@
 package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
-import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper.Companion.KEY_CHOSEN_ADDRESS
-import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 2020-03-05.
- */
-class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext private val context: Context,
-                                                        private val graphqlUseCase: GraphqlUseCase,
-                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
-    : UseCase<ValidateUsePromoRevampUiModel>() {
+class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
+                                                        private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<ValidateUsePromoRevampUiModel>() {
+
+    private var paramValidateUse: ValidateUsePromoRequest? = null
 
     companion object {
-        const val PARAM_VALIDATE_USE = "PARAM_VALIDATE_USE"
         const val PARAM_PROMO = "promo"
         const val PARAM_PARAMS = "params"
+    }
+
+    fun setParam(param: ValidateUsePromoRequest): ValidateUsePromoRevampUseCase {
+        paramValidateUse = param
+        return this
     }
 
     private fun getParams(validateUsePromoRequest: ValidateUsePromoRequest): Map<String, Any?> {
@@ -42,23 +37,12 @@ class ValidateUsePromoRevampUseCase @Inject constructor(@ApplicationContext priv
         )
     }
 
-    override fun createObservable(requestParams: RequestParams?): Observable<ValidateUsePromoRevampUiModel> {
-        val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as ValidateUsePromoRequest
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.mutation_validate_use_promo_revamp), ValidateUseResponse::class.java, getParams(paramValidateUse))
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
+    override suspend fun executeOnBackground(): ValidateUsePromoRevampUiModel {
+        val param = paramValidateUse?.copy() ?: throw RuntimeException("Param has not been initialized")
 
-        return graphqlUseCase.createObservable(RequestParams.EMPTY)
-                .map { it ->
-                    var validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
-                    val validateUseGqlResponse = it.getData<ValidateUseResponse>(ValidateUseResponse::class.java)
-                    validateUseGqlResponse?.validateUsePromoRevamp?.let {
-                        validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(it)
-                    }
-                    validateUsePromoRevampUiModel
-                }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+        val request = GraphqlRequest(VALIDATE_USE_QUERY, ValidateUseResponse::class.java, getParams(param))
+        val validateUseGqlResponse = graphqlRepository.response(listOf(request)).getSuccessData<ValidateUseResponse>()
+
+        return ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseGqlResponse.validateUsePromoRevamp)
     }
 }

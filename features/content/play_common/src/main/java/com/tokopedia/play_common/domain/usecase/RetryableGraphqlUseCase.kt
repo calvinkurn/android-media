@@ -21,25 +21,23 @@ abstract class RetryableGraphqlUseCase<T: Any>(
                 val response = super.executeOnBackground()
                 val isSuccess = isResponseSuccess(response)
                 if (isSuccess) return response
-                else error("Response is not success")
+                else error("Response is $response, but further validation deemed that as error")
             } catch (e: Throwable) {
                 latestError = e
                 count += 1
             }
         }
 
-        throw MessageErrorException(getErrorMessage(latestError))
+        throw latestError ?: MessageErrorException(DEFAULT_ERROR_MESSAGE)
     }
 
     open fun isResponseSuccess(response: T): Boolean {
         return true
     }
 
-    open fun getErrorMessage(err: Throwable?): String {
-        return DEFAULT_ERROR_MESSAGE
-    }
-
     companion object {
+
+        const val HIGH_RETRY_COUNT = 5
 
         private const val DEFAULT_RETRY_COUNT = 3
         private const val DEFAULT_ERROR_MESSAGE = "Terjadi kesalahan pada sistem. Silahkan coba lagi."

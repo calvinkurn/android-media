@@ -73,6 +73,15 @@ class VerificationViewModelTest {
 
     private lateinit var viewmodel: VerificationViewModel
 
+    private val otpModeListDataMock = OtpModeListData(success = true, errorMessage = "")
+    private val successGetVerificationMethodResponse = OtpModeListPojo(otpModeListDataMock)
+
+    private val otpValidateData = OtpValidateData(success = true, validateToken = "abc123")
+    private val successOtpValidationResponse = OtpValidatePojo(otpValidateData)
+
+    private val otpRequestData = OtpRequestData(success = true)
+    private val successSendOtpResponse = OtpRequestPojo(otpRequestData)
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
@@ -105,6 +114,34 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `Success get verification method message not empty`() {
+        successGetVerificationMethodResponse.data.errorMessage = "error"
+        successGetVerificationMethodResponse.data.success = false
+
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodUseCase.getData(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethod("", "", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Fail)
+    }
+
+    @Test
+    fun `Success get verification method message not empty and success == false`() {
+        successGetVerificationMethodResponse.data.errorMessage = ""
+        successGetVerificationMethodResponse.data.success = false
+
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodUseCase.getData(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethod("", "", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Fail)
+    }
+
+    @Test
     fun `Failed get verification method`() {
         viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
         coEvery { getVerificationMethodUseCase.getData(any()) } coAnswers { throw throwable }
@@ -130,6 +167,34 @@ class VerificationViewModelTest {
 
         val result = viewmodel.getVerificationMethodResult.value as Success<OtpModeListData>
         assert(result.data == successGetVerificationMethodResponse.data)
+    }
+
+    @Test
+    fun `Failed get verification method 2fa error message not empty`() {
+        successGetVerificationMethodResponse.data.errorMessage = "error"
+        successGetVerificationMethodResponse.data.success = false
+
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodUseCase2FA.getData(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethod2FA("", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Fail)
+    }
+
+    @Test
+    fun `Failed get verification method 2fa error message empty and success == false`() {
+        successGetVerificationMethodResponse.data.errorMessage = ""
+        successGetVerificationMethodResponse.data.success = false
+
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodUseCase2FA.getData(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethod2FA("", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Fail)
     }
 
     @Test
@@ -245,6 +310,33 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `Failed validate otp method error message not empty`() {
+        successOtpValidationResponse.data.success = false
+        successOtpValidationResponse.data.errorMessage = "error"
+
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase.getData(any()) } returns successOtpValidationResponse
+
+        viewmodel.otpValidate("", "", "", "", "", "", "", "", "", 0)
+
+        verify { otpValidateResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.otpValidateResult.value is Fail)
+    }
+
+    @Test
+    fun `Failed validate otp method error message is empty and success == false`() {
+        successOtpValidationResponse.data.success = false
+
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase.getData(any()) } returns successOtpValidationResponse
+
+        viewmodel.otpValidate("", "", "", "", "", "", "", "", "", 0)
+
+        verify { otpValidateResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.otpValidateResult.value is Fail)
+    }
+
+    @Test
     fun `Failed validate otp method`() {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase.getData(any()) } coAnswers { throw throwable }
@@ -270,6 +362,34 @@ class VerificationViewModelTest {
 
         val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
         assert(result.data == successOtpValidationResponse.data)
+    }
+
+    @Test
+    fun `Success validate otp method 2fa error message isNotEmpty`() {
+        successOtpValidationResponse.data.errorMessage = "error"
+        successOtpValidationResponse.data.success = false
+
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
+
+        viewmodel.otpValidate2FA("", "", "", "", "")
+
+        verify { otpValidateResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.otpValidateResult.value is Fail)
+    }
+
+    @Test
+    fun `Success validate otp method 2fa error message isEmpty & success == false`() {
+        successOtpValidationResponse.data.errorMessage = ""
+        successOtpValidationResponse.data.success = false
+
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
+
+        viewmodel.otpValidate2FA("", "", "", "", "")
+
+        verify { otpValidateResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.otpValidateResult.value is Fail)
     }
 
     @Test
@@ -304,18 +424,6 @@ class VerificationViewModelTest {
     }
 
     companion object {
-        private val successGetVerificationMethodResponse: OtpModeListPojo = FileUtil.parse(
-            "/success_get_verification_method.json",
-            OtpModeListPojo::class.java
-        )
-        private val successOtpValidationResponse: OtpValidatePojo = FileUtil.parse(
-            "/success_otp_validate.json",
-            OtpValidatePojo::class.java
-        )
-        private val successSendOtpResponse: OtpRequestPojo = FileUtil.parse(
-            "/success_send_otp.json",
-            OtpRequestPojo::class.java
-        )
         private val throwable = Throwable()
     }
 }

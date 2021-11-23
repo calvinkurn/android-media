@@ -2,6 +2,8 @@ package com.tokopedia.akamai_bot_lib.interceptor
 
 import com.tokopedia.akamai_bot_lib.*
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -66,9 +68,21 @@ class GqlAkamaiBotInterceptor : Interceptor {
         val response = chain.proceed(newRequest.build())
 
         if (response.code() == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
+            logError(response)
             throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
         }
         return response
+    }
+
+    private fun logError(response: Response){
+        var messageMap: Map<String, String>? = mapOf(
+            "request_body" to response.request().toString(),
+            "user-agent" to response.request().header("User-Agent").toString(),
+            "response" to response.peekBody(1024).string()
+        )
+        if (messageMap != null) {
+            ServerLogger.log(Priority.P1, "AKAMAI_403_ERROR", messageMap)
+        }
     }
 
     private fun isPlaintext(buffer: Buffer): Boolean {

@@ -57,7 +57,6 @@ class OrderSummaryPageActivityRevampTrackingTest {
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(idlingResource)
-        activityRule.finishActivity()
     }
 
     @Test

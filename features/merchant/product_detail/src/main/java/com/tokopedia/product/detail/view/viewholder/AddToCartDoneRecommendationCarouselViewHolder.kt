@@ -48,8 +48,8 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private val adapter = RecommendationCarouselAdapter()
 
     // animation
-    private val slideLeftOut = ObjectAnimator.ofFloat(containerContent, "translationX", 0f, -100f)
-    private val slideLeftIn = ObjectAnimator.ofFloat(containerContent, "translationX", -100f, 0f)
+    private val slideLeftOut = ObjectAnimator.ofFloat(containerContent, "translationX", 0f, TRANSLATION_100_MINUS)
+    private val slideLeftIn = ObjectAnimator.ofFloat(containerContent, "translationX", TRANSLATION_100_MINUS, 0f)
     private val slideRightIn = ObjectAnimator.ofFloat(containerContent, "translationX", 100f, 0f)
     private val slideRightOut = ObjectAnimator.ofFloat(containerContent, "translationX", 0f, 100f)
     private val alphaOut = ObjectAnimator.ofFloat(containerContent, "alpha", 1f, 0f)
@@ -60,7 +60,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     private var viewPager2PageChangeCallback: ViewPager2.OnPageChangeCallback? = null
     private val itemDecoration = HorizontalMarginItemDecoration(
             itemView.context,
-            R.dimen.viewpager_current_item_horizontal_margin
+            com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin
     )
 
     private var previousPosition = -1
@@ -69,12 +69,20 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     companion object {
         val LAYOUT_RES = R.layout.add_to_cart_done_recommendation_carousel_layout
+
+        private const val TRANSLATION_100_MINUS = -100f
+        private const val ANIMATION_DURATION_200 = 200L
+        private const val ANIMATION_DELAY_180 = 180L
+        private const val ANIMATION_VALUE_QUARTER_FLOAT = 0.25f
+        private const val ANIMATION_VALUE_HALF_FLOAT = 0.5f
+        private const val PAGE_LIMIT = 3
     }
 
     init {
         configAnimation()
     }
 
+    @SuppressLint("WrongConstant")
     override fun bind(element: AddToCartDoneRecommendationCarouselDataModel) {
         try{
             with(itemView) {
@@ -88,7 +96,7 @@ class AddToCartDoneRecommendationCarouselViewHolder(
                 with(viewPager) {
                     clipToPadding = false
                     clipChildren = false
-                    offscreenPageLimit = 3
+                    offscreenPageLimit = PAGE_LIMIT
                 }
                 if(viewPager2PageChangeCallback == null){
                     viewPager2PageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
@@ -138,24 +146,24 @@ class AddToCartDoneRecommendationCarouselViewHolder(
     }
 
     private fun configAnimation(){
-        slideLeftOut.duration = 200
+        slideLeftOut.duration = ANIMATION_DURATION_200
         slideLeftOut.interpolator = FastOutLinearInInterpolator()
-        slideLeftIn.duration = 200
+        slideLeftIn.duration = ANIMATION_DURATION_200
         slideLeftIn.interpolator = FastOutLinearInInterpolator()
 
-        slideRightOut.duration = 200
+        slideRightOut.duration = ANIMATION_DURATION_200
         slideRightOut.interpolator = FastOutLinearInInterpolator()
-        slideRightIn.duration = 200
+        slideRightIn.duration = ANIMATION_DURATION_200
         slideRightIn.interpolator = FastOutLinearInInterpolator()
 
-        alphaOut.duration = 200
-        alphaIn.duration = 200
+        alphaOut.duration = ANIMATION_DURATION_200
+        alphaIn.duration = ANIMATION_DURATION_200
 
         animatorSet.play(slideLeftOut).with(alphaOut)
-        animatorSet.play(slideRightIn).with(alphaIn).after(180)
+        animatorSet.play(slideRightIn).with(alphaIn).after(ANIMATION_DELAY_180)
 
         reversedAnimatorSet.play(slideRightOut).with(alphaOut)
-        reversedAnimatorSet.play(slideLeftIn).with(alphaIn).after(180)
+        reversedAnimatorSet.play(slideLeftIn).with(alphaIn).after(ANIMATION_DELAY_180)
 
         animationListener = object : Animator.AnimatorListener{
             override fun onAnimationRepeat(animation: Animator?) {}
@@ -249,21 +257,21 @@ class AddToCartDoneRecommendationCarouselViewHolder(
 
     inner class ViewPager2PageTransformation : ViewPager2.PageTransformer {
         override fun transformPage(page: View, position: Float) {
-            val nextItemVisiblePx = itemView.resources.getDimension(R.dimen.viewpager_next_item_visible)
-            val currentItemHorizontalMarginPx = itemView.resources.getDimension(R.dimen.viewpager_current_item_horizontal_margin)
+            val nextItemVisiblePx = itemView.resources.getDimension(com.tokopedia.product.detail.R.dimen.viewpager_next_item_visible)
+            val currentItemHorizontalMarginPx = itemView.resources.getDimension(com.tokopedia.product.detail.R.dimen.viewpager_current_item_horizontal_margin)
             val pageTranslationX = nextItemVisiblePx + currentItemHorizontalMarginPx
             page.apply {
                 page.translationX = -pageTranslationX * position
-                page.scaleY = 1 - (0.25f * abs(position))
-                page.alpha = 0.25f + (1 - abs(position))
+                page.scaleY = 1 - (ANIMATION_VALUE_QUARTER_FLOAT * abs(position))
+                page.alpha = ANIMATION_VALUE_QUARTER_FLOAT + (1 - abs(position))
             }
             when {
                 position < -1 ->
-                    page.alpha = 0.5f
+                    page.alpha = ANIMATION_VALUE_HALF_FLOAT
                 position <= 1 -> {
-                    page.alpha = Math.max(0.5f, 1 - Math.abs(position))
+                    page.alpha = Math.max(ANIMATION_VALUE_HALF_FLOAT, 1 - Math.abs(position))
                 }
-                else -> page.alpha = 0.5f
+                else -> page.alpha = ANIMATION_VALUE_HALF_FLOAT
             }
         }
     }
