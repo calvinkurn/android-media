@@ -507,6 +507,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         return navSearchBarController.etSearch?.text?.toString() ?: ""
     }
 
+    fun clearSearchbarText() {
+        navSearchBarController.etSearch?.text?.clear()
+        navSearchBarController.etSearch?.clearFocus()
+    }
+
     private fun applyStatusBarPadding() {
         var pT = 0
         pT = ViewHelper.getStatusBarHeight(context)

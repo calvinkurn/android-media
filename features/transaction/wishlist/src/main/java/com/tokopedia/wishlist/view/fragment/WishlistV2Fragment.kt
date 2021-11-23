@@ -1,6 +1,5 @@
 package com.tokopedia.wishlist.view.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -14,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -33,7 +31,6 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -68,7 +65,7 @@ import com.tokopedia.wishlist.view.viewmodel.WishlistV2ViewModel
 import javax.inject.Inject
 
 @Keep
-class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, WishlistV2Adapter.ActionListener {
+class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -76,7 +73,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
     private lateinit var wishlistV2Adapter: WishlistV2Adapter
     private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
     private var paramWishlistV2 = WishlistV2Params()
-    private var refreshHandler: RefreshHandler? = null
+    // private var refreshHandler: RefreshHandler? = null
     private var onLoadMore = false
     // private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
@@ -170,14 +167,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 is Success -> {
                     result.data.let { wishlistV2 ->
                         hideLoader()
-                        refreshHandler?.finishRefresh()
+                        // refreshHandler?.finishRefresh()
+                        finishRefresh()
                         scrollRecommendationListener.setHasNextPage(wishlistV2.hasNextPage)
 
                         if (wishlistV2.totalData == 0) {
                             isFetchRecommendation = true
-                        } /*else {
-                            updateTotalLabel(wishlistV2.totalData)
-                        }*/
+                        }
                         if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
                             renderChipsFilter(wishlistV2.sortFilters)
                         }
@@ -188,7 +184,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
                 }
                 is Fail -> {
-                    refreshHandler?.finishRefresh()
+                    // refreshHandler?.finishRefresh()
+                    finishRefresh()
                     showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
                 }
             }
@@ -226,8 +223,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
     private fun prepareLayout() {
         binding?.run {
-            refreshHandler = RefreshHandler(swipeRefreshLayout, this@WishlistV2Fragment)
-            refreshHandler?.setPullEnabled(true)
+            swipeRefreshLayout.setOnRefreshListener {
+                doRefresh()
+            }
+            // refreshHandler = RefreshHandler(swipeRefreshLayout, this@WishlistV2Fragment)
+            // refreshHandler?.setPullEnabled(true)
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistNavtoolbar)
@@ -251,32 +251,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                     }
             )
             var pageSource = ""
+            val icons: IconBuilder
             if(activityWishlistV2 != PARAM_HOME) {
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                icons = IconBuilder(IconBuilderFlag()).apply {
+                    addIcon(IconList.ID_CART) {}
+                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
             } else {
                 pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-            }
-            val icons = IconBuilder(IconBuilderFlag(pageSource = pageSource))
-            icons.apply {
-                addIcon(IconList.ID_MESSAGE) {}
-                addIcon(IconList.ID_NOTIFICATION) {}
-                addIcon(IconList.ID_CART) {}
-                addIcon(IconList.ID_NAV_GLOBAL) {}
+                icons = IconBuilder(IconBuilderFlag(pageSource = pageSource)).apply {
+                    addIcon(IconList.ID_MESSAGE) {}
+                    addIcon(IconList.ID_NOTIFICATION) {}
+                    addIcon(IconList.ID_CART) {}
+                    addIcon(IconList.ID_NAV_GLOBAL) {}
+                }
             }
             wishlistNavtoolbar.setIcon(icons)
-
-            /*wishlistManageLabel.setOnClickListener {
-                if (!isBulkDeleteShow) {
-                    wishlistManageLabel.text = getString(R.string.wishlist_cancel_manage_label)
-                    wishlistV2Adapter.showCheckbox()
-                } else {
-                    wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-                    wishlistV2Adapter.hideCheckbox()
-                    binding?.containerDelete?.visibility = View.GONE
-                }
-                isBulkDeleteShow = !isBulkDeleteShow
-            }*/
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -341,7 +333,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
     private fun triggerSearch() {
         paramWishlistV2.query = searchQuery
-        refreshHandler?.startRefresh()
+        // refreshHandler?.startRefresh()
+        doRefresh()
         scrollRecommendationListener.resetState()
         currRecommendationListPage = 1
     }
@@ -363,7 +356,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
-                            refreshHandler?.startRefresh()
+                            // refreshHandler?.startRefresh()
+                            doRefresh()
                         }
                     }
                 }
@@ -392,7 +386,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
-                            refreshHandler?.startRefresh()
+                            // refreshHandler?.startRefresh()
+                            doRefresh()
                         }
                     }
                 }
@@ -437,30 +432,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         })
     }
 
-    /*@SuppressLint("SetTextI18n")
-    private fun updateTotalLabel(totalData: Int) {
-        binding?.run {
-            rlWishlistCountManageRow.visible()
-            wishlistCountLabel.text = getString(R.string.wishlist_count_label, totalData)
-        }
-    }*/
-
     private fun showLoader() {
         wishlistV2Adapter.showLoader()
         binding?.run {
-            // rlWishlistCountManageRow.gone()
             wishlistSortFilter.gone()
             wishlistLoaderLayout.root.visible()
-            // rlWishlistSortLoader.visible()
         }
     }
 
     private fun hideLoader() {
         binding?.run {
-            // rlWishlistCountManageRow.visible()
             wishlistSortFilter.visible()
             wishlistLoaderLayout.root.gone()
-            // rlWishlistSortLoader.gone()
         }
     }
 
@@ -485,7 +468,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 sortFilterPrefix.setOnClickListener {
                     resetAllFilters()
                     paramWishlistV2 = WishlistV2Params()
-                    refreshHandler?.startRefresh()
+                    // refreshHandler?.startRefresh()
+                    doRefresh()
                 }
             }
         }
@@ -508,7 +492,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
                 val listSortFilter = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
                 listSortFilter.add(filterItem)
                 paramWishlistV2.sortFilters = listSortFilter
-                refreshHandler?.startRefresh()
+                // refreshHandler?.startRefresh()
+                doRefresh()
             }
 
             override fun onCheckboxSelected(name: String, optionId: String) {
@@ -523,7 +508,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
 
                 paramWishlistV2.sortFilters = listSortFilter
                 filterBottomSheet.dismiss()
-                refreshHandler?.startRefresh()
+                // refreshHandler?.startRefresh()
+                doRefresh()
             }
         })
         filterBottomSheet.show(childFragmentManager)
@@ -627,89 +613,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    /*private suspend fun organizeWishlistV2Data(wishlistV2Response: WishlistV2Response.Data.WishlistV2, typeLayout: String?) : List<WishlistV2TypeLayoutData> {
-        var listData = arrayListOf<WishlistV2TypeLayoutData>()
-        if (wishlistV2Response.items.isEmpty() && paramWishlistV2.page == 1) {
-            if (wishlistV2Response.query.isEmpty()) {
-                listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE))
-            } else {
-                listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
-            }
-            val recommItems = wishlistViewModel.getRecommendationWishlistV2(0, listOf(), EMPTY_WISHLIST_PAGE_NAME)
-            listData.add(WishlistV2TypeLayoutData(recommItems.title, WishlistV2Consts.TYPE_RECOMMENDATION_TITLE))
-            recommItems.recommendationData.forEach { item ->
-                listData.add(WishlistV2TypeLayoutData(item, WishlistV2Consts.TYPE_RECOMMENDATION_LIST))
-            }
-
-        } else {
-            if (paramWishlistV2.page == 1) {
-                when {
-                    // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
-                    wishlistV2Response.totalData < topAdsPositionInPage -> {
-                        listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                        listData.add(WishlistV2TypeLayoutData(wishlistViewModel.getRecommendationWishlistV2(0, listOf(), WishlistV2Consts.WISHLIST_PAGE_NAME), WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL))
-                    }
-
-                    // if user has 4 products, banner ads is after 4th of products, and recom widget is after TDN (at the bottom of the page)
-                    wishlistV2Response.totalData == topAdsPositionInPage -> {
-                        listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                        listData.add(WishlistV2TypeLayoutData(wishlistViewModel.getTopAdsData(""), WishlistV2Consts.TYPE_TOPADS))
-                    }
-
-                    // if user has > 4 products, banner ads is after 4th of products, while recom widget is always at the bottom of the page
-                    wishlistV2Response.totalData > topAdsPositionInPage -> {
-                        listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                        listData.add(topAdsPositionInPage +1, WishlistV2TypeLayoutData(wishlistViewModel.getTopAdsData(""), WishlistV2Consts.TYPE_TOPADS))
-                    }
-                }
-            } else {
-                // next page
-                if (wishlistV2Response.totalData >= topAdsPositionInPage && paramWishlistV2.page % 2 == 0) {
-                    listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(wishlistViewModel.getRecommendationWishlistV2(params.page, listOf(), WishlistV2Consts.WISHLIST_PAGE_NAME), WishlistV2Consts.TYPE_RECOMMENDATION_CAROUSEL))
-
-                } else {
-                    listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
-                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(wishlistViewModel.getTopAdsData(""), WishlistV2Consts.TYPE_TOPADS))
-                }
-            }
-        }
-        return listData
-    }
-
-    private fun mapToProductCardList(items: List<WishlistV2Response.Data.WishlistV2.Item>, typeLayout: String?) : ArrayList<WishlistV2TypeLayoutData> {
-        val listItem = arrayListOf<WishlistV2TypeLayoutData>()
-        items.forEach { item ->
-            val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
-
-            item.labelGroup.forEach { labelGroupItem ->
-                val labelGroup = ProductCardModel.LabelGroup(
-                        position = labelGroupItem.position,
-                        title = labelGroupItem.title,
-                        type = labelGroupItem.type,
-                        imageUrl = labelGroupItem.url)
-                listGroupLabel.add(labelGroup)
-            }
-
-            val isButtonAtc = item.buttons.primaryButton.action == ATC_WISHLIST
-
-            val productModel = ProductCardModel(
-                    productImageUrl = item.imageUrl,
-                    isWishlistVisible = true,
-                    productName = item.name,
-                    shopName = item.shop.name,
-                    formattedPrice = item.priceFmt,
-                    shopLocation = item.shop.location,
-                    isShopRatingYellow = true,
-                    hasSecondaryButton = true,
-                    tambahKeranjangButton = isButtonAtc,
-                    lihatBarangSerupaButton = !isButtonAtc,
-                    labelGroupList = listGroupLabel)
-            listItem.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
-        }
-        return listItem
-    }*/
-
     override fun onCariBarangClicked() {
 
     }
@@ -774,9 +677,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
             wishlistSortFilter.run {
                 resetAllFilters()
                 paramWishlistV2 = WishlistV2Params()
-                refreshHandler?.startRefresh()
+                wishlistNavtoolbar.clearSearchbarText()
+                doRefresh()
             }
-            searchQuery
         }
     }
 
@@ -813,20 +716,30 @@ class WishlistV2Fragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandler
         }
     }
 
-    override fun onRefresh(view: View?) {
+    /*override fun onRefresh(view: View?) {
+
+    }*/
+
+    private fun doRefresh() {
+        binding?.run {
+            swipeRefreshLayout.isRefreshing = true
+        }
         onLoadMore = false
         isFetchRecommendation = false
         // onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
-        // paramWishlistV2 = WishlistV2Params()
         isBulkDeleteShow = false
         listBulkDelete = arrayListOf()
-        /*binding?.run {
-            wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-        }*/
         wishlistV2Adapter.hideCheckbox()
+        wishlistV2Adapter.isRefreshing = true
         binding?.containerDelete?.visibility = View.GONE
         loadWishlistV2()
+    }
+
+    private fun finishRefresh() {
+        binding?.run {
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 }

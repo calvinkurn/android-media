@@ -3,6 +3,7 @@ package com.tokopedia.wishlist.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.wishlist.R
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.*
@@ -25,6 +26,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<WishlistV2TypeLayoutData>()
     private var isShowCheckbox = false
+    var isRefreshing = false
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -112,6 +114,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val element = listTypeData[position]
         when (holder) {
             is WishlistV2CountManageRowItemViewHolder-> {
+                if (isRefreshing) {
+                    isRefreshing = false
+                    holder.setManageLabel(holder.itemView.context.getString(R.string.wishlist_manage_label))
+                }
                 holder.bind(element)
             }
             is WishlistV2ListItemViewHolder-> {

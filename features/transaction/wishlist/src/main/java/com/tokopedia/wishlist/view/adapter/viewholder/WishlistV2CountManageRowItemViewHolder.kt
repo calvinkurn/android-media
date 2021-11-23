@@ -11,7 +11,6 @@ class WishlistV2CountManageRowItemViewHolder(private val binding: WishlistV2Coun
                                              private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData) {
         if (item.dataObject is WishlistV2CountManageRowData) {
-            // binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_manage_label)
             binding.wishlistCountLabel.text = itemView.context.getString(R.string.wishlist_count_label, item.dataObject.count)
             binding.wishlistManageLabel.setOnClickListener {
                 if (!item.dataObject.isBulkDeleteShow) {
@@ -24,5 +23,9 @@ class WishlistV2CountManageRowItemViewHolder(private val binding: WishlistV2Coun
                 item.dataObject.isBulkDeleteShow = !item.dataObject.isBulkDeleteShow
             }
         }
+    }
+
+    fun setManageLabel(label: String) {
+        binding.wishlistManageLabel.text = label
     }
 }

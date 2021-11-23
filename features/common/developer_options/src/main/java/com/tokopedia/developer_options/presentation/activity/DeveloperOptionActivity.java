@@ -214,7 +214,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        System.out.println("++ line 206");
         alwaysOldBalanceWidget.setEllipsize(null);
     }
 
@@ -338,7 +337,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
         UnifyButton alwaysOsExperiment = findViewById(R.id.buttonAlwaysExpOsBottomNavigation);
         alwaysOldBalanceWidget = findViewById(R.id.buttonAlwaysOldBalanceWidget);
-        System.out.println("++ line 332");
         UnifyButton alwaysNewBalanceWidget = findViewById(R.id.buttonAlwaysNewBalanceWidget);
 
         setupNewInboxAbButton();
