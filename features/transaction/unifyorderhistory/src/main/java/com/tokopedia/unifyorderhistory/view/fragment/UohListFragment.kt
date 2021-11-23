@@ -219,6 +219,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var filterStatus = ""
     private var orderIdNeedUpdated = ""
     private var currIndexNeedUpdate = -1
+    private var isFilterClicked = false
     private var isFirstLoad = false
     private var gson = Gson()
     private var activityOrderHistory = ""
@@ -709,7 +710,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    renderChipsFilter(it.data.v2Filters, it.data.categories)
+                    if (!isFilterClicked && currPage == 1) {
+                        renderChipsFilter(it.data.v2Filters, it.data.categories)
+                    }
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
                             currPage += 1
@@ -1089,6 +1092,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         filterDateBottomSheet.setListener(object : UohFilterOptionsBottomSheet.UohFilterOptionBottomSheetListener {
             override fun onClickApply() {
                 filterDateBottomSheet.dismiss()
+                isFilterClicked = true
                 isReset = false
                 currFilterType = tempFilterType
                 currFilterDateKey = tempFilterDateKey
@@ -1181,6 +1185,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             }
 
             override fun onOptionItemClick(label: String, value: String, filterType: Int) {
+                isFilterClicked = true
                 tempFilterType = filterType
                 tempFilterDateKey = label
                 tempFilterDateLabel = value
@@ -1241,6 +1246,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         filterStatusBottomSheet.setListener(object : UohFilterOptionsBottomSheet.UohFilterOptionBottomSheetListener {
             override fun onClickApply() {
                 filterStatusBottomSheet.dismiss()
+                isFilterClicked = true
                 isReset = false
                 currFilterType = tempFilterType
 
@@ -1266,6 +1272,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             override fun showDatePicker(flag: String) {}
 
             override fun onOptionItemClick(label: String, value: String, filterType: Int) {
+                isFilterClicked = true
                 tempFilterType = filterType
                 tempFilterStatusKey = label
                 tempFilterStatusLabel = value
@@ -1329,6 +1336,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         filterProductBottomSheet.setListener(object : UohFilterOptionsBottomSheet.UohFilterOptionBottomSheetListener {
             override fun onClickApply() {
                 filterProductBottomSheet.dismiss()
+                isFilterClicked = true
                 isReset = false
                 currFilterType = tempFilterType
                 filterStatus = ""
@@ -1354,6 +1362,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             override fun showDatePicker(flag: String) {}
 
             override fun onOptionItemClick(label: String, value: String, filterType: Int) {
+                isFilterClicked = true
                 tempFilterType = filterType
                 tempFilterCategoryKey = label
                 tempFilterCategoryLabel = value
@@ -1390,6 +1399,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         tempStartDate = ""
         tempEndDate = ""
 
+        isFilterClicked = false
         isReset = true
         binding?.run { uohSortFilter.resetAllFilters() }
         chipDate?.title = ALL_DATE
