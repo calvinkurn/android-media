@@ -30,7 +30,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private var selectedDistrictId = -1L
     private var selectedCityId = -1L
     private var selectedProvinceId = -1L
-    private var zipCodes: List<String> = ArrayList()
+    private var zipCodes: MutableList<String> = ArrayList()
     private var binding by autoClearedNullable<FragmentShopAddressAddBinding>()
 
     @Inject lateinit var presenter: ShopSettingAddressAddEditPresenter
@@ -175,11 +175,10 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 selectedProvinceId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1L)
                 selectedCityId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1L)
                 selectedDistrictId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1L)
-                val newZipCodeList = arrayListOf<String>(getString(R.string.header_list_postal_code)).apply {
+                zipCodes = arrayListOf<String>(getString(R.string.header_list_postal_code)).apply {
                     addAll(it.getStringArrayList(
                             INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES) ?: arrayListOf())
                 }
-                zipCodes = ArrayList(newZipCodeList)
                 updateAutoTextZipCodes()
             }
         }
