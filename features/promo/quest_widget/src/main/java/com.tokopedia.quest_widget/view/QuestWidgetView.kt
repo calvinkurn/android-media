@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,11 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.data.WidgetData
 import com.tokopedia.quest_widget.di.DaggerQuestComponent
+import com.tokopedia.quest_widget.listeners.QuestWidgetLoginClickListener
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSession
@@ -37,6 +40,7 @@ class QuestWidgetView @JvmOverloads constructor(
         const val LOGIN = 3
     }
 
+    private val REQUEST_CODE_LOGIN_QUEST_WIDGET = 132
     private lateinit var viewModel: QuestWidgetViewModel
     private var tvLabel: Typography
     private var tvLihat: Typography
@@ -47,6 +51,7 @@ class QuestWidgetView @JvmOverloads constructor(
     private var rvError: RecyclerView
     var userSession: UserSessionInterface
     private lateinit var page: String
+    private lateinit var questWidgetLoginClickListener: QuestWidgetLoginClickListener
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -99,18 +104,45 @@ class QuestWidgetView @JvmOverloads constructor(
                     questWidgetLogin.show()
                     tvLihat.text = context.getString(R.string.lihat_semua)
                     tvLabel.text = context.getString(R.string.quest_label)
+                    setupNonLoginClickListeners()
                 }
             }
         })
     }
 
-    private fun setData(data: QuestData?) {
+    fun setupListeners(listener: QuestWidgetLoginClickListener){
+        questWidgetLoginClickListener = listener
+    }
 
-        shimmerQuestWidget.hide()
-        constraintLayoutQuestWidget.show()
+    private fun setupNonLoginClickListeners(){
+
+        tvLihat.setOnClickListener {
+            questWidgetLoginClickListener.questLogin()
+        }
+
+        questWidgetLogin.setOnClickListener {
+
+            questWidgetLoginClickListener.questLogin()
+        }
+
+    }
+
+    private fun setData(data: QuestData?) {
 
         tvLabel.text = data?.widgetData?.questWidgetList?.pageDetail?.title
         tvLihat.text = data?.widgetData?.questWidgetList?.pageDetail?.cta?.text
+
+        tvLihat.setOnClickListener {
+
+            RouteManager.route(context, ApplinkConst.LOGIN)
+            data?.widgetData?.questWidgetList?.pageDetail?.cta?.url?.let {
+                try {
+                    RouteManager.route(context, it)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
 
         val list = data?.widgetData?.questWidgetList
 
@@ -121,20 +153,6 @@ class QuestWidgetView @JvmOverloads constructor(
                     data.config
                 )
             rvQuestWidget.adapter = adapter
-        }
-
-        tvLihat.setOnClickListener {
-            data?.widgetData?.questWidgetList?.pageDetail?.cta?.url?.let {
-                try {
-                    RouteManager.route(context, it)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        questWidgetLogin.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.LOGIN)
         }
 
     }

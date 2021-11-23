@@ -138,7 +138,7 @@ data class Cta(
     @SerializedName("url")
     val url: String? = null,
 
-    @SerializedName("applink")
+    @SerializedName("appLink")
     val applink: String? = null
 
 )

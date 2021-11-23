@@ -61,7 +61,9 @@ class QuestWidgetItemView @JvmOverloads constructor(
     fun setData(item: QuestWidgetListItem, config: Config) {
 
         this.setOnClickListener {
-            RouteManager.route(context, item.actionButton?.cta?.applink)
+            item.actionButton?.cta?.applink?.let{
+                RouteManager.route(context, item.actionButton.cta.applink)
+            }
         }
 
         tvBannerTitle.text = config.banner_title

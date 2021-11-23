@@ -1693,7 +1693,9 @@ open class HomeRevampViewModel @Inject constructor(
                 }
             }){
                 it.printStackTrace()
-                deleteWidget(questModel, index)
+                if(it.message != "your session has expired, please login again") {
+                    deleteWidget(questModel, index)
+                }
             }
         }
     }
