@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.settingbank.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheets_privacy_policy.*
 
 
 class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
@@ -33,6 +34,11 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
             setTitle(TITLE)
             setChild(child)
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        privacyWebview.loadUrl("https://www.tokopedia.com/privacy")
     }
 
 
