@@ -5,12 +5,14 @@ import com.google.gson.Gson
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.pdp.EventJsonMapper.getJson
 import com.tokopedia.entertainment.pdp.data.*
+import com.tokopedia.entertainment.pdp.data.pdp.EventVerifyResponse
 import com.tokopedia.entertainment.pdp.data.pdp.EventVerifyResponseV2
 import com.tokopedia.entertainment.pdp.data.pdp.VerifyRequest
 import com.tokopedia.entertainment.pdp.usecase.EventProductDetailUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
 import com.tokopedia.travelcalendar.domain.TravelCalendarHolidayUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -152,6 +154,40 @@ class EventPDPTicketViewModelTest {
 
         val actual = eventPDPTicketViewModel.verifyResponse.value
         assertEquals(actual, verifyMock)
+    }
+
+    @Test
+    fun `VerifyData_SuccessVerify_ShouldSuccessErrorNullVerify`() {
+
+        val verifyMock = Gson().fromJson(getJson("verify_mock.json"), EventVerifyResponseV2::class.java)
+
+        val result = HashMap<Type, Any>()
+        result[EventVerifyResponseV2::class.java] = verifyMock.apply {
+            eventVerify.error = null
+        }
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        eventPDPTicketViewModel.verify("", VerifyRequest())
+
+        val actual = eventPDPTicketViewModel.verifyResponse.value
+        assertEquals(actual, verifyMock)
+    }
+
+    @Test
+    fun `VerifyData_SuccessVerify_ShouldErrorFromDescVerify`() {
+        val errorDesc = "Something went wrong"
+        val result = HashMap<Type, Any>()
+        result[EventVerifyResponseV2::class.java] = EventVerifyResponseV2(EventVerifyResponse(error = errorDesc, errorDescription = errorDesc))
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+
+        eventPDPTicketViewModel.verify("", VerifyRequest())
+
+        val actual = eventPDPTicketViewModel.errorVerify.value
+        assertEquals(actual?.message, errorDesc)
     }
 
 

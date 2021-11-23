@@ -15,7 +15,7 @@ data class EventVerifyResponseV2(
 data class EventVerifyResponse(
         @SerializedName("error")
         @Expose
-        val error: String = "",
+        var error: String? = "",
         @SerializedName("error_description")
         @Expose
         val errorDescription: String = "",
