@@ -7,10 +7,18 @@ import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
 
-class InitialStateChipWidgetTitleViewHolder(itemView: View) : AbstractViewHolder<InitialStateChipWidgetTitleDataView>(itemView) {
+class InitialStateChipWidgetTitleViewHolder(
+    itemView: View,
+) : AbstractViewHolder<InitialStateChipWidgetTitleDataView>(itemView) {
 
     override fun bind(element: InitialStateChipWidgetTitleDataView) {
-        itemView.titleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, element.title, getString(R.string.content_desc_titleTextView)) }
+        itemView.titleTextView?.let {
+            TextAndContentDescriptionUtil.setTextAndContentDescription(
+                it,
+                element.title,
+                getString(R.string.content_desc_titleTextView)
+            )
+        }
     }
 
     companion object {

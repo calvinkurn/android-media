@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shop_credibility_ava"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shop_credibility_badge"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_name"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_ava"
+        app:layout_constraintTop_toTopOf="@id/shop_credibility_name"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginBottom="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/shop_credibility_last_active"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_badge"
+        app:layout_constraintRight_toLeftOf="@id/shop_credibility_feature"
+        app:layout_constraintTop_toTopOf="@id/shop_credibility_ava"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginEnd="16dp"
+        app:layout_goneMarginLeft="8dp"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Chupacup Indonesia Rayaaa" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_feature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_rounded_grey_250"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_name"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_name"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/shop_credibility_name"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        tools:text="Go-Apotik"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_last_active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_ava"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_ava"
+        app:layout_constraintRight_toLeftOf="@id/shop_credibility_location"
+        app:layout_constraintTop_toBottomOf="@id/shop_credibility_name"
+        app:typographyType="body_3"
+        tools:text="• Online"
+        tools:textColor="@color/Unify_G500"
+        tools:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="16dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_last_active"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/shop_credibility_last_active"
+        app:typographyType="body_3"
+        tools:text="• Kota Tangerang Selatan" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shop_credibility_icon_1"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_1"
+        app:layout_constraintLeft_toLeftOf="@id/shop_credibility_ava"
+        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_1"
+        tools:icon_name="STAR" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_info_title_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_icon_1"
+        app:layout_constraintTop_toBottomOf="@id/shop_credibility_ava"
+        app:layout_goneMarginStart="0dp"
+        app:typographyType="body_2"
+        tools:text="4.8" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_info_desc_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_1"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_1"
+        app:typographyType="body_3"
+        tools:text="rating toko" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/shop_credibility_icon_2"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
+        app:layout_constraintLeft_toLeftOf="@id/shop_credibility_icon_1"
+        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_2"
+        tools:icon_name="CLOCK" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_info_title_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintBottom_toTopOf="@id/shop_credibility_info_ticker"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_icon_2"
+        app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_title_1"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginBottom="12dp"
+        app:layout_goneMarginStart="0dp"
+        app:typographyType="body_2"
+        tools:text="± 1 menit" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_credibility_info_desc_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
+        app:layout_constraintLeft_toRightOf="@id/shop_credibility_info_title_2"
+        app:typographyType="body_3"
+        tools:text="pesanan diproses" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/shop_credibility_button_follow"
+        android:layout_width="88dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="@string/label_follow"
+        app:layout_constraintBottom_toBottomOf="@id/shop_credibility_info_title_2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/shop_credibility_info_title_1"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/shop_credibility_info_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shop_credibility_info_desc_2"
+        app:layout_constraintVertical_bias="0"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement"
+        tools:descriptionText="Toko sedang libur. Ada potensi keterlambatan dalam pengiriman. Cek Jadwal"
+        tools:layout_editor_absoluteX="12dp"
+        tools:visibility="gone" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

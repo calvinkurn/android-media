@@ -58,6 +58,7 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.AB_TEST_AUTO_TRANSITION_KEY
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
@@ -234,11 +235,6 @@ class TokoNowHomeFragment: Fragment(),
             isShowFirstInstallSearch = it.getBoolean(REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false)
             durationAutoTransition = it.getLong(REMOTE_CONFIG_KEY_FIRST_DURATION_TRANSITION_SEARCH, DEFAULT_INTERVAL_HINT)
         }
-        TokoNowCommonAnalytics.onOpenScreen(
-            isLoggedInStatus = userSession.isLoggedIn,
-            screenName = HOMEPAGE_TOKONOW,
-            userId = userSession.userId
-        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -485,12 +481,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
-            true
-        } else {
-            analytics.onImpressBannerPromo(userSession.userId, channelModel)
-            false
-        }
+        analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
     }
 
     override fun onShareBtnSharingEducationClicked() {
@@ -553,6 +544,7 @@ class TokoNowHomeFragment: Fragment(),
                 }
                 else -> {
                     showLayout()
+                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
                 }
             }
         }
@@ -607,6 +599,7 @@ class TokoNowHomeFragment: Fragment(),
         if (localCacheModel?.city_id?.isBlank() == true && localCacheModel?.district_id?.isBlank() == true) {
             showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
         } else {
+            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
             showEmptyState(EMPTY_STATE_NO_ADDRESS)
         }
     }
@@ -909,6 +902,13 @@ class TokoNowHomeFragment: Fragment(),
                     it.data
                 )
             }
+        }
+
+        observe(viewModelTokoNow.openScreenTracker) { screenName ->
+            TokoNowCommonAnalytics.onOpenScreen(
+                isLoggedInStatus = userSession.isLoggedIn,
+                screenName = screenName
+            )
         }
     }
 
