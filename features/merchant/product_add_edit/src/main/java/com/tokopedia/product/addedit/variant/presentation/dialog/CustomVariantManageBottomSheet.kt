@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -113,9 +114,9 @@ class CustomVariantManageBottomSheet(
 
     private fun showDeleteConfDialog(variantDetail: VariantDetail) {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.label_cvt_edit_conf_title, variantDetail.name))
-            setDescription(getString(R.string.label_cvt_edit_conf_desc))
-            setPrimaryCTAText(getString(R.string.action_variant_delete_all_negative))
+            setTitle(getString(R.string.label_cvt_delete_conf_title, variantDetail.name))
+            setDescription(getString(R.string.label_cvt_delete_conf_desc))
+            setPrimaryCTAText(getString(R.string.action_cancel))
             setSecondaryCTAText(getString(R.string.action_variant_delete_all_positive))
             setPrimaryCTAClickListener {
                 dismiss()
@@ -129,17 +130,45 @@ class CustomVariantManageBottomSheet(
         }.show()
     }
 
-    private fun showEditVariantBottomSheet(level: Int, variantDetail: VariantDetail) {
-        val bottomSheet = CustomVariantInputBottomSheet(variantDetail.name, variantDetails.orEmpty())
+    private fun showEditConfDialog(
+            context: Context,
+            oldVariantDetail: VariantDetail,
+            newVariantDetail: VariantDetail,
+            onCorfirmed: () -> Unit
+    ) {
+        DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(context.getString(R.string.label_cvt_edit_conf_title))
+            setDescription(context.getString(
+                    R.string.label_cvt_edit_conf_desc,
+                    oldVariantDetail.name,
+                    newVariantDetail.name,
+                    oldVariantDetail.name
+            ))
+            setPrimaryCTAText(context.getString(R.string.action_cancel))
+            setSecondaryCTAText(context.getString(R.string.action_confirm_replace_variant_type))
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+            setSecondaryCTAClickListener {
+                dismiss()
+                onCorfirmed.invoke()
+            }
+        }.show()
+    }
+
+    private fun showEditVariantBottomSheet(level: Int, oldVariantDetail: VariantDetail) {
+        val bottomSheet = CustomVariantInputBottomSheet(oldVariantDetail.name, variantDetails.orEmpty())
         bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
-            val position = getVariantDetailPosition(variantDetail) ?: return@setOnCustomVariantTypeSubmitted
-            val newVariantDetail = variantDetail.apply { name = newVariantName }
+            val position = getVariantDetailPosition(oldVariantDetail) ?: return@setOnCustomVariantTypeSubmitted
+            val newVariantDetail = oldVariantDetail.apply { name = newVariantName }
             onVariantTypeEditedListener?.invoke(position, level, newVariantDetail)
         }
-        bottomSheet.setOnPredefinedVariantTypeSubmitted {
-            val position = getVariantDetailPosition(variantDetail)
-                ?: return@setOnPredefinedVariantTypeSubmitted
-            onVariantTypeEditedListener?.invoke(position, level, it)
+        bottomSheet.setOnPredefinedVariantTypeSubmitted { newVariantDetail ->
+            showEditConfDialog(bottomSheet.requireContext(), oldVariantDetail, newVariantDetail) {
+                getVariantDetailPosition(oldVariantDetail)?.let { position ->
+                    onVariantTypeEditedListener?.invoke(position, level, newVariantDetail)
+                }
+            }
         }
         bottomSheet.show(requireActivity().supportFragmentManager)
     }

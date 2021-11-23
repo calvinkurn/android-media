@@ -27,6 +27,7 @@ import com.tokopedia.coachmark.*
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.*
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
@@ -694,7 +695,8 @@ class AddEditProductVariantFragment :
                     variantTypeAdapter?.getItems())
             bottomSheet.setOnVariantTypeEditedListener { editedIndex, editedLevel, variantDetail ->
                 variantTypeAdapter?.replaceItem(editedIndex, variantDetail)
-                if (variantTypeAdapter?.isItemAtPositionSelected(editedIndex) == false){
+                val isSelected = variantTypeAdapter?.isItemAtPositionSelected(editedIndex).orFalse()
+                if (!isSelected) {
                     showToaster(getString(R.string.label_cvt_message_variant_edited))
                     return@setOnVariantTypeEditedListener
                 }
@@ -708,8 +710,11 @@ class AddEditProductVariantFragment :
                         }
                     }
                 } else {
+                    showToaster(getString(R.string.label_cvt_message_variant_edited))
+                    variantTypeAdapter?.deselectItem(editedIndex)
+                    viewModel.isSingleVariantTypeIsSelected =
+                            variantTypeAdapter?.getSelectedItems()?.size == VARIANT_VALUE_LEVEL_ONE_COUNT
                     deselectVariantType(editedLevel, editedIndex, variantDetail)
-                    onVariantTypeSelected(editedIndex, variantDetail)
                 }
             }
             bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->

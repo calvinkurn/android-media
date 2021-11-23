@@ -303,6 +303,7 @@
     <string name="action_variant_delete_all_positive">Ya, Hapus</string>
     <string name="action_confirm_replacement">Ya, Ganti</string>
     <string name="action_cancel_replacement">Oh, Jangan</string>
+    <string name="action_confirm_replace_variant_type">Ya, Ubah</string>
     <string name="action_confirm_exit">Ya</string>
     <string name="action_cancel_exit">Batal</string>
     <string name="action_variant_custom_add">Buat Tipe Varian</string>
@@ -357,8 +358,10 @@
     <string name="label_variant_value_empty">Belum ada %1s yang bisa dipilih. Tambah pilihan %2s dulu, ya.</string>
     <string name="label_cvt_tips">Beri nama varian atau pakai varian dari kategori lain. Kamu bisa buat maksimum 2 varian, ya.</string>
     <string name="label_cvt_tips_title">Sekarang kamu bisa buat varian sendiri</string>
-    <string name="label_cvt_edit_conf_title">Hapus tipe varian %1s?</string>
-    <string name="label_cvt_edit_conf_desc">Tipe varian ini dan semua pilihannya akan hilang.</string>
+    <string name="label_cvt_edit_conf_title">Ubah nama tipe varian?</string>
+    <string name="label_cvt_delete_conf_title">Hapus tipe varian %1s?</string>
+    <string name="label_cvt_edit_conf_desc">Nama tipe varian akan berubah dari %1s menjadi %2s dan semua pilihan dari varian %3s akan hilang.</string>
+    <string name="label_cvt_delete_conf_desc">Tipe varian ini dan semua pilihannya akan hilang.</string>
     <string name="label_cvt_message_variant_added">Tipe varian berhasil dibuat.</string>
     <string name="label_cvt_message_variant_deleted">Tipe varian berhasil dihapus.</string>
     <string name="label_cvt_message_variant_edited">Nama tipe varian berhasil diubah.</string>
