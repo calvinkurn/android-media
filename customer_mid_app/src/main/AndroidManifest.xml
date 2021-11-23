@@ -156,7 +156,8 @@
         </activity>
         <activity
             android:name="com.tokopedia.tkpd.nfc.NFCHandlerActivity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
