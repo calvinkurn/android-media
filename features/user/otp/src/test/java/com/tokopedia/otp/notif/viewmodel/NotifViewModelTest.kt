@@ -1,6 +1,5 @@
 package com.tokopedia.otp.notif.viewmodel
 
-import FileUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.otp.notif.domain.pojo.*
@@ -49,6 +48,18 @@ class NotifViewModelTest {
 
     private lateinit var viewmodel: NotifViewModel
 
+    private val data = ChangeStatusPushNotifData(success = true)
+    private val successChangeStatusPushNotifResponse = ChangeStatusPushNotifPojo(data)
+
+    private val deviceStatusData = DeviceStatusPushNotifData(success = true)
+    private val successDeviceStatusPushNotifResponse = DeviceStatusPushNotifPojo(deviceStatusData)
+
+    private val verifyPushNotifData = VerifyPushNotifData(success = true, imglink = "imgLink", messageTitle = "title", messageBody = "body", ctaType = "cta type")
+    private val successVerifyPushNotifResponse = VerifyPushNotifPojo(verifyPushNotifData)
+
+    private val verifyPushNotifExpData = VerifyPushNotifExpData(success = true)
+    private val successVerifyPushNotifExpResponse = VerifyPushNotifExpPojo(verifyPushNotifExpData)
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
@@ -73,6 +84,37 @@ class NotifViewModelTest {
 
         val result = viewmodel.changeStatusPushNotifResult.value as Success<ChangeStatusPushNotifData>
         assert(result.data == successChangeStatusPushNotifResponse.data)
+    }
+
+    @Test
+    fun `Failed change status push notif error message not empty`() {
+        successChangeStatusPushNotifResponse.data.success = false
+        successChangeStatusPushNotifResponse.data.errorMessage = error
+
+        viewmodel.changeStatusPushNotifResult.observeForever(changeStatusPushNotifResultObserver)
+        coEvery { changeStatusPushNotifUseCase.getData(any()) } returns successChangeStatusPushNotifResponse
+
+        viewmodel.changeStatusPushNotif(true)
+
+        verify { changeStatusPushNotifResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.changeStatusPushNotifResult.value is Fail)
+
+        val result = viewmodel.changeStatusPushNotifResult.value as Fail
+        assert(result.throwable.message == error)
+    }
+
+    @Test
+    fun `Failed change status push notif error message empty & success == false`() {
+        successChangeStatusPushNotifResponse.data.success = false
+        successChangeStatusPushNotifResponse.data.errorMessage = ""
+
+        viewmodel.changeStatusPushNotifResult.observeForever(changeStatusPushNotifResultObserver)
+        coEvery { changeStatusPushNotifUseCase.getData(any()) } returns successChangeStatusPushNotifResponse
+
+        viewmodel.changeStatusPushNotif(true)
+
+        verify { changeStatusPushNotifResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.changeStatusPushNotifResult.value is Fail)
     }
 
     @Test
@@ -104,6 +146,37 @@ class NotifViewModelTest {
     }
 
     @Test
+    fun `Failed get device status push notif error msg not empty `() {
+        successDeviceStatusPushNotifResponse.data.errorMessage = error
+        successDeviceStatusPushNotifResponse.data.success = false
+
+        viewmodel.deviceStatusPushNotifResult.observeForever(deviceStatusPushNotifResultObserver)
+        coEvery { deviceStatusPushNotifUseCase.getData(any()) } returns successDeviceStatusPushNotifResponse
+
+        viewmodel.deviceStatusPushNotif()
+
+        verify { deviceStatusPushNotifResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.deviceStatusPushNotifResult.value is Fail)
+
+        val result = viewmodel.deviceStatusPushNotifResult.value as Fail
+        assert(result.throwable.message == error)
+    }
+
+    @Test
+    fun `Failed get device status push notif other errors `() {
+        successDeviceStatusPushNotifResponse.data.errorMessage = ""
+        successDeviceStatusPushNotifResponse.data.success = false
+
+        viewmodel.deviceStatusPushNotifResult.observeForever(deviceStatusPushNotifResultObserver)
+        coEvery { deviceStatusPushNotifUseCase.getData(any()) } returns successDeviceStatusPushNotifResponse
+
+        viewmodel.deviceStatusPushNotif()
+
+        verify { deviceStatusPushNotifResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.deviceStatusPushNotifResult.value is Fail)
+    }
+
+    @Test
     fun `Failed get device status push notif`() {
         viewmodel.deviceStatusPushNotifResult.observeForever(deviceStatusPushNotifResultObserver)
         coEvery { deviceStatusPushNotifUseCase.getData(any()) } coAnswers { throw throwable }
@@ -129,6 +202,53 @@ class NotifViewModelTest {
 
         val result = viewmodel.verifyPushNotifResult.value as Success<VerifyPushNotifData>
         assert(result.data == successVerifyPushNotifResponse.data)
+    }
+
+    @Test
+    fun `Failed verify push notif error msg not empty`() {
+        successVerifyPushNotifResponse.data.imglink = ""
+        successVerifyPushNotifResponse.data.errorMessage = error
+
+        viewmodel.verifyPushNotifResult.observeForever(verifyPushNotifResultObserver)
+        coEvery { verifyPushNotifUseCase.getData(any()) } returns successVerifyPushNotifResponse
+
+        viewmodel.verifyPushNotif("", "", "")
+
+        verify { verifyPushNotifResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyPushNotifResult.value is Fail)
+
+        val result = viewmodel.verifyPushNotifResult.value as Fail
+        assert(result.throwable.message == error)
+    }
+
+    @Test
+    fun `Failed verify push notif msg not empty`() {
+        successVerifyPushNotifResponse.data.imglink = ""
+        successVerifyPushNotifResponse.data.errorMessage = ""
+        successVerifyPushNotifResponse.data.message = error
+
+        viewmodel.verifyPushNotifResult.observeForever(verifyPushNotifResultObserver)
+        coEvery { verifyPushNotifUseCase.getData(any()) } returns successVerifyPushNotifResponse
+
+        viewmodel.verifyPushNotif("", "", "")
+
+        verify { verifyPushNotifResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyPushNotifResult.value is Fail)
+    }
+
+    @Test
+    fun `Failed verify push notif other errors`() {
+        successVerifyPushNotifResponse.data.imglink = ""
+        successVerifyPushNotifResponse.data.errorMessage = ""
+        successVerifyPushNotifResponse.data.message = ""
+
+        viewmodel.verifyPushNotifResult.observeForever(verifyPushNotifResultObserver)
+        coEvery { verifyPushNotifUseCase.getData(any()) } returns successVerifyPushNotifResponse
+
+        viewmodel.verifyPushNotif("", "", "")
+
+        verify { verifyPushNotifResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyPushNotifResult.value is Fail)
     }
 
     @Test
@@ -160,6 +280,22 @@ class NotifViewModelTest {
     }
 
     @Test
+    fun `Failed verify push notif expiration error msg not empty`() {
+        successVerifyPushNotifExpResponse.data.errorMessage = error
+
+        viewmodel.verifyPushNotifExpResult.observeForever(verifyPushNotifExpResultObserver)
+        coEvery { verifyPushNotifExpUseCase.getData(any()) } returns successVerifyPushNotifExpResponse
+
+        viewmodel.verifyPushNotifExp("", "", "")
+
+        verify { verifyPushNotifExpResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.verifyPushNotifExpResult.value is Fail)
+
+        val result = viewmodel.verifyPushNotifExpResult.value as Fail
+        assert(result.throwable.message == error)
+    }
+
+    @Test
     fun `Failed verify push notif expiration`() {
         viewmodel.verifyPushNotifExpResult.observeForever(verifyPushNotifExpResultObserver)
         coEvery { verifyPushNotifExpUseCase.getData(any()) } coAnswers { throw throwable }
@@ -174,22 +310,7 @@ class NotifViewModelTest {
     }
 
     companion object {
-        private val successChangeStatusPushNotifResponse: ChangeStatusPushNotifPojo = FileUtil.parse(
-                "/success_change_otp_push_notif.json",
-                ChangeStatusPushNotifPojo::class.java
-        )
-        private val successDeviceStatusPushNotifResponse: DeviceStatusPushNotifPojo = FileUtil.parse(
-                "/success_get_device_status_push_notif.json",
-                DeviceStatusPushNotifPojo::class.java
-        )
-        private val successVerifyPushNotifResponse: VerifyPushNotifPojo = FileUtil.parse(
-                "/success_verify_push_notif.json",
-                VerifyPushNotifPojo::class.java
-        )
-        private val successVerifyPushNotifExpResponse: VerifyPushNotifExpPojo = FileUtil.parse(
-                "/success_verify_push_notif_exp.json",
-                VerifyPushNotifExpPojo::class.java
-        )
         private val throwable = Throwable()
+        private const val error = "error message"
     }
 }

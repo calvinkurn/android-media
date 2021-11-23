@@ -58,7 +58,10 @@ class PopularKeywordViewHolder (val view: View,
     var channelSubtitle: TextView? = null
 
     private val errorPopularKeyword = view.findViewById<LocalLoad>(R.id.error_popular_keyword)
-    private val rotateAnimation = RotateAnimation(0f, 360f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f)
+    private val rotateToDegrees = 360f
+    private val pivotXValue = 0.5f
+    private val pivotYValue = 0.5f
+    private val rotateAnimation = RotateAnimation(0f, rotateToDegrees, Animation.RELATIVE_TO_SELF, pivotXValue, Animation.RELATIVE_TO_SELF, pivotYValue)
     private val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
 
     init{

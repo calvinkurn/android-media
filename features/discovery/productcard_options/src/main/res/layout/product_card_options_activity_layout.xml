@@ -6,12 +6,6 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/imageBackgroundTransparent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/product_card_options_bottomsheet_transparent" />
-
     <FrameLayout
         android:id="@+id/parentView"
         android:layout_width="match_parent"

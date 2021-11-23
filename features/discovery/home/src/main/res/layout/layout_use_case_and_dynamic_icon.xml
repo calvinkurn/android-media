@@ -29,7 +29,7 @@
             app:corners="30"/>
     </FrameLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="@dimen/use_case_and_dynamic_icon_size"
         android:layout_height="wrap_content"
@@ -43,6 +43,7 @@
         android:textColor="@color/Unify_N700_68"
         android:textSize="10sp"
         android:textStyle="normal"
+        app:typographyType="small"
         tools:text="Ajukan Ada deh" />
 
 </LinearLayout>

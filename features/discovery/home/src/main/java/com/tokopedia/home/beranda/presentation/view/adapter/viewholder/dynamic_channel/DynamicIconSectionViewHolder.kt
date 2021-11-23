@@ -102,7 +102,9 @@ class DynamicIconSectionViewHolder(val view: View,
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
             holder.title.text = sectionViewModel.itemList[position].name
             holder.shimmeringIcon.show()
-            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, 150, 150, FPM_USE_CASE_ICON, {
+            val iconWidth = 150
+            val iconHeight = 150
+            holder.icon.loadMiniImage(sectionViewModel.itemList[position].imageUrl, iconWidth, iconHeight, FPM_USE_CASE_ICON, {
                 holder.shimmeringIcon.hide()
             }, onFailed = {
                 holder.shimmeringIcon.show()

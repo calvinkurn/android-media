@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
@@ -47,5 +48,6 @@ interface TopChatTypeFactory {
 
     fun type(reviewUiModel: ReviewUiModel): Int
     fun type(srwBubbleUiModel: SrwBubbleUiModel): Int
+    fun type(getReminderTickerUiModel: ReminderTickerUiModel): Int
 
 }

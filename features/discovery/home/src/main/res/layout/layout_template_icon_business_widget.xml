@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:ignore="MergeRootFrame">
     <ImageView
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/ic_squircle" />
+        app:srcCompat="@drawable/ic_squircle"
+        android:contentDescription="@string/content_desc_background_business" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
