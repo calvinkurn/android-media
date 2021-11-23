@@ -212,9 +212,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
@@ -251,9 +248,6 @@ dependencies {
     androidTestImplementation rootProject.ext.miscDependencies.gson
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
-    androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 

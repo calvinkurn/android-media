@@ -664,10 +664,6 @@
         android:theme="@style/Theme.Tokopedia3"
         android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup,android:resizeableActivity">
-        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
-           android:value="false"/>
-        <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
-           android:value="false"/>
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true"/>
@@ -710,9 +706,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_ma" />
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_id_ma" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -731,18 +724,6 @@
             android:value="@string/appsflyer_key_ma"/>
 
         <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
-
-        <provider
-            android:name="com.facebook.internal.FacebookInitProvider"
-            android:authorities="${applicationId}.FacebookInitProvider"
-            android:exported="false"
-            tools:node="remove" />
-
-        <provider
-            android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"
-            android:exported="true"/>
-
 
         <provider
             android:name="androidx.core.content.FileProvider"

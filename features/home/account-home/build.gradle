@@ -105,9 +105,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.multiDex
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.firebase.crashlytics
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {

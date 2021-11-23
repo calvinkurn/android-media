@@ -112,12 +112,6 @@
     {
       "event": "clickLogin",
       "eventCategory": "login page",
-      "eventAction": "click on button facebook",
-      "eventLabel": "click"
-    },
-    {
-      "event": "clickLogin",
-      "eventCategory": "login page",
       "eventAction": "click back"
     },
     {
@@ -163,12 +157,6 @@
     {
       "event": "clickLogin",
       "eventCategory": "login page",
-      "eventAction": "click on button facebook",
-      "eventLabel": "success"
-    },
-    {
-      "event": "clickLogin",
-      "eventCategory": "login page",
       "eventAction": "click on button google",
       "eventLabel": "success"
     },
@@ -182,12 +170,6 @@
       "event": "clickLogin",
       "eventCategory": "login page smart lock",
       "eventAction": "click on email login smart lock",
-      "eventLabel": "failed - (?:.*)"
-    },
-    {
-      "event": "clickLogin",
-      "eventCategory": "login page",
-      "eventAction": "click on button facebook",
       "eventLabel": "failed - (?:.*)"
     },
     {
