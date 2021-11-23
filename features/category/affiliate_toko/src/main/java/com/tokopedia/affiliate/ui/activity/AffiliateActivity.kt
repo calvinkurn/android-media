@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavbar
 import com.tokopedia.affiliate.ui.custom.IBottomClickListener
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.AffiliateIncomeFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
@@ -138,6 +139,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         when (position) {
             HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
+            INCOME_MENU -> openFragment(AffiliateIncomeFragment.getFragmentInstance())
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
         return true
@@ -230,7 +232,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     companion object MenuItems {
         const val HOME_MENU = 0
         const val PROMO_MENU = 1
-        const val HELP_MENU = 2
+        const val INCOME_MENU = 2
+        const val HELP_MENU = 3
     }
 
     override fun selectItem(position: Int, id: Int) {

@@ -4,6 +4,7 @@
 
     <string name="affiliate_home">Home</string>
     <string name="affiliate_promo">Promosikan</string>
+    <string name="affiliate_withdrawal">Pendapatan</string>
     <string name="affiliate_bantuan">Bantuan</string>
 
     <string name="daftar_affiliate">Daftar Affiliate</string>
@@ -92,4 +93,17 @@
     <string name="affiliate_logout_description">Dengan kamu keluar akun disini, akun kamu di Tokopedia juga akan keluar</string>
     <string name="affiliate_batal">Batal</string>
     <string name="affiliate_terapkan">Terapkan</string>
+    <string name="affiliate_saldo">Saldo Affiliate</string>
+    <string name="affiliate_tarik_saldo">Tarik Saldo</string>
+    <string name="affiliate_transaction_history">Riwayat Transaksi</string>
+    <string name="affiliate_zero_amount">Rp 0</string>
+    <string name="affiliate_komisi_produk">Komisi Produk Affiliate</string>
+    <string name="affiliate_empty_transaction">Tidak ada transaksi pada rentang waktu ini</string>
+    <string name="affiliate_empty_transaction_description">Coba pilih tanggal lainnya. Mungkin kamu akan menemukan transaksi.</string>
+    <string name="affiliate_choose_date">Pilih Tanggal</string>
+    <string name="affiliate_transaksi_selesai">Transaksi selesai</string>
+    <string name="affiliate_rincian_komisi">Rincian Komisi</string>
+    <string name="affiliate_total_harga_s_barang">Total Harga (%s barang)</string>
+    <string name="affiliate_komisi">Komisi</string>
+    <string name="affiliate_total_diterima">Total Diterima</string>
 </resources>
