@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.manageaddress.di.module.AddressChoiceModule
 import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListFragment
+import com.tokopedia.manageaddress.ui.addresschoice.recyclerview.ShipmentAddressListFragmentNew
 import dagger.Component
 
 /**
@@ -13,5 +14,5 @@ import dagger.Component
 @ActivityScope
 @Component(modules = [AddressChoiceModule::class], dependencies = [BaseAppComponent::class])
 interface AddressChoiceComponent {
-    fun inject(shipmentAddressListFragment: ShipmentAddressListFragment)
+    fun inject(shipmentAddressListFragment: ShipmentAddressListFragmentNew)
 }
