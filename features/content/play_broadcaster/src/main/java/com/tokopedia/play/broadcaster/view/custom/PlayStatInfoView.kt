@@ -7,7 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
-import com.tokopedia.play.broadcaster.util.extension.millisToMinutes
+import com.tokopedia.play.broadcaster.util.extension.*
+import com.tokopedia.play.broadcaster.util.extension.millisToHours
 import com.tokopedia.play.broadcaster.util.extension.millisToRemainingSeconds
 import com.tokopedia.unifyprinciples.Typography
 
@@ -45,10 +46,20 @@ class PlayStatInfoView : ConstraintLayout {
     }
 
     fun setCountDown(timeInMillis: Long) {
-        tvCountDown.text = context.getString(
-            R.string.play_live_broadcast_remaining_duration_format,
-            timeInMillis.millisToMinutes(),
-            timeInMillis.millisToRemainingSeconds()
-        )
+        val hour = timeInMillis.millisToHours()
+        val minutes = timeInMillis.millisToRemainingMinutes()
+        val seconds = timeInMillis.millisToRemainingSeconds()
+
+        tvCountDown.text = if(hour > 0) {
+            context.getString(
+                R.string.play_live_broadcast_remaining_duration_format_with_hour,
+                hour, minutes, seconds
+            )
+        }
+        else {
+            context.getString(R.string.play_live_broadcast_remaining_duration_format,
+                minutes, seconds
+            )
+        }
     }
 }
