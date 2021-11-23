@@ -249,13 +249,14 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     private fun setHeaderComponent(element: RechargeBUWidgetDataModel) {
         val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
         val parser = SimpleDateFormat(EXPIRED_DATE_PATTERN)
-        val expiredTime = Date(element.data.endTime.toLong())
+        val expiredTime = if (element.data.endTime.isNotEmpty())
+            parser.format(Date(element.data.endTime.toLong())) else ""
         val channel = element.channel.copy(
                 channelHeader = ChannelHeader(
                         name = element.data.title,
                         applink = if (element.data.textlink.isNotEmpty()) element.data.applink else "",
                         subtitle = element.data.subtitle,
-                        expiredTime = parser.format(expiredTime),
+                        expiredTime = expiredTime,
                         serverTimeUnix = element.channel.channelHeader.serverTimeUnix
                 )
         )
