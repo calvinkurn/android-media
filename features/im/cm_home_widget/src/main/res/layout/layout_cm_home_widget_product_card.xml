@@ -3,7 +3,7 @@
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_cm_home_widget_product"
+    android:id="@+id/layout_cm_home_widget_product_card"
     android:layout_width="@dimen/cm_home_widget_dp_260"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/cm_home_widget_dp_6"

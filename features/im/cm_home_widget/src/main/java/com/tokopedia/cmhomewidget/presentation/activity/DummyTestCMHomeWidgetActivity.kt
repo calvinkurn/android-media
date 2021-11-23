@@ -86,6 +86,7 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
                 }
                 is Fail -> {
                     Timber.e(result.throwable, "Failed")
+                    hideCMHomeWidget()
                 }
             }
         }
@@ -93,12 +94,11 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
     }
 
     private fun getCMHomeWidgetData() {
-        hideCMHomeWidget()
         dummyTestCMHomeWidgetViewModel.getCMHomeWidgetData()
     }
 
     private fun hideCMHomeWidget() {
-        cmHomeWidget.hideCMHomeWidget()
+        cmHomeWidget.hide()
     }
 
     override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {

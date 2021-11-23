@@ -5,25 +5,25 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.cmhomewidget.R
 import com.tokopedia.cmhomewidget.communicator.CMHomeWidgetCommunicator
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetBinding
 import com.tokopedia.cmhomewidget.di.component.DaggerCMHomeWidgetComponent
 import com.tokopedia.cmhomewidget.di.module.CMHomeWidgetModule
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
-import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
+import com.tokopedia.cmhomewidget.domain.data.*
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
 import com.tokopedia.cmhomewidget.presentation.adapter.decorator.HorizontalSpaceItemDecorator
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
 import javax.inject.Inject
 
-class CMHomeWidgetCard @JvmOverloads constructor(
+class CMHomeWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0
@@ -38,9 +38,26 @@ class CMHomeWidgetCard @JvmOverloads constructor(
 
     private lateinit var cmHomeWidgetData: CMHomeWidgetData
 
+    private var isShowShimmer = false
+
     init {
+        initAttrs(context, attrs)
         injectComponent()
         initRecyclerView()
+        handleShimmer()
+    }
+
+    private fun initAttrs(context: Context, attrs: AttributeSet?) {
+        attrs?.let { attributeSet ->
+            context.theme.obtainStyledAttributes(attributeSet, R.styleable.CMHomeWidget, 0, 0)
+                .apply {
+                    try {
+                        isShowShimmer = getBoolean(R.styleable.CMHomeWidget_showShimmer, false)
+                    } finally {
+                        recycle()
+                    }
+                }
+        }
     }
 
     private fun injectComponent() {
@@ -53,13 +70,23 @@ class CMHomeWidgetCard @JvmOverloads constructor(
     private fun initRecyclerView() {
         binding.rvCmHomeWidget.apply {
             layoutManager = LinearLayoutManager(
-                (this@CMHomeWidgetCard).context, LinearLayoutManager.HORIZONTAL,
+                (this@CMHomeWidget).context, RecyclerView.HORIZONTAL,
                 false
             )
             addItemDecoration(HorizontalSpaceItemDecorator(10, 0))
-            adapter = (this@CMHomeWidgetCard).adapter.get()
+            adapter = (this@CMHomeWidget).adapter.get()
         }
     }
+
+    private fun handleShimmer() {
+        if (isShowShimmer) {
+            adapter.get().loadData(getShimmerDataList())
+            binding.tvCmHomeWidgetHeadingShimmer.visibility = View.VISIBLE
+        }
+    }
+
+    private fun getShimmerDataList() =
+        listOf(CMHomeWidgetProductCardShimmerData(), CMHomeWidgetViewAllCardShimmerData())
 
     override fun onCMHomeWidgetDataReceived(cmHomeWidgetData: CMHomeWidgetData) {
         this.cmHomeWidgetData = cmHomeWidgetData
@@ -67,9 +94,13 @@ class CMHomeWidgetCard @JvmOverloads constructor(
     }
 
     private fun setUpUi() {
-        showCMHomeWidget()
         setHeading()
         setItemsInRecyclerView()
+    }
+
+    private fun setHeading() {
+        binding.tvCmHomeWidgetHeading.text = cmHomeWidgetData.widgetTitle
+        binding.tvCmHomeWidgetHeadingShimmer.visibility = View.GONE
     }
 
     private fun setItemsInRecyclerView() {
@@ -83,15 +114,11 @@ class CMHomeWidgetCard @JvmOverloads constructor(
         if (itemsList.isNotEmpty()) adapter.get().loadData(itemsList)
     }
 
-    private fun setHeading() {
-        binding.tvCmHomeWidgetHeading.text = cmHomeWidgetData.widgetTitle
-    }
-
-    override fun hideCMHomeWidget() {
+    override fun hide() {
         this.visibility = View.GONE
     }
 
-    override fun showCMHomeWidget() {
+    override fun show() {
         this.visibility = View.VISIBLE
     }
 

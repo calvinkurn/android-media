@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.viewallcard.ViewAllCard xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cm_home_widget_card_view_all"
+    android:id="@+id/cm_home_widget_view_all_card"
     android:layout_width="@dimen/cm_home_widget_dp_144"
-    android:layout_height="@dimen/cm_home_widget_dp_174"
+    android:layout_height="match_parent"
     android:layout_marginTop="@dimen/cm_home_widget_dp_6"
     android:layout_marginBottom="@dimen/cm_home_widget_dp_10"
+    android:clickable="true"
+    android:focusable="true"
     app:view_all_card_unify_mode="invert" />
+

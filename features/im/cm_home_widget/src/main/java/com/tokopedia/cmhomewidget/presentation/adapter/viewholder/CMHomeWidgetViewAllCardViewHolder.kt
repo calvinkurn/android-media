@@ -14,8 +14,9 @@ class CMHomeWidgetViewAllCardViewHolder(
     override fun bind(dataItem: CMHomeWidgetViewAllCardData) {
         with(binding)
         {
-            cmHomeWidgetCardViewAll.description = dataItem.description.toString()
-            cmHomeWidgetCardViewAll.setCta(dataItem.label.toString())
+            cmHomeWidgetViewAllCard.backgroundView.setImageResource(R.drawable.ic_cm_home_widget_graphic_element_white)
+            cmHomeWidgetViewAllCard.description = dataItem.description.toString()
+            cmHomeWidgetViewAllCard.setCta(dataItem.label.toString())
             root.setOnClickListener {
                 listener.onViewAllCardClick(dataItem)
             }
