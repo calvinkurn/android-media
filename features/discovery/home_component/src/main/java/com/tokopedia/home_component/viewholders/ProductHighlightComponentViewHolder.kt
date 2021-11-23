@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.ProductHighlightListener
 import com.tokopedia.home_component.mapper.ProductHighlightModelMapper
@@ -55,8 +56,9 @@ class ProductHighlightComponentViewHolder(
     }
 
     private fun setDealsChannelInfo(productHighlightDataModel: ProductHighlightDataModel) {
-        setDealsChannelTitle(productHighlightDataModel.channelModel.channelHeader)
-        setDealsCountDownTimer(productHighlightDataModel)
+//        setDealsChannelTitle(productHighlightDataModel.channelModel.channelHeader)
+//        setDealsCountDownTimer(productHighlightDataModel)
+        setHeaderComponent(productHighlightDataModel)
         setDealsChannelBackground(productHighlightDataModel.channelModel.channelBanner)
         setChannelDivider(productHighlightDataModel)
     }
@@ -69,55 +71,69 @@ class ProductHighlightComponentViewHolder(
         )
     }
 
-    private fun setDealsCountDownTimer(dataModel: ProductHighlightDataModel) {
-        itemView.deals_channel_subtitle.text = dataModel.channelModel.channelHeader.subtitle
-        if (dataModel.channelModel.channelHeader.textColor.isNotEmpty()) {
-            val textColor = Color.parseColor(dataModel.channelModel.channelHeader.textColor)
-            itemView.deals_channel_subtitle.setTextColor(textColor)
-        }
-
-        if (dataModel.channelModel.channelHeader.expiredTime.isNotEmpty()) {
-            val expiredTime = DateHelper.getExpiredTime(dataModel.channelModel.channelHeader.expiredTime)
-            if (!DateHelper.isExpired(dataModel.channelModel.channelConfig.serverTimeOffset, expiredTime)) {
-                itemView.deals_count_down?.run {
-                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
-                    timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
-                        TimerUnifySingle.VARIANT_ALTERNATE
-                    } else {
-                        TimerUnifySingle.VARIANT_MAIN
-                    }
-
-                    visibility = View.VISIBLE
-
-                    // calculate date diff
-                    targetDate = Calendar.getInstance().apply {
-                        val currentDate = Date()
-                        val currentMillisecond: Long = currentDate.time + dataModel.channelModel.channelConfig.serverTimeOffset
-                        val timeDiff = expiredTime.time - currentMillisecond
-                        add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
-                        add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
-                        add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
-                    }
-                    onFinish = {
-                        listener?.onChannelExpired(dataModel.channelModel, adapterPosition, dataModel)
-                    }
-
-                }
-            }
-        } else {
-            itemView.deals_count_down.visibility = View.GONE
-        }
-    }
+//    private fun setDealsCountDownTimer(dataModel: ProductHighlightDataModel) {
+//        itemView.deals_channel_subtitle.text = dataModel.channelModel.channelHeader.subtitle
+//        if (dataModel.channelModel.channelHeader.textColor.isNotEmpty()) {
+//            val textColor = Color.parseColor(dataModel.channelModel.channelHeader.textColor)
+//            itemView.deals_channel_subtitle.setTextColor(textColor)
+//        }
+//
+//        if (dataModel.channelModel.channelHeader.expiredTime.isNotEmpty()) {
+//            val expiredTime = DateHelper.getExpiredTime(dataModel.channelModel.channelHeader.expiredTime)
+//            if (!DateHelper.isExpired(dataModel.channelModel.channelConfig.serverTimeOffset, expiredTime)) {
+//                itemView.deals_count_down?.run {
+//                    val defaultColor = "#${Integer.toHexString(ContextCompat.getColor(itemView.context, R.color.Unify_Static_White))}"
+//                    timerVariant = if(dataModel.channelModel.channelBanner.gradientColor.firstOrNull() != defaultColor || dataModel.channelModel.channelBanner.gradientColor.size > 1){
+//                        TimerUnifySingle.VARIANT_ALTERNATE
+//                    } else {
+//                        TimerUnifySingle.VARIANT_MAIN
+//                    }
+//
+//                    visibility = View.VISIBLE
+//
+//                    // calculate date diff
+//                    targetDate = Calendar.getInstance().apply {
+//                        val currentDate = Date()
+//                        val currentMillisecond: Long = currentDate.time + dataModel.channelModel.channelConfig.serverTimeOffset
+//                        val timeDiff = expiredTime.time - currentMillisecond
+//                        add(Calendar.SECOND, (timeDiff / 1000 % 60).toInt())
+//                        add(Calendar.MINUTE, (timeDiff / (60 * 1000) % 60).toInt())
+//                        add(Calendar.HOUR, (timeDiff / (60 * 60 * 1000)).toInt())
+//                    }
+//                    onFinish = {
+//                        listener?.onChannelExpired(dataModel.channelModel, adapterPosition, dataModel)
+//                    }
+//
+//                }
+//            }
+//        } else {
+//            itemView.deals_count_down.visibility = View.GONE
+//        }
+//    }
 
     private fun setDealsChannelBackground(it: ChannelBanner) {
         itemView.deals_background.setGradientBackground(it.gradientColor)
     }
 
-    private fun setDealsChannelTitle(it: ChannelHeader) {
-        itemView.deals_channel_title.text = it.name
-        if (it.textColor.isNotEmpty()) {
-            val textColor = Color.parseColor(it.textColor)
-            itemView.deals_channel_title.setTextColor(textColor)
+//    private fun setDealsChannelTitle(it: ChannelHeader) {
+//        itemView.deals_channel_title.text = it.name
+//        if (it.textColor.isNotEmpty()) {
+//            val textColor = Color.parseColor(it.textColor)
+//            itemView.deals_channel_title.setTextColor(textColor)
+//        }
+//    }
+
+    private fun setHeaderComponent(element: ProductHighlightDataModel?) {
+        element?.channelModel?.let {
+            itemView.home_component_header_view.setChannel(it, object : HeaderListener {
+                override fun onSeeAllClick(link: String) {
+//                    listener.onDynamicChannelClicked(link)
+                }
+
+                override fun onChannelExpired(channelModel: ChannelModel) {
+
+                }
+            })
         }
     }
 
