@@ -59,9 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_product_status"
             android:textSize="@dimen/sp_10"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"

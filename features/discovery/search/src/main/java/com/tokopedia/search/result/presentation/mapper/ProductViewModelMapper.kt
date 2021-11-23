@@ -2,8 +2,42 @@ package com.tokopedia.search.result.presentation.mapper
 
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
 import com.tokopedia.search.result.domain.model.SearchProductModel
-import com.tokopedia.search.result.domain.model.SearchProductModel.*
-import com.tokopedia.search.result.presentation.model.*
+import com.tokopedia.search.result.domain.model.SearchProductModel.Banner
+import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalNavItem
+import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalSearchNavigation
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCardOption
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselData
+import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelated
+import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProduct
+import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProductBadge
+import com.tokopedia.search.result.domain.model.SearchProductModel.OtherRelatedProductFreeOngkir
+import com.tokopedia.search.result.domain.model.SearchProductModel.Product
+import com.tokopedia.search.result.domain.model.SearchProductModel.ProductBadge
+import com.tokopedia.search.result.domain.model.SearchProductModel.ProductFreeOngkir
+import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroup
+import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelGroupVariant
+import com.tokopedia.search.result.domain.model.SearchProductModel.Related
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationCarousel
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspirationWidget
+import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
+import com.tokopedia.search.result.presentation.model.BadgeItemDataView
+import com.tokopedia.search.result.presentation.model.BannerDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
+import com.tokopedia.search.result.presentation.model.BroadMatchProduct
+import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardDataView
+import com.tokopedia.search.result.presentation.model.InspirationCardOptionDataView
+import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupDataView
+import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
+import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.presentation.model.ProductDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.RelatedDataView
+import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.model.TickerDataView
 import java.util.*
 
 class ProductViewModelMapper {
@@ -210,6 +244,7 @@ class ProductViewModelMapper {
         productItem.productUrl = productModel.url
         productItem.pageTitle = pageTitle
         productItem.dimension90 = dimension90
+        productItem.applink = productModel.applink
         return productItem
     }
 

@@ -13,7 +13,7 @@ import com.tokopedia.checkout.old.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.old.view.uimodel.EgoldAttributeModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -41,7 +41,7 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
         tvEmasDesc.text = MethodChecker.fromHtml(
                 String.format(llContainer.context.getString(R.string.emas_checkout_desc),
                         egoldAttributeModel.subText,
-                        removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false))
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(egoldAttributeModel.buyEgoldValue, false).removeDecimalSuffix()
                 )
         )
         buyEmas.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
