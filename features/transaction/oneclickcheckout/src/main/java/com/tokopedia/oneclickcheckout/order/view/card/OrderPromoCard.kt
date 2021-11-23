@@ -37,16 +37,16 @@ class OrderPromoCard(private val binding: CardOrderPromoBinding,
             else -> {
                 val lastApply = orderPromo.lastApply
                 var title = binding.root.context.getString(com.tokopedia.purchase_platform.common.R.string.promo_funnel_label)
-                if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
+                if (lastApply.additionalInfo.messageInfo.message.isNotEmpty()) {
                     title = lastApply.additionalInfo.messageInfo.message
-                } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
+                } else if (lastApply.defaultEmptyPromoMessage.isNotBlank()) {
                     title = lastApply.defaultEmptyPromoMessage
                 }
                 binding.btnPromoCheckout.state = ButtonPromoCheckoutView.State.ACTIVE
                 binding.btnPromoCheckout.title = title
-                binding.btnPromoCheckout.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
+                binding.btnPromoCheckout.desc = lastApply.additionalInfo.messageInfo.detail
 
-                if (lastApply?.additionalInfo?.usageSummaries?.isNotEmpty() == true) {
+                if (lastApply.additionalInfo.usageSummaries.isNotEmpty()) {
                     analytics.eventViewPromoAlreadyApplied()
                 }
 
