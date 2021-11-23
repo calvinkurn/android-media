@@ -29,11 +29,7 @@ android {
     }
     defaultConfig {
         multiDexEnabled true
-        if (project.hasProperty("benchmark")) {
-            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
-        } else {
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
