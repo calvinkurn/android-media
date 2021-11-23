@@ -49,7 +49,6 @@ object SomAnalytics {
     private const val CURRENT_SITE_TOKOPEDIA_SELLER = "tokopediaseller"
     private const val BUSINESS_UNIT_SOM = "Seller Order Management"
     private const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
-    private const val TOKOPEDIA_MARKETPLACE_WITH_SPACING = "tokopedia marketplace"
     private const val EVENT_NAME_VIEW_SHIPPING_IRIS = "viewShippingIris"
     private const val EVENT_ACTION_REQUEST_ORDER_EXTENSION = "request order extension status"
 
@@ -106,7 +105,7 @@ object SomAnalytics {
             TrackAppUtils.EVENT_ACTION to CLICK_SECONDARY_ACTION_IN_ORDER_DETAIL,
             TrackAppUtils.EVENT_LABEL to "$statusOrderCode - $orderStatusName - $labelBtn",
             CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
-            CUSTOM_DIMENSION_CURRENT_SITE to CURRENT_SITE_TOKOPEDIA_SELLER,
+            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             CUSTOM_DIMENSION_SHOP_TYPE to shopId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
@@ -281,7 +280,7 @@ object SomAnalytics {
             TrackAppUtils.EVENT_CATEGORY to CATEGORY_SOM,
             TrackAppUtils.EVENT_LABEL to "${if (success) "success" else "failed"} - $orderId",
             CUSTOM_DIMENSION_BUSINESS_UNIT to BUSINESS_UNIT_PHYSICAL_GOODS_CAPITALIZE,
-            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE_WITH_SPACING,
+            CUSTOM_DIMENSION_CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             CUSTOM_DIMENSION_SHOP_ID to shopId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
