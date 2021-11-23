@@ -1,13 +1,14 @@
 package com.tokopedia.home_account.di
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
-import com.tokopedia.home_account.pref.AccountPreference
-import com.tokopedia.home_account.stub.data.FakeAccountPreference
 import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
@@ -20,6 +21,7 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import java.lang.reflect.Array.setBoolean
 
 /**
  * @author by nisie on 10/10/18.
@@ -63,8 +65,13 @@ class FakeHomeAccountUserModules(val context: Context) {
     }
 
     @Provides
-    fun provideAccountPreference(@HomeAccountUserContext context: Context): AccountPreference {
-        return FakeAccountPreference(context)
+    @HomeAccountUserScope
+    fun provideHomeAccountPref(@HomeAccountUserContext context: Context): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context).apply {
+            val editor = edit()
+            editor?.putBoolean(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+            editor?.apply()
+        }
     }
 
     @Provides
