@@ -55,6 +55,7 @@ abstract class AffiliateVMModule {
     @AffiliateScope
     @ViewModelKey(AffiliateLoginViewModel::class)
     internal abstract fun affiliateLoginViewModel(viewModel: AffiliateLoginViewModel): ViewModel
+
     @Binds
     @IntoMap
     @AffiliateScope

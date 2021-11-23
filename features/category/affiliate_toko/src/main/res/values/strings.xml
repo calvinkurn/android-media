@@ -92,4 +92,10 @@
     <string name="affiliate_logout_description">Dengan kamu keluar akun disini, akun kamu di Tokopedia juga akan keluar</string>
     <string name="affiliate_batal">Batal</string>
     <string name="affiliate_terapkan">Terapkan</string>
+    <string name="affiliate_saldo_withdrawal_balance_status">Status penarikan saldo</string>
+    <string name="affiliate_title_saldo_detail">Detail Saldo</string>
+    <string name="affiliate_saldo_withdrawal_info_details">Rincian penarikan</string>
+    <string name="affiliate_saldo_withdrawal_amount">Jumlah Penarikan</string>
+    <string name="affiliate_saldo_withdrawal_fee">Biaya Penarikan</string>
+    <string name="affiliate_saldo_transferred_amount">Jumlah yang Ditransfer</string>
 </resources>

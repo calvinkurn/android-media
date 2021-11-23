@@ -13,3 +13,4 @@ const val ANNOUNCEMENT__TYPE_CCA = "cca"
 const val ANNOUNCEMENT__TYPE_SERVICE_STATUS = "serviceStatus"
 const val ANNOUNCEMENT__TYPE_USER_BLACKLIST = "userBlacklisted"
 const val ANNOUNCEMENT__TYPE_SUCCESS = 1
+const val WITHDRAWAL_ID = "withdrawalId"

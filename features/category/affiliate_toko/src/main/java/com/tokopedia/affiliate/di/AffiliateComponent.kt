@@ -12,6 +12,8 @@ import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
+import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
+import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
 import dagger.Component
 
 @AffiliateScope
@@ -22,6 +24,8 @@ interface AffiliateComponent {
     val context: Context
 
     fun injectActivity(affiliateActivity : AffiliateActivity)
+
+    fun injectWithdrawalDetailActivity(affiliateAffiliateSaldoActivity : AffiliateSaldoWithdrawalDetailActivity)
 
     fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
 
@@ -37,6 +41,7 @@ interface AffiliateComponent {
 
     fun injectTermAndConditionFragment(affiliateTermsAndConditionFragment: AffiliateTermsAndConditionFragment)
 
-    fun injectRecommendedProductFragment(viewModel: AffiliateRecommendedProductFragment)
+    fun injectRecommendedProductFragment(affiliateRecommendedProductFragment: AffiliateRecommendedProductFragment)
 
+    fun injectWithdrawalDetailFragment(affiliateSaldoWithdrawalDetailFragment: AffiliateSaldoWithdrawalDetailFragment)
 }

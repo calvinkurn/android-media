@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+
+    <ImageView
+        android:id="@+id/ivCircleDot"
+        android:layout_width="@dimen/unify_space_8"
+        android:layout_height="@dimen/unify_space_8"
+        android:layout_marginStart="@dimen/unify_space_4"
+        android:contentDescription="Dot"
+        android:src="@drawable/affiliate_ic_circle_light_grey"
+        app:layout_constraintBottom_toBottomOf="@id/tvStatusTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvStatusTitle" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/statusDivider"
+        android:layout_width="@dimen/unify_space_2"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/ivCircleDot"
+        app:layout_constraintStart_toStartOf="@+id/ivCircleDot"
+        app:layout_constraintTop_toBottomOf="@id/ivCircleDot"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStatusTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toEndOf="@id/ivCircleDot"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Penarikan saldo berhasil" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvWithdrawalDetail"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_2"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvStatusTitle"
+        app:typographyType="body_2"
+        tools:text="Rp595.000 telah berhasil dikirimkan ke rekening tujuan." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvWithdrawalDate"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_4"
+        android:paddingBottom="@dimen/unify_space_16"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvStatusTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvWithdrawalDetail"
+        app:typographyType="body_2"
+        tools:text="Sabtu, 20 Des 2020, 16:40 WIB" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
