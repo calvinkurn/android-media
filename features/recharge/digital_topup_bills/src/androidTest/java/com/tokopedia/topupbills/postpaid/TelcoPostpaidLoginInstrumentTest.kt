@@ -105,6 +105,7 @@ class TelcoPostpaidLoginInstrumentTest {
 
 
     fun validate_pdp_client_number_widget_interaction() {
+        clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)

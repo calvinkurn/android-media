@@ -72,7 +72,6 @@ internal open class ProductListPresenterTestFixtures {
         productListPresenter.attachView(productListView)
 
         verify {
-            productListView.abTestRemoteConfig
             productListView.isChooseAddressWidgetEnabled
         }
     }
