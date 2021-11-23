@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
-import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.common.util.getTrimmedText
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantInputBottomSheetContentBinding
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
@@ -98,7 +98,7 @@ class CustomVariantInputBottomSheet (
             getString(R.string.action_variant_custom_type_add)
         }
         binding?.buttonSave?.setOnClickListener {
-            val inputText = binding?.textFieldVariantTypeInput?.getText().orEmpty()
+            val inputText = binding?.textFieldVariantTypeInput?.getTrimmedText().orEmpty()
             viewModel.validateVariantTitle(inputText, variantDetails)
         }
     }
@@ -106,10 +106,11 @@ class CustomVariantInputBottomSheet (
     private fun setupTextFieldVariantTypeInput(variantTypeName: String) {
         binding?.textFieldVariantTypeInput?.setText(variantTypeName)
         binding?.textFieldVariantTypeInput?.editText?.afterTextChanged {
+            val cleanedText = it.trim().replace("\\s+".toRegex(), " ")
             binding?.textFieldVariantTypeInput?.setMessage("")
             binding?.textFieldVariantTypeInput?.isInputError = false
-            variantTypeSuggestionAdapter.setHighlightCharLength(it.length)
-            viewModel.getAllVariantFromKeyword(it)
+            variantTypeSuggestionAdapter.setHighlightCharLength(cleanedText.length)
+            viewModel.getAllVariantFromKeyword(cleanedText)
         }
     }
 
@@ -163,7 +164,7 @@ class CustomVariantInputBottomSheet (
                     }
                     else -> {
                         isInputError = false
-                        submitData(getText())
+                        submitData(getTrimmedText())
                     }
                 }
             }
