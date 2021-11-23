@@ -30,13 +30,24 @@ class UploaderWorker(
     @Inject lateinit var lazyNotificationManager: Lazy<UploadMediaNotificationManager>
     private val notificationManager: UploadMediaNotificationManager get() = lazyNotificationManager.get()
 
+    /*
+    * because there are multiple entries in db's work-manager,
+    * we can preventing doWork called a method multiple times
+    * with this flag.
+    * */
+    private var hasProgressLoader = false
+
     init {
         initInjector()
     }
 
     override suspend fun doWork(): Result {
+        trackProgressLoader()
+
+        notificationManager.setId(getNotificationId())
+        notificationManager.onStart()
+
         return try {
-            trackProgressLoader()
             when (val result = upload()) {
                 is UploadResult.Success -> onSuccessUpload(result)
                 is UploadResult.Error -> onFailedUpload()
@@ -74,11 +85,12 @@ class UploaderWorker(
     }
 
     private fun trackProgressLoader() {
-        notificationManager.setId(getNotificationId())
-        notificationManager.onStart()
+        if (hasProgressLoader) return
+
         uploaderUseCase.trackProgress { progress ->
             Handler(Looper.getMainLooper()).post {
                 Log.d("MediaUploaderx", progress.toString())
+                hasProgressLoader = true
                 notificationManager.onProgress(progress)
             }
         }
