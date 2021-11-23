@@ -77,7 +77,7 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
     @Test
     fun product_card_impression_tracker_test() {
         // Given
-        val journeyId = "139"
+        val journeyId = "142"
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         launchChatRoomActivity()
