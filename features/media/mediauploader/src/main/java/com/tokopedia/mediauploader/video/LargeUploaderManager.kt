@@ -10,7 +10,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.isLessThan2Hours
 import com.tokopedia.mediauploader.common.util.slice
 import com.tokopedia.mediauploader.common.util.trimLastZero
-import com.tokopedia.mediauploader.video.data.internal.LargeUploadState
+import com.tokopedia.mediauploader.video.data.internal.LargeUploadStateHandler
 import com.tokopedia.mediauploader.video.data.params.ChunkCheckerParam
 import com.tokopedia.mediauploader.video.data.params.ChunkUploadParam
 import com.tokopedia.mediauploader.video.data.params.InitParam
@@ -28,7 +28,7 @@ class LargeUploaderManager @Inject constructor(
     private val completeUseCase: SetCompleteUploaderUseCase,
     private val transcodingUseCase: GetTranscodingStatusUseCase,
     private val abortUseCase: SetAbortUploaderUseCase,
-    private val uploadState: LargeUploadState,
+    private val uploadState: LargeUploadStateHandler,
 ) {
 
     private var maxRetryTranscoding = 0

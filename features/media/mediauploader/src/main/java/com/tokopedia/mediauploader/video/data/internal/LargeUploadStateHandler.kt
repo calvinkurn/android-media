@@ -2,22 +2,17 @@ package com.tokopedia.mediauploader.video.data.internal
 
 import android.content.Context
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.mediauploader.video.data.params.LargeUploadCacheParam
 import java.io.File
+import javax.inject.Inject
 
-interface LargeUploadState {
-    fun set(sourceId: String, state: LargeUploadCacheParam)
-    fun get(sourceId: String, fileName: String): LargeUploadCacheParam?
-    fun setPartNumber(sourceId: String, fileName: String, partNumber: Int)
-    fun clear()
-}
+class LargeUploadStateHandler @Inject constructor(
+    @ApplicationContext context: Context
+) : LocalCacheHandler(context, NAME_PREFERENCE_LARGE_UPLOAD) {
 
-class LargeUploadStateHandler(
-    context: Context
-) : LocalCacheHandler(context, NAME_PREFERENCE_LARGE_UPLOAD), LargeUploadState {
-
-    override fun set(sourceId: String, state: LargeUploadCacheParam) {
+    fun set(sourceId: String, state: LargeUploadCacheParam) {
         val content = Gson().toJson(state)
         val cacheKey = key(sourceId, state.filePath)
         putString(cacheKey, content)
@@ -25,7 +20,7 @@ class LargeUploadStateHandler(
         applyEditor()
     }
 
-    override fun get(sourceId: String, fileName: String): LargeUploadCacheParam? {
+    fun get(sourceId: String, fileName: String): LargeUploadCacheParam? {
         val cacheKey = key(sourceId, fileName)
         val content = getString(cacheKey, "")
 
@@ -36,14 +31,14 @@ class LargeUploadStateHandler(
         return Gson().fromJson(content, LargeUploadCacheParam::class.java)
     }
 
-    override fun setPartNumber(sourceId: String, fileName: String, partNumber: Int) {
+    fun setPartNumber(sourceId: String, fileName: String, partNumber: Int) {
         get(sourceId, fileName)?.let {
             val updated = it.copy(partNumber = partNumber)
             set(sourceId, updated)
         }
     }
 
-    override fun clear() {
+    fun clear() {
         clearCache()
     }
 
