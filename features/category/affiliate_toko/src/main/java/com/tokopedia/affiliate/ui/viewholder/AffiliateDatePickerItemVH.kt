@@ -22,6 +22,9 @@ class AffiliateDatePickerItemVH(itemView: View,private val dateClickedInterface:
         itemView.findViewById<Typography>(R.id.text).text = element?.dateRange?.text
         val radioBtn = itemView.findViewById<RadioButtonUnify>(R.id.textRadioButton)
         radioBtn.isChecked= element?.dateRange?.isSelected == true
+        itemView.setOnClickListener {
+            radioBtn.isChecked = true
+        }
         radioBtn.setOnCheckedChangeListener { _,isChecked ->
             if(isChecked) dateClickedInterface?.onDateRangeClicked(adapterPosition)
         }
