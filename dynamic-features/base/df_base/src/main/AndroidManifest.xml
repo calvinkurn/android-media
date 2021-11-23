@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ns0="http://schemas.android.com/apk/distribution"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.tokopedia.df.base">
 
-    <ns0:module ns0:title="@string/onboarding_app_name">
-        <ns0:delivery>
-            <ns0:install-time />
-        </ns0:delivery>
-        <ns0:fusing ns0:include="true" />
-    </ns0:module>
+    <dist:module dist:title="@string/onboarding_app_name">
+        <dist:delivery>
+            <dist:install-time />
+        </dist:delivery>
+        <dist:fusing dist:include="true" />
+    </dist:module>
     <application android:hasCode="false" />
 </manifest>
