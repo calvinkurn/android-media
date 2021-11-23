@@ -18,6 +18,7 @@ data class FlightBookingModel (
         var cartId: String = "",
         var isDomestic: Boolean = true,
         var isMandatoryDob: Boolean = false,
+        var isMandatoryIdentificationNumber: Boolean = false,
         var flightPriceModel: FlightPriceModel = FlightPriceModel(),
         var searchParam: FlightSearchPassDataModel = FlightSearchPassDataModel(),
         var insurances: List<FlightCart.Insurance> = arrayListOf()

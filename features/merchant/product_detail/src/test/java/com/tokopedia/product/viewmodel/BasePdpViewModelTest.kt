@@ -12,7 +12,6 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -60,9 +59,6 @@ abstract class BasePdpViewModelTest {
 
     @RelaxedMockK
     lateinit var trackAffiliateUseCase: TrackAffiliateUseCase
-
-    @RelaxedMockK
-    lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
 
     @RelaxedMockK
     lateinit var updateCartCounterUseCase: UpdateCartCounterUseCase
@@ -131,7 +127,6 @@ abstract class BasePdpViewModelTest {
                 { getRecommendationUseCase },
                 { getRecommendationFilterChips },
                 { trackAffiliateUseCase },
-                { submitHelpTicketUseCase },
                 { updateCartCounterUseCase },
                 { addToCartUseCase },
                 { addToCartOcsUseCase },

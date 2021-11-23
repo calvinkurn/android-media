@@ -24,18 +24,19 @@ class GetOfficialStoreCategoriesUseCase @Inject constructor(
         gqlRequest.isDoQueryHash = doQueryHashing
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
-        val graphqlResponse = graphqlUseCase.executeOnBackground()
+        val response = graphqlUseCase.executeOnBackground()
+            .getData<OfficialStoreCategories.Response>(OfficialStoreCategories.Response::class.java)
 
-        return graphqlResponse.run {
-            getData<OfficialStoreCategories.Response>(OfficialStoreCategories.Response::class.java)
-                    .OfficialStoreCategories
+        response?.let {
+            return it.OfficialStoreCategories
         }
+        return OfficialStoreCategories()
     }
 
     suspend fun executeOnBackground(isCache: Boolean, doQueryHashing : Boolean): OfficialStoreCategories{
         this.doQueryHashing = doQueryHashing
         if(isCache){
-            graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(GraphqlConstant.ExpiryTimes.MONTHS_3.`val`()).build())
+            graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_ONLY).setExpiryTime(GraphqlConstant.ExpiryTimes.MONTHS_3.`val`()).build())
         }
         else{
             graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).setExpiryTime(GraphqlConstant.ExpiryTimes.MONTHS_3.`val`()).build())

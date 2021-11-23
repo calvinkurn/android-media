@@ -19,9 +19,11 @@
         android:clipChildren="false"/>
 
     <include
+        android:id="@+id/merchantVoucherReload"
         layout="@layout/partial_shop_home_get_failed"/>
 
     <include
+        android:id="@+id/merchantVoucherShimmering"
         layout="@layout/partial_shop_home_voucher_shimmering"/>
 
 </LinearLayout>
