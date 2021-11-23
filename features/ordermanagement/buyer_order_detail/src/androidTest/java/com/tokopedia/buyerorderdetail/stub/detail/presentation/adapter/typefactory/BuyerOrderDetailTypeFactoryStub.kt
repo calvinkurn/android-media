@@ -13,6 +13,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBun
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.CourierDriverInfoViewHolderStub
+import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.PgRecommendationViewHolderStub
 import com.tokopedia.buyerorderdetail.stub.detail.presentation.adapter.viewholder.ProductViewHolderStub
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
 
@@ -39,6 +40,7 @@ class BuyerOrderDetailTypeFactoryStub(
         return when (type) {
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolderStub(parent, navigator)
             ProductViewHolder.LAYOUT -> ProductViewHolderStub(parent, productViewListener, navigator)
+            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolderStub(parent, buyerOrderDetailBindRecomWidgetListener)
             else -> super.createViewHolder(parent, type)
         }
     }
