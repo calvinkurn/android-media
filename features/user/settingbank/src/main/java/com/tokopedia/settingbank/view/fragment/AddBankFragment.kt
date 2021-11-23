@@ -31,6 +31,7 @@ import com.tokopedia.settingbank.util.textChangedListener
 import com.tokopedia.settingbank.view.activity.AddBankActivity
 import com.tokopedia.settingbank.view.viewModel.AddAccountViewModel
 import com.tokopedia.settingbank.view.viewState.*
+import com.tokopedia.settingbank.view.widgets.BankPrivacyPolicyBottomSheet
 import com.tokopedia.settingbank.view.widgets.BankTNCBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -505,21 +506,56 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun setTncText() {
-        val tncSpannableString = createTermsAndConditionSpannable()
+        val tncSpannableString = createPrivacyTextSpannable()
         tvAddBankTnc.text = tncSpannableString
         tvAddBankTnc.highlightColor = MethodChecker.getColor(context, android.R.color.transparent)
         tvAddBankTnc.movementMethod = LinkMovementMethod.getInstance()
     }
 
+    private fun createPrivacyTextSpannable(): SpannableStringBuilder? {
+        val originalText = createTermsAndConditionSpannable()
+        val startIndexPrivacy = originalText.indexOf("Kebijakan")
+        val endIndexPrivacy = originalText.indexOf("dan") - 1
+        val spannableStringPrivacyPolicy = SpannableString(originalText)
+        val color =
+            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
+        spannableStringPrivacyPolicy.setSpan(
+            color,
+            startIndexPrivacy,
+            endIndexPrivacy,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringPrivacyPolicy.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                openPrivacyBottomSheet()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = color
+            }
+        }, startIndexPrivacy, endIndexPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return SpannableStringBuilder.valueOf(spannableStringPrivacyPolicy)
+    }
+
     private fun createTermsAndConditionSpannable(): SpannableStringBuilder {
         val originalText = getString(R.string.sbank_add_bank_tnc)
-        val readMoreText = getString(R.string.sbank_add_bank_tnc_clickable_part)
-        val spannableString = SpannableString(readMoreText)
-        val startIndex = 0
-        val endIndex = spannableString.length
-        val color = MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
-        spannableString.setSpan(color, startIndex, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(object : ClickableSpan() {
+        // val readMoreText = getString(R.string.sbank_add_bank_tnc_clickable_part)
+        val spannableStringTermAndCondition = SpannableString(originalText)
+        val startIndex = originalText.indexOf("Syarat")
+        val endIndex = originalText.length
+
+
+        val color =
+            MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
+        spannableStringTermAndCondition.setSpan(
+            color,
+            startIndex,
+            endIndex,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        spannableStringTermAndCondition.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
                 loadTncForAddBank()
             }
@@ -530,12 +566,16 @@ class AddBankFragment : BaseDaggerFragment() {
                 ds.color = color
             }
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString)
+        return SpannableStringBuilder.valueOf(spannableStringTermAndCondition)
     }
 
     private fun loadTncForAddBank() {
         bankSettingAnalytics.eventOnTermsAndConditionClick()
         addAccountViewModel.loadTermsAndCondition()
+    }
+
+    private fun openPrivacyBottomSheet() {
+        BankPrivacyPolicyBottomSheet.showBankPrivacyBottomSheet(activity)
     }
 
     private fun openTNCBottomSheet(templateData: TemplateData?) {
