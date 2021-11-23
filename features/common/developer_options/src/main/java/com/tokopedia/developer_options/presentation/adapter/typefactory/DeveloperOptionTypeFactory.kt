@@ -12,4 +12,8 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: OpenScreenRecorderUiModel): Int
     fun type(uiModel: NetworkLogOnNotificationUiModel): Int
     fun type(uiModel: ViewNetworkLogUiModel): Int
+    fun type(uiModel: DeviceIdUiModel): Int
+    fun type(uiModel: ForceDarkModeUiModel): Int
+    fun type(uiModel: TopAdsLogOnNotificationUiModel): Int
+    fun type(uiModel: ViewTopAdsLogUiModel): Int
 }

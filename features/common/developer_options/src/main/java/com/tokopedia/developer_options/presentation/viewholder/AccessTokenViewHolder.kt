@@ -19,7 +19,7 @@ class AccessTokenViewHolder(
 
     override fun bind(element: AccessTokenUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.access_token_btn)
-        btn.text = "Access token : ${listener.getAccessToken()}"
+        btn.text = String.format("Access token : ${listener.getAccessToken()}")
         btn.setOnClickListener {
             listener.onClickAccessTokenBtn()
         }

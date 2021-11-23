@@ -38,7 +38,7 @@
     <string name="open_screen_recorder">Open Screen Recorder</string>
     <string name="enable_network_log_on_notification">Enable Network Log on Notification</string>
     <string name="view_network_log">View Network Log</string>
-    <string name="device_id">Device ID: 1213124</string>
+    <string name="device_id">DEVICE ID:</string>
     <string name="force_dark_mode">Force Dark Mode</string>
     <string name="enable_topads_notif">Enable TopAds Log on Notification</string>
     <string name="view_topads_log">View TopAds Log</string>

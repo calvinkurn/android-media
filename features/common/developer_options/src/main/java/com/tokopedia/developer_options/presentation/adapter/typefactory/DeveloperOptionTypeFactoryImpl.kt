@@ -28,6 +28,10 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: OpenScreenRecorderUiModel): Int = OpenScreenRecorderViewHolder.LAYOUT
     override fun type(uiModel: NetworkLogOnNotificationUiModel): Int = NetworkLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewNetworkLogUiModel): Int = ViewNetworkLogViewHolder.LAYOUT
+    override fun type(uiModel: DeviceIdUiModel): Int = DeviceIdViewHolder.LAYOUT
+    override fun type(uiModel: ForceDarkModeUiModel): Int = ForceDarkModeViewHolder.LAYOUT
+    override fun type(uiModel: TopAdsLogOnNotificationUiModel): Int = TopAdsLogOnNotificationViewHolder.LAYOUT
+    override fun type(uiModel: ViewTopAdsLogUiModel): Int = ViewTopAdsLogViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -40,6 +44,10 @@ class DeveloperOptionTypeFactoryImpl(
             OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view, openScreenRecorderListener)
             NetworkLogOnNotificationViewHolder.LAYOUT -> NetworkLogOnNotificationViewHolder(view, tickNetworkLogOnNotificationListener)
             ViewNetworkLogViewHolder.LAYOUT -> ViewNetworkLogViewHolder(view, viewNetworkLogListener)
+            DeviceIdViewHolder.LAYOUT -> DeviceIdViewHolder(view)
+            ForceDarkModeViewHolder.LAYOUT -> ForceDarkModeViewHolder(view)
+            TopAdsLogOnNotificationViewHolder.LAYOUT -> TopAdsLogOnNotificationViewHolder(view)
+            ViewTopAdsLogViewHolder.LAYOUT -> ViewTopAdsLogViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

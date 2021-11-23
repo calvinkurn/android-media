@@ -21,7 +21,11 @@ class DeveloperOptionAdapter(
         SendFirebaseCrashExceptionUiModel(context.getString(R.string.send_firebase_exception)),
         OpenScreenRecorderUiModel(context.getString(R.string.open_screen_recorder)),
         NetworkLogOnNotificationUiModel(context.getString(R.string.enable_network_log_on_notification)),
-        ViewNetworkLogUiModel(context.getString(R.string.view_network_log))
+        ViewNetworkLogUiModel(context.getString(R.string.view_network_log)),
+        DeviceIdUiModel(context.getString(R.string.device_id)),
+        ForceDarkModeUiModel(context.getString(R.string.force_dark_mode)),
+        TopAdsLogOnNotificationUiModel(context.getString(R.string.enable_topads_notif)),
+        ViewTopAdsLogUiModel(context.getString(R.string.view_topads_log))
     )
 
     fun searchItem(text: String) {
