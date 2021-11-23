@@ -6,6 +6,8 @@ import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAn
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalyticImpl
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.datastore.*
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountUpTimerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
@@ -105,4 +107,12 @@ abstract class PlayBroadcastBindModule {
     @PlayBroadcastScope
     @Binds
     abstract fun bindLogger(logger: PlayLoggerImpl): PlayLogger
+
+    /**
+     * Pusher
+     */
+
+    @PlayBroadcastScope
+    @Binds
+    abstract fun bindPlayLivePusherCountUpTimer(playLivePusherCountUpTimerImpl: PlayLivePusherCountUpTimerImpl): PlayLivePusherCountDownTimer
 }
