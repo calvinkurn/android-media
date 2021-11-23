@@ -332,6 +332,11 @@
     <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>
     <string name="title_current_cost">Biaya saat ini</string>
     <string name="title_new_fee">Biaya baru</string>
+    <string name="no_of_searches">Jumlah pencarian <![CDATA["<font color='#000000'><b>+%drb</b></font>]]>/bulan</string>
+    <string name="apply_fee">Terapkan Biaya (%d)</string>
+    <string name="add_keyword">Tambah Kata Kunci (%d)</string>
+    <string name="add_neg_keywords">Tambah Kata Kunci Negatif (%d)</string>
+
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->
     <string name="topads_dash_recom_daily_budget_title">Rekomendasi anggaran harian iklan</string>

@@ -9,7 +9,5 @@
 
     <dimen name="edit_icon_size">12dp</dimen>
     <dimen name="top_spacing">12dp</dimen>
-    <dimen name="arrow_left_spacing">6dp</dimen>
     <dimen name="edit_icon_left_spacing">10dp</dimen>
-    <dimen name="keyword_layout_divider_left_spacing">106dp</dimen>
 </resources>

@@ -407,4 +407,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             startActivityForResult(intent, AUTO_ADS_DISABLED)
         }
     }
+
+    fun bottomLayout()  = bottom
+    fun multiActionButton(): UnifyButton = multiActionBtn
 }

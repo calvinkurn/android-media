@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeyword
+import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightRecommKeywordsAdapter
 import kotlinx.android.synthetic.main.topads_insight_keywords_layout.view.*
 
@@ -16,7 +17,13 @@ class TopAdsInsightRecommKeywordsView(
     private val recommendedKeyword: RecommendedKeyword
 ) : ConstraintLayout(context) {
 
-    private val mAdapter by lazy { TopAdsInsightRecommKeywordsAdapter.createInstance(recommendedKeyword.keywordDetails) }
+    private var selectedItemCount = 0
+    private val mAdapter by lazy {
+        TopAdsInsightRecommKeywordsAdapter.createInstance(
+            recommendedKeyword.keywordDetails,
+            type
+        )
+    }
 
     init {
         inflate(context, layout, this)
@@ -35,12 +42,15 @@ class TopAdsInsightRecommKeywordsView(
                     DividerItemDecoration.VERTICAL
                 )
             )
+            mAdapter.itemSelectedListener = { item, isChecked ->
+                onItemSelected(item, isChecked)
+            }
         }
     }
 
     private fun initView() {
         when (type) {
-            TopAdsInsightConstants.RECOMM_KEYWORD -> {
+            TopAdsInsightConstants.BID_KEYWORD -> {
                 txtTitle.text = String.format(
                     resources.getString(R.string.topads_insight_recomm_keyword_title),
                     recommendedKeyword.keywordCount
@@ -73,10 +83,19 @@ class TopAdsInsightRecommKeywordsView(
         }
     }
 
+    private fun onItemSelected(item: RecommendedKeywordDetail, isChecked: Boolean) {
+        if (isChecked) selectedItemCount++ else selectedItemCount--
+        itemSelectedListener?.invoke(type, selectedItemCount)
+    }
+
+    var itemSelectedListener: ((Int, Int) -> Unit)? = null
+
     companion object {
         private val layout = R.layout.topads_insight_keywords_layout
-        fun createInstance(context: Context, type: Int,recommendedKeyword: RecommendedKeyword) =
-            TopAdsInsightRecommKeywordsView(context, type,recommendedKeyword)
+        fun createInstance(
+            context: Context, type: Int,
+            recommendedKeyword: RecommendedKeyword
+        ) = TopAdsInsightRecommKeywordsView(context, type, recommendedKeyword)
     }
 
 }

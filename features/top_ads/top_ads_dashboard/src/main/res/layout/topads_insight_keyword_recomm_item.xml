@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/topads_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingVertical="@dimen/spacing_lvl3">
@@ -34,9 +35,9 @@
         android:id="@+id/divider"
         android:layout_width="2dp"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/keyword_layout_divider_left_spacing"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
-        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintStart_toEndOf="@id/txtTitle"
         app:layout_constraintTop_toTopOf="@id/txtTitle" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -64,8 +65,36 @@
         app:typographyType="body_3"
         tools:text="Kemeja Pojos" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/searchIcon"
+        android:layout_width="@dimen/unify_space_12"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:srcCompat="@drawable/ic_search_icon" />
+
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtCurrentCostTitle"
+        android:id="@+id/txtNoOfSearches"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:layout_constraintBottom_toBottomOf="@id/searchIcon"
+        app:layout_constraintStart_toEndOf="@id/searchIcon"
+        app:layout_constraintTop_toTopOf="@id/searchIcon"
+        app:typographyType="body_2"
+        tools:text="Hii ther" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/subtitle_top_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="searchIcon" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtSubTitle1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
@@ -73,18 +102,18 @@
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:layout_constraintTop_toBottomOf="@id/subtitle_top_barrier"
         app:typographyType="body_3"
         tools:text="Biaya saat ini" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtCurrentCost"
+        android:id="@+id/txtSubTitle1Value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:textSize="@dimen/fontSize_lvl3"
-        app:layout_constraintStart_toStartOf="@id/txtCurrentCostTitle"
-        app:layout_constraintTop_toBottomOf="@id/txtCurrentCostTitle"
+        app:layout_constraintStart_toStartOf="@id/txtSubTitle1"
+        app:layout_constraintTop_toBottomOf="@id/txtSubTitle1"
         app:typographyType="body_3"
         tools:text="150/klik" />
 
@@ -92,36 +121,31 @@
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/arrow_left_spacing"
-        app:layout_constraintBottom_toBottomOf="@id/txtCurrentCost"
-        app:layout_constraintStart_toStartOf="@id/divider"
-        app:layout_constraintTop_toTopOf="@id/txtCurrentCostTitle"
+        app:layout_constraintBottom_toBottomOf="@id/txtSubTitle1Value"
+        app:layout_constraintEnd_toEndOf="@id/txtSubTitle2"
+        app:layout_constraintStart_toStartOf="@id/txtSubTitle1"
+        app:layout_constraintTop_toTopOf="@id/txtSubTitle1"
         app:srcCompat="@drawable/ic_arrow_right_grey" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtNewFeeTitle"
-        android:text="@string/title_new_fee"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/subtitle2_left_guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl6"
-        android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/fontSize_lvl2"
-        app:layout_constraintStart_toEndOf="@id/arrow"
-        app:layout_constraintTop_toBottomOf="@id/txtCurrentCostTitle"
-        app:layout_constraintTop_toTopOf="@id/txtCurrentCostTitle"
-        app:typographyType="body_3"
-        tools:text="Biya baru" />
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.6" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtNewFee"
+        android:id="@+id/txtSubTitle2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/fontSize_lvl3"
-        app:typographyType="body_2"
-        app:layout_constraintBottom_toBottomOf="@id/txtCurrentCost"
-        app:layout_constraintStart_toStartOf="@id/txtNewFeeTitle"
-        app:layout_constraintTop_toTopOf="@id/txtCurrentCost"
-        tools:text="../klik" />
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/title_new_fee"
+        android:textColor="@color/Unify_N700_68"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:layout_constraintStart_toEndOf="@id/subtitle2_left_guideline"
+        app:layout_constraintTop_toTopOf="@id/subtitle_top_barrier"
+        app:typographyType="body_3"
+        tools:text="Biya baru" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/btnEditFee"
@@ -129,42 +153,87 @@
         android:layout_height="@dimen/edit_icon_size"
         android:layout_marginStart="@dimen/edit_icon_left_spacing"
         android:tint="@color/black"
-        app:layout_constraintBottom_toBottomOf="@id/txtNewFee"
-        app:layout_constraintStart_toEndOf="@id/txtNewFee"
-        app:layout_constraintTop_toTopOf="@id/txtNewFee"
+        app:layout_constraintBottom_toBottomOf="@id/txtSubTitle2Value"
+        app:layout_constraintStart_toEndOf="@id/txtSubTitle2Value"
+        app:layout_constraintTop_toTopOf="@id/txtSubTitle2Value"
         app:srcCompat="@drawable/iconunify_edit" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtSubTitle2Value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintStart_toStartOf="@id/txtSubTitle2"
+        app:layout_constraintTop_toBottomOf="@id/txtSubTitle2"
+        app:typographyType="body_2"
+        tools:text="../klik" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtRecommendedBudget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:text="•Rekomendasi Rp350"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintStart_toStartOf="@id/txtSubTitle2Value"
+        app:layout_constraintTop_toBottomOf="@id/txtSubTitle2Value"
+        app:typographyType="body_3" />
+
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/edtNewFee"
+        android:id="@+id/edtBid"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:textSize="@dimen/fontSize_lvl3"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/txtNewFeeTitle"
-        app:layout_constraintBottom_toBottomOf="@id/txtCurrentCost"
+        app:layout_constraintStart_toStartOf="@id/txtSubTitle2"
+        app:layout_constraintTop_toTopOf="@id/txtSubTitle2"
         app:text_field_append_text="@string/topads_common_klik_"
         app:text_field_input_type="number"
-        app:text_field_prepend_text="Rp" />
+        app:text_field_prepend_text="Rp"
+        app:unify_text_field_message="Rekomendasi Rp350" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtFooter"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/top_spacing"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl8"
         android:background="@drawable/rounded_bg_unify_b100"
         android:paddingHorizontal="@dimen/spacing_lvl3"
         android:paddingVertical="@dimen/spacing_lvl2"
         android:textSize="@dimen/fontSize_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/txtCurrentCost"
+        app:layout_constraintTop_toBottomOf="@id/txtRecommendedBudget"
         app:typographyType="body_2"
         tools:text="Potensi tampil meningkat +500 kali/bulan" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/footerBarrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="txtSubTitle2Value,edtBid" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/feeGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="txtNewFee,btnEditFee" />
+        app:constraint_referenced_ids="txtSubTitle2Value,btnEditFee" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/newKeywordGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="arrow,txtSubTitle1,txtSubTitle1Value" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/searchGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="searchIcon,txtNoOfSearches" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
