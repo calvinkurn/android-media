@@ -67,4 +67,6 @@
 
     <string name="content_desc_label_image">Label</string>
     <string name="content_desc_label_arrow">Next</string>
+
+    <string name="pref_receive_shake_nav" translatable="false">notification_shake_shake</string>
 </resources>
