@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.variant.domain
 
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
@@ -15,7 +16,7 @@ class GetAllVariantUseCase @Inject constructor(
 ) : GraphqlUseCase<GetVariantCategoryCombinationResponse>(repository) {
 
     companion object {
-        private const val CACHE_EXPIRY_TIME = 10
+        private const val CACHE_EXPIRY_TIME = 1 // in days
         private const val PARAM_CATEGORY_ID = "categoryID"
         private const val PARAM_ALL_VARIANTS = "allVariants"
         private val query = String.format(
@@ -36,7 +37,7 @@ class GetAllVariantUseCase @Inject constructor(
 
     private fun createCacheStrategy(): GraphqlCacheStrategy {
         return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-            .setExpiryTime(CACHE_EXPIRY_TIME * 1000L)
+            .setExpiryTime(CACHE_EXPIRY_TIME * GraphqlConstant.ExpiryTimes.DAY.`val`())
             .setSessionIncluded(true)
             .build()
     }
