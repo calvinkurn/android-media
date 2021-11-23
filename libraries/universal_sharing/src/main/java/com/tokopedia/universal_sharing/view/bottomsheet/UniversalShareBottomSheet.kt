@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Telephony
+import android.text.Html
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -320,7 +321,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun showAffiliateCommission(affiliateEligibleCommission: EligibleCommission){
         clearLoader()
-        affiliateCommissionTextView?.text = affiliateEligibleCommission.amountFormatted
+        affiliateCommissionTextView?.text = Html.fromHtml(affiliateEligibleCommission.message)
         affiliateCommissionTextView?.visibility = View.VISIBLE
     }
 
