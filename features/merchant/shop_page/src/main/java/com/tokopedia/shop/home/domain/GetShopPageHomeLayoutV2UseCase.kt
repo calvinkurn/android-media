@@ -174,6 +174,10 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           url
                         }
                       }
+                      backgroundGradientColor {
+                        firstColor
+                        secondColor
+                      }
                     }
                   }
                 }
