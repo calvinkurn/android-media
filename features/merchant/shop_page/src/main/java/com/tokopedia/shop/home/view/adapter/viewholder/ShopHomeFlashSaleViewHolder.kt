@@ -1,5 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -68,7 +70,11 @@ class ShopHomeFlashSaleViewHolder(
         val productSize = flashSaleItem?.productList?.size ?: 0
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize)
-        setupFlashSaleBackgroundView(flashSaleItem?.productList ?: listOf())
+        setupFlashSaleBackgroundView(
+            productList = flashSaleItem?.productList.orEmpty(),
+            startBackgroundColor = flashSaleItem?.firstBackgroundColor.orEmpty(),
+            endBackgroundColor = flashSaleItem?.secondBackgroundColor.orEmpty()
+        )
         setupFlashSaleCountDownTimer(element)
         setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
@@ -121,7 +127,16 @@ class ShopHomeFlashSaleViewHolder(
         else ctaSeeAllView?.show()
     }
 
-    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>) {
+    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackgroundColor: String, endBackgroundColor: String) {
+        // set flash sale background color
+        val colors = intArrayOf(
+            Color.parseColor(startBackgroundColor),
+            Color.parseColor(endBackgroundColor)
+        )
+        val backgroundColor = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+        singleBackGroundView?.background = backgroundColor
+        doubleBackGroundView?.background = backgroundColor
+        multipleBackGroundView?.background = backgroundColor
         // reset background visibility
         singleBackGroundView?.hide()
         doubleBackGroundView?.hide()

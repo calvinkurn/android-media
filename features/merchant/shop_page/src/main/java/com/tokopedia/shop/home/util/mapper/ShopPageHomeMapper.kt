@@ -354,7 +354,9 @@ object ShopPageHomeMapper {
                 it.totalProduct,
                 it.totalProductWording,
                 mapCampaignFlashSaleListProduct(it.statusCampaign, it.listProduct),
-                false
+                false,
+                it.backgroundGradientColor.firstColor,
+                it.backgroundGradientColor.secondColor
             )
         }
     }
