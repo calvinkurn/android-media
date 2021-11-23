@@ -45,6 +45,10 @@ class WishlistV2ListItemViewHolder(
                 item.wishlistItem
             )
         }
+
+        binding.wishlistItem.setOnClickListener {
+            actionListener?.onProductItemClicked(item.wishlistItem.id)
+        }
     }
 
     private fun checkboxListener(wishlistItem: WishlistV2Response.Data.WishlistV2.Item): CompoundButton.OnCheckedChangeListener {

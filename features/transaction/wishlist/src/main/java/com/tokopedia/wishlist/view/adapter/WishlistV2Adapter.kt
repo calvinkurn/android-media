@@ -46,13 +46,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface ActionListener {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
-        fun onProductRecommendationClicked(productId: String)
-        fun onThreeDotsMenuClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
+        fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item)
         fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean)
         fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
         fun onCheckSimilarProduct(url: String)
         fun onResetFilter()
         fun onManageClicked(showCheckbox: Boolean)
+        fun onProductItemClicked(productId: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -104,7 +104,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             }
             LAYOUT_RECOMMENDATION_CAROUSEL -> {
                 val binding = WishlistV2RecommendationCarouselItemBinding.inflate(LayoutInflater.from(parent.context), null, false)
-                WishlistV2RecommendationCarouselViewHolder(binding)
+                WishlistV2RecommendationCarouselViewHolder(binding, actionListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

@@ -7,8 +7,10 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2RecommendationCarouselItemBinding
+import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
-class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2RecommendationCarouselItemBinding) :
+class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2RecommendationCarouselItemBinding,
+                                                 private val actionListener: WishlistV2Adapter.ActionListener?) :
     RecyclerView.ViewHolder(binding.root) {
         fun bind(element: WishlistV2TypeLayoutData) {
             if (element.dataObject is WishlistV2RecommendationDataModel) {
@@ -17,8 +19,8 @@ class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2
                     productCardModelList = convertIntoProductDataModel(data),
                     carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
                         override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            val wishlistDataModel = data.getOrNull(carouselProductCardPosition) ?: return
-
+                            // val wishlistDataModel = data.getOrNull(carouselProductCardPosition) ?: return
+                            actionListener?.onProductItemClicked(data.get(carouselProductCardPosition).productId.toString())
                         }
                     },
 //                    carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener{
@@ -66,6 +68,6 @@ class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2
                     )
                 }
             )
-        } ?: listOf()
+        }
     }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.dialog.DialogUnify
@@ -126,6 +127,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         const val DELETE_WISHLIST = "DELETE_WISHLIST"
         const val ATC_WISHLIST = "ADD_TO_CART"
         const val CTA_ATC = "Lihat"
+        const val CTA_RESET = "Reset"
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
 
         private const val topAdsPositionInPage = 4
@@ -250,7 +252,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         }
                     }
             )
-            var pageSource = ""
+            var pageSource: String
             val icons: IconBuilder
             if(activityWishlistV2 != PARAM_HOME) {
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
@@ -486,6 +488,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         var nameSelected = ""
 
         filterBottomSheet.setAdapter(filterBottomSheetAdapter)
+        filterBottomSheet.setAction(CTA_RESET) {
+            filterBottomSheet.dismiss()
+            doResetFilter()
+        }
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
             override fun onRadioButtonSelected(filterItem: WishlistV2Params.WishlistSortFilterParam) {
                 filterBottomSheet.dismiss()
@@ -502,9 +508,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
 
             override fun onSaveCheckboxSelection() {
-                val filterItem = WishlistV2Params.WishlistSortFilterParam(name = nameSelected, selected = listOptionIdSelected)
+                val filterSortItem = WishlistV2Params.WishlistSortFilterParam(name = nameSelected, selected = listOptionIdSelected)
                 val listSortFilter = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
-                listSortFilter.add(filterItem)
+                listSortFilter.add(filterSortItem)
 
                 paramWishlistV2.sortFilters = listSortFilter
                 filterBottomSheet.dismiss()
@@ -621,9 +627,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     }
 
-    override fun onProductRecommendationClicked(productId: String) {
+    override fun onProductItemClicked(productId: String) {
         activity?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_INFO, productId)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
             startActivity(intent)
         }
     }
@@ -643,9 +649,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             binding?.run {
                 containerDelete.visible()
                 deleteButton.apply {
-                    setText(getString(R.string.wishlist_v2_delete_text, listBulkDelete.size))
-                    setOnClickListener {
-                        showPopupBulkDeleteConfirmation(listBulkDelete)
+                    isEnabled = true
+                    if (listBulkDelete.size > 1) {
+                        text = getString(R.string.wishlist_v2_delete_text_counter, listBulkDelete.size)
+                        setOnClickListener {
+                            showPopupBulkDeleteConfirmation(listBulkDelete)
+                        }
+                    } else if (listBulkDelete.size == 1) {
+                        text = getString(R.string.wishlist_v2_delete_text)
+
+                        setOnClickListener {
+                            wishlistViewModel.deleteWishlistV2(listBulkDelete[0], userSession.userId)
+                        }
                     }
                 }
             }
@@ -673,6 +688,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onResetFilter() {
+        doResetFilter()
+    }
+
+    private fun doResetFilter() {
         binding?.run {
             wishlistSortFilter.run {
                 resetAllFilters()
@@ -686,6 +705,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     override fun onManageClicked(showCheckbox: Boolean) {
         if (showCheckbox) {
             wishlistV2Adapter.showCheckbox()
+            binding?.run {
+                containerDelete.visibility = View.VISIBLE
+                deleteButton.isEnabled = false
+            }
+
         } else {
             wishlistV2Adapter.hideCheckbox()
             binding?.containerDelete?.visibility = View.GONE

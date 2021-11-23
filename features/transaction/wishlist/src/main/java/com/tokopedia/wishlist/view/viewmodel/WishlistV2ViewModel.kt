@@ -241,6 +241,11 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
             val isButtonAtc = item.buttons.primaryButton.action == ATC_WISHLIST
 
+            val listBadge = arrayListOf<ProductCardModel.ShopBadge>()
+            item.badges.forEach { badgesItem ->
+                listBadge.add(ProductCardModel.ShopBadge(imageUrl = badgesItem.imageUrl))
+            }
+
             val productModel = ProductCardModel(
                     productImageUrl = item.imageUrl,
                     isWishlistVisible = true,
@@ -252,7 +257,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     hasSecondaryButton = true,
                     tambahKeranjangButton = isButtonAtc,
                     lihatBarangSerupaButton = !isButtonAtc,
-                    labelGroupList = listGroupLabel)
+                    labelGroupList = listGroupLabel,
+                    shopBadgeList = listBadge,
+                    ratingString = item.rating,
+                    discountPercentage = item.discountPercentageFmt)
             listItem.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
         }
         return listItem

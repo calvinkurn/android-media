@@ -19,7 +19,7 @@ class WishlistV2RecommendationItemViewHolder(private val binding: WishlistV2Reco
                 )
 
                 setOnClickListener {
-                    actionListener?.onProductRecommendationClicked(item.dataObject.productId.toString())
+                    actionListener?.onProductItemClicked(item.dataObject.productId.toString())
                 }
             }
         }
