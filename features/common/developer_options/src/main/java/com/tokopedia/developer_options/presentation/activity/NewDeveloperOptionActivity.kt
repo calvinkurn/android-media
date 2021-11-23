@@ -84,14 +84,14 @@ class NewDeveloperOptionActivity : BaseActivity() {
     private val adapter by lazy {
         DeveloperOptionAdapter(
             typeFactory = DeveloperOptionTypeFactoryImpl(
-                pdpDevListener = clickPdpDevBtn(this),
+                pdpDevListener = clickPdpDevBtn(),
                 accessTokenListener = clickAccessTokenBtn(),
                 systemNonSystemAppsListener = clickSystemNonSystemApps(),
-                resetOnBoardingListener = clickResetOnBoarding(this),
+                resetOnBoardingListener = clickResetOnBoarding(),
                 forceCrashListener = clickForceCrash(),
-                sendFirebaseCrashExceptionListener = clickSendFirebaseCrashException(this),
-                openScreenRecorderListener = clickOpenScreenRecorder(this),
-                tickNetworkLogOnNotificationListener = tickNetworkLogOnNotification(this),
+                sendFirebaseCrashExceptionListener = clickSendFirebaseCrashException(),
+                openScreenRecorderListener = clickOpenScreenRecorder(),
+                tickNetworkLogOnNotificationListener = tickNetworkLogOnNotification(),
                 viewNetworkLogListener = clickViewNetworkLog()
             ),
             differ = DeveloperOptionDiffer(),
@@ -228,9 +228,9 @@ class NewDeveloperOptionActivity : BaseActivity() {
         TranslatorManager.Companion.init(this.application, API_KEY_TRANSLATOR)
     }
 
-    private fun clickPdpDevBtn(context: Context) = object : PdpDevViewHolder.PdpDevListener {
+    private fun clickPdpDevBtn() = object : PdpDevViewHolder.PdpDevListener {
         override fun onClickPdpDevBtn() {
-            val intent = Intent(context, ProductDetailDevActivity::class.java)
+            val intent = Intent(this@NewDeveloperOptionActivity, ProductDetailDevActivity::class.java)
             startActivity(intent)
         }
     }
@@ -251,13 +251,13 @@ class NewDeveloperOptionActivity : BaseActivity() {
         override fun onClickNonSystemAppsBtn() = showToastAndCopySystemOrNonSystemApps(false)
     }
 
-    private fun clickResetOnBoarding(context: Context) = object : ResetOnBoardingViewHolder.ResetOnBoardingListener {
+    private fun clickResetOnBoarding() = object : ResetOnBoardingViewHolder.ResetOnBoardingListener {
         override fun onClickOnBoardingBtn() {
             userSession?.isFirstTimeUser = true
             val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
             val editor = sharedPref.edit().clear()
             editor.apply()
-            Toast.makeText(context,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@NewDeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -265,24 +265,24 @@ class NewDeveloperOptionActivity : BaseActivity() {
         override fun onClickForceCrashBtn() = throw DeveloperOptionException("Throw Runtime Exception")
     }
 
-    private fun clickSendFirebaseCrashException(context: Context) = object : SendFirebaseCrashExceptionViewHolder.SendFirebaseCrashListener {
+    private fun clickSendFirebaseCrashException() = object : SendFirebaseCrashExceptionViewHolder.SendFirebaseCrashListener {
         override fun onClickSendFirebaseCrashBtn(message: String) {
             if (message.isBlank()) {
-                Toast.makeText(context, "Crash message should not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@NewDeveloperOptionActivity, "Crash message should not be empty", Toast.LENGTH_SHORT).show()
             } else {
                 FirebaseCrashlytics.getInstance().recordException(DeveloperOptionException(message))
             }
         }
     }
 
-    private fun clickOpenScreenRecorder(context: Context) = object : OpenScreenRecorderViewHolder.OpenScreenRecorderListener {
+    private fun clickOpenScreenRecorder() = object : OpenScreenRecorderViewHolder.OpenScreenRecorderListener {
         override fun onClickScreenRecorderBtn() {
-            RouteManager.route(context, ApplinkConstInternalGlobal.SCREEN_RECORDER)
+            RouteManager.route(this@NewDeveloperOptionActivity, ApplinkConstInternalGlobal.SCREEN_RECORDER)
         }
     }
 
-    private fun tickNetworkLogOnNotification(context: Context) = object : NetworkLogOnNotificationViewHolder.NetworkLogOnNotificationListener {
-        val sharedPref = context.getSharedPreferences(DevOptConfig.CHUCK_ENABLED, MODE_PRIVATE)
+    private fun tickNetworkLogOnNotification() = object : NetworkLogOnNotificationViewHolder.NetworkLogOnNotificationListener {
+        val sharedPref = this@NewDeveloperOptionActivity.getSharedPreferences(DevOptConfig.CHUCK_ENABLED, MODE_PRIVATE)
 
         override fun onTickNetworkLogOnNotificationCheckbox(state: Boolean) {
             val editor = sharedPref.edit().putBoolean(
@@ -297,7 +297,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
         }
     }
 
-    private fun clickViewNetworkLog() = object : ViewNetworkLogViewHolder.ViewNetworkLogListener{
+    private fun clickViewNetworkLog() = object : ViewNetworkLogViewHolder.ViewNetworkLogListener {
         override fun onClickNetworkLogBtn() {
             startActivity(getLaunchIntent(applicationContext, SCREEN_HTTP))
         }
