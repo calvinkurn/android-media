@@ -8,6 +8,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDriverInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
@@ -22,7 +23,8 @@ class BuyerOrderDetailTypeFactoryStub(
     digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     productViewListener: ProductViewHolder.ProductViewListener,
-    navigator: BuyerOrderDetailNavigator
+    navigator: BuyerOrderDetailNavigator,
+    buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BuyerOrderDetailTypeFactory(
     productBundlingViewListener,
     tickerViewHolderListener,
@@ -30,7 +32,8 @@ class BuyerOrderDetailTypeFactoryStub(
     digitalRecommendationListener,
     courierInfoViewHolderListener,
     productViewListener,
-    navigator
+    navigator,
+    buyerOrderDetailBindRecomWidgetListener
 ) {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
