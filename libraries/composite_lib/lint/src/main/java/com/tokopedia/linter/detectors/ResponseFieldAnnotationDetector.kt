@@ -48,12 +48,10 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
     override fun createUastHandler(context: JavaContext): UElementHandler {
         return object : UElementHandler() {
             override fun visitParameter(node: UParameter) {
-                val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
-                    ?.containsAll(listOf("equals", "hashCode")) == true
                 val serializedNameAnnotation = node.findAnnotation(SERIALIZED_NAME_ANNOTATION)
                 val exposeAnnotation = node.findAnnotation(EXPOSE_ANNOTATION)
 
-                if(shouldCheckAnnotation(context, node) && isDataClass &&
+                if(shouldCheckAnnotation(context, node) &&
                     (serializedNameAnnotation == null || exposeAnnotation == null)) {
                     reportError(context, node)
                 }
@@ -64,8 +62,11 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
     private fun shouldCheckAnnotation(context: JavaContext, node: UParameter): Boolean {
         val fileName = context.file.name
         val filePath = context.file.path
+        val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
+            ?.containsAll(listOf("equals", "hashCode")) == true
         return (fileName.contains(RESPONSE_KEYWORD) || fileName.contains(PARAM_KEYWORD) ||
-                filePath.contains(DOMAIN_MODEL_PATH)) && node.uastParent is KotlinConstructorUMethod
+                filePath.contains(DOMAIN_MODEL_PATH)) && node.uastParent is KotlinConstructorUMethod &&
+                isDataClass
     }
 
     private fun reportError(context: JavaContext, node: UElement) {
