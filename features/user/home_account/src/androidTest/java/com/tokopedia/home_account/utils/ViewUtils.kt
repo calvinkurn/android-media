@@ -125,7 +125,6 @@ object ViewUtils {
             }
 
             override fun matchesSafely(item: CommonViewHolder): Boolean {
-                println("cek item ${item.getTitle().equals(title, ignoreCase = true)} ${item.getTitle()}")
                 return item.getTitle().equals(title, ignoreCase = true)
             }
 
