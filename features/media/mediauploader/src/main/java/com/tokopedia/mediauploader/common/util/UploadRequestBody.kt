@@ -20,13 +20,13 @@ class UploadRequestBody(
     override fun contentLength(): Long = file.length()
 
     override fun writeTo(sink: BufferedSink) {
+        val handler = Handler(Looper.getMainLooper())
         val fileLength = file.length()
         val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
         val inputStream = FileInputStream(file)
         var uploaded = 0L
 
         inputStream.use { stream ->
-            val handler = Handler(Looper.getMainLooper())
             var read = 0
             while (read != -1) {
                 handler.post(ProgressUpdater(uploaded, fileLength, uploader))
