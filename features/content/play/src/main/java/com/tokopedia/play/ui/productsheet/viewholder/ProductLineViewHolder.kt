@@ -1,9 +1,9 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
-import android.widget.ImageView
-import androidx.core.graphics.drawable.DrawableCompat
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.view.type.OutOfStock
@@ -17,10 +17,10 @@ import com.tokopedia.unifycomponents.UnifyButton
 class ProductLineViewHolder(itemView: View, private val listener: Listener) : ProductBasicViewHolder(itemView, listener) {
 
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
-    private val ivProductAtc: ImageView = itemView.findViewById(R.id.iv_product_atc)
+    private val ivProductAtc: UnifyButton = itemView.findViewById(R.id.iv_product_atc)
 
     init {
-        ivProductAtc.drawable.mutate()
+        ivProductAtc.refreshDrawableState()
     }
 
     override fun bind(item: PlayProductUiModel.Product) {
@@ -30,15 +30,16 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
                 btnProductBuy.isEnabled = false
                 ivProductAtc.isEnabled = false
                 btnProductBuy.text = getString(R.string.play_product_empty)
-
-                DrawableCompat.setTint(ivProductAtc.drawable, MethodChecker.getColor(itemView.context, R.color.play_dms_atc_image_disabled))
             }
+
             is StockAvailable -> {
                 btnProductBuy.isEnabled = true
                 ivProductAtc.isEnabled = true
                 btnProductBuy.text = getString(R.string.play_product_buy)
-
-                DrawableCompat.setTintList(ivProductAtc.drawable, null)
+                ivProductAtc.text = getString(R.string.play_product_atc)
+                ivProductAtc.setDrawable(
+                    getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                )
             }
         }
 

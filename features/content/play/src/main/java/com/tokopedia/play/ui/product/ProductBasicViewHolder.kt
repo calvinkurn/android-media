@@ -48,13 +48,15 @@ open class ProductBasicViewHolder(
 
         when (item.price) {
             is DiscountedPrice -> {
-                llProductDiscount.show()
+                tvProductDiscount.show()
+                tvOriginalPrice.show()
                 tvProductDiscount.text = itemView.context.getString(R.string.play_discount_percent, item.price.discountPercent)
                 tvOriginalPrice.text = item.price.originalPrice
                 tvCurrentPrice.text = item.price.discountedPrice
             }
             is OriginalPrice -> {
-                llProductDiscount.hide()
+                tvProductDiscount.hide()
+                tvOriginalPrice.hide()
                 tvCurrentPrice.text = item.price.price
             }
         }
