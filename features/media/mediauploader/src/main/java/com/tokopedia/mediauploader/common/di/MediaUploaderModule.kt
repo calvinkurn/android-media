@@ -12,6 +12,8 @@ import com.tokopedia.mediauploader.video.LargeUploaderManager
 import com.tokopedia.mediauploader.video.SimpleUploaderManager
 import com.tokopedia.mediauploader.video.VideoUploaderManager
 import com.tokopedia.mediauploader.video.data.VideoUploadServices
+import com.tokopedia.mediauploader.video.data.internal.LargeUploadState
+import com.tokopedia.mediauploader.video.data.internal.LargeUploadStateHandler
 import com.tokopedia.mediauploader.video.domain.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -104,6 +106,14 @@ class MediaUploaderModule {
     }
 
     // --- large video ---
+
+    @Provides
+    @MediaUploaderQualifier
+    fun provideLargeUploadStateHandler(
+        @ApplicationContext context: Context
+    ): LargeUploadState {
+        return LargeUploadStateHandler(context)
+    }
 
     @Provides
     @MediaUploaderQualifier
