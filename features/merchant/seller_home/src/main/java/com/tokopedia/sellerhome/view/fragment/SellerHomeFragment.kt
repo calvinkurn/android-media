@@ -1664,7 +1664,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
-        diffUtilResult.dispatchUpdatesTo(adapter)
+        recyclerView?.post {
+            diffUtilResult.dispatchUpdatesTo(adapter)
+        }
     }
 
     private fun checkLoadingWidgets() {
