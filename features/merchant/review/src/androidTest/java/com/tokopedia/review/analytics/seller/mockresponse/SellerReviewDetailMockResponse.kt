@@ -1,4 +1,4 @@
-package com.tokopedia.review.analytics.seller
+package com.tokopedia.review.analytics.seller.mockresponse
 
 import android.content.Context
 import com.tokopedia.review.test.R
