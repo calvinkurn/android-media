@@ -3,7 +3,7 @@ package com.tokopedia.mediauploader
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.work.WorkInfo
+import com.tokopedia.mediauploader.common.state.UploadResult
 
 class MediaUploaderViewModel : ViewModel() {
 
@@ -17,10 +17,14 @@ class MediaUploaderViewModel : ViewModel() {
     companion object {
         sealed class UploadState {
             object Idle: UploadState()
-            object Uploading: UploadState()
+            data class Uploading(
+                val withWorker: Boolean
+            ): UploadState()
             object Stopped: UploadState()
             object Aborted: UploadState()
-            object Finished: UploadState()
+            data class Finished(
+                val result: UploadResult
+            ): UploadState()
         }
     }
 

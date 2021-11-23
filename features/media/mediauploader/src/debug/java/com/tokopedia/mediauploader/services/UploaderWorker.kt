@@ -1,9 +1,6 @@
 package com.tokopedia.mediauploader.services
 
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.work.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.mediauploader.UploaderUseCase
@@ -30,24 +27,13 @@ class UploaderWorker(
     @Inject lateinit var lazyNotificationManager: Lazy<UploadMediaNotificationManager>
     private val notificationManager: UploadMediaNotificationManager get() = lazyNotificationManager.get()
 
-    /*
-    * because there are multiple entries in db's work-manager,
-    * we can preventing doWork called a method multiple times
-    * with this flag.
-    * */
-    private var hasProgressLoader = false
-
     init {
         initInjector()
     }
 
     override suspend fun doWork(): Result {
-        trackProgressLoader()
-
-        notificationManager.setId(getNotificationId())
-        notificationManager.onStart()
-
         return try {
+            trackProgressLoader()
             when (val result = upload()) {
                 is UploadResult.Success -> onSuccessUpload(result)
                 is UploadResult.Error -> onFailedUpload()
@@ -63,8 +49,6 @@ class UploaderWorker(
             getFilePath(),
             isSupportTranscode()
         )
-
-        Log.d("MediaUploaderx", uploadParams.paramsAllValueInString.toString())
 
         uploaderUseCase(uploadParams)
     }
@@ -85,14 +69,11 @@ class UploaderWorker(
     }
 
     private fun trackProgressLoader() {
-        if (hasProgressLoader) return
+        notificationManager.setId(getNotificationId())
+        notificationManager.onStart()
 
         uploaderUseCase.trackProgress { progress ->
-            Handler(Looper.getMainLooper()).post {
-                Log.d("MediaUploaderx", progress.toString())
-                hasProgressLoader = true
-                notificationManager.onProgress(progress)
-            }
+            notificationManager.onProgress(progress)
         }
     }
 
@@ -132,8 +113,8 @@ class UploaderWorker(
         private const val PARAM_FILE_PATH = "file_path"
 
         // output result
-        private const val RESULT_UPLOAD_ID = "upload_id"
-        private const val RESULT_VIDEO_URL = "video_url"
+        const val RESULT_UPLOAD_ID = "upload_id"
+        const val RESULT_VIDEO_URL = "video_url"
 
         private fun createWorkRequest(
             sourceId: String,
@@ -186,6 +167,12 @@ class UploaderWorker(
             WorkManager
                 .getInstance(context.applicationContext)
                 .cancelUniqueWork(UNIQUE_WORK_NAME)
+        }
+
+        fun pruneWork(context: Context) {
+            WorkManager
+                .getInstance(context.applicationContext)
+                .pruneWork()
         }
     }
 

@@ -5,11 +5,14 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -21,11 +24,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.mediauploader.MediaUploaderViewModel.Companion.UploadState
-import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.common.util.mbToBytes
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
 import com.tokopedia.mediauploader.di.MediaUploaderTestModule
+import com.tokopedia.mediauploader.services.UploaderWorker
+import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_UPLOAD_ID
+import com.tokopedia.mediauploader.services.UploaderWorker.Companion.RESULT_VIDEO_URL
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
@@ -54,6 +59,9 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private var mediaFilePath = ""
     private var isUploadImage = false
     private var isVideoTranscodeSupported = true
+    private var isLargeUpload = false
+
+    private var isAborted = false
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
@@ -79,21 +87,38 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
         btnUpload.setOnClickListener {
             progressBar.setValue(0, true)
-            viewModel.setUploadingStatus(UploadState.Uploading)
-            mediaUploader()
+            showPickUploadPopUpMenu()
         }
+
+        abortButtonClicked()
     }
 
     private fun initObservable() {
         viewModel.uploading.observe(this, { status ->
             when (status) {
                 is UploadState.Idle -> stateLargeUploadIdle()
-                is UploadState.Uploading -> stateLargeUploading()
+                is UploadState.Uploading -> stateLargeUploading(status.withWorker)
                 is UploadState.Stopped -> stateLargeUploadStopped()
                 is UploadState.Aborted -> stateLargeUploadAborted()
-                is UploadState.Finished -> stateLargeUploadFinished()
+                is UploadState.Finished -> stateLargeUploadFinished(status.result)
             }
         })
+
+        WorkManager
+            .getInstance(applicationContext)
+            .getWorkInfosForUniqueWorkLiveData(UploaderWorker.UNIQUE_WORK_NAME)
+            .observe(this, {
+                it.firstOrNull()?.let { info ->
+                    if (info.state == WorkInfo.State.SUCCEEDED) {
+                        viewModel.setUploadingStatus(UploadState.Finished(UploadResult.Success(
+                            videoUrl = info.outputData.getString(RESULT_VIDEO_URL)?: "",
+                            uploadId = info.outputData.getString(RESULT_UPLOAD_ID)?: ""
+                        )))
+
+                        UploaderWorker.pruneWork(applicationContext)
+                    }
+                }
+            })
     }
 
     private fun stateLargeUploadIdle() {
@@ -106,8 +131,14 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         progressBar.setValue(0, true)
     }
 
-    private fun stateLargeUploading() {
-        appendInfo("\nuploading...\n")
+    private fun stateLargeUploading(withWorker: Boolean) {
+        if (withWorker) {
+            appendInfo("\nthe uploader move to push notification.\n")
+        } else {
+            appendInfo("\nuploading...\n")
+            btnAbort.show()
+        }
+
         btnUpload.text = "Uploading..."
 
         // hide pick-up and show remove button
@@ -116,7 +147,6 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
 
         // disabled upload button and change caption
         btnUpload.isEnabled = false
-        btnAbort.show()
     }
 
     private fun stateLargeUploadStopped() {
@@ -140,76 +170,98 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         btnAbort.hide()
     }
 
-    private fun stateLargeUploadFinished() {
+    private fun stateLargeUploadFinished(result: UploadResult) {
         appendInfo("\nuploaded\n")
         edtUrl.show()
 
         btnUpload.text = "Upload"
         btnUpload.isEnabled = false
         btnAbort.hide()
+
+        if (result is UploadResult.Success) {
+            if (isUploadImage) {
+                appendInfo("${result.uploadId}\n")
+                edtUrl.setText(result.uploadId)
+            } else {
+                appendInfo("${result.videoUrl}\n")
+                edtUrl.setText(result.videoUrl)
+            }
+        }
     }
 
     private fun abortButtonClicked() {
-        if (!isUploadImage) {
-            progressBar.setValue(0, true)
-            btnUpload.isEnabled = false
-            btnAbort.show()
-
-            btnAbort.setOnClickListener {
+        btnAbort.setOnClickListener {
+            if (!isUploadImage && isLargeUpload) {
+                isAborted = true
                 viewModel.setUploadingStatus(UploadState.Aborted)
+
                 launch {
-                    uploaderUseCase.abortUpload {
-                        coroutineContext.cancelChildren()
-                        btnAbort.hide()
-                    }
+                    uploaderUseCase.abortUpload()
                 }
+
+                coroutineContext.cancelChildren()
+                btnAbort.hide()
+            } else {
+                Toast.makeText(
+                    applicationContext,
+                    "abort only support on large upload",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
     @SuppressLint("LogNotTimber")
-    private fun mediaUploader() {
+    private fun mediaUploader(withWorker: Boolean) {
         if (mediaFilePath.isEmpty()) return
 
-        abortButtonClicked()
+        btnUpload.isEnabled = false
 
-        val param = uploaderUseCase.createParams(
-            sourceId = if (isUploadImage) {
-                "tuOYCg" // sourceId for image upload
-            } else {
-                "VsrJDL" // sourceId for video upload (simple and large)
-            },
-            filePath = File(mediaFilePath),
-            withTranscode = isVideoTranscodeSupported
-        )
-
-        uploaderUseCase.trackProgress { progress ->
-            progressBar.setValue(progress, true)
+        val sourceId = if (isUploadImage) {
+            "tuOYCg" // sourceId for image upload
+        } else {
+            "VsrJDL" // sourceId for video upload (simple and large)
         }
 
-        launch {
-            val result = uploaderUseCase(param)
+        if (!withWorker) {
+            val param = uploaderUseCase.createParams(
+                sourceId = sourceId,
+                filePath = File(mediaFilePath),
+                withTranscode = isVideoTranscodeSupported
+            )
 
-            withContext(Dispatchers.Main) {
-                btnAbort.hide()
+            uploaderUseCase.trackProgress { progress ->
+                progressBar.setValue(progress, true)
+            }
 
-                when(result) {
-                    is UploadResult.Success -> {
-                        viewModel.setUploadingStatus(UploadState.Finished)
-                        if (isUploadImage) {
-                            appendInfo("${result.uploadId}\n")
-                            edtUrl.setText(result.uploadId)
-                        } else {
-                            appendInfo("${result.videoUrl}\n")
-                            edtUrl.setText(result.videoUrl)
+            launch {
+                val result = uploaderUseCase(param)
+
+                withContext(Dispatchers.Main) {
+                    btnAbort.hide()
+
+                    when(result) {
+                        is UploadResult.Success -> {
+                            viewModel.setUploadingStatus(UploadState.Finished(result))
                         }
-                    }
-                    is UploadResult.Error -> {
-                        viewModel.setUploadingStatus(UploadState.Stopped)
-                        appendInfo("${result.message}\n")
+                        is UploadResult.Error -> {
+                            if (!isAborted) {
+                                viewModel.setUploadingStatus(UploadState.Stopped)
+                                appendInfo("${result.message}\n")
+                            } else {
+                                isAborted = false
+                            }
+                        }
                     }
                 }
             }
+        } else {
+            UploaderWorker.createChainedWorkRequests(
+                context = applicationContext,
+                sourceId = sourceId,
+                filePath = mediaFilePath,
+                isSupportTranscode = isVideoTranscodeSupported
+            )
         }
     }
 
@@ -226,7 +278,7 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     }
 
     private fun appendInfo(text: String) {
-        txtInfo.text = txtInfo.text.toString() + text
+        txtInfo.append(text)
     }
 
     @SuppressLint("SetTextI18n")
@@ -234,9 +286,17 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         val sourceType = if (isUploadImage) "image" else "video"
 
         val sourceUpload = when {
-            isUploadImage -> "image-uploader"
-            file.length() >= 10.mbToBytes() -> "large-uploader"
-            else -> "simple-uploader"
+            isUploadImage -> {
+                "image-uploader"
+            }
+            file.length() >= 10.mbToBytes() -> {
+                isLargeUpload = true
+                "large-uploader"
+            }
+            else -> {
+                isLargeUpload = false
+                "simple-uploader"
+            }
         }
 
         txtInfo.text = """
@@ -273,6 +333,25 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         }.show()
     }
 
+    private fun showPickUploadPopUpMenu() {
+        PopupMenu(applicationContext, btnUpload).apply {
+            menuInflater.inflate(R.menu.menu_pick_upload, this.menu)
+            setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.menu_normal -> {
+                        viewModel.setUploadingStatus(UploadState.Uploading(false))
+                        mediaUploader(false)
+                    }
+                    R.id.menu_worker -> {
+                        viewModel.setUploadingStatus(UploadState.Uploading(true))
+                        mediaUploader(true)
+                    }
+                }
+                true
+            }
+        }.show()
+    }
+
     private fun pickImageToUpload() {
         val builder = ImagePickerBuilder.getOriginalImageBuilder(this)
             .withSimpleMultipleSelection(maxPick = 1)
@@ -300,7 +379,6 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private fun initInjector() {
         DaggerMediaUploaderTestComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .mediaUploaderModule(MediaUploaderModule())
             .mediaUploaderTestModule(MediaUploaderTestModule(applicationContext))
             .build()
             .inject(this)

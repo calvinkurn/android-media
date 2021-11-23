@@ -10,12 +10,7 @@ import dagger.Component
 
 @MediaUploaderTestScope
 @Component(
-    modules = [
-        MediaUploaderTestModule::class,
-        MediaUploaderModule::class,
-        MediaUploaderNetworkModule::class,
-        NetworkModule::class
-    ],
+    modules = [MediaUploaderTestModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface MediaUploaderTestComponent {

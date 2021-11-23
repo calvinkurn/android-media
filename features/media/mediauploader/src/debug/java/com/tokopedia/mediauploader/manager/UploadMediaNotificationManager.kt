@@ -1,8 +1,9 @@
 package com.tokopedia.mediauploader.manager
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import java.util.*
@@ -19,17 +20,27 @@ class UploadMediaNotificationManager @Inject constructor(
     private var notificationId: Int = Random().nextInt()
 
     private val statusBarMAIcon = com.tokopedia.resources.common.R.drawable.ic_status_bar_notif_customerapp
-    private val mainAppMAIcon = com.tokopedia.resources.common.R.drawable.ic_big_notif_customerapp
 
     private val notificationBuilder = NotificationCompat
         .Builder(context, CHANNEL_GENERAL)
         .apply {
             setSmallIcon(statusBarMAIcon)
-            setLargeIcon(BitmapFactory.decodeResource(context.resources, mainAppMAIcon))
             setGroup(NOTIFICATION_GROUP)
             setOnlyAlertOnce(true)
             priority = NotificationCompat.PRIORITY_MAX
         }
+
+    init {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(
+                NotificationChannel(
+                    CHANNEL_GENERAL,
+                    "Upload Worker Test",
+                    NotificationManager.IMPORTANCE_HIGH
+                )
+            )
+        }
+    }
 
     fun onStart() {
         val notification = notificationBuilder
