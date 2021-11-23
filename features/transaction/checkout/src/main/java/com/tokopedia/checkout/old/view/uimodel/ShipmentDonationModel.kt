@@ -2,7 +2,7 @@ package com.tokopedia.checkout.old.view.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.checkout.old.domain.model.cartshipmentform.Donation
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ShipmentDonationModel(
