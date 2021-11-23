@@ -77,4 +77,8 @@ class ProductProfile {
     @SerializedName("parent_id")
     @Expose
     var parentId: String = "0"
+    // TODO: replace with actual
+    @SerializedName("is_upcoming_campaign")
+    @Expose
+    var isUpcomingCampaign: Boolean = false
 }

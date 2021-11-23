@@ -69,6 +69,7 @@ open class ProductAttachmentUiModel protected constructor(
     val stringBlastId: String get() = blastId.toString()
     var campaignId: Long = 0
     var isFulfillment: Boolean = false
+    var isUpcomingCampaign: Boolean = false
     var urlTokocabang: String = ""
     var parentId: String = "0"
 
@@ -118,6 +119,7 @@ open class ProductAttachmentUiModel protected constructor(
             }
             this.isLoading = false
             parentId = attribute.productProfile.parentId
+            isUpcomingCampaign = attribute.productProfile.isUpcomingCampaign
         }
     }
 
