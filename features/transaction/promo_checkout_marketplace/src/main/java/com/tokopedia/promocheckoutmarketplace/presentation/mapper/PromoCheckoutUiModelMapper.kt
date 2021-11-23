@@ -101,25 +101,25 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, parentEnabled: Boolean, selectedPromo: List<String>, index: Int = 0): PromoListItemUiModel {
+    fun mapPromoListItemUiModel(couponItem: Coupon,
+                                couponSubSection: SubSection,
+                                headerIdentifierId: Int,
+                                selectedPromo: List<String>,
+                                index: Int = 0): PromoListItemUiModel {
         return PromoListItemUiModel(
                 id = index.toString(),
                 uiData = PromoListItemUiModel.UiData().apply {
                     uniqueId = couponItem.uniqueId
                     shopId = couponItem.shopId.toInt()
                     title = couponItem.title
-                    subTitle = couponItem.expiryInfo
+                    expiryInfo = couponItem.expiryInfo
                     benefitAmount = couponItem.benefitAmount
                     imageResourceUrls = couponItem.tagImageUrls
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
                     couponAppLink = couponItem.couponAppLink
                     currencyDetailStr = couponItem.currencyDetailStr
-                    coachMark = PromoListItemUiModel.UiCoachmarkData(
-                            isShown = couponItem.coachMark.isShown,
-                            title = couponItem.coachMark.title,
-                            content = couponItem.coachMark.content
-                    )
+                    coachMark = couponItem.coachMark
                     val clashingInfoMap = HashMap<String, String>()
                     if (couponItem.clashingInfos.isNotEmpty()) {
                         couponItem.clashingInfos.forEach {
@@ -142,25 +142,30 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         tmpErrorMessage.append(couponItem.message)
                     }
                     errorMessage = if (tmpErrorMessage.isNotBlank()) tmpErrorMessage.toString() else ""
+                    promoInfos = couponItem.promoInfos
+                    remainingPromoCount = couponSubSection.coupons.filter {
+                        it.groupId == couponItem.groupId
+                    }.size
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-                    isParentEnabled = parentEnabled
+                    isParentEnabled = couponSubSection.isEnabled
                     isSelected = couponItem.isSelected
                     isAttempted = couponItem.isAttempted
                     isCausingOtherPromoClash = false
+                    isHighlighted = couponItem.isHighlighted
                 }
         )
     }
 
     fun mapErrorState(errorPage: ErrorPage): PromoErrorStateUiModel {
         return PromoErrorStateUiModel(
-            uiData = PromoErrorStateUiModel.UiData().apply {
-                imageUrl = errorPage.img
-                title = errorPage.title
-                description = errorPage.desc
-                buttonText = errorPage.button.text
-                buttonDestination = errorPage.button.destination
-            }
+                uiData = PromoErrorStateUiModel.UiData().apply {
+                    imageUrl = errorPage.img
+                    title = errorPage.title
+                    description = errorPage.desc
+                    buttonText = errorPage.button.text
+                    buttonDestination = errorPage.button.destination
+                }
         )
     }
 

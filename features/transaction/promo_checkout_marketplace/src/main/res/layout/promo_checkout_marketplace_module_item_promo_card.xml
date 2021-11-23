@@ -14,7 +14,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:orientation="vertical"
-        app:card_background_color="#ECFEF4"
+        app:card_background_color="@color/Unify_GN50"
         app:card_type="border_active"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -111,54 +111,14 @@
                 app:typographyWeight="bold"
                 tools:text="HHBSFDUJKSBS" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/image_payment_rules"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_promo_code_info"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"
-                tools:srcCompat="@drawable/ic_action_x" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_payment_rule"
+            <LinearLayout
+                android:id="@+id/container_promo_info_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:textColor="@color/Unify_N700_68"
-                app:layout_constraintBottom_toBottomOf="@+id/image_payment_rules"
-                app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
-                app:layout_constraintStart_toEndOf="@+id/image_payment_rules"
-                app:layout_constraintTop_toTopOf="@+id/image_payment_rules"
-                app:typographyType="body_3"
-                tools:text="Khusus pembayaran GoPay" />
-
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/image_logistic_rules"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toStartOf="@+id/imaginary_view"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_payment_rules"
-                app:unify_image_corner_radius="0"
-                app:unify_image_type="rect"
-                tools:srcCompat="@drawable/ic_action_x" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/text_logistic_rule"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:textColor="@color/Unify_N700_68"
-                app:layout_constraintBottom_toBottomOf="@+id/image_logistic_rules"
-                app:layout_constraintStart_toEndOf="@+id/image_logistic_rules"
-                app:layout_constraintTop_toTopOf="@+id/image_logistic_rules"
-                app:typographyType="body_3"
-                tools:text="Khusus pengiriman GoSend" />
+                app:layout_constraintTop_toBottomOf="@+id/text_promo_code_info" />
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/container_time_validity"
@@ -168,7 +128,7 @@
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_logistic_rules">
+                app:layout_constraintTop_toBottomOf="@+id/container_promo_infos">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_time_validity"

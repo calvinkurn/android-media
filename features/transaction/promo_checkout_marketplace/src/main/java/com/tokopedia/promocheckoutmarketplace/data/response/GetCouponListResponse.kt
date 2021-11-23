@@ -217,7 +217,13 @@ data class PromoInfo(
         val title: String = "",
         @SerializedName("icon")
         val icon: String = ""
-)
+) {
+    companion object {
+        const val TYPE_TOP_BANNER = "top_banner"
+        const val TYPE_COUPON_INFO = "coupon_info"
+        const val TYPE_BOTTOM_BANNER = "bottom_banner"
+    }
+}
 
 data class ClashingInfo(
         @SerializedName("code")
