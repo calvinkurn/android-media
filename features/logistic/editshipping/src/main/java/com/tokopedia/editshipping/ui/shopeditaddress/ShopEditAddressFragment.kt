@@ -40,7 +40,7 @@ import com.tokopedia.editshipping.util.ShopEditAddressUtils
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
-import com.tokopedia.logisticCommon.util.LogisticCommonUtil
+import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -380,7 +380,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
             goToPinpointActivity(currentLat, currentLong, warehouseModel)
         }
 
-        LogisticCommonUtil.displayUserConsent(activity as Context, tvUserConsent, getString(R.string.save_changes))
+        LogisticUserConsentHelper().displayUserConsent(activity as Context, tvUserConsent, getString(R.string.save_changes))
 
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->

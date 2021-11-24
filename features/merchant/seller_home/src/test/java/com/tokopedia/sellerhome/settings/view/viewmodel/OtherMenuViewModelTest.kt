@@ -7,6 +7,8 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
+import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
@@ -26,6 +28,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -556,6 +559,62 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         }
 
     @Test
+    fun `when getUserShopInfo returns RM status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(RegularMerchant.NeedUpgrade)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(false)
+                verifySetIsPowerMerchantIdleCalled(false)
+                verifySetIsOfficialStoreCalled(false)
+            }
+
+    @Test
+    fun `when getUserShopInfo returns PM Inactive status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.NotActive)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(false)
+                verifySetIsPowerMerchantIdleCalled(true)
+                verifySetIsOfficialStoreCalled(false)
+            }
+
+    @Test
+    fun `when getUserShopInfo returns PM Active status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(PowerMerchantStatus.Active)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(true)
+                verifySetIsPowerMerchantIdleCalled(false)
+                verifySetIsOfficialStoreCalled(false)
+            }
+
+    @Test
+    fun `when getUserShopInfo returns OS status, should set user session data accordingly`() =
+            coroutineTestRule.runBlockingTest {
+                val userShopInfoWrapper = UserShopInfoWrapper(ShopType.OfficialStore)
+                onGetUserShopInfo_thenReturn(userShopInfoWrapper)
+
+                mViewModel.getUserShopInfo()
+
+                verifyGetUserShopInfoCalled()
+                verifySetIsGoldMerchantCalled(true)
+                verifySetIsPowerMerchantIdleCalled(false)
+                verifySetIsOfficialStoreCalled(true)
+            }
+
+    @Test
     fun `when getUserShopInfo error should set live data state error`() =
         coroutineTestRule.runBlockingTest {
             val error = IllegalStateException()
@@ -840,6 +899,18 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     private suspend fun verifyGetShareInfoCalled(atLeast: Int = 1) {
         coVerify(atLeast = atLeast) { shopShareInfoUseCase.execute(any()) }
+    }
+
+    private fun verifySetIsGoldMerchantCalled(isGoldMerchant: Boolean) {
+        verify { userSession.setIsGoldMerchant(isGoldMerchant) }
+    }
+
+    private fun verifySetIsPowerMerchantIdleCalled(isPowerMerchantIdle: Boolean) {
+        verify { userSession.setIsPowerMerchantIdle(isPowerMerchantIdle) }
+    }
+
+    private fun verifySetIsOfficialStoreCalled(isOfficialStore: Boolean) {
+        verify { userSession.setIsShopOfficialStore(isOfficialStore) }
     }
 
     private fun onGetFreeShippingRemoteConfigDisabled_thenReturn(
