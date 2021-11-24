@@ -274,7 +274,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 listBulkDelete.clear()
                 wishlistV2Adapter.hideCheckbox()
                 wishlistV2Adapter.isRefreshing = true
-                binding?.containerDelete?.gone()
+                binding?.run {
+                    containerDelete.gone()
+                    clWishlistHeader.visible()
+                }
             }
             // refreshHandler = RefreshHandler(swipeRefreshLayout, this@WishlistV2Fragment)
             // refreshHandler?.setPullEnabled(true)
@@ -773,10 +776,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun removeFilter(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
-        paramWishlistV2.sortFilters.forEach { filterParam ->
-            if (filterParam.name == filterItem.name) {
-                paramWishlistV2.sortFilters.remove(filterParam)
-                return@forEach
+        with(paramWishlistV2.sortFilters.iterator()) {
+            forEach { filterParam ->
+                if (filterParam.name == filterItem.name) {
+                    remove()
+                    // paramWishlistV2.sortFilters.remove(filterParam)
+                    return@forEach
+                }
             }
         }
         doRefresh()
