@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
 
@@ -41,14 +40,7 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = adapterOptionBottomSheet
             }
-
-            val selectionType = arguments?.getInt(SELECTION_TYPE)
-            if (selectionType == 2) {
-                btnSave.visible()
-                btnSave.setOnClickListener { listener?.onSaveCheckboxSelection() }
-            } else if (selectionType == 1) {
-                btnSave.gone()
-            }
+            btnSave.gone()
         }
         showCloseIcon = true
         showHeader = true
@@ -69,9 +61,16 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
         show(fm, TAG)
     }
 
+    fun showButtonSave() {
+        binding?.run {
+            btnSave.visible()
+            btnSave.setOnClickListener { listener?.onSaveCheckboxSelection() }
+        }
+    }
+
     interface BottomSheetListener {
-        fun onRadioButtonSelected(filterItem: WishlistV2Params.WishlistSortFilterParam)
-        fun onCheckboxSelected(name: String, optionId: String)
+        fun onRadioButtonSelected(name: String, optionId: String)
+        fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean)
         fun onSaveCheckboxSelection()
     }
 }

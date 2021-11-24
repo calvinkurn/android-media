@@ -2,7 +2,6 @@ package com.tokopedia.wishlist.view.adapter.viewholder
 
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.wishlist.data.model.WishlistV2Params
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistFilterCheckboxItemBinding
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 
@@ -16,13 +15,14 @@ class WishlistV2FilterCheckboxViewHolder(private val binding: BottomsheetWishlis
         binding.root.setOnClickListener {
             checkboxListener(parentFilterName, optionId)
         }
+        binding.cbOption.setOnClickListener {
+            checkboxListener(parentFilterName, optionId)
+        }
     }
 
     private fun checkboxListener(parentFilterName: String, optionId: String): CompoundButton.OnCheckedChangeListener {
         return CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                listener?.onCheckboxSelected(parentFilterName, optionId)
-            }
+            listener?.onCheckboxSelected(parentFilterName, optionId, isChecked)
         }
     }
 }

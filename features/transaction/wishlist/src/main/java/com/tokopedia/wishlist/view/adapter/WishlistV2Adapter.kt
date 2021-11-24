@@ -47,7 +47,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onCariBarangClicked()
         fun onNotFoundButtonClicked(keyword: String)
         fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item)
-        fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean)
+        fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int)
         fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item)
         fun onCheckSimilarProduct(url: String)
         fun onResetFilter()
@@ -180,6 +180,11 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun appendList(list: List<WishlistV2TypeLayoutData>) {
         listTypeData.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun setCheckbox(position: Int, checked: Boolean) {
+        listTypeData[position].isChecked = checked
         notifyDataSetChanged()
     }
 

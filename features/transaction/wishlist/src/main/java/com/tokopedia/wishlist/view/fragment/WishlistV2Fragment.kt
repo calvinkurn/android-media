@@ -31,6 +31,8 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST_V2
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -86,6 +88,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var listBulkDelete: ArrayList<String> = arrayListOf()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var checkpoint = false
+    private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
 
     private val wishlistViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
@@ -143,6 +146,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         checkLogin()
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        launchAutoRefresh(isVisibleToUser)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentWishlistV2Binding.inflate(inflater, container, false)
         return binding?.root
@@ -152,6 +160,38 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         super.onViewCreated(view, savedInstanceState)
         prepareLayout()
         observingData()
+    }
+
+    private fun isAutoRefreshEnabled(): Boolean {
+        return try {
+            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_WISHLIST_V2)?:false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
+        if (!::firebaseRemoteConfig.isInitialized) {
+            context?.let {
+                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+                return firebaseRemoteConfig
+            }
+            return null
+        } else {
+            return firebaseRemoteConfig
+        }
+    }
+
+    private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
+        // TODO : follow up about remote config
+        // if (isVisibleToUser && isAutoRefreshEnabled()) {
+        if (isVisibleToUser) {
+            binding?.run {
+                rvWishlist.scrollToPosition(0)
+            }
+            doRefresh()
+        }
+        // }
     }
 
     private fun observingData() {
@@ -167,10 +207,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         wishlistViewModel.wishlistV2.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
+                    finishRefresh()
                     result.data.let { wishlistV2 ->
                         hideLoader()
                         // refreshHandler?.finishRefresh()
-                        finishRefresh()
+
                         scrollRecommendationListener.setHasNextPage(wishlistV2.hasNextPage)
 
                         if (wishlistV2.totalData == 0) {
@@ -186,8 +227,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
                 }
                 is Fail -> {
-                    // refreshHandler?.finishRefresh()
                     finishRefresh()
+                    // refreshHandler?.finishRefresh()
                     showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
                 }
             }
@@ -200,6 +241,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistViewModel.wishlistV2Data.observe(viewLifecycleOwner, { result ->
                 when (result) {
                     is Success -> {
+                        finishRefresh()
                         result.data.let { listData ->
                             if (!onLoadMore) {
                                 wishlistV2Adapter.addList(listData)
@@ -212,6 +254,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
                     }
                     is Fail -> {
+                        finishRefresh()
                         showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
                     }
                 }
@@ -227,6 +270,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         binding?.run {
             swipeRefreshLayout.setOnRefreshListener {
                 doRefresh()
+                isBulkDeleteShow = false
+                listBulkDelete.clear()
+                wishlistV2Adapter.hideCheckbox()
+                wishlistV2Adapter.isRefreshing = true
+                binding?.containerDelete?.gone()
             }
             // refreshHandler = RefreshHandler(swipeRefreshLayout, this@WishlistV2Fragment)
             // refreshHandler?.setPullEnabled(true)
@@ -483,7 +531,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
         filterBottomSheetAdapter.filterItem = filterItem
-
+        // filterBottomSheetAdapter.selectedRadio = selectedRadio
         val listOptionIdSelected = arrayListOf<String>()
         var nameSelected = ""
 
@@ -493,26 +541,42 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             doResetFilter()
         }
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
-            override fun onRadioButtonSelected(filterItem: WishlistV2Params.WishlistSortFilterParam) {
+            override fun onRadioButtonSelected(name: String, optionId: String) {
                 filterBottomSheet.dismiss()
-                val listSortFilter = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
-                listSortFilter.add(filterItem)
-                paramWishlistV2.sortFilters = listSortFilter
+                paramWishlistV2.sortFilters.forEach { itemFilter ->
+                    if (itemFilter.name == name) {
+                        paramWishlistV2.sortFilters.remove(itemFilter)
+                    }
+                }
+                paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                        name = filterItem.name, selected = arrayListOf(optionId)))
                 // refreshHandler?.startRefresh()
                 doRefresh()
             }
 
-            override fun onCheckboxSelected(name: String, optionId: String) {
-                nameSelected = name
-                listOptionIdSelected.add(optionId)
+            override fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean) {
+                if (isChecked) {
+                    nameSelected = name
+                    listOptionIdSelected.add(optionId)
+                }
+                filterBottomSheet.showButtonSave()
             }
 
             override fun onSaveCheckboxSelection() {
-                val filterSortItem = WishlistV2Params.WishlistSortFilterParam(name = nameSelected, selected = listOptionIdSelected)
-                val listSortFilter = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
-                listSortFilter.add(filterSortItem)
+                var listCheckboxSelected = arrayListOf<String>()
+                paramWishlistV2.sortFilters.forEach { itemFilter ->
+                    if (itemFilter.name == nameSelected) {
+                        listCheckboxSelected = itemFilter.selected
+                        paramWishlistV2.sortFilters.remove(itemFilter)
+                    }
+                }
 
-                paramWishlistV2.sortFilters = listSortFilter
+                listOptionIdSelected.forEach { optionId ->
+                    listCheckboxSelected.add(optionId)
+                }
+
+                paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                        name = nameSelected, selected = listCheckboxSelected))
                 filterBottomSheet.dismiss()
                 // refreshHandler?.startRefresh()
                 doRefresh()
@@ -620,11 +684,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onCariBarangClicked() {
-
+        RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH)
     }
 
     override fun onNotFoundButtonClicked(keyword: String) {
-
+        RouteManager.route(context, "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword")
     }
 
     override fun onProductItemClicked(productId: String) {
@@ -638,12 +702,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         showBottomSheetThreeDotsMenu(itemWishlist)
     }
 
-    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean) {
+    override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int) {
         if (isChecked) {
             listBulkDelete.add(productId)
         } else {
             listBulkDelete.remove(productId)
         }
+        wishlistV2Adapter.setCheckbox(position, isChecked)
         val showButton = listBulkDelete.isNotEmpty()
         if (showButton) {
             binding?.run {
@@ -666,7 +731,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
         } else {
             binding?.run {
-                containerDelete.gone()
+                containerDelete.visible()
+                deleteButton.isEnabled = false
+                deleteButton.text = getString(R.string.wishlist_v2_delete_text)
             }
         }
     }
@@ -706,13 +773,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         if (showCheckbox) {
             wishlistV2Adapter.showCheckbox()
             binding?.run {
-                containerDelete.visibility = View.VISIBLE
+                clWishlistHeader.gone()
+                containerDelete.visible()
                 deleteButton.isEnabled = false
             }
 
         } else {
             wishlistV2Adapter.hideCheckbox()
-            binding?.containerDelete?.visibility = View.GONE
+            binding?.run {
+                containerDelete.gone()
+                clWishlistHeader.visible()
+            }
         }
     }
 
@@ -753,11 +824,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         // onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
-        isBulkDeleteShow = false
-        listBulkDelete = arrayListOf()
-        wishlistV2Adapter.hideCheckbox()
-        wishlistV2Adapter.isRefreshing = true
-        binding?.containerDelete?.visibility = View.GONE
         loadWishlistV2()
     }
 

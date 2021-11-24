@@ -131,18 +131,28 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
         // empty wishlist
         if (wishlistV2Response.items.isEmpty() && wishlistV2Response.page == 1) {
-            when {
+            if (wishlistV2Response.query.isNotEmpty()) {
+                listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
+
+            } else if (wishlistV2Response.sortFilters.isNotEmpty()) {
+                val wishlistV2Empty = WishlistV2EmptyStateData(R.string.empty_state_img, R.string.empty_state_desc_1, R.string.empty_state_title, R.string.empty_state_button)
+                listData.add(WishlistV2TypeLayoutData(wishlistV2Empty, WishlistV2Consts.TYPE_EMPTY_STATE))
+                
+            } else if (wishlistV2Response.sortFilters.isEmpty() && wishlistV2Response.query.isEmpty()) {
+                listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL))
+            }
+            /*when {
                 wishlistV2Response.sortFilters.isNotEmpty() -> {
                     val wishlistV2Empty = WishlistV2EmptyStateData(R.string.empty_state_img, R.string.empty_state_desc_1, R.string.empty_state_title, R.string.empty_state_button)
                     listData.add(WishlistV2TypeLayoutData(wishlistV2Empty, WishlistV2Consts.TYPE_EMPTY_STATE))
                 }
-                wishlistV2Response.query.isEmpty() -> {
+                wishlistV2Response.query.isNotEmpty() -> {
                     listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL))
                 }
                 else -> {
                     listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
                 }
-            }
+            }*/
             val recommItems = getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME)
             listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
             recommItems.recommendationData.forEach { item ->
@@ -190,10 +200,6 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     val countManageRowData = WishlistV2CountManageRowData(wishlistV2Response.totalData)
                     listData.add(0, WishlistV2TypeLayoutData(countManageRowData, TYPE_COUNT_MANAGE_ROW))
                 }
-                // has next page
-                /*if (params.page == 1 ) {
-                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
-                }*/
 
                 if (wishlistV2Response.totalData >= topAdsPositionInPage && wishlistV2Response.page % 2 == 0) {
                     val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
@@ -248,7 +254,6 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
             val productModel = ProductCardModel(
                     productImageUrl = item.imageUrl,
-                    isWishlistVisible = true,
                     productName = item.name,
                     shopName = item.shop.name,
                     formattedPrice = item.priceFmt,
@@ -259,8 +264,9 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     lihatBarangSerupaButton = !isButtonAtc,
                     labelGroupList = listGroupLabel,
                     shopBadgeList = listBadge,
-                    ratingString = item.rating,
-                    discountPercentage = item.discountPercentageFmt)
+                    discountPercentage = item.discountPercentageFmt,
+                    countSoldRating = item.rating,
+                    slashedPrice = item.originalPriceFmt)
             listItem.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
         }
         return listItem
@@ -280,7 +286,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     companion object {
-        private const val topAdsPositionInPage = 4
+        private const val topAdsPositionInPage = 5
         private const val termsRecom = 26
         private const val termsTopads = 21
         private const val WISHLIST_TOPADS_SOURCE = "6"
