@@ -7,7 +7,6 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.databinding.ViewmodelOfficialLoadingMoreBinding
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.utils.view.binding.viewBinding
-import kotlinx.android.synthetic.main.viewmodel_official_loading_more.view.*
 
 
 class OfficialLoadingMoreViewHolder(itemView: View) : AbstractViewHolder<OfficialLoadingMoreDataModel>(itemView) {
