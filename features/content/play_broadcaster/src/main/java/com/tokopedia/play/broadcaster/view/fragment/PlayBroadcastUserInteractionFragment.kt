@@ -42,10 +42,7 @@ import com.tokopedia.play.broadcaster.view.custom.PlayTimerView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFormView
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
-import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
-import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveSetupViewComponent
-import com.tokopedia.play.broadcaster.view.partial.BroadcastInteractiveViewComponent
-import com.tokopedia.play.broadcaster.view.partial.ChatListViewComponent
+import com.tokopedia.play.broadcaster.view.partial.*
 import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -155,6 +152,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+    private val productTagView by viewComponent { ProductTagViewComponent(it) }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
@@ -286,6 +284,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
+        observeProductTag()
     }
 
     override fun onDestroy() {
@@ -671,6 +670,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                 }
             }
+        }
+    }
+
+    private fun observeProductTag() {
+        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
+            productTagView.setProducts(it)
         }
     }
     //endregion
