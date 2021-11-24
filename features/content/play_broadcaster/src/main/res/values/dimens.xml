@@ -102,8 +102,8 @@
     <dimen name="play_bro_pinned_msg_loading_size">52dp</dimen>
 
     <!-- Product Tag -->
-    <dimen name="play_bro_product_tag_height">240dp</dimen>
-    <dimen name="play_bro_product_tag_width">160dp</dimen>
+    <dimen name="play_bro_product_tag_width">120dp</dimen>
+    <dimen name="play_bro_product_tag_image_height">120dp</dimen>
     <dimen name="play_bro_product_tag_radius">12dp</dimen>
     <dimen name="play_bro_product_tag_stock_radius">4dp</dimen>
 </resources>
