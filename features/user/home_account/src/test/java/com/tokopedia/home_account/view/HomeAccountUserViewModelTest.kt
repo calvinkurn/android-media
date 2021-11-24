@@ -143,8 +143,8 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Execute getBuyerData Success`() {
         /* When */
-        coEvery { homeAccountUserUsecase.executeOnBackground() } returns responseResult
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { homeAccountUserUsecase(Unit) } returns responseResult
+        coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
 
         viewModel.getBuyerData()
@@ -161,8 +161,8 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Execute getBuyerData Failed`() {
         /* When */
-        coEvery { homeAccountUserUsecase.executeOnBackground() } throws throwable.throwable
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwable.throwable
+        coEvery { homeAccountUserUsecase(Unit) } throws throwable.throwable
+        coEvery { homeAccountShortcutUseCase(Unit) } throws throwable.throwable
         coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable.throwable
 
         viewModel.getBuyerData()
@@ -354,7 +354,7 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `get shortcut data success`() {
         /* When */
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
 
         viewModel.getShortcutData()
 
@@ -366,7 +366,7 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `get shortcut data fail`() {
         /* When */
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwableResponse
+        coEvery { homeAccountShortcutUseCase(Unit) } throws throwableResponse
 
         viewModel.getShortcutData()
 
