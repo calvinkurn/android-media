@@ -87,5 +87,7 @@
     <string name="search_remote_config_here">search remote config here</string>
     <string name="system_apps">System Apps</string>
     <string name="non_system_apps">Non System Apps</string>
+    <string name="old_cart_checkout">Old Cart Checkout</string>
+    <string name="new_cart_checkout_bundling">New Cart Checkout Bundling</string>
 
 </resources>

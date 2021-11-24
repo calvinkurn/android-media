@@ -45,12 +45,24 @@ class DeveloperOptionAdapter(
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
         const val KEYWORD_FAKE_RESPONSE_ACTIVITY = "Fake Response Activity"
+        const val KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER = "Home and Navigation Revamp Switcher"
+        const val KEYWORD_NEW_NAVIGATION = "New Navigation"
+        const val KEYWORD_ALWAYS_OS_EXPERIMENT = "Always OS Experiment"
+        const val KEYWORD_OLD_BALANCE_WIDGET = "Old Balance Widget"
+        const val KEYWORD_NEW_BALANCE_WIDGET = "New Balance Widget"
+        const val KEYWORD_OLD_INBOX = "Old Inbox"
+        const val KEYWORD_NEW_INBOX = "New Inbox"
+        const val KEYWORD_OLD_CART_CHECKOUT = "Old Cart Checkout"
+        const val KEYWORD_NEW_CART_CHECKOUT = "New Cart Checkout Bundling"
     }
 
     private val defaultItems = listOf(
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
-        SystemNonSystemAppsUiModel(listOf(KEYWORD_SYSTEM_APPS, KEYWORD_NON_SYSTEM_APPS)),
+        SystemNonSystemAppsUiModel(listOf(
+            KEYWORD_SYSTEM_APPS,
+            KEYWORD_NON_SYSTEM_APPS)
+        ),
         ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
@@ -69,15 +81,35 @@ class DeveloperOptionAdapter(
         AnalyticsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_ANALYTICS_LOG_ON_NOTIFICATION)),
         CassavaUiModel(listOf(KEYWORD_CASSAVA)),
         ViewAnalyticsLogUiModel(listOf(KEYWORD_VIEW_ANALYTICS_LOG)),
-        ViewIrisLogUiModel(listOf(KEYWORD_VIEW_IRIS_SAVE_LOG, KEYWORD_VIEW_IRIS_SEND_LOG)),
+        ViewIrisLogUiModel(listOf(
+            KEYWORD_VIEW_IRIS_SAVE_LOG,
+            KEYWORD_VIEW_IRIS_SEND_LOG
+        )),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER)),
-        LoggingToServerUiModel(listOf(KEYWORD_LOGGING_TO_SERVER, KEYWORD_SEND_LOG_TO_SERVER)),
+        LoggingToServerUiModel(listOf(
+            KEYWORD_LOGGING_TO_SERVER,
+            KEYWORD_SEND_LOG_TO_SERVER)
+        ),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
         AppVersionUiModel(listOf(KEYWORD_APP_VERSION)),
-        UrlEnvironmentUiModel(listOf(KEYWORD_CHOOSE_URL_ENVIRONMENT, KEYWORD_STAGING, KEYWORD_LIVE)),
-        FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY))
+        UrlEnvironmentUiModel(listOf(
+            KEYWORD_CHOOSE_URL_ENVIRONMENT,
+            KEYWORD_STAGING, KEYWORD_LIVE)
+        ),
+        FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        HomeAndNavigationRevampSwitcherUiModel(listOf(
+            KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
+            KEYWORD_NEW_NAVIGATION,
+            KEYWORD_ALWAYS_OS_EXPERIMENT,
+            KEYWORD_OLD_BALANCE_WIDGET,
+            KEYWORD_NEW_BALANCE_WIDGET,
+            KEYWORD_OLD_INBOX,
+            KEYWORD_NEW_INBOX,
+            KEYWORD_OLD_CART_CHECKOUT,
+            KEYWORD_NEW_CART_CHECKOUT
+        ))
     )
 
     fun searchItem(keyword: String) {
