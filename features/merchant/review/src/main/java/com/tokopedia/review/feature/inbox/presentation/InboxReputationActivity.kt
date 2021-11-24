@@ -77,8 +77,6 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
     private var viewPager: ViewPager? = null
     private var sectionAdapter: PagerAdapter? = null
     private var toolbar: HeaderUnify? = null
-
-    var fragmentList: MutableList<Fragment> = mutableListOf()
     var indicator: TabsUnify? = null
 
     @Inject
@@ -187,6 +185,15 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
         return super.onOptionsItemSelected(item)
     }
 
+    fun getFragmentList(): List<Fragment> {
+        val fragmentList = mutableListOf<Fragment>()
+        reviewSellerFragment?.let { fragmentList.add(it) }
+        inboxReviewFragment?.let { fragmentList.add(it) }
+        fragmentList.add(createInstance(TAB_BUYER_REVIEW))
+        sellerReputationPenaltyFragment?.let { fragmentList.add(it) }
+        return fragmentList
+    }
+
     private fun initView(tab: String?) {
         viewPager = findViewById(R.id.pager_reputation)
         indicator = findViewById(R.id.indicator_unify)
@@ -222,11 +229,11 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
                     super.onTabSelected(tab)
                     val position = tab.position
                     if (position != selectedTabPosition) {
-                        populateFragmentList()
-                        for (i in fragmentList.indices) {
-                            val fragment = fragmentList[i]
+                        getFragmentList()
+                        for (i in getFragmentList().indices) {
+                            val fragment = getFragmentList()[i]
                             if (fragment is InboxReviewFragment) {
-                                val onTabChangeListener = fragmentList[i] as OnTabChangeListener?
+                                val onTabChangeListener = getFragmentList()[i] as OnTabChangeListener?
                                 onTabChangeListener?.onTabChange(position)
                             }
                         }
@@ -247,10 +254,10 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
         setupTabName()
         sectionAdapter = SectionsPagerAdapter(
             supportFragmentManager,
-            fragmentList,
+            getFragmentList(),
             indicator?.getUnifyTabLayout()
         )
-        viewPager?.offscreenPageLimit = fragmentList.size
+        viewPager?.offscreenPageLimit = getFragmentList().size
         viewPager?.adapter = sectionAdapter
         if (GlobalConfig.isSellerApp()) {
             if (isExistParamTab(tab)) {
@@ -348,13 +355,6 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
     private fun settingMargin(layoutParams: ViewGroup.MarginLayoutParams, start: Int, end: Int) {
         layoutParams.marginStart = start
         layoutParams.marginEnd = end
-    }
-
-    private fun populateFragmentList() {
-        reviewSellerFragment?.let { fragmentList.add(it) }
-        inboxReviewFragment?.let { fragmentList.add(it) }
-        fragmentList.add(createInstance(TAB_BUYER_REVIEW))
-        sellerReputationPenaltyFragment?.let { fragmentList.add(it) }
     }
 
     private fun setupToolbar() {
