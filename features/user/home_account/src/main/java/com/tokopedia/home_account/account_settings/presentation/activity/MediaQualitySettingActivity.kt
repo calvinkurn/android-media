@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.home_account.account_settings.R
+import com.tokopedia.home_account.R
 import com.tokopedia.home_account.account_settings.presentation.fragment.setting.MediaQualitySettingFragment
 
 class MediaQualitySettingActivity: BaseSimpleActivity() {

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.home_account.account_settings.R;
+import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfig;
 
 import java.util.HashMap;

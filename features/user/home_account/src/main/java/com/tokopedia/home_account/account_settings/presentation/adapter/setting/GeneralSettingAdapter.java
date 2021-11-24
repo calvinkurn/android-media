@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.home_account.account_settings.R;
+import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.presentation.view.GeneralSettingMenuLabel;
 import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home_account.account_settings.presentation.viewmodel.base.SwitchSettingItemViewModel;

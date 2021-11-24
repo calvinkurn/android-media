@@ -1,5 +1,31 @@
 package com.tokopedia.home_account.account_settings.analytics;
 
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.ACCOUNT;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.BUSINESS_UNIT;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CATEGORY_NOTIF_CENTER;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CATEGORY_SETTING_PAGE;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CLICK_SETTING;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CURRENT_SITE;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EMPTY;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_ACTION;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_ACTION_CLICK_SCREEN_RECORDER;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_ACTION_TS_USR_MENU;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_CATEGORY;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_LABEL;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_NAME_CLICK_NOTIF_CENTER;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.FIELD_SHOP_ID;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.FIELD_USER_ID;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.FINGERPRINT;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.HOME_AND_BROWSE;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.PASSWORD;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SETTING;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SHOP;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOPEDIA_MARKETPLACE;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.USER;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.USER_PLATFORM;
+
 import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;

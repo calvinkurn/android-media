@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home_account.account_settings.R
+import com.tokopedia.home_account.R
 import com.tokopedia.home_account.account_settings.data.model.UserProfileDobResponse
 import java.util.*
 import javax.inject.Inject

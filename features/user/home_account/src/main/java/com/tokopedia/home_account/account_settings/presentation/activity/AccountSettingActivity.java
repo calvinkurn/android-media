@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.home_account.account_settings.R;
+import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.presentation.fragment.setting.AccountSettingFragment;
 
 public class AccountSettingActivity extends BaseSimpleActivity {
