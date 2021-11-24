@@ -14,6 +14,7 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.logisticorder.R
 import com.tokopedia.logisticorder.databinding.BottomsheetTippingGojekBinding
@@ -163,7 +164,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
 
                     chipsPayment.chip_image_icon.setImageUrl(logisticDriverModel.payment.methodIcon)
-                    chipsPayment.chipText = String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted)
+                    chipsPayment.chip_text.text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
                 }
 
             }

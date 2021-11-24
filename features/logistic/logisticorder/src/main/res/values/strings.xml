@@ -46,4 +46,10 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="tipping_result_desc">Tip 100% ditransfer ke driver setelah pesanan sampai. Tip akan dikembalikan ke kamu jika pesanan batal</string>
     <string name="minimum_tipping">Min. Rp1.000</string>
     <string name="maksimum_tipping">Maks. Rp20.000</string>
+    <string name="detail_info_label">Detail Informasi</string>
+    <string name="resi_label">No. Resi</string>
+    <string name="invoice_label">No. Invoice</string>
+    <string name="phone_number_label">Nomor HP</string>
+    <string name="driver_name_label">Nama Driver</string>
+    <string name="license_label">Plat Nomor Kendaraan</string>
 </resources>
