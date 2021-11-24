@@ -36,6 +36,8 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_with_banned_products.json"
     private val sellerSrwPromptPath =
         "seller/success_get_chat_replies_with_srw_reply_prompt.json"
+    private val shippingLocationPath =
+        "seller/chat_replies_shipping_location.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -67,6 +69,19 @@ class GetChatUseCaseStub @Inject constructor(
     fun getCurrentRoomMetaData(msgId: String): RoomMetaData {
         return mapper.generateRoomMetaData(msgId, response)
     }
+
+    /**
+     * <!--- Start Shipping Location Seller --->
+     */
+
+    val withShippingInfo: GetExistingChatPojo
+        get() = alterResponseOf(shippingLocationPath) { response ->
+
+        }
+
+    /**
+     * <!--- End Shipping Location Seller --->
+     */
 
     /**
      * <!--- Start SRW Prompt --->

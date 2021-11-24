@@ -28,7 +28,30 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     private val sellerSrwPromptPath =
         "seller/success_get_chat_attachment_srw_reply_prompt.json"
+    private val shippingLocationPath =
+        "seller/chat_attachment_shipping_location_reply.json"
 
+    /**
+     * <!--- Start Shipping Location Seller --->
+     */
+
+    val withShippingInfo: ChatAttachmentResponse
+        get() = alterResponseOf(shippingLocationPath) { response ->
+
+        }
+
+    fun getShippingText(position: Int, response: ChatAttachmentResponse): String {
+        val attr = response.chatAttachments.list[position].attributes
+        val obj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
+        return obj.getAsJsonObject(product_profile)
+            .getAsJsonObject(location_stock)
+            .get(district_name_full_text)
+            .asString
+    }
+
+    /**
+     * <!--- End Shipping Location Seller --->
+     */
 
     /**
      * <!--- Start SRW Prompt --->
@@ -153,6 +176,9 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val list = "list"
     private val attributes = "attributes"
     private val id = "id"
+    private val product_profile = "product_profile"
+    private val location_stock = "location_stock"
+    private val district_name_full_text = "district_name_full_text"
 
     // broadcast attributes
     private val start_date = "start_date"
