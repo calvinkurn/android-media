@@ -39,7 +39,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.*
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationWidgetDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
@@ -78,6 +82,7 @@ open class AddToCartDoneBottomSheet :
         private const val abNewPdpAfterAtcKey = "PDP ATC 2020"
         private const val oldVariantPDP = "PDP after ATC"
         private const val className: String = "com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet"
+        private const val HEIGHT_SCALING = 0.9f
     }
 
     @Inject
@@ -330,7 +335,7 @@ open class AddToCartDoneBottomSheet :
                 val displaymetrics = DisplayMetrics()
                 activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
                 val screenHeight = displaymetrics.heightPixels
-                val maxHeight = (screenHeight * 0.9f).toInt()
+                val maxHeight = (screenHeight * HEIGHT_SCALING).toInt()
                 val params = parent.layoutParams
                 params.height = maxHeight
                 parent.layoutParams = params

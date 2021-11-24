@@ -7,6 +7,8 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.ITEM_CATEGORY_BUILDER
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.KEY_UNDEFINED
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -153,13 +155,10 @@ object TrackingUtil {
     }
 
     fun getEnhanceCategoryFormatted(detail: List<Category.Detail>?): String {
-        val list = ArrayList<String>()
-        if (detail != null) {
-            for (i in 0 until detail.size) {
-                list.add(detail[i].name)
-            }
-        }
-        return TextUtils.join("/", list)
+        val categoryNameLvl1 = detail?.firstOrNull()?.id ?: KEY_UNDEFINED
+        val categoryNameLvl2 = detail?.getOrNull(1)?.id ?: KEY_UNDEFINED
+        val categoryNameLvl3 = detail?.getOrNull(2)?.id ?: KEY_UNDEFINED
+        return String.format(ITEM_CATEGORY_BUILDER, categoryNameLvl1, categoryNameLvl2, categoryNameLvl3, KEY_UNDEFINED)
     }
 
     fun getFormattedPrice(price: Double): String {

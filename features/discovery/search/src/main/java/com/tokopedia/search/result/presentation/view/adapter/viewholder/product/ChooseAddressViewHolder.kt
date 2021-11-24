@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -10,9 +9,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultProductChooseAddressLayoutBinding
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.view.listener.ChooseAddressListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 internal class ChooseAddressViewHolder(
         itemView: View,
@@ -28,23 +29,14 @@ internal class ChooseAddressViewHolder(
         private const val SOURCE = "search page"
     }
 
-    private var chooseAddressContainer: ConstraintLayout? = null
-    private var chooseAddressWidget: ChooseAddressWidget? = null
-    private var changeViewButton: IconUnify? = null
+    private var binding: SearchResultProductChooseAddressLayoutBinding? by viewBinding()
 
     init {
-        findViews()
         configureChooseAddress()
     }
 
-    private fun findViews() {
-        chooseAddressContainer = itemView.findViewById(R.id.searchProductChooseAddressContainer)
-        chooseAddressWidget = itemView.findViewById(R.id.searchProductChooseAddress)
-        changeViewButton = itemView.findViewById(R.id.searchProductChooseAddressChangeViewButton)
-    }
-
     private fun configureChooseAddress() {
-        chooseAddressWidget?.bindChooseAddress(object: ChooseAddressWidget.ChooseAddressWidgetListener {
+        binding?.searchProductChooseAddress?.bindChooseAddress(object: ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
                 chooseAddressListener.onLocalizingAddressSelected()
             }
@@ -52,11 +44,11 @@ internal class ChooseAddressViewHolder(
             override fun onLocalizingAddressUpdatedFromBackground() { }
 
             override fun onLocalizingAddressServerDown() {
-                chooseAddressContainer?.hide()
+                binding?.searchProductChooseAddressContainer?.hide()
             }
 
             override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) {
-                if (!isRollOutUser) chooseAddressContainer?.hide()
+                if (!isRollOutUser) binding?.searchProductChooseAddressContainer?.hide()
             }
 
             override fun getLocalizingAddressHostFragment() = chooseAddressListener.getFragment()
@@ -77,11 +69,11 @@ internal class ChooseAddressViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        chooseAddressWidget?.updateWidget()
+        binding?.searchProductChooseAddress?.updateWidget()
     }
 
     private fun bindChangeViewButton() {
-        changeViewButton?.setOnClickListener {
+        binding?.searchProductChooseAddressChangeViewButton?.setOnClickListener {
             searchNavigationListener.onChangeViewClicked(adapterPosition)
         }
     }
@@ -97,6 +89,6 @@ internal class ChooseAddressViewHolder(
     }
 
     private fun changeViewButton(id: Int) {
-        changeViewButton?.setImage(newIconId = id)
+        binding?.searchProductChooseAddressChangeViewButton?.setImage(newIconId = id)
     }
 }

@@ -100,7 +100,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                 }))
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
         support_button_not_visible()
     }
 
@@ -118,8 +117,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                 .assertVisible()
                 .check(matches(ViewMatchers.withText("+ Keranjang test")))
 
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        support_button_not_visible()
+         support_button_not_visible()
     }
 
     @Test
@@ -139,8 +137,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
 
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        support_button_not_visible()
+         support_button_not_visible()
     }
 
     //region Error case
@@ -154,8 +151,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        onView(withId(R.id.seller_button_container)).assertNotVisible()
+         onView(withId(R.id.seller_button_container)).assertNotVisible()
 
         onView(withId(R.id.btn_empty_stock)) .assertVisible()
                 .check(matches(ViewMatchers.withText("Stok Habis")))
@@ -188,8 +184,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                     buttonUnify.buttonVariant == UnifyButton.Variant.FILLED && buttonUnify.buttonType == UnifyButton.Type.TRANSACTION
                 }))
 
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        support_button_not_visible()
+         support_button_not_visible()
     }
 
     @Test
@@ -212,8 +207,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                 }))
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        support_button_not_visible()
+         support_button_not_visible()
     }
 
     @Test
@@ -247,8 +241,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.qty_tokonow_non_var)).assertNotVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        support_button_not_visible()
+         support_button_not_visible()
     }
 
     @Test
@@ -271,8 +264,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                 }))
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        support_button_not_visible()
+         support_button_not_visible()
     }
 
     @Test
@@ -318,8 +310,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
                 }))
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-        support_button_not_visible()
+         support_button_not_visible()
     }
 
     @Test
@@ -356,8 +347,7 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
 
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
-    }
+     }
 
     @Test
     fun check_click_atc_tokonow_non_variant_non_login() {
@@ -397,7 +387,6 @@ class ProductDetailButtonTest : BaseProductDetailUiTest() {
         onView(withId(R.id.btn_topchat)).assertNotVisible()
         onView(withId(R.id.btn_buy_now)).assertNotVisible()
         onView(withId(R.id.btn_add_to_cart)).assertNotVisible()
-        onView(withId(R.id.base_btn_affiliate_dynamic)).assertNotVisible()
 
         onView(withId(R.id.seller_button_container)).assertVisible()
         onView(withId(R.id.btn_edit_product))

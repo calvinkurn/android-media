@@ -92,7 +92,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         channelId: String,
         extraParams: ExtraParams
     ) = PlayChannelReportUiModel(
-        shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true
+        shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
+        sourceType = extraParams.sourceType
     )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
@@ -213,7 +214,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             statusType = mapStatusType(!configResponse.active || configResponse.freezed),
             bannedModel = mapBannedModel(configResponse.bannedData),
             freezeModel = mapFreezeModel(configResponse.freezeData, title),
-            shouldAutoSwipeOnFreeze = true
+            shouldAutoSwipeOnFreeze = true,
+            waitingDuration = 0,
     )
 
     private fun mapBannedModel(
@@ -282,5 +284,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             val channelId: String?,
             val videoStartMillis: Long?,
             val shouldTrack: Boolean,
+            val sourceType: String,
     )
 }
