@@ -63,11 +63,19 @@ class FlightBookingPassengerAdapter : RecyclerView.Adapter<FlightBookingPassenge
                 tvPassengerName.text = String.format("%s %s %s", passenger.passengerTitle,
                         passenger.passengerFirstName, passenger.passengerLastName)
 
-                //initiate passenger detail like passport num, birthdate, luggage and amenities
+                //initiate passenger detail like passport num, birthdate, luggage and amenities, identification number
                 val simpleViewModels = listOf<SimpleModel>().toMutableList()
                 if (passenger.passengerBirthdate.isNotEmpty()) {
                     simpleViewModels.add(SimpleModel(itemView.context.getString(R.string.flight_booking_list_passenger_birthdate_label) + " | ",
                             passenger.passengerBirthdate.toDate(DateUtil.YYYY_MM_DD).toString(DateUtil.DEFAULT_VIEW_FORMAT)))
+                }
+                if(passenger.identificationNumber.isNotEmpty()){
+                    simpleViewModels.add(
+                        SimpleModel(
+                            itemView.context.getString(R.string.flight_booking_passenger_identification_number_label) + " | ",
+                            passenger.identificationNumber
+                        )
+                    )
                 }
                 passenger.passportNumber?.let {
                     if (it.isNotEmpty())

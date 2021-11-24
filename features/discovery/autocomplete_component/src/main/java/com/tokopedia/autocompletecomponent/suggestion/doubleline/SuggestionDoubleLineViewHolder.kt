@@ -1,9 +1,10 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
+import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
-import android.text.style.TextAppearanceSpan
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -104,8 +105,10 @@ class SuggestionDoubleLineViewHolder(
 
     private fun highlightTitleBeforeKeyword(highlightedTitle: SpannableString) {
         highlightedTitle.safeSetSpan(
-                TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                0, searchQueryStartIndexInKeyword, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            StyleSpan(Typeface.BOLD),
+            0,
+            searchQueryStartIndexInKeyword,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
 
@@ -114,8 +117,10 @@ class SuggestionDoubleLineViewHolder(
         val highlightAfterKeywordEndIndex = item.title.length
 
         highlightedTitle.safeSetSpan(
-                TextAppearanceSpan(itemView.context, R.style.searchTextHiglight),
-                highlightAfterKeywordStartIndex, highlightAfterKeywordEndIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            StyleSpan(Typeface.BOLD),
+            highlightAfterKeywordStartIndex,
+            highlightAfterKeywordEndIndex,
+            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
 

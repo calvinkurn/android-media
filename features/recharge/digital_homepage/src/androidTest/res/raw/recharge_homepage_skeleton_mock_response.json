@@ -37,6 +37,10 @@
             "template": "PRODUCT_CARD_ROW"
           },
           {
+            "id": 933,
+            "template": "SWIPE_BANNER"
+          },
+          {
             "id": 9,
             "template": "COUNTDOWN_SINGLE_BANNER"
           },

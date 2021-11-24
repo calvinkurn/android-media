@@ -272,7 +272,7 @@ open class ProductAttachmentUiModel protected constructor(
 
     //not a variant, not product campaign, not broadcast, & not pre-order
     fun isEligibleOCC(): Boolean {
-        return doesNotHaveVariant() && !isProductCampaign() && !fromBroadcast() && !isPreOrder
+        return !isSupportVariant && !isProductCampaign() && !fromBroadcast() && !isPreOrder
     }
 
     companion object {

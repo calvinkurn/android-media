@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<com.tokopedia.unifyprinciples.Typography
     android:id="@+id/see_all_button"
     android:contentDescription="@string/content_desc_see_all_button"
     android:layout_marginRight="16dp"
@@ -13,7 +13,8 @@
     android:lineSpacingExtra="3sp"
     android:text="@string/lihat_semua"
     android:textColor="@color/Unify_G500"
-    android:textSize="13sp"
+    app:typographyType="heading_6"
+    app:typographyWeight="bold"
     android:textStyle="bold"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"

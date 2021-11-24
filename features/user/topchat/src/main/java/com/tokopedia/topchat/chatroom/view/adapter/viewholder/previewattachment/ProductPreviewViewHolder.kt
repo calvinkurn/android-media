@@ -6,11 +6,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.util.ViewUtil
@@ -85,11 +85,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     }
 
     private fun bindImageThumbnail(model: SendableProductPreview) {
-        ImageHandler.loadImageRounded(
-                productImage?.context,
-                productImage, model.productPreview.imageUrl,
-                6.toPx().toFloat()
-        )
+        productImage?.loadImageRounded(model.productPreview.imageUrl, 6.toPx().toFloat())
     }
 
     private fun bindBackground() {

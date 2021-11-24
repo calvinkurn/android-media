@@ -9,7 +9,9 @@ import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemNewShopProductMerchantVoucherBinding
 import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -17,10 +19,11 @@ import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
 
 class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMerchantVoucherUiModel>(itemView) {
 
+    private val viewBinding : ItemNewShopProductMerchantVoucherBinding? by viewBinding()
     private var merchantVoucherWidget: MvcView? = null
 
     init {
-        findViews(itemView)
+        findViews()
     }
 
     override fun bind(model: ShopMerchantVoucherUiModel) {
@@ -34,8 +37,8 @@ class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMer
         }
     }
 
-    private fun findViews(view: View) {
-        merchantVoucherWidget = view.findViewById(R.id.merchantVoucherWidget)
+    private fun findViews() {
+        merchantVoucherWidget = viewBinding?.merchantVoucherWidget
     }
 
     companion object {

@@ -185,7 +185,13 @@ public class TrackApp {
         return getValue(APPSFLYER);
     }
 
+    /**
+     * @deprecated This MoengageAnalytics is deprecated,
+     * But an instance is created for this and no tracking will be recorded from this Analytics class
+     * please see com.tokopedia.core.analytics.container.MoengageAnalytics for detail
+     */
     @NonNull
+    @Deprecated
     public ContextAnalytics getMoEngage() {
         return getValue(MOENGAGE);
     }
