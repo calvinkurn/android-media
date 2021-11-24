@@ -105,6 +105,8 @@ data class ShopLayoutWidget(
                 val listBanner: List<Banner> = listOf(),
                 @SerializedName("products")
                 val listProduct: List<Product> = listOf(),
+                @SerializedName("backgroundGradientColor")
+                val backgroundGradientColor: BackgroundGradientColor = BackgroundGradientColor(),
                 @SerializedName("displayPrice")
                 val displayPrice: String = "",
                 @SerializedName("originalPrice")
@@ -146,6 +148,13 @@ data class ShopLayoutWidget(
                     val bannerType: String = "",
                     @SerializedName("device")
                     val device: String = ""
+            )
+
+            data class BackgroundGradientColor(
+                    @SerializedName("firstColor")
+                    val firstColor: String = "#008849",
+                    @SerializedName("secondColor")
+                    val secondColor: String = "#00AA5B"
             )
 
             data class Product(

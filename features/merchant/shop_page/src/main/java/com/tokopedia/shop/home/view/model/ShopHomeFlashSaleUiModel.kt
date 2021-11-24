@@ -31,6 +31,8 @@ class ShopHomeFlashSaleUiModel(
         var totalProduct: Int = 0,
         val totalProductWording: String = "",
         val productList: List<ShopHomeProductUiModel> = listOf(),
-        var isRemindMe: Boolean = false
+        var isRemindMe: Boolean = false,
+        val firstBackgroundColor: String = "",
+        val secondBackgroundColor: String = ""
     )
 }

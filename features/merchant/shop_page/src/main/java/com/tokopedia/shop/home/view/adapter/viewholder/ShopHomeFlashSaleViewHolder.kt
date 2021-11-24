@@ -1,8 +1,11 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -54,6 +57,8 @@ class ShopHomeFlashSaleViewHolder(
         private const val ONE_MILLION = 1000000
         private const val MAX_PRODUCT_CARD_SIZE = 5
         private const val EMPTY_STRING = ""
+        private const val FORMAT_STRING_COLOR = "#%06x"
+        private const val FORMAT_HEX_COLOR = 0xffffff
     }
 
     init {
@@ -68,7 +73,11 @@ class ShopHomeFlashSaleViewHolder(
         val productSize = flashSaleItem?.productList?.size ?: 0
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize)
-        setupFlashSaleBackgroundView(flashSaleItem?.productList ?: listOf())
+        setupFlashSaleBackgroundView(
+            productList = flashSaleItem?.productList.orEmpty(),
+            startBackgroundColor = flashSaleItem?.firstBackgroundColor,
+            endBackgroundColor = flashSaleItem?.secondBackgroundColor,
+        )
         setupFlashSaleCountDownTimer(element)
         setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
@@ -121,7 +130,16 @@ class ShopHomeFlashSaleViewHolder(
         else ctaSeeAllView?.show()
     }
 
-    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>) {
+    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackgroundColor: String?, endBackgroundColor: String?) {
+        // set flash sale background color
+        val colors = intArrayOf(
+            Color.parseColor(startBackgroundColor ?: getStringColor(R.color.fs_toko_bg_start_gradient_color)),
+            Color.parseColor(endBackgroundColor ?: getStringColor(R.color.fs_toko_bg_end_gradient_color))
+        )
+        val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
+        singleBackGroundView?.background = gradientDrawable
+        doubleBackGroundView?.background = gradientDrawable
+        multipleBackGroundView?.background = gradientDrawable
         // reset background visibility
         singleBackGroundView?.hide()
         doubleBackGroundView?.hide()
@@ -235,5 +253,9 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun isStatusCampaignUpcoming(statusCampaign: String): Boolean {
         return statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, true)
+    }
+
+    private fun getStringColor(colorRes: Int) : String {
+        return String.format(FORMAT_STRING_COLOR, ContextCompat.getColor(itemView.context, colorRes) and FORMAT_HEX_COLOR)
     }
 }

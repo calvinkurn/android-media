@@ -60,7 +60,6 @@
             android:id="@+id/bg_multiple"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_184"
-            android:background="@drawable/bg_flash_sale"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -69,7 +68,6 @@
             android:id="@+id/bg_single"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/unify_space_0"
-            android:background="@drawable/bg_flash_sale"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -80,7 +78,6 @@
             android:id="@+id/bg_double"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_212"
-            android:background="@drawable/bg_flash_sale"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
