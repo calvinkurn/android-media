@@ -162,6 +162,12 @@
             "eta": {
               "text_eta": "Tiba dalam 2 jam",
               "error_code": 0
+            },
+            "is_bebas_ongkir_extra": false,
+            "texts": {
+              "bottom_sheet": "\u003cb\u003eBebas Ongkir (3-5 hari)\u003c/b\u003e",
+              "chosen_courier": "\u003cb\u003ePengiriman Bebas Ongkir (3-5 hari)\u003c/b\u003e \u003cb\u003e(\u003c/b\u003e\u003cs\u003eRp30.000\u003c/s\u003e \u003cb\u003eRp10.000)\u003c/b\u003e",
+              "ticker_courier": "Tersedia Bebas Ongkir (3-5 hari)"
             }
           },
           "info": {
