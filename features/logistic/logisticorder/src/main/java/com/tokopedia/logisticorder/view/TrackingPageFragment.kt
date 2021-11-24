@@ -211,10 +211,11 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 driverPhone.text = tippingData.lastDriver.phone + "•" + tippingData.lastDriver.licenseNumber
             }
 
-            if (tippingData.status == 200 || tippingData.status == 210) {
-                btnTipping.text = "Lihat Bukti"
-            } else {
-                btnTipping.text = "Beri Tip"
+            btnTipping.text = when (tippingData.status) {
+                200, 210 -> "Lihat Bukti"
+                150 -> "Cek Status"
+                300 -> "Lihat Saldo"
+                else -> "Beri Tip"
             }
 
             tippingText.text = tippingData.statusTitle
@@ -225,7 +226,20 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             }
 
             btnTipping.setOnClickListener {
-                DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
+                when (tippingData.status) {
+                    200, 210, 100 -> {
+                        DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
+                    }
+                    150 -> {
+                        RouteManager.route(context, ApplinkConst.PMS)
+                    }
+                    300 -> {
+                        RouteManager.route(context, ApplinkConst.SALDO)
+                    }
+                    else -> {
+                        // no ops
+                    }
+                }
             }
         }
     }
