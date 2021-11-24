@@ -19,7 +19,6 @@ class CassavaViewHolder(
 
     override fun bind(element: CassavaUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.cassava_btn)
-        btn.text = element.text
         btn.setOnClickListener {
             itemView.context.apply { startActivity(newInstance(this)) }
         }

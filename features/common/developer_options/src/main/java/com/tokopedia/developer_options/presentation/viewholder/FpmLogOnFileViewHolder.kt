@@ -26,7 +26,6 @@ class FpmLogOnFileViewHolder(
 
     override fun bind(element: FpmLogOnFileUiModel) {
         cb = itemView.findViewById(R.id.fpm_log_on_file_cb)
-        cb?.text = element.text
         cb?.isChecked = FpmLogger.getInstance()?.isAutoLogFileEnabled ?: false
         cb?.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             if (state) {

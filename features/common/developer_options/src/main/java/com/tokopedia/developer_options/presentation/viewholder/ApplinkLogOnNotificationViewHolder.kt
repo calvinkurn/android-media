@@ -20,7 +20,6 @@ class ApplinkLogOnNotificationViewHolder(
 
     override fun bind(element: ApplinkLogOnNotificationUiModel) {
         val cb = itemView.findViewById<CheckboxUnify>(R.id.applink_log_on_notification_cb)
-        cb.text = element.text
         cb.isChecked = ApplinkLogger.getInstance(itemView.context).isNotificationEnabled
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             ApplinkLogger.getInstance(itemView.context).enableNotification(state)

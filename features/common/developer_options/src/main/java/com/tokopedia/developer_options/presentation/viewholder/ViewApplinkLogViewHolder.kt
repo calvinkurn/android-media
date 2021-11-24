@@ -19,7 +19,6 @@ class ViewApplinkLogViewHolder(
 
     override fun bind(element: ViewApplinkLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_applink_log_btn)
-        btn.text = element.text
         btn.setOnClickListener {
             ApplinkLogger.getInstance(itemView.context).openActivity()
         }

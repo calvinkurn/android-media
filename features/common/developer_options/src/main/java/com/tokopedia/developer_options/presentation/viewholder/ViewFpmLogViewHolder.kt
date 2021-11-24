@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ViewFpmLogUiModel
-import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ViewFpmLogViewHolder(
@@ -20,7 +19,6 @@ class ViewFpmLogViewHolder(
 
     override fun bind(element: ViewFpmLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_fpm_log_btn)
-        btn.text = element.text
         btn.setOnClickListener {
             FpmLogger.getInstance()?.openActivity()
         }

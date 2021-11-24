@@ -1,16 +1,18 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.LayoutRes
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 class SendFirebaseCrashExceptionViewHolder(
-    itemView: View,
-    private val listener: SendFirebaseCrashListener
+    itemView: View
 ): AbstractViewHolder<SendFirebaseCrashExceptionUiModel>(itemView)
 {
     companion object {
@@ -21,14 +23,13 @@ class SendFirebaseCrashExceptionViewHolder(
     override fun bind(element: SendFirebaseCrashExceptionUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.send_firebase_crash_btn)
         val tf = itemView.findViewById<TextFieldUnify>(R.id.firebase_crash_tf)
-        btn.text = element.text
         btn.setOnClickListener {
             val crashMessage = tf.textFieldInput.text.toString()
-            listener.onClickSendFirebaseCrashBtn(crashMessage)
+            if (crashMessage.isBlank()) {
+                Toast.makeText(itemView.context, "Crash message should not be empty", Toast.LENGTH_SHORT).show()
+            } else {
+                FirebaseCrashlytics.getInstance().recordException(NewDeveloperOptionActivity.DeveloperOptionException(crashMessage))
+            }
         }
-    }
-
-    interface SendFirebaseCrashListener {
-        fun onClickSendFirebaseCrashBtn(message: String)
     }
 }

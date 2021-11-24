@@ -84,18 +84,10 @@ class NewDeveloperOptionActivity : BaseActivity() {
     private val adapter by lazy {
         DeveloperOptionAdapter(
             typeFactory = DeveloperOptionTypeFactoryImpl(
-                pdpDevListener = clickPdpDevBtn(),
                 accessTokenListener = clickAccessTokenBtn(),
-                systemNonSystemAppsListener = clickSystemNonSystemApps(),
-                resetOnBoardingListener = clickResetOnBoarding(),
-                forceCrashListener = clickForceCrash(),
-                sendFirebaseCrashExceptionListener = clickSendFirebaseCrashException(),
-                openScreenRecorderListener = clickOpenScreenRecorder(),
-                tickNetworkLogOnNotificationListener = tickNetworkLogOnNotification(),
-                viewNetworkLogListener = clickViewNetworkLog()
+                resetOnBoardingListener = clickResetOnBoarding()
             ),
-            differ = DeveloperOptionDiffer(),
-            context = this
+            differ = DeveloperOptionDiffer()
         )
     }
 
@@ -228,13 +220,6 @@ class NewDeveloperOptionActivity : BaseActivity() {
         TranslatorManager.Companion.init(this.application, API_KEY_TRANSLATOR)
     }
 
-    private fun clickPdpDevBtn() = object : PdpDevViewHolder.PdpDevListener {
-        override fun onClickPdpDevBtn() {
-            val intent = Intent(this@NewDeveloperOptionActivity, ProductDetailDevActivity::class.java)
-            startActivity(intent)
-        }
-    }
-
     private fun clickAccessTokenBtn() = object : AccessTokenViewHolder.AccessTokenListener {
         override fun onClickAccessTokenBtn() {
             userSession?.accessToken?.apply {
@@ -244,11 +229,6 @@ class NewDeveloperOptionActivity : BaseActivity() {
             }
         }
         override fun getAccessToken(): String = userSession?.accessToken.orEmpty()
-    }
-
-    private fun clickSystemNonSystemApps() = object : SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener {
-        override fun onClickSystemAppsBtn() = showToastAndCopySystemOrNonSystemApps(true)
-        override fun onClickNonSystemAppsBtn() = showToastAndCopySystemOrNonSystemApps(false)
     }
 
     private fun clickResetOnBoarding() = object : ResetOnBoardingViewHolder.ResetOnBoardingListener {
@@ -261,70 +241,5 @@ class NewDeveloperOptionActivity : BaseActivity() {
         }
     }
 
-    private fun clickForceCrash() = object : ForceCrashViewHolder.ForceCrashListener {
-        override fun onClickForceCrashBtn() = throw DeveloperOptionException("Throw Runtime Exception")
-    }
-
-    private fun clickSendFirebaseCrashException() = object : SendFirebaseCrashExceptionViewHolder.SendFirebaseCrashListener {
-        override fun onClickSendFirebaseCrashBtn(message: String) {
-            if (message.isBlank()) {
-                Toast.makeText(this@NewDeveloperOptionActivity, "Crash message should not be empty", Toast.LENGTH_SHORT).show()
-            } else {
-                FirebaseCrashlytics.getInstance().recordException(DeveloperOptionException(message))
-            }
-        }
-    }
-
-    private fun clickOpenScreenRecorder() = object : OpenScreenRecorderViewHolder.OpenScreenRecorderListener {
-        override fun onClickScreenRecorderBtn() {
-            RouteManager.route(this@NewDeveloperOptionActivity, ApplinkConstInternalGlobal.SCREEN_RECORDER)
-        }
-    }
-
-    private fun tickNetworkLogOnNotification() = object : NetworkLogOnNotificationViewHolder.NetworkLogOnNotificationListener {
-        val sharedPref = this@NewDeveloperOptionActivity.getSharedPreferences(DevOptConfig.CHUCK_ENABLED, MODE_PRIVATE)
-
-        override fun onTickNetworkLogOnNotificationCheckbox(state: Boolean) {
-            val editor = sharedPref.edit().putBoolean(
-                DevOptConfig.IS_CHUCK_ENABLED,
-                state
-            )
-            editor.apply()
-        }
-
-        override fun isChuckerEnabled(): Boolean {
-            return sharedPref.getBoolean(DevOptConfig.IS_CHUCK_ENABLED, false)
-        }
-    }
-
-    private fun clickViewNetworkLog() = object : ViewNetworkLogViewHolder.ViewNetworkLogListener {
-        override fun onClickNetworkLogBtn() {
-            startActivity(getLaunchIntent(applicationContext, SCREEN_HTTP))
-        }
-    }
-
-    private fun showToastAndCopySystemOrNonSystemApps(isSystemApps: Boolean) {
-        val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val apps: List<ApplicationInfo> = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-        val systemApps = StringBuilder()
-        for (applicationInfo in apps) {
-            val check = if (isSystemApps) {
-                applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == ApplicationInfo.FLAG_SYSTEM
-            } else {
-                applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM != ApplicationInfo.FLAG_SYSTEM
-            }
-            if (check) {
-                if (systemApps.isNotEmpty()) {
-                    systemApps.append(",")
-                }
-                systemApps.append(applicationInfo.packageName)
-            }
-        }
-        val text = systemApps.toString()
-        val clip = ClipData.newPlainText("Copied Text", text)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-    }
-
-    private class DeveloperOptionException(message: String?) : RuntimeException(message)
+    class DeveloperOptionException(message: String?) : RuntimeException(message)
 }

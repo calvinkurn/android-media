@@ -2,7 +2,7 @@ package com.tokopedia.developer_options.presentation.model
 
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactory
 
-class SendFirebaseCrashExceptionUiModel(text: String) : OptionItemUiModel(text) {
+class SendFirebaseCrashExceptionUiModel(keyword: String) : OptionItemUiModel(keyword) {
     override fun type(typeFactory: DeveloperOptionTypeFactory): Int {
         return typeFactory.type(this)
     }

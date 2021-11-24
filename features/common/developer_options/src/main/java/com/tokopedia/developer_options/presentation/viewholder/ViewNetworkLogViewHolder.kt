@@ -2,14 +2,14 @@ package com.tokopedia.developer_options.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 class ViewNetworkLogViewHolder(
-    itemView: View,
-    private val listener: ViewNetworkLogListener
+    itemView: View
 ): AbstractViewHolder<ViewNetworkLogUiModel>(itemView)
 {
     companion object {
@@ -19,13 +19,10 @@ class ViewNetworkLogViewHolder(
 
     override fun bind(element: ViewNetworkLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_network_log_btn)
-        btn.text = element.text
         btn.setOnClickListener {
-            listener.onClickNetworkLogBtn()
+            itemView.context.apply {
+                startActivity(Chucker.getLaunchIntent(applicationContext, Chucker.SCREEN_HTTP))
+            }
         }
-    }
-
-    interface ViewNetworkLogListener {
-        fun onClickNetworkLogBtn()
     }
 }

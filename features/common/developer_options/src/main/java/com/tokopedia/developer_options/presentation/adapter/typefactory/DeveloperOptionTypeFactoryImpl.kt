@@ -8,15 +8,8 @@ import com.tokopedia.developer_options.presentation.model.*
 import com.tokopedia.developer_options.presentation.viewholder.*
 
 class DeveloperOptionTypeFactoryImpl(
-    private val pdpDevListener: PdpDevViewHolder.PdpDevListener,
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
-    private val systemNonSystemAppsListener: SystemNonSystemAppsViewHolder.SystemNonSystemAppsListener,
-    private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
-    private val forceCrashListener: ForceCrashViewHolder.ForceCrashListener,
-    private val sendFirebaseCrashExceptionListener: SendFirebaseCrashExceptionViewHolder.SendFirebaseCrashListener,
-    private val openScreenRecorderListener: OpenScreenRecorderViewHolder.OpenScreenRecorderListener,
-    private val tickNetworkLogOnNotificationListener: NetworkLogOnNotificationViewHolder.NetworkLogOnNotificationListener,
-    private val viewNetworkLogListener: ViewNetworkLogViewHolder.ViewNetworkLogListener
+    private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -44,15 +37,15 @@ class DeveloperOptionTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view, pdpDevListener)
+            PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)
-            SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view, systemNonSystemAppsListener)
+            SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view)
             ResetOnBoardingViewHolder.LAYOUT -> ResetOnBoardingViewHolder(view, resetOnBoardingListener)
-            ForceCrashViewHolder.LAYOUT -> ForceCrashViewHolder(view, forceCrashListener)
-            SendFirebaseCrashExceptionViewHolder.LAYOUT -> SendFirebaseCrashExceptionViewHolder(view, sendFirebaseCrashExceptionListener)
-            OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view, openScreenRecorderListener)
-            NetworkLogOnNotificationViewHolder.LAYOUT -> NetworkLogOnNotificationViewHolder(view, tickNetworkLogOnNotificationListener)
-            ViewNetworkLogViewHolder.LAYOUT -> ViewNetworkLogViewHolder(view, viewNetworkLogListener)
+            ForceCrashViewHolder.LAYOUT -> ForceCrashViewHolder(view)
+            SendFirebaseCrashExceptionViewHolder.LAYOUT -> SendFirebaseCrashExceptionViewHolder(view)
+            OpenScreenRecorderViewHolder.LAYOUT -> OpenScreenRecorderViewHolder(view)
+            NetworkLogOnNotificationViewHolder.LAYOUT -> NetworkLogOnNotificationViewHolder(view)
+            ViewNetworkLogViewHolder.LAYOUT -> ViewNetworkLogViewHolder(view)
             DeviceIdViewHolder.LAYOUT -> DeviceIdViewHolder(view)
             ForceDarkModeViewHolder.LAYOUT -> ForceDarkModeViewHolder(view)
             TopAdsLogOnNotificationViewHolder.LAYOUT -> TopAdsLogOnNotificationViewHolder(view)

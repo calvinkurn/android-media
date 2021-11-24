@@ -1,15 +1,16 @@
 package com.tokopedia.developer_options.presentation.viewholder
 
+import android.content.Intent
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.presentation.activity.ProductDetailDevActivity
 import com.tokopedia.developer_options.presentation.model.PdpDevUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 class PdpDevViewHolder(
-    itemView: View,
-    private val listener: PdpDevListener
+    itemView: View
 ): AbstractViewHolder<PdpDevUiModel>(itemView)
 {
     companion object {
@@ -19,13 +20,11 @@ class PdpDevViewHolder(
 
     override fun bind(element: PdpDevUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.pdp_dev_btn)
-        btn.text = element.text
         btn.setOnClickListener {
-           listener.onClickPdpDevBtn()
+            itemView.context.apply {
+                val intent = Intent(this, ProductDetailDevActivity::class.java)
+                startActivity(intent)
+            }
         }
-    }
-
-    interface PdpDevListener {
-        fun onClickPdpDevBtn()
     }
 }

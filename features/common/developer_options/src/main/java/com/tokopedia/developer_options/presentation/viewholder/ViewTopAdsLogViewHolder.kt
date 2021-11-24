@@ -5,7 +5,6 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.model.ViewNetworkLogUiModel
 import com.tokopedia.developer_options.presentation.model.ViewTopAdsLogUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -20,7 +19,6 @@ class ViewTopAdsLogViewHolder(
 
     override fun bind(element: ViewTopAdsLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_topads_log_btn)
-        btn.text = element.text
         btn.setOnClickListener {
             TopAdsLogger.getInstance(itemView.context).openActivity()
         }

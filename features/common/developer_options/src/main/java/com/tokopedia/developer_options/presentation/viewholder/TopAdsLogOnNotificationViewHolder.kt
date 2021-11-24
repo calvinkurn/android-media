@@ -20,7 +20,6 @@ class TopAdsLogOnNotificationViewHolder(
 
     override fun bind(element: TopAdsLogOnNotificationUiModel) {
         val cb = itemView.findViewById<CheckboxUnify>(R.id.topads_log_on_notification_cb)
-        cb.text = element.text
         cb.isChecked = TopAdsLogger.getInstance(itemView.context).isNotificationEnabled
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             TopAdsLogger.getInstance(itemView.context).enableNotification(state)

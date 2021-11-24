@@ -21,7 +21,6 @@ class ForceDarkModeViewHolder(
 
     override fun bind(element: ForceDarkModeUiModel) {
         val cb = itemView.findViewById<CheckboxUnify>(R.id.force_dark_mode_cb)
-        cb.text = element.text
         cb.isChecked = itemView.context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)

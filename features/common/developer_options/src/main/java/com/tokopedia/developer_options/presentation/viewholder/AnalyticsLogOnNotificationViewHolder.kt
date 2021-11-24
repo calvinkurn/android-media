@@ -20,7 +20,6 @@ class AnalyticsLogOnNotificationViewHolder(
 
     override fun bind(element: AnalyticsLogOnNotificationUiModel) {
         val cb = itemView.findViewById<CheckboxUnify>(R.id.analytics_log_on_notification_cb)
-        cb.text = element.text
         cb.isChecked = GtmLogger.getInstance(itemView.context).isNotificationEnabled
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             GtmLogger.getInstance(itemView.context).enableNotification(state)

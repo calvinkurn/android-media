@@ -19,7 +19,6 @@ class ResetOnBoardingViewHolder(
 
     override fun bind(element: ResetOnBoardingUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.reset_onboarding_btn)
-        btn.text = element.text
         btn.setOnClickListener {
             listener.onClickOnBoardingBtn()
         }

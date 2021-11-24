@@ -19,7 +19,6 @@ class ViewAnalyticsLogViewHolder(
 
     override fun bind(element: ViewAnalyticsLogUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.view_analytics_log_btn)
-        btn.text = element.text
         btn.setOnClickListener {
             itemView.context.apply { startActivity(newInstance(this)) }
         }
