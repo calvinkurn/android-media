@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasQueryParameter
 import com.tokopedia.test.application.matcher.isPointingTo
 import org.hamcrest.MatcherAssert.assertThat
@@ -17,8 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@LargeTest
-@RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class InboxActivityApplinkTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext

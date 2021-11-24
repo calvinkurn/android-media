@@ -4,20 +4,16 @@ import android.content.SharedPreferences
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.model.response.DataModel
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.stub.chatroom.view.service.UploadImageChatServiceStub
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -33,14 +29,10 @@ class TopChatRoomPresenterStub @Inject constructor(
     topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     replyChatUseCase: ReplyChatUseCase,
-    addToCartUseCase: AddToCartUseCase,
     compressImageUseCase: CompressImageUseCase,
-    seamlessLoginUsecase: SeamlessLoginUsecase,
-    getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
     addWishListUseCase: AddWishListUseCase,
     removeWishListUseCase: RemoveWishListUseCase,
     uploadImageUseCase: TopchatUploadImageUseCase,
-    orderProgressUseCase: OrderProgressUseCase,
     groupStickerUseCase: ChatListGroupStickerUseCase,
     chatAttachmentUseCase: ChatAttachmentUseCase,
     chatToggleBlockChat: ChatToggleBlockChatUseCase,
@@ -60,14 +52,10 @@ class TopChatRoomPresenterStub @Inject constructor(
     topChatRoomWebSocketMessageMapper,
     getTemplateChatRoomUseCase,
     replyChatUseCase,
-    addToCartUseCase,
     compressImageUseCase,
-    seamlessLoginUsecase,
-    getChatRoomSettingUseCase,
     addWishListUseCase,
     removeWishListUseCase,
     uploadImageUseCase,
-    orderProgressUseCase,
     groupStickerUseCase,
     chatAttachmentUseCase,
     chatToggleBlockChat,
@@ -98,16 +86,6 @@ class TopChatRoomPresenterStub @Inject constructor(
             ImageUploadMapper.mapToImageUploadServer(image),
             thisMessageId
         )
-    }
-
-    //Need to add this because error: calling this from your main thread can lead to deadlock in instrument test
-    override fun addProductToCart(
-        requestParams: RequestParams,
-        onSuccessAddToCart: (data: DataModel) -> Unit,
-        onError: (msg: String) -> Unit
-    ) {
-        onSuccessAddToCart.invoke(DataModel())
-        //TODO: remove this when TopChat ViewModel is ready
     }
 
     companion object {

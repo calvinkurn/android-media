@@ -96,11 +96,21 @@ class FlightPassengerInfoValidator @Inject constructor() {
         return passengerLastName != null && passengerLastName.split(" ".toRegex()).toTypedArray().size == 1
     }
 
+    fun isNumberOnly(number: String): Boolean{
+        return number.matches(REGEX_IS_NUMBER_ONLY.toRegex())
+    }
+
+    fun validateIdenNumLength(number: String): Boolean {
+        return (number.length < IDENTIFICATION_NUMBER_LENGTH || number.length > IDENTIFICATION_NUMBER_LENGTH)
+    }
+
     companion object {
         private const val MAX_PASSENGER_FIRST_NAME_LENGTH = 30
         private const val MAX_PASSENGER_LAST_NAME_LENGTH = 18
         private const val MIN_PASSENGER_LAST_NAME = 2
+        private const val IDENTIFICATION_NUMBER_LENGTH = 16
         private const val REGEX_IS_ALPHABET_AND_SPACE_ONLY = "^[a-zA-Z\\s]*$"
+        private const val REGEX_IS_NUMBER_ONLY = "^[0-9]"
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z0-9]*$"
         private const val REGEX_IS_ALPHA_AND_NUMERIC = "^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$"
     }

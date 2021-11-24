@@ -39,13 +39,14 @@
             android:contentDescription="@string/content_desc_image_scan"
             android:layout_centerHorizontal="true"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_below="@+id/img_scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/home_header_fintech_scan"
             android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/sp_10"
+            app:typographyType="small"
             android:gravity="center"/>
 
     </RelativeLayout>
@@ -85,15 +86,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_tokocash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_12"
                 android:textColor="@color/Unify_N700"
+                app:typographyType="heading_6"
                 android:textStyle="bold"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_below="@+id/tv_title_tokocash"
                 android:id="@+id/tv_btn_action_tokocash"
                 android:layout_width="wrap_content"
@@ -102,9 +104,10 @@
                 android:textSize="@dimen/sp_12"
                 android:ellipsize="end"
                 android:maxLines="1"
+                app:typographyType="heading_6"
                 android:visibility="gone" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_below="@+id/tv_title_tokocash"
                 android:id="@+id/tv_balance_tokocash"
                 android:layout_width="wrap_content"
@@ -112,6 +115,7 @@
                 android:textColor="@color/Unify_N700_32"
                 android:ellipsize="end"
                 android:maxLines="1"
+                app:typographyType="small"
                 android:textSize="@dimen/sp_10"/>
 
         </RelativeLayout>
@@ -173,7 +177,7 @@
             android:baselineAligned="false">
 
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_balance_tokopoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -185,9 +189,10 @@
                 android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible"
+                app:typographyType="body_3"
                 tools:text="50 Toko Poin"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_btn_action_tokopoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -198,9 +203,10 @@
                 android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 tools:text="Kupon Baru"
+                app:typographyType="small"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_coupon_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -212,6 +218,7 @@
                 android:textColor="@color/Unify_N700_32"
                 android:textSize="@dimen/sp_10"
                 android:visibility="gone"
+                app:typographyType="small"
                 tools:text="900000000000000000 Poin"
                 tools:visibility="visible" />
         </LinearLayout>
@@ -257,7 +264,7 @@
             android:baselineAligned="false">
 
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_balance_bebasongkir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -269,9 +276,10 @@
                 android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible"
+                app:typographyType="body_3"
                 tools:text="50 Toko Poin"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_btn_action_bebasongkir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -281,10 +289,11 @@
                 android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/sp_10"
                 android:visibility="gone"
+                app:typographyType="small"
                 tools:text="Kupon Baru"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_coupon_bebasongkir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -296,6 +305,7 @@
                 android:textColor="@color/Unify_N700_32"
                 android:textSize="@dimen/sp_10"
                 android:visibility="gone"
+                app:typographyType="small"
                 tools:text="900000000000000000 Poin"
                 tools:visibility="visible" />
         </LinearLayout>

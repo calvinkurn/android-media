@@ -29,7 +29,9 @@ class ShopPerformanceDiffUtilCallback(
                 isTheSameSectionPMPotentialPMProUiModel(oldItem, newItem) ||
                 isTheSameSectionRMPotentialPMBenefitUiModel(oldItem, newItem) ||
                 isTheSameSectionRMPotentialPMProUiModel(oldItem, newItem) ||
-                isTheSameSectionShopRecommendationUiModel(oldItem, newItem)
+                isTheSameSectionShopRecommendationUiModel(oldItem, newItem) ||
+                isTheSameTickerReactivatedUiModel(oldItem, newItem) ||
+                isTheSameReactivatedComebackUiModel(oldItem, newItem)
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
@@ -38,13 +40,27 @@ class ShopPerformanceDiffUtilCallback(
         return oldItem == newItem
     }
 
+    private fun isTheSameTickerReactivatedUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is TickerReactivatedUiModel && newItem is TickerReactivatedUiModel
+    }
+
+    private fun isTheSameReactivatedComebackUiModel(
+        oldItem: Visitable<*>?,
+        newItem: Visitable<*>?
+    ): Boolean {
+        return oldItem is ItemReactivatedComebackUiModel && newItem is ItemReactivatedComebackUiModel
+    }
+
     private fun isTheSameHeaderShopPerformanceUiModel(
         oldItem: Visitable<*>?,
         newItem: Visitable<*>?
     ): Boolean {
         return oldItem is HeaderShopPerformanceUiModel && newItem is HeaderShopPerformanceUiModel &&
                 oldItem.shopScore == newItem.shopScore && oldItem.shopLevel == newItem.shopLevel &&
-                oldItem.showCardNewSeller == newItem.showCardNewSeller
+                oldItem.showCard == newItem.showCard
     }
 
     private fun isTheSameDetailPerformanceUiModel(
@@ -111,7 +127,7 @@ class ShopPerformanceDiffUtilCallback(
         newItem: Visitable<*>?
     ): Boolean {
         return oldItem is ProtectedParameterSectionUiModel && newItem is ProtectedParameterSectionUiModel &&
-                oldItem.protectedParameterDate == newItem.protectedParameterDate
+                oldItem.descParameterRelief == newItem.descParameterRelief
     }
 
     private fun isTheSameSectionFaqUiModel(

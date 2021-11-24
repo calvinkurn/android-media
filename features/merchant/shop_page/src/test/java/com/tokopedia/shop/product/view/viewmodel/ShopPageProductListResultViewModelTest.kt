@@ -659,6 +659,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             shopPageProductListResultViewModel.getFilterResultCount(
                     shopId = anyString(),
+                    productPerPage = mockProductPerPage,
                     searchKeyword = anyString(),
                     etalaseId = anyString(),
                     tempShopProductFilterParameter = ShopProductFilterParameter(),
@@ -683,6 +684,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
             shopPageProductListResultViewModel.getFilterResultCount(
                     shopId = anyString(),
+                    productPerPage = mockProductPerPage,
                     searchKeyword = anyString(),
                     etalaseId = anyString(),
                     tempShopProductFilterParameter = ShopProductFilterParameter(),
