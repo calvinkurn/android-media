@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 import android.graphics.Paint
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
@@ -21,6 +22,7 @@ class ProductTagViewHolder(
 ): BaseViewHolder(itemView) {
 
     private val ivProductTag: ImageUnify = itemView.findViewById(R.id.iv_product_tag)
+    private val ivProductTagCover: ImageUnify = itemView.findViewById(R.id.iv_product_tag_cover)
     private val tvDiscount: Typography = itemView.findViewById(R.id.tv_product_tag_discount)
     private val tvProductTagStock: Typography = itemView.findViewById(R.id.tv_product_tag_stock)
     private val tvProductTagPrice: Typography = itemView.findViewById(R.id.tv_product_tag_price)
@@ -32,17 +34,26 @@ class ProductTagViewHolder(
 
     fun bind(item: ProductContentUiModel) {
         ivProductTag.setImageUrl(item.imageUrl)
-        tvProductTagStock.text = if (item.stock is StockAvailable) getString(R.string.play_bro_product_tag_stock_amount, item.stock.stock)
-                                    else getString(R.string.play_bro_product_tag_stock_empty)
+        if (item.stock is StockAvailable) {
+            tvProductTagStock.text = getString(R.string.play_bro_product_tag_stock_amount, item.stock.stock)
+            ivProductTagCover.hide()
+        }
+        else {
+            tvProductTagStock.text = getString(R.string.play_bro_product_tag_stock_empty)
+            ivProductTagCover.show()
+        }
+
          when(item.price) {
             is DiscountedPrice -> {
                 tvProductTagPriceOriginal.show()
+                tvDiscount.show()
                 tvDiscount.text = getString(R.string.play_bro_product_discount_template, item.price.discountPercent)
                 tvProductTagPrice.text = item.price.discountedPrice
                 tvProductTagPriceOriginal.text = item.price.originalPrice
             }
             is OriginalPrice -> {
                 tvProductTagPriceOriginal.invisible()
+                tvDiscount.hide()
                 tvProductTagPrice.text = item.price.price
             }
             else -> getString(R.string.play_bro_product_tag_no_price)
