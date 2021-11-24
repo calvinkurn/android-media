@@ -9,6 +9,8 @@ import com.google.firebase.ktx.Firebase
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -27,6 +29,7 @@ class FirebaseDLWrapper {
                     1- Long link:  link = firebaseUrl.toString()
                     2- Short link with custom format: link= firebaseUrl.getQueryParameter("android_url")
                     3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
+                    ex: https://tkpd.page.link/?link=https://www.tokopedia.com?android_url%3Dtokopedia://home%26ios_url%3Dtokopedia://home
                  */
                 var firebaseUrl: Uri?
                 if (pendingDynamicLinkData != null) {
@@ -50,12 +53,23 @@ class FirebaseDLWrapper {
                             RouteManager.route(activity, link)
                             processUtmParams(link, firebaseUrl)
                         }
-                        //scalyr logs
+
+                        //check link is not null
+                        val messageMap = mapOf("type" to "validation", "reason" to "FdlOpen", "data" to link)
+                        logging(messageMap)
                     }
                 }
 
             }
             .addOnFailureListener(activity) { e ->
+                if(e?.message != null) {
+                    val messageMap = mapOf(
+                        "type" to "validation",
+                        "reason" to "FdlOpenError",
+                        "data" to e.message.toString()
+                    )
+                    logging(messageMap)
+                }
             }
 
     }
@@ -125,15 +139,36 @@ class FirebaseDLWrapper {
             if (shortLink != null) {
                 var link = shortLink.toString()
                 shareCallback.urlCreated(LinkerUtils.createShareResult(link, link, link))
-                //scalyr logs
+                val messageMap = mapOf("type" to "validation", "reason" to "FdlCreationSucess", "data" to link)
+                logging(messageMap)
             }
 
         }.addOnFailureListener {
-            // Error
-            // ...
-            //scalyr logs
+            if(it?.message!=null) {
+                shareCallback.urlCreated(
+                    LinkerUtils.createShareResult(
+                        data.textContent,
+                        getFailureFallbackUrl(data),
+                        getFailureFallbackUrl(data)
+                    )
+                )
+
+                val messageMap =
+                    mapOf("type" to "validation", "reason" to "FdlCreationError", "data" to it.message.toString())
+                logging(messageMap)
+            }
         }
 
+    }
+
+    private fun getFailureFallbackUrl(data: LinkerData): String? {
+        var fallbackUrl = data.renderShareUri()
+        if (TextUtils.isEmpty(fallbackUrl)
+            && !TextUtils.isEmpty(data.desktopUrl)
+        ) {
+            fallbackUrl = data.desktopUrl
+        }
+        return fallbackUrl
     }
 
     private fun getDeeplinkData(data: LinkerData): String? {
@@ -162,6 +197,8 @@ class FirebaseDLWrapper {
 
     private fun needFallbakUrl(data: LinkerData): Boolean {
         if (LinkerData.REFERRAL_TYPE.equals(data.type, ignoreCase = true)) {
+            return false
+        }else if (LinkerData.APP_SHARE_TYPE.equals(data.type, ignoreCase = true)) {
             return false
         }
         return true
@@ -260,5 +297,9 @@ class FirebaseDLWrapper {
 
     private fun sendCampaignToTrackApp(param: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendCampaign(param)
+    }
+
+    private fun logging(messageMap: Map<String, String>){
+        ServerLogger.log(Priority.P2, "FDL_VALIDATION", messageMap)
     }
 }
