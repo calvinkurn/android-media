@@ -9,6 +9,8 @@ import com.google.firebase.ktx.Firebase
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.track.TrackApp
 import java.util.*
 
@@ -50,12 +52,23 @@ class FirebaseDLWrapper {
                             RouteManager.route(activity, link)
                             processUtmParams(link, firebaseUrl)
                         }
-                        //scalyr logs
+
+                        //check link is not null
+                        val messageMap = mapOf("type" to "validation", "reason" to "FdlOpen", "data" to link)
+                        logging(messageMap)
                     }
                 }
 
             }
             .addOnFailureListener(activity) { e ->
+                if(e?.message != null) {
+                    val messageMap = mapOf(
+                        "type" to "validation",
+                        "reason" to "FdlOpenError",
+                        "data" to e.message.toString()
+                    )
+                    logging(messageMap)
+                }
             }
 
     }
@@ -125,13 +138,16 @@ class FirebaseDLWrapper {
             if (shortLink != null) {
                 var link = shortLink.toString()
                 shareCallback.urlCreated(LinkerUtils.createShareResult(link, link, link))
-                //scalyr logs
+                val messageMap = mapOf("type" to "validation", "reason" to "FdlCreationSucess", "data" to link)
+                logging(messageMap)
             }
 
         }.addOnFailureListener {
-            // Error
-            // ...
-            //scalyr logs
+            if(it?.message!=null) {
+                val messageMap =
+                    mapOf("type" to "validation", "reason" to "FdlCreationError", "data" to it.message.toString())
+                logging(messageMap)
+            }
         }
 
     }
@@ -260,5 +276,9 @@ class FirebaseDLWrapper {
 
     private fun sendCampaignToTrackApp(param: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendCampaign(param)
+    }
+
+    private fun logging(messageMap: Map<String, String>){
+        ServerLogger.log(Priority.P2, "FDL_VALIDATION", messageMap)
     }
 }
