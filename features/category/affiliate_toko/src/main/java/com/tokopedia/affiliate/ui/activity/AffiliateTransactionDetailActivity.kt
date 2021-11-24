@@ -8,10 +8,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailData
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransactionDetailViewModel>() {
@@ -39,7 +42,54 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
     }
 
     private fun afterViewCreated() {
+        initObserver()
+        intent?.getStringExtra(PARAM_TRANSACTION)?.let { transactionID ->
+            affiliateVM.affiliateCommission(transactionID)
+        }
+    }
 
+    private fun initObserver() {
+        affiliateVM.getErrorMessage().observe(this , {
+
+        })
+        affiliateVM.getCommissionData().observe(this,{
+            setData(it)
+        })
+    }
+
+    private fun setData(commissionData: AffiliateCommissionDetailData.GetAffiliateCommissionDetail?) {
+        commissionData?.data?.cardDetail?.image?.android?.let { url ->
+            findViewById<ImageUnify>(R.id.product_image).setImageUrl(
+                url
+            )
+        }
+        findViewById<Typography>(R.id.product_name).text = commissionData?.data?.cardDetail?.cardTitle
+        findViewById<Typography>(R.id.product_status).text = commissionData?.data?.cardDetail?.cardPriceFormatted
+        findViewById<Typography>(R.id.shop_name).text = commissionData?.data?.cardDetail?.shopName
+        findViewById<Typography>(R.id.transaction_date).text = commissionData?.data?.createdAtFormatted
+        setCommissionDetails(commissionData?.data?.detail)
+
+    }
+
+    private fun setCommissionDetails(detail: List<AffiliateCommissionDetailData.GetAffiliateCommissionDetail.Data.Detail?>?) {
+        if(detail?.isNotEmpty() == true)
+        {
+            detail.getOrNull(0)?.let {
+                findViewById<Typography>(R.id.commission_details).text = it.detailTitle
+            }
+            detail.getOrNull(1)?.let {
+                findViewById<Typography>(R.id.transaction_total_price_header).text = it.detailTitle
+                findViewById<Typography>(R.id.transaction_total_price).text = it.detailDescription
+            }
+            detail.getOrNull(2)?.let {
+                findViewById<Typography>(R.id.transaction_komisi_header).text = it.detailTitle
+                findViewById<Typography>(R.id.transaction_komisi).text = it.detailDescription
+            }
+            detail.getOrNull(3)?.let {
+                findViewById<Typography>(R.id.transaction_total_received_header).text = it.detailTitle
+                findViewById<Typography>(R.id.transaction_total_received).text = it.detailDescription
+            }
+        }
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_transaction_detail_layout
