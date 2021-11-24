@@ -2,7 +2,6 @@ package com.tokopedia.thankyou_native.presentation.activity
 
 import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -36,8 +35,6 @@ import com.tokopedia.thankyou_native.presentation.helper.ThankYouPageDataLoadCal
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 import java.lang.ref.WeakReference
 import javax.inject.Inject
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.remoteconfig.RollenceKey
 
 var idlingResource: TkpdIdlingResource? = null
 
@@ -247,14 +244,21 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun initializeGlobalNav(title: String) {
         globalNabToolbar?.apply {
+            var hideSearchBar = false
+            var hideGlobalMenu = false
+            if (::thanksPageData.isInitialized) {
+                hideSearchBar = thanksPageData.configFlagData?.shouldHideSearchBar ?: false
+                hideGlobalMenu= thanksPageData.configFlagData?.shouldHideGlobalMenu ?: false
+            }
             this@ThankYouPageActivity.lifecycle.addObserver(this)
             setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-            setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
-            setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))
+            if (hideSearchBar.not()) setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
+            if (hideGlobalMenu.not()) setupSearchbar(listOf(HintData(GLOBAL_NAV_HINT)))
             setToolbarPageName(title)
             show()
         }
     }
+
 
     private fun updateHeaderTitle(screenName: String) {
         thank_header.title = screenName
@@ -282,7 +286,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                 is LoaderFragment -> true
                 else -> false
             }
-
         }
         return false
     }

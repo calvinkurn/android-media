@@ -1,14 +1,15 @@
 package com.tokopedia.thankyou_native.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.domain.response.DefaultChosenAddressData
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.*
@@ -115,6 +116,10 @@ class ThanksPageDataViewModel @Inject constructor(
                 thanksPageData.paymentDetails?.apply {
                     thanksPageData.paymentMethodCount += (size - 1)
                 }
+                val configFlagData: ConfigFlag? = thanksPageData.configFlag?.let {
+                    Gson().fromJson(it, ConfigFlag::class.java)
+                }
+                thanksPageData.configFlagData = configFlagData
             }
             thanksPageDataResultLiveData.postValue(Success(thanksPageData))
         }, onError = {
