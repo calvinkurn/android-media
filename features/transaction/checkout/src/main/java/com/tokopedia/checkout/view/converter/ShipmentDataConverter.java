@@ -98,6 +98,22 @@ public class ShipmentDataConverter {
         }
     }
 
+    public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        ArrayList<ShipmentCrossSellModel> listCrossSellModel = new ArrayList<>();
+        if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
+            for (int i = 0; i<cartShipmentAddressFormData.getCrossSell().size(); i++) {
+                ShipmentCrossSellModel shipmentCrossSellModel = new ShipmentCrossSellModel();
+                shipmentCrossSellModel.setChecked(cartShipmentAddressFormData.getCrossSell().get(i).isChecked());
+                shipmentCrossSellModel.setEnabled(!cartShipmentAddressFormData.getCrossSell().get(i).getCheckboxDisabled());
+                shipmentCrossSellModel.setCrossSellModel(cartShipmentAddressFormData.getCrossSell().get(i));
+                listCrossSellModel.add(shipmentCrossSellModel);
+            }
+            return listCrossSellModel;
+        } else {
+            return null;
+        }
+    }
+
     @NonNull
     private RecipientAddressModel createRecipientAddressModel(UserAddress defaultAddress,
                                                               UserAddress tradeInAddress,
@@ -291,6 +307,7 @@ public class ShipmentDataConverter {
 
         cartItemModel.setCartId(product.getCartId());
         cartItemModel.setProductId(product.getProductId());
+        cartItemModel.setProductCatId(product.getProductCatId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());

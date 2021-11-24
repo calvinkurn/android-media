@@ -2,6 +2,7 @@ package com.tokopedia.hotel.cancellation.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -11,9 +12,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.hotel.cancellation.data.*
-import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.util.HotelGqlMutation
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -46,15 +47,13 @@ class HotelCancellationViewModel @Inject constructor(private val graphqlReposito
             graphqlUseCase.addRequest(graphqlRequest)
 
             val graphqlResponse = graphqlUseCase.executeOnBackground()
-            val errors = graphqlResponse.getError(HotelCancellationModel.Response::class.java)
-
-            if (errors != null && errors.isNotEmpty() && errors.first().extensions != null) {
-                mutableCancellationData.postValue(Fail(HotelErrorException(errors.first().extensions.code, errors.first().message)))
+            val data = graphqlResponse.getSuccessData<HotelCancellationModel.Response>().response
+            if (data.content.actionButton.isNotEmpty()) {
+                val errMsg = Gson().toJson(data)
+                mutableCancellationData.postValue(Fail(MessageErrorException(errMsg)))
             } else {
-                val data = graphqlResponse.getSuccessData<HotelCancellationModel.Response>().response.data
-                mutableCancellationData.postValue(Success(data))
+                mutableCancellationData.postValue(Success(data.data))
             }
-
         }) {
             mutableCancellationData.postValue(Fail(it))
         }

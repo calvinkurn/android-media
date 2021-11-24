@@ -42,7 +42,6 @@ import com.tokopedia.sellerhome.settings.view.animator.OtherMenuHeaderAnimator
 import com.tokopedia.sellerhome.settings.view.animator.OtherMenuShareButtonAnimator
 import com.tokopedia.sellerhome.settings.view.animator.SecondaryShopInfoAnimator
 import com.tokopedia.sellerhome.settings.view.customview.TopadsTopupView
-import com.tokopedia.sellerhome.settings.view.fragment.old.OtherMenuFragment
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -54,6 +53,10 @@ class OtherMenuViewHolder(
     private val lifecycleOwner: LifecycleOwner?,
     private val userSession: UserSessionInterface,
     private var listener: Listener) : LifecycleObserver {
+
+    companion object {
+        const val SCROLLVIEW_INITIAL_POSITION = 0
+    }
 
     private val otherMenuAdapter by lazy {
         listener.getFragmentAdapter() as? OtherMenuAdapter
@@ -208,8 +211,8 @@ class OtherMenuViewHolder(
     fun scrollToTop() {
         scrollView?.post {
             scrollView?.smoothScrollTo(
-                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION,
-                OtherMenuFragment.SCROLLVIEW_INITIAL_POSITION
+                SCROLLVIEW_INITIAL_POSITION,
+                SCROLLVIEW_INITIAL_POSITION
             )
         }
     }
@@ -487,6 +490,7 @@ class OtherMenuViewHolder(
         fun getRecyclerView(): RecyclerView?
         fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory>?
         fun onShopInfoClicked()
+        fun onRmTransactionClicked()
         fun onShopBadgeClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
@@ -494,7 +498,7 @@ class OtherMenuViewHolder(
         fun onRefreshShopInfo()
         fun onFreeShippingClicked()
         fun onShopOperationalClicked()
-        fun onGoToPowerMerchantSubscribe(tab: String?)
+        fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean)
         fun onShopBadgeRefresh()
         fun onShopTotalFollowersRefresh()
         fun onUserInfoRefresh()

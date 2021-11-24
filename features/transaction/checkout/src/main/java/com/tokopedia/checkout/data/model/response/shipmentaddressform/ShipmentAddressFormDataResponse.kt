@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.CrossSellResponse
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
@@ -53,5 +54,7 @@ data class ShipmentAddressFormDataResponse(
         @SerializedName("pop_up_message")
         val popUpMessage: String = "",
         @SerializedName("error_ticker")
-        val errorTicker: String = ""
+        val errorTicker: String = "",
+        @SerializedName("cross_sell")
+        val crossSell: List<CrossSellResponse> = emptyList()
 )

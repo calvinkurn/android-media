@@ -5,8 +5,7 @@ import com.tokopedia.attachproduct.domain.model.AttachProductDomainModel
 
 fun AceSearchProductResponse.mapToListProduct(): AttachProductDomainModel {
     return AttachProductDomainModel(
-        this.aceSearchProductResponse.data?.products?.toList()
-                ?: emptyList())
+        this.aceSearchProductResponse.data.products.toList())
 }
 
 

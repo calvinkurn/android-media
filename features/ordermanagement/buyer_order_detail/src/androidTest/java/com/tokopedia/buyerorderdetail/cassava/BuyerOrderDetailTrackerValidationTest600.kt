@@ -8,9 +8,12 @@ class BuyerOrderDetailTrackerValidationTest600 : BuyerOrderDetailTrackerValidati
     @Test
     fun validateTrackerOnOrder600() {
         setupMock {
-            mockOrderDetail(BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_600)
+            mockOrderDetail(
+                BuyerOrderDetailMock.BuyerOrderDetailMockResponse.MOCK_RESPONSE_600,
+                graphqlRepositoryStub,
+                context
+            )
         } actionTest {
-            login()
             launchBuyerOrderDetailActivity(activityRule)
             blockAllIntent()
             testClickToolbarChatIcon()
@@ -20,25 +23,32 @@ class BuyerOrderDetailTrackerValidationTest600 : BuyerOrderDetailTrackerValidati
             testClickShopName(activityRule.activity)
             testClickProduct(activityRule.activity)
             testClickCopyAWB(activityRule.activity)
-            testClickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet(activityRule.activity, true)
-            testClickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet(activityRule.activity, true)
+            testClickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet(
+                activityRule.activity,
+                true
+            )
+            testClickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet(
+                activityRule.activity,
+                true
+            )
             testClickSecondaryActionButtonRequestComplaint(activityRule.activity)
             testClickSecondaryActionButtonTrack(activityRule.activity)
         } validate {
             clearQueries()
             addQueriesToValidate(
-                    BuyerOrderDetailTrackerValidationConstant.clickToolbarChatIconQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonFinishOrderQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickFinishOrderOnFinishOrderConfirmationBottomSheet,
-                    BuyerOrderDetailTrackerValidationConstant.clickRequestComplaintOnFinishOrderConfirmationBottomSheet,
-                    BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonRequestComplaintQueryPath,
-                    BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonTrackQueryPath)
+                BuyerOrderDetailTrackerValidationConstant.clickToolbarChatIconQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSeeDetailQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSeeInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickCopyInvoiceQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickShopNameQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickProductQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickCopyAWBQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickPrimaryActionButtonFinishOrderQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickFinishOrderOnFinishOrderConfirmationBottomSheet,
+                BuyerOrderDetailTrackerValidationConstant.clickRequestComplaintOnFinishOrderConfirmationBottomSheet,
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonRequestComplaintQueryPath,
+                BuyerOrderDetailTrackerValidationConstant.clickSecondaryActionButtonTrackQueryPath
+            )
             hasPassedAnalytics(cassavaTestRule)
         }
     }

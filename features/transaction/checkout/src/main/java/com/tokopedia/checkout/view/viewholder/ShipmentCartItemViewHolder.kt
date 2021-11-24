@@ -19,7 +19,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -225,8 +224,8 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
                 mSeparatorMultipleProductSameStore.gone()
             }
             textBundleTitle.text = cartItemModel.bundleTitle
-            textBundlePrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false))
-            textBundleSlashPrice.text = removeDecimalSuffix(convertPriceValueToIdrFormat(cartItemModel.bundleOriginalPrice, false))
+            textBundlePrice.text = convertPriceValueToIdrFormat(cartItemModel.bundlePrice, false).removeDecimalSuffix()
+            textBundleSlashPrice.text = convertPriceValueToIdrFormat(cartItemModel.bundleOriginalPrice, false).removeDecimalSuffix()
             textBundleSlashPrice.paintFlags = textBundleSlashPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             productContainerLayoutParams.bottomMargin = 0
             productInfoLayoutParams.bottomMargin = 0

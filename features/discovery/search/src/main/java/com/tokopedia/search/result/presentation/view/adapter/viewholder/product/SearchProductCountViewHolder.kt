@@ -8,9 +8,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultProductCountLayoutBinding
 import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
-import kotlinx.android.synthetic.main.search_result_product_count_layout.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SearchProductCountViewHolder(itemView: View, private val listener: SearchNavigationClickListener): AbstractViewHolder<SearchProductCountDataView>(itemView) {
 
@@ -19,6 +20,7 @@ class SearchProductCountViewHolder(itemView: View, private val listener: SearchN
         @LayoutRes
         val LAYOUT = R.layout.search_result_product_count_layout
     }
+    private var binding: SearchResultProductCountLayoutBinding? by viewBinding()
 
     override fun bind(element: SearchProductCountDataView) {
         bindCountTitle(element)
@@ -26,14 +28,15 @@ class SearchProductCountViewHolder(itemView: View, private val listener: SearchN
     }
 
     private fun bindCountTitle(element: SearchProductCountDataView) {
-        itemView.searchProductCountTitle?.shouldShowWithAction(element.productCountString.isNotEmpty()) {
+        val binding = binding ?: return
+        binding.searchProductCountTitle.shouldShowWithAction(element.productCountString.isNotEmpty()) {
             val countTitle = "<b>" + element.productCountString + "</b>" + " hasil pencarian"
-            itemView.searchProductCountTitle?.text = MethodChecker.fromHtml(countTitle)
+            binding.searchProductCountTitle.text = MethodChecker.fromHtml(countTitle)
         }
     }
 
     private fun bindChangeViewListener(element: SearchProductCountDataView) {
-        itemView.searchProductCountChangeViewButton?.setOnClickListener {
+        binding?.searchProductCountChangeViewButton?.setOnClickListener {
             listener.onChangeViewClicked(element.position)
         }
     }
@@ -49,6 +52,6 @@ class SearchProductCountViewHolder(itemView: View, private val listener: SearchN
     }
 
     private fun changeViewButton(id: Int) {
-        itemView.searchProductCountChangeViewButton.setImage(newIconId = id)
+        binding?.searchProductCountChangeViewButton?.setImage(newIconId = id)
     }
 }

@@ -18,7 +18,6 @@ import com.tokopedia.managepassword.common.ManagePasswordConstant.PARAM_AUTO_FIL
 import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
-import com.tokopedia.managepassword.forgotpassword.view.fragment.ForgotPasswordFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_URL
@@ -42,7 +41,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var uri: Uri
+    private var uri: Uri? = null
 
     override fun getScreenName(): String {
         return SCREEN_FORGOT_PASSWORD
@@ -55,13 +54,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                 .build()
     }
 
-    override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        if (intent?.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return ForgotPasswordFragment.createInstance(bundle)
-    }
+    override fun getNewFragment(): Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,10 +74,12 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                         uri = Uri.parse(url).buildUpon().build()
 
                         if (isContainsLoginApplink) {
-                            if (userSession.isLoggedIn && isForceLogout(uri)) {
-                                gotoLogout()
-                            } else {
-                                gotoLogin(uri)
+                            uri?.let {
+                                if (userSession.isLoggedIn && isForceLogout(it)) {
+                                    gotoLogout()
+                                } else {
+                                    gotoLogin(it)
+                                }
                             }
                         }
                     }

@@ -1,6 +1,6 @@
 query {
-  tokopointsStatusFiltered(filterKeys: ["tier"]) {
-    statusFilteredData {
+  tokopoints {
+    status {
       tier {
         nameDesc
         eggImageHomepageURL
