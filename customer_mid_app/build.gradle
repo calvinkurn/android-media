@@ -201,6 +201,7 @@ dependencies {
         exclude module: 'answers-shim'
     }
     implementation rootProject.ext.supportLibDependencies.preferenceV7
+    implementation rootProject.ext.supportLibDependencies.mediaV7
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
