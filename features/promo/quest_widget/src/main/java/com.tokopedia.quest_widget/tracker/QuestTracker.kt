@@ -1,30 +1,15 @@
 package com.tokopedia.quest_widget.tracker
 
-import androidx.annotation.IntDef
-import com.tokopedia.quest_widget.tracker.QuestSource.Companion.DEFAULT
-import com.tokopedia.quest_widget.tracker.QuestSource.Companion.DISCO
-import com.tokopedia.quest_widget.tracker.QuestSource.Companion.HOME
-import com.tokopedia.quest_widget.tracker.QuestSource.Companion.REWARDS
-import com.tokopedia.quest_widget.tracker.QuestSource.Companion.SHOP
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.interfaces.Analytics
+class QuestTracker {
 
-object QuestTracker {
-    fun getTracker(): Analytics {
-        return TrackApp.getInstance().gtm
+    private var trackerImpl: QuestTrackerImpl = DefaultQuestTrackerImpl()
+
+    fun clickLihatButton(@QuestSource source: Int){
+        trackerImpl.clickLihatButton(source)
     }
-}
 
-@Retention(AnnotationRetention.SOURCE)
-@IntDef(DEFAULT, HOME, REWARDS , SHOP , DISCO)
-annotation class QuestSource {
-
-    companion object {
-        const val DEFAULT = 0
-        const val HOME = 1
-        const val REWARDS = 2
-        const val SHOP = 3
-        const val DISCO = 4
-
+    fun clickQuestCard(@QuestSource source: Int, id: String){
+        trackerImpl.clickQuestCard(source, id)
     }
+
 }

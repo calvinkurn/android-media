@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.promoui.common.dpToPx
+import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.view.QuestWidgetView
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CarouselItemDecorationNew
@@ -19,6 +20,6 @@ class SectionTopQuestVH(val view: View, val listener: RewardsRecomListener) : Re
 
     fun bind(data: RewardsRecommendation) {
          val view:QuestWidgetView = view.findViewById(R.id.topquest)
-         view.getQuestList(0,"","myreward")
+         view.getQuestList(0,"","myreward", QuestSource.REWARDS)
     }
 }

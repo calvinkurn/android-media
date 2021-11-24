@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.listeners.QuestWidgetLoginClickListener
+import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.view.QuestWidgetView
 
 const val HOMEPAGE_PARAM = "homepag1"
@@ -31,8 +32,8 @@ class QuestWidgetViewHolder(
 
     override fun bind(element: QuestWidgetModel) {
         questWidget?.setupListeners(questWidgetLoginClickListener)
-        questWidget?.getQuestList(page = QuestWidgetLocations.MY_REWARD)
-//        questWidget?.setQuestData(element.questData)
+        questWidget?.getQuestList(page = QuestWidgetLocations.MY_REWARD, source = QuestSource.HOME)
+//        questWidget?.setQuestData(element.questData, QuestSource.HOME)
     }
 
 }

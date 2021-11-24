@@ -1689,13 +1689,13 @@ open class HomeRevampViewModel @Inject constructor(
                     val newQuestModel = questModel.copy(questData = results)
                     updateWidget(newQuestModel, index)
                 } else {
-                    deleteWidget(questModel, index)
+                    if (userSession.get().isLoggedIn) {
+                        deleteWidget(questModel, index)
+                    }
                 }
             }){
                 it.printStackTrace()
-                if(it.message != "your session has expired, please login again") {
-                    deleteWidget(questModel, index)
-                }
+                deleteWidget(questModel, index)
             }
         }
     }

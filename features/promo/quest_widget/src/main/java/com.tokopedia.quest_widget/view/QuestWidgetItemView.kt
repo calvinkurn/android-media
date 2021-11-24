@@ -21,6 +21,7 @@ import com.tokopedia.quest_widget.constants.QuestUserStatus
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.Progress
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
+import com.tokopedia.quest_widget.tracker.QuestTracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -58,9 +59,13 @@ class QuestWidgetItemView @JvmOverloads constructor(
     }
 
     @SuppressLint("SetTextI18n")
-    fun setData(item: QuestWidgetListItem, config: Config) {
+    fun setData(item: QuestWidgetListItem, config: Config, questTracker: QuestTracker, source: Int) {
 
         this.setOnClickListener {
+
+            //tracker event
+            questTracker.clickQuestCard(source, item.id.toString())
+
             item.actionButton?.cta?.applink?.let{
                 RouteManager.route(context, item.actionButton.cta.applink)
             }
