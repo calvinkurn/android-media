@@ -398,12 +398,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
     private fun setupAffiliate(affiliateInput: AffiliatePDPInput,
                                universalShareBottomSheet: UniversalShareBottomSheet) {
+        universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
         if (affiliateInput.shop?.shopStatus == null) {
             universalShareBottomSheet.affiliateRequestDataAwaited()
         } else {
             universalShareBottomSheet.affiliateRequestDataReceived(true)
         }
-        universalShareBottomSheet.setAffiliateRequestHolder(affiliateInput)
     }
     //endregion
 
