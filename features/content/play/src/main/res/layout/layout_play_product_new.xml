@@ -97,14 +97,15 @@
 
     </LinearLayout>
 
-    <com.google.android.flexbox.FlexboxLayout
+    <LinearLayout
         android:id="@+id/layout_product_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:flexWrap="wrap"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:orientation="horizontal"
+        android:weightSum="10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
         app:layout_constraintHorizontal_bias="0.0"
@@ -113,12 +114,12 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/iv_product_atc"
-            android:layout_width="96dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl3"
             android:textColor="#2E7D32"
+            android:layout_weight="5"
             app:layout_constraintStart_toEndOf="@+id/iv_product_image"
             app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
-            app:layout_flexGrow="1"
             app:unifyButtonSize="micro"
             app:unifyButtonVariant="ghost"
             tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck"
@@ -126,16 +127,16 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_product_buy"
-            android:layout_width="96dp"
-            android:layout_height="@dimen/layout_lvl2"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/layout_lvl1"
             app:layout_constraintStart_toEndOf="@+id/iv_product_atc"
             app:layout_constraintTop_toTopOf="@+id/iv_product_atc"
-            app:layout_flexGrow="1"
+            android:layout_weight="5"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             tools:ignore="TextContrastCheck"
             tools:text="Beli" />
-    </com.google.android.flexbox.FlexboxLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
