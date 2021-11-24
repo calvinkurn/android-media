@@ -13,7 +13,7 @@ data class AddToCart(
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_PRICE) var productPrice: Float? = 0f,
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_VARIANT) var productVariant: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_QUANTITY) var productQuantity: String? = "",
-        @Expose @SerializedName(CMConstant.PayloadKeys.ATC_SHOP_ID) var shopId: Long? = 0,
+        @Expose @SerializedName(CMConstant.PayloadKeys.ATC_SHOP_ID) var shopId: Int? = 0,
         @Expose @SerializedName(CMConstant.PayloadKeys.SHOP_NAME) var shopName: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.SHOP_TYPE) var shopType: String? = ""
 ) : Parcelable {
@@ -25,7 +25,7 @@ data class AddToCart(
             parcel.readFloat(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readLong(),
+            parcel.readInt(),
             parcel.readString(),
             parcel.readString()
     )
@@ -37,7 +37,7 @@ data class AddToCart(
         parcel.writeFloat(productPrice?: 0f)
         parcel.writeString(productVariant)
         parcel.writeString(productQuantity)
-        parcel.writeLong(shopId?: 0)
+        parcel.writeInt(shopId?: 0)
         parcel.writeString(shopName)
         parcel.writeString(shopType)
     }
