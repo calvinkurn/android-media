@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HolderTransactionListBinding
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.OrderListTypeFactoryImpl
@@ -31,8 +32,8 @@ class TransactionListViewHolder(itemView: View,
         val context = itemView.context
         val adapter = OrderListAdapter(OrderListTypeFactoryImpl(mainNavListener))
 
-        val edgeMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
-        val spacingBetween = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        val edgeMargin = 16f.toDpInt()
+        val spacingBetween = 8f.toDpInt()
 
         binding?.transactionRv?.adapter = adapter
         binding?.transactionRv?.layoutManager = LinearLayoutManager(

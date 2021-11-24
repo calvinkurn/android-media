@@ -20,6 +20,7 @@ import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProdu
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.FeaturedShopAdapter
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -86,7 +87,7 @@ class FeaturedShopViewHolder(
         if (binding?.dcBannerRv?.itemDecorationCount == 0) {
             binding?.dcBannerRv?.addItemDecoration(
                     CommonMarginStartDecoration(
-                            marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_14)
+                            marginStart = 14f.toDpInt()
                     )
             )
         }
@@ -107,7 +108,7 @@ class FeaturedShopViewHolder(
     }
 
     private fun setHeaderComponent(element: FeaturedShopDataModel) {
-        var textColor = ContextCompat.getColor(itemView.context, R.color.Unify_N50)
+        var textColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
         if (element.channelModel.channelBanner.textColor.isNotEmpty()) {
             try {
                 textColor = Color.parseColor(element.channelModel.channelBanner.textColor)

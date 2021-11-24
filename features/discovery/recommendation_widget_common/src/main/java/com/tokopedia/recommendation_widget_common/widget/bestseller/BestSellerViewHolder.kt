@@ -13,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.databinding.BestSellerViewHolderBinding
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.ChannelWidgetUtil
+import com.tokopedia.recommendation_widget_common.viewutil.toDpInt
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipFilterAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
@@ -40,7 +41,7 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
 
     private var annotationChipAdapter: AnnotationChipFilterAdapter = AnnotationChipFilterAdapter(this)
     private var recommendationAdapter: RecommendationCarouselAdapter = RecommendationCarouselAdapter(recommendationTypeFactory)
-    
+
     private var binding: BestSellerViewHolderBinding? by viewBinding()
 
     private var bestSellerDataModel: BestSellerDataModel? = null
@@ -109,14 +110,14 @@ class BestSellerViewHolder (private val view: View, private val listener: Recomm
             if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
                 binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = view.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+                                marginStart = 12f.toDpInt()
                         )
                 )
             }
             if (binding?.bestSellerRecommendationRecyclerView?.itemDecorationCount == 0) {
                 binding?.bestSellerRecommendationRecyclerView?.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                                marginStart = 8f.toDpInt()
                         )
                 )
             }
