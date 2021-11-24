@@ -78,7 +78,7 @@ object PromoRequestMapper {
     private fun getPromoCodesFromValidateUseByUniqueId(promoUiModel: PromoUiModel, cartShopHolderData: CartShopHolderData): List<String> {
         // get from voucher order first
         promoUiModel.voucherOrderUiModels.forEach { voucherOrder ->
-            if (voucherOrder?.uniqueId?.equals(cartShopHolderData.cartString) == true) {
+            if (voucherOrder.uniqueId == cartShopHolderData.cartString) {
                 val promoCodes = listOf(voucherOrder.code)
                 if (promoCodes.isNotEmpty()) {
                     return promoCodes
@@ -124,7 +124,7 @@ object PromoRequestMapper {
             }
             promoData.voucherOrderUiModels.forEach { voucherOrder ->
                 orders.forEach { order ->
-                    if (voucherOrder?.uniqueId == order.uniqueId) {
+                    if (voucherOrder.uniqueId == order.uniqueId) {
                         if (!order.codes.contains(voucherOrder.code)) {
                             order.codes.add(voucherOrder.code)
                         }

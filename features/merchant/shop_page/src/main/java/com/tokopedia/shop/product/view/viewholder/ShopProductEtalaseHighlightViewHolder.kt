@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemNewShopProductEtalaseHighlightBinding
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapter
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapterTypeFactory
 import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselUiModel
@@ -16,6 +17,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseHighlightUiMo
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 import java.util.ArrayList
 
@@ -24,15 +26,15 @@ class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
                                             shopProductImpressionListener: ShopProductImpressionListener?,
                                             shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?) : AbstractViewHolder<ShopProductEtalaseHighlightUiModel>(itemView) {
 
+    private val viewBinding : ItemNewShopProductEtalaseHighlightBinding? by viewBinding()
     private var recyclerView: RecyclerView? = null
-    private val etalaseHighlightAdapter: EtalaseHighlightAdapter
+    private val etalaseHighlightAdapter: EtalaseHighlightAdapter = EtalaseHighlightAdapter(
+            EtalaseHighlightAdapterTypeFactory(shopProductClickedListener,
+                    shopProductImpressionListener,
+                    shopCarouselSeeAllClickedListener,
+                    deviceWidth))
 
     init {
-        etalaseHighlightAdapter = EtalaseHighlightAdapter(
-                EtalaseHighlightAdapterTypeFactory(shopProductClickedListener,
-                        shopProductImpressionListener,
-                        shopCarouselSeeAllClickedListener,
-                        deviceWidth))
         findViews(itemView)
     }
 
@@ -47,16 +49,16 @@ class ShopProductEtalaseHighlightViewHolder(itemView: View, deviceWidth: Int,
     }
 
     private fun findViews(view: View) {
-        recyclerView = view.findViewById(R.id.recyclerViewEtalaseHighLight)
+        recyclerView = viewBinding?.recyclerViewEtalaseHighLight
         val layoutManager = LinearLayoutManager(view.context,
                 LinearLayoutManager.VERTICAL, false)
-        recyclerView!!.layoutManager = layoutManager
-        val animator = recyclerView!!.itemAnimator
+        recyclerView?.layoutManager = layoutManager
+        val animator = recyclerView?.itemAnimator
         if (animator is SimpleItemAnimator) {
             animator.supportsChangeAnimations = false
         }
-        recyclerView!!.isNestedScrollingEnabled = false
-        recyclerView!!.adapter = etalaseHighlightAdapter
+        recyclerView?.isNestedScrollingEnabled = false
+        recyclerView?.adapter = etalaseHighlightAdapter
     }
 
     companion object {

@@ -12,7 +12,7 @@ class TrackingPageActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         var fragment : TrackingPageFragment? = null
-        if (intent.extras != null && intent.data?.lastPathSegment != null) {
+        if (intent.data?.lastPathSegment != null) {
             var orderId = intent?.data?.lastPathSegment
             var urlLiveTracking = intent?.data?.getQueryParameter(URL_LIVE_TRACKING)
             var orderCaller = intent?.data?.getQueryParameter(ORDER_CALLER)

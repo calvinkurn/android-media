@@ -21,6 +21,9 @@ import com.tokopedia.unifycomponents.toPx
 private const val POSITION_TOP = 1
 private const val DOT_HALF_DIMEN = 8
 private const val LIHAT_PRODUK_EXPANDED_WIDTH = 100
+private const val LIHAT_PRODUK_SHRINKED_WIDTH = 24
+private const val POINTER_ACTUAL_WIDTH = 79
+
 
 
 fun showViewWithAnimation(view: View, duration: Long = 300) {
@@ -68,7 +71,10 @@ fun showBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
     else
         0f
 
-    view.pivotX = ((((view.width) / 2)).toFloat() + DOT_HALF_DIMEN.toPx()/2)
+    val pointerLeftMargin = (pointerView.layoutParams as ConstraintLayout.LayoutParams).marginStart
+    val bubbleLeftMargin = (view.layoutParams as ConstraintLayout.LayoutParams).marginStart
+    view.pivotX = (pointerLeftMargin - bubbleLeftMargin).toFloat() + POINTER_ACTUAL_WIDTH/2
+
     val pvhScaleX =
         PropertyValuesHolder.ofFloat(ConstraintLayout.SCALE_X, 0f, 1f)
     val pvhScaleY =
@@ -99,7 +105,11 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
         (view.height).toFloat()
     else
         0f
-    view.pivotX = ((((view.width) / 2)).toFloat() + DOT_HALF_DIMEN.toPx()/2)
+
+    val pointerLeftMargin = (pointerView.layoutParams as ConstraintLayout.LayoutParams).marginStart
+    val bubbleLeftMargin = (view.layoutParams as ConstraintLayout.LayoutParams).marginStart
+    view.pivotX = (pointerLeftMargin - bubbleLeftMargin).toFloat() + POINTER_ACTUAL_WIDTH/2
+
     val pvhScaleX =
         PropertyValuesHolder.ofFloat(ConstraintLayout.SCALE_X, 1f, 0f)
     val pvhScaleY =
@@ -116,7 +126,7 @@ fun hideBubbleViewWithAnimation(view: View, position: Int, pointerView: View) {
                         gone()
                     }
                 }
-            }, 150)
+            }, 100)
         }
         override fun onAnimationEnd(animation: Animator) {
             view.gone()
@@ -197,8 +207,8 @@ fun hideViewWithAnimation(layoutLihatProdukParent: View, context: Context) {
 fun hideViewWithoutAnimation(layoutLihatProdukParent: View, context: Context) {
     val expandedWidthDp = 100F
     val shrinkedWidthDp = 24F
-    if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH) {
-        val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
+    if (layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_SHRINKED_WIDTH){
+    val anim = ValueAnimator.ofInt(convertDpToPixel(expandedWidthDp, context), convertDpToPixel(shrinkedWidthDp, context))
         anim.cancel()
         anim.addUpdateListener { valueAnimator ->
             val animatedFinalValue = valueAnimator.animatedValue as Int

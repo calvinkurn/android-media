@@ -26,9 +26,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     private var shopLocationOldUiModel: ShopLocationOldUiModel? = null
     private var isAddNew = true
-    private var selectedDistrictId = -1
-    private var selectedCityId = -1
-    private var selectedProvinceId = -1
+    private var selectedDistrictId = -1L
+    private var selectedCityId = -1L
+    private var selectedProvinceId = -1L
     private val zipCodes: MutableList<String> = mutableListOf()
     private val zipCodesAdapter: ArrayAdapter<String>  by lazy {
         ArrayAdapter<String>(requireActivity(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row, com.tokopedia.design.R.id.item, zipCodes)
@@ -166,9 +166,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 val fullAddress = "$provinceName, $cityName, $districtName"
                 edit_text_district.setText(fullAddress)
 
-                selectedProvinceId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1)
-                selectedCityId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1)
-                selectedDistrictId = it.getInt(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1)
+                selectedProvinceId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1L)
+                selectedCityId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1L)
+                selectedDistrictId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1L)
                 zipCodes.clear()
                 zipCodes.addAll(it.getStringArrayList(
                     INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES

@@ -23,7 +23,7 @@
         android:id="@+id/menu_sah_order"
         android:enabled="true"
         android:icon="@drawable/selector_sah_order"
-        android:title="@string/sah_sale"
+        android:title="@string/sah_order"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_sah_other"

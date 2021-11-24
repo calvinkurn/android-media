@@ -1,7 +1,5 @@
 package com.tokopedia.play.view.activity
 
-import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.media.AudioManager
@@ -33,6 +31,7 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentUpcomingViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -102,6 +101,10 @@ class PlayActivity : BaseActivity(),
     private val ivLoading by viewComponent { LoadingViewComponent(it, R.id.iv_loading) }
     private val fragmentErrorView by viewComponent {
         FragmentErrorViewComponent(startChannelId, it, R.id.fl_global_error, supportFragmentManager)
+    }
+
+    private val fragmentUpcomingView by viewComponent {
+        FragmentUpcomingViewComponent(it, R.id.fcv_upcoming, supportFragmentManager)
     }
 
     /**
@@ -263,8 +266,16 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }
+                is PageResultState.Upcoming -> {
+                    ivLoading.hide()
+                    fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
+                }
             }
-            swipeContainerView.setChannelIds(it.currentValue)
+
+            if(it.state !is PageResultState.Upcoming) {
+                fragmentUpcomingView.safeRelease()
+                swipeContainerView.setChannelIds(it.currentValue)
+            }
         }
     }
 
@@ -280,29 +291,28 @@ class PlayActivity : BaseActivity(),
             if (!fragment.onBackPressed()) {
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
-                    if (isCustomTaskRoot()) {
-                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                        startActivity(intent)
-                        finish()
+                    if (isTaskRoot) {
+                        gotoHome()
                     } else {
                         fragment.setResultBeforeFinish()
                         supportFinishAfterTransition()
                     }
                 }
             }
-        } else super.onBackPressed()
+        } else {
+            if (isTaskRoot) {
+                gotoHome()
+            } else {
+                fragmentUpcomingView.getActiveFragment()?.setResultBeforeFinish()
+                supportFinishAfterTransition()
+            }
+        }
     }
 
-    private fun isCustomTaskRoot(): Boolean {
-        val activityManager = applicationContext.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        val appTasks = activityManager.appTasks
-        for(task in appTasks) {
-            val baseIntent = task.taskInfo.baseIntent
-            val categories = baseIntent.categories ?: return true
-
-            return !categories.contains(Intent.CATEGORY_LAUNCHER)
-        }
-        return true
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        startActivity(intent)
+        finish()
     }
 
     override fun requestEnableNavigation() {

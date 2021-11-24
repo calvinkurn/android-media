@@ -2,6 +2,8 @@ package com.tokopedia.logout.view
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.NotificationManager
+import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -14,8 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.facebook.FacebookSdk
-import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,14 +29,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.core.gcm.FCMCacheManager
 import com.tokopedia.core.gcm.NotificationModHandler
-import com.tokopedia.core.util.AppWidgetUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logout.R
 import com.tokopedia.logout.di.DaggerLogoutComponent
 import com.tokopedia.logout.di.LogoutComponent
-import com.tokopedia.logout.di.module.LogoutModule
 import com.tokopedia.logout.viewmodel.LogoutViewModel
 import com.tokopedia.notifications.CMPushNotificationManager.Companion.instance
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -80,7 +77,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     override fun getComponent(): LogoutComponent {
         return DaggerLogoutComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .logoutModule(LogoutModule(this))
                 .build()
     }
 
@@ -176,17 +172,19 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun clearData() {
         hideLoading()
         clearStickyLogin()
-        logoutFacebook()
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
         PersistentCacheManager.instance.delete()
-        AppWidgetUtil.sendBroadcastToAppWidget(applicationContext)
+        sendBroadcastToAppWidget()
+
+        // need to implement delete use case
         NotificationModHandler.clearCacheAllNotification(applicationContext)
-        NotificationModHandler(applicationContext).dismissAllActivedNotifications()
+
+        dismissAllActivedNotifications()
         clearWebView()
         clearLocalChooseAddress()
 
-        instance.refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(applicationContext), true)
+        instance.refreshFCMTokenFromForeground(userSession.deviceId, true)
 
         tetraDebugger?.setUserId("")
         userSession.clearToken()
@@ -212,14 +210,24 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }
     }
 
+
+    fun dismissAllActivedNotifications() {
+        val notificationManager =
+            applicationContext.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancelAll()
+    }
+
+    private fun sendBroadcastToAppWidget() {
+        if (GlobalConfig.isSellerApp()) {
+            val i = Intent()
+            i.action = AppWidgetManager.ACTION_APPWIDGET_UPDATE
+            applicationContext.sendBroadcast(i)
+        }
+    }
+
     private fun logoutGoogleAccountIfExist() {
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(applicationContext)
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
-    }
-
-    private fun logoutFacebook() {
-        FacebookSdk.sdkInitialize(applicationContext)
-        LoginManager.getInstance().logOut()
     }
 
     private fun clearStickyLogin() {

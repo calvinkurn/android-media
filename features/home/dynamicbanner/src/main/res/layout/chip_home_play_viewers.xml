@@ -26,13 +26,13 @@
         android:contentDescription="@string/content_desc_play_widget"
         app:srcCompat="@drawable/ic_chip_home_play_viewers"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTotalViewers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:textColor="@color/dynamicbanner_dms_text_total_viewers"
-        android:textSize="@dimen/sp_11"
+        app:typographyType="body_3"
         android:layout_marginStart="4dp"
         android:layout_marginLeft="4dp"
         android:visibility="visible"
