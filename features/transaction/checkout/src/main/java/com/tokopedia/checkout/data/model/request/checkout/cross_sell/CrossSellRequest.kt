@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell
+package com.tokopedia.checkout.data.model.request.checkout.cross_sell
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

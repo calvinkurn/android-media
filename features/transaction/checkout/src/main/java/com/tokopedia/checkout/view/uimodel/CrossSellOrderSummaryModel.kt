@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.bundle.view.uimodel
+package com.tokopedia.checkout.view.uimodel
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

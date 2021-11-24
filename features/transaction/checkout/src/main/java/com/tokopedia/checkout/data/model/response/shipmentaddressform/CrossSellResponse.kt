@@ -1,7 +1,10 @@
-package com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform
+package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
 
 /**
  * Created by fwidjaja on 26/10/21.

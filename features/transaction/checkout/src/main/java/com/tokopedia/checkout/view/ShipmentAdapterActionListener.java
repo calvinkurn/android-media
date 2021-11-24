@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view;
 
 import androidx.fragment.app.FragmentManager;
 
-import com.tokopedia.checkout.bundle.view.uimodel.CrossSellModel;
+import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;

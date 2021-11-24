@@ -1,8 +1,7 @@
 package com.tokopedia.checkout.domain.model.cartshipmentform
 
 import android.os.Parcelable
-import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.Donation
-import com.tokopedia.checkout.bundle.view.uimodel.CrossSellModel
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticcart.shipping.model.CodModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault

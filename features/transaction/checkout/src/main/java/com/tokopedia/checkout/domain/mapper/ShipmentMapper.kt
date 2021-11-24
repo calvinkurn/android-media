@@ -1,5 +1,12 @@
 package com.tokopedia.checkout.domain.mapper
 
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
+import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
+import com.tokopedia.checkout.view.uimodel.CrossSellInfoModel
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
+import com.tokopedia.checkout.view.uimodel.CrossSellOrderSummaryModel
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.*
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.domain.model.cartshipmentform.*

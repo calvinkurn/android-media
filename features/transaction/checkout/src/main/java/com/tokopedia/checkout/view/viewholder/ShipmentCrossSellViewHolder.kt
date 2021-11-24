@@ -1,15 +1,14 @@
-package com.tokopedia.checkout.bundle.view.viewholder
+package com.tokopedia.checkout.view.viewholder
 
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.R
-import com.tokopedia.checkout.bundle.view.ShipmentAdapterActionListener
-import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet

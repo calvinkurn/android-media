@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.checkout.bundle.data.model.response.shipmentaddressform.CrossSellResponse
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker

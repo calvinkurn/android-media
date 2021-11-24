@@ -1,6 +1,7 @@
-package com.tokopedia.checkout.bundle.view.uimodel
+package com.tokopedia.checkout.view.uimodel
 
 import android.os.Parcelable
+import com.tokopedia.checkout.view.uimodel.CrossSellModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
