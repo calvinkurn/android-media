@@ -29,16 +29,18 @@ object DigitalCartDummyData {
                 discountPrice = "Rp 12.500"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
+        val subscriptionProduct = FintechProduct(
+                transactionType = "Aktivasi Langganan",
+                tierId = "68",
+                optIn = false,
+                checkBoxDisabled = true,
+                allowOVOPoints = false,
+                fintechAmount = 0.0,
+                fintechPartnerAmount = 0.0,
+                info = FintechProduct.FintechProductInfo(
+                        title = "Aktifkan Langganan untuk bayar otomatis",
+                        subtitle = "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
+                        checkedSubtitle = "Tagihan ini akan otomatis dibayar tiap bulan mulai 24 Dec 2021 menggunakan OVO."
                 )
         )
 
@@ -56,7 +58,7 @@ object DigitalCartDummyData {
                         tooltipText = "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)"
                 )
         )
-        // [Misael] crossSellingType = 3
+
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -79,7 +81,7 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                fintechProduct = listOf(fintechProduct),
+                fintechProduct = listOf(subscriptionProduct, fintechProduct),
                 adminFee = 3000.0
         )
     }
@@ -102,17 +104,19 @@ object DigitalCartDummyData {
                 discountAmountLabel = "PROMOO"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
+        val subscriptionProduct = FintechProduct(
+            transactionType = "Aktivasi Langganan",
+            tierId = "68",
+            optIn = false,
+            checkBoxDisabled = true,
+            allowOVOPoints = false,
+            fintechAmount = 0.0,
+            fintechPartnerAmount = 0.0,
+            info = FintechProduct.FintechProductInfo(
+                title = "Aktifkan Langganan untuk bayar otomatis",
+                subtitle = "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
+                checkedSubtitle = "Tagihan ini akan otomatis dibayar tiap bulan mulai 24 Dec 2021 menggunakan OVO."
+            )
         )
 
         val fintechProduct = FintechProduct(
@@ -130,7 +134,6 @@ object DigitalCartDummyData {
                 )
         )
 
-        // [Misael] crossSellingType = 3
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -153,7 +156,7 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                fintechProduct = listOf(fintechProduct),
+                fintechProduct = listOf(subscriptionProduct, fintechProduct),
                 adminFee = 3000.0
         )
     }
@@ -196,17 +199,19 @@ object DigitalCartDummyData {
                 discountPrice = "Rp 12.500"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
+        val subscriptionProduct = FintechProduct(
+            transactionType = "Aktivasi Langganan",
+            tierId = "68",
+            optIn = false,
+            checkBoxDisabled = true,
+            allowOVOPoints = false,
+            fintechAmount = 0.0,
+            fintechPartnerAmount = 0.0,
+            info = FintechProduct.FintechProductInfo(
+                title = "Aktifkan Langganan untuk bayar otomatis",
+                subtitle = "Bayar tagihan ini secara otomatis, lebih mudah dan hemat waktu. Yuk mulai berlangganan.",
+                checkedSubtitle = "Tagihan ini akan otomatis dibayar tiap bulan mulai 24 Dec 2021 menggunakan OVO."
+            )
         )
 
         val fintechProduct = FintechProduct(
@@ -224,7 +229,6 @@ object DigitalCartDummyData {
                 )
         )
 
-        // [Misael] crossSellingType = 3
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -247,7 +251,7 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                fintechProduct = listOf(fintechProduct)
+                fintechProduct = listOf(subscriptionProduct, fintechProduct)
         )
     }
 
@@ -276,19 +280,6 @@ object DigitalCartDummyData {
                 discountPrice = "Rp 12.500"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
-        )
-
         val fintechProduct = FintechProduct(
                 transactionType = "egold",
                 tierId = "1",
@@ -304,7 +295,6 @@ object DigitalCartDummyData {
                 )
         )
 
-        // [Misael] crossSellingType = 0
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -357,19 +347,6 @@ object DigitalCartDummyData {
                 discountPrice = "Rp 1.000"
         )
 
-        val crossSellingConfig = CrossSellingConfig(
-                canBeSkipped = true,
-                isChecked = false,
-                wording = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording",
-                        checkoutButtonText = "Bayar"
-                ),
-                wordingIsSubscribe = CrossSellingConfig.CrossSellingWording(
-                        headerTitle = "cross selling wording subscribed",
-                        checkoutButtonText = "Bayar"
-                )
-        )
-
         val fintechProduct = FintechProduct(
                 transactionType = "egold",
                 tierId = "1",
@@ -385,7 +362,6 @@ object DigitalCartDummyData {
                 )
         )
 
-        // [Misael] crossSellingType = 0
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
