@@ -50,9 +50,6 @@ class ChooseAccountViewModelTest {
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var getAccountListDataModelFBResponseObserver: Observer<Result<AccountListDataModel>>
-
-    @RelaxedMockK
     lateinit var getAccountListDataModelPhoneResponseObserver: Observer<Result<AccountListDataModel>>
 
     @RelaxedMockK
@@ -65,10 +62,6 @@ class ChooseAccountViewModelTest {
     lateinit var goToSecurityQuestionObserver: Observer<Result<String>>
 
     private lateinit var viewmodel: ChooseAccountViewModel
-
-    private val rawQueries = mapOf(
-        ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST to ChooseAccountQueryConstant.QUERY_GET_ACCOUNT_LIST
-    )
 
     @Before
     fun before() {
@@ -106,7 +99,6 @@ class ChooseAccountViewModelTest {
         val response = LoginTokenPojo(
             loginToken = LoginToken(errors = arrayListOf(Error(message = msg)))
         )
-        viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onSuccessLoginToken.invoke(
                 response
@@ -125,7 +117,6 @@ class ChooseAccountViewModelTest {
     @Test
     fun `Success login token phone with error else condition`() {
         val response = LoginTokenPojo()
-        viewmodel.loginPhoneNumberResponse.observeForever(loginPhoneNumberResponseObserver)
         coEvery { loginTokenUseCase.executeLoginPhoneNumber(any(), any()) } coAnswers {
             secondArg<LoginTokenSubscriber>().onSuccessLoginToken.invoke(
                 response
