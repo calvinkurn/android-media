@@ -35,4 +35,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: FakeResponseActivityUiModel): Int
     fun type(uiModel: HomeAndNavigationRevampSwitcherUiModel): Int
     fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int
+    fun type(uiModel: RequestNewFcmTokenUiModel): Int
+    fun type(uiModel: ResetOnBoardingNavigationUiModel): Int
 }

@@ -55,6 +55,8 @@ class DeveloperOptionAdapter(
         const val KEYWORD_OLD_CART_CHECKOUT = "Old Cart Checkout"
         const val KEYWORD_NEW_CART_CHECKOUT = "New Cart Checkout Bundling"
         const val KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER = "Rollence AB Testing Manual Switcher"
+        const val KEYWORD_REQUEST_NEW_FCM_TOKEN = "Request New FCM Token"
+        const val KEYWORD_RESET_ONBOARDING_NAVIGATION = "Reset OnBoarding Navigation"
     }
 
     private val defaultItems = listOf(
@@ -100,6 +102,8 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
+        ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
         RollenceAbTestingManualSwitcherUiModel(listOf(KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER)),
         HomeAndNavigationRevampSwitcherUiModel(listOf(
             KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,

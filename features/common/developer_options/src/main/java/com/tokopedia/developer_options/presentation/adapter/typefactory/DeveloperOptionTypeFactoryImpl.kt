@@ -46,6 +46,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: FakeResponseActivityUiModel): Int = FakeResponseActivityViewHolder.LAYOUT
     override fun type(uiModel: HomeAndNavigationRevampSwitcherUiModel): Int = HomeAndNavigationRevampSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int = RollenceAbTestingManualSwitcherViewHolder.LAYOUT
+    override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
+    override fun type(uiModel: ResetOnBoardingNavigationUiModel): Int = ResetOnBoardingNavigationViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -81,6 +83,8 @@ class DeveloperOptionTypeFactoryImpl(
             FakeResponseActivityViewHolder.LAYOUT -> FakeResponseActivityViewHolder(view)
             HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view)
             RollenceAbTestingManualSwitcherViewHolder.LAYOUT -> RollenceAbTestingManualSwitcherViewHolder(view)
+            RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
+            ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
