@@ -5,9 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -15,20 +12,14 @@ import android.os.Process
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chuckerteam.chucker.api.Chucker.SCREEN_HTTP
-import com.chuckerteam.chucker.api.Chucker.getLaunchIntent
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.coachmark.CoachMark2.Companion.isCoachmmarkShowAllowed
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.config.DevOptConfig
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionAdapter
 import com.tokopedia.developer_options.presentation.adapter.DeveloperOptionDiffer
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
@@ -42,7 +33,6 @@ import com.tokopedia.url.TokopediaUrl.Companion.setEnvironment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.RuntimeException
-import java.lang.StringBuilder
 
 class NewDeveloperOptionActivity : BaseActivity() {
 
@@ -139,13 +129,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
         sbDeveloperOption = findViewById(R.id.sbDeveloperOption)
         sbDeveloperOption?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                s?.toString()?.let {
-                    if (it.isEmpty()) {
-                        adapter.setDefaultItem()
-                    } else {
-                        adapter.searchItem(it)
-                    }
-                }
+                s?.toString()?.let { adapter.searchItem(it) }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no need to implement */ }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* no need to implement */ }

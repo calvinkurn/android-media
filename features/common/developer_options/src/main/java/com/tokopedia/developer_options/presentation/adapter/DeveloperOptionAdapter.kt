@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.model.*
 
@@ -65,7 +66,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_TOTAL_TRANSLATED_TEXT = "Total Translated Text"
     }
 
-    private val defaultItems = listOf(
+    private val defaultItems = mutableListOf(
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         SystemNonSystemAppsUiModel(listOf(
@@ -132,6 +133,14 @@ class DeveloperOptionAdapter(
         )),
     )
 
+    init {
+        if (GlobalConfig.isSellerApp()) {
+            removeSellerAppItems()
+        } else {
+            removeMainAppItems()
+        }
+    }
+
     fun searchItem(keyword: String) {
         val newItems = mutableListOf<OptionItemUiModel>()
         defaultItems.forEach { model ->
@@ -144,5 +153,31 @@ class DeveloperOptionAdapter(
 
     fun setDefaultItem() {
         submitList(defaultItems)
+    }
+
+    private fun removeSellerAppItems() {
+        removeWidget(PdpDevUiModel::class.java)
+        removeWidget(SystemNonSystemAppsUiModel::class.java)
+        removeWidget(LeakCanaryUiModel::class.java)
+        removeWidget(SharedPreferencesEditorUiModel::class.java)
+    }
+
+    private fun removeMainAppItems() {
+        removeWidget(PdpDevUiModel::class.java)
+        removeWidget(SystemNonSystemAppsUiModel::class.java)
+        removeWidget(LeakCanaryUiModel::class.java)
+        removeWidget(SharedPreferencesEditorUiModel::class.java)
+    }
+
+    private fun <T> removeWidget(itemClass: Class<T>) {
+        val items = defaultItems
+        val widget = getItem(itemClass)
+        widget?.let {
+            items.remove(it)
+        }
+    }
+
+    private fun <T> getItem(itemClass: Class<T>): Visitable<*>? {
+        return defaultItems.find { it.javaClass == itemClass}
     }
 }
