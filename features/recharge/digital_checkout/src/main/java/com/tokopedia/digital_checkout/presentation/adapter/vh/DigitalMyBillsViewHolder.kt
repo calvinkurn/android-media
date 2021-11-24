@@ -3,8 +3,6 @@ package com.tokopedia.digital_checkout.presentation.adapter.vh
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
-import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartMyBillsWidget
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.view.*
@@ -14,7 +12,6 @@ import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.vie
  */
 
 class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) : RecyclerView.ViewHolder(view) {
-    // [Misael] Here
     fun bindSubscription(subscription: FintechProduct) {
         with(itemView) {
             if (subscription.info.title.isNotEmpty()) {
@@ -61,9 +58,7 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
                 widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 if (fintechProduct.info.iconUrl.isNotEmpty()) {
                     listener.onTebusMurahImpression(fintechProduct, position)
-                } else {
-                    listener.onCrossellImpression(fintechProduct, position)
-                }
+                } else listener.onCrossellImpression(fintechProduct, position)
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                     override fun onMoreInfoClicked() {
@@ -94,7 +89,6 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
 }
 
 interface MyBillsActionListener {
-//    fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean)
     fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int)
     fun onCrossellImpression(fintechProduct: FintechProduct, position: Int)
     fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean)

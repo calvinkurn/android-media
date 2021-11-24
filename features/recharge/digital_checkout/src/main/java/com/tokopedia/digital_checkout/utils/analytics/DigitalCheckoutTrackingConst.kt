@@ -41,7 +41,7 @@ object DigitalCheckoutTrackingConst {
         const val UNCHECK_TEBUS_MURAH_ICON = "uncheck tebus murah icon"
 
         const val IMPRESSION_CROSSELL_ICON = "impression crossell icon"
-        const val IMPRESSION_AUTODEBIT = "view tick box autodebet"
+        const val IMPRESSION_AUTODEBIT = "view tick box auto debit"
     }
 
     object Label {

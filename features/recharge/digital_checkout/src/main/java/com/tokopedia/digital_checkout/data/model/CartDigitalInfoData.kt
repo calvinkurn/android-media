@@ -33,9 +33,7 @@ data class CartDigitalInfoData(
 
         var isForceRenderCart: Boolean = false,
 
-        var crossSellingType: Int = 0,
-
-        var showSubscriptionsView: Boolean = false,
+        var isSubscribed: Boolean = false,
 
         var isSpecialProduct: Boolean = false
 ) : Parcelable {

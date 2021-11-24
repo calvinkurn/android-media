@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.digital_checkout.data.model.CartDigitalInfoData
 import com.tokopedia.digital_checkout.presentation.adapter.vh.DigitalMyBillsViewHolder
 import com.tokopedia.digital_checkout.presentation.adapter.vh.MyBillsActionListener
 

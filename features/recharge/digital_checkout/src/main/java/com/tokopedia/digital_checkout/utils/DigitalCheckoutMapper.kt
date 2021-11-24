@@ -3,7 +3,6 @@ package com.tokopedia.digital_checkout.utils
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
-import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
@@ -126,11 +125,12 @@ object DigitalCheckoutMapper {
                 attributesDigital.defaultPromoTab = attributes.defaultPromo
                 attributesDigital.userId = attributes.userId
             }
-            // [Misael] Here
+
             responseRechargeGetCart.response.run {
-                cartDigitalInfoData.crossSellingType = crossSellingType
-                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
-                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
+                val subscriptions = fintechProduct.filter {
+                    it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+                }
+                cartDigitalInfoData.isSubscribed = subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled
                 attributesDigital.fintechProduct = fintechProduct
             }
 

@@ -19,4 +19,9 @@ object DigitalCheckoutConst {
         const val SUMMARY_ADMIN_FEE_POSITION = 1
         const val SUMMARY_PROMO_CODE_POSITION = 2
     }
+
+    object FintechProduct {
+        const val PROTECTION = "purchase-protection"
+        const val AUTO_DEBIT = "Aktivasi Langganan"
+    }
 }

@@ -29,7 +29,7 @@ import com.tokopedia.common_digital.common.constant.DigitalCache
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.digital_checkout.R
-import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
+import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_COUPON_ACTIVE
 import com.tokopedia.digital_checkout.data.DigitalPromoCheckoutPageConst.EXTRA_PROMO_DIGITAL_MODEL
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
@@ -266,7 +266,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
-        digitalSubscriptionParams.isSubscribed = cartInfo.crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
+        digitalSubscriptionParams.isSubscribed = cartInfo.isSubscribed
         sendGetCartAndCheckoutAnalytics()
 
         if (cartInfo.attributes.isOpenAmount) {
@@ -462,7 +462,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         rvMyBills.adapter = myBillsAdapter
 
         val (subscriptions, fintechProducts) = cartInfo.attributes.fintechProduct.partition {
-            it.transactionType == "Aktivasi Langganan"
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
         }
         myBillsAdapter.setItems(subscriptions, fintechProducts)
     }
@@ -491,7 +491,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int) {
-        if (fintechProduct.transactionType == "purchase_protection") {
+        if (fintechProduct.transactionType == DigitalCheckoutConst.FintechProduct.PROTECTION) {
             digitalAnalytics.eventClickProtection(getCategoryName(), getOperatorName(), isChecked, userSession.userId)
         } else {
             digitalAnalytics.eventClickCrossSell(getCategoryName(), getOperatorName(), isChecked, userSession.userId)
