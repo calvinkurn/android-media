@@ -2261,8 +2261,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderCheckboxGlobal(cartData: CartData) {
+        // Just add view item to fill space. This view item will always be covered by sticky global checkbox view.
         if (cartData.availableSection.availableGroupGroups.isNotEmpty()) {
-            cartAdapter.addItem(CartUiModelMapper.mapSelectAllUiModel())
+            cartAdapter.addItem(CartSelectAllHolderData())
         }
     }
 
