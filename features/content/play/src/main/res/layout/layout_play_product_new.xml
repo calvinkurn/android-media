@@ -97,30 +97,45 @@
 
     </LinearLayout>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/iv_product_atc"
-        android:layout_width="96dp"
-        android:layout_height="@dimen/layout_lvl3"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/layout_product_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:textColor="#2E7D32"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:flexWrap="wrap"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
-        app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
-        app:unifyButtonSize="micro"
-        app:unifyButtonVariant="ghost"
-        tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck"
-        tools:text="Keranjang" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_product_discount">
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_product_buy"
-        android:layout_width="96dp"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        app:layout_constraintStart_toEndOf="@+id/iv_product_atc"
-        app:layout_constraintTop_toTopOf="@+id/iv_product_atc"
-        app:unifyButtonSize="micro"
-        app:unifyButtonType="main"
-        tools:ignore="TextContrastCheck"
-        tools:text="Beli" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/iv_product_atc"
+            android:layout_width="96dp"
+            android:layout_height="24dp"
+            android:textColor="#2E7D32"
+            app:layout_constraintStart_toEndOf="@+id/iv_product_image"
+            app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
+            app:layout_flexGrow="1"
+            app:unifyButtonSize="micro"
+            app:unifyButtonVariant="ghost"
+            tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck"
+            tools:text="Keranjang" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_product_buy"
+            android:layout_width="96dp"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            app:layout_constraintStart_toEndOf="@+id/iv_product_atc"
+            app:layout_constraintTop_toTopOf="@+id/iv_product_atc"
+            app:layout_flexGrow="1"
+            app:unifyButtonSize="micro"
+            app:unifyButtonType="main"
+            tools:ignore="TextContrastCheck"
+            tools:text="Beli" />
+    </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
