@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'kotlin-parcelize'
+apply plugin: 'kotlin-kapt'
 
 android {
     defaultConfig {
@@ -11,8 +12,6 @@ android {
         viewBinding true
     }
 }
-
-apply plugin: 'kotlin-kapt'
 
 kapt {
     correctErrorTypes = true
