@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <androidx.appcompat.widget.Toolbar
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/recom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
