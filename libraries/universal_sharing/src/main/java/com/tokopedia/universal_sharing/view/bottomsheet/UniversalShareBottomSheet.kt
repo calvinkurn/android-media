@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.linker.LinkerManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -280,7 +281,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     //call this method if the request data is received
     fun affiliateRequestDataReceived(validRequest: Boolean) {
-        val userSession = UserSession(context)
+        val userSession = UserSession(LinkerManager.getInstance().context)
         if(userSession.isLoggedIn && validRequest){
             executeAffiliateEligibilityUseCase()
             showLoader = true
