@@ -1,15 +1,11 @@
 package com.tokopedia.thankyou_native.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
-import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
-import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.domain.usecase.*
@@ -20,15 +16,16 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ThanksPageDataViewModel @Inject constructor(
     private val thanksPageDataUseCase: ThanksPageDataUseCase,
+    private val thanksPageMapperUseCase: ThanksPageMapperUseCase,
     private val gyroEngineRequestUseCase: GyroEngineRequestUseCase,
+    private val gyroEngineMapperUseCase: GyroEngineMapperUseCase,
     private val topTickerDataUseCase: TopTickerUseCase,
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
-    private val thankYouTopAdsViewModelUseCase : ThankYouTopAdsViewModelUseCase,
+    private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
     @CoroutineBackgroundDispatcher val dispatcherIO: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -76,14 +73,14 @@ class ThanksPageDataViewModel @Inject constructor(
         topAdsRequestParams: TopAdsRequestParams,
         thanksPageData: ThanksPageData
     ) {
-        thankYouTopAdsViewModelUseCase.getAppLinkPaymentInfo(topAdsRequestParams, thanksPageData, {
-            if(it.isNotEmpty()){
+        thankYouTopAdsViewModelUseCase.getTopAdsData(topAdsRequestParams, thanksPageData, {
+            if (it.isNotEmpty()) {
                 topAdsRequestParams.topAdsUIModelList = it
                 topAdsDataLiveData.postValue(topAdsRequestParams)
-            }else {
+            } else {
                 postGyroRecommendation(gyroResponseLiveData.value)
             }
-        },{
+        }, {
             postGyroRecommendation(gyroResponseLiveData.value)
         })
     }
@@ -93,36 +90,15 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     private fun postGyroRecommendation(engineData: FeatureEngineData?) {
-        launchCatchError(block = {
-            val gyroRecommendation: GyroRecommendation? = withContext(dispatcherIO) {
-                return@withContext FeatureRecommendationMapper.getFeatureList(engineData)
-            }
-            gyroRecommendation?.let {
-                gyroRecommendationLiveData.postValue(gyroRecommendation)
-            }
-        }, onError = {
-            it.printStackTrace()
-        })
+        gyroEngineMapperUseCase.populateThanksPageDataFields(engineData, {
+            gyroRecommendationLiveData.postValue(it)
+        }, { it.printStackTrace() })
     }
 
     private fun onThanksPageDataSuccess(thanksPageData: ThanksPageData) {
-        launchCatchError(block = {
-            withContext(dispatcherIO) {
-                thanksPageData.paymentDeductions?.forEach {
-                    if (it.itemName == PaymentDeductionKey.REWARDS_POINT) {
-                        thanksPageData.paymentMethodCount++
-                    }
-                }
-                thanksPageData.paymentDetails?.apply {
-                    thanksPageData.paymentMethodCount += (size - 1)
-                }
-                val configFlagData: ConfigFlag? = thanksPageData.configFlag?.let {
-                    Gson().fromJson(it, ConfigFlag::class.java)
-                }
-                thanksPageData.configFlagData = configFlagData
-            }
-            thanksPageDataResultLiveData.postValue(Success(thanksPageData))
-        }, onError = {
+        thanksPageMapperUseCase.populateThanksPageDataFields(thanksPageData, {
+            thanksPageDataResultLiveData.postValue(Success(it))
+        }, {
             thanksPageDataResultLiveData.postValue(Fail(it))
         })
     }
