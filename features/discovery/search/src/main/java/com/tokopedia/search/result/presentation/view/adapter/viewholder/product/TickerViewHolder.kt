@@ -37,7 +37,7 @@ class TickerViewHolder(
 
         tickerView.shouldShowWithAction(shouldShowTicker) {
             tickerView.addOnImpressionListener(element) {
-                tickerListener.onTickerClicked(element)
+                tickerListener.onTickerImpressed(element)
             }
             tickerView.setHtmlDescription(element.text)
             tickerView.setDescriptionClickEvent(object : TickerCallback {
