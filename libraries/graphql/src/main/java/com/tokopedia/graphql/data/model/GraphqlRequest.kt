@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.data.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.FingerprintManager
