@@ -7,9 +7,12 @@ import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
+import com.tokopedia.network.NetworkRouter
 import com.tokopedia.notification.common.PushNotificationApi
 import com.tokopedia.notification.common.utils.NotificationValidationManager
 import com.tokopedia.notifications.common.*
@@ -19,8 +22,8 @@ import com.tokopedia.notifications.common.PayloadConverter.convertMapToBundle
 import com.tokopedia.notifications.data.AmplificationDataSource
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.model.NotificationMode
-import com.tokopedia.notifications.worker.PushWorker
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import timber.log.Timber
@@ -79,6 +82,8 @@ class CMPushNotificationManager : CoroutineScope {
         this.applicationContext = application.applicationContext
         CMInAppManager.getInstance().init(application)
 
+        initGraphql(application)
+
         PushNotificationApi.bindService(
                 applicationContext,
                 ::onAidlReceive,
@@ -88,6 +93,10 @@ class CMPushNotificationManager : CoroutineScope {
         getAmplificationPushData(application)
     }
 
+    private fun initGraphql(application: Application) {
+        val authenticator = TkpdAuthenticatorGql.createAuthenticator(application, application as NetworkRouter, UserSession(application), RefreshTokenGql())
+        GraphqlClient.init(application, authenticator)
+    }
 
     private fun getAmplificationPushData(application: Application) {
         /*

@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.receiver
 
 import android.app.Activity
+import android.app.Application
 import android.content.*
 import android.os.Bundle
 import android.util.Log
@@ -57,11 +58,15 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         get() = Dispatchers.Main
 
 
+    private fun initGraphql(application: Application) {
+        val authenticator = TkpdAuthenticatorGql.createAuthenticator(application, application as NetworkRouter, UserSession(application), RefreshTokenGql())
+        GraphqlClient.init(application, authenticator)
+    }
+
     private fun initInjector(context: Context) {
         try {
             val application = context.applicationContext as BaseMainApplication
-            val authenticator = TkpdAuthenticatorGql.createAuthenticator(application, context.applicationContext as NetworkRouter, UserSession(application), RefreshTokenGql())
-            GraphqlClient.init(application, authenticator)
+            initGraphql(application)
             DaggerCMNotificationComponent.builder()
                     .baseAppComponent(application.baseAppComponent)
                     .notificationModule(NotificationModule(context))
