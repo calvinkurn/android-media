@@ -48,6 +48,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int = RollenceAbTestingManualSwitcherViewHolder.LAYOUT
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
     override fun type(uiModel: ResetOnBoardingNavigationUiModel): Int = ResetOnBoardingNavigationViewHolder.LAYOUT
+    override fun type(uiModel: TranslatorUiModel): Int = TranslatorSettingViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -85,6 +86,7 @@ class DeveloperOptionTypeFactoryImpl(
             RollenceAbTestingManualSwitcherViewHolder.LAYOUT -> RollenceAbTestingManualSwitcherViewHolder(view)
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
             ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)
+            TranslatorSettingViewHolder.LAYOUT -> TranslatorSettingViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

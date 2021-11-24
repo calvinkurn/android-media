@@ -37,4 +37,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int
     fun type(uiModel: RequestNewFcmTokenUiModel): Int
     fun type(uiModel: ResetOnBoardingNavigationUiModel): Int
+    fun type(uiModel: TranslatorUiModel): Int
 }

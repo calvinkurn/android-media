@@ -57,6 +57,12 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER = "Rollence AB Testing Manual Switcher"
         const val KEYWORD_REQUEST_NEW_FCM_TOKEN = "Request New FCM Token"
         const val KEYWORD_RESET_ONBOARDING_NAVIGATION = "Reset OnBoarding Navigation"
+        const val KEYWORD_TRANSLATOR = "Translator (ON/OFF)"
+        const val KEYWORD_API_KEY_SETTING = "API Key Setting"
+        const val KEYWORD_VISIT_BELOW_FOR_API_KEY = "Visit Below For New API Key"
+        const val KEYWORD_LANGUAGE_SETTING = "Language Setting"
+        const val KEYWORD_CURRENTLY_SELECTED_LANGUAGES = "Currently selected languages is from Indonesian to English"
+        const val KEYWORD_TOTAL_TRANSLATED_TEXT = "Total Translated Text"
     }
 
     private val defaultItems = listOf(
@@ -102,10 +108,18 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        TranslatorUiModel(listOf(
+            KEYWORD_API_KEY_SETTING,
+            KEYWORD_VISIT_BELOW_FOR_API_KEY,
+            KEYWORD_LANGUAGE_SETTING,
+            KEYWORD_CURRENTLY_SELECTED_LANGUAGES,
+            KEYWORD_TOTAL_TRANSLATED_TEXT
+        )),
         RequestNewFcmTokenUiModel(listOf(KEYWORD_REQUEST_NEW_FCM_TOKEN)),
         ResetOnBoardingNavigationUiModel(listOf(KEYWORD_RESET_ONBOARDING_NAVIGATION)),
         RollenceAbTestingManualSwitcherUiModel(listOf(KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER)),
         HomeAndNavigationRevampSwitcherUiModel(listOf(
+            KEYWORD_TRANSLATOR,
             KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
             KEYWORD_NEW_NAVIGATION,
             KEYWORD_ALWAYS_OS_EXPERIMENT,
