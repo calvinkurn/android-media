@@ -241,9 +241,12 @@ object DeepLinkChecker {
 
     private fun getFindIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)
-        val segment = if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""
-        val query = segment.replace("-","%20")
-        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + query))
+        val segments = uri.pathSegments
+        var searchKeyword = if (segments.size > 1) segments[1] else ""
+        var city = if (segments.indexOf("c") == 2) "%20di%20" + segments[segments.lastIndex] else ""
+        var query = searchKeyword + city
+
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + query))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {
