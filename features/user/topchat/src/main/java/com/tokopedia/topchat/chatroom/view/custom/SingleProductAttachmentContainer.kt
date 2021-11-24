@@ -210,7 +210,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindVariant(product)
             bindCampaign(product)
             bindPrice(product)
-            bindStatusContainer(product)
             bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
@@ -498,23 +497,17 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         tv_price?.text = product.productPrice
     }
 
-    private fun bindStatusContainer(product: ProductAttachmentUiModel) {
-        if (product.hasFreeShipping() || (product.hasReview() && product.fromBroadcast())) {
-            statusContainer?.show()
-        } else {
-            statusContainer?.hide()
-        }
-    }
-
     @SuppressLint("SetTextI18n")
     private fun bindRating(product: ProductAttachmentUiModel) {
         if (product.hasReview() && commonListener?.isSeller() == false) {
             reviewScore?.text = product.rating.score.toString()
             reviewCount?.text = "(${product.rating.count})"
+            statusContainer?.show()
             reviewStar?.show()
             reviewScore?.show()
             reviewCount?.show()
         } else {
+            statusContainer?.hide()
             reviewStar?.hide()
             reviewScore?.hide()
             reviewCount?.hide()
