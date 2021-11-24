@@ -72,7 +72,7 @@ class GraphqlRepositoryStub : GraphqlRepository {
                         mapOf(),
                         false
                 ) }
-                it.contains("tokopointsStatusFiltered") -> GraphqlResponse(
+                it.contains("tokopoints") && it.contains("tier") -> GraphqlResponse(
                         mapOf(ShortcutResponse::class.java to provideStatusFilteredSuccess()),
                         mapOf(),
                         false)

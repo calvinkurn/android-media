@@ -1,6 +1,6 @@
 {
-  "tokopointsStatusFiltered":{
-    "statusFilteredData":{
+  "tokopoints":{
+    "status":{
       "tier":{
         "nameDesc":"Member Silver 2",
         "eggImageHomepageURL":"https://ecs7.tokopedia.net/img/blog/promo/2021/04/silver.png",
