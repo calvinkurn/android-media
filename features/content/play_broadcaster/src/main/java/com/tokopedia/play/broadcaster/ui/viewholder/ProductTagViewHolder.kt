@@ -21,7 +21,8 @@ class ProductTagViewHolder(
 
     fun bind(item: ProductContentUiModel) {
         ivProductTag.setImageUrl(item.imageUrl)
-        tvProductTagStock.text = getString(R.string.play_product_stock_amount, if (item.stock is StockAvailable) item.stock.stock else "-")
+        tvProductTagStock.text = if (item.stock is StockAvailable) getString(R.string.play_bro_product_tag_stock_amount, item.stock.stock)
+                                    else getString(R.string.play_bro_product_tag_stock_empty)
         tvProductTagPrice.text = "RP 999.999.999"
     }
 

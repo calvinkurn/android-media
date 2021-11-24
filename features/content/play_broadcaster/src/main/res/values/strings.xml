@@ -204,4 +204,8 @@
     <string name="play_bro_pinned_msg_form_title">Pin Chat</string>
     <string name="play_bro_pinned_msg_form_placeholder">Tulis Pin Chat</string>
     <string name="play_bro_pinned_msg_form_instruction">Buat pin chat untuk kasih info penting ke penontonmu selama Live berlangsung.</string>
+
+    <!-- Product Tag -->
+    <string name="play_bro_product_tag_stock_amount">Stok %s</string>
+    <string name="play_bro_product_tag_stock_empty">Stok Habis</string>
 </resources>
