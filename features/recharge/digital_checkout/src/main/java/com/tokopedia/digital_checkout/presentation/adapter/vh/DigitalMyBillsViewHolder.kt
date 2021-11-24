@@ -89,13 +89,11 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
 }
 
 interface MyBillsActionListener {
+    fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean)
+    fun onSubscriptionImpression(isChecked: Boolean)
     fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int)
     fun onCrossellImpression(fintechProduct: FintechProduct, position: Int)
     fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean)
     fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int)
     fun onFintechMoreInfoChecked(info: FintechProduct.FintechProductInfo)
-
-    // new
-    fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean)
-    fun onSubscriptionImpression(isChecked: Boolean)
 }
