@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -22,7 +23,7 @@ class ProductTagViewComponent(
     init {
         rvProductTag.layoutManager = LinearLayoutManager(rvProductTag.context, RecyclerView.HORIZONTAL, false)
         rvProductTag.adapter = adapter
-        /** TODO: Add item decoration */
+        rvProductTag.addItemDecoration(ProductTagItemDecoration(rvProductTag.context))
     }
 
     fun setProducts(products: List<ProductContentUiModel>) {
