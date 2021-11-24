@@ -244,14 +244,12 @@
 
 
 # To show pop-up via CM engine
--keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 -keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 -keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
 -keepnames class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
 -keepnames class com.tokopedia.cart.view.CartFragment
--keepnames class com.tokopedia.home.account.presentation.fragment.AccountHomeFragment
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
 
 # Hansel proguard rules
