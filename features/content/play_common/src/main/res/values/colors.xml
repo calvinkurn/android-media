@@ -31,4 +31,7 @@
     <color name="play_dms_winner_ring_g1">#EF7E08</color>
     <color name="play_dms_winner_ring_g2">#F1C53E</color>
 
+    <!-- Product Tage -->
+    <color name="play_dms_discount_badge">#FFEAEF</color>
+    <color name="play_dms_product_tag_stock_bg">#B331353B</color>
 </resources>

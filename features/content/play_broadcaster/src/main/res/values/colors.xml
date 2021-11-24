@@ -37,7 +37,4 @@
 
     <!--Pinned Message-->
     <color name="play_bro_dms_pinned_msg_form_border">#BFC9D9</color>
-
-    <!-- Product Tag -->
-    <color name="play_bro_dms_product_tag_stock_bg">#B331353B</color>
 </resources>

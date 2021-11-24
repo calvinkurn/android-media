@@ -23,7 +23,6 @@
     <dimen name="play_product_image_radius">6dp</dimen>
 
     <dimen name="play_product_line_title_image_margin">14dp</dimen>
-    <dimen name="play_product_line_discount_radius">3dp</dimen>
     <dimen name="play_product_line_buy_padding_start_end">20dp</dimen>
     <dimen name="play_product_line_divider_height">1dp</dimen>
     <dimen name="play_product_line_divider_start_offset">96dp</dimen>
