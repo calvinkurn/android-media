@@ -25,4 +25,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: CassavaUiModel): Int
     fun type(uiModel: ViewAnalyticsLogUiModel): Int
     fun type(uiModel: ViewIrisLogUiModel): Int
+    fun type(uiModel: LeakCanaryUiModel): Int
+    fun type(uiModel: RemoteConfigEditorUiModel): Int
 }

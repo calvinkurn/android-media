@@ -34,6 +34,8 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_ANALYTICS_LOG = "View Analytics Log"
         const val KEYWORD_VIEW_IRIS_SAVE_LOG = "View Iris Save Log"
         const val KEYWORD_VIEW_IRIS_SEND_LOG = "View Iris Send Log"
+        const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
+        const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
     }
 
     private val defaultItems = listOf(
@@ -58,7 +60,9 @@ class DeveloperOptionAdapter(
         AnalyticsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_ANALYTICS_LOG_ON_NOTIFICATION)),
         CassavaUiModel(listOf(KEYWORD_CASSAVA)),
         ViewAnalyticsLogUiModel(listOf(KEYWORD_VIEW_ANALYTICS_LOG)),
-        ViewIrisLogUiModel(listOf(KEYWORD_VIEW_IRIS_SAVE_LOG, KEYWORD_VIEW_IRIS_SEND_LOG))
+        ViewIrisLogUiModel(listOf(KEYWORD_VIEW_IRIS_SAVE_LOG, KEYWORD_VIEW_IRIS_SEND_LOG)),
+        LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
+        RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR))
     )
 
     fun searchItem(keyword: String) {

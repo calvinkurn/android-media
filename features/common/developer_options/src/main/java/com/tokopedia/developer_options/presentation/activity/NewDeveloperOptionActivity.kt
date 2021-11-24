@@ -47,12 +47,12 @@ import java.lang.StringBuilder
 class NewDeveloperOptionActivity : BaseActivity() {
 
     companion object {
-        private const val LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle"
-        private const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
-        private const val LEAK_CANARY_DEFAULT_TOGGLE = true
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
         private const val API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49"
 
+        const val LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle"
+        const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
+        const val LEAK_CANARY_DEFAULT_TOGGLE = true
         const val IS_RELEASE_MODE = "IS_RELEASE_MODE"
         const val REMOTE_CONFIG_PREFIX = "remote_config_prefix"
         const val SHARED_PREF_FILE = "shared_pref_file"
