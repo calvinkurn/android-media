@@ -6,10 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultProductTickerLayoutBinding
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TickerViewHolder(
         itemView: View,
@@ -22,7 +23,7 @@ class TickerViewHolder(
         val LAYOUT = R.layout.search_result_product_ticker_layout
     }
 
-    private val tickerView: Ticker? = itemView.findViewById(R.id.tickerView)
+    private var binding : SearchResultProductTickerLayoutBinding? by viewBinding()
 
     override fun bind(element: TickerDataView) {
         bindTickerView(element)
@@ -31,17 +32,19 @@ class TickerViewHolder(
     private fun bindTickerView(element: TickerDataView) {
         val shouldShowTicker = !(tickerListener.isTickerHasDismissed || element.text.isEmpty())
 
-        itemView.shouldShowWithAction(shouldShowTicker) {
-            tickerView?.setHtmlDescription(element.text)
-            tickerView?.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    onDescriptionViewClick(element)
-                }
+        binding?.root?.let {
+            it.shouldShowWithAction(shouldShowTicker) {
+                it.setHtmlDescription(element.text)
+                it.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        onDescriptionViewClick(element)
+                    }
 
-                override fun onDismiss() {
-                    onTickerDismissed()
-                }
-            })
+                    override fun onDismiss() {
+                        onTickerDismissed()
+                    }
+                })
+            }
         }
     }
 
@@ -52,7 +55,7 @@ class TickerViewHolder(
     }
 
     private fun onTickerDismissed() {
-        itemView.gone()
+        binding?.root?.gone()
         tickerListener.onTickerDismissed()
     }
 }

@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white_four">#e0e0e0</color>
-    <color name="divider_notif_light">#e5e7e9</color>
     <color name="divider_notif_big">#f3f4f5</color>
-    <color name="chorcoal_black">#31353b</color>
 
     <color name="navigation_dms_color_active_bottom_nav">#00AA5B</color>
     <color name="navigation_dms_color_active_bottom_nav_os">#7F37D7</color>
-    <color name="navigation_dms_color_line_bottom_nav">#E4EAF3</color>
-    
     <color name="navigation_dms_footer_color">#42b549</color>
-
-    <color name="navigation_dms_button_nav_color_test">#525A67</color>
 </resources>

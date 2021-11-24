@@ -9,6 +9,7 @@ import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
@@ -29,6 +30,9 @@ import com.tokopedia.report.view.adapter.ReportFormAdapter
 import com.tokopedia.report.view.customview.UnifyDialog
 import com.tokopedia.report.view.viewmodel.ProductReportSubmitViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
@@ -67,6 +71,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val cacheId = arguments?.getString(ProductReportFormActivity.REASON_CACHE_ID, "") ?: ""
         val reason: ProductReportReason? = context?.let {
             val cacheManager = SaveInstanceCacheManager(it, cacheId)
@@ -85,10 +90,11 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
                     setOkOnClickListner(View.OnClickListener {
                         dismiss()
                         binding.loadingView.visible()
-                        viewModel.submitReport(productId.toLongOrZero(),
-                                reasonItem.categoryId, adapter.inputs, this@ProductReportSubmitFragment::onSuccessSubmit,
-                                this@ProductReportSubmitFragment::onFailSubmit)
-                        adapter.inputs
+                        viewModel.submitReport(
+                            productId.toLongOrZero(),
+                            reasonItem.categoryId,
+                            adapter.inputs
+                        )
                     })
                     setSecondaryOnClickListner(View.OnClickListener {
                         tracking.eventReportCancelDisclaimer(reasonItem.value.toLowerCase())
@@ -199,9 +205,21 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.getSubmitResult().observe(viewLifecycleOwner, observerSubmitResult)
+    }
+
     override fun onDestroy() {
         viewModel.flush()
         super.onDestroy()
+    }
+
+    private val observerSubmitResult = Observer<Result<Boolean>> {
+        when (it) {
+            is Success -> onSuccessSubmit(it.data)
+            is Fail -> onFailSubmit(it.throwable)
+        }
     }
 
     companion object {
