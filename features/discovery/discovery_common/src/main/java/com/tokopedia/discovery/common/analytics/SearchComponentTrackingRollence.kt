@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.common.analytics
 
+import com.tokopedia.iris.Iris
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.track.TrackApp
@@ -8,17 +9,17 @@ import com.tokopedia.track.interfaces.Analytics
 object SearchComponentTrackingRollence {
 
     fun impress(
-        searchComponentTracking: SearchComponentTracking,
+        iris: Iris,
+        searchComponentTracking: List<SearchComponentTracking>,
         experimentName: String,
         fallback: () -> Unit = { },
     ) {
         try {
             val remoteConfig = RemoteConfigInstance.getInstance().abTestPlatform
-            val analytics = TrackApp.getInstance().gtm
 
             impress(
                 remoteConfig,
-                analytics,
+                iris,
                 searchComponentTracking,
                 experimentName,
                 fallback,
@@ -77,13 +78,13 @@ object SearchComponentTrackingRollence {
 
     internal fun impress(
         remoteConfig: RemoteConfig,
-        analytics: Analytics,
-        searchComponentTracking: SearchComponentTracking,
+        iris: Iris,
+        searchComponentTrackingList: List<SearchComponentTracking>,
         experimentName: String,
-        fallback: () -> Unit = { },
+        fallback: () -> Unit,
     ) {
         if (remoteConfig.isEnabled(experimentName))
-            searchComponentTracking.impress(analytics)
+            searchComponentTrackingList.forEach { it.impress(iris) }
         else
             fallback()
     }
@@ -93,7 +94,7 @@ object SearchComponentTrackingRollence {
         analytics: Analytics,
         searchComponentTracking: SearchComponentTracking,
         experimentName: String,
-        fallback: () -> Unit = { },
+        fallback: () -> Unit,
     ) {
         if (remoteConfig.isEnabled(experimentName))
             searchComponentTracking.click(analytics)
@@ -106,7 +107,7 @@ object SearchComponentTrackingRollence {
         analytics: Analytics,
         searchComponentTracking: SearchComponentTracking,
         experimentName: String,
-        fallback: () -> Unit = { },
+        fallback: () -> Unit,
     ) {
         if (remoteConfig.isEnabled(experimentName))
             searchComponentTracking.clickOtherAction(analytics)
