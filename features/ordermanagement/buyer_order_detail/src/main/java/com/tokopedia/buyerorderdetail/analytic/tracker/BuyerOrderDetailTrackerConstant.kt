@@ -84,8 +84,8 @@ object BuyerOrderDetailTrackerConstant {
         "click on confirmation order extension button"
     const val EVENT_ACTION_REQUEST_ACTION_ORDER_EXTENSION =
         "order extension request action"
-    const val EVENT_LABEL_ACCEPT_EXTENSION = "accept extension -"
-    const val EVENT_LABEL_REJECT_EXTENSION = "reject extension -"
+    const val EVENT_LABEL_ACCEPT_EXTENSION = "accept extension"
+    const val EVENT_LABEL_REJECT_EXTENSION = "reject extension"
     const val UOH_SOURCE = "UOH"
     const val BOM_SOURCE = "BOM"
 }
