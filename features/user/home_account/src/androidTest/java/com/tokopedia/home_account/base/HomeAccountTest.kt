@@ -75,7 +75,7 @@ abstract class HomeAccountTest {
     }
 
     fun Unit.validate(query: List<Map<String, String>>) {
-        Thread.sleep(3000)
+        Thread.sleep(5000)
         val queryMatcher = cassavaTestRule.validate(
                 query,  CassavaTestRule.MODE_SUBSET)
         ViewMatchers.assertThat(queryMatcher, hasAllSuccess())
