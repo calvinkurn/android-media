@@ -1,0 +1,12 @@
+{
+  "walletappGetWalletEligible": {
+    "code": "SUCCESS",
+    "message": "Success",
+    "data": [
+      {
+      "wallet_code": "PEMUDAPOINTS",
+      "is_eligible": true
+    }
+    ]
+  }
+}

@@ -401,7 +401,11 @@ data class SearchProductModel(
 
             @SerializedName("url")
             @Expose
-            val url: String = ""
+            val url: String = "",
+
+            @SerializedName("applink")
+            @Expose
+            val applink: String = ""
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()

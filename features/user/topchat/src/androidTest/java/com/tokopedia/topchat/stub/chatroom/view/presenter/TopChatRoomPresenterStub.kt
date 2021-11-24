@@ -4,13 +4,11 @@ import android.content.SharedPreferences
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
@@ -32,12 +30,9 @@ class TopChatRoomPresenterStub @Inject constructor(
     getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
     replyChatUseCase: ReplyChatUseCase,
     compressImageUseCase: CompressImageUseCase,
-    seamlessLoginUsecase: SeamlessLoginUsecase,
-    getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
     addWishListUseCase: AddWishListUseCase,
     removeWishListUseCase: RemoveWishListUseCase,
     uploadImageUseCase: TopchatUploadImageUseCase,
-    orderProgressUseCase: OrderProgressUseCase,
     groupStickerUseCase: ChatListGroupStickerUseCase,
     chatAttachmentUseCase: ChatAttachmentUseCase,
     chatToggleBlockChat: ChatToggleBlockChatUseCase,
@@ -58,12 +53,9 @@ class TopChatRoomPresenterStub @Inject constructor(
     getTemplateChatRoomUseCase,
     replyChatUseCase,
     compressImageUseCase,
-    seamlessLoginUsecase,
-    getChatRoomSettingUseCase,
     addWishListUseCase,
     removeWishListUseCase,
     uploadImageUseCase,
-    orderProgressUseCase,
     groupStickerUseCase,
     chatAttachmentUseCase,
     chatToggleBlockChat,

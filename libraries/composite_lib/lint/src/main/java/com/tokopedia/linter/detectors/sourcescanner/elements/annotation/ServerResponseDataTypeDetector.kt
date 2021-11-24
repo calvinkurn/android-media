@@ -37,7 +37,7 @@ object ServerResponseDataTypeDetector {
     const val TYPE_CHARACTER_WRAPPER = "java.lang.Character"
 
 
-    private val classTypeIdentifierMap = mapOf("^id_|_id\$|^id\$" to TYPE_STRING)
+    private val classTypeIdentifierMap = mapOf("^id_|_id\$|^id\$|Id\$|id\$" to TYPE_STRING)
     private val primitiveTypeIdentifierMap = mapOf("^price\$" to TYPE_DOUBLE, "^price\$" to TYPE_DOUBLE_WRAPPER)
 
 

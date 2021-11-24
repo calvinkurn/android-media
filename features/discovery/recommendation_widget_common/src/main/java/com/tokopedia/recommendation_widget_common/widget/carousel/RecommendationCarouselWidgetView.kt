@@ -27,6 +27,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.toDpInt
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
@@ -394,7 +395,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         itemView.post {
             layoutManager.scrollToPositionWithOffset(
                     scrollToPosition,
-                    context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16)
+                    16f.toDpInt()
             )
         }
     }

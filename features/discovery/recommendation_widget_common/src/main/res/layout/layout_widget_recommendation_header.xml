@@ -26,7 +26,7 @@
         android:layout="@layout/view_stub_recom_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_1"
+        android:layout_marginTop="1dp"
         android:layout_marginStart="@dimen/recom_margin_default"
         android:layout_marginLeft="@dimen/recom_margin_default"
         android:visibility="gone"
