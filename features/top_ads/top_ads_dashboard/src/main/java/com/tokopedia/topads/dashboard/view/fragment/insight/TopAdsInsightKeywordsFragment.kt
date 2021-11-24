@@ -4,43 +4,63 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
-import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeyword
+import com.tokopedia.topads.dashboard.data.model.insightkey.TopadsHeadlineKeyword
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.TopAdsInsightRecommKeywordsView
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightKeywordViewModel
 import kotlinx.android.synthetic.main.topads_insight_fragment_keyword.*
 
 class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
 
-    private val recommendedKeyword by lazy {
-        Gson().fromJson(
-            getResp(),
-            RecommendedKeyword::class.java
-        )
-    }
+    private lateinit var viewModel: TopAdsInsightKeywordViewModel
     private val itemsCount = arrayOf(0, 0, 0)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadRecommendation(0)
+        observeLiveData()
         setAccordion()
         accordionUnify.onItemClick = { position, isExpanded ->
-            (activity as? TopAdsDashboardActivity)?.bottomLayout()?.visibility =
-                if (isExpanded) View.VISIBLE else View.GONE
+
+            (activity as? TopAdsDashboardActivity)?.bottomLayout()?.let {
+                it.visibility =
+                    if (isExpanded) {
+                        accordionUnify.setMargin(0, 0, 0, it.height)
+                        View.VISIBLE
+                    } else {
+                        accordionUnify.setMargin(0, 0, 0, 0)
+                        View.GONE
+                    }
+            }
             if (isExpanded) onItemSelected(position, itemsCount[position])
         }
+    }
+
+    //method to be executed when ad type is changed
+    fun loadRecommendation(type: Int) {
+        viewModel.getKeywords("480396", arrayOf())
+    }
+
+    private fun observeLiveData() {
+        viewModel.recommendedKeyword.observe(viewLifecycleOwner, {
+            //Toast.makeText(requireContext(), it.shopId, Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun setAccordion() {
         accordionUnify.addGroup(
             newAccordion(
                 R.string.topads_insight_recomm_keyword_cost,
-                recommendedKeyword.keywordCount,
+                1,
                 getAccordionSubView(TopAdsInsightConstants.BID_KEYWORD)
             )
         )
@@ -48,7 +68,7 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
         accordionUnify.addGroup(
             newAccordion(
                 R.string.topads_insight_new_recomm_keyword,
-                recommendedKeyword.keywordCount,
+                1,
                 getAccordionSubView(TopAdsInsightConstants.NEW_KEYWORD)
             )
         )
@@ -56,7 +76,7 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
         accordionUnify.addGroup(
             newAccordion(
                 R.string.topads_insight_negative_recomm_keyword,
-                recommendedKeyword.keywordCount,
+                1,
                 getAccordionSubView(TopAdsInsightConstants.NEGATIVE_KEYWORD)
             )
         )
@@ -66,7 +86,7 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
         val instance = TopAdsInsightRecommKeywordsView.createInstance(
             requireContext(),
             type,
-            recommendedKeyword
+            TopadsHeadlineKeyword()
         )
         instance.itemSelectedListener = { t, c ->
             onItemSelected(t, c)
@@ -110,7 +130,12 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View {
         initInjector()
-        return inflater.inflate(layout, container, false)
+        val view = inflater.inflate(layout, container, false)
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+        ).get(TopAdsInsightKeywordViewModel::class.java)
+        return view
     }
 
     override fun getScreenName(): String {

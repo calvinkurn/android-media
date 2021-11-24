@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="0dp">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/leftGuide"
@@ -14,23 +14,23 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtTitle"
+        tools:text="@string/topads_insight_recomm_keyword_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="body_3"
-        tools:text="@string/topads_insight_recomm_keyword_title" />
+        app:typographyType="body_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtSubTitle"
+        tools:text="tampil lebih banyak hingga +1.000 kali!"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintStart_toStartOf="@id/leftGuide"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
-        tools:text="tampil lebih banyak hingga +1.000 kali!" />
+        app:layout_constraintTop_toBottomOf="@id/txtTitle" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkBox"
@@ -51,10 +51,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewKeyword"
+        tools:itemCount="2"
+        tools:listitem="@layout/topads_insight_keyword_recomm_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/divider"
-        tools:itemCount="2"
-        tools:listitem="@layout/topads_insight_keyword_recomm_item" />
-
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 </androidx.constraintlayout.widget.ConstraintLayout>
