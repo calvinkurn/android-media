@@ -703,4 +703,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         removeLifecycleObserverAndSavedImage()
         super.onDismiss(dialog)
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.clear()
+    }
 }

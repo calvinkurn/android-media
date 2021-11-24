@@ -334,7 +334,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun clearAllData() {
         isLoadingInitialData = true
-        super.clearAllData()
+        recyclerView?.post {
+            super.clearAllData()
+        }
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = swipeRefreshLayout
@@ -527,6 +529,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         params?.bottomMargin = translation.toInt()
         swipeRefreshLayout?.layoutParams = params
     }
+
      override fun editMultipleProductsEtalase() {
         goToEtalasePicker()
         ProductManageTracking.eventBulkSettingsMoveEtalase()
@@ -847,10 +850,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     private fun setupSelectAll() {
         checkBoxSelectAll?.setOnClickListener {
             val isChecked = checkBoxSelectAll?.isChecked == true
-            adapter.data.forEachIndexed { index, _ ->
-                onClickProductCheckBox(isChecked, index)
+            recyclerView?.post {
+                adapter.data.forEachIndexed { index, _ ->
+                    onClickProductCheckBox(isChecked, index)
+                }
+                productManageListAdapter.notifyDataSetChanged()
             }
-            productManageListAdapter.notifyDataSetChanged()
         }
     }
 
@@ -1025,8 +1030,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         val lastIndex = adapter.data.size - 1
         adapter.data.getOrNull(lastIndex)?.let { item ->
             if (item is EmptyModel) {
-                adapter.data.removeAt(lastIndex)
-                adapter.notifyItemRemoved(lastIndex)
+                recyclerView?.post {
+                    adapter.data.removeAt(lastIndex)
+                    adapter.notifyItemRemoved(lastIndex)
+                }
             }
         }
     }
@@ -1387,13 +1394,15 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun unCheckMultipleProducts(productIds: List<String>) {
-        productIds.forEach { productId ->
-            val index = adapter.data.filterIsInstance<ProductUiModel>().indexOfFirst { it.id == productId }
-            if (index >= 0) {
-                onClickProductCheckBox(false, index)
+        recyclerView?.post {
+            productIds.forEach { productId ->
+                val index = adapter.data.filterIsInstance<ProductUiModel>().indexOfFirst { it.id == productId }
+                if (index >= 0) {
+                    onClickProductCheckBox(false, index)
+                }
             }
+            productManageListAdapter.notifyDataSetChanged()
         }
-        productManageListAdapter.notifyDataSetChanged()
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
