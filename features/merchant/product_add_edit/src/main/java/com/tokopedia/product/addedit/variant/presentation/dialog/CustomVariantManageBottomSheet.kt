@@ -157,7 +157,7 @@ class CustomVariantManageBottomSheet(
     }
 
     private fun showEditVariantBottomSheet(level: Int, oldVariantDetail: VariantDetail) {
-        val bottomSheet = CustomVariantInputBottomSheet(oldVariantDetail.name, variantDetails.orEmpty())
+        val bottomSheet = CustomVariantInputBottomSheet(oldVariantDetail.name, selectedVariantDetails.orEmpty())
         bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
             val position = getVariantDetailPosition(oldVariantDetail) ?: return@setOnCustomVariantTypeSubmitted
             val newVariantDetail = oldVariantDetail.apply { name = newVariantName }

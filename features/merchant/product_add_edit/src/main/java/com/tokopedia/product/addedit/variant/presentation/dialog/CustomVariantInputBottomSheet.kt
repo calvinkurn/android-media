@@ -29,7 +29,7 @@ import javax.inject.Inject
 
 class CustomVariantInputBottomSheet (
     private val variantTypeName: String = "",
-    private val variantDetails: List<VariantDetail> = emptyList()
+    private val selectedVariantDetails: List<VariantDetail> = emptyList()
 ) : BottomSheetUnify() {
 
     @Inject
@@ -99,7 +99,7 @@ class CustomVariantInputBottomSheet (
         }
         binding?.buttonSave?.setOnClickListener {
             val inputText = binding?.textFieldVariantTypeInput?.getTrimmedText().orEmpty()
-            viewModel.validateVariantTitle(inputText, variantDetails)
+            viewModel.validateVariantTitle(inputText, selectedVariantDetails)
         }
     }
 
@@ -176,8 +176,12 @@ class CustomVariantInputBottomSheet (
             if (result is Success) {
                 val variantDetail = result.data.apply { isCustom = true }
                 onPredefinedVariantTypeSubmitted?.invoke(variantDetail)
+                dismiss()
+            } else if (result is Fail){
+                val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                binding?.buttonSave?.isLoading = false
+                binding?.textFieldVariantTypeInput?.setMessage(errorMessage)
             }
-            dismiss()
         }
     }
 
@@ -189,6 +193,7 @@ class CustomVariantInputBottomSheet (
         } else {
             viewModel.getVariantDetailFromVariantId(newVariantType.variantId)
         }
+        binding?.buttonSave?.isLoading = true
     }
 
     fun setOnCustomVariantTypeSubmitted(listener: (variantTypeName: String) -> Unit) {

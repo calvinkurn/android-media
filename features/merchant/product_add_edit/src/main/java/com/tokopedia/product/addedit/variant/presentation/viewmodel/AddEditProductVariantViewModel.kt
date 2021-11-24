@@ -180,7 +180,10 @@ class AddEditProductVariantViewModel @Inject constructor(
         })
     }
 
-    fun validateVariantTitle(productName: String, variantDetails: List<VariantDetail>) {
+    fun validateVariantTitle(
+            productName: String,
+            selectedVariantDetails: List<VariantDetail>
+    ) {
         when {
             productName.length < MIN_CHAR_VARIANT_TYPE_NAME -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.MINIMUM_CHAR
@@ -188,7 +191,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             !isAllowedString(productName) -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.SYMBOL_ERROR
             }
-            variantDetails.any { it.name.equals(productName, ignoreCase = true) } -> {
+            selectedVariantDetails.any { it.name.equals(productName, ignoreCase = true) } -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
             }
             else -> validateIllegalVariantTitle(productName)
@@ -428,7 +431,7 @@ class AddEditProductVariantViewModel @Inject constructor(
             variantUnitMap: HashMap<Int, Unit>
     ): List<SelectionInputModel> {
         val result: MutableList<SelectionInputModel> = mutableListOf()
-        var level = 0 // varaint value level
+        var level = 0 // variant value level
         variantUnitValuesMap.forEach {
             // get selected variant detail selected each level
             if (it.value.isNotEmpty()) {
