@@ -531,15 +531,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
         filterBottomSheetAdapter.filterItem = filterItem
-        // filterBottomSheetAdapter.selectedRadio = selectedRadio
         val listOptionIdSelected = arrayListOf<String>()
         var nameSelected = ""
 
         filterBottomSheet.setAdapter(filterBottomSheetAdapter)
-        filterBottomSheet.setAction(CTA_RESET) {
-            filterBottomSheet.dismiss()
-            doResetFilter()
+
+        if (filterItem.isActive) {
+            filterBottomSheet.setAction(CTA_RESET) {
+                filterBottomSheet.dismiss()
+                removeFilter(filterItem)
+            }
         }
+
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
             override fun onRadioButtonSelected(name: String, optionId: String) {
                 filterBottomSheet.dismiss()
@@ -767,6 +770,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 doRefresh()
             }
         }
+    }
+
+    private fun removeFilter(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
+        paramWishlistV2.sortFilters.forEach { filterParam ->
+            if (filterParam.name == filterItem.name) {
+                paramWishlistV2.sortFilters.remove(filterParam)
+                return@forEach
+            }
+        }
+        doRefresh()
     }
 
     override fun onManageClicked(showCheckbox: Boolean) {
