@@ -648,7 +648,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun setAffiliateRequestHolder(affiliatePDPInput: AffiliatePDPInput){
-        this.affiliateQueryData = affiliatePDPInput
+        if(UserSession(LinkerManager.getInstance().context).isLoggedIn) {
+            this.affiliateQueryData = affiliatePDPInput
+        }
     }
 
     fun getAffiliateRequestHolder(): AffiliatePDPInput? {
