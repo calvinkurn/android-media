@@ -32,8 +32,8 @@ class QuestWidgetViewHolder(
 
     override fun bind(element: QuestWidgetModel) {
         questWidget?.setupListeners(questWidgetLoginClickListener)
-        questWidget?.getQuestList(page = QuestWidgetLocations.MY_REWARD, source = QuestSource.HOME)
-//        questWidget?.setQuestData(element.questData, QuestSource.HOME)
+//        questWidget?.getQuestList(page = QuestWidgetLocations.MY_REWARD, source = QuestSource.HOME)
+        questWidget?.setQuestData(element.questData, QuestSource.HOME)
     }
 
 }
