@@ -12,6 +12,7 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.ChannelWidgetUtil
+import com.tokopedia.recommendation_widget_common.viewutil.toDpInt
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipFilterAdapter
 import com.tokopedia.recommendation_widget_common.widget.bestseller.annotationfilter.AnnotationChipListener
 import com.tokopedia.recommendation_widget_common.widget.bestseller.decoration.CommonMarginStartDecoration
@@ -106,14 +107,14 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             if (itemView.best_seller_recommendation_recycler_view.itemDecorationCount == 0) {
                 itemView.best_seller_recommendation_recycler_view.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+                                marginStart = 12f.toDpInt()
                         )
                 )
             }
             if (itemView.best_seller_chip_filter_recyclerview.itemDecorationCount == 0) {
                 itemView.best_seller_chip_filter_recyclerview.addItemDecoration(
                         CommonMarginStartDecoration(
-                                marginStart = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                                marginStart = 8f.toDpInt()
                         )
                 )
             }
