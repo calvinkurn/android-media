@@ -5,6 +5,7 @@ import com.android.SdkConstants.RES_FOLDER
 import com.android.SdkConstants.TAG_ANIMATED_VECTOR
 import com.android.resources.ResourceFolderType
 import com.android.tools.lint.detector.api.Category
+import com.android.tools.lint.detector.api.Context
 import com.android.tools.lint.detector.api.Detector
 import com.android.tools.lint.detector.api.Implementation
 import com.android.tools.lint.detector.api.Issue
@@ -48,12 +49,19 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
 
         private const val TAG_TARGET = "<target"
         private const val METHOD_CREATE = "create"
+        private const val METHOD_GET_DRAWABLE = "getDrawable"
+        private const val CONTEXT_COMPAT_PACKAGE = "androidx.core.content"
+        private const val CONTEXT_COMPAT_CLASS = "$CONTEXT_COMPAT_PACKAGE.ContextCompat"
         private const val ANIMATED_VECTOR_PACKAGE = "androidx.vectordrawable.graphics.drawable"
         private const val ANIMATED_VECTOR_CLASS = "$ANIMATED_VECTOR_PACKAGE.AnimatedVectorDrawableCompat"
         private const val ERROR_MESSAGE = "Unsafe animated vector usage. Animated vector should have target tag."
     }
 
     private val animatedVectorResources = Sets.newHashSet<String>()
+
+    override fun beforeCheckRootProject(context: Context) {
+        scanAnimatedVector(context)
+    }
 
     override fun appliesTo(folderType: ResourceFolderType): Boolean {
         return folderType == ResourceFolderType.DRAWABLE
@@ -70,19 +78,19 @@ class AnimatedVectorDetector: Detector(), SourceCodeScanner, XmlScanner {
     }
 
     override fun getApplicableMethodNames(): List<String>? {
-        return listOf(METHOD_CREATE)
+        return listOf(METHOD_CREATE, METHOD_GET_DRAWABLE)
     }
 
     override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
         val evaluator = context.evaluator
 
-        if(evaluator.isMemberInClass(method, ANIMATED_VECTOR_CLASS)) {
-            scanAnimatedVector(context)
+        if(evaluator.isMemberInClass(method, ANIMATED_VECTOR_CLASS) ||
+            evaluator.isMemberInClass(method, CONTEXT_COMPAT_CLASS)) {
             scanJavaError(context, node)
         }
     }
 
-    private fun scanAnimatedVector(context: JavaContext) {
+    private fun scanAnimatedVector(context: Context) {
         val libFolders = context.project.directLibraries.filter { it.dir.isDirectory }
         val resourceFolders = context.project.resourceFolders
         val fileNames = resourceFolders.findAnimatedVector()

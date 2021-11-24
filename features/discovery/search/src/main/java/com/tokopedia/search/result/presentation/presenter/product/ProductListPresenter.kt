@@ -28,7 +28,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_SKIP_PRODUCT_ADS
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
-import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartResult
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
@@ -43,11 +42,6 @@ import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OLD
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -112,7 +106,6 @@ import org.json.JSONArray
 import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
-import rx.observers.Subscribers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -209,7 +202,6 @@ class ProductListPresenter @Inject constructor(
         private set
     private var threeDotsProductItem: ProductItemDataView? = null
     private var firstProductPositionWithBOELabel = -1
-    private var hasFullThreeDotsOptions = false
     private var isABTestNavigationRevamp = false
     private var isEnableChooseAddress = false
     private var chooseAddressData: LocalCacheModel? = null
@@ -219,7 +211,6 @@ class ProductListPresenter @Inject constructor(
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
 
-        hasFullThreeDotsOptions = getHasFullThreeDotsOptions()
         isABTestNavigationRevamp = isABTestNavigationRevamp()
         isEnableChooseAddress = view.isChooseAddressWidgetEnabled
         if (isEnableChooseAddress) chooseAddressData = view.chooseAddressData
@@ -227,28 +218,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun isABTestNavigationRevamp(): Boolean {
         return try {
-            checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV,
-                NAVIGATION_VARIANT_REVAMP
-            )
-            || checkNavigationRollenceValue(
-                NAVIGATION_EXP_TOP_NAV2,
-                NAVIGATION_VARIANT_REVAMP2
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    private fun checkNavigationRollenceValue(rollenceKey: String, expectedValue: String): Boolean {
-        return view.abTestRemoteConfig?.getString(rollenceKey, NAVIGATION_VARIANT_OLD) == expectedValue
-    }
-
-    private fun getHasFullThreeDotsOptions(): Boolean {
-        return try {
-            (view.abTestRemoteConfig?.getString(SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH)
-                    == SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS)
+            true
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -804,7 +774,7 @@ class ProductListPresenter @Inject constructor(
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
             if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct)
+                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
             } else {
                 getViewToShowEmptySearch(productDataView)
 
@@ -848,15 +818,29 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun getViewToHandleEmptySearchWithErrorMessage(searchProduct: SearchProductModel.SearchProduct) {
+    private fun getViewToHandleEmptySearchWithErrorMessage(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ) {
+        val bannedProductsVisitableList =
+            createBannedProductsVisitableList(searchProduct, productDataView)
+
         view.removeLoading()
-        view.setBannedProductsErrorMessage(createBannedProductsErrorMessageAsList(searchProduct))
+        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
         view.trackEventImpressionBannedProducts(true)
     }
 
-    private fun createBannedProductsErrorMessageAsList(searchProduct: SearchProductModel.SearchProduct): List<Visitable<*>> {
-        return listOf(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-    }
+    private fun createBannedProductsVisitableList(
+        searchProduct: SearchProductModel.SearchProduct,
+        productDataView: ProductDataView,
+    ): List<Visitable<*>> =
+        mutableListOf<Visitable<*>>().apply {
+            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
+                add(globalNavDataView)
+            }
+
+            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
+        }
 
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         val globalNavDataView = getGlobalNavViewModel(productDataView)
@@ -2120,9 +2104,6 @@ class ProductListPresenter @Inject constructor(
 
         productCardOptionsModel.hasWishlist = item.isWishlistButtonEnabled
         productCardOptionsModel.hasSimilarSearch = true
-        productCardOptionsModel.hasVisitShop = hasFullThreeDotsOptions
-        productCardOptionsModel.hasShareProduct = hasFullThreeDotsOptions
-        productCardOptionsModel.hasAddToCart = hasFullThreeDotsOptions
 
         productCardOptionsModel.isWishlisted = item.isWishlisted
         productCardOptionsModel.keyword = view.queryKey
@@ -2147,80 +2128,6 @@ class ProductListPresenter @Inject constructor(
         productCardOptionsModel.shop = shop
 
         return productCardOptionsModel
-    }
-
-    override fun handleAddToCartAction(productCardOptionModel: ProductCardOptionsModel) {
-        if (isViewNotAttached) return
-
-        val addToCartResult = productCardOptionModel.addToCartResult
-        if (!addToCartResult.isUserLoggedIn)
-            view.launchLoginActivity("")
-        else
-            handleAddToCartForLoginUser(productCardOptionModel.addToCartResult)
-
-        threeDotsProductItem = null
-    }
-
-    private fun handleAddToCartForLoginUser(addToCartResult: AddToCartResult) {
-        if (addToCartResult.isSuccess)
-            handleAddToCartSuccess(addToCartResult)
-        else
-            handleAddToCartError(addToCartResult)
-    }
-
-    private fun handleAddToCartSuccess(addToCartResult: AddToCartResult) {
-        if (threeDotsProductItem == null || isViewNotAttached) return
-        val threeDotsProductItem = threeDotsProductItem ?: return
-
-        val cartId = addToCartResult.cartId
-        val addToCartDataLayer = threeDotsProductItem.getProductAsATCObjectDataLayer(cartId)
-
-        if (threeDotsProductItem.isAds)
-            sendTrackingATCProductAds(threeDotsProductItem)
-
-        view.trackSuccessAddToCartEvent(threeDotsProductItem.isAds, addToCartDataLayer)
-        view.showAddToCartSuccessMessage()
-    }
-
-    private fun sendTrackingATCProductAds(threeDotsProductItem: ProductItemDataView) {
-        topAdsUrlHitter.hitClickUrl(
-                view.className,
-                threeDotsProductItem.topadsClickUrl,
-                threeDotsProductItem.productID,
-                threeDotsProductItem.productName,
-                threeDotsProductItem.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
-        )
-    }
-
-    private fun handleAddToCartError(addToCartResult: AddToCartResult) {
-        if (isViewNotAttached) return
-
-        view.showAddToCartFailedMessage(addToCartResult.errorMessage)
-    }
-
-    override fun handleVisitShopAction() {
-        if (isViewNotAttached) return
-        val threeDotsProductItem = threeDotsProductItem ?: return
-
-        if (threeDotsProductItem.isTopAds)
-            sendTrackingVisitShopProductAds(threeDotsProductItem)
-
-        view.routeToShopPage(threeDotsProductItem.shopID)
-        view.trackEventGoToShopPage(threeDotsProductItem.getProductAsShopPageObjectDataLayer())
-
-        this.threeDotsProductItem = null
-    }
-
-    private fun sendTrackingVisitShopProductAds(threeDotsProductItem: ProductItemDataView) {
-        topAdsUrlHitter.hitClickUrl(
-                view.className,
-                threeDotsProductItem.topadsClickShopUrl,
-                threeDotsProductItem.productID,
-                threeDotsProductItem.productName,
-                threeDotsProductItem.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
-        )
     }
 
     override fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType) {

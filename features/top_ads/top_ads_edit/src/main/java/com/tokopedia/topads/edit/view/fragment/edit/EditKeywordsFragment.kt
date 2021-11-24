@@ -19,6 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
@@ -800,7 +801,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             it.bidSuggest,
             minSuggestKeyword,
             it.source,
-            BROAD_POSITIVE,
+            if(it.keywordType== TopAdsCommonConstant.SPECIFIC_TYPE) EXACT_POSITIVE else BROAD_POSITIVE,
             "0",
         )
     }

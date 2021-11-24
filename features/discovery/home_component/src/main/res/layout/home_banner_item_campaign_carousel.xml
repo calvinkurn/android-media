@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_campaign"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/product_card_dms_card_background"
+    android:foreground="?attr/selectableItemBackground"
+    android:layout_width="@dimen/campaign_widget_card_width"
+    android:layout_height="@dimen/campaign_widget_card_height"
+    tools:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/card_campaign_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/content_desc_campaign_image" />
+
+</androidx.cardview.widget.CardView>

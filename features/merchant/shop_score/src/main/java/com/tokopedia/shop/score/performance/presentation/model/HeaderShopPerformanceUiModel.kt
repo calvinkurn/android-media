@@ -10,7 +10,7 @@ data class HeaderShopPerformanceUiModel(
     var shopAge: Long = 0,
     var titleHeaderShopService: String? = "",
     var descHeaderShopService: String? = "",
-    var showCardNewSeller: Boolean = false,
+    var showCard: Boolean = false,
     var powerMerchantData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data? = null,
     var isShowPopupEndTenure: Boolean = false
 ) : BaseShopPerformance {

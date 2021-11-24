@@ -59,7 +59,6 @@ class OrderSummaryPageActivityTokonowTrackingTest {
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(idlingResource)
-        activityRule.finishActivity()
     }
 
     @Test
