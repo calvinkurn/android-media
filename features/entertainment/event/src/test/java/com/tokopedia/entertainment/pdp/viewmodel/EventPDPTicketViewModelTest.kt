@@ -26,6 +26,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.NumberFormatException
 import java.lang.reflect.Type
 
 class EventPDPTicketViewModelTest {
@@ -137,6 +138,93 @@ class EventPDPTicketViewModelTest {
         assertNotNull(eventPDPTicketViewModel.error.value)
         assertEquals((eventPDPTicketViewModel.error.value as Throwable).message, error.message)
         assert(eventPDPTicketViewModel.eventHoliday.value == arrayListOf<Legend>())
+    }
+
+    @Test
+    fun `ProductdetailTicketData_FailConvert_FailActualResult`() {
+        //given
+        coEvery {
+            eventProductDetailUseCase.executeUseCase("",
+                "", false, "")
+        } returns Fail(Throwable())
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Fail(Throwable())
+
+        //When
+        eventPDPTicketViewModel.getData("", "A", false, "", "")
+
+        //then
+        assertNull(eventPDPTicketViewModel.ticketModel.value)
+        assertNotNull(eventPDPTicketViewModel.error.value)
+        assertEquals((eventPDPTicketViewModel.error.value as Throwable).message, "For input string: \"A\"")
+    }
+
+    @Test
+    fun `ProductdetailTicketData_SuccessShowNotSelectedDate_ShowActualNotSelectedDateResult`() {
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
+        val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
+
+        val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
+        val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
+
+        coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns Success(EventPDPContentCombined(contentMock, pdpMock))
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Success(travelHolidayData)
+
+
+        //When
+        eventPDPTicketViewModel.getData("", "1904250000", false, "", "")
+
+        //then
+        val recommendationPackages = arrayListOf<PackageV3>()
+        for (item in pdpMock.eventProductDetail.productDetailData.packages) {
+                recommendationPackages.add(item)
+        }
+
+        assertNotNull(eventPDPTicketViewModel.ticketModel)
+        assertEquals(eventPDPTicketViewModel.ticketModel.value, eventPDPTicketViewModel.lists)
+        assertEquals(eventPDPTicketViewModel.recommendationList, recommendationPackages)
+        assertEquals(eventPDPTicketViewModel.recommendationTicketModel.value, eventPDPTicketViewModel.recommendationList)
+        assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
+        assertNotNull(eventPDPTicketViewModel.productDetailEntity.value)
+    }
+
+    @Test
+    fun `ProductdetailTicketData_SuccessShowRecommendProductSuccessShowHoliday_ShowActualRecommendResult`() {
+        //given
+        val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
+        val pdpMock = Gson().fromJson(getJson("pdp_mock_date_null.json"), EventProductDetailEntity::class.java)
+
+        val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
+        val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
+
+        coEvery { eventProductDetailUseCase.executeUseCase("", "", false, "") } returns Success(EventPDPContentCombined(contentMock, pdpMock))
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Success(travelHolidayData)
+
+
+        //When
+        eventPDPTicketViewModel.getData("", "1604250001", false, "", "")
+
+        //then
+        val recommendationPackages = arrayListOf<PackageV3>()
+        for ((index, item) in pdpMock.eventProductDetail.productDetailData.packages.withIndex()) {
+            if (index > 0) {
+                recommendationPackages.add(item)
+            }
+        }
+
+        assertNotNull(eventPDPTicketViewModel.ticketModel)
+        assertEquals(eventPDPTicketViewModel.ticketModel.value, eventPDPTicketViewModel.lists)
+        assertEquals(eventPDPTicketViewModel.recommendationList, recommendationPackages)
+        assertEquals(eventPDPTicketViewModel.recommendationTicketModel.value, eventPDPTicketViewModel.recommendationList)
+        assertNotNull(eventPDPTicketViewModel.eventHoliday.value)
+        assertNotNull(eventPDPTicketViewModel.productDetailEntity.value)
+        assertEquals(eventPDPTicketViewModel.categoryData, pdpMock.eventProductDetail.productDetailData.category.first())
     }
 
     @Test
