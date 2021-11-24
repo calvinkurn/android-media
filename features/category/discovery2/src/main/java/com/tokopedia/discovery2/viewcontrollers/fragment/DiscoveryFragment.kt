@@ -385,12 +385,28 @@ class DiscoveryFragment :
     private fun setAdapter() {
         recyclerView.apply {
             addDecorator(MasterProductCardItemDecorator())
-            staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            staggeredGridLayoutManager = getLayoutManager()
             setLayoutManager(staggeredGridLayoutManager!!)
             discoveryAdapter = DiscoveryRecycleAdapter(this@DiscoveryFragment).also {
                 setAdapter(it)
             }
         }
+    }
+
+    private fun getLayoutManager():StaggeredGridLayoutManager{
+       return object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+           override fun supportsPredictiveItemAnimations():Boolean {
+               return false
+           }
+
+           override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+               try {
+                   super.onLayoutChildren(recycler, state)
+               } catch (e: Exception) {
+                   e.printStackTrace()
+               }
+           }
+       }
     }
 
     fun reSync() {
