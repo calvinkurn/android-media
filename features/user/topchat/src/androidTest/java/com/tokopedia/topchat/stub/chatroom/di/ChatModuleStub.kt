@@ -29,14 +29,13 @@ import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
-import com.tokopedia.topchat.stub.chatroom.usecase.AddWishListUseCaseStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import com.tokopedia.topchat.stub.chatroom.usecase.AddWishListUseCaseStub
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -60,7 +59,7 @@ class ChatModuleStub {
     @ChatScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+        return UserSessionStub(context)
     }
 
     @ChatScope

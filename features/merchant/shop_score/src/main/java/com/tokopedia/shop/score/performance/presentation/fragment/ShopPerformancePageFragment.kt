@@ -86,7 +86,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private var shopScorePerformanceMonitoringListener: ShopScorePerformanceMonitoringListener? = null
 
-    private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
+    private val shopScorePrefManager by lazy { context?.let { ShopScorePrefManager(it) } }
 
     private val coachMark by getInstanceCoachMark()
 
@@ -301,13 +301,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemTimerNewSellerListener
      */
     override fun onBtnLearnNowToSellerEduClicked(sellerEduUrl: String) {
-        context?.let {
-            RouteManager.route(
-                it,
-                ApplinkConstInternalGlobal.WEBVIEW,
-                sellerEduUrl
-            )
-        }
+        goToSellerEdu(sellerEduUrl)
     }
 
     override fun onBtnLearnNowToFaqClicked() {
@@ -322,9 +316,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onWatchVideoClicked(videoId: String) {
-        context?.let {
-            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
-        }
+        goToYoutubePage(videoId)
         shopScorePenaltyTracking.clickWatchVideoNewSeller()
     }
 
@@ -334,6 +326,19 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onImpressWatchVideo() {
         shopScorePenaltyTracking.impressWatchVideoNewSeller(isNewSeller)
+    }
+
+    override fun onWatchVideoReactivatedClicked(videoId: String) {
+        goToYoutubePage(videoId)
+    }
+
+    override fun onBtnLearnNowReactivatedClicked(sellerEduUrl: String) {
+        goToSellerEdu(sellerEduUrl)
+    }
+
+    override fun onCloseTickerClicked() {
+        shopPerformanceAdapter.removeTickerReactivated()
+        shopScorePrefManager?.setIsNeedShowTickerReactivated(false)
     }
 
     /**
@@ -374,9 +379,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }
 
-    override fun onProtectedParameterChevronClicked(protectedParameterDate: String) {
+    override fun onProtectedParameterChevronClicked(descParameterRelief: String) {
         val bottomSheetProtectedParameter = BottomSheetProtectedParameter.createInstance(
-            protectedParameterDate
+            descParameterRelief
         )
         bottomSheetProtectedParameter.show(childFragmentManager)
     }
@@ -409,6 +414,22 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             context
         } else {
             null
+        }
+    }
+
+    private fun goToSellerEdu(sellerEduUrl: String) {
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                sellerEduUrl
+            )
+        }
+    }
+
+    private fun goToYoutubePage(videoId: String) {
+        context?.let {
+            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
         }
     }
 
@@ -557,7 +578,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             })
             coachMark?.onFinishListener = {
-                shopScoreCoachMarkPrefs?.setFinishCoachMark(true)
+                shopScorePrefManager?.setFinishCoachMark(true)
             }
             coachMark
         }
@@ -808,7 +829,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun processShowCoachMark() {
-        if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
+        if (shopScorePrefManager?.getFinishCoachMark() == false && !isNewSeller) {
             Handler(Looper.getMainLooper()).postDelayed({
                 scrollToItemParameterDetailCoachMark()
                 showCoachMark()
@@ -869,7 +890,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         bottomSheetPopupEndTenure.setOnDismissListener {
             if (isShowPopupEndTenure) {
-                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(false)
+                shopScorePrefManager?.setIsShowPopupEndTenure(false)
             }
         }
         if (isShowPopupEndTenure) {

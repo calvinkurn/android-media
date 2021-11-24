@@ -12,7 +12,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class CourierDriverInfoViewHolder(
+open class CourierDriverInfoViewHolder(
         itemView: View?,
         private val navigator: BuyerOrderDetailNavigator
 ) : AbstractViewHolder<ShipmentInfoUiModel.CourierDriverInfoUiModel>(itemView) {
@@ -83,7 +83,7 @@ class CourierDriverInfoViewHolder(
         element?.let { navigator.goToCallingPage(it.phoneNumber) }
     }
 
-    private fun setupDriverPhoto(photoUrl: String) {
+    protected open fun setupDriverPhoto(photoUrl: String) {
         ivBuyerOrderDetailCourierDriverPhoto?.setImageUrl(photoUrl)
     }
 

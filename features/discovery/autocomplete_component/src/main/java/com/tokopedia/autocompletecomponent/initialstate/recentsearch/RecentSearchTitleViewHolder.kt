@@ -4,12 +4,17 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
+import com.tokopedia.autocompletecomponent.databinding.LayoutTitleRecentSearchBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
-import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-class RecentSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<RecentSearchTitleDataView>(itemView) {
+class RecentSearchTitleViewHolder(
+    itemView: View,
+    private val listener: RecentSearchListener,
+) : AbstractViewHolder<RecentSearchTitleDataView>(itemView) {
+
+    private var binding: LayoutTitleRecentSearchBinding? by viewBinding()
 
     override fun bind(element: RecentSearchTitleDataView) {
         bindTitle(element)
@@ -17,13 +22,21 @@ class RecentSearchTitleViewHolder(itemView: View, private val clickListener: Ini
     }
 
     private fun bindTitle(item: RecentSearchTitleDataView) {
-        itemView.titleTextView?.let {TextAndContentDescriptionUtil.setTextAndContentDescription(it, item.title, getString(R.string.content_desc_titleTextView)) }
+        binding?.recentSearchTitleLayout?.titleTextView?.let {
+            TextAndContentDescriptionUtil.setTextAndContentDescription(
+                it,
+                item.title,
+                getString(R.string.content_desc_titleTextView)
+            )
+        }
     }
 
     private fun bindActionDeleteButton(item: RecentSearchTitleDataView) {
-        itemView.actionDeleteButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
-            itemView.actionDeleteButton?.text = item.labelAction
-            itemView.actionDeleteButton?.setOnClickListener { clickListener.onDeleteAllRecentSearch() }
+        val actionDeleteButton = binding?.recentSearchTitleLayout?.actionDeleteButton ?: return
+
+        actionDeleteButton.shouldShowWithAction(item.labelAction.isNotEmpty()) {
+            actionDeleteButton.text = item.labelAction
+            actionDeleteButton.setOnClickListener { listener.onDeleteAllRecentSearch() }
         }
     }
 

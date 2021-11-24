@@ -20,7 +20,7 @@ class SomListBulkAcceptOrderDialog(private val context: Context) {
 
     fun init() {
         binding = SomListBulkActionDialogBinding.inflate(LayoutInflater.from(context))
-        dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+        dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
             if (DeviceScreenInfo.isTablet(context)) {
                 dialogMaxWidth = getScreenWidth() / 2
             }

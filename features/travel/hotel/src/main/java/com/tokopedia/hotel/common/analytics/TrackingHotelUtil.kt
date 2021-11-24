@@ -643,11 +643,24 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelDetailViewNearbyLandmarks(context: Context, screenName: String, hotelId: Long, hotelPrice: String){
+    fun hotelDetailViewNearbyLandmarks(context: Context, screenName: String, hotelId: Long, hotelPrice: String, hotelName: String){
         val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
         val eventLabel = "$HOTEL_LABEL - $hotelId - $hotelPrice"
         map.addGeneralEvent(PROMO_VIEW, VIEW_HOTEL_PDP_NEARBY_LANDMARK, eventLabel)
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS_LABEL, getNearbyPromotions(hotelId, hotelName)))
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun getNearbyPromotions(hotelId: Long, hotelName: String): List<Any>{
+        val list = ArrayList<Map<String, Any>>()
+        val map = HashMap<String, Any>()
+        map[ID_LABEL] = hotelId
+        map[NAME_LABEL] = hotelName
+        map[POSITION_LABEL] = ""
+        map[CREATIVE_LABEL] = NAME_HOTEL_PDP_NEARBY_LANDMARK
+        list.add(map)
+
+        return DataLayer.listOf(*list.toTypedArray<Any>())
     }
 
     private fun convertDate(date: String): String =

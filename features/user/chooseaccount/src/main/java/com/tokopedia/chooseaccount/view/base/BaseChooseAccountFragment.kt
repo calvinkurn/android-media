@@ -150,7 +150,6 @@ abstract class BaseChooseAccountFragment: BaseDaggerFragment(), ChooseAccountLis
     }
 
     companion object {
-        const val FACEBOOK_LOGIN_TYPE = "fb"
         const val REQUEST_CODE_PIN_CHALLENGE = 112
 
         const val OTP_TYPE_AFTER_LOGIN_PHONE = 148

@@ -58,5 +58,7 @@
     <color name="discovery2_dms_clr_1e31353b">#1e31353b</color>
     <color name="discovery2_dms_white">#FFFFFF</color>
     <color name="discovery2_dms_white_95">#f2ffffff</color>
+    <color name="discovery2_dms_clr_262626">#262626</color>
+    <color name="discovery2_dms_clr_2F89FC">#2F89FC</color>
 
 </resources>

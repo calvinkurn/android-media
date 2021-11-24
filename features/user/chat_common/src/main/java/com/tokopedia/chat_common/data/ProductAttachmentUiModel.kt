@@ -211,21 +211,6 @@ open class ProductAttachmentUiModel protected constructor(
         this.isError = false
     }
 
-    fun getAtcDimension40(sourcePage: String): String {
-        return when (sourcePage) {
-            ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
-            else -> getField()
-        }
-    }
-
-    private fun getField(): String {
-        return if (blastId > 0) {
-            "/broadcast"
-        } else {
-            "/chat"
-        }
-    }
-
     fun hasReview(): Boolean {
         return rating.count > 0
     }

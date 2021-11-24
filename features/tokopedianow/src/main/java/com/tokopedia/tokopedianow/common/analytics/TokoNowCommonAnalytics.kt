@@ -17,14 +17,17 @@ import com.tokopedia.track.interfaces.Analytics
 
 object TokoNowCommonAnalytics {
 
-    fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String, userId: String) {
+    fun onOpenScreen(isLoggedInStatus : Boolean, screenName: String, additionalMap: MutableMap<String, String>? = null) {
+        val map = mutableMapOf(
+            Pair(TrackAppUtils.EVENT, EVENT_OPEN_SCREEN),
+            Pair(KEY_IS_LOGGED_IN_STATUS, isLoggedInStatus.toString()),
+        )
+        additionalMap?.apply {
+            map.putAll(this)
+        }
         hitCommonScreenTracker(
             screenName,
-            mutableMapOf(
-                Pair(TrackAppUtils.EVENT, EVENT_OPEN_SCREEN),
-                Pair(KEY_IS_LOGGED_IN_STATUS, isLoggedInStatus.toString()),
-                Pair(KEY_USER_ID, userId)
-            )
+            map,
         )
     }
 

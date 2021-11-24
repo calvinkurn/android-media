@@ -2,6 +2,7 @@ package com.tokopedia.attachproduct.view.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFactory
 import kotlinx.parcelize.Parcelize
 
@@ -28,4 +29,18 @@ data class AttachProductItemUiModel(
     override fun type(typeFactory: AttachProductListAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun toResultProduct(): ResultProduct = ResultProduct(
+            this.productId,
+            this.productUrl,
+            this.productImage,
+            this.productPrice,
+            this.productName,
+            this.originalPrice,
+            this.discountPercentage,
+            this.isFreeOngkirActive,
+            this.imgUrlFreeOngkir,
+            this.stock,
+            this.isSupportVariant
+    )
 }
