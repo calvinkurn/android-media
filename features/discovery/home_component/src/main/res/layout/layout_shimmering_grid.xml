@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_96"
+        android:layout_height="96dp"
         android:layout_marginBottom="8dp"
         app:loader_type="rect"
         app:corners="@integer/corner_radius_shimmering" />

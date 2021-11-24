@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 
 open class SafeSettingProfileUseCase @Inject constructor(@ApplicationContext var context: Context?,
-                                                        graphqlRepository: GraphqlRepository)
+                                                         @ApplicationContext graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<SetUserProfileSettingResponse>(graphqlRepository) {
 
     private fun getRequestParamsForSetSafeMode(savedValue: Boolean): HashMap<String, Any> {
