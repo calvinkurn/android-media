@@ -314,7 +314,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    private fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
+    open fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
         when {
             otpValidateData.success -> {
                 // tracker auto submit success
@@ -587,8 +587,6 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
         private const val DELAY_ANIMATE_TEXT = 350
-
-        const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
 
         fun createInstance(bundle: Bundle?): VerificationFragment {
             val fragment = VerificationFragment()

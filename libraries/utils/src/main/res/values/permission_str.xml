@@ -20,5 +20,6 @@
     <string name="permission_accounts">Akun</string>
     <string name="permission_phone">Telepon</string>
     <string name="permission_audio">Microphone</string>
+    <string name="permission_call_log">Call Log</string>
 
 </resources>
