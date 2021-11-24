@@ -3,6 +3,8 @@ package com.tokopedia.play.broadcaster.ui.viewholder
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play.broadcaster.type.DiscountedPrice
+import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -23,7 +25,11 @@ class ProductTagViewHolder(
         ivProductTag.setImageUrl(item.imageUrl)
         tvProductTagStock.text = if (item.stock is StockAvailable) getString(R.string.play_bro_product_tag_stock_amount, item.stock.stock)
                                     else getString(R.string.play_bro_product_tag_stock_empty)
-        tvProductTagPrice.text = "RP 999.999.999"
+        tvProductTagPrice.text = when(item.price) {
+            is DiscountedPrice -> item.price.discountedPrice
+            is OriginalPrice -> item.price.price
+            else -> "Rp Unknown"
+        }
     }
 
     companion object {

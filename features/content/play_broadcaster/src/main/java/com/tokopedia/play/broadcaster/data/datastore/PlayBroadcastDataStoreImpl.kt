@@ -52,7 +52,8 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                             imageUrl = it.imageUrl,
                             originalImageUrl = it.originalImageUrl,
                             hasStock = it.stock is StockAvailable,
-                            totalStock = if (it.stock is StockAvailable) it.stock.stock else 0
+                            totalStock = if (it.stock is StockAvailable) it.stock.stock else 0,
+                            price = it.price
                     )
                 },
                 selectedCoverData = SerializableCoverData(
@@ -71,7 +72,8 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                     name = it.name,
                     imageUrl = it.imageUrl,
                     originalImageUrl = it.originalImageUrl,
-                    stock = if (it.hasStock) StockAvailable(it.totalStock) else OutOfStock
+                    stock = if (it.hasStock) StockAvailable(it.totalStock) else OutOfStock,
+                    price = it.price
             )
         })
         mSetupDataStore.setFullCover(
