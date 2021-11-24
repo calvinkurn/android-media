@@ -2,7 +2,6 @@ package com.tokopedia.sellerfeedback
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -13,16 +12,12 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.screenshot_observer.Screenshot
-import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK
-import com.tokopedia.sellerfeedback.SellerFeedbackConstants.REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
 import com.tokopedia.sellerfeedback.presentation.fragment.SellerFeedbackFragment
 import com.tokopedia.sellerfeedback.presentation.util.ScreenshotPreferenceManager
 import com.tokopedia.sellerfeedback.presentation.util.SuccessToasterHelper
 import com.tokopedia.unifycomponents.Toaster
 import java.lang.ref.WeakReference
-
 
 class SellerFeedbackScreenshot(private val context: Context) : Screenshot(context.contentResolver) {
 
@@ -32,7 +27,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
         private const val TOASTER_MARGIN_BOTTOM = 104
     }
 
-    private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var currentActivity: WeakReference<Activity>? = null
     private var onResumeCounter = ACTIVITY_STATUS_PAUSED
     private var isScreenShootToasterShown = false
@@ -46,9 +40,7 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     }
 
     override fun onScreenShotTaken(uri: Uri) {
-        val enableSellerFeedbackScreenshot =
-            getEnableSellerGlobalFeedbackRemoteConfig(currentActivity?.get())
-        if (screenshotPreferenceManager.isScreenShootTriggerEnabled() && enableSellerFeedbackScreenshot) {
+        if (screenshotPreferenceManager.isScreenShootTriggerEnabled()) {
             processScreenshotTaken(uri)
         }
     }
@@ -56,18 +48,6 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     override fun onActivityResumed(activity: Activity) {
         currentActivity = WeakReference(activity)
         super.onActivityResumed(activity)
-    }
-
-    private fun getEnableSellerGlobalFeedbackRemoteConfig(activity: Activity?): Boolean {
-        return activity?.let {
-            if (remoteConfig == null) {
-                remoteConfig = FirebaseRemoteConfigImpl(activity)
-            }
-            remoteConfig?.getBoolean(
-                REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK,
-                REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
-            ) ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
-        } ?: REMOTE_CONFIG_ENABLE_SELLER_GLOBAL_FEEDBACK_DEFAULT
     }
 
     private fun processScreenshotTaken(uri: Uri) {

@@ -6,7 +6,6 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".view.viewcontrollers.activity.TradeInInfoActivity"
             android:launchMode="singleTop"
-            android:exported="false"
             android:theme="@style/Theme.AppCompat.Translucent">
 
             <intent-filter>
@@ -27,7 +26,6 @@
         <activity
             android:name=".view.viewcontrollers.activity.TradeInHomeActivity"
             android:label="@string/tukar_tambah"
-            android:exported="false"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

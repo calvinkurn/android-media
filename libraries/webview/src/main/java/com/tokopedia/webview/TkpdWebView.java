@@ -10,6 +10,7 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -84,6 +85,8 @@ public class TkpdWebView extends WebView {
             webSettings.setUserAgentString(userAgent);
         }
         SplitCompat.installActivity(context);
+        setBackgroundColor(ContextCompat.getColor(getContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_Background));
     }
 
     public void setWebViewScrollListener(@Nullable TkpdWebView.WebviewScrollListener scrollListener) {

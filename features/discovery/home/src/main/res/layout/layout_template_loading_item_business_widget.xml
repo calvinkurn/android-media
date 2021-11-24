@@ -21,8 +21,7 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
-
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -30,6 +29,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="right"
                 android:textSize="@dimen/sp_10"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -90,6 +90,7 @@
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_52"
                 android:layout_gravity="center"
+                android:contentDescription="@string/content_desc_loading_icon_business"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_squircle" />
 
@@ -118,7 +119,7 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -126,6 +127,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="right"
                 android:textSize="@dimen/sp_10"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -186,6 +188,7 @@
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_52"
                 android:layout_gravity="center"
+                android:contentDescription="@string/content_desc_loading_icon_business"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_squircle" />
 
@@ -214,7 +217,7 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="@dimen/dp_60"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -222,6 +225,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="right"
                 android:textSize="@dimen/sp_10"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -283,7 +287,8 @@
                 android:layout_height="@dimen/dp_52"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_squircle" />
+                app:srcCompat="@drawable/ic_squircle"
+                android:contentDescription="@string/content_desc_loading_icon_business" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_32"

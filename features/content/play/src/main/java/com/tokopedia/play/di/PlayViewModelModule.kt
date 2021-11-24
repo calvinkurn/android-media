@@ -33,4 +33,9 @@ abstract class PlayViewModelModule {
     @IntoMap
     @ViewModelKey(PlayBottomSheetViewModel::class)
     abstract fun getPlayVariantViewModel(viewModel: PlayBottomSheetViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayUpcomingViewModel::class)
+    abstract fun getPlayUpcomingViewModel(viewModel: PlayUpcomingViewModel): ViewModel
 }

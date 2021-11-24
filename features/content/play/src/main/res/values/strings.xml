@@ -68,6 +68,7 @@
     <string name="play_featured_product_check_product">Cek Barang</string>
 
     <string name="play_remind_me">Ingatkan Saya</string>
+    <string name="play_upcoming_refresh">Refresh</string>
     <string name="play_remind_me_success">Berhasil diingatkan</string>
     <string name="play_watch_now">Tonton Sekarang</string>
     <string name="play_will_start_on">Akan mulai dalam</string>
@@ -77,4 +78,6 @@
     <string name="play_connecting_chromecast">Connecting to Chromecast</string>
     <string name="play_casting_chromecast">Casting to Chromecast</string>
     <string name="play_disconnect_chromecast">Disconnected from Chromecast</string>
+
+    <string name="play_upcoming_channel_not_started">Live-nya belum mulai, nih. Silakan tunggu atau refresh halaman ini.</string>
 </resources>

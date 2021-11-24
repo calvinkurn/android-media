@@ -129,6 +129,7 @@ object RechargeHomepageSectionMapper {
                             tickerList
                         } else null
                     }
+                    SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
                     else -> null
                 }
             }

@@ -4,11 +4,16 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
+import com.tokopedia.autocompletecomponent.databinding.LayoutTitleDynamicInitialStateBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_title_dynamic_initial_state.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
-class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<DynamicInitialStateTitleDataView>(itemView) {
+class DynamicInitialStateTitleViewHolder(
+    itemView: View,
+    private val listener: DynamicInitialStateListener
+) : AbstractViewHolder<DynamicInitialStateTitleDataView>(itemView) {
+
+    private var binding: LayoutTitleDynamicInitialStateBinding? by viewBinding()
 
     override fun bind(element: DynamicInitialStateTitleDataView) {
         bindTitle(element)
@@ -16,16 +21,18 @@ class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListen
     }
 
     private fun bindTitle(item: DynamicInitialStateTitleDataView) {
-        itemView.initialStateDynamicTitle?.text = item.title
+        binding?.initialStateDynamicTitle?.text = item.title
     }
 
     private fun bindActionButton(item: DynamicInitialStateTitleDataView) {
-        itemView.initialStateDynamicButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
-            itemView.initialStateDynamicButton?.text = item.labelAction
-            itemView.initialStateDynamicButton?.isEnabled = true
-            itemView.initialStateDynamicButton?.setOnClickListener {
-                itemView.initialStateDynamicButton?.isEnabled = false
-                clickListener.onRefreshDynamicSection(item.featureId)
+        val actionButton = binding?.initialStateDynamicButton ?: return
+
+        actionButton.shouldShowWithAction(item.labelAction.isNotEmpty()) {
+            actionButton.text = item.labelAction
+            actionButton.isEnabled = true
+            actionButton.setOnClickListener {
+                actionButton.isEnabled = false
+                listener.onRefreshDynamicSection(item.featureId)
             }
         }
     }
