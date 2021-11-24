@@ -59,6 +59,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var btnUpdateStockContainer: LinearLayout? = null
     private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
+    private var shippingLocation: Typography? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: TopchatProductAttachmentListener? = null
@@ -148,6 +149,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnUpdateStockContainer = findViewById(R.id.ll_seller_update_stock)
         btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
+        shippingLocation = findViewById(R.id.tv_shipping_location)
     }
 
     private fun initLayoutView() {
@@ -221,6 +223,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindSellerUpdateStockClick(product)
             bindMargin(product)
             bindContentPadding(product)
+            bindShippingLocation(product)
             listener.trackSeenProduct(product)
         }
     }
@@ -420,6 +423,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             listener?.updateProductStock(product, adapterPosition, parentMetaData)
             listener?.trackClickUpdateStock(product)
         }
+    }
+
+    private fun bindShippingLocation(product: ProductAttachmentUiModel) {
+        // TODO: implement this
     }
 
     private fun bindMargin(product: ProductAttachmentUiModel) {

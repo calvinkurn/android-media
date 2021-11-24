@@ -167,6 +167,19 @@
                 app:typographyWeight="bold"
                 tools:text="Rp7.999.000" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_shipping_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
+                app:typographyType="body_3"
+                tools:text="Dikirim dari Jakarta Selatan"
+                tools:visibility="visible" />
+
             <LinearLayout
                 android:id="@+id/ll_status_container"
                 android:layout_width="match_parent"
