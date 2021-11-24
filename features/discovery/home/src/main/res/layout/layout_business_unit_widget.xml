@@ -11,21 +11,51 @@
         android:visibility="gone"
         tools:visibility="visible"
         tools:background="@color/Unify_Static_Black"/>
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
     <com.tokopedia.unifycomponents.ContainerUnify
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/container_unify"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tab_layout"
+        <View
+            android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabBackground="@color/Unify_N0"
-            app:tabIndicatorColor="@color/Unify_G500"
-            app:tabSelectedTextColor="@color/Unify_G500"
-            app:tabTextColor="@color/Unify_N200"/>
+            android:layout_height="1dp"
+            android:background="@color/Unify_NN300"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.TabsUnify
+                android:id="@+id/tab_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                app:tabBackground="@color/Unify_N0"
+                app:tabPaddingBottom="6dp"
+                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabSelectedTextColor="@color/Unify_G500"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:tabTextColor="@color/Unify_N200"/>
+
+            <View
+                android:id="@+id/divider_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@color/Unify_NN300"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
@@ -43,27 +73,27 @@
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="3" />
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="3" />
             <com.elyeproj.loaderviewlibrary.LoaderTextView
                 android:layout_width="0dp"
-                android:layout_height="@dimen/dp_30"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginRight="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="8dp"
                 android:layout_weight="3"/>
         </LinearLayout>
         <include

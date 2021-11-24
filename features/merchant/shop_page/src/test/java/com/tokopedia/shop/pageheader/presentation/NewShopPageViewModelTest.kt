@@ -2,12 +2,14 @@ package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestStatus
@@ -38,6 +40,7 @@ import org.junit.Test
 import java.io.File
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.pageheader.util.NewShopPageHeaderMapper
 
 class NewShopPageViewModelTest {
 
@@ -94,7 +97,6 @@ class NewShopPageViewModelTest {
     private lateinit var shopPageViewModel : NewShopPageViewModel
 
     private val SAMPLE_SHOP_ID = "123"
-    private val SAMPLE_BUTTON_FOLLOW_VARIANT_TYPE = "follow_green_small"
 
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
 
@@ -169,6 +171,38 @@ class NewShopPageViewModelTest {
     }
 
     @Test
+    fun `check whether shopPageP1Data value is Fail is mapper throw exception`() {
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
+                shopInfoHomeTypeData = ShopPageGetHomeType(
+                        homeLayoutData = ShopPageGetHomeType.HomeLayoutData(
+                                widgetIdList = listOf(ShopPageGetHomeType.HomeLayoutData.WidgetIdList())
+                        )
+                )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+                data = listOf(ShopProduct(),ShopProduct())
+        )
+        mockkObject(NewShopPageHeaderMapper)
+        every {
+            NewShopPageHeaderMapper.mapToShopPageP1HeaderData(any(),any(),any(),any(),any())
+        } throws Exception()
+        shopPageViewModel.getShopPageTabData(
+                SAMPLE_SHOP_ID.toIntOrZero(),
+                "shop domain",
+                1,
+                10,
+                ShopProductFilterParameter(),
+                "",
+                "",
+                false,
+                addressWidgetData
+        )
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Fail)
+    }
+
+    @Test
     fun `check whether shopPageP1Data value is Fail`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
         shopPageViewModel.getShopPageTabData(
@@ -232,7 +266,11 @@ class NewShopPageViewModelTest {
     fun `check whether get follow status is success`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { getFollowStatusUseCase.get().executeOnBackground() } returns FollowStatusResponse(null)
-        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, SAMPLE_BUTTON_FOLLOW_VARIANT_TYPE)
+        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_SMALL)
+        coVerify { getFollowStatusUseCase.get().executeOnBackground() }
+        assert(shopPageViewModel.followStatusData.value is Success)
+
+        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, RollenceKey.AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_BIG)
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
         assert(shopPageViewModel.followStatusData.value is Success)
     }
@@ -241,7 +279,7 @@ class NewShopPageViewModelTest {
     fun `check whether get follow status is fail`() {
         every { userSessionInterface.isLoggedIn } returns true
         coEvery { getFollowStatusUseCase.get().executeOnBackground() } throws Throwable()
-        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, SAMPLE_BUTTON_FOLLOW_VARIANT_TYPE)
+        shopPageViewModel.getFollowStatusData(SAMPLE_SHOP_ID, "mock_key")
         coVerify { getFollowStatusUseCase.get().executeOnBackground() }
         assert(shopPageViewModel.followStatusData.value is Fail)
     }
@@ -267,9 +305,9 @@ class NewShopPageViewModelTest {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()
 
-        mockkStatic(ImageHandler::class)
-        every { ImageHandler.loadImageWithTarget(any(), any(), any()) } answers {
-            (thirdArg() as CustomTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
         }
 
         mockkStatic(ImageProcessingUtil::class)
@@ -280,6 +318,48 @@ class NewShopPageViewModelTest {
         } returns File("path")
         shopPageViewModel.saveShopImageToPhoneStorage(context, "")
         assert(shopPageViewModel.shopImagePath.value.orEmpty().isNotEmpty())
+    }
+
+    @Test
+    fun `check whether shopImagePath value is null when savedFile is null`() {
+        val mockBitmap = mockk<Bitmap>()
+        val mockTransition = mockk<Transition<in Bitmap>>()
+
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onResourceReady(mockBitmap, mockTransition)
+        }
+
+        mockkStatic(ImageProcessingUtil::class)
+        every {
+            ImageProcessingUtil.writeImageToTkpdPath(
+                    mockBitmap,
+                    Bitmap.CompressFormat.PNG)
+        } returns null
+        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageViewModel.shopImagePath.value == null)
+    }
+
+    @Test
+    fun `check whether shopImagePath value is null when onLoadCleared is called on saveShopImageToPhoneStorage`() {
+        val mockDrawable = mockk<Drawable>()
+
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } answers {
+            (lastArg() as MediaBitmapEmptyTarget<Bitmap>).onLoadCleared(mockDrawable)
+        }
+
+        mockkStatic(ImageProcessingUtil::class)
+        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageViewModel.shopImagePath.value == null)
+    }
+
+    @Test
+    fun `check whether shopImagePath value is null when ImageHandler loadImageWithTarget throws exception`() {
+        mockkStatic("com.tokopedia.media.loader.ExtensionKt")
+        every { loadImageWithEmptyTarget(any(), any(), any(), any()) } throws Exception()
+        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageViewModel.shopImagePath.value == null)
     }
 
     @Test
@@ -382,6 +462,19 @@ class NewShopPageViewModelTest {
         val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
         assert(shopSellerPLayWidgetData is Success)
         assert((shopSellerPLayWidgetData as? Success)?.data?.streamAllowed == true)
+    }
+
+    @Test
+    fun `check whether shopSellerPLayWidgetData post success value and streamAllowed false when error get data`() {
+        val mockShopId = "123"
+        every { userSessionInterface.shopId } returns mockShopId
+        coEvery {
+            getBroadcasterShopConfigUseCase.get().executeOnBackground()
+        } throws Exception()
+        shopPageViewModel.getSellerPlayWidgetData(mockShopId)
+        val shopSellerPLayWidgetData = shopPageViewModel.shopSellerPLayWidgetData.value
+        assert(shopSellerPLayWidgetData is Success)
+        assert((shopSellerPLayWidgetData as? Success)?.data?.streamAllowed == false)
     }
 
     @Test

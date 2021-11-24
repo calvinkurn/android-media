@@ -19,13 +19,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
@@ -54,11 +53,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommen
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder.Companion.LAYOUT
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -88,7 +87,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory, this) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
-    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
+    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(requireContext()), StaggeredGridLayoutManager.VERTICAL) }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
     private var totalScrollY = 0
@@ -101,10 +100,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private var parentPool: RecyclerView.RecycledViewPool? = null
     private var homeCategoryListener: HomeCategoryListener? = null
     private var component: BerandaComponent? = null
-    private var pmProCoachmarkIsShowing = false
     private var coachmarkLocalCache: CoachMarkLocalCache? = null
-    private var pmProCoachmark: CoachMark2? = null
-    private var pmProCoachmarkItem: ArrayList<CoachMark2Item> = arrayListOf()
     private var pmProProductPosition: Int = -1
     private var remoteConfigInstance: RemoteConfigInstance? = null
 
@@ -210,7 +206,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun setupRecyclerView() {
         recyclerView?.layoutManager = staggeredGridLayoutManager
         (recyclerView?.layoutManager as StaggeredGridLayoutManager?)?.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recyclerView?.addItemDecoration(HomeFeedItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_4)))
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
                 LAYOUT,
@@ -333,34 +329,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
         viewModel.loadInitialPage(tabName, recomId, DEFAULT_TOTAL_ITEM_HOME_RECOM_PER_PAGE, getLocationParamString())
     }
 
-    override fun onProductWithPmProImpressed(pmProView: View?, position: Int) {
-        if (shouldShowPmProCoachmark()) {
-            pmProView?.let {
-                setupPMProCoachmark(pmProView)
-                this.pmProProductPosition = position
-            }
-        }
-    }
-
-    private fun shouldShowPmProCoachmark(): Boolean {
-        val pmProAbTestValue =
-                try {
-                    remoteConfigInstance?.abTestPlatform?.getString(
-                            RollenceKey.POWER_MERCHANT_PRO_POP_UP)
-                } catch (e: Exception) {
-                    false
-                }
-
-        val isPmProRollenceActive =
-                pmProAbTestValue == RollenceKey.POWER_MERCHANT_PRO_POP_UP
-
-        return if (pmProCoachmark == null && isPmProRollenceActive) {
-            coachmarkLocalCache?.shouldShowHomePMProCoachMark()?: false
-        } else {
-            false
-        }
-    }
-
     private fun initListeners() {
         if (view == null) return
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -372,13 +340,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
                 homeEggListener?.hideEggOnScroll()
                 if (homeTabFeedListener != null) {
                     homeTabFeedListener?.onFeedContentScrolled(dy, totalScrollY)
-                }
-
-                val viewsIds: IntArray = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)
-                if (pmProProductPosition == viewsIds.getOrNull(0)?:-1 || pmProProductPosition == viewsIds.getOrNull(1)?:-1) {
-                    showPmProCoachmark()
-                } else {
-                    pmProCoachmark?.dismissCoachMark()
                 }
             }
 
@@ -430,44 +391,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
             return !it.isFinishing
         }
         return false
-    }
-
-    private fun setupPMProCoachmark(pmProBadgeView: View) {
-        context?.let {
-            pmProCoachmarkItem = arrayListOf(
-                    CoachMark2Item(
-                            title = getString(R.string.home_pmpro_coachmark_title),
-                            description = getString(R.string.home_pmpro_coachmark_description),
-                            anchorView = pmProBadgeView
-                    )
-            )
-            pmProCoachmark = CoachMark2(requireContext())
-            showPmProCoachmark()
-        }
-    }
-
-    private fun showPmProCoachmark() {
-        pmProCoachmark.let {
-            //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
-            //will be removed along the coachmark removal in the future
-            try {
-                if (pmProCoachmarkItem.isNotEmpty() && isValidToShowCoachMark()) {
-                    if (!pmProCoachmarkIsShowing) {
-                        pmProCoachmark?.showCoachMark(step = pmProCoachmarkItem)
-                        pmProCoachmarkIsShowing = true
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun hidePmProCoachmark() {
-        if (activity?.isFinishing == false && pmProCoachmark?.isShowing == true && pmProCoachmarkIsShowing) {
-            pmProCoachmark?.hideCoachMark()
-            pmProCoachmarkIsShowing = false
-        }
     }
 
     fun scrollToTop() {

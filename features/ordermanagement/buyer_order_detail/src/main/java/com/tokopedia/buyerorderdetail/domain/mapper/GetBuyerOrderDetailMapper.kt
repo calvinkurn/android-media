@@ -8,6 +8,7 @@ import android.text.style.StyleSpan
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
+import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.presentation.model.*
 import javax.inject.Inject
@@ -20,9 +21,18 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 actionButtonsUiModel = mapActionButtons(buyerOrderDetail.button, buyerOrderDetail.dotMenu),
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
-                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
-                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship)
+                productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.haveProductBundle, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
+                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship),
+                pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(buyerOrderDetail.adsPageName, buyerOrderDetail.products)
         )
+    }
+
+    private fun mapToRecommendationWidgetUiModel(adsPageName: String, productsList: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>): PGRecommendationWidgetUiModel {
+        val productIdList = arrayListOf<String>()
+        productsList.forEach { product ->
+            productIdList.add(product.productId)
+        }
+        return PGRecommendationWidgetUiModel(adsPageName, productIdList)
     }
 
     private fun mapActionButtons(button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button, dotMenu: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.DotMenu>): ActionButtonsUiModel {
@@ -50,10 +60,30 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>, shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop, orderId: String, orderStatusId: String): ProductListUiModel {
+    private fun mapProductListUiModel(products: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>,
+                                      haveProductBundle: Boolean,
+                                      bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?,
+                                      shop: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shop,
+                                      orderId: String,
+                                      orderStatusId: String): ProductListUiModel {
+        val productList =
+                if (haveProductBundle) {
+                    bundleDetail?.nonBundleList?.let { nonBundleProducts ->
+                        mapProductList(nonBundleProducts, orderId, orderStatusId)
+                    }.orEmpty()
+                } else {
+                    mapProductList(products, orderId, orderStatusId)
+                }
+        val productBundlingList =
+                if (haveProductBundle) {
+                    mapProductBundle(bundleDetail, orderId, orderStatusId)
+                } else {
+                    emptyList()
+                }
         return ProductListUiModel(
-                productList = mapProductList(products, orderId, orderStatusId),
-                productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId)
+                productList = productList,
+                productListHeaderUiModel = mapProductListHeaderUiModel(shop, orderId, orderStatusId),
+                productBundlingList = productBundlingList
         )
     }
 
@@ -252,6 +282,20 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
+    private fun mapProductBundle(bundleDetail: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.BundleDetail?, orderId: String, orderStatusId: String): List<ProductListUiModel.ProductBundlingUiModel> {
+        return bundleDetail?.bundleList?.map { bundle ->
+            ProductListUiModel.ProductBundlingUiModel(
+                    bundleName = bundle.bundleName,
+                    bundleIconUrl = bundleDetail.bundleIcon.orEmpty(),
+                    totalPrice = bundle.bundleSubtotalPrice,
+                    totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
+                    bundleItemList = bundle.orderDetailList.map { bundleDetail ->
+                        mapProduct(bundleDetail, orderId, orderStatusId)
+                    }
+            )
+        }.orEmpty()
+    }
+
     private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {
         return CopyableKeyValueUiModel(
                 copyableText = formatDropshipperValue(dropship),
@@ -266,7 +310,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 arrivalEstimation = composeETA(shipment.eta),
                 courierNameAndProductName = shipment.shippingDisplayName,
                 isFreeShipping = meta.isBebasOngkir,
-                boBadgeUrl = meta.boImageUrl
+                boBadgeUrl = meta.boImageUrl,
+                etaChanged = shipment.etaIsUpdated,
+                etaUserInfo = shipment.userUpdatedInfo
         )
     }
 

@@ -5,8 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberItem
 import com.tokopedia.common.topupbills.databinding.ItemTopupBillsFavoriteNumberBinding
-import com.tokopedia.common.topupbills.view.model.TopupBillsFavNumberDataView
+import com.tokopedia.common.topupbills.view.model.favorite.TopupBillsFavNumberDataView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 
 class FavoriteNumberViewHolder(
@@ -29,10 +30,10 @@ class FavoriteNumberViewHolder(
             }
 
             if (item.favoriteNumber.iconUrl.isNotEmpty()) {
-                commonTopupbillsFavoriteNumberIcon.setImageUrl(item.favoriteNumber.iconUrl)
+                commonTopupbillsFavoriteNumberIcon.loadImage(item.favoriteNumber.iconUrl)
             }
             commonTopupbillsFavoriteNumberContainer.setOnClickListener {
-                favoriteNumberListener.onFavoriteNumberClick(item.favoriteNumber)
+                favoriteNumberListener.onFavoriteNumberClick(item.favoriteNumber, adapterPosition+1)
             }
             commonTopupbillsFavoriteNumberMenu.setOnClickListener {
                 favoriteNumberListener.onFavoriteNumberMenuClick(item.favoriteNumber)
@@ -41,7 +42,7 @@ class FavoriteNumberViewHolder(
     }
 
     interface OnFavoriteNumberClickListener {
-        fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem)
+        fun onFavoriteNumberClick(clientNumber: TopupBillsSeamlessFavNumberItem, position: Int)
         fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem)
     }
 

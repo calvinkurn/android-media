@@ -449,14 +449,14 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }else{
             socialMediaList.add(ShareModel.Instagram().apply {
                 packageName = PACKAGE_NAME_INSTAGRAM
-                socialMediaName = context?.resources?.getString(R.string.label_instagram_msg)
+                socialMediaName = context?.resources?.getString(R.string.label_instagram_dm)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelIgMessage
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
                 shareOnlyLink = false
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram_dm) }
             })
         }
         socialMediaList.add(ShareModel.Line().apply {

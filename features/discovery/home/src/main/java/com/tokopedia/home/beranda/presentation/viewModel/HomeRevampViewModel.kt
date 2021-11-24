@@ -61,6 +61,7 @@ import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
 import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -77,7 +78,6 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
@@ -102,7 +102,6 @@ open class HomeRevampViewModel @Inject constructor(
     private val getBusinessWidgetTab: Lazy<GetBusinessWidgetTab>,
     private val getDisplayHeadlineAds: Lazy<GetDisplayHeadlineAds>,
     private val getHomeReviewSuggestedUseCase: Lazy<GetHomeReviewSuggestedUseCase>,
-    private val getHomeTokopointsDataUseCase: Lazy<GetHomeTokopointsDataUseCase>,
     private val getHomeTokopointsListDataUseCase: Lazy<GetHomeTokopointsListDataUseCase>,
     private val getKeywordSearchUseCase: Lazy<GetKeywordSearchUseCase>,
     private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
@@ -233,7 +232,6 @@ open class HomeRevampViewModel @Inject constructor(
     private var takeTicker = true
     private var homeNotifModel = HomeNotifModel()
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().main)
-    private var navRollanceType: String = ""
     private var useNewBalanceWidget: Boolean = true
     private var useWalletApp: Boolean = false
     private var popularKeywordRefreshCount = 1
@@ -281,21 +279,14 @@ open class HomeRevampViewModel @Inject constructor(
     /**
      * use this refresh mechanism only for conditional refresh (3 mins rule)
      */
-    fun refresh(forceRefresh: Boolean = false){
+    fun refresh(forceRefresh: Boolean = false, isFirstInstall: Boolean = false){
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
         } else {
             getHeaderData()
         }
-    }
-
-    private fun showBalanceWidgetLoading() {
-        val loadingState = homeDataModel.homeBalanceModel.copy().apply {
-            setWalletBalanceState(state = STATE_LOADING)
-            setTokopointBalanceState(state = STATE_LOADING)
-        }
-        newUpdateHeaderViewModel(loadingState)
+        getSearchHint(isFirstInstall)
     }
 
     fun getRecommendationWidget(){
@@ -334,7 +325,8 @@ open class HomeRevampViewModel @Inject constructor(
                     updateWidget(dataModel.copy(
                             id = bestSellerDataModel.id,
                             pageName = dataModel.pageName,
-                            widgetParam = bestSellerDataModel.widgetParam
+                            widgetParam = bestSellerDataModel.widgetParam,
+                            dividerType = bestSellerDataModel.dividerType
                     ), index)
                 } else {
                     deleteWidget(bestSellerDataModel, index)
@@ -368,6 +360,7 @@ open class HomeRevampViewModel @Inject constructor(
                                 it.copy(isActivated = filterChip.name == it.name
                                         && filterChip.isActivated)
                             },
+                            dividerType = bestSellerDataModel.dividerType,
                             chipsPosition = (selectedChipsPosition+1)
                     )
                     updateWidget(newModel, index)
@@ -558,10 +551,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getRecommendationFeedSectionPosition() = homeDataModel.list.size -1
 
-    fun refreshHomeData(isFirstInstall: Boolean = false) {
+    fun refreshHomeData() {
         getHeaderData()
-        getSearchHint(isFirstInstall)
-
         if (homeFlowDataCancelled) {
             initFlow()
             homeFlowDataCancelled = false
@@ -854,7 +845,9 @@ open class HomeRevampViewModel @Inject constructor(
             getKeywordSearchUseCase.get().params = getKeywordSearchUseCase.get().createParams(isFirstInstall, userSession.get().deviceId, userSession.get().userId)
             val data = getKeywordSearchUseCase.get().executeOnBackground()
             _searchHint.postValue(data.searchData)
-        }){}
+        }){
+            _searchHint.postValue(SearchPlaceholder())
+        }
     }
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
@@ -971,10 +964,6 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun setRollanceNavigationType(type: String) {
-        navRollanceType = type
-    }
-
     fun setNewBalanceWidget(useNewBalanceWidget: Boolean) {
         this.useNewBalanceWidget = useNewBalanceWidget
     }
@@ -1002,12 +991,12 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun isAddressDataEmpty(): Boolean {
-        return getAddressData().lat.isEmpty() &&
-                getAddressData().long.isEmpty() &&
-                getAddressData().districId.isEmpty() &&
-                getAddressData().cityId.isEmpty() &&
-                getAddressData().addressId.isEmpty() &&
-                getAddressData().postCode.isEmpty()
+        return getAddressData().localCacheModel.lat.isEmpty() &&
+                getAddressData().localCacheModel.long.isEmpty() &&
+                getAddressData().localCacheModel.district_id.isEmpty() &&
+                getAddressData().localCacheModel.city_id.isEmpty() &&
+                getAddressData().localCacheModel.address_id.isEmpty() &&
+                getAddressData().localCacheModel.postal_code.isEmpty()
 
     }
 
@@ -1099,29 +1088,8 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getHomeLocationDataParam() : String {
         return if (!isAddressDataEmpty()) {
-            buildLocationParams(
-                    getAddressData().lat,
-                    getAddressData().long,
-                    getAddressData().addressId,
-                    getAddressData().cityId,
-                    getAddressData().districId,
-                    getAddressData().postCode)
+            getAddressData().localCacheModel.convertToLocationParams()
         } else ""
-    }
-
-    private fun buildLocationParams(
-            lat: String = "",
-            long: String = "",
-            addressId: String = "",
-            cityId: String = "",
-            districtId: String = "",
-            postCode: String = ""): String {
-        return "user_lat=" + lat +
-                "&user_long=" + long +
-                "&user_addressId=" + addressId +
-                "&user_cityId=" + cityId +
-                "&user_districtId=" + districtId +
-                "&user_postCode=" + postCode
     }
 
     private fun convertPopularKeywordDataList(popularKeywordList: HomeWidget.PopularKeywordList): MutableList<PopularKeywordDataModel> {
@@ -1217,35 +1185,19 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true || !userSession.get().isLoggedIn) return
-        getTokopointJob = if (navRollanceType.equals(RollenceKey.NAVIGATION_VARIANT_REVAMP)) {
-            launchCatchError(coroutineContext, block = {
-                val data = getTokopointListBasedOnElibility()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
-                                ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
-                        tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("BBO"),
-                        isTokoPointDataError = false
-                )
-            }){
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
-        } else {
-            launchCatchError(coroutineContext, block = {
-                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-                updateHeaderViewModel(
-                        tokopointsDrawer = data.tokopointsDrawer,
-                        isTokoPointDataError = false
-                )
-            }) {
-                updateHeaderViewModel(
-                        tokopointsDrawer = null,
-                        isTokoPointDataError = true
-                )
-            }
+        getTokopointJob = launchCatchError(coroutineContext, block = {
+            val data = getTokopointListBasedOnElibility()
+            updateHeaderViewModel(
+                    tokopointsDrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("Rewards")
+                            ?: data.tokopointsDrawerList.drawerList.getDrawerListByType("Coupon"),
+                    tokopointsBBODrawer = data.tokopointsDrawerList.drawerList.getDrawerListByType("BBO"),
+                    isTokoPointDataError = false
+            )
+        }){
+            updateHeaderViewModel(
+                    tokopointsDrawer = null,
+                    isTokoPointDataError = true
+            )
         }
     }
 

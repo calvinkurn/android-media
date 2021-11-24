@@ -10,7 +10,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -28,8 +27,10 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -55,15 +56,16 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.*
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
@@ -72,6 +74,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -200,16 +203,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initNavRevampAbTest() {
-        showOldToolbar = !isNavRevamp()
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+        showOldToolbar = false
     }
 
     private fun initInboxAbTest() {
@@ -443,32 +437,40 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         if (isSeller && userSession.isLoggedIn) {
             items.add(
-                FloatingButtonItem(
-                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-                    title = getString(R.string.feed_fab_create_post),
-                    listener = {
-                        fab_feed.menuOpen = false
-                        entryPointAnalytic.clickCreatePostEntryPoint()
-
-                        val authors = viewModel.feedContentForm.authors
-                        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                        intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
-                            ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                        intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
-                            MAX_MULTI_SELECT_ALLOWED_VALUE)
-                        intent.putExtra(TITLE,
-                            getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
-                        val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-                        intent.putExtra(SUB_TITLE, name)
-                        intent.putExtra(TOOLBAR_ICON_URL,
-                            authors.first().thumbnail
-                        )
-                        intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
-                            ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                        startActivity(intent)
-                        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-                    }
-                )
+                    FloatingButtonItem(
+                            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+                            title = getString(R.string.feed_fab_create_post),
+                            listener = {
+                                try {
+                                    fab_feed.menuOpen = false
+                                    entryPointAnalytic.clickCreatePostEntryPoint()
+                                    val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
+                                    if (shouldShowNewContentCreationFlow) {
+                                        val authors = viewModel.feedContentForm.authors
+                                        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                                        intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
+                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                        intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                                                MAX_MULTI_SELECT_ALLOWED_VALUE)
+                                        intent.putExtra(TITLE,
+                                                getString(com.tokopedia.feedplus.R.string.feed_post_sebagai))
+                                        val name: String = MethodChecker.fromHtml(authors.first().name).toString()
+                                        intent.putExtra(SUB_TITLE, name)
+                                        intent.putExtra(TOOLBAR_ICON_URL,
+                                                authors.first().thumbnail
+                                        )
+                                        intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
+                                                ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                                        startActivity(intent)
+                                        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+                                    } else {
+                                        openBottomSheetToFollowOldFlow()
+                                    }
+                                } catch (e: Exception) {
+                                    Timber.e(e)
+                                }
+                            }
+                    )
             )
         }
 
@@ -479,6 +481,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.hide()
         }
     }
+
+    private fun enableContentCreationNewFlow(): Boolean {
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
+        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
+    }
+
 
     private fun setViewPager() {
         view_pager?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -750,4 +758,22 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             postProgressUpdateView?.hide()
         }
     }
+
+    private fun openBottomSheetToFollowOldFlow() {
+        when {
+            isSellerMigrationEnabled(context) -> {
+                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
+                val intent = SellerMigrationActivity.createIntent(
+                        context = requireContext(),
+                        featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                        screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                        appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
+                setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+
+            }
+        }
+    }
+
+
 }

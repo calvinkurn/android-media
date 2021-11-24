@@ -22,6 +22,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.utils.ViewUtilsKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
@@ -234,8 +235,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
-                .getDimensionPixelSize(R.dimen.dp_8)));
+        recyclerView.addItemDecoration(new RecomItemDecoration(ViewUtilsKt.toDpInt(8f)));
         layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);
@@ -442,7 +442,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list, RecomTitle title) {
-        if (headlineData == null
+            adapter.addElement(title);
+
+            if (headlineData == null
                 || headlineData.getData() == null
                 || headlineData.getData().get(0) == null
                 || headlineData.getData().get(0).getCpm() == null) {
@@ -455,8 +457,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             adapter.addElement(list);
 
             if (absRecommPosition <= adapter.getList().size() && !isAdded) {
-                adapter.addElement(absRecommPosition, title);
-                adapter.addElement(absRecommPosition + 1, new TopadsHeadlineUiModel(headlineData, 0));
+                adapter.addElement(absRecommPosition, new TopadsHeadlineUiModel(headlineData, 0));
                 isAdded = true;
             }
 

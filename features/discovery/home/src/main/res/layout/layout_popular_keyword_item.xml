@@ -8,17 +8,17 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_2"
-    app:cardCornerRadius="@dimen/dp_8">
+    android:layout_margin="4dp"
+    app:cardElevation="2dp"
+    app:cardCornerRadius="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             app:unify_image_type="rect"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -29,8 +29,8 @@
             android:id="@+id/tv_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="8dp"
             android:ellipsize="end"
             android:maxLines="2"
             android:textColor="@color/Unify_N700_96"
@@ -47,7 +47,7 @@
             android:id="@+id/tv_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="2dp"
             android:textColor="@color/Unify_N700_44"
             android:ellipsize="end"
             android:maxLines="1"

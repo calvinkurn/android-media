@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.data.ProductAttachmentViewModel
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.ProductListAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
@@ -42,7 +42,7 @@ object ProductCarouselListAttachmentViewHolderBinder {
         if (!carousel.isLoading()) return
         val attachments = deferredAttachment.getLoadedChatAttachments()
         for (product in carousel.products) {
-            if (product is ProductAttachmentViewModel) {
+            if (product is ProductAttachmentUiModel) {
                 val attachment = attachments[product.id] ?: return
                 if (attachment is ErrorAttachment) {
                     product.syncError()
@@ -53,7 +53,7 @@ object ProductCarouselListAttachmentViewHolderBinder {
         }
         if (carousel.isBroadCast()) {
             carousel.products = carousel.products.sortedBy {
-                return@sortedBy (it as ProductAttachmentViewModel).hasEmptyStock()
+                return@sortedBy (it as ProductAttachmentUiModel).hasEmptyStock()
             }
         }
     }

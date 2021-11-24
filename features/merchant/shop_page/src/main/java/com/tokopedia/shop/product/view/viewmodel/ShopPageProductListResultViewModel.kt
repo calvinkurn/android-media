@@ -169,6 +169,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                 shopProductFilterParameter.getRating(),
                                 shopProductFilterParameter.getPmax(),
                                 shopProductFilterParameter.getPmin(),
+                                shopProductFilterParameter.getCategory(),
                                 widgetUserAddressLocalData.district_id,
                                 widgetUserAddressLocalData.city_id,
                                 widgetUserAddressLocalData.lat,
@@ -311,10 +312,10 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         return shopProductSortMapper.convertSort(listSort).toMutableList()
     }
 
-    fun getBottomSheetFilterData() {
+    fun getBottomSheetFilterData(shopId: String = "") {
         launchCatchError(coroutineContext, block = {
             val filterBottomSheetData = withContext(dispatcherProvider.io) {
-                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
+                getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams(shopId)
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
             filterBottomSheetData.data.let {
@@ -330,6 +331,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     fun getFilterResultCount(
             shopId: String,
+            productPerPage: Int,
             searchKeyword: String,
             etalaseId: String,
             tempShopProductFilterParameter: ShopProductFilterParameter,
@@ -339,6 +341,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             val filterResultProductCount = withContext(dispatcherProvider.io) {
                 getFilterResultCountData(
                         shopId,
+                        productPerPage,
                         searchKeyword,
                         etalaseId,
                         tempShopProductFilterParameter,
@@ -353,6 +356,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
 
     private suspend fun getFilterResultCountData(
             shopId: String,
+            productPerPage: Int,
             searchKeyword: String,
             etalaseId: String,
             tempShopProductFilterParameter: ShopProductFilterParameter,
@@ -360,13 +364,14 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     ): Int {
         val filter = ShopProductFilterInput(
                 ShopPageConstant.START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                productPerPage,
                 searchKeyword,
                 etalaseId,
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),
                 tempShopProductFilterParameter.getRating(),
                 tempShopProductFilterParameter.getPmax(),
                 tempShopProductFilterParameter.getPmin(),
+                tempShopProductFilterParameter.getCategory(),
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,

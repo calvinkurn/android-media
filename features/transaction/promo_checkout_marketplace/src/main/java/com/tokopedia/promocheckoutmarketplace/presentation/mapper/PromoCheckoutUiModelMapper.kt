@@ -1,9 +1,9 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.mapper
 
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.promocheckout.common.view.model.clearpromo.SuccessDataUiModel
 import com.tokopedia.promocheckoutmarketplace.data.response.*
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
 import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {

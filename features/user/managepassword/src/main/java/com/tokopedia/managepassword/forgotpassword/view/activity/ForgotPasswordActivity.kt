@@ -18,9 +18,7 @@ import com.tokopedia.managepassword.common.ManagePasswordConstant.PARAM_AUTO_FIL
 import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
-import com.tokopedia.managepassword.forgotpassword.view.fragment.ForgotPasswordFragment
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.KEY_URL
 import javax.inject.Inject
@@ -43,11 +41,7 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var uri: Uri
-
-    private val isDirectToWebView: Boolean
-        get() = getAbTestPlatform()?.getString(AB_TEST_RESET_PASSWORD_KEY) == AB_TEST_RESET_PASSWORD
+    private var uri: Uri? = null
 
     override fun getScreenName(): String {
         return SCREEN_FORGOT_PASSWORD
@@ -60,24 +54,12 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                 .build()
     }
 
-    override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        if (intent?.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return ForgotPasswordFragment.createInstance(bundle)
-    }
+    override fun getNewFragment(): Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
-
-        getAbTestPlatform()?.fetch(null)
-
-        if (isDirectToWebView) {
-            gotoWebView(urlResetPassword())
-            return
-        }
+        gotoWebView(urlResetPassword())
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -92,10 +74,12 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
                         uri = Uri.parse(url).buildUpon().build()
 
                         if (isContainsLoginApplink) {
-                            if (userSession.isLoggedIn && isForceLogout(uri)) {
-                                gotoLogout()
-                            } else {
-                                gotoLogin(uri)
+                            uri?.let {
+                                if (userSession.isLoggedIn && isForceLogout(it)) {
+                                    gotoLogout()
+                                } else {
+                                    gotoLogin(it)
+                                }
                             }
                         }
                     }
@@ -152,13 +136,6 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         return String(byteArray)
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(this.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
     private fun urlResetPassword(): String {
         val url = RemoteConfigInstance.getInstance().abTestPlatform.getString(REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL, "")
         return if (url.isEmpty()) {
@@ -181,7 +158,5 @@ class ForgotPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePassword
         private const val SCREEN_FORGOT_PASSWORD = "Forgot password page"
         private const val URL_FORGOT_PASSWORD = "https://m.tokopedia.com/reset-password"
         private const val REMOTE_FORGOT_PASSWORD_DIRECT_TO_WEBVIEW_URL = "android_forgot_password_webview_url"
-        private const val AB_TEST_RESET_PASSWORD_KEY = "Reset Password AND"
-        private const val AB_TEST_RESET_PASSWORD = "Reset Password AND"
     }
 }

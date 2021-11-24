@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetBuyerOrderDetailResponse(
@@ -38,6 +39,10 @@ data class GetBuyerOrderDetailResponse(
                 val paymentDate: String = "",
                 @SerializedName("products")
                 val products: List<Product> = listOf(),
+                @SerializedName("have_product_bundle")
+                val haveProductBundle: Boolean = false,
+                @SerializedName("bundle_detail")
+                val bundleDetail: BundleDetail? = BundleDetail(),
                 @SerializedName("shipment")
                 val shipment: Shipment = Shipment(),
                 @SerializedName("shop")
@@ -45,7 +50,9 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("ticker_info")
                 val tickerInfo: TickerInfo = TickerInfo(),
                 @SerializedName("dropship")
-                val dropship: Dropship = Dropship()
+                val dropship: Dropship = Dropship(),
+                @SerializedName("ads_page_name")
+                val adsPageName: String = ""
         ) {
             data class Button(
                     @SerializedName("display_name")
@@ -163,8 +170,11 @@ data class GetBuyerOrderDetailResponse(
                     val categoryId: String = "0",
                     @SerializedName("notes")
                     val notes: String = "",
+                    @SerializedName("bundle_id")
+                    val bundleId: String? = "0",
                     @SerializedName("order_detail_id")
                     val orderDetailId: String = "0",
+                    @SuppressLint("Invalid Data Type")
                     @SerializedName("price")
                     val price: Double = 0.0,
                     @SerializedName("price_text")
@@ -182,8 +192,32 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("total_price")
                     val totalPrice: String = "0",
                     @SerializedName("total_price_text")
-                    val totalPriceText: String = ""
+                    val totalPriceText: String = "",
             )
+
+            data class BundleDetail(
+                    @SerializedName("bundle")
+                    val bundleList: List<Bundle> = listOf(),
+                    @SerializedName("product_bundling_icon")
+                    val bundleIcon: String? = "",
+                    @SerializedName("non_bundle")
+                    val nonBundleList: List<Product> = listOf()
+            ) {
+                data class Bundle(
+                        @SerializedName("bundle_id")
+                        val bundleId: String = "0",
+                        @SerializedName("bundle_name")
+                        val bundleName: String = "",
+                        @SerializedName("bundle_price")
+                        val bundlePrice: Double = 0.0,
+                        @SerializedName("bundle_quantity")
+                        val bundleQty: Int = 0,
+                        @SerializedName("bundle_subtotal_price")
+                        val bundleSubtotalPrice: Double = 0.0,
+                        @SerializedName("order_detail")
+                        val orderDetailList: List<Product> = listOf()
+                )
+            }
 
             data class Shipment(
                     @SerializedName("driver")
@@ -197,7 +231,11 @@ data class GetBuyerOrderDetailResponse(
                     @SerializedName("shipping_info")
                     val shippingInfo: TickerInfo = TickerInfo(),
                     @SerializedName("shipping_ref_num")
-                    val shippingRefNum: String = ""
+                    val shippingRefNum: String = "",
+                    @SerializedName("eta_is_updated")
+                    val etaIsUpdated: Boolean = false,
+                    @SerializedName("user_updated_info")
+                    val userUpdatedInfo: String = ""
             ) {
                 data class Driver(
                         @SerializedName("license_number")

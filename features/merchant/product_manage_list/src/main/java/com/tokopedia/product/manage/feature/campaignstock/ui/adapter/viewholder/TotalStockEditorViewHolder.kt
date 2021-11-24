@@ -11,16 +11,18 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
+import com.tokopedia.product.manage.databinding.ItemCampaignStockTotalEditorBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.TotalStockEditorUiModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.textwatcher.StockEditorTextWatcher
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.unifycomponents.QuantityEditorUnify
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_campaign_stock_total_editor.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TotalStockEditorViewHolder(itemView: View?,
                                  private val onTotalStockChanged: (Int) -> Unit,
-                                 private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit
+                                 private val onOngoingPromotionClicked: (campaignTypeList: List<ProductCampaignType>) -> Unit,
+                                 private val source: String,
+                                 private val shopId: String
 ): AbstractViewHolder<TotalStockEditorUiModel>(itemView) {
 
     companion object {
@@ -30,10 +32,16 @@ class TotalStockEditorViewHolder(itemView: View?,
         private const val MAXIMUM_LENGTH = 7
     }
 
-    private val stockEditor by lazy { itemView?.qte_campaign_stock_amount }
-    private val emptyStockInfo by lazy { itemView?.emptyStockInfo }
-    private val textStock by lazy { itemView?.textStock }
-    private val ongoingCampaignTypeText by lazy { itemView?.findViewById<Typography>(R.id.tv_campaign_stock_count) }
+    private val binding by viewBinding<ItemCampaignStockTotalEditorBinding>()
+
+    private val stockEditor
+        get() = binding?.qteCampaignStockAmount
+    private val emptyStockInfo
+        get() = binding?.emptyStockInfo
+    private val textStock
+        get() = binding?.textStock
+    private val ongoingCampaignTypeText
+        get() = binding?.tvCampaignStockCount
 
     private val stockTextWatcher by lazy {
         StockEditorTextWatcher(stockEditor, emptyStockInfo, onTotalStockChanged)
@@ -60,10 +68,18 @@ class TotalStockEditorViewHolder(itemView: View?,
             }
         }
         setAddClickListener {
-            ProductManageTracking.eventClickAllocationIncreaseStock(isVariant = false)
+            ProductManageTracking.eventClickAllocationIncreaseStock(
+                isVariant = false,
+                source = source,
+                productId = element.productId.orEmpty(),
+                shopId = shopId)
         }
         setSubstractListener {
-            ProductManageTracking.eventClickAllocationDecreaseStock(isVariant = false)
+            ProductManageTracking.eventClickAllocationDecreaseStock(
+                isVariant = false,
+                source = source,
+                productId = element.productId.orEmpty(),
+                shopId = shopId)
         }
         setupStockEditor(element)
         setupCampaignCountText(element)

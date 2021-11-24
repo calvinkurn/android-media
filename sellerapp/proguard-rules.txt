@@ -276,6 +276,5 @@
 # Window
 -keep class androidx.window.** { *; }
 
-# otaliastudios.zoom library
--dontwarn com.otaliastudios.zoom.**
--keep class com.otaliastudios.zoom.*{ *; }
+# Keep fragment class name
+-keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment

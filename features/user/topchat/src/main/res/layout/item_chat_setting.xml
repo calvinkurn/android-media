@@ -46,18 +46,21 @@
         app:typographyType="body_3"
         tools:text="Akses fitur Template Chat, Balasan Otomatis, dan Pengumuman toko di Tokopedia Seller" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_chat_setting"
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/cs_nu_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_topchat_6"
-        android:text="@string/seller_migration_label_seller_app_only"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/unify_space_8"
         android:visibility="gone"
-        app:labelType="general_light_green"
         app:layout_constraintBottom_toBottomOf="@id/tvTitle"
         app:layout_constraintEnd_toStartOf="@id/ivChevron"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/tvTitle"
         app:layout_constraintTop_toTopOf="@id/tvTitle"
+        app:notificationColor="color_text_type"
+        app:notificationTitle="@string/title_topchat_new"
+        app:notificationType="text_type"
         tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
