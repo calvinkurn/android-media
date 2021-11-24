@@ -44,8 +44,8 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
 
     private fun setDefaultParams() {
         isFullpage = true
-        isDragable = true
-        isHideable = true
+        isDragable = false
+        isHideable = false
     }
 
     companion object {
