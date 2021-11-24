@@ -7,7 +7,7 @@
     android:background="@drawable/bg_play_product_tag">
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/iv_bro_product_tag"
+        android:id="@+id/iv_product_tag"
         android:layout_width="match_parent"
         android:layout_height="@dimen/play_product_tag_image_height"
         android:layout_marginBottom="@dimen/spacing_lvl3"
@@ -26,49 +26,49 @@
         android:background="@drawable/bg_play_discount_badge"
         android:textColor="@color/Unify_R400"
         android:layout_margin="@dimen/spacing_lvl3"
-        app:layout_constraintTop_toTopOf="@id/iv_bro_product_tag"
-        app:layout_constraintEnd_toEndOf="@id/iv_bro_product_tag"
+        app:layout_constraintTop_toTopOf="@id/iv_product_tag"
+        app:layout_constraintEnd_toEndOf="@id/iv_product_tag"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="57%"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_bro_product_tag_stock"
+        android:id="@+id/tv_product_tag_stock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl3"
         android:background="@drawable/bg_play_product_tag_stock"
         android:padding="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="@id/iv_bro_product_tag"
-        app:layout_constraintStart_toStartOf="@id/iv_bro_product_tag"
+        app:layout_constraintBottom_toBottomOf="@id/iv_product_tag"
+        app:layout_constraintStart_toStartOf="@id/iv_product_tag"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="Stok 450" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_bro_product_tag_price"
+        android:id="@+id/tv_product_tag_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_bro_product_tag"
+        app:layout_constraintTop_toBottomOf="@id/iv_product_tag"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="RP 999.999.999" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_bro_product_tag_price_normal_price"
+        android:id="@+id/tv_product_tag_normal_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:textColor="@color/Unify_N700_44"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/tv_bro_product_tag_price"
-        app:layout_constraintStart_toStartOf="@id/tv_bro_product_tag_price"
-        app:layout_constraintTop_toBottomOf="@id/tv_bro_product_tag_price"
+        app:layout_constraintEnd_toEndOf="@id/tv_product_tag_price"
+        app:layout_constraintStart_toStartOf="@id/tv_product_tag_price"
+        app:layout_constraintTop_toBottomOf="@id/tv_product_tag_price"
         app:typographyType="body_2"
         tools:text="RP 999.999.999" />
 
