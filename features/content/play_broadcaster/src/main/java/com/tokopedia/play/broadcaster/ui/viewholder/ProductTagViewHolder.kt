@@ -28,7 +28,7 @@ class ProductTagViewHolder(
         tvProductTagPrice.text = when(item.price) {
             is DiscountedPrice -> item.price.discountedPrice
             is OriginalPrice -> item.price.price
-            else -> "Rp Unknown"
+            else -> getString(R.string.play_bro_product_tag_no_price)
         }
     }
 
