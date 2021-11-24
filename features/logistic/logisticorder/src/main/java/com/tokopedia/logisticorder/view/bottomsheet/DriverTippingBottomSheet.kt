@@ -148,7 +148,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
             150 -> {
                 //tip sedang diproses
             }
-            200 -> {
+            200, 210 -> {
                 //post payment
                 binding.resultTippingLayout.visibility = View.VISIBLE
                 binding.paymentTippingLayout.visibility = View.GONE
@@ -157,14 +157,17 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.apply {
                     imgTipDriver.setImage(R.drawable.ic_succes_tipping_gojek, 0F)
                     tvTipResult.text = getString(com.tokopedia.logisticorder.R.string.tipping_result_text)
-                    tvTipResultDesc.text = getString(com.tokopedia.logisticorder.R.string.tipping_result_desc)
+                    tvTipResultDesc.text = MethodChecker.fromHtml(getString(com.tokopedia.logisticorder.R.string.tipping_result_desc))
                     tvResiValue.text = trackingDataModel?.trackOrder?.shippingRefNum
                     tvDriverNameValue.text = logisticDriverModel.lastDriver.name
                     tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
                     tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
 
                     chipsPayment.chip_image_icon.setImageUrl(logisticDriverModel.payment.methodIcon)
-                    chipsPayment.chip_text.text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
+                    chipsPayment.chip_text.run {
+                        text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
+                        setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    }
                 }
 
             }

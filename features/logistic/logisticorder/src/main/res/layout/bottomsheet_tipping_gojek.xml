@@ -63,6 +63,7 @@
         android:id="@+id/result_tipping_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="@dimen/dp_72"
         android:visibility="gone"
         tools:visibility="visible">
 
