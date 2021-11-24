@@ -21,15 +21,15 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
-
-                android:layout_width="@dimen/dp_60"
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="right"
-                android:textSize="@dimen/sp_10"
+                android:textSize="10sp"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -87,15 +87,16 @@
             android:layout_marginLeft="2dp">
 
             <ImageView
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:layout_gravity="center"
+                android:contentDescription="@string/content_desc_loading_icon_business"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_squircle" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_margin="4dp"
                 android:layout_gravity="center"
                 android:visibility="invisible"
@@ -118,14 +119,15 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="@dimen/dp_60"
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="right"
-                android:textSize="@dimen/sp_10"
+                android:textSize="10sp"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -183,15 +185,16 @@
             android:layout_marginLeft="2dp">
 
             <ImageView
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:layout_gravity="center"
+                android:contentDescription="@string/content_desc_loading_icon_business"
                 android:scaleType="fitCenter"
                 app:srcCompat="@drawable/ic_squircle" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_margin="4dp"
                 android:layout_gravity="center"
                 android:visibility="invisible"
@@ -214,14 +217,15 @@
             android:background="@drawable/bg_card_home_widget"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="@dimen/dp_60"
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="60dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="8dp"
                 android:gravity="right"
-                android:textSize="@dimen/sp_10"
+                android:textSize="10sp"
+                app:typographyType="small"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -279,15 +283,16 @@
             android:layout_marginLeft="2dp">
 
             <ImageView
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_52"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_squircle" />
+                app:srcCompat="@drawable/ic_squircle"
+                android:contentDescription="@string/content_desc_loading_icon_business" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="@dimen/dp_32"
-                android:layout_height="@dimen/dp_32"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_margin="4dp"
                 android:layout_gravity="center"
                 android:visibility="invisible"

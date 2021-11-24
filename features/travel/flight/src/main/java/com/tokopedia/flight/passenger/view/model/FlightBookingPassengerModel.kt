@@ -25,7 +25,8 @@ class FlightBookingPassengerModel(
         var passportNumber: String? = null,
         var passportExpiredDate: String? = null,
         var passportNationality: TravelCountryPhoneCode? = null,
-        var passportIssuerCountry: TravelCountryPhoneCode? = null
+        var passportIssuerCountry: TravelCountryPhoneCode? = null,
+        var identificationNumber: String = ""
 ) : Parcelable, Visitable<FlightBookingPassengerTypeFactory> {
 
     override fun equals(other: Any?): Boolean {

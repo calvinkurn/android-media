@@ -14,7 +14,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.domain.usecase.*
-import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
+import com.tokopedia.seller.menu.common.view.uimodel.base.*
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
@@ -413,11 +414,41 @@ class OtherMenuViewModel @Inject constructor(
                         userSession
                     )
                 )
+                userShopInfoWrapper.shopType?.let {
+                    updateShopInfoUserSession(it)
+                }
             },
             onError = {
                 _userShopInfoLiveData.value = SettingResponseState.SettingError(it)
             }
         )
+    }
+
+    private fun updateShopInfoUserSession(shopType: ShopType) {
+        when (shopType) {
+            is ShopType.OfficialStore -> {
+                userSession.setIsGoldMerchant(true)
+                userSession.setIsPowerMerchantIdle(false)
+                userSession.setIsShopOfficialStore(true)
+            }
+            // This means that the power merchant status is IDLE
+            is PowerMerchantStatus.NotActive, is PowerMerchantProStatus.InActive -> {
+                userSession.setIsGoldMerchant(false)
+                userSession.setIsPowerMerchantIdle(true)
+                userSession.setIsShopOfficialStore(false)
+            }
+            is PowerMerchantStatus, is PowerMerchantProStatus -> {
+                userSession.setIsGoldMerchant(true)
+                userSession.setIsPowerMerchantIdle(false)
+                userSession.setIsShopOfficialStore(false)
+            }
+            // This means that the status is Regular Merchant
+            else -> {
+                userSession.setIsGoldMerchant(false)
+                userSession.setIsPowerMerchantIdle(false)
+                userSession.setIsShopOfficialStore(false)
+            }
+        }
     }
 
     private fun getShopOperationalData() {
