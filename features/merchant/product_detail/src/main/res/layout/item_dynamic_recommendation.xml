@@ -83,6 +83,8 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        tools:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <FrameLayout
