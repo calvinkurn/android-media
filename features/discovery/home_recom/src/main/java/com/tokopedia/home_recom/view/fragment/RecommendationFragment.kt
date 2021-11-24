@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -41,6 +42,7 @@ import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.W
 import com.tokopedia.home_recom.view.viewholder.ProductInfoViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationErrorViewHolder
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -249,7 +251,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     private fun setupToolbar() {
         activity?.run {
-            (this as AppCompatActivity).supportActionBar?.hide()
+            (activity as HomeRecommendationActivity).findViewById<Toolbar>(R.id.recom_toolbar).gone()
             navToolbar?.let {
                 it.setShowShadowEnabled(true)
                 navToolbar?.setToolbarTitle(getString(R.string.recom_home_recommendation))
