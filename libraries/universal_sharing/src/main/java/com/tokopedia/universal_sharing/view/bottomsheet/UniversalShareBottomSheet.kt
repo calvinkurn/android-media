@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.linker.LinkerManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -45,6 +46,7 @@ import com.tokopedia.universal_sharing.view.model.EligibleCommission
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -279,7 +281,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     //call this method if the request data is received
     fun affiliateRequestDataReceived(validRequest: Boolean) {
-        if(validRequest){
+        val userSession = UserSession(context)
+        if(userSession.isLoggedIn && validRequest){
             executeAffiliateEligibilityUseCase()
             showLoader = true
             loaderUnify?.visibility = View.VISIBLE
@@ -322,8 +325,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun showAffiliateCommission(affiliateEligibleCommission: EligibleCommission){
         clearLoader()
-        affiliateCommissionTextView?.text = Html.fromHtml(affiliateEligibleCommission.message)
-        affiliateCommissionTextView?.visibility = View.VISIBLE
+        if(affiliateEligibleCommission.isEligible) {
+            if (!TextUtils.isEmpty(affiliateEligibleCommission.message)) {
+                affiliateCommissionTextView?.text =
+                    Html.fromHtml(affiliateEligibleCommission.message)
+                affiliateCommissionTextView?.visibility = View.VISIBLE
+                return
+            }
+        }
+        affiliateQueryData = null
     }
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
