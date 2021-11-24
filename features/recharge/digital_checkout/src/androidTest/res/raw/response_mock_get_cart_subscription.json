@@ -145,6 +145,25 @@
               "link_url": "",
               "tooltip_text": "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)."
             }
+          },
+          {
+            "id": 2,
+            "transaction_type": "Aktivasi Langganan",
+            "tier_id": 3,
+            "opt_in": false,
+            "check_box_disabled": true,
+            "allow_ovo_points": false,
+            "fintech_amount": 0,
+            "fintech_partner_amount": 0,
+            "info": {
+              "title": "Subscription body, this is a description (is subscribed)",
+              "subtitle": "Text Before Checked",
+              "checked_subtitle": "Text After Checked",
+              "link_text": "",
+              "link_url": "",
+              "icon_url": "",
+              "tooltip_text": ""
+            }
           }
         ],
         "atc_source": "",

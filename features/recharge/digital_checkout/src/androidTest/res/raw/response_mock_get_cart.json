@@ -101,25 +101,6 @@
           "message_success": ""
         },
         "default_promo": "voucher",
-        "cross_selling_type": 0,
-        "cross_selling_config": {
-          "can_be_skipped": true,
-          "is_checked": false,
-          "wording": {
-            "header_title": "",
-            "body_title": "",
-            "body_content_before": "",
-            "body_content_after": "",
-            "cta_button_text": "Bayar"
-          },
-          "wording_is_subscribed": {
-            "header_title": "",
-            "body_title": "",
-            "body_content_before": "",
-            "body_content_after": "",
-            "cta_button_text": "Bayar"
-          }
-        },
         "pop_up": {
           "title": "",
           "content": "",

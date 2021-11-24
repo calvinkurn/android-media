@@ -134,8 +134,10 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig.headerTitle == dummyResponse.crossSellingConfig.wording.headerTitle)
+        val subscriptions = dummyResponse.fintechProduct.filter {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
         assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
         assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.fintechAmount ==
                 dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
@@ -220,8 +222,10 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
+        val subscriptions = dummyResponse.fintechProduct.filter {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
         assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
         assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
                 dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
@@ -274,8 +278,10 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
+        val subscriptions = dummyResponse.fintechProduct.filter {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
         assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
         assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
                 dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
@@ -329,8 +335,10 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        assert(mappedCartInfoData.crossSellingType == dummyResponse.crossSellingType)
-        assert(mappedCartInfoData.crossSellingConfig?.headerTitle == dummyResponse.crossSellingConfig.wordingIsSubscribe.headerTitle)
+        val subscriptions = dummyResponse.fintechProduct.filter {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
+        }
+        assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
         assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
         assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
                 dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)

@@ -56,7 +56,7 @@ object DigitalCartDummyData {
                         tooltipText = "Nominal pembulatan disesuaikan dengan total tagihan setiap transaksi yang otomatis ditabung dan dapat di cek saldonya di Tokopedia Emas (berpartner dengan Pegadaian)"
                 )
         )
-
+        // [Misael] crossSellingType = 3
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -79,8 +79,6 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 3,
-                crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct),
                 adminFee = 3000.0
         )
@@ -132,6 +130,7 @@ object DigitalCartDummyData {
                 )
         )
 
+        // [Misael] crossSellingType = 3
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -154,8 +153,6 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 3,
-                crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct),
                 adminFee = 3000.0
         )
@@ -227,6 +224,7 @@ object DigitalCartDummyData {
                 )
         )
 
+        // [Misael] crossSellingType = 3
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -249,8 +247,6 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 3,
-                crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct)
         )
     }
@@ -308,6 +304,7 @@ object DigitalCartDummyData {
                 )
         )
 
+        // [Misael] crossSellingType = 0
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -330,8 +327,6 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 0,
-                crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct),
                 adminFee = 5000.0
         )
@@ -390,6 +385,7 @@ object DigitalCartDummyData {
                 )
         )
 
+        // [Misael] crossSellingType = 0
         return RechargeGetCart(
                 id = "8964392-7-aa86756c05ea3433a8ad6b6de34a4788",
                 userId = "8964392",
@@ -412,8 +408,6 @@ object DigitalCartDummyData {
                 isCouponActive = true,
                 autoApply = autoApplyVoucher,
                 defaultPromo = "voucher",
-                crossSellingType = 0,
-                crossSellingConfig = crossSellingConfig,
                 fintechProduct = listOf(fintechProduct)
         )
     }
