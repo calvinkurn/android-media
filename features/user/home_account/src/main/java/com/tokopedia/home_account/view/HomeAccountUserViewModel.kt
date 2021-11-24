@@ -44,7 +44,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
     private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-    private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
     private val walletPref: WalletPref,
@@ -89,10 +88,6 @@ class HomeAccountUserViewModel @Inject constructor(
 
     private val _phoneNo = MutableLiveData<String>()
     val phoneNo: LiveData<String> get() = _phoneNo
-
-    private val _walletEligible = MutableLiveData<Result<WalletappWalletEligibility>>()
-    val walletEligible: LiveData<Result<WalletappWalletEligibility>>
-        get() = _walletEligible
 
     var internalBuyerData: UserAccountDataModel? = null
 
@@ -263,17 +258,6 @@ class HomeAccountUserViewModel @Inject constructor(
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
         }
-    }
-
-    fun getGopayWalletEligible() {
-        launchCatchError(block = {
-            val params = getWalletEligibleUseCase.getParams(GOPAY_PARTNER_CODE, GOPAY_WALLET_CODE)
-            val result = getWalletEligibleUseCase(params)
-
-            _walletEligible.value = Success(result.data)
-        }, onError = {
-            _walletEligible.value = Fail(it)
-        })
     }
 
     private fun checkFirstPage(page: Int): Boolean = page == 1

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/unify_space_12"
-    android:layout_marginTop="@dimen/dp_13"
+    android:layout_marginTop="13dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
@@ -27,7 +27,7 @@
         android:layout="@layout/view_stub_dc_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_1"
+        android:layout_marginTop="1dp"
         android:layout_marginStart="@dimen/home_component_margin_default"
         android:layout_marginLeft="@dimen/home_component_margin_default"
         android:visibility="gone"
@@ -49,11 +49,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/channel_title"
         app:layout_constraintStart_toEndOf="@+id/channel_subtitle"
-        android:layout_marginBottom="@dimen/dp_3"
-        android:layout_marginTop="@dimen/dp_3"
+        android:layout_marginBottom="3dp"
+        android:layout_marginTop="3dp"
         android:visibility="gone"
         tools:layout_height="20dp"
-        tools:layout_width="@dimen/dp_100"
+        tools:layout_width="100dp"
         tools:visibility="visible"/>
 
     <ViewStub

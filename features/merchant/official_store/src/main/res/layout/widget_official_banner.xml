@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/viewpager_banner_category"
@@ -20,7 +20,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:orientation="horizontal" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_below="@+id/viewpager_banner_category"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -36,6 +36,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/banner_see_all"
         android:textColor="@color/Unify_P600"
+        app:typographyType="heading_6"
         android:textSize="13sp" />
 
 </RelativeLayout>

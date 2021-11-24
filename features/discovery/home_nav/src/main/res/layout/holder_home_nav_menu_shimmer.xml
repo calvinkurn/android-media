@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/menu_title"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="14sp"
         android:layout_marginStart="8dp"
         android:ellipsize="end"

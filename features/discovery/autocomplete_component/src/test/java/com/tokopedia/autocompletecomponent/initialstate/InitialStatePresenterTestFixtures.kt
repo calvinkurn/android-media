@@ -41,6 +41,7 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected val ID_POPULAR_SEARCH = "popular_search"
     protected val ID_NEW_SECTION = "new_section"
+    protected val keyword = "samsung"
 
     @Before
     fun setUp() {
@@ -91,10 +92,10 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun `Then verify initial state view behavior is correct`() {
         verifyOrder {
             initialStateView.chooseAddressData
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
-            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(any(), capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
         }
         confirmVerified(initialStateView)
@@ -103,10 +104,10 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun `Then verify initial state view behavior for failed refresh`() {
         verifyOrder {
             initialStateView.chooseAddressData
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
-            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(any(), capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
             initialStateView.onRefreshPopularSearch()
             initialStateView.chooseAddressData
@@ -117,10 +118,10 @@ internal open class InitialStatePresenterTestFixtures {
     protected fun `Then verify initial state view behavior for failed refresh dynamic`() {
         verifyOrder {
             initialStateView.chooseAddressData
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
-            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(any(), capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(any(), capture(slotDynamicSectionTrackingModel))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
             initialStateView.chooseAddressData
         }
@@ -147,9 +148,9 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected fun `Then verify refreshPopularSearch view behavior`(refreshedPosition: Int) {
         verifyOrder {
-            initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
-            initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onRecentViewImpressed(any(), capture(slotRecentViewItemList))
+            initialStateView.onRecentSearchImpressed(any(), capture(slotRecentSearchItemList))
+            initialStateView.onPopularSearchImpressed(any(), capture(slotPopularSearchTrackingModel))
 
             //This showInitialStateResult is called the first time it loads initial state data
             initialStateView.showInitialStateResult(capture(slotVisitableList))

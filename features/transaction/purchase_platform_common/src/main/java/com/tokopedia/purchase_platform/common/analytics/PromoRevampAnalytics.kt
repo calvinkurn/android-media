@@ -105,10 +105,6 @@ object PromoRevampAnalytics {
         sendEvent(gtmData)
     }
 
-    fun eventCheckoutViewPromoChanged(msg: String) {
-        sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_COURIER_SELECTION, msg)
-    }
-
     fun eventCheckoutViewPromoAlreadyApplied() {
         sendEventCategoryAction(VIEW_COURIER_IRIS, CATEGORY_COURIER_SELECTION, VIEW_PROMO_ALREADY_APPLIED_IN_CHECKOUT_LIST)
     }
@@ -119,10 +115,6 @@ object PromoRevampAnalytics {
 
     fun eventCheckoutViewBottomsheetPromoError() {
         sendEventCategoryAction(VIEW_COURIER_IRIS, CATEGORY_COURIER_SELECTION, VIEW_BOTTOMSHEET_PROMO_ERROR)
-    }
-
-    fun eventCheckoutClickLanjutBayarOnBottomsheetPromoError() {
-        sendEventCategoryAction(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_LANJUT_BAYAR_ON_BOTTOMSHEET_PROMO_ERROR)
     }
 
     fun eventCheckoutClickPilihPromoLainOnBottomsheetPromoError() {
