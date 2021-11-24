@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.buyerorderdetail.R
@@ -88,7 +90,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
 
-        private const val SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY = "buyerOrderDetailSavedInstanceState"
+        private const val SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY =
+            "buyerOrderDetailSavedInstanceState"
     }
 
     @Inject
@@ -143,14 +146,14 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
     protected val digitalRecommendationData: DigitalRecommendationData
         get() = DigitalRecommendationData(
-                viewModelFactory,
-                viewLifecycleOwner,
-                DigitalRecommendationAdditionalTrackingData(
-                        userType = "",
-                        widgetPosition = "",
-                        pgCategories = viewModel.getCategoryId()
-                ),
-                DigitalRecommendationPage.PHYSICAL_GOODS
+            viewModelFactory,
+            viewLifecycleOwner,
+            DigitalRecommendationAdditionalTrackingData(
+                userType = "",
+                widgetPosition = "",
+                pgCategories = viewModel.getCategoryId()
+            ),
+            DigitalRecommendationPage.PHYSICAL_GOODS
         )
 
     private val bottomSheetManager: BuyerOrderDetailBottomSheetManager by lazy {
@@ -171,7 +174,11 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu? {
-        return (View.inflate(context, R.layout.partial_buyer_order_detail_toolbar_menu, null) as? BuyerOrderDetailToolbarMenu)?.apply {
+        return (View.inflate(
+            context,
+            R.layout.partial_buyer_order_detail_toolbar_menu,
+            null
+        ) as? BuyerOrderDetailToolbarMenu)?.apply {
             setViewModel(viewModel)
             setNavigator(navigator)
         }
@@ -190,7 +197,11 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         getComponent(BuyerOrderDetailComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_buyer_order_detail, container, false)
     }
 
@@ -212,11 +223,24 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        activity?.overridePendingTransition(com.tokopedia.resources.common.R.anim.slide_left_in_medium, com.tokopedia.resources.common.R.anim.slide_right_out_medium)
+        activity?.overridePendingTransition(
+            com.tokopedia.resources.common.R.anim.slide_left_in_medium,
+            com.tokopedia.resources.common.R.anim.slide_right_out_medium
+        )
         when (requestCode) {
-            BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(resultCode, data)
+            BuyerOrderDetailIntentCode.REQUEST_CODE_REQUEST_CANCEL_ORDER -> handleRequestCancelResult(
+                resultCode,
+                data
+            )
             BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
             BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY -> handleResultRefreshOnly()
+            BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        handleResultOrderExtension(data)
+                    }
+                }
+            }
         }
     }
 
@@ -242,7 +266,10 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onClickShipmentInfoTnC() {
-        BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(viewModel.getOrderStatusId(), viewModel.getOrderId())
+        BuyerOrderDetailTracker.eventClickSeeShipmentInfoTNC(
+            viewModel.getOrderStatusId(),
+            viewModel.getOrderId()
+        )
     }
 
     override fun hideDigitalRecommendation() {
@@ -252,9 +279,13 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun restoreFragmentState(savedInstanceState: Bundle) {
-        val cacheManagerId = savedInstanceState.getString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID).orEmpty()
+        val cacheManagerId =
+            savedInstanceState.getString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID).orEmpty()
         cacheManager.id = cacheManagerId
-        val savedBuyerOrderDetailData = cacheManager.get<BuyerOrderDetailUiModel>(SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY, BuyerOrderDetailUiModel::class.java)
+        val savedBuyerOrderDetailData = cacheManager.get<BuyerOrderDetailUiModel>(
+            SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY,
+            BuyerOrderDetailUiModel::class.java
+        )
         if (savedBuyerOrderDetailData != null) {
             viewModel.restoreBuyerOrderDetailData(savedBuyerOrderDetailData)
         } else {
@@ -300,8 +331,15 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             }
         }
         emptyStateBuyerOrderDetail?.apply {
-            setImageDrawable(resources.getDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500, null))
-            setPrimaryCTAText(context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty())
+            setImageDrawable(
+                resources.getDrawable(
+                    com.tokopedia.globalerror.R.drawable.unify_globalerrors_500,
+                    null
+                )
+            )
+            setPrimaryCTAText(
+                context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
+            )
             setPrimaryCTAClickListener {
                 contentVisibilityAnimator.animateToLoadingState {
                     loadBuyerOrderDetail()
@@ -330,9 +368,12 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun loadBuyerOrderDetail() {
-        val orderId = arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
-        val paymentId = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
-        val cart = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
+        val orderId =
+            arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
+        val paymentId =
+            arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
+        val cart =
+            arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
         viewModel.getBuyerOrderDetail(orderId, paymentId, cart)
     }
 
@@ -439,7 +480,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun onFailedAddToCart(throwable: Throwable) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
+            .orEmpty()
         showErrorToaster(errorMessage)
     }
 
@@ -465,7 +507,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
+            .orEmpty()
         setDescription(errorMessage)
         contentVisibilityAnimator.animateToEmptyStateError()
     }
@@ -478,17 +521,31 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showCommonToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {
+    private fun showCommonToaster(
+        message: String,
+        actionText: String = "",
+        onActionClicked: () -> Unit = {}
+    ) {
         if (message.isNotBlank()) {
             view?.let { view ->
-                Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionText) {
+                Toaster.build(
+                    view,
+                    message,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    actionText
+                ) {
                     onActionClicked()
                 }.show()
             }
         }
     }
 
-    private fun showErrorToaster(message: String, actionText: String = "", onActionClicked: () -> Unit = {}) {
+    private fun showErrorToaster(
+        message: String,
+        actionText: String = "",
+        onActionClicked: () -> Unit = {}
+    ) {
         if (message.isNotBlank()) {
             view?.let { view ->
                 Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, actionText) {
@@ -501,22 +558,30 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     private fun Throwable.showErrorToaster() {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, this)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
+            .orEmpty()
         showErrorToaster(errorMessage)
     }
 
     private fun handleRequestCancelResult(resultCode: Int, data: Intent?) {
         if (resultCode == RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST) {
-            val resultMessage = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_MSG_INSTANT_CANCEL).orEmpty()
-            val result = data?.getIntExtra(BuyerOrderDetailMiscConstant.RESULT_CODE_INSTANT_CANCEL, 1)
+            val resultMessage =
+                data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_MSG_INSTANT_CANCEL)
+                    .orEmpty()
+            val result =
+                data?.getIntExtra(BuyerOrderDetailMiscConstant.RESULT_CODE_INSTANT_CANCEL, 1)
                     ?: 1
             if (result == BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_TOASTER) {
                 if (resultMessage.isNotBlank()) {
                     showCommonToaster(resultMessage)
                 }
             } else if (result == BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_SHOULD_SHOW_DIALOG) {
-                val popupTitle = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_TITLE_INSTANT_CANCEL).orEmpty()
-                val popupBody = data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_BODY_INSTANT_CANCEL).orEmpty()
+                val popupTitle =
+                    data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_TITLE_INSTANT_CANCEL)
+                        .orEmpty()
+                val popupBody =
+                    data?.getStringExtra(BuyerOrderDetailMiscConstant.RESULT_POPUP_BODY_INSTANT_CANCEL)
+                        .orEmpty()
                 if (popupTitle.isNotBlank() && popupBody.isNotBlank()) {
                     context?.let { context ->
                         requestCancelResultDialog.apply {
@@ -542,6 +607,36 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         bottomSheetManager.dismissBottomSheets()
     }
 
+    private fun handleResultOrderExtension(data: Intent?) {
+        val isOrderExtend = data?.getBooleanExtra(
+            ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED,
+            true
+        )
+        val toasterMessage =
+            data?.getStringExtra(ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE)
+
+        if (isOrderExtend == true) {
+            handleResultRefreshOnly()
+        } else {
+            bottomSheetManager.dismissBottomSheets()
+        }
+
+        if (!toasterMessage.isNullOrBlank()) {
+            val toasterType = data.getIntExtra(
+                ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_TYPE,
+                Toaster.TYPE_NORMAL
+            )
+            view?.run {
+                Toaster.build(
+                    view = this,
+                    text = toasterMessage,
+                    type = toasterType,
+                    duration = Toaster.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
     private fun handleResultRefreshOnly() {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
         loadBuyerOrderDetail()
@@ -556,20 +651,23 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     private fun trackBuyAgainProduct() {
         BuyerOrderDetailTracker.eventClickBuyAgain(
-                viewModel.getOrderId(),
-                viewModel.getUserId()
+            viewModel.getOrderId(),
+            viewModel.getUserId()
         )
     }
 
-    private fun trackSuccessATC(products: List<ProductListUiModel.ProductUiModel>, result: AtcMultiData) {
+    private fun trackSuccessATC(
+        products: List<ProductListUiModel.ProductUiModel>,
+        result: AtcMultiData
+    ) {
         BuyerOrderDetailTracker.eventSuccessATC(
-                products,
-                result.atcMulti.buyAgainData.listProducts,
-                viewModel.getOrderId(),
-                viewModel.getShopId(),
-                viewModel.getShopName(),
-                viewModel.getShopType().toString(),
-                viewModel.getUserId()
+            products,
+            result.atcMulti.buyAgainData.listProducts,
+            viewModel.getOrderId(),
+            viewModel.getShopId(),
+            viewModel.getShopName(),
+            viewModel.getShopType().toString(),
+            viewModel.getUserId()
         )
     }
 
