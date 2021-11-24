@@ -44,6 +44,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
         const val KEYWORD_STAGING = "Staging"
         const val KEYWORD_LIVE = "Live"
+        const val KEYWORD_FAKE_RESPONSE_ACTIVITY = "Fake Response Activity"
     }
 
     private val defaultItems = listOf(
@@ -75,7 +76,8 @@ class DeveloperOptionAdapter(
         LoggingToServerUiModel(listOf(KEYWORD_LOGGING_TO_SERVER, KEYWORD_SEND_LOG_TO_SERVER)),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
         AppVersionUiModel(listOf(KEYWORD_APP_VERSION)),
-        UrlEnvironmentUiModel(listOf(KEYWORD_CHOOSE_URL_ENVIRONMENT, KEYWORD_STAGING, KEYWORD_LIVE))
+        UrlEnvironmentUiModel(listOf(KEYWORD_CHOOSE_URL_ENVIRONMENT, KEYWORD_STAGING, KEYWORD_LIVE)),
+        FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY))
     )
 
     fun searchItem(keyword: String) {

@@ -32,4 +32,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: SharedPreferencesEditorUiModel): Int
     fun type(uiModel: AppVersionUiModel): Int
     fun type(uiModel: UrlEnvironmentUiModel): Int
+    fun type(uiModel: FakeResponseActivityUiModel): Int
 }

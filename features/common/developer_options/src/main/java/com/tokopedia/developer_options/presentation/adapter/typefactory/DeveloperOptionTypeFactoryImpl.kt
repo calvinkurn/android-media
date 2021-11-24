@@ -43,6 +43,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: SharedPreferencesEditorUiModel): Int = SharedPreferencesEditorViewHolder.LAYOUT
     override fun type(uiModel: AppVersionUiModel): Int = AppVersionViewHolder.LAYOUT
     override fun type(uiModel: UrlEnvironmentUiModel): Int = UrlEnvironmentViewHolder.LAYOUT
+    override fun type(uiModel: FakeResponseActivityUiModel): Int = FakeResponseActivityViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -75,6 +76,7 @@ class DeveloperOptionTypeFactoryImpl(
             SharedPreferencesEditorViewHolder.LAYOUT -> SharedPreferencesEditorViewHolder(view)
             AppVersionViewHolder.LAYOUT -> AppVersionViewHolder(view)
             UrlEnvironmentViewHolder.LAYOUT -> UrlEnvironmentViewHolder(view, urlEnvironmentListener)
+            FakeResponseActivityViewHolder.LAYOUT -> FakeResponseActivityViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

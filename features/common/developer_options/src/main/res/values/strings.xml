@@ -66,7 +66,7 @@
     <string name="change">Change</string>
     <string name="version_change_api">Version change is for api purpose - app kill will change back</string>
     <string name="choose_url_env">Choose URL Env</string>
-    <string name="fake_response_activity">Fake response Activity</string>
+    <string name="fake_response_activity">Fake Response Activity</string>
     <string name="request_new_fcm">Request New FCM Token</string>
     <string name="reset_onboarding_nav">RESET ONBOARDING NAVIGATION!</string>
     <string name="rollence_ab_testing">Rollence AB Testing Manual Switcher :</string>
