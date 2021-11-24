@@ -41,6 +41,9 @@ class DeveloperOptionAdapter(
         const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
         const val KEYWORD_SHARED_PREFERENCES_EDITOR = "Shared Preferences Editor"
         const val KEYWORD_APP_VERSION = "Version change is for api purpose - api kill will change back"
+        const val KEYWORD_CHOOSE_URL_ENVIRONMENT = "Choose URL Environment"
+        const val KEYWORD_STAGING = "Staging"
+        const val KEYWORD_LIVE = "Live"
     }
 
     private val defaultItems = listOf(
@@ -71,7 +74,8 @@ class DeveloperOptionAdapter(
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER)),
         LoggingToServerUiModel(listOf(KEYWORD_LOGGING_TO_SERVER, KEYWORD_SEND_LOG_TO_SERVER)),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
-        AppVersionUiModel(listOf(KEYWORD_APP_VERSION))
+        AppVersionUiModel(listOf(KEYWORD_APP_VERSION)),
+        UrlEnvironmentUiModel(listOf(KEYWORD_CHOOSE_URL_ENVIRONMENT, KEYWORD_STAGING, KEYWORD_LIVE))
     )
 
     fun searchItem(keyword: String) {

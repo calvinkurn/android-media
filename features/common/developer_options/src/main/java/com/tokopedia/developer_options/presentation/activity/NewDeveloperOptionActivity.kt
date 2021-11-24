@@ -85,7 +85,8 @@ class NewDeveloperOptionActivity : BaseActivity() {
         DeveloperOptionAdapter(
             typeFactory = DeveloperOptionTypeFactoryImpl(
                 accessTokenListener = clickAccessTokenBtn(),
-                resetOnBoardingListener = clickResetOnBoarding()
+                resetOnBoardingListener = clickResetOnBoarding(),
+                urlEnvironmentListener = selectUrlEnvironment()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -238,6 +239,12 @@ class NewDeveloperOptionActivity : BaseActivity() {
             val editor = sharedPref.edit().clear()
             editor.apply()
             Toast.makeText(this@NewDeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun selectUrlEnvironment() = object : UrlEnvironmentViewHolder.UrlEnvironmentListener {
+        override fun onLogOutUserSession() {
+            userSession?.logoutSession()
         }
     }
 

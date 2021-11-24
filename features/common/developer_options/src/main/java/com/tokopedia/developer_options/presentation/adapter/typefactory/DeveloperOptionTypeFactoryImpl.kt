@@ -10,7 +10,8 @@ import com.tokopedia.developer_options.presentation.viewholder.*
 
 class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
-    private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener
+    private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
+    private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -41,6 +42,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
     override fun type(uiModel: SharedPreferencesEditorUiModel): Int = SharedPreferencesEditorViewHolder.LAYOUT
     override fun type(uiModel: AppVersionUiModel): Int = AppVersionViewHolder.LAYOUT
+    override fun type(uiModel: UrlEnvironmentUiModel): Int = UrlEnvironmentViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -72,6 +74,7 @@ class DeveloperOptionTypeFactoryImpl(
             LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)
             SharedPreferencesEditorViewHolder.LAYOUT -> SharedPreferencesEditorViewHolder(view)
             AppVersionViewHolder.LAYOUT -> AppVersionViewHolder(view)
+            UrlEnvironmentViewHolder.LAYOUT -> UrlEnvironmentViewHolder(view, urlEnvironmentListener)
             else -> super.createViewHolder(view, type)
         }
     }

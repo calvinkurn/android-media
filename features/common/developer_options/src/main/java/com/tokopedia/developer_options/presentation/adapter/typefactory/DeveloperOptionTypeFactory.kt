@@ -31,4 +31,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: LoggingToServerUiModel): Int
     fun type(uiModel: SharedPreferencesEditorUiModel): Int
     fun type(uiModel: AppVersionUiModel): Int
+    fun type(uiModel: UrlEnvironmentUiModel): Int
 }
