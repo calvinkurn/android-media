@@ -37,6 +37,7 @@ class ProductTagViewHolder(
          when(item.price) {
             is DiscountedPrice -> {
                 tvProductTagPriceOriginal.show()
+                tvDiscount.text = getString(R.string.play_bro_product_discount_template, item.price.discountPercent)
                 tvProductTagPrice.text = item.price.discountedPrice
                 tvProductTagPriceOriginal.text = item.price.originalPrice
             }
