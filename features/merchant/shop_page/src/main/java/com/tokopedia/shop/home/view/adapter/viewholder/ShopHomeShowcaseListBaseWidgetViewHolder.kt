@@ -9,9 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeBaseEtalaseListWidgetBinding
 import com.tokopedia.shop.home.view.adapter.ShopHomeShowcaseListWidgetAdapter
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlin.math.roundToInt
 
 /**
@@ -55,7 +57,7 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
             }
         }
     }
-
+    private val viewBinding: ItemShopHomeBaseEtalaseListWidgetBinding? by viewBinding()
     private var tvCarouselTitle : TextView? = null
     private var recyclerView : RecyclerView? = null
 
@@ -70,8 +72,8 @@ class ShopHomeShowcaseListBaseWidgetViewHolder (
     }
 
     private fun initView() {
-        tvCarouselTitle = itemView.findViewById(R.id.tvShowcaseSectionTitle)
-        recyclerView = itemView.findViewById(R.id.rvShowcaseListWidget)
+        tvCarouselTitle = viewBinding?.tvShowcaseSectionTitle
+        recyclerView = viewBinding?.rvShowcaseListWidget
     }
 
     private fun initRecyclerView() {

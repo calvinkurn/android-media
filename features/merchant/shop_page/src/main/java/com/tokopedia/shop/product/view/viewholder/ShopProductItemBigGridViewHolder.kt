@@ -7,10 +7,12 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopNewproductBigGridBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductItemBigGridViewHolder(
         itemView: View,
@@ -26,7 +28,8 @@ class ShopProductItemBigGridViewHolder(
         val LAYOUT = R.layout.item_shop_newproduct_big_grid
     }
 
-    private val productCard: ProductCardGridView? = itemView.findViewById(R.id.product_card)
+    private val viewBinding : ItemShopNewproductBigGridBinding? by viewBinding()
+    private val productCard: ProductCardGridView? = viewBinding?.productCard
 
     override fun bind(shopProductUiModel: ShopProductUiModel) {
         productCard?.setProductModel(

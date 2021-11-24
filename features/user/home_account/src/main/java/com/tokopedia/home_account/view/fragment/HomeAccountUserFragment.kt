@@ -91,6 +91,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -584,16 +585,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         })
 
-        viewModel.walletEligible.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetWalletEligible(it.data)
-                }
-                is Fail -> {
-                    onFailedGetWalletEligible()
-                }
-            }
-        })
 
         viewModel.phoneNo.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()) {
@@ -619,11 +610,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY
-            ) {
-                viewModel.getBalanceAndPoint(it.id)
-            } else {
-                viewModel.getGopayWalletEligible()
+            viewModel.getBalanceAndPoint(it.id)
+
+            if(it.id == AccountConstants.WALLET.GOPAY) {
+                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             }
         }
     }
@@ -643,24 +633,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         balanceAndPointAdapter?.changeItemToFailedById(walletId)
-        adapter?.notifyItemChanged(0)
-    }
-
-    private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
-        val eligibility = walletappWalletEligibility.data
-        if (eligibility.isNotEmpty()) {
-            if (eligibility[0].isEligible) {
-                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
-                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-            } else {
-                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
-            }
-            adapter?.notifyItemChanged(0)
-        }
-    }
-
-    private fun onFailedGetWalletEligible() {
-        balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
         adapter?.notifyItemChanged(0)
     }
 
@@ -878,6 +850,9 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun setupSettingList() {
         val userSettingsMenu = menuGenerator.generateUserSettingMenu()
+        val isRollenceEnabledDarkMode = getAbTestPlatform().getString(
+            RollenceKey.USER_DARK_MODE_TOGGLE, "").isNotEmpty()
+
         userSettingsMenu.items.forEach {
             if(it.id == AccountConstants.SettingCode.SETTING_LINK_ACCOUNT && !isEnableLinkAccount()) {
                 userSettingsMenu.items.remove(it)
@@ -885,7 +860,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
         addItem(userSettingsMenu, addSeparator = true)
         addItem(menuGenerator.generateApplicationSettingMenu(
-                accountPref, permissionChecker, isShowDarkModeToggle, isShowScreenRecorder),
+                accountPref, permissionChecker,
+                isShowDarkModeToggle || isRollenceEnabledDarkMode, isShowScreenRecorder),
                 addSeparator = true)
         addItem(menuGenerator.generateAboutTokopediaSettingMenu(), addSeparator = true)
         if (GlobalConfig.isAllowDebuggingTools()) {

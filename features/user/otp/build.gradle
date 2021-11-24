@@ -28,9 +28,6 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
-    androidExtensions {
-        experimental = true
-    }
 }
 
 dependencies {

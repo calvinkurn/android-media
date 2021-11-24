@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 import kotlin.collections.ArrayList
 

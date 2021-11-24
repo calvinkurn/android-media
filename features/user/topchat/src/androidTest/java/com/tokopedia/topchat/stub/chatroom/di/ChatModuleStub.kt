@@ -11,9 +11,7 @@ import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.mediauploader.di.MediaUploaderModule
-import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
-import com.tokopedia.mediauploader.di.NetworkModule
+import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -31,9 +29,8 @@ import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.TopchatCacheManager
-import com.tokopedia.topchat.common.network.TopchatCacheManagerImpl
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocketUtil
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -48,9 +45,7 @@ import java.util.concurrent.TimeUnit
 @Module(
         includes = arrayOf(
                 ChatNetworkModuleStub::class,
-                MediaUploaderModule::class,
-                MediaUploaderNetworkModule::class,
-                NetworkModule::class
+                MediaUploaderModule::class
         )
 )
 class ChatModuleStub {
@@ -63,7 +58,7 @@ class ChatModuleStub {
     @ChatScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+        return UserSessionStub(context)
     }
 
     @ChatScope

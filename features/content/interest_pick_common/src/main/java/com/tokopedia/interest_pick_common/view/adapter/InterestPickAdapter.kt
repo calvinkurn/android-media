@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.interest_pick_common.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import kotlinx.android.synthetic.main.item_new_interest_pick.view.*
 
@@ -118,10 +119,10 @@ class InterestPickAdapter(private val listener: InterestPickItemListener, val so
         private fun setBackgroundColor(item: InterestPickDataViewModel) {
             if (item.isSelected) {
                 itemView.bg_selected.background = MethodChecker.getDrawable(itemView.context, R.drawable.bg_interespick_selected)
-                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, RUnify.color.Unify_N0))
             } else {
-                itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
-                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
+                itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, RUnify.color.Unify_N0))
+                itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, RUnify.color.Unify_N700))
             }
         }
 

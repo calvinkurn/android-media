@@ -8,9 +8,11 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopFeaturedShowcaseBinding
 import com.tokopedia.shop.showcase.presentation.model.FeaturedShowcaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Rafli Syam on 09/03/2021
@@ -24,14 +26,15 @@ class ShopPageFeaturedShowcaseViewHolder(
         private const val MARGIN_DP_10 = 10.0f
     }
 
+    private val viewBinding : ItemShopFeaturedShowcaseBinding? by viewBinding()
     private var ivShowcaseImg: ImageUnify? = null
     private var tvShowcaseName: Typography? = null
     private var tvShowcaseCount: Typography? = null
 
     init {
-        ivShowcaseImg = itemView.findViewById(R.id.ivShowcaseImg)
-        tvShowcaseName = itemView.findViewById(R.id.tvShowcaseName)
-        tvShowcaseCount = itemView.findViewById(R.id.tvShowcaseCount)
+        ivShowcaseImg = viewBinding?.ivShowcaseImg
+        tvShowcaseName = viewBinding?.tvShowcaseName
+        tvShowcaseCount = viewBinding?.tvShowcaseCount
     }
 
     fun bind(list: List<FeaturedShowcaseUiModel>) {
