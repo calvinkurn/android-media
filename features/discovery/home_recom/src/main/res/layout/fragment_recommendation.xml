@@ -5,8 +5,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/navToolbar"
+        android:tag="@string/tag_home_nav_toolbar_recom_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="top"
+        android:minHeight="?actionBarSize"
+        android:visibility="visible"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarContentType="typeTitle"
+        app:toolbarBackButton="back"
+        app:toolbarAlwaysShowShadow="true"
+        app:toolbarPageName="/"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarInitialTheme="light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>

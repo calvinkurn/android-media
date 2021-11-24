@@ -250,20 +250,21 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     private fun setupToolbar() {
-        activity?.run {
-            (activity as HomeRecommendationActivity).findViewById<Toolbar>(R.id.recom_toolbar).gone()
-            navToolbar?.let {
-                it.setShowShadowEnabled(true)
-                navToolbar?.setToolbarTitle(getString(R.string.recom_home_recommendation))
-                activity?.let { actv ->
-                    it.setupToolbarWithStatusBar(
-                        activity = actv,
-                        applyPadding = false,
-                        applyPaddingNegative = true
-                    )
-                }
-                it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
+        activity?.let {
+            (it as HomeRecommendationActivity).findViewById<Toolbar>(R.id.recom_toolbar).gone()
+            (it as AppCompatActivity).supportActionBar?.hide()
+        }
+        navToolbar?.let {
+            it.setShowShadowEnabled(true)
+            navToolbar?.setToolbarTitle(getString(R.string.recom_home_recommendation))
+            activity?.let { actv ->
+                it.setupToolbarWithStatusBar(
+                    activity = actv,
+                    applyPadding = false,
+                    applyPaddingNegative = true
+                )
             }
+            it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
         }
     }
 
