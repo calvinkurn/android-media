@@ -75,7 +75,7 @@ data class ItemSelection(
                     name = name,
                     preview = preview,
                     placeholderBitmap = bitmap,
-                    itemType = itemType.get(placeholderBitmap.indexOf(bitmap)),
+                    itemType = itemType[placeholderBitmap.indexOf(bitmap)],
                     isSelected = false
                 )
             }.apply { first().isSelected = true }

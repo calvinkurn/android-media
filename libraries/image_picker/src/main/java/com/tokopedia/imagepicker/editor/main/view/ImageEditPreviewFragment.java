@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -406,6 +407,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
     void setPreviewImageWatermark(Bitmap bitmap) {
         gestureCropImageView.setImageBitmap(bitmap);
+    }
+
+    void setRemoveBackground(Bitmap bitmap) {
+        Toast.makeText(getContext(), "Hi", Toast.LENGTH_LONG).show();
     }
 
     private void initProgressBar(View view) {

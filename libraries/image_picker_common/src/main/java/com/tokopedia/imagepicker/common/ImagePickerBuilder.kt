@@ -103,7 +103,8 @@ data class ImagePickerEditorBuilder(
             ImageEditActionType.ACTION_BRIGHTNESS,
             ImageEditActionType.ACTION_CONTRAST,
             ImageEditActionType.ACTION_CROP,
-            ImageEditActionType.ACTION_ROTATE
+            ImageEditActionType.ACTION_ROTATE,
+            ImageEditActionType.ACTION_REMOVE_BACKGROUND,
         )
     }
 }
@@ -167,7 +168,8 @@ enum class ImageEditActionType(val action: Int) : Parcelable {
     ACTION_WATERMARK(3),
     ACTION_CROP_ROTATE(4),
     ACTION_BRIGHTNESS(5),
-    ACTION_CONTRAST(6);
+    ACTION_CONTRAST(6),
+    ACTION_REMOVE_BACKGROUND(7);
 
     companion object {
         private val map = values().associateBy(ImageEditActionType::action)

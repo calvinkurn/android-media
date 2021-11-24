@@ -84,6 +84,10 @@ public class ImageEditorEditActionAdapter implements View.OnClickListener {
                     ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_contrast));
                     tvEdit.setText(context.getString(R.string.contrast));
                     break;
+                case ACTION_REMOVE_BACKGROUND:
+                    ivEdit.setImageDrawable(MethodChecker.getDrawable(context,R.drawable.ic_contrast));
+                    tvEdit.setText(context.getString(R.string.remove_background));
+                    break;
             }
             view.setOnClickListener(this);
             viewGroup.addView(view);

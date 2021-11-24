@@ -17,6 +17,7 @@
     <string name="image_edit_backpressed_title">Hasil edit gambar akan hilang jika anda kembali ke halaman sebelumnya.</string>
     <string name="brightness">Brightness</string>
     <string name="contrast">Contrast</string>
+    <string name="remove_background">Hapus Latar</string>
     <string name="default_brightness_value">0</string>
     <string name="default_rotate_value">0°</string>
     <string name="default_all_album">Semua Media</string>
