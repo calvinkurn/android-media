@@ -93,7 +93,12 @@ class EditorItemSelectionAdapter constructor(
             if (item.isSelected) viewSelection.show() else viewSelection.hide()
 
             txtItem.text = item.name
-            txtItem.visibility = View.GONE
+
+            if (item.name.isNotEmpty() && !item.isSingleLabel) {
+                txtItem.visibility = View.VISIBLE
+            } else {
+                txtItem.visibility = View.GONE
+            }
 
             imgItemSelection.loadImageRounded(
                 item.preview,

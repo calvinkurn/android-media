@@ -9,7 +9,7 @@
     <dimen name="image_editor_main_height">64dp</dimen>
     <dimen name="image_editor_thumbnail_width">72dp</dimen>
     <dimen name="image_editor_control_height">80dp</dimen>
-    <dimen name="image_editor_widget_item_width">64dp</dimen>
+    <dimen name="image_editor_widget_item_width">80dp</dimen>
 
     <dimen name="sp_16">16sp</dimen>
     <dimen name="sp_20">20sp</dimen>

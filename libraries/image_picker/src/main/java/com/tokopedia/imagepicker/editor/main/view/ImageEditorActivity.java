@@ -632,6 +632,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         layoutBrightness.setVisibility(View.GONE);
         layoutContrast.setVisibility(View.GONE);
         layoutWatermark.setVisibility(View.GONE);
+        layoutRemoveBackground.setVisibility(View.GONE);
     }
 
     private void setupRemoveBackgroundWidget() {
@@ -645,28 +646,31 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
         items.add(ItemSelection.createWithPlaceholderResourceId(
                 "Normal",
                 preview,
-                R.drawable.ic_logo_watermark,
+                0,
                 Constant.TYPE_REMOVE_BG_NORMAL,
+                false,
                 true
         ));
 
         items.add(ItemSelection.createWithPlaceholderResourceId(
                 "Latar Putih",
                 preview,
-                R.drawable.ic_logo_watermark,
+                0,
                 Constant.TYPE_REMOVE_BG_WHITE,
+                false,
                 false
         ));
 
         items.add(ItemSelection.createWithPlaceholderResourceId(
                 "Latar Hitam",
                 preview,
-                R.drawable.ic_logo_watermark,
+                0,
                 Constant.TYPE_REMOVE_BG_BLACK,
+                false,
                 false
         ));
 
-        watermarkItemSelection.setData(
+        removeBgItemSelection.setData(
                 items, (bitmap, type) -> {
                     imageEditPreviewFragment.setRemoveBackground(bitmap);
                     removeBackgroundType = type;
@@ -808,6 +812,7 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                         getString(R.string.editor_watermark_item),
                         preview,
                         Arrays.asList(bitmaps), // placeholder preview
+                        true,
                         Arrays.asList(Constant.TYPE_WATERMARK_TOPED, Constant.TYPE_WATERMARK_CENTER_TOPED)
                 ), (bitmap, type) -> {
                     imageEditPreviewFragment.setPreviewImageWatermark(bitmap);
