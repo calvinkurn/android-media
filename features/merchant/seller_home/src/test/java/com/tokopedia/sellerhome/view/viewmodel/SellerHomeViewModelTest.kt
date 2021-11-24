@@ -115,9 +115,6 @@ class SellerHomeViewModelTest {
     lateinit var shopQuestGeneralTrackerUseCase: ShopQuestGeneralTrackerUseCase
 
     @RelaxedMockK
-    lateinit var sellerHomeLayoutHelper: SellerHomeLayoutHelper
-
-    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @get:Rule
@@ -126,12 +123,29 @@ class SellerHomeViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
 
+    private lateinit var sellerHomeLayoutHelper: SellerHomeLayoutHelper
     private lateinit var viewModel: SellerHomeViewModel
     private lateinit var dynamicParameter: DynamicParameterModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
+
+        sellerHomeLayoutHelper = SellerHomeLayoutHelper(
+            { getCardDataUseCase },
+            { getLineGraphDataUseCase },
+            { getProgressDataUseCase },
+            { getPostDataUseCase },
+            { getCarouselDataUseCase },
+            { getTableDataUseCase },
+            { getPieChartDataUseCase },
+            { getBarChartDataUseCase },
+            { getMultiLineGraphUseCase },
+            { getAnnouncementDataUseCase },
+            { getRecommendationDataUseCase },
+            { getMilestoneDataUseCase },
+            coroutineTestRule.dispatchers
+        )
 
         viewModel = SellerHomeViewModel(
             { userSession },
@@ -245,7 +259,7 @@ class SellerHomeViewModelTest {
         Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
     }
 
-/*    @Test
+    @Test
     fun `when get widget layout and set height as 0f, should also success`() = runBlocking {
 
         val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
@@ -278,6 +292,10 @@ class SellerHomeViewModelTest {
         } returns shopId
 
         every {
+            remoteConfig.isSellerHomeDashboardNewCachingEnabled()
+        } returns false
+
+        every {
             remoteConfig.isSellerHomeDashboardCachingEnabled()
         } returns true
 
@@ -285,7 +303,7 @@ class SellerHomeViewModelTest {
             getLayoutUseCase.executeOnBackground()
         } returns layoutList
 
-        coEvery {
+        every {
             getLayoutUseCase.isFirstLoad
         } returns true
 
@@ -306,8 +324,11 @@ class SellerHomeViewModelTest {
 
         viewModel.getWidgetLayout(widgetHeightInDp)
 
-        coVerify {
+        verify {
             userSession.shopId
+        }
+
+        coVerify {
             getLayoutUseCase.executeOnBackground()
             sellerHomeLayoutHelper.getInitialWidget(layoutList, widgetHeightInDp)
         }
@@ -337,7 +358,7 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
             successLayoutList.find { it.data == actualWidget.data } != null
         } == true)
-    }*/
+    }
 
     @Test
     fun `given null widget height, should also success`() = coroutineTestRule.runBlockingTest {
@@ -570,7 +591,7 @@ class SellerHomeViewModelTest {
             }
         }
 
-/*    @Test
+    @Test
     fun `when get widget layout and height param is not null, should also success`() = runBlocking {
 
         val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
@@ -659,9 +680,9 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
             successLayoutList.find { it.data == actualWidget.data } != null
         } == true)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun `when get widget layout and height param is not null and is new caching enabled, should also success`() {
         coroutineTestRule.runBlockingTest {
             val layoutList: List<BaseWidgetUiModel<*>> = provideCompleteSuccessWidgetLayout()
@@ -752,7 +773,7 @@ class SellerHomeViewModelTest {
                 successLayoutList.find { it.data == actualWidget.data } != null
             } == true)
         }
-    }*/
+    }
 
     @Test
     fun `when get widget layout with given height and new caching enabled then throws exception should return failed result`() {
@@ -3707,7 +3728,7 @@ class SellerHomeViewModelTest {
         }
     }
 
-/*    @Test
+    @Test
     fun `given getting widget data is success, when getting initial widgets layout, start and stop plt custom trace should not be null`() =
         runBlocking {
             val layoutList: List<BaseWidgetUiModel<*>> = listOf(
@@ -3811,9 +3832,9 @@ class SellerHomeViewModelTest {
 
             assert(viewModel.startWidgetCustomMetricTag.value != null)
             assert(viewModel.stopWidgetType.value != null)
-        }*/
+        }
 
-/*    @Test
+    @Test
     fun `given some widget data is empty and should be removed, when initial load, should not have included that widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             SectionWidgetUiModel(
@@ -3990,9 +4011,9 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout(1000f)
 
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun `given the previous widget needs to be removed, get initial layout should check the more previous widget for removability`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
@@ -4063,9 +4084,9 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout(1000f)
 
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == false)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun `given widget data isShowWidget false, when get initial layout, should remove widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
@@ -4113,9 +4134,9 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout(1000f)
 
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == false)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun `given widget data isShowWidget true and isShowEmpty true, when get initial layout, should not remove widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
@@ -4163,9 +4184,9 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout(1000f)
 
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_PROGRESS } == true)
-    }*/
+    }
 
-/*    @Test
+    @Test
     fun `given widget data isShowWidget true but isShowEmpty false and data is empty, when get initial layout, should remove widget`() {
         val layoutList: List<BaseWidgetUiModel<*>> = listOf(
             ProgressWidgetUiModel(
@@ -4386,7 +4407,7 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout(1000f)
 
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
-    }*/
+    }
 
     private suspend fun onGetTickerListFlow_thenReturn(tickerList: List<TickerItemUiModel>) {
         coEvery {
