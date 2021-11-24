@@ -134,13 +134,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        val subscriptions = dummyResponse.fintechProduct.filter {
-            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
-        }
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
         assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
-        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes.fintechProduct.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
 
@@ -222,13 +228,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        val subscriptions = dummyResponse.fintechProduct.filter {
-            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
-        }
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
         assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
 
@@ -278,13 +290,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        val subscriptions = dummyResponse.fintechProduct.filter {
-            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
-        }
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
         assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
         assert(mappedCartInfoData.id == dummyResponse.id)
         assert(!mappedCartInfoData.attributes.isOpenAmount)
         assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
@@ -335,15 +353,19 @@ class DigitalCartViewModelTest {
         assert(mappedCartInfoData.attributes.isCouponActive == 1)
         assert(mappedCartInfoData.attributes.voucherAutoCode == dummyResponse.voucher)
         assert(!mappedCartInfoData.isNeedOtp)
-        val subscriptions = dummyResponse.fintechProduct.filter {
-            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
-        }
+
+        val (subscriptions, fintechProduct) = dummyResponse.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+        val (mappedSubscriptions, mappedFintechProduct) = mappedCartInfoData.attributes.fintechProduct.partition {
+            it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT }
+
         assert(mappedCartInfoData.isSubscribed == (subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled))
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.transactionType == dummyResponse.fintechProduct.getOrNull(0)?.transactionType)
-        assert(mappedCartInfoData.attributes?.fintechProduct?.getOrNull(0)?.fintechAmount ==
-                dummyResponse.fintechProduct.getOrNull(0)?.fintechAmount)
-        assert(mappedCartInfoData.id == dummyResponse.id)
-        assert(mappedCartInfoData.isInstantCheckout == dummyResponse.isInstantCheckout)
+        assert(mappedSubscriptions.size == subscriptions.size)
+        assert(mappedSubscriptions.getOrNull(0)?.transactionType == subscriptions.getOrNull(0)?.transactionType)
+        assert(mappedSubscriptions.getOrNull(0)?.fintechAmount == subscriptions.getOrNull(0)?.fintechAmount)
+        assert(mappedFintechProduct.size == fintechProduct.size)
+        assert(mappedFintechProduct.getOrNull(0)?.transactionType == fintechProduct.getOrNull(0)?.transactionType)
+        assert(mappedFintechProduct.getOrNull(0)?.fintechAmount == fintechProduct.getOrNull(0)?.fintechAmount)
 
         // show correct total price
         assert(digitalCartViewModel.totalPrice.value != null)
