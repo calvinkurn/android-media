@@ -144,12 +144,30 @@ class FirebaseDLWrapper {
 
         }.addOnFailureListener {
             if(it?.message!=null) {
+                shareCallback.urlCreated(
+                    LinkerUtils.createShareResult(
+                        data.textContent,
+                        getFailureFallbackUrl(data),
+                        getFailureFallbackUrl(data)
+                    )
+                )
+
                 val messageMap =
                     mapOf("type" to "validation", "reason" to "FdlCreationError", "data" to it.message.toString())
                 logging(messageMap)
             }
         }
 
+    }
+
+    private fun getFailureFallbackUrl(data: LinkerData): String? {
+        var fallbackUrl = data.renderShareUri()
+        if (TextUtils.isEmpty(fallbackUrl)
+            && !TextUtils.isEmpty(data.desktopUrl)
+        ) {
+            fallbackUrl = data.desktopUrl
+        }
+        return fallbackUrl
     }
 
     private fun getDeeplinkData(data: LinkerData): String? {
