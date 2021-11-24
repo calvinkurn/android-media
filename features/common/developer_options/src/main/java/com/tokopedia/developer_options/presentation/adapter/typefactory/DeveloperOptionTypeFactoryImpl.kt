@@ -39,6 +39,9 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: RemoteConfigEditorUiModel): Int = RemoteConfigEditorViewHolder.LAYOUT
     override fun type(uiModel: RouteManagerUiModel): Int = RouteManagerViewHolder.LAYOUT
     override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
+    override fun type(uiModel: SharedPreferencesEditorUiModel): Int = SharedPreferencesEditorViewHolder.LAYOUT
+    override fun type(uiModel: AppVersionUiModel): Int = AppVersionViewHolder.LAYOUT
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
@@ -67,6 +70,8 @@ class DeveloperOptionTypeFactoryImpl(
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
             RouteManagerViewHolder.LAYOUT -> RouteManagerViewHolder(view)
             LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)
+            SharedPreferencesEditorViewHolder.LAYOUT -> SharedPreferencesEditorViewHolder(view)
+            AppVersionViewHolder.LAYOUT -> AppVersionViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

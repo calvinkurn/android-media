@@ -29,4 +29,6 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: RemoteConfigEditorUiModel): Int
     fun type(uiModel: RouteManagerUiModel): Int
     fun type(uiModel: LoggingToServerUiModel): Int
+    fun type(uiModel: SharedPreferencesEditorUiModel): Int
+    fun type(uiModel: AppVersionUiModel): Int
 }
