@@ -37,6 +37,9 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: FpmLogOnFileUiModel): Int = FpmLogOnFileViewHolder.LAYOUT
     override fun type(uiModel: FpmLogOnNotificationUiModel): Int = FpmLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: ViewFpmLogUiModel): Int = ViewFpmLogViewHolder.LAYOUT
+    override fun type(uiModel: AnalyticsLogOnNotificationUiModel): Int = AnalyticsLogOnNotificationViewHolder.LAYOUT
+    override fun type(uiModel: CassavaUiModel): Int = CassavaViewHolder.LAYOUT
+    override fun type(uiModel: ViewAnalyticsLogUiModel): Int = ViewAnalyticsLogViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -58,6 +61,9 @@ class DeveloperOptionTypeFactoryImpl(
             FpmLogOnFileViewHolder.LAYOUT -> FpmLogOnFileViewHolder(view)
             FpmLogOnNotificationViewHolder.LAYOUT -> FpmLogOnNotificationViewHolder(view)
             ViewFpmLogViewHolder.LAYOUT -> ViewFpmLogViewHolder(view)
+            AnalyticsLogOnNotificationViewHolder.LAYOUT -> AnalyticsLogOnNotificationViewHolder(view)
+            CassavaViewHolder.LAYOUT -> CassavaViewHolder(view)
+            ViewAnalyticsLogViewHolder.LAYOUT -> ViewAnalyticsLogViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

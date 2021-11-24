@@ -30,7 +30,10 @@ class DeveloperOptionAdapter(
         ViewApplinkLogUiModel(context.getString(R.string.view_applink_log)),
         FpmLogOnFileUiModel(context.getString(R.string.enable_fpm_log_file)),
         FpmLogOnNotificationUiModel((context.getString(R.string.enable_fpm_log_notif))),
-        ViewFpmLogUiModel((context.getString(R.string.enable_fpm_log)))
+        ViewFpmLogUiModel((context.getString(R.string.enable_fpm_log))),
+        AnalyticsLogOnNotificationUiModel(context.getString(R.string.enable_analytics_log_notif)),
+        CassavaUiModel(context.getString(R.string.cassava)),
+        ViewAnalyticsLogUiModel(context.getString(R.string.view_analytics_log))
     )
 
     fun searchItem(text: String) {

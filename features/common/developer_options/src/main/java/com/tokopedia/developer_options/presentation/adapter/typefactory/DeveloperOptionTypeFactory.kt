@@ -21,4 +21,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: FpmLogOnFileUiModel): Int
     fun type(uiModel: FpmLogOnNotificationUiModel): Int
     fun type(uiModel: ViewFpmLogUiModel): Int
+    fun type(uiModel: AnalyticsLogOnNotificationUiModel): Int
+    fun type(uiModel: CassavaUiModel): Int
+    fun type(uiModel: ViewAnalyticsLogUiModel): Int
 }
