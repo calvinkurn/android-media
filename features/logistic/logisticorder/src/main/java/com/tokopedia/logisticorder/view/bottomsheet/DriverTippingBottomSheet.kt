@@ -152,7 +152,13 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 //post payment
                 binding.resultTippingLayout.visibility = View.VISIBLE
                 binding.paymentTippingLayout.visibility = View.GONE
-                binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_done)
+                binding.btnTipping.run {
+                    text = getString(com.tokopedia.logisticorder.R.string.button_tipping_done)
+                    isEnabled = true
+                    setOnClickListener {
+                        dismiss()
+                    }
+                }
 
                 binding.apply {
                     imgTipDriver.setImage(R.drawable.ic_succes_tipping_gojek, 0F)
