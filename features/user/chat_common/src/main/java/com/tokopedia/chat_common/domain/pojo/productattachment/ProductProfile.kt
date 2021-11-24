@@ -81,4 +81,8 @@ class ProductProfile {
     @SerializedName("is_upcoming_campaign")
     @Expose
     var isUpcomingCampaign: Boolean = false
+    // TODO: replace with actual
+    @SerializedName("location_stock")
+    @Expose
+    var locationStock: LocationStock = LocationStock()
 }
