@@ -40,6 +40,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: AnalyticsLogOnNotificationUiModel): Int = AnalyticsLogOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: CassavaUiModel): Int = CassavaViewHolder.LAYOUT
     override fun type(uiModel: ViewAnalyticsLogUiModel): Int = ViewAnalyticsLogViewHolder.LAYOUT
+    override fun type(uiModel: ViewIrisLogUiModel): Int = ViewIrisLogViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -64,6 +65,7 @@ class DeveloperOptionTypeFactoryImpl(
             AnalyticsLogOnNotificationViewHolder.LAYOUT -> AnalyticsLogOnNotificationViewHolder(view)
             CassavaViewHolder.LAYOUT -> CassavaViewHolder(view)
             ViewAnalyticsLogViewHolder.LAYOUT -> ViewAnalyticsLogViewHolder(view)
+            ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

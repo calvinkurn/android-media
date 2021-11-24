@@ -24,4 +24,5 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: AnalyticsLogOnNotificationUiModel): Int
     fun type(uiModel: CassavaUiModel): Int
     fun type(uiModel: ViewAnalyticsLogUiModel): Int
+    fun type(uiModel: ViewIrisLogUiModel): Int
 }

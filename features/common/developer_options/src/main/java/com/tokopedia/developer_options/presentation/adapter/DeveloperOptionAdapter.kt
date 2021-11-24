@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.model.*
+import com.tokopedia.developer_options.presentation.viewholder.ViewIrisLogViewHolder
 
 class DeveloperOptionAdapter(
     typeFactory: DeveloperOptionTypeFactoryImpl,
@@ -33,7 +34,8 @@ class DeveloperOptionAdapter(
         ViewFpmLogUiModel((context.getString(R.string.enable_fpm_log))),
         AnalyticsLogOnNotificationUiModel(context.getString(R.string.enable_analytics_log_notif)),
         CassavaUiModel(context.getString(R.string.cassava)),
-        ViewAnalyticsLogUiModel(context.getString(R.string.view_analytics_log))
+        ViewAnalyticsLogUiModel(context.getString(R.string.view_analytics_log)),
+        ViewIrisLogUiModel(context.getString(R.string.keyword_view_iris_log))
     )
 
     fun searchItem(text: String) {
