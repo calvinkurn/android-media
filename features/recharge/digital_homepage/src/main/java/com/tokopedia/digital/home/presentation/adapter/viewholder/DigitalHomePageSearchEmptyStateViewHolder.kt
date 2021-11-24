@@ -30,7 +30,7 @@ class DigitalHomePageSearchEmptyStateViewHolder (itemView: View?, val emptyListe
 
     companion object {
         val LAYOUT = R.layout.view_digital_home_search_empty
-        val IMG_LINK = "https://images.tokopedia.net/img/subhome_empty_state.png"
+        const val IMG_LINK = "https://images.tokopedia.net/img/subhome_empty_state.png"
     }
 
     interface DigitalHomepageSearchEmptyListener {

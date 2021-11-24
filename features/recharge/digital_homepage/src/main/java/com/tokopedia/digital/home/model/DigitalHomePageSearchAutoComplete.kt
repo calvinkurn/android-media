@@ -30,7 +30,7 @@ data class Data (
         val items : List<Items> = emptyList(),
         @SerializedName("__typename")
         @Expose
-        val __typename : String = ""
+        val typename : String = ""
 )
 
 data class Tracking (
@@ -57,7 +57,7 @@ data class Tracking (
         val itemType : String = "",
         @SerializedName("__typename")
         @Expose
-        val __typename : String = ""
+        val typename : String = ""
 )
 
 data class Items (
@@ -108,5 +108,5 @@ data class Items (
         val originalPrice : String = "",
         @SerializedName("__typename")
         @Expose
-        val __typename : String = ""
+        val typename : String = ""
 )

@@ -184,7 +184,6 @@ class RechargeHomepageAnalytics {
         ))
     }
 
-    //#1
     fun impressionSearchAutoComplete(tracker: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression search result")
@@ -195,7 +194,6 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    //#2
     fun clickCateoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "click category autocomplete")
@@ -206,7 +204,6 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL_EVENT, eventDataLayer)
     }
 
-    //#3
     fun clickOperatorAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "click operator autocomplete")
@@ -217,7 +214,6 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_DIGITAL_EVENT, eventDataLayer)
     }
 
-    //#4
     fun impressNoResult(tracker: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression no results")
@@ -228,7 +224,6 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    //#6
     fun impressionCategoryAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression category autocomplete")
@@ -239,7 +234,6 @@ class RechargeHomepageAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_DIGITAL_IRIS, eventDataLayer)
     }
 
-    //#7
     fun impressionOperatorAutoComplete(trackerUser: Tracking, trackerItem: Tracking, userId: String){
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, "impression operator autocomplete")
