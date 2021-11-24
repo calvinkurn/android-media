@@ -52,8 +52,10 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
     private var isUserBlackListed = false
 
     companion object {
-        fun getFragmentInstance(): Fragment {
-            return AffiliatePromotionHistoryFragment()
+        fun getFragmentInstance(isBlackListed :Boolean): Fragment {
+            return AffiliatePromotionHistoryFragment().apply {
+                isUserBlackListed = isBlackListed
+            }
         }
     }
 

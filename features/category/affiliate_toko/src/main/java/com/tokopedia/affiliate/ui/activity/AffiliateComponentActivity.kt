@@ -23,6 +23,12 @@ class AffiliateComponentActivity : BaseViewModelActivity<AffiliateViewModel>() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
     }
+    private var isUserBlackListed = false
+    private fun getBundle() {
+        intent?.let {
+            isUserBlackListed = it.getBooleanExtra("isUserBlackListed",false)
+        }
+    }
 
     override fun getVMFactory(): ViewModelProvider.Factory {
         return viewModelProvider
@@ -36,7 +42,8 @@ class AffiliateComponentActivity : BaseViewModelActivity<AffiliateViewModel>() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return AffiliatePromotionHistoryFragment.getFragmentInstance()
+        getBundle()
+        return AffiliatePromotionHistoryFragment.getFragmentInstance(isUserBlackListed)
     }
     override fun initInject() {
         getComponent().injectComponentActivity(this)

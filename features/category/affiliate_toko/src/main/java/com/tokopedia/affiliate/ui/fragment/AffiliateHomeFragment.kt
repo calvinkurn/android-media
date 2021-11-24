@@ -120,7 +120,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
             setIcon(
                     IconBuilder()
                             .addIcon(IconList.ID_BILL){
-                                startActivity(Intent(context,AffiliateComponentActivity::class.java))
+                                openHistoryActivity()
                             }
                             .addIcon(IconList.ID_INFORMATION) {
                                 AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_BETA_INFO).show(childFragmentManager, "")
@@ -136,6 +136,13 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         sendScreenEvent()
         setUserDetails()
     }
+
+    private fun openHistoryActivity() {
+        val intent = Intent(context,AffiliateComponentActivity::class.java)
+        intent.putExtra("isUserBlackListed",isUserBlackListed)
+        startActivity(intent)
+    }
+
     private fun setUserDetails(){
         ImageHandler.loadImageCircle2(context, user_image, affiliateHomeViewModel.getUserProfilePicture())
         user_name.text = affiliateHomeViewModel.getUserName()
