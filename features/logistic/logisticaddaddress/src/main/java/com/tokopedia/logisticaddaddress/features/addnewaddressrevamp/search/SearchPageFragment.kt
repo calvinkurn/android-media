@@ -370,6 +370,8 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
                 is Fail -> {
                     Timber.d(it.throwable)
                     hideListLocation()
+                    binding.layoutEmptyState.visibility = View.VISIBLE
+                    binding.ivEmptyState.setImageUrl(LOCATION_NOT_FOUND)
                 }
             }
         })
@@ -386,6 +388,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
     private fun loadListLocation(suggestedPlace: Place) {
         if (suggestedPlace.data.isNotEmpty()) {
             binding.rvAddressList.visibility = View.VISIBLE
+            binding.layoutEmptyState.visibility = View.GONE
             autoCompleteAdapter.setData(suggestedPlace.data)
         }
     }
