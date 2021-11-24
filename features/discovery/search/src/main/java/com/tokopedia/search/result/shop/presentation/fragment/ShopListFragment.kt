@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -31,6 +30,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
+import com.tokopedia.search.databinding.SearchResultShopFragmentLayoutBinding
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
@@ -48,7 +48,7 @@ import com.tokopedia.search.utils.removeQuickFilterElevation
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import kotlinx.android.synthetic.main.search_result_shop_fragment_layout.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 internal class ShopListFragment:
         TkpdBaseV4Fragment(),
@@ -70,9 +70,7 @@ internal class ShopListFragment:
 
     private var gridLayoutManager: GridLayoutManager? = null
     private var shopListAdapter: ShopListAdapter? = null
-    private var recyclerViewSearchShop: RecyclerView? = null
     private var gridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
-    private var refreshLayout: SwipeRefreshLayout? = null
     private var searchShopViewModel: SearchShopViewModel? = null
     private var searchViewModel: SearchViewModel? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
@@ -86,8 +84,11 @@ internal class ShopListFragment:
         )
     }
 
+    private var binding by autoClearedNullable<SearchResultShopFragmentLayoutBinding>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.search_result_shop_fragment_layout, container, false)
+        binding = SearchResultShopFragmentLayoutBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,9 +116,7 @@ internal class ShopListFragment:
     }
 
     private fun initRefreshLayout() {
-        refreshLayout = view?.findViewById(R.id.swipeRefreshLayoutSearchShop)
-
-        refreshLayout?.setOnRefreshListener {
+        binding?.swipeRefreshLayoutSearchShop?.setOnRefreshListener {
             searchShopViewModel?.onViewReloadData()
         }
     }
@@ -137,13 +136,13 @@ internal class ShopListFragment:
     private fun initRecyclerView() {
         activity?.let { activity ->
             initShopListAdapter()
-
-            recyclerViewSearchShop = view?.findViewById(R.id.recyclerViewSearchShop)
-            recyclerViewSearchShop?.layoutManager = gridLayoutManager
-            recyclerViewSearchShop?.adapter = shopListAdapter
-            recyclerViewSearchShop?.addItemDecoration(createShopItemDecoration(activity))
+            binding?.recyclerViewSearchShop?.let {
+                it.layoutManager = gridLayoutManager
+                it.adapter = shopListAdapter
+                it.addItemDecoration(createShopItemDecoration(activity))
+            }
             gridLayoutLoadMoreTriggerListener?.let {
-                recyclerViewSearchShop?.addOnScrollListener(it)
+                binding?.recyclerViewSearchShop?.addOnScrollListener(it)
             }
         }
     }
@@ -220,11 +219,11 @@ internal class ShopListFragment:
     }
 
     private fun showRefreshLayout() {
-        refreshLayout?.isRefreshing = true
+        binding?.swipeRefreshLayoutSearchShop?.isRefreshing = true
     }
 
     private fun hideRefreshLayout() {
-        refreshLayout?.isRefreshing = false
+        binding?.swipeRefreshLayoutSearchShop?.isRefreshing = false
     }
 
     private fun updateList(searchShopLiveData: State<List<Visitable<*>>>) {
@@ -268,9 +267,11 @@ internal class ShopListFragment:
     }
 
     private fun hideViewOnError() {
-        searchShopQuickSortFilter?.hide()
-        shimmeringViewShopQuickFilter?.hide()
-        refreshLayout?.hide()
+        binding?.let {
+            it.searchShopQuickSortFilter.hide()
+            it.shimmeringViewShopQuickFilter.root.hide()
+            it.swipeRefreshLayoutSearchShop.hide()
+        }
     }
 
     private fun showNetworkErrorOnLoadMore(activity: Activity, retryClickedListener: NetworkErrorHelper.RetryClickedListener, throwable: Throwable?) {
@@ -495,7 +496,7 @@ internal class ShopListFragment:
     private fun showQuickFilterView(sortFilterItemList: List<SortFilterItem>?) {
         if (sortFilterItemList == null) return
 
-        searchShopQuickSortFilter?.let {
+        binding?.searchShopQuickSortFilter?.let {
             it.sortFilterItems.removeAllViews()
             it.visible()
             it.sortFilterHorizontalScrollView.scrollX = 0
@@ -516,25 +517,25 @@ internal class ShopListFragment:
 
     private fun observeRefreshLayoutVisibility() {
         searchShopViewModel?.getRefreshLayoutIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
-            refreshLayout?.showWithCondition(it)
+            binding?.swipeRefreshLayoutSearchShop?.showWithCondition(it)
         })
     }
 
     private fun observeShimmeringLayoutVisibility() {
         searchShopViewModel?.getShimmeringQuickFilterIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
-            shimmeringViewShopQuickFilter?.showWithCondition(it)
+            binding?.shimmeringViewShopQuickFilter?.root?.showWithCondition(it)
         })
     }
 
     private fun observeQuickFilterVisibility() {
         searchShopViewModel?.getQuickFilterIsVisibleLiveData()?.observe(viewLifecycleOwner, Observer {
-            searchShopQuickSortFilter?.showWithCondition(it)
+            binding?.searchShopQuickSortFilter?.showWithCondition(it)
         })
     }
 
     private fun observeActiveFilterCount() {
         searchShopViewModel?.getActiveFilterCountLiveData()?.observe(viewLifecycleOwner, Observer {
-            searchShopQuickSortFilter?.indicatorCounter = it
+            binding?.searchShopQuickSortFilter?.indicatorCounter = it
         })
     }
 
@@ -615,12 +616,14 @@ internal class ShopListFragment:
     }
 
     fun backToTop() {
-        recyclerViewSearchShop?.smoothScrollToPosition(0)
+        binding?.recyclerViewSearchShop?.smoothScrollToPosition(0)
     }
 
     override fun configure(shouldRemove: Boolean) {
-        if (shouldRemove) removeQuickFilterElevation(searchShopQuickSortFilter)
-        else applyQuickFilterElevation(context, searchShopQuickSortFilter)
+        binding?.let {
+            if (shouldRemove) removeQuickFilterElevation(it.searchShopQuickSortFilter)
+            else applyQuickFilterElevation(context, it.searchShopQuickSortFilter)
+        }
     }
 
     private fun observeGeneralSearchTracking() {

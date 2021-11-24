@@ -134,4 +134,22 @@
     <string name="buyer_finish_order_desc">Dengan klik "Selesai", dana akan diteruskan ke penjual dan kamu tidak dapat mengajukan komplain.</string>
     <string name="buyer_finish_order_1">Pastikan kamu sudah menerima barang yang sesuai dengan pesananmu.</string>
     <string name="buyer_finish_order_2">Jika memenuhi syarat &amp; Ketentuan, cashback dari transaksi yang pakai promo akan dikirim maks. 24 jam ke depan.</string>
+
+    <string name="recharge_order_detail_see_invoice_label">Lihat Invoice</string>
+    <string name="recharge_order_detail_purchase_date_label">Tanggal Pembelian</string>
+    <string name="order_detail_recharge_product_detail_label">Detail Produk</string>
+    <string name="recharge_order_detail_payment_detail_label">Rincian Pembayaran</string>
+    <string name="recharge_order_detail_total_payment_label">Total Bayar</string>
+    <string name="recharge_order_detail_sbm_label">Bayar Sekaligus</string>
+    <string name="recharge_order_detail_sbm_detail">Banyak tagihan? Sekali bayar, semua lunas</string>
+    <string name="recharge_order_detail_mybills_label">Langganan</string>
+    <string name="recharge_order_detail_mybills_detail">Ada tagihan rutin? Biar nggak lupa, Langganan aja</string>
+    <string name="recharge_order_detail_about_orders_title">Tentang Pesananmu</string>
+    <string name="recharge_order_detail_help_center_title">Pusat Bantuan</string>
+
+    <string name="recharge_order_detail_copied_message" formatted="false">%s berhasil tersalin</string>
+
+    <string name="static_assets_ic_my_bills_link">https://images.tokopedia.net/img/android/recharge_order_details/sbm.png</string>
+    <string name="static_assets_ic_langganan_link">https://images.tokopedia.net/img/android/recharge_order_details/langganan.png</string>
+
 </resources>

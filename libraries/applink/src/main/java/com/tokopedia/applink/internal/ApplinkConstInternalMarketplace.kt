@@ -42,7 +42,6 @@ object ApplinkConstInternalMarketplace {
     // ProductDetailActivity
     const val PRODUCT_DETAIL = "$INTERNAL_MARKETPLACE/product-detail/{id}/"
     const val PRODUCT_DETAIL_WITH_AFFILIATE_UUID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?aff_unique_id={affiliate_uuid}"
-    const val PRODUCT_DETAIL_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{product_id}/?is_from_explore_affiliate={isAffiliate}"
     const val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     const val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
     const val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}&aff_unique_id={affiliate_uuid}"
@@ -63,9 +62,6 @@ object ApplinkConstInternalMarketplace {
     // ReadReviewActivity
     const val SHOP_REVIEW = "$INTERNAL_MARKETPLACE/shop/{id}/review"
 
-    // ReviewProductActivity, "x_prd_nm" = productName
-    const val PRODUCT_REVIEW_OLD = "$INTERNAL_MARKETPLACE/product/{id}/review-old"
-
     // ReviewCredibilityActivity
     const val REVIEW_CREDIBILITY = "$INTERNAL_MARKETPLACE/review/credibility/{userId}/{source}/"
 
@@ -80,6 +76,9 @@ object ApplinkConstInternalMarketplace {
 
     // CreateReviewActivity
     const val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
+
+    // EditReviewActivity
+    const val EDIT_REVIEW = "$INTERNAL_MARKETPLACE/product-review/edit/{reputation_id}/{product_id}/"
 
     // InboxReputationActivity
     const val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
@@ -262,4 +261,6 @@ object ApplinkConstInternalMarketplace {
     const val ARGS_LAYOUT_ID = "layoutID"
 
     const val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
+
+    const val ARGS_IS_UPGRADE = "is_upgrade"
 }
