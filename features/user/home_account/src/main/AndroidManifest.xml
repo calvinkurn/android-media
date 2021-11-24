@@ -6,7 +6,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
 
-        <activity android:name=".presentation.activity.GeneralSettingActivity"
+        <activity android:name=".account_settings.presentation.activity.GeneralSettingActivity"
             android:exported="false"
             android:label="@string/label_menu_setting"
             android:screenOrientation="portrait"
@@ -26,7 +26,7 @@
         </activity>
 
         <activity
-            android:name=".presentation.activity.AdvancedSettingActivity"
+            android:name=".account_settings.presentation.activity.AdvancedSettingActivity"
             android:exported="false"
             android:label="@string/title_app_advanced_setting"
             android:screenOrientation="portrait"
@@ -43,7 +43,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.activity.TkpdPaySettingActivity"
+        <activity android:name=".account_settings.presentation.activity.TkpdPaySettingActivity"
             android:exported="false"
             android:label="@string/screentitle_tkpd_pay_setting"
             android:screenOrientation="portrait"
@@ -62,7 +62,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.activity.AccountSettingActivity"
+        <activity android:name=".account_settings.presentation.activity.AccountSettingActivity"
             android:exported="false"
             android:label="@string/home_account_title"
             android:screenOrientation="portrait"
@@ -81,7 +81,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".presentation.activity.MediaQualitySettingActivity"
+        <activity android:name=".account_settings.presentation.activity.MediaQualitySettingActivity"
             android:exported="false"
             android:label="@string/image_quality_setting_screen"
             android:screenOrientation="portrait"

@@ -1,7 +1,10 @@
 package com.tokopedia.home_account.account_settings.presentation.fragment.setting;
 
 
+import static com.tokopedia.home_account.AccountConstants.Analytics.ADDRESS_LIST;
+import static com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.ACCOUNT_BANK;
+import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.PASSWORD;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,7 +34,9 @@ import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics;
 import com.tokopedia.home_account.account_settings.constant.SettingConstant;
 import com.tokopedia.home_account.account_settings.data.model.AccountSettingConfig;
 import com.tokopedia.home_account.account_settings.di.component.AccountSettingComponent;
+import com.tokopedia.home_account.account_settings.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home_account.account_settings.presentation.AccountSetting;
+import com.tokopedia.home_account.account_settings.presentation.util.AccountHomeErrorHandler;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.unifycomponents.LoaderUnify;

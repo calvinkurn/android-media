@@ -2,7 +2,7 @@
     <string name="home_account_title">Akun Saya</string>
     <string name="label_menu_setting">Pengaturan</string>
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>
-    <string name="screentitle_tkpd_pay_settinag">Atur Pembayaran</string>
+    <string name="screentitle_tkpd_pay_setting">Atur Pembayaran</string>
     <string name="image_quality_setting_screen">Kualitas Gambar</string>
     <string name="pref_safe_mode" translatable="false">notification_safe_mode</string>
     <string name="clear_cache">clear cache</string>
@@ -208,5 +208,17 @@
     <string name="title_app_review_setting">Review Aplikasi</string>
     <string name="feedback_form">Feedback Form</string>
     <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
+
+    <string name="title_personal_data_setting">Data Diri</string>
+    <string name="title_address_setting">Daftar Alamat</string>
+    <string name="title_sampai_project">Tokopedia Corner</string>
+    <string name="header_privacy_account_setting">Keamanan</string>
+    <string name="title_password_setting">Ubah Kata Sandi</string>
+    <string name="title_setting_pin">PIN Tokopedia</string>
+    <string name="title_kyc_setting">Verifikasi Data Diri</string>
+    <string name="title_signin_with_notification">Masuk Lewat Notifikasi</string>
+    <string name="image_quality_setting_subtitle">Pilihanmu akan menentukan kejelasan gambar yang kamu lihat di berbagai halaman Tokopedia.</string>
+    <string name="message_success_change_profile">Sukses mengubah profil</string>
+    <string name="message_success_change_password">Kata sandi berhasil diubah</string>
 
 </resources>
