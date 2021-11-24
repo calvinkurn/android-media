@@ -8,8 +8,8 @@
             android:label="@string/title_uoh_list"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

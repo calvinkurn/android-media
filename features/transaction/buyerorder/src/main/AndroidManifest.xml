@@ -34,6 +34,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:exported="false">
+        <activity
+            android:name=".recharge.presentation.activity.RechargeOrderDetailActivity"
+            android:label="@string/title_order_detail"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

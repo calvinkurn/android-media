@@ -1,6 +1,5 @@
 package com.tokopedia.unifyorderhistory.data.model
 
-
 import com.google.gson.annotations.SerializedName
 
 data class UohListOrder(
@@ -15,14 +14,11 @@ data class UohListOrder(
             @SerializedName("orders")
             val orders: List<Order> = listOf(),
 
-            @SerializedName("filters")
-            val filters: List<String> = listOf(),
-
             @SerializedName("filtersV2")
-            val v2Filters: List<FilterV2> = listOf(),
+            val v2Filters: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2> = listOf(),
 
             @SerializedName("categories")
-            val categories: List<Category> = listOf(),
+            val categories: List<UohFilterCategory.Data.UohFilterCategoryData.Category> = listOf(),
 
             @SerializedName("next")
             val next: String = "",
@@ -252,25 +248,6 @@ data class UohListOrder(
                     )
                 }
             }
-
-            data class FilterV2(
-                    @SerializedName("isPrimary")
-                    val isPrimary: Boolean = false,
-
-                    @SerializedName("label")
-                    val label: String = "",
-
-                    @SerializedName("value")
-                    val value: String = ""
-            )
-
-            data class Category(
-                @SerializedName("value")
-                val value: String = "",
-
-                @SerializedName("label")
-                val label: String = ""
-            )
 
             data class Ticker(
                 @SerializedName("action")
