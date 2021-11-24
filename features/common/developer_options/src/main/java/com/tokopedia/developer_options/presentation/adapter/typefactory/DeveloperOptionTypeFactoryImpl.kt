@@ -45,6 +45,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: UrlEnvironmentUiModel): Int = UrlEnvironmentViewHolder.LAYOUT
     override fun type(uiModel: FakeResponseActivityUiModel): Int = FakeResponseActivityViewHolder.LAYOUT
     override fun type(uiModel: HomeAndNavigationRevampSwitcherUiModel): Int = HomeAndNavigationRevampSwitcherViewHolder.LAYOUT
+    override fun type(uiModel: RollenceAbTestingManualSwitcherUiModel): Int = RollenceAbTestingManualSwitcherViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -79,6 +80,7 @@ class DeveloperOptionTypeFactoryImpl(
             UrlEnvironmentViewHolder.LAYOUT -> UrlEnvironmentViewHolder(view, urlEnvironmentListener)
             FakeResponseActivityViewHolder.LAYOUT -> FakeResponseActivityViewHolder(view)
             HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view)
+            RollenceAbTestingManualSwitcherViewHolder.LAYOUT -> RollenceAbTestingManualSwitcherViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -54,6 +54,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_NEW_INBOX = "New Inbox"
         const val KEYWORD_OLD_CART_CHECKOUT = "Old Cart Checkout"
         const val KEYWORD_NEW_CART_CHECKOUT = "New Cart Checkout Bundling"
+        const val KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER = "Rollence AB Testing Manual Switcher"
     }
 
     private val defaultItems = listOf(
@@ -99,6 +100,7 @@ class DeveloperOptionAdapter(
             KEYWORD_STAGING, KEYWORD_LIVE)
         ),
         FakeResponseActivityUiModel(listOf(KEYWORD_FAKE_RESPONSE_ACTIVITY)),
+        RollenceAbTestingManualSwitcherUiModel(listOf(KEYWORD_ROLLENCE_AB_TESTING_MANUAL_SWITCHER)),
         HomeAndNavigationRevampSwitcherUiModel(listOf(
             KEYWORD_HOME_AND_NAVIGATION_REVAMP_SWITCHER,
             KEYWORD_NEW_NAVIGATION,
@@ -109,7 +111,7 @@ class DeveloperOptionAdapter(
             KEYWORD_NEW_INBOX,
             KEYWORD_OLD_CART_CHECKOUT,
             KEYWORD_NEW_CART_CHECKOUT
-        ))
+        )),
     )
 
     fun searchItem(keyword: String) {

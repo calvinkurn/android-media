@@ -57,7 +57,7 @@
     <string name="str_to_be_put">String to be put in RouteManager.route(…)</string>
     <string name="try_routemanager">Try RouteManager.route</string>
     <string name="shared_pref_editor">SharedPreferences Editor</string>
-    <string name="logging_to_server">Logging To Server</string>
+    <string name="logging_to_server">Logging To Server:</string>
     <string name="required_server_logging">Pno##TAG##message (message: abc=123##edf=4) (required Server Logging ON)</string>
     <string name="send_log_to_server">Send Log to Server</string>
     <string name="enable_seller_app_review_debugging">Enable Seller App Review Debugging</string>
@@ -69,11 +69,11 @@
     <string name="fake_response_activity">Fake Response Activity</string>
     <string name="request_new_fcm">Request New FCM Token</string>
     <string name="reset_onboarding_nav">RESET ONBOARDING NAVIGATION!</string>
-    <string name="rollence_ab_testing">Rollence AB Testing Manual Switcher :</string>
+    <string name="rollence_ab_testing">Rollence AB Testing Manual Switcher:</string>
     <string name="input_rollence_key">input rollence key</string>
     <string name="input_rollence_variant">input rollence variant</string>
     <string name="apply">APPLY</string>
-    <string name="home_nav_revamp_switcher">Home and Navigation Revamp Switcher :</string>
+    <string name="home_nav_revamp_switcher">Home and Navigation Revamp Switcher:</string>
     <string name="always_os_experiment">Always OS Experiment</string>
     <string name="always_new_nav">New Navigation</string>
     <string name="always_old_home">Old Home</string>
