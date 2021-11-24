@@ -208,11 +208,14 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
 
     override fun onResume() {
         super.onResume()
-        hideKeyboard()
         context?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 registerIncomingPhoneCall(it)
             }
+        }
+
+        if (isOtpMiscallNew()) {
+            hideKeyboard()
         }
     }
 
