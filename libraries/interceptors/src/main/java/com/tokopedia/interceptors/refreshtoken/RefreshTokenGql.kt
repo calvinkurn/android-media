@@ -99,7 +99,6 @@ class RefreshTokenGql {
             }
             resultToken
         } catch (e: Exception) {
-            e.printStackTrace()
             null
         }
     }

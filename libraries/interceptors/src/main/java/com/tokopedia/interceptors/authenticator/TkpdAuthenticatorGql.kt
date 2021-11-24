@@ -224,12 +224,10 @@ class TkpdAuthenticatorGql(
 
         const val ROLLOUT_REFRESH_TOKEN = "refresh_token_gql"
 
+        const val LIMIT_STACKTRACE = 1000
+
         fun formatThrowable(throwable: Throwable): String {
-            return try{
-                Log.getStackTraceString(throwable).take(1000)
-            } catch (e: Exception){
-                e.toString()
-            }
+            return Log.getStackTraceString(throwable).take(LIMIT_STACKTRACE)
         }
 
         fun createAuthenticator(context: Application, networkRouter: NetworkRouter, userSession: UserSessionInterface, refreshTokenUseCaseGql: RefreshTokenGql): TkpdAuthenticatorGql {

@@ -19,10 +19,7 @@ object TokenUtils {
     fun encode(type: String): String {
         return if (type.isNotBlank()) {
             val secretId = randomChar(4)
-            System.out.println("type : $type")
             val asB64 = Base64.encodeToString(type.toByteArray(), Base64.NO_WRAP)
-            System.out.println("asB64 : $asB64")
-
             "$asB64$secretId"
         } else {
             ""
