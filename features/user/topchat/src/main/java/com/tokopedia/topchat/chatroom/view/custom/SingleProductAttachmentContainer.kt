@@ -425,7 +425,14 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindShippingLocation(product: ProductAttachmentUiModel) {
-        // TODO: implement this
+        if (commonListener?.isSeller() == true &&
+            product.locationStock.districtFullName.isNotEmpty()
+        ) {
+            shippingLocation?.show()
+            shippingLocation?.text = product.locationStock.districtFullName
+        } else {
+            shippingLocation?.hide()
+        }
     }
 
     private fun bindMargin(product: ProductAttachmentUiModel) {
