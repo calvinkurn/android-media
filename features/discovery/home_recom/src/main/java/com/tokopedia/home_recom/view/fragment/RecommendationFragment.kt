@@ -20,10 +20,12 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
 import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_QUERY_PARAM
@@ -49,6 +51,9 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.fragment_product_info.*
@@ -92,6 +97,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private var menu: Menu? = null
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
+    private var navToolbar: NavToolbar? = null
     private lateinit var viewModelProvider: ViewModelProvider
     private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this, this, this, this) }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
@@ -119,7 +125,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recommendation, container, false)
+        val view = inflater.inflate(R.layout.fragment_recommendation, container, false)
+        navToolbar = view.findViewById(R.id.navToolbar)
+        return view
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,9 +146,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.run{
-            (this as AppCompatActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
-        }
+        setupToolbar()
         if(productId.isEmpty()) {
             RecommendationPageTracking.sendScreenRecommendationPage(
                     screenName,
@@ -241,6 +247,39 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 })
     }
 
+    private fun setupToolbar() {
+        activity?.run {
+            (this as AppCompatActivity).supportActionBar?.hide()
+            navToolbar?.let {
+                it.setShowShadowEnabled(true)
+                navToolbar?.setToolbarTitle(getString(R.string.recom_home_recommendation))
+                activity?.let { actv ->
+                    it.setupToolbarWithStatusBar(
+                        activity = actv,
+                        applyPadding = false,
+                        applyPaddingNegative = true
+                    )
+                }
+                it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
+            }
+        }
+    }
+
+    private fun addToolbarMenu(productDetailData: ProductDetailData) {
+        val iconBuilder = IconBuilder()
+            .addIcon(
+                iconId = IconList.ID_SHARE,
+                onClick = { shareProduct(
+                    productDetailData.id.toString(),
+                    productDetailData.name,
+                    productDetailData.name,
+                    productDetailData.imageUrl)
+            })
+        navToolbar?.let {
+            it.setIcon(iconBuilder)
+        }
+    }
+
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
         if (productCardOptionsModel == null) return
         val wishlistResult = productCardOptionsModel.wishlistResult
@@ -312,11 +351,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 hideLoading()
                 getRecyclerView(view)?.smoothScrollToPosition(0)
                 (response.firstOrNull() as? ProductInfoDataModel)?.productDetailData?.let { productDetailData ->
-                    menu?.findItem(R.id.action_share)?.isVisible = true
-                    menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {
-                        shareProduct(productDetailData.id.toString(), productDetailData.name, productDetailData.name, productDetailData.imageUrl)
-                        true
-                    }
+                    addToolbarMenu(productDetailData)
+//                    menu?.findItem(R.id.action_share)?.isVisible = true
+//                    menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {
+//                        shareProduct(productDetailData.id.toString(), productDetailData.name, productDetailData.name, productDetailData.imageUrl)
+//                        true
+//                    }
                 }
             }
         })
