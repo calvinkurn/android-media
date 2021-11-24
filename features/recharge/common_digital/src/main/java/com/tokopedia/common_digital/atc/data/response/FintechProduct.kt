@@ -55,6 +55,9 @@ data class FintechProduct(
             var title: String = "",
             @Expose
             var subtitle: String = "",
+            @SerializedName("checked_subtitle")
+            @Expose
+            var checkedSubtitle: String = "",
             @SerializedName("link_text")
             @Expose
             var textLink: String = "",

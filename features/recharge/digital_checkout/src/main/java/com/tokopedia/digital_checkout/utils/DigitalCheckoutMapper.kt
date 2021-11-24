@@ -126,31 +126,11 @@ object DigitalCheckoutMapper {
                 attributesDigital.defaultPromoTab = attributes.defaultPromo
                 attributesDigital.userId = attributes.userId
             }
-
+            // [Misael] Here
             responseRechargeGetCart.response.run {
                 cartDigitalInfoData.crossSellingType = crossSellingType
                 cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
                         crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
-                crossSellingConfig.run {
-                    val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
-                    crossSellingConfig.isSkipAble = canBeSkipped
-                    crossSellingConfig.isChecked = isChecked
-
-                    val crossSellingWording = if (cartDigitalInfoData.crossSellingType
-                            == DigitalCartCrossSellingType.SUBSCRIBED.id) {
-                        wordingIsSubscribe
-                    } else {
-                        wording
-                    }
-                    crossSellingWording.run {
-                        crossSellingConfig.headerTitle = headerTitle
-                        crossSellingConfig.bodyTitle = bodyTitle
-                        crossSellingConfig.bodyContentBefore = bodyContentBefore
-                        crossSellingConfig.bodyContentAfter = bodyContentAfter
-                        crossSellingConfig.checkoutButtonText = checkoutButtonText
-                        cartDigitalInfoData.crossSellingConfig = crossSellingConfig
-                    }
-                }
                 attributesDigital.fintechProduct = fintechProduct
             }
 

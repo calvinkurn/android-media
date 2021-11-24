@@ -105,6 +105,7 @@ object DigitalCheckoutQueries {
               info {
                 title
                 subtitle
+                checked_subtitle
                 link_text
                 link_url
                 tooltip_text

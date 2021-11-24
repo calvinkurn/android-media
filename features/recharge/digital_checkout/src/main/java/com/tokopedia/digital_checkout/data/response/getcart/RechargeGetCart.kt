@@ -101,10 +101,6 @@ data class RechargeGetCart(
         @Expose
         val crossSellingType: Int = 0,
 
-        @SerializedName("cross_selling_config")
-        @Expose
-        val crossSellingConfig: CrossSellingConfig = CrossSellingConfig(),
-
         @SerializedName("pop_up")
         @Expose
         val popUp: PopUpData = PopUpData(),

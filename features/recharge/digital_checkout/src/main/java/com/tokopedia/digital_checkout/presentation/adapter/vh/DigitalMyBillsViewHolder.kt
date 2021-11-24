@@ -14,31 +14,37 @@ import kotlinx.android.synthetic.main.item_digital_checkout_my_bills_section.vie
  */
 
 class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) : RecyclerView.ViewHolder(view) {
-    fun bindSubscription(subscription: CartDigitalInfoData.CrossSellingConfig, crossSellingType: Int) {
+    // [Misael] Here
+    fun bindSubscription(subscription: FintechProduct) {
         with(itemView) {
-            if (subscription.bodyTitle.isNotEmpty()) {
+            if (subscription.info.title.isNotEmpty()) {
                 itemView.show()
-                if (crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id) {
-                    widgetMyBills.disableCheckBox()
-                }
-                widgetMyBills.hasMoreInfo(false)
+                listener.onSubscriptionImpression(subscription.optIn)
 
-                widgetMyBills.setTitle(subscription.bodyTitle)
-                if (subscription.isChecked) widgetMyBills.setDescription(subscription.bodyContentAfter)
-                else widgetMyBills.setDescription(subscription.bodyContentBefore)
+                widgetMyBills.hasMoreInfo(false)
+                widgetMyBills.setTitle(subscription.info.title)
+                if (subscription.optIn) {
+                    widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+                } else {
+                    widgetMyBills.setDescription(subscription.info.subtitle)
+                }
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                     override fun onMoreInfoClicked() {}
 
                     override fun onCheckChanged(isChecked: Boolean) {
-                        if (isChecked) widgetMyBills.setDescription(subscription.bodyContentAfter)
-                        else widgetMyBills.setDescription(subscription.bodyContentBefore)
+                        if (isChecked) widgetMyBills.setDescription(subscription.info.checkedSubtitle)
+                        else widgetMyBills.setDescription(subscription.info.subtitle)
                         listener.onSubscriptionChecked(subscription, isChecked)
                     }
                 }
 
-                if (!widgetMyBills.isChecked() && subscription.isChecked) {
-                    widgetMyBills.setChecked(true)
+                if (subscription.checkBoxDisabled) {
+                    widgetMyBills.disableCheckBox()
+                } else {
+                    if (!widgetMyBills.isChecked() && subscription.optIn) {
+                        widgetMyBills.setChecked(subscription.optIn)
+                    }
                 }
             }
         }
@@ -55,7 +61,9 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
                 widgetMyBills.setAdditionalImage(fintechProduct.info.iconUrl)
                 if (fintechProduct.info.iconUrl.isNotEmpty()) {
                     listener.onTebusMurahImpression(fintechProduct, position)
-                } else listener.onCrossellImpression(fintechProduct, position)
+                } else {
+                    listener.onCrossellImpression(fintechProduct, position)
+                }
 
                 widgetMyBills.actionListener = object : DigitalCartMyBillsWidget.ActionListener {
                     override fun onMoreInfoClicked() {
@@ -86,10 +94,14 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
 }
 
 interface MyBillsActionListener {
-    fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean)
+//    fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean)
     fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int)
     fun onCrossellImpression(fintechProduct: FintechProduct, position: Int)
     fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean)
     fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int)
     fun onFintechMoreInfoChecked(info: FintechProduct.FintechProductInfo)
+
+    // new
+    fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean)
+    fun onSubscriptionImpression(isChecked: Boolean)
 }

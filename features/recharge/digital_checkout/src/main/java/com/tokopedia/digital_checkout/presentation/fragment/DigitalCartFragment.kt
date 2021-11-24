@@ -455,20 +455,25 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun renderMyBillsLayout(cartInfo: CartDigitalInfoData) {
-        myBillsAdapter = DigitalMyBillsAdapter(cartInfo.crossSellingType, this)
+        myBillsAdapter = DigitalMyBillsAdapter(this)
 
         rvMyBills.layoutManager = LinearLayoutManager(context)
         rvMyBills.isNestedScrollingEnabled = false
         rvMyBills.adapter = myBillsAdapter
 
-        myBillsAdapter.setItems(if (cartInfo.showSubscriptionsView) listOf(cartInfo.crossSellingConfig) else listOf(),
-                cartInfo.attributes.fintechProduct)
+        val (subscriptions, fintechProducts) = cartInfo.attributes.fintechProduct.partition {
+            it.transactionType == "Aktivasi Langganan"
+        }
+        myBillsAdapter.setItems(subscriptions, fintechProducts)
     }
 
-    override fun onSubscriptionChecked(subscription: CartDigitalInfoData.CrossSellingConfig, isChecked: Boolean) {
+    override fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean) {
         digitalAnalytics.eventClickSubscription(isChecked, getCategoryName(), getOperatorName(), userSession.userId)
-
         viewModel.onSubscriptionChecked(isChecked)
+    }
+
+    override fun onSubscriptionImpression(isChecked: Boolean) {
+        digitalAnalytics.eventImpressionSubscription(userSession.userId, isChecked)
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {
@@ -486,10 +491,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int) {
-        if (isChecked) {
-            digitalAnalytics.eventClickCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
+        if (fintechProduct.transactionType == "purchase_protection") {
+            digitalAnalytics.eventClickProtection(getCategoryName(), getOperatorName(), isChecked, userSession.userId)
         } else {
-            digitalAnalytics.eventUnclickCrossSell(fintechProduct, userSession.userId)
+            digitalAnalytics.eventClickCrossSell(getCategoryName(), getOperatorName(), isChecked, userSession.userId)
         }
         viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }

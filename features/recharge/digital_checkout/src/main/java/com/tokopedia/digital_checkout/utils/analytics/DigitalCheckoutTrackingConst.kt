@@ -12,6 +12,7 @@ object DigitalCheckoutTrackingConst {
         const val PRODUCT_VIEW = "productView"
         const val PRODUCT_CLICK = "productClick"
         const val DIGITAL_GENERAL_EVENT = "digitalGeneralEvent"
+        const val VIEW_CHECKOUT_IRIS = "viewCheckoutIris"
     }
 
     object Category {
@@ -29,16 +30,18 @@ object DigitalCheckoutTrackingConst {
         const val CLICK_USE_COUPON = "click gunakan kode promo atau kupon"
 
         const val TICK_AUTODEBIT = "tick auto debit"
-        const val TICK_CROSSSELL = "click crossell ticker"
-        const val UNTICK_CROSSSELL = "uncheck crossell ticker"
+        const val TICK_CROSSSELL = "tick cross sell"
+        const val TICK_PROTECTION = "tick protection"
+        const val UNTICK_CROSSSELL = "untick cross sell"
         const val UNTICK_AUTODEBIT = "untick auto debit"
+        const val UNTICK_PROTECTION = "untick protection"
 
         const val IMPRESSION_TEBUS_MURAH_ICON = "impression tebus murah icon"
         const val CLICK_TEBUS_MURAH_ICON = "click tebus murah icon"
         const val UNCHECK_TEBUS_MURAH_ICON = "uncheck tebus murah icon"
 
-
         const val IMPRESSION_CROSSELL_ICON = "impression crossell icon"
+        const val IMPRESSION_AUTODEBIT = "view tick box autodebet"
     }
 
     object Label {

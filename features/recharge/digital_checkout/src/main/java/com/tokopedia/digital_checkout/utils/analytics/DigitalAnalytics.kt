@@ -53,14 +53,28 @@ class DigitalAnalytics {
         } else {
             DigitalCheckoutTrackingConst.Action.UNTICK_AUTODEBIT
         }
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
-                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
-                TrackAppUtils.EVENT_ACTION, actionValue,
-                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
-                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
-                DigitalCheckoutTrackingConst.Label.USER_ID, userId
+        val dataLayer = DataLayer.mapOf(
+            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
+            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+            TrackAppUtils.EVENT_ACTION, actionValue,
+            TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
+            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE
+        )
+        if (tick) dataLayer[DigitalCheckoutTrackingConst.Label.USER_ID] = userId
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
+    }
+
+    fun eventImpressionSubscription(userId: String, isChecked: Boolean) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.VIEW_CHECKOUT_IRIS,
+            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+            TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.IMPRESSION_AUTODEBIT,
+            TrackAppUtils.EVENT_LABEL, if (isChecked) "enabled" else "disabled",
+            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+            DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
     }
 
@@ -133,36 +147,42 @@ class DigitalAnalytics {
         ))
     }
 
-    fun eventClickCrossSell(fintechProduct: FintechProduct, categoryName: String, position: Int, userId: String?) {
-        val fintechProductList: MutableList<Any> = ArrayList()
-        fintechProductList.add(constructFintechProduct(fintechProduct, categoryName, position))
+    fun eventClickCrossSell(categoryName: String, operatorName: String, isChecked: Boolean, userId: String) {
+        val actionValue: String = if (isChecked) {
+            DigitalCheckoutTrackingConst.Action.TICK_CROSSSELL
+        } else {
+            DigitalCheckoutTrackingConst.Action.UNTICK_CROSSSELL
+        }
+        val dataLayer = DataLayer.mapOf(
+            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
+            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+            TrackAppUtils.EVENT_ACTION, actionValue,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+        )
+        if (isChecked) dataLayer[DigitalCheckoutTrackingConst.Label.USER_ID] = userId
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.PRODUCT_CLICK,
-                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.TICK_CROSSSELL,
-                TrackAppUtils.EVENT_LABEL, "${fintechProduct.transactionType} - ${fintechProduct.fintechPartnerAmount}",
-                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
-                BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
-                DigitalCheckoutTrackingConst.Label.CLICK,
-                DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
-                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} $position - $CROSSELL_CARD_TYPE"),
-                        DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray()))),
-                DigitalCheckoutTrackingConst.Label.USER_ID, userId
-        ))
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
-    fun eventUnclickCrossSell(fintechProduct: FintechProduct, userId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
-                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
-                TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.UNTICK_CROSSSELL,
-                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", fintechProduct.transactionType, fintechProduct.fintechPartnerAmount),
-                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
-                DigitalCheckoutTrackingConst.Label.USER_ID, userId
-        ))
+    fun eventClickProtection(categoryName: String, operatorName: String, isChecked: Boolean, userId: String) {
+        val actionValue: String = if (isChecked) {
+            DigitalCheckoutTrackingConst.Action.TICK_PROTECTION
+        } else {
+            DigitalCheckoutTrackingConst.Action.UNTICK_PROTECTION
+        }
+        val dataLayer = DataLayer.mapOf(
+            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
+            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+            TrackAppUtils.EVENT_ACTION, actionValue,
+            TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+        )
+        if (isChecked) dataLayer[DigitalCheckoutTrackingConst.Label.USER_ID] = userId
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
     fun eventCheckout(cartDigitalInfoData: CartDigitalInfoData, userId: String, categoryId: String) {
