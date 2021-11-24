@@ -2647,8 +2647,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val SECOND_DIVIDER = 1000
 
-        private const val AB_TEST_OCC = "chat_occ_exp"
-        private const val AB_TEST_NON_OCC = "chat_occ_control"
+        const val AB_TEST_OCC = "chat_occ_exp"
+        const val AB_TEST_NON_OCC = "chat_occ_control"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {

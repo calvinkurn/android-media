@@ -8,51 +8,77 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot
+import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.matchers.withRecyclerView
-import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
 
-    @Test
-    fun should_directly_open_occ_when_click_beli_langsung_in_attached_product() {
-        // Given
-        TopChatRoomFragmentStub.isOCCActive = true
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        launchChatRoomActivity()
-
-        //When
-        Intents.intending(IntentMatchers.anyIntent())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(4, R.id.tv_buy)
-        ).perform(ViewActions.click())
-
-        //Then
-        val intent = RouteManager.getIntent(
-            context,
-            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
-            "1160424090"
-        )
-        Intents.intended(IntentMatchers.hasData(intent.data))
+    @Before
+    override fun before() {
+        super.before()
+        activateOcc()
     }
+
+    @After
+    override fun tearDown() {
+        super.tearDown()
+        deactivateOcc()
+    }
+
+    private fun activateOcc() {
+        abTestPlatform.setString(
+            TopChatRoomFragment.AB_TEST_OCC,
+            TopChatRoomFragment.AB_TEST_OCC
+        )
+    }
+
+    private fun deactivateOcc() {
+        abTestPlatform.setString(
+            TopChatRoomFragment.AB_TEST_OCC,
+            TopChatRoomFragment.AB_TEST_NON_OCC
+        )
+    }
+
+
+    // TODO: cannot validate applink on testapp if the destination page is not included/different module
+//    @Test
+//    fun should_directly_open_occ_when_click_beli_langsung_in_attached_product() {
+//        // Given
+//        getChatUseCase.response = firstPageChatAsBuyer
+//        chatAttachmentUseCase.response = chatAttachmentResponse
+//        launchChatRoomActivity()
+//
+//        //When
+//        Intents.intending(IntentMatchers.anyIntent())
+//            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+//        scrollChatToPosition(0)
+//        onView(
+//            withRecyclerView(R.id.recycler_view_chatroom)
+//                .atPositionOnView(4, R.id.tv_buy)
+//        ).perform(ViewActions.click())
+//
+//        //Then
+//        val intent = RouteManager.getIntent(
+//            context,
+//            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
+//            "1160424090"
+//        )
+////        Intents.intended(IntentMatchers.hasData(intent.data))
+//    }
 
     @Test
     fun should_show_toaster_when_click_beli_langsung_in_attached_product_and_fail() {
         // Given
         val expectedErrorMessage = "Oops OCC!"
-        TopChatRoomFragmentStub.isOCCActive = true
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         addToCartOccMultiUseCase.errorMessage = listOf(expectedErrorMessage)
@@ -62,20 +88,18 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         scrollChatToPosition(0)
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(4, R.id.tv_buy)
-        ).perform(ViewActions.click())
+        // TODO: separate action implementation for better test readability, do this for other test cases
+        ProductCardRobot.clickBuyButtonAt(position = 4)
 
         //Then
-        onView(withSubstring(expectedErrorMessage))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        // TODO: separate assertion implementation for better test readability, do this for other test cases
+        ProductCardResult.hasFailedToasterWithMsg(msg = expectedErrorMessage)
     }
 
+    //
     @Test
     fun should_show_toaster_when_click_beli_langsung_in_attached_product_and_error() {
         // Given
-        TopChatRoomFragmentStub.isOCCActive = true
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         addToCartOccMultiUseCase.isError = true
@@ -111,8 +135,10 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(withRecyclerView(R.id.rv_product_carousel)
-            .atPositionOnView(0, R.id.tv_buy))
+        onView(
+            withRecyclerView(R.id.rv_product_carousel)
+                .atPositionOnView(0, R.id.tv_buy)
+        )
             .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
@@ -132,8 +158,10 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(withRecyclerView(R.id.rv_product_carousel)
-            .atPositionOnView(0, R.id.tv_buy))
+        onView(
+            withRecyclerView(R.id.rv_product_carousel)
+                .atPositionOnView(0, R.id.tv_buy)
+        )
             .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
@@ -153,8 +181,10 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(withRecyclerView(R.id.rv_product_carousel)
-            .atPositionOnView(0, R.id.tv_buy))
+        onView(
+            withRecyclerView(R.id.rv_product_carousel)
+                .atPositionOnView(0, R.id.tv_buy)
+        )
             .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
@@ -174,15 +204,16 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(withRecyclerView(R.id.rv_product_carousel)
-            .atPositionOnView(0, R.id.tv_buy))
+        onView(
+            withRecyclerView(R.id.rv_product_carousel)
+                .atPositionOnView(0, R.id.tv_buy)
+        )
             .check(matches(withText(context.getString(R.string.action_buy))))
     }
 
     @Test
     fun should_not_show_button_beli_langsung_when_attached_product_preorder() {
         // Given
-        TopChatRoomFragmentStub.isOCCActive = true
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         chatAttachmentUseCase.response.chatAttachments.list[2].attributes =
@@ -199,18 +230,29 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         ).perform(ViewActions.click())
 
         //Then
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_buy))
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(1, R.id.tv_buy)
+        )
             .check(matches(withText(context.getString(R.string.title_topchat_pre_order_camel))))
 
-        Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
+        // TODO: cannot validate applink on testapp if the destination page is not included/different module
+//        Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
     }
 
     private fun getModifiedChatAttributes(
         isVariant: Boolean = false,
         hasDiscount: Boolean = false
     ): String {
-        return "{\"product_id\":445955139,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Mascara Waterproof Lash Paradise Black\",\"price\":\"Rp 93.000\",\"price_int\":93000,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-mascara-waterproof-lash-paradise-black\",\"playstore_product_data\":{\"playstore_status\":\"NORMAL\"},\"price_before\":\"${getPriceBeforeModified(hasDiscount)}\",\"drop_percentage\":\"${getDropPercentageModified(hasDiscount)}\",\"shop_id\":5665147,\"status\":1,\"min_order\":1,\"category_id\":61,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/attachment/2020/6/10/32520341/32520341_637c6bb1-0422-4c05-84cf-751c50073585.jpg\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_b6e07130-f8d4-4220-9114-ae7bb75c3f33_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_cabc9e63-f092-4e70-8a77-4352a0646660_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/27/29240564/29240564_be0e7639-8800-492a-a808-62cbb6093c1f_1080_1080\"],\"variant\":${getVariantModified(isVariant)},\"wishlist\":false,\"free_ongkir\":{\"is_active\":true,\"image_url\":\"https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png\"},\"rating\":{\"rating\":5,\"rating_score\":4.9,\"count\":1944},\"campaign_id\":-10000}}"
+        return "{\"product_id\":445955139,\"product_profile\":{\"name\":\"L\u0027Oreal Paris Mascara Waterproof Lash Paradise Black\",\"price\":\"Rp 93.000\",\"price_int\":93000,\"image_url\":\"https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"url\":\"https://www.tokopedia.com/lorealparis/l-oreal-paris-mascara-waterproof-lash-paradise-black\",\"playstore_product_data\":{\"playstore_status\":\"NORMAL\"},\"price_before\":\"${
+            getPriceBeforeModified(
+                hasDiscount
+            )
+        }\",\"drop_percentage\":\"${getDropPercentageModified(hasDiscount)}\",\"shop_id\":5665147,\"status\":1,\"min_order\":1,\"category_id\":61,\"remaining_stock\":0,\"category_breadcrumb\":\"\",\"list_image_url\":[\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/5/12/29240564/29240564_d2a1bb6c-0a2a-44a3-8aee-67ee4b90c31f_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/attachment/2020/6/10/32520341/32520341_637c6bb1-0422-4c05-84cf-751c50073585.jpg\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_b6e07130-f8d4-4220-9114-ae7bb75c3f33_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/16/29240564/29240564_cabc9e63-f092-4e70-8a77-4352a0646660_1300_1300\",\"https://ecs7.tokopedia.net/img/cache/700/product-1/2020/8/27/29240564/29240564_be0e7639-8800-492a-a808-62cbb6093c1f_1080_1080\"],\"variant\":${
+            getVariantModified(
+                isVariant
+            )
+        },\"wishlist\":false,\"free_ongkir\":{\"is_active\":true,\"image_url\":\"https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png\"},\"rating\":{\"rating\":5,\"rating_score\":4.9,\"count\":1944},\"campaign_id\":-10000}}"
     }
 
     private fun modifiedPreorder(isPreorder: Boolean): String {
@@ -233,11 +275,6 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         return if (hasDiscount) {
             "40"
         } else ""
-    }
-
-    @After
-    fun after() {
-        TopChatRoomFragmentStub.isOCCActive = false
     }
 
 }
