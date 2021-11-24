@@ -175,6 +175,8 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.testCore
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.uiautomator
+    androidTestImplementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
 
     // Unit test
     testImplementation rootProject.ext.testDependencies.archCoreTesting

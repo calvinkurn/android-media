@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.lang.Exception;
 
 import javax.inject.Inject;
 
@@ -87,7 +87,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
                 hexString.append(String.format("%02x", b & 0xff));
             }
             return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "";
         }

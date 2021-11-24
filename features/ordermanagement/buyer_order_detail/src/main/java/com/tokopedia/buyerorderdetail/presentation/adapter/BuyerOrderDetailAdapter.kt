@@ -12,15 +12,21 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         BaseAdapter<BuyerOrderDetailTypeFactory>(typeFactory) {
 
     private fun setupNewItems(
-            newData: BuyerOrderDetailUiModel
+            newData: BuyerOrderDetailUiModel,
     ): List<Visitable<BuyerOrderDetailTypeFactory>> {
         return mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
             setupOrderStatusSection(newData.orderStatusUiModel)
             setupProductListSection(newData.productListUiModel)
             setupShipmentInfoSection(newData.shipmentInfoUiModel)
             setupPaymentInfoSection(newData.paymentInfoUiModel)
+            addThickDividerSection()
+            setUpPhysicalRecommendationSection(newData.pgRecommendationWidgetUiModel)
             setupDigitalRecommendationSection()
         }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel) {
+        add(pgRecommendationWidgetUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(
@@ -71,7 +77,6 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {
-        addThickDividerSection()
         add(DigitalRecommendationUiModel())
     }
 
@@ -226,6 +231,15 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             visitables.removeAt(dividerIndex)
             notifyItemRangeRemoved(dividerIndex, 2)
         } else if (index != -1) {
+            visitables.removeAt(index)
+            notifyItemRemoved(index)
+        }
+    }
+
+    fun removePgRecommendation() {
+        val index = visitables.indexOfLast { it is PGRecommendationWidgetUiModel }
+
+        if (index != -1) {
             visitables.removeAt(index)
             notifyItemRemoved(index)
         }

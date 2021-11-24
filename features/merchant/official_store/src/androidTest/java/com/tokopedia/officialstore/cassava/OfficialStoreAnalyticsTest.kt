@@ -18,6 +18,7 @@ import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
+import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -84,6 +85,17 @@ class OfficialStoreAnalyticsTest {
             activityRule.activity.findViewById<RecyclerView>(R.id.os_child_recycler_view)
         val itemCount = recyclerView.adapter?.itemCount ?: 0
         val productRecommendationOffset = 10
+
+        /**
+         * This function needed to remove any loading view, because any infinite loop rendered view such as loading view,
+         * shimmering, progress bar, etc can block instrumentation test
+         */
+        removeProgressBarOnOsPage(recyclerView, activityRule.activity)
+
+        /**
+         * This function needed to trigger product recommendation usecase in official store,
+         * official store page only hit recommendation usecase on scroll in the end of current list
+         */
         preloadRecomOnOSPage(recyclerView)
         for (i in 0 until (itemCount + productRecommendationOffset)) {
             scrollRecyclerViewToPosition(recyclerView, i)
