@@ -4,13 +4,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
-import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductTagViewHolder
 
 /**
  * Created By : Jonathan Darwin on November 24, 2021
  */
-class ProductTagAdapterDelegate: TypedAdapterDelegate<ProductContentUiModel, ProductUiModel, ProductTagViewHolder>(ProductTagViewHolder.LAYOUT) {
+class ProductTagAdapterDelegate: TypedAdapterDelegate<ProductContentUiModel, ProductContentUiModel, ProductTagViewHolder>(ProductTagViewHolder.LAYOUT) {
     override fun onBindViewHolder(item: ProductContentUiModel, holder: ProductTagViewHolder) {
         holder.bind(item)
     }
