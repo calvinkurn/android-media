@@ -26,10 +26,6 @@ class AffiliateIncomeViewModel @Inject constructor(
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     var hasNext = true
 
-    init {
-        getAffiliateBalance()
-    }
-
     fun getAffiliateBalance() {
         launchCatchError(block = {
             affiliateBalanceData.value =

@@ -171,6 +171,7 @@ class AffiliateIncomeFragment : BaseViewModelFragment<AffiliateIncomeViewModel>(
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_withdrawal)
         }
+        affiliateIncomeViewModel.getAffiliateBalance()
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
