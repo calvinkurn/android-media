@@ -29,6 +29,7 @@ class FirebaseDLWrapper {
                     1- Long link:  link = firebaseUrl.toString()
                     2- Short link with custom format: link= firebaseUrl.getQueryParameter("android_url")
                     3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
+                    ex: https://tkpd.page.link/?link=https://www.tokopedia.com?android_url%3Dtokopedia://home%26ios_url%3Dtokopedia://home
                  */
                 var firebaseUrl: Uri?
                 if (pendingDynamicLinkData != null) {
@@ -178,6 +179,8 @@ class FirebaseDLWrapper {
 
     private fun needFallbakUrl(data: LinkerData): Boolean {
         if (LinkerData.REFERRAL_TYPE.equals(data.type, ignoreCase = true)) {
+            return false
+        }else if (LinkerData.APP_SHARE_TYPE.equals(data.type, ignoreCase = true)) {
             return false
         }
         return true
