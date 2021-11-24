@@ -18,7 +18,6 @@ buildscript {
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
-        classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
 android {
