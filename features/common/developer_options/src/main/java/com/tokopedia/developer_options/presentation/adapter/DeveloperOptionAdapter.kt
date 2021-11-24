@@ -36,6 +36,9 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_IRIS_SEND_LOG = "View Iris Send Log"
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
+        const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
+        const val KEYWORD_LOGGING_TO_SERVER = "Logging To Server"
+        const val KEYWORD_SEND_LOG_TO_SERVER = "Send Log To Server"
     }
 
     private val defaultItems = listOf(
@@ -62,19 +65,15 @@ class DeveloperOptionAdapter(
         ViewAnalyticsLogUiModel(listOf(KEYWORD_VIEW_ANALYTICS_LOG)),
         ViewIrisLogUiModel(listOf(KEYWORD_VIEW_IRIS_SAVE_LOG, KEYWORD_VIEW_IRIS_SEND_LOG)),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
-        RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR))
+        RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
+        RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER)),
+        LoggingToServerUiModel(listOf(KEYWORD_LOGGING_TO_SERVER, KEYWORD_SEND_LOG_TO_SERVER))
     )
 
     fun searchItem(keyword: String) {
         val newItems = mutableListOf<OptionItemUiModel>()
         defaultItems.forEach { model ->
-            var isKeywordFound = false
-            model.keyword.forEach {
-                if (it.lowercase().contains(keyword.lowercase())) {
-                    isKeywordFound = true
-                }
-            }
-            if (isKeywordFound) {
+            if (!model.keyword.filter { it.lowercase().contains(keyword.lowercase()) }.isNullOrEmpty()) {
                 newItems.add(model)
             }
         }

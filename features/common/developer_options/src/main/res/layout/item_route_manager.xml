@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/route_manager_tf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:text_field_placeholder="@string/str_to_be_put"
+        app:text_field_label_static="true"
+        app:text_field_label=""
+        app:text_field_input_type="text"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/route_manager_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="@string/try_routemanager"
+        android:layout_marginBottom="10dp"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"/>
+
+</LinearLayout>

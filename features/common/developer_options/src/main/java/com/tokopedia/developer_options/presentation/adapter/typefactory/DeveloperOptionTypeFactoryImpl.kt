@@ -1,6 +1,7 @@
 package com.tokopedia.developer_options.presentation.adapter.typefactory
 
 import android.view.View
+import com.google.android.datatransport.runtime.logging.Logging
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -36,7 +37,8 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: ViewIrisLogUiModel): Int = ViewIrisLogViewHolder.LAYOUT
     override fun type(uiModel: LeakCanaryUiModel): Int = LeakCanaryViewHolder.LAYOUT
     override fun type(uiModel: RemoteConfigEditorUiModel): Int = RemoteConfigEditorViewHolder.LAYOUT
-
+    override fun type(uiModel: RouteManagerUiModel): Int = RouteManagerViewHolder.LAYOUT
+    override fun type(uiModel: LoggingToServerUiModel): Int = LoggingToServerViewHolder.LAYOUT
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
@@ -63,6 +65,8 @@ class DeveloperOptionTypeFactoryImpl(
             ViewIrisLogViewHolder.LAYOUT -> ViewIrisLogViewHolder(view)
             LeakCanaryViewHolder.LAYOUT -> LeakCanaryViewHolder(view)
             RemoteConfigEditorViewHolder.LAYOUT -> RemoteConfigEditorViewHolder(view)
+            RouteManagerViewHolder.LAYOUT -> RouteManagerViewHolder(view)
+            LoggingToServerViewHolder.LAYOUT -> LoggingToServerViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }
