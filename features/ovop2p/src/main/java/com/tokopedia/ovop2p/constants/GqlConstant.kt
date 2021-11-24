@@ -22,3 +22,21 @@ const val GQL_OVOP2P_TRANSFER_REQUEST =
   }
 }
 """
+
+const val GQL_OVOP2P_TRANSACTION_CONFIRM =
+    """mutation goalP2PConfirm(${'$'}amount: Int!, ${'$'}to_phone_number: String!, ${'$'}message: String!) {
+    goalP2PConfirm(amount: ${'$'}amount, to_phone_number: ${'$'}to_phone_number, message: ${'$'}message) {
+        status
+        transfer_id
+        transaction_id
+        pin_url
+        receiver_link
+        errors {
+            title
+            message
+        }
+    }
+}"""
+
+
+
