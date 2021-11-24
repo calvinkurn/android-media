@@ -17,11 +17,11 @@ import java.net.UnknownHostException
 import java.util.concurrent.CancellationException
 import java.util.concurrent.TimeUnit
 
-private const val THRESHOLD_REQUEST_IN_TIME = 10 // minutes
+private const val THRESHOLD_REQUEST_IN_TIME = 2 // hours
 
 fun Long.isLessThan2Hours(): Boolean {
     val currentTime = System.currentTimeMillis()
-    val diff = TimeUnit.MILLISECONDS.toMinutes(currentTime - this)
+    val diff = TimeUnit.MILLISECONDS.toHours(currentTime - this)
     return diff < THRESHOLD_REQUEST_IN_TIME
 }
 
