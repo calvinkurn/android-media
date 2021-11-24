@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -384,6 +385,28 @@ class ChatRoomFakeUseCaseModule {
         chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
     ): AddToCartOccMultiUseCaseStub {
         return AddToCartOccMultiUseCaseStub(
+            repository,
+            addToCartDataMapper,
+            chosenAddressAddToCartRequestHelper
+        )
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideAddToCartUseCase(
+        stub: AddToCartUseCaseStub
+    ): AddToCartUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideAddToCartUseCaseStub(
+        @ApplicationContext repository: GraphqlRepository,
+        addToCartDataMapper: AddToCartDataMapper,
+        chosenAddressAddToCartRequestHelper: ChosenAddressRequestHelper
+    ): AddToCartUseCaseStub {
+        return AddToCartUseCaseStub(
             repository,
             addToCartDataMapper,
             chosenAddressAddToCartRequestHelper

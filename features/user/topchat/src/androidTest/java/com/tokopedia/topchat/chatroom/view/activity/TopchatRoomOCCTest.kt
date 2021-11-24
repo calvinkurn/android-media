@@ -17,10 +17,14 @@ import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
-import org.junit.After
 import org.junit.Test
 
 class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
+
+    override fun before() {
+        super.before()
+        TopChatRoomFragmentStub.isOCCActive = false
+    }
 
     @Test
     fun should_directly_open_occ_when_click_beli_langsung_in_attached_product() {
@@ -234,10 +238,4 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             "40"
         } else ""
     }
-
-    @After
-    fun after() {
-        TopChatRoomFragmentStub.isOCCActive = false
-    }
-
 }
