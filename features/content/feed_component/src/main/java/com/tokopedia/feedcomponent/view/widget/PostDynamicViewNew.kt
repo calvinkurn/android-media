@@ -1353,6 +1353,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             vod_volumeIcon?.setOnClickListener {
                 setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
+                changeMuteStateVideo()
             }
         }
         return vodItem
@@ -1368,7 +1369,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 volumeIcon?.gone()
             }
         }
-        isMute = !isMute
         listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed, isVOD)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
@@ -1382,6 +1382,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 countDownTimer.start()
             }
 
+        }
+    }
+
+    private fun changeMuteStateVideo() {
+        GridPostAdapter.isMute = !GridPostAdapter.isMute
+        toggleVolume(GridPostAdapter.isMute)
+        if (GridPostAdapter.isMute) {
+            vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+        } else {
+            vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
         }
     }
 
@@ -1440,6 +1450,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
                         setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true)
+                        changeMuteStateVideo()
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {
@@ -1454,10 +1465,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     vod_frozen_view?.gone()
                     videoPlayer?.getExoPlayer()?.currentPosition?.let { it2 -> listener?.onFullScreenCLick(feedXCard, positionInFeed, feedXCard.appLink,it2,false, false)}
                 }
-
-                videoPlayer?.start(feedMedia.mediaUrl, isMute)
+                videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
                 vod_volumeIcon?.visible()
-                vod_volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                if (GridPostAdapter.isMute) {
+                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+                } else {
+                    vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
+                }
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVODLoading()

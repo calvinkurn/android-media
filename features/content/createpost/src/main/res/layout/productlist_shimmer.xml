@@ -1,19 +1,102 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@+id/loaderUnify">
 
-    <include layout="@layout/shimmer_item" />
 
-    <include layout="@layout/shimmer_item" />
+    <include
+        android:id="@+id/include_shimmer_1"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/include_shimmer_2"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <include layout="@layout/shimmer_item" />
+    <include
+        android:id="@+id/include_shimmer_2"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/include_shimmer_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <include layout="@layout/shimmer_item" />
+    <include
+        android:id="@+id/include_shimmer_3"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/include_shimmer_4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_2" />
 
-    <include layout="@layout/shimmer_item" />
-</LinearLayout>
+    <include
+        android:id="@+id/include_shimmer_4"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/include_shimmer_3"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_1" />
+
+    <include
+        android:id="@+id/include_shimmer_5"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/include_shimmer_6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_3" />
+
+    <include
+        android:id="@+id/include_shimmer_6"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/include_shimmer_5"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_4" />
+
+    <include
+        android:id="@+id/include_shimmer_7"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/include_shimmer_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_5" />
+
+    <include
+        android:id="@+id/include_shimmer_8"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/include_shimmer_7"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_6" />
+
+    <include
+        android:id="@+id/include_shimmer_9"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/include_shimmer_10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_7" />
+
+    <include
+        android:id="@+id/include_shimmer_10"
+        layout="@layout/shimmer_item"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/include_shimmer_9"
+        app:layout_constraintTop_toBottomOf="@+id/include_shimmer_8" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 

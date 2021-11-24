@@ -218,4 +218,7 @@ class GridPostAdapter(private val contentPosition: Int,
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
     }
+    companion object {
+        var isMute = true
+    }
 }
