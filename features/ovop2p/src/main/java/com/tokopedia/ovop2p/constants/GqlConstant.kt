@@ -39,4 +39,31 @@ const val GQL_OVOP2P_TRANSACTION_CONFIRM =
 }"""
 
 
+const val GQL_OVO_THNAKYOU_PAGE = """query goalP2PThanks(${'$'}transfer_id: Int!){
+      goalP2PThanks(transfer_id: ${'$'}transfer_id) {
+          transfer_id
+          transaction_id
+          status
+          amount
+          source_of_fund
+          transfer_date
+          destination {
+              name
+              phone
+          }
+          source {
+              name
+              phone
+          }
+          message
+          reference_number
+          errors {
+              title
+              message
+          }
+      }
+  }
+"""
+
+
 
