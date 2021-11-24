@@ -990,7 +990,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         `co every p1 success`(dataP1, true)
 
-        viewModel.getProductP1(productParams, true, "", false, userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, true, "", userLocationLocal = getUserLocationCache())
 
         `co verify p1 success`()
 
@@ -1153,7 +1153,7 @@ class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
         `co every p1 success`(dataP1)
 
-        viewModel.getProductP1(productParams, refreshPage = true, isUseOldNav = true, userLocationLocal = getUserLocationCache())
+        viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
 
         val p1Result = (viewModel.productLayout.value as Success).data
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 0)

@@ -5,58 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/search_pdp_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:visibility="visible"
-        android:gravity="center"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:id="@+id/layout_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/pdp_bg_search"
-            android:layout_toStartOf="@+id/btn_wishlist"
-            android:layout_toLeftOf="@+id/btn_wishlist"
-            android:orientation="horizontal"
-            android:padding="4dp">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@null"
-                android:layout_marginStart="2dp"
-                android:layout_marginLeft="2dp"
-                app:srcCompat="@drawable/ic_product_detail_search_bar" />
-
-            <TextView
-                android:id="@+id/et_search"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="4dp"
-                android:layout_marginLeft="4dp"
-                android:background="@null"
-                android:ellipsize="end"
-                android:enabled="true"
-                android:focusable="false"
-                android:gravity="center_vertical"
-                android:hint="@string/pdp_search_hint"
-                android:inputType="none"
-                android:lines="1"
-                android:maxLines="1"
-                android:textColorHint="@color/Unify_N200"
-                android:textSize="@dimen/sp_12" />
-        </LinearLayout>
-
-    </androidx.appcompat.widget.Toolbar>
-
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/pdp_navtoolbar"
         android:layout_width="match_parent"
@@ -71,13 +19,6 @@
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialTheme="light" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/toolbar_barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="pdp_navtoolbar, search_pdp_toolbar"
-        app:barrierDirection="bottom"/>
-
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipeRefreshPdp"
         android:layout_width="match_parent"
@@ -87,7 +28,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:focusableInTouchMode="true"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar_barrier">
+        app:layout_constraintTop_toBottomOf="@+id/pdp_navtoolbar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_pdp"
