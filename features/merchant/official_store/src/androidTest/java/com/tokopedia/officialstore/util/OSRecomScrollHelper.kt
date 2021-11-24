@@ -1,9 +1,12 @@
 package com.tokopedia.officialstore.util
 
+import android.app.Activity
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
@@ -22,4 +25,18 @@ fun preloadRecomOnOSPage(recyclerView: RecyclerView) {
     Thread.sleep(2500)
     recyclerView.layoutManager?.smoothScrollToPosition(recyclerView, null, 0)
     Thread.sleep(2500)
+}
+
+fun removeProgressBarOnOsPage(recyclerView: RecyclerView, activity: Activity) {
+    /**
+     * This function needed to remove any loading view, because any infinite loop rendered view such as loading view,
+     * shimmering, progress bar, etc can block instrumentation test
+     */
+    recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val checkLoadingView: View? = activity.findViewById<View>(R.id.loading_view)
+            checkLoadingView?.let { checkLoadingView.gone() }
+        }
+    })
 }

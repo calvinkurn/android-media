@@ -31,6 +31,7 @@ class MilestoneViewHolder(
     companion object {
         val RES_LAYOUT = R.layout.shc_milestone_widget
 
+        private const val MARGIN_IN_DP = 12
         private const val PROGRESS_BAR_MIN_VALUE = 0
         private const val PROGRESS_BAR_MAX_VALUE = 100
         private const val FIRST_INDEX = 0
@@ -172,9 +173,7 @@ class MilestoneViewHolder(
                 //do nothing
             }
             rvShcMissionMilestone.addItemDecoration(
-                MilestoneMissionItemDecoration(
-                    root.resources.getDimension(R.dimen.unify_space_12).toInt()
-                )
+                MilestoneMissionItemDecoration(root.context.dpToPx(MARGIN_IN_DP).toInt())
             )
             rvShcMissionMilestone.adapter = MilestoneMissionAdapter(
                 mission,
