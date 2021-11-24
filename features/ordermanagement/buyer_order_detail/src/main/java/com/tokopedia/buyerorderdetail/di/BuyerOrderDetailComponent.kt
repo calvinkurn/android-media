@@ -7,7 +7,10 @@ import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderExtensionF
 import dagger.Component
 
 @BuyerOrderDetailScope
-@Component(modules = [BuyerOrderDetailModule::class, BuyerOrderDetailViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [BuyerOrderDetailModule::class, BuyerOrderDetailViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface BuyerOrderDetailComponent {
     fun inject(buyerOrderDetailFragment: BuyerOrderDetailFragment)
     fun inject(buyerOrderExtensionFragment: BuyerOrderExtensionFragment)

@@ -60,6 +60,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
+    implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
@@ -88,7 +90,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
-    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.testCore
 
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
 
@@ -104,7 +106,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
 
-    androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 apply from: '../../../jacoco_task.gradle'

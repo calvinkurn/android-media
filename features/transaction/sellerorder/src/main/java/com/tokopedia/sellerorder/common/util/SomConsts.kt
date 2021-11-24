@@ -55,6 +55,7 @@ object SomConsts {
     const val KEY_SET_DELIVERED = "set_delivered"
     const val KEY_RESPOND_TO_CANCELLATION = "respond_to_cancellations"
     const val KEY_PRINT_AWB = "print"
+    const val KEY_ORDER_EXTENSION_REQUEST = "request_extend_order"
 
     const val KEY_BATALKAN_PESANAN = "reject_shipping"
     const val KEY_UBAH_NO_RESI = "change_awb"
@@ -121,10 +122,6 @@ object SomConsts {
     const val TOPADS_NO_ADS = 2
     const val TOPADS_MANUAL_ADS = 3
     const val TOPADS_AUTO_ADS = 4
-
-    const val KEY_WAITING_PAYMENT_ORDER_LIST_RESULT = "waiting_payment_order_list_result"
-    const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
-
 
     //SOM FILTER LABEL
     const val FILTER_SORT = "Urutkan"

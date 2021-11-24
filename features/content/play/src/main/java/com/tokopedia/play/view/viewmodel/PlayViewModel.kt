@@ -91,7 +91,6 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         private val trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-        private val playChannelReminderUseCase: PlayChannelReminderUseCase,
         private val playSocketToModelMapper: PlaySocketToModelMapper,
         private val playUiModelMapper: PlayUiModelMapper,
         private val userSession: UserSessionInterface,
@@ -100,7 +99,6 @@ class PlayViewModel @Inject constructor(
         private val playPreference: PlayPreference,
         private val videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
         private val playChannelWebSocket: PlayChannelWebSocket,
-        private val playChannelSSE: PlayChannelSSE,
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
         private val timerFactory: TimerFactory,
@@ -133,8 +131,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableEventPiPState
     val observableOnboarding: LiveData<Event<Unit>>
         get() = _observableOnboarding
-    val observableUpcomingInfo: LiveData<PlayUpcomingUiModel>
-        get() = _observableUpcomingInfo
     val observableCastState: LiveData<PlayCastUiModel>
         get() = _observableCastState
 
@@ -166,7 +162,6 @@ class PlayViewModel @Inject constructor(
     private val _likeInfo = MutableStateFlow(PlayLikeInfoUiModel())
     private val _channelReport = MutableStateFlow(PlayChannelReportUiModel())
     private val _cartInfo = MutableStateFlow(PlayCartInfoUiModel())
-    private val _upcomingInfo = MutableStateFlow<PlayUpcomingUiModel?>(null)
 
     private val _interactiveUiState = combine(
         _interactive, _bottomInsets, _status
@@ -222,21 +217,20 @@ class PlayViewModel @Inject constructor(
     }.flowOn(dispatchers.computation)
 
     private val _shareUiState = combine(
-        _channelDetail, _bottomInsets, _status, _upcomingInfo
-    ) { channelDetail, bottomInsets, status, upcomingInfo ->
+        _channelDetail, _bottomInsets, _status
+    ) { channelDetail, bottomInsets, status ->
         PlayShareUiState(shouldShow = channelDetail.shareInfo.shouldShow &&
                 !bottomInsets.isAnyShown &&
-                (status.isActive || upcomingInfo?.isUpcoming == true)
+                status.isActive
         )
     }.flowOn(dispatchers.computation)
 
     private val _cartUiState = combine(
-        _cartInfo, _bottomInsets, _upcomingInfo
-    ) { cartInfo, bottomInsets, upcomingInfo ->
+        _cartInfo, _bottomInsets
+    ) { cartInfo, bottomInsets ->
         PlayCartUiState(
             shouldShow = cartInfo.shouldShow &&
-                    !bottomInsets.isAnyShown &&
-                    (upcomingInfo == null || !upcomingInfo.isUpcoming),
+                    !bottomInsets.isAnyShown,
             count = if (cartInfo.itemCount > 0) {
                 val countText = if (cartInfo.itemCount > MAX_CART_COUNT) "${MAX_CART_COUNT}+"
                 else cartInfo.itemCount.toString()
@@ -290,8 +284,7 @@ class PlayViewModel @Inject constructor(
 
     val uiEvent: Flow<PlayViewerNewUiEvent>
         get() = _uiEvent.filter {
-            isActive.get() || it is AllowedWhenInactiveEvent ||
-                    (upcomingInfo != null && upcomingInfo?.isUpcoming == true)
+            isActive.get() || it is AllowedWhenInactiveEvent
         }.map { if (it is AllowedWhenInactiveEvent) it.event else it }
             .flowOn(dispatchers.computation)
 
@@ -336,9 +329,6 @@ class PlayViewModel @Inject constructor(
     val videoLatency: Long
         get() = videoLatencyPerformanceMonitoring.totalDuration
 
-    val upcomingInfo: PlayUpcomingUiModel?
-        get() = _observableUpcomingInfo.value
-
     private var mChannelData: PlayChannelData? = null
 
     private val channelId: String
@@ -375,7 +365,7 @@ class PlayViewModel @Inject constructor(
                     videoMetaInfo = newVideoMeta,
                     statusInfo = _observableStatusInfo.value ?: channelData.statusInfo,
                     leaderboardInfo = _leaderboardInfo.value,
-                    upcomingInfo = _observableUpcomingInfo.value ?: channelData.upcomingInfo
+                    upcomingInfo = channelData.upcomingInfo
             )
         }
 
@@ -403,8 +393,6 @@ class PlayViewModel @Inject constructor(
 
     private var socketJob: Job? = null
 
-    private var sseJob: Job? = null
-
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableQuickReply = MutableLiveData<PlayQuickReplyInfoUiModel>() /**Changed**/
@@ -422,7 +410,6 @@ class PlayViewModel @Inject constructor(
     }
     private val _observableEventPiPState = MutableLiveData<Event<PiPState>>()
     private val _observableOnboarding = MutableLiveData<Event<Unit>>() /**Added**/
-    private val _observableUpcomingInfo = MutableLiveData<PlayUpcomingUiModel>()
     private val _observableCastState = MutableLiveData<PlayCastUiModel>()
     private val _observableUserWinnerStatus = MutableLiveData<PlayUserWinnerStatusUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
@@ -451,9 +438,6 @@ class PlayViewModel @Inject constructor(
             viewModelScope.launch {
                 if (insets.isAnyShown) _uiEvent.emit(HideCoachMarkWinnerEvent)
             }
-        }
-        addSource(_observableUpcomingInfo) {
-            _upcomingInfo.value = it
         }
     }
 
@@ -548,7 +532,7 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         stopWebSocket()
-        stopSSE()
+
         if (!pipState.isInPiP) stopPlayer()
         playVideoPlayer.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
@@ -735,9 +719,6 @@ class PlayViewModel @Inject constructor(
             ClickFollowInteractiveAction -> handleClickFollowInteractive()
             ClickPartnerNameAction -> handleClickPartnerName()
             ClickRetryInteractiveAction -> handleClickRetryInteractive()
-            ImpressUpcomingChannel -> handleImpressUpcomingChannel()
-            ClickRemindMeUpcomingChannel -> handleRemindMeUpcomingChannel(userClick = true)
-            ClickWatchNowUpcomingChannel -> handleWatchNowUpcomingChannel()
             is OpenPageResultAction -> handleOpenPageResult(action.isSuccess, action.requestCode)
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
@@ -791,26 +772,18 @@ class PlayViewModel @Inject constructor(
     fun focusPage(channelData: PlayChannelData) {
         isActive.compareAndSet(false, true)
 
-        _observableUpcomingInfo.value = channelData.upcomingInfo
+        focusVideoPlayer(channelData)
+        startWebSocket(channelData.id)
+        checkLeaderboard(channelData.id)
 
-        if(channelData.upcomingInfo.isUpcoming) {
-            startSSE(channelData.id)
-        }
-        else {
-            focusVideoPlayer(channelData)
-            startWebSocket(channelData.id)
-            checkLeaderboard(channelData.id)
+        prepareSelfLikeBubbleIcon()
+        checkLikeReminderTimer()
 
-            prepareSelfLikeBubbleIcon()
-            checkLikeReminderTimer()
+        addCastStateListener()
 
-            addCastStateListener()
+        setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
 
-            setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
-
-            trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack)
-        }
-
+        trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
         updateChannelInfo(channelData)
     }
 
@@ -823,7 +796,6 @@ class PlayViewModel @Inject constructor(
         cancelReminderLikeTimer()
 
         stopInteractive()
-        stopSSE()
 
         removeCastSessionListener()
         removeCastStateListener()
@@ -908,7 +880,7 @@ class PlayViewModel @Inject constructor(
         updateStatusInfo(channelData.id)
         updatePartnerInfo(channelData.partnerInfo)
         updateCartInfo(channelData.cartInfo)
-        if (!channelData.statusInfo.statusType.isFreeze && upcomingInfo != null && upcomingInfo?.isUpcoming == false) {
+        if (!channelData.statusInfo.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
             updateProductTagsInfo(channelData.pinnedInfo.pinnedProduct.productTags, channelData.pinnedInfo, channelData.id)
         }
@@ -991,32 +963,6 @@ class PlayViewModel @Inject constructor(
 
     private fun stopInteractive() {
         _interactive.value = PlayInteractiveUiState.NoInteractive
-    }
-
-    private fun startSSE(channelId: String) {
-        sseJob?.cancel()
-        sseJob = viewModelScope.launch {
-            val socketCredential = getSocketCredential()
-            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
-            playChannelSSE.listen().collect {
-                when (it) {
-                    is SSEAction.Message -> handleSSEMessage(it.message, channelId)
-                    is SSEAction.Close -> {
-                        if (it.reason == SSECloseReason.ERROR)
-                            connectSSE(channelId, PlayChannelSSEPageSource.PlayUpcomingChannel.source, socketCredential.gcToken)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun connectSSE(channelId: String, pageSource: String, gcToken: String) {
-        playChannelSSE.connect(channelId, pageSource, gcToken)
-    }
-
-    private fun stopSSE() {
-        sseJob?.cancel()
-        playChannelSSE.close()
     }
 
     private suspend fun getSocketCredential(): SocketCredential = try {
@@ -1143,7 +1089,13 @@ class PlayViewModel @Inject constructor(
 
                 try {
                     val report = deferredReportSummaries.await().data.first().channel.metrics
-                    _channelReport.value = PlayChannelReportUiModel(report.totalViewFmt, report.totalLike.toLongOrZero(), report.totalLikeFmt)
+                    _channelReport.setValue {
+                        copy(
+                            totalViewFmt = report.totalViewFmt,
+                            totalLike = report.totalLike.toLongOrZero(),
+                            totalLikeFmt = report.totalLikeFmt
+                        )
+                    }
                 } catch (e: Throwable) {
 
                 }
@@ -1250,10 +1202,10 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun trackVisitChannel(channelId: String, shouldTrack: Boolean) {
+    private fun trackVisitChannel(channelId: String, shouldTrack: Boolean, sourceType: String) {
         if(shouldTrack) {
             viewModelScope.launchCatchError(dispatchers.io, block = {
-                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId))
+                trackVisitChannelBroadcasterUseCase.setRequestParams(TrackVisitChannelBroadcasterUseCase.createParams(channelId, sourceType))
                 trackVisitChannelBroadcasterUseCase.executeOnBackground()
             }) { }
         }
@@ -1534,25 +1486,6 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun handleSSEMessage(message: SSEResponse, channelId: String) {
-        val result = withContext(dispatchers.computation) {
-            val sseMapper = PlaySSEMapper(message)
-            sseMapper.mapping()
-        }
-
-        when(result) {
-            is UpcomingChannelUpdateLive -> handleUpdateChannelStatus(result.channelId, channelId)
-            is UpcomingChannelUpdateActive -> handleUpdateChannelStatus(result.channelId, channelId)
-        }
-    }
-
-    private fun handleUpdateChannelStatus(changedChannelId: String, currentChannelId: String) {
-        if(changedChannelId == currentChannelId) {
-            _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isAlreadyLive = true)
-            stopSSE()
-        }
-    }
-
     /**
      * Called when user tap
      */
@@ -1752,47 +1685,11 @@ class PlayViewModel @Inject constructor(
         checkInteractive(channelId = channelId)
     }
 
-    private fun handleImpressUpcomingChannel() {
-        playAnalytic.impressUpcomingPage(channelId)
-    }
-
-    private fun handleRemindMeUpcomingChannel(userClick: Boolean)  {
-        if(userClick) playAnalytic.clickRemindMe(channelId)
-
-        needLogin(REQUEST_CODE_LOGIN_REMIND_ME) {
-            viewModelScope.launchCatchError(block = {
-
-                mChannelData?.let {
-                    val status: Boolean
-
-                    withContext(dispatchers.io) {
-                        playChannelReminderUseCase.setRequestParams(PlayChannelReminderUseCase.createParams(it.id, true))
-                        val response = playChannelReminderUseCase.executeOnBackground()
-                        status = PlayChannelReminderUseCase.checkRequestSuccess(response)
-                    }
-
-                    _observableUpcomingInfo.value = _observableUpcomingInfo.value?.copy(isReminderSet = status)
-
-                    _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_remind_me_success), isSuccess = status))
-
-                } ?: _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
-            }) {
-                _uiEvent.emit(RemindMeEvent(message = UiString.Resource(R.string.play_failed_remind_me), isSuccess = false))
-            }
-        }
-    }
-
-    private fun handleWatchNowUpcomingChannel() {
-        playAnalytic.clickWatchNow(channelId)
-        stopSSE()
-    }
-
     private fun handleOpenPageResult(isSuccess: Boolean, requestCode: Int) {
         if (!isSuccess) return
         when (requestCode) {
             REQUEST_CODE_LOGIN_FOLLOW -> handleClickFollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE -> handleClickFollowInteractive()
-            REQUEST_CODE_LOGIN_REMIND_ME -> handleRemindMeUpcomingChannel(userClick = false)
             REQUEST_CODE_LOGIN_LIKE -> handleClickLike(isFromLogin = true)
             REQUEST_CODE_LOGIN_CART_PAGE -> handleClickCart(isFromLogin = true)
             else -> {}
@@ -1881,14 +1778,14 @@ class PlayViewModel @Inject constructor(
                 copy(totalLike = newTotalLike, totalLikeFmt = newTotalLikeFmt)
             }
 
-            viewModelScope.launch {
+            viewModelScope.launchCatchError(block = {
                 repo.postLike(
                     contentId = likeInfo.contentId.toLongOrZero(),
                     contentType = likeInfo.contentType,
                     likeType = likeInfo.likeType,
                     shouldLike = newStatus == PlayLikeStatus.Liked
                 )
-            }
+            }) { }
 
             onNewStatusFn(newStatus)
         }
@@ -2004,7 +1901,6 @@ class PlayViewModel @Inject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
-        private const val REQUEST_CODE_LOGIN_REMIND_ME = 574
         private const val REQUEST_CODE_LOGIN_CART_PAGE = 575
     }
 }

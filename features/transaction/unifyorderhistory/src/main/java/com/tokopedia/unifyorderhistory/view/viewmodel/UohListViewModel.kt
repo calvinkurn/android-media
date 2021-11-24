@@ -36,6 +36,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 03/07/20.
  */
 class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
+                                           private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
                                            private val uohListUseCase: UohListUseCase,
                                            private val getRecommendationUseCase: GetRecommendationUseCase,
                                            private val uohFinishOrderUseCase: UohFinishOrderUseCase,
@@ -46,6 +47,10 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                                            private val rechargeSetFailUseCase: RechargeSetFailUseCase,
                                            private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
                                            private val atcUseCase: AddToCartUseCase) : BaseViewModel(dispatcher.main) {
+
+    private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory.Data>>()
+    val filterCategoryResult: LiveData<Result<UohFilterCategory.Data>>
+        get() = _filterCategoryResult
 
     private val _orderHistoryListResult = MutableLiveData<Result<UohListOrder.Data.UohOrders>>()
     val orderHistoryListResult: LiveData<Result<UohListOrder.Data.UohOrders>>
@@ -86,6 +91,12 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private val _tdnBannerResult = MutableLiveData<Result<TopAdsImageViewModel>>()
     val tdnBannerResult: LiveData<Result<TopAdsImageViewModel>>
         get() = _tdnBannerResult
+
+    fun loadFilterCategory() {
+        launch {
+            _filterCategoryResult.value = getUohFilterCategoryUseCase.executeSuspend()
+        }
+    }
 
     fun loadOrderList(paramOrder: UohListParam) {
         UohIdlingResource.increment()
@@ -130,18 +141,18 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
             listParam.forEachIndexed { index, product ->
                 arrayListProducts.add(
-                    ECommerceAdd.Add.Products(
-                    name = product.productName,
-                    id = product.productId.toString(),
-                    price = product.productPrice.toString(),
-                    quantity = product.qty.toString(),
-                    dimension79 = product.shopId.toString()
-                ))
+                        ECommerceAdd.Add.Products(
+                                name = product.productName,
+                                id = product.productId.toString(),
+                                price = product.productPrice.toString(),
+                                quantity = product.qty.toString(),
+                                dimension79 = product.shopId.toString()
+                        ))
             }
 
             if (result is Success) {
                 UohAnalytics.clickBeliLagiOnOrderCardMP("", userId, arrayListProducts,
-                    verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
+                        verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
             }
 
             UohIdlingResource.decrement()
@@ -180,7 +191,7 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    fun loadTdnBanner(){
+    fun loadTdnBanner() {
         launch {
             try {
                 val params = topAdsImageViewUseCase.getQueryMap("", TDN_INVENTORY_ID, "", TDN_ADS_COUNT, TDN_DIMEN_ID, "", "", "")

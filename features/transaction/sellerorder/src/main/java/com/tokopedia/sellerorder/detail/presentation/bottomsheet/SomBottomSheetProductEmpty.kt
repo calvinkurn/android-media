@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
@@ -15,16 +16,17 @@ import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class SomBottomSheetProductEmpty(
-        context: Context,
-        private var rejectReason: SomReasonRejectData.Data.SomRejectReason,
-        private var orderId: String,
-        private val listener: SomRejectOrderBottomSheetListener
+        context: Context
 ) : SomBaseRejectOrderBottomSheet<BottomsheetSecondaryBinding>(context, LAYOUT, SomConsts.TITLE_PILIH_PRODUK_KOSONG), SomBottomSheetStockEmptyAdapter.ProductCheckChangedListener {
 
     companion object {
         private val LAYOUT = R.layout.bottomsheet_secondary
     }
 
+
+    private var rejectReason: SomReasonRejectData.Data.SomRejectReason? = null
+    private var orderId: String = ""
+    private var listener: SomRejectOrderBottomSheetListener? = null
     private var somBottomSheetStockEmptyAdapter: SomBottomSheetStockEmptyAdapter = SomBottomSheetStockEmptyAdapter(this)
 
     override fun bind(view: View): BottomsheetSecondaryBinding {
@@ -49,7 +51,7 @@ class SomBottomSheetProductEmpty(
                 dismiss()
                 val orderRejectRequest = SomRejectRequestParam()
                 orderRejectRequest.orderId = orderId
-                orderRejectRequest.rCode = rejectReason.reasonCode.toString()
+                orderRejectRequest.rCode = rejectReason?.reasonCode?.orZero().toString()
                 var strListPrd = ""
                 var indexPrd = 0
                 somBottomSheetStockEmptyAdapter.getListProductEmptied().forEach {
@@ -59,9 +61,9 @@ class SomBottomSheetProductEmpty(
                 }
                 orderRejectRequest.listPrd = strListPrd
                 orderRejectRequest.reason = tfExtraNotes.textFieldInput.text.toString()
-                listener.onDoRejectOrder(orderRejectRequest)
+                listener?.onDoRejectOrder(orderRejectRequest)
             }
-            btnPrimary.setOnTouchListener(hideKeyboardTouchListener)
+            hideKeyboardHandler.attachListener(btnPrimary)
         }
     }
 
@@ -87,10 +89,10 @@ class SomBottomSheetProductEmpty(
 
     private fun setupTicker() {
         binding?.run {
-            if (rejectReason.reasonTicker.isNotEmpty()) {
+            if (!rejectReason?.reasonTicker.isNullOrEmpty()) {
                 tickerPenaltySecondary.show()
                 tickerPenaltySecondary.tickerType = Ticker.TYPE_ANNOUNCEMENT
-                tickerPenaltySecondary.setHtmlDescription(rejectReason.reasonTicker)
+                tickerPenaltySecondary.setHtmlDescription(rejectReason?.reasonTicker.orEmpty())
             } else {
                 tickerPenaltySecondary.gone()
             }
@@ -109,5 +111,9 @@ class SomBottomSheetProductEmpty(
     fun setRejectReason(rejectReason: SomReasonRejectData.Data.SomRejectReason) {
         this.rejectReason = rejectReason
         setupTicker()
+    }
+
+    fun setListener(listener: SomRejectOrderBottomSheetListener) {
+        this.listener = listener
     }
 }

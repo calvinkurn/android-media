@@ -304,8 +304,6 @@ public interface ApplinkConst {
     String LAYANAN_FINANSIAL = "tokopedia://layanan-finansial";
     String SALDO_INTRO = "tokopedia://saldo-intro";
 
-
-    String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String HAS_PASSWORD = "tokopedia://settings/haspassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
     String SETTING_NOTIFICATION = "tokopedia://settings/notification";

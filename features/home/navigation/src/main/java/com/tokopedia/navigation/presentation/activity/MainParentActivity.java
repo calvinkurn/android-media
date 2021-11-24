@@ -279,7 +279,7 @@ public class MainParentActivity extends BaseActivity implements
                 return sendOpenHomeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext(), true);
         installDFonBackground();
         runRiskWorker();
 
@@ -399,7 +399,7 @@ public class MainParentActivity extends BaseActivity implements
                 return executeFirstTimeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext(), true);
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
@@ -879,11 +879,11 @@ public class MainParentActivity extends BaseActivity implements
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
                 .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .shadowColorRes(R.color.Unify_N700_68)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
+                .textSizeRes(com.tokopedia.navigation.R.dimen.mainparent_case_text_size)
+                .titleTextSizeRes(com.tokopedia.navigation.R.dimen.mainparent_case_title_text_size)
                 .nextStringRes(R.string.navigation_showcase_next)
                 .prevStringRes(R.string.navigation_showcase_prev)
                 .useCircleIndicator(true)
