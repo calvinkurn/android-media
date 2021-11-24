@@ -1,7 +1,6 @@
 package com.tokopedia.developer_options.presentation.adapter.typefactory
 
 import android.view.View
-import com.google.android.datatransport.runtime.logging.Logging
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -49,6 +48,9 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: RequestNewFcmTokenUiModel): Int = RequestNewFcmTokenViewHolder.LAYOUT
     override fun type(uiModel: ResetOnBoardingNavigationUiModel): Int = ResetOnBoardingNavigationViewHolder.LAYOUT
     override fun type(uiModel: TranslatorUiModel): Int = TranslatorSettingViewHolder.LAYOUT
+    override fun type(uiModel: AppAuthSecretUiModel): Int = AppAuthSecretViewHolder.LAYOUT
+    override fun type(uiModel: SellerAppReviewDebuggingUiModel): Int = SellerAppReviewDebuggingViewHolder.LAYOUT
+    override fun type(uiModel: ShowApplinkOnToastUiModel): Int = ShowApplinkOnToastViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -87,6 +89,9 @@ class DeveloperOptionTypeFactoryImpl(
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
             ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)
             TranslatorSettingViewHolder.LAYOUT -> TranslatorSettingViewHolder(view)
+            AppAuthSecretViewHolder.LAYOUT -> AppAuthSecretViewHolder(view)
+            SellerAppReviewDebuggingViewHolder.LAYOUT -> SellerAppReviewDebuggingViewHolder(view)
+            ShowApplinkOnToastViewHolder.LAYOUT -> ShowApplinkOnToastViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -64,11 +64,15 @@ class DeveloperOptionAdapter(
         const val KEYWORD_LANGUAGE_SETTING = "Language Setting"
         const val KEYWORD_CURRENTLY_SELECTED_LANGUAGES = "Currently selected languages is from Indonesian to English"
         const val KEYWORD_TOTAL_TRANSLATED_TEXT = "Total Translated Text"
+        const val KEYWORD_APP_AUTH_SECRET = "App Auth Secret (IT Risk)"
+        const val KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING = "Enable Seller App Review Debugging"
+        const val KEYWORD_SHOW_APPLINK_ON_TOAST = "Show Applink on Toast and Copy the Link to Clipboard"
     }
 
     private val defaultItems = mutableListOf(
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
+        AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),
         SystemNonSystemAppsUiModel(listOf(
             KEYWORD_SYSTEM_APPS,
             KEYWORD_NON_SYSTEM_APPS)
@@ -77,6 +81,7 @@ class DeveloperOptionAdapter(
         ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
         SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
         OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
+        ShowApplinkOnToastUiModel(listOf(KEYWORD_SHOW_APPLINK_ON_TOAST)),
         NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
         ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
         DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
@@ -102,6 +107,7 @@ class DeveloperOptionAdapter(
             KEYWORD_LOGGING_TO_SERVER,
             KEYWORD_SEND_LOG_TO_SERVER)
         ),
+        SellerAppReviewDebuggingUiModel(listOf(KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING)),
         SharedPreferencesEditorUiModel(listOf(KEYWORD_SHARED_PREFERENCES_EDITOR)),
         AppVersionUiModel(listOf(KEYWORD_APP_VERSION)),
         UrlEnvironmentUiModel(listOf(
@@ -156,17 +162,13 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        removeWidget(PdpDevUiModel::class.java)
-        removeWidget(SystemNonSystemAppsUiModel::class.java)
         removeWidget(LeakCanaryUiModel::class.java)
-        removeWidget(SharedPreferencesEditorUiModel::class.java)
+        removeWidget(AppAuthSecretUiModel::class.java)
     }
 
     private fun removeMainAppItems() {
-        removeWidget(PdpDevUiModel::class.java)
-        removeWidget(SystemNonSystemAppsUiModel::class.java)
-        removeWidget(LeakCanaryUiModel::class.java)
-        removeWidget(SharedPreferencesEditorUiModel::class.java)
+        removeWidget(SellerAppReviewDebuggingUiModel::class.java)
+        removeWidget(AppAuthSecretUiModel::class.java)
     }
 
     private fun <T> removeWidget(itemClass: Class<T>) {

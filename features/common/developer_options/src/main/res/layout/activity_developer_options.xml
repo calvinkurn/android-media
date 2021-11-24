@@ -475,7 +475,7 @@
                 android:layout_weight="2"
                 android:gravity="center"
                 android:padding="@dimen/spacing_lvl3"
-                android:text="@string/change"
+                android:text="@string/change_the_version"
                 app:unifyButtonType="main"
                 app:unifyButtonSize="medium" />
 

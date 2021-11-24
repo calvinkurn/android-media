@@ -61,7 +61,7 @@
     <string name="enable_seller_app_review_debugging">Enable Seller App Review Debugging</string>
     <string name="v_3_99">3.99</string>
     <string name="example_version_code">399123456</string>
-    <string name="change">Change</string>
+    <string name="change_the_version">Change</string>
     <string name="version_change_api">Version change is for api purpose - app kill will change back</string>
     <string name="choose_url_env">Choose URL Env</string>
     <string name="fake_response_activity">Fake Response Activity</string>
@@ -88,5 +88,6 @@
     <string name="non_system_apps">Non System Apps</string>
     <string name="old_cart_checkout">Old Cart Checkout</string>
     <string name="new_cart_checkout_bundling">New Cart Checkout Bundling</string>
+    <string name="type_anything">Type Anything Here</string>
 
 </resources>

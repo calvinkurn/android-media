@@ -38,4 +38,7 @@ interface DeveloperOptionTypeFactory {
     fun type(uiModel: RequestNewFcmTokenUiModel): Int
     fun type(uiModel: ResetOnBoardingNavigationUiModel): Int
     fun type(uiModel: TranslatorUiModel): Int
+    fun type(uiModel: AppAuthSecretUiModel): Int
+    fun type(uiModel: SellerAppReviewDebuggingUiModel): Int
+    fun type(uiModel: ShowApplinkOnToastUiModel): Int
 }

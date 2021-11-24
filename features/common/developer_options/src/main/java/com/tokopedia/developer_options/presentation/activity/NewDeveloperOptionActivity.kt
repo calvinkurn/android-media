@@ -40,10 +40,12 @@ class NewDeveloperOptionActivity : BaseActivity() {
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
         private const val API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49"
 
+        const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
+        const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
+        const val SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE = false
         const val LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle"
         const val LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle"
         const val LEAK_CANARY_DEFAULT_TOGGLE = true
-        const val IS_RELEASE_MODE = "IS_RELEASE_MODE"
         const val REMOTE_CONFIG_PREFIX = "remote_config_prefix"
         const val SHARED_PREF_FILE = "shared_pref_file"
         const val STAGING = "staging"
@@ -51,20 +53,18 @@ class NewDeveloperOptionActivity : BaseActivity() {
         const val CHANGEURL = "changeurl"
         const val URI_HOME_MACROBENCHMARK = "home-macrobenchmark"
         const val URI_COACHMARK = "coachmark"
-        const val URI_COACHMARK_ENABLE = "enable"
         const val URI_COACHMARK_DISABLE = "disable"
-
-        var KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
-        var KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
-        var KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1"
-        var KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2"
-        var KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN"
-        var PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK"
-        var PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV"
-        var PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX"
-        var PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE"
-        var PREFERENCE_NAME = "coahmark_choose_address"
-        var EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
+        const val KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION"
+        const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING"
+        const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1"
+        const val KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2"
+        const val KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN"
+        const val PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK"
+        const val PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV"
+        const val PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX"
+        const val PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE"
+        const val PREFERENCE_NAME = "coahmark_choose_address"
+        const val EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
     }
 
     private var userSession: UserSession? = null
@@ -129,7 +129,10 @@ class NewDeveloperOptionActivity : BaseActivity() {
         sbDeveloperOption = findViewById(R.id.sbDeveloperOption)
         sbDeveloperOption?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                s?.toString()?.let { adapter.searchItem(it) }
+                s?.toString()?.let {
+                    adapter.searchItem(it)
+                    rvDeveloperOption?.scrollToPosition(0)
+                }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no need to implement */ }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { /* no need to implement */ }
