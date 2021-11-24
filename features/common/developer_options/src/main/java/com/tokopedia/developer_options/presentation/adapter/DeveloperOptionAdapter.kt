@@ -12,7 +12,8 @@ class DeveloperOptionAdapter(
     companion object {
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
-        const val KEYWORD_SYSTEM_APPS_NON_SYSTEM_APPS = "System Apps Non System Apps"
+        const val KEYWORD_SYSTEM_APPS = "System Apps"
+        const val KEYWORD_NON_SYSTEM_APPS = "Non System Apps"
         const val KEYWORD_RESET_ONBOARDING = "Reset OnBoarding"
         const val KEYWORD_FORCE_CRASH = "Force Crash"
         const val KEYWORD_SEND_FIREBASE_EXCEPTION = "Send Firebase Exception"
@@ -31,39 +32,46 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_ANALYTICS_LOG_ON_NOTIFICATION = "Enable Analytics Log on Notification"
         const val KEYWORD_CASSAVA = "Cassava"
         const val KEYWORD_VIEW_ANALYTICS_LOG = "View Analytics Log"
-        const val KEYWORD_VIEW_IRIS_LOG = "View Iris Save Log View Iris Send Log"
+        const val KEYWORD_VIEW_IRIS_SAVE_LOG = "View Iris Save Log"
+        const val KEYWORD_VIEW_IRIS_SEND_LOG = "View Iris Send Log"
     }
 
     private val defaultItems = listOf(
-        PdpDevUiModel(KEYWORD_PRODUCT_DETAIL_DEV),
-        AccessTokenUiModel(KEYWORD_ACCESS_TOKEN),
-        SystemNonSystemAppsUiModel(KEYWORD_SYSTEM_APPS_NON_SYSTEM_APPS),
-        ResetOnBoardingUiModel(KEYWORD_RESET_ONBOARDING),
-        ForceCrashUiModel(KEYWORD_FORCE_CRASH),
-        SendFirebaseCrashExceptionUiModel(KEYWORD_SEND_FIREBASE_EXCEPTION),
-        OpenScreenRecorderUiModel(KEYWORD_OPEN_SCREEN_RECORDER),
-        NetworkLogOnNotificationUiModel(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION),
-        ViewNetworkLogUiModel(KEYWORD_VIEW_NETWORK_LOG),
-        DeviceIdUiModel(KEYWORD_DEVICE_ID),
-        ForceDarkModeUiModel(KEYWORD_FORCE_DARK_MODE),
-        TopAdsLogOnNotificationUiModel(KEYWORD_ENABLE_TOPADS_LOG_ON_NOTIFICATION),
-        ViewTopAdsLogUiModel(KEYWORD_VIEW_TOPADS_LOG),
-        ApplinkLogOnNotificationUiModel(KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION),
-        ViewApplinkLogUiModel(KEYWORD_VIEW_APPLINK_LOG),
-        FpmLogOnFileUiModel(KEYWORD_ENABLE_FPM_LOG_ON_FILE),
-        FpmLogOnNotificationUiModel(KEYWORD_ENABLE_FPM_LOG_ON_NOTIFICATION),
-        ViewFpmLogUiModel(KEYWORD_VIEW_FPM_LOG),
-        AnalyticsLogOnNotificationUiModel(KEYWORD_ENABLE_ANALYTICS_LOG_ON_NOTIFICATION),
-        CassavaUiModel(KEYWORD_CASSAVA),
-        ViewAnalyticsLogUiModel(KEYWORD_VIEW_ANALYTICS_LOG),
-        ViewIrisLogUiModel(KEYWORD_VIEW_IRIS_LOG)
+        PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
+        AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
+        SystemNonSystemAppsUiModel(listOf(KEYWORD_SYSTEM_APPS, KEYWORD_NON_SYSTEM_APPS)),
+        ResetOnBoardingUiModel(listOf(KEYWORD_RESET_ONBOARDING)),
+        ForceCrashUiModel(listOf(KEYWORD_FORCE_CRASH)),
+        SendFirebaseCrashExceptionUiModel(listOf(KEYWORD_SEND_FIREBASE_EXCEPTION)),
+        OpenScreenRecorderUiModel(listOf(KEYWORD_OPEN_SCREEN_RECORDER)),
+        NetworkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_NETWORK_LOG_ON_NOTIFICATION)),
+        ViewNetworkLogUiModel(listOf(KEYWORD_VIEW_NETWORK_LOG)),
+        DeviceIdUiModel(listOf(KEYWORD_DEVICE_ID)),
+        ForceDarkModeUiModel(listOf(KEYWORD_FORCE_DARK_MODE)),
+        TopAdsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_TOPADS_LOG_ON_NOTIFICATION)),
+        ViewTopAdsLogUiModel(listOf(KEYWORD_VIEW_TOPADS_LOG)),
+        ApplinkLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_APPLINK_LOG_ON_NOTIFICATION)),
+        ViewApplinkLogUiModel(listOf(KEYWORD_VIEW_APPLINK_LOG)),
+        FpmLogOnFileUiModel(listOf(KEYWORD_ENABLE_FPM_LOG_ON_FILE)),
+        FpmLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_FPM_LOG_ON_NOTIFICATION)),
+        ViewFpmLogUiModel(listOf(KEYWORD_VIEW_FPM_LOG)),
+        AnalyticsLogOnNotificationUiModel(listOf(KEYWORD_ENABLE_ANALYTICS_LOG_ON_NOTIFICATION)),
+        CassavaUiModel(listOf(KEYWORD_CASSAVA)),
+        ViewAnalyticsLogUiModel(listOf(KEYWORD_VIEW_ANALYTICS_LOG)),
+        ViewIrisLogUiModel(listOf(KEYWORD_VIEW_IRIS_SAVE_LOG, KEYWORD_VIEW_IRIS_SEND_LOG))
     )
 
     fun searchItem(keyword: String) {
         val newItems = mutableListOf<OptionItemUiModel>()
-        defaultItems.forEach {
-            if (it.keyword.lowercase().contains(keyword.lowercase())) {
-                newItems.add(it)
+        defaultItems.forEach { model ->
+            var isKeywordFound = false
+            model.keyword.forEach {
+                if (it.lowercase().contains(keyword.lowercase())) {
+                    isKeywordFound = true
+                }
+            }
+            if (isKeywordFound) {
+                newItems.add(model)
             }
         }
         submitList(newItems)
