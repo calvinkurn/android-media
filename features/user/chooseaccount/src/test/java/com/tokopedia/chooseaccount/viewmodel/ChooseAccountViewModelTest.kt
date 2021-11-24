@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.chooseaccount.data.AccountListDataModel
 import com.tokopedia.chooseaccount.data.AccountsDataModel
+import com.tokopedia.chooseaccount.data.ErrorResponseDataModel
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant
 import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -225,6 +226,43 @@ class ChooseAccountViewModelTest {
         val result =
             viewmodel.getAccountListDataModelPhoneResponse.value as Success<AccountListDataModel>
         assert(result.data == SUCCESS_GET_ACCOUNTS_LIST_RESPONSE.accountListDataModel)
+    }
+
+    @Test
+    fun `Success get account list phone error message`() {
+        val errorMsg = "error"
+        coEvery { getAccountsListUseCase.invoke(any()) } returns AccountsDataModel(
+            accountListDataModel = AccountListDataModel(
+                errorResponseDataModels = listOf(
+                    ErrorResponseDataModel(message = errorMsg)
+                )
+            )
+        )
+
+        viewmodel.getAccountListPhoneNumber("", "")
+
+        assertThat(
+            viewmodel.getAccountListDataModelPhoneResponse.getOrAwaitValue(),
+            instanceOf(Fail::class.java)
+        )
+    }
+
+    @Test
+    fun `Success get account list phone empty error message`() {
+        coEvery { getAccountsListUseCase.invoke(any()) } returns AccountsDataModel(
+            accountListDataModel = AccountListDataModel(
+                errorResponseDataModels = listOf(
+                    ErrorResponseDataModel()
+                )
+            )
+        )
+
+        viewmodel.getAccountListPhoneNumber("", "")
+
+        assertThat(
+            viewmodel.getAccountListDataModelPhoneResponse.getOrAwaitValue(),
+            instanceOf(Fail::class.java)
+        )
     }
 
     @Test
