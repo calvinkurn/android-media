@@ -129,9 +129,9 @@ import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import org.json.JSONArray
@@ -577,8 +577,9 @@ class ProductListFragment: BaseDaggerFragment(),
         val filterSortParams = searchParameter?.let {
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
         } ?: ""
+        val pageComponentId = presenter?.pageComponentId ?: ""
 
-        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams))
+        dataLayerList.add(item.getProductAsObjectDataLayer(filterSortParams, pageComponentId))
         productItemDataViews.add(item)
 
         trackingQueue?.let {
@@ -693,32 +694,6 @@ class ProductListFragment: BaseDaggerFragment(),
         presenter?.handleWishlistAction(productCardOptionsModel)
     }
 
-    override fun trackSuccessAddToCartEvent(isAds: Boolean, addToCartDataLayer: Any) {
-        SearchTracking.trackEventAddToCart(queryKey, isAds, addToCartDataLayer)
-    }
-
-    override fun showAddToCartSuccessMessage() {
-        view?.let {
-            Toaster.make(it, getString(R.string.search_add_to_cart_success), LENGTH_SHORT, TYPE_NORMAL)
-        }
-    }
-
-    override fun showAddToCartFailedMessage(errorMessage: String) {
-        view?.let {
-            Toaster.make(it, errorMessage, LENGTH_SHORT, TYPE_ERROR)
-        }
-    }
-
-    override fun routeToShopPage(shopId: String?) {
-        context?.let {
-            RouteManager.route(it, ApplinkConst.SHOP, shopId)
-        }
-    }
-
-    override fun trackEventGoToShopPage(dataLayer: Any) {
-        SearchTracking.trackEventGoToShopPage(queryKey, dataLayer)
-    }
-
     override fun onPause() {
         super.onPause()
 
@@ -733,6 +708,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val trackingQueue = trackingQueue ?: return
         val product: Product = createTopAdsProductForTracking(item)
         val irisSessionId = irisSession?.getSessionId() ?: ""
+        val pageComponentId = presenter?.pageComponentId ?: ""
 
         TopAdsGtmTracker.getInstance().eventImpressionSearchResultProduct(
             trackingQueue,
@@ -744,6 +720,7 @@ class ProductListFragment: BaseDaggerFragment(),
             irisSessionId,
             item.topadsTag,
             item.dimension115,
+            pageComponentId,
         )
     }
 
@@ -807,16 +784,18 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun sendTopAdsGTMTrackingProductClick(item: ProductItemDataView) {
         val product = createTopAdsProductForTracking(item)
+        val pageComponentId = presenter?.pageComponentId ?: ""
 
         TopAdsGtmTracker.eventSearchResultProductClick(
-                context,
-                queryKey,
-                product,
-                item.position,
-                getUserId(),
-                item.dimension90,
-                item.topadsTag,
-                item.dimension115,
+            context,
+            queryKey,
+            product,
+            item.position,
+            getUserId(),
+            item.dimension90,
+            item.topadsTag,
+            item.dimension115,
+            pageComponentId,
         )
     }
 
@@ -829,14 +808,16 @@ class ProductListFragment: BaseDaggerFragment(),
         val filterSortParams = searchParameter?.let {
             getSortFilterParamsString(it.getSearchParameterMap() as Map<String?, Any?>)
         } ?: ""
+        val pageComponentId = presenter?.pageComponentId ?: ""
 
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductAsObjectDataLayer(filterSortParams),
-                item.isOrganicAds,
-                item.topadsTag,
-                eventLabel,
-                filterSortParams,
-                userId,
+            item.getProductAsObjectDataLayer(filterSortParams, pageComponentId),
+            item.isOrganicAds,
+            item.topadsTag,
+            eventLabel,
+            filterSortParams,
+            userId,
+            pageComponentId,
         )
     }
 
@@ -925,8 +906,13 @@ class ProductListFragment: BaseDaggerFragment(),
         showProductCardOptions(this, productCardOptionsModel)
     }
 
+    override fun onTickerImpressed(tickerDataView: TickerDataView) {
+        tickerDataView.impress(iris)
+    }
+
     override fun onTickerClicked(tickerDataView: TickerDataView) {
-        SearchTracking.trackEventClickTicker(queryKey, tickerDataView.typeId)
+        tickerDataView.click(TrackApp.getInstance().gtm)
+
         applyParamsFromTicker(UrlParamUtils.getParamMap(tickerDataView.query))
     }
 
@@ -963,10 +949,12 @@ class ProductListFragment: BaseDaggerFragment(),
     override val isTickerHasDismissed
         get() = presenter?.isTickerHasDismissed ?: false
 
-    override fun onSuggestionClicked(suggestionDataView: SuggestionDataView?) {
-        if (suggestionDataView == null) return
+    override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
+        suggestionDataView.impress(iris)
+    }
 
-        SearchTracking.eventClickSuggestedSearch(queryKey, suggestionDataView.suggestion)
+    override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
+        suggestionDataView.click(TrackApp.getInstance().gtm)
         performNewProductSearch(suggestionDataView.suggestedQuery)
     }
 
@@ -1108,10 +1096,6 @@ class ProductListFragment: BaseDaggerFragment(),
             SearchTracking.trackEventImpressionBannedProductsEmptySearch(queryKey)
         else
             SearchTracking.trackEventImpressionBannedProductsWithResult(queryKey)
-    }
-
-    override fun trackEventImpressionTicker(typeId: Int) {
-        SearchTracking.trackEventImpressionTicker(queryKey, typeId)
     }
 
     override fun reloadData() {

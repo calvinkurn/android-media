@@ -43,36 +43,57 @@ import java.util.*
 class ProductViewModelMapper {
 
     fun convertToProductViewModel(
-            lastProductItemPosition: Int,
-            searchProductModel: SearchProductModel,
-            pageTitle: String,
-            isLocalSearch: Boolean,
-            dimension90: String,
+        lastProductItemPosition: Int,
+        searchProductModel: SearchProductModel,
+        pageTitle: String,
+        isLocalSearch: Boolean,
+        dimension90: String,
+        keyword: String,
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
         val productDataView = ProductDataView()
 
         productDataView.adsModel = searchProductModel.topAdsModel
-        productDataView.globalNavDataView = convertToViewModel(searchProductModel.globalSearchNavigation)
+        productDataView.globalNavDataView = convertToViewModel(
+            searchProductModel.globalSearchNavigation
+        )
         productDataView.cpmModel = searchProductModel.cpmModel
-        productDataView.relatedDataView = convertToRelatedViewModel(searchProductData.related, isLocalSearch, dimension90)
+        productDataView.relatedDataView = convertToRelatedViewModel(
+            searchProductData.related,
+            isLocalSearch,
+            dimension90,
+        )
         productDataView.productList = convertToProductItemDataViewList(
-                lastProductItemPosition, searchProductData.productList, pageTitle, dimension90,
+            lastProductItemPosition,
+            searchProductData.productList,
+            pageTitle,
+            dimension90,
         )
         productDataView.adsModel = searchProductModel.topAdsModel
-        productDataView.tickerModel = convertToTickerDataView(searchProductData)
-        productDataView.suggestionModel = convertToSuggestionDataView(searchProductData)
+        productDataView.tickerModel = convertToTickerDataView(
+            searchProductData,
+            keyword,
+            dimension90,
+        )
+        productDataView.suggestionModel = convertToSuggestionDataView(
+            searchProductModel,
+            keyword,
+            dimension90,
+        )
         productDataView.totalData = searchProductHeader.totalData
         productDataView.totalDataText = searchProductHeader.totalDataText
         productDataView.responseCode = searchProductHeader.responseCode
         productDataView.keywordProcess = searchProductHeader.keywordProcess
         productDataView.errorMessage = searchProductHeader.errorMessage
+        productDataView.pageComponentId = searchProductHeader.componentId
         productDataView.isQuerySafe = searchProductData.isQuerySafe
         productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
-                searchProductModel.searchInspirationCarousel
+            searchProductModel.searchInspirationCarousel
         )
-        productDataView.inspirationCardDataView = convertToInspirationCardViewModel(searchProductModel.searchInspirationWidget)
+        productDataView.inspirationCardDataView = convertToInspirationCardViewModel(
+            searchProductModel.searchInspirationWidget
+        )
         productDataView.additionalParams = searchProductHeader.additionalParams
         productDataView.autocompleteApplink = searchProductData.autocompleteApplink
         productDataView.defaultView = searchProductHeader.defaultView
@@ -263,23 +284,6 @@ class ProductViewModelMapper {
                 )
             }
 
-    private fun convertToLabelGroupList(labelGroupModelList: List<ProductLabelGroup>): List<LabelGroupDataView> {
-        val labelGroupDataViewList: MutableList<LabelGroupDataView> = ArrayList()
-        for (labelGroupModel in labelGroupModelList) {
-            labelGroupDataViewList.add(convertToLabelGroupViewModel(labelGroupModel))
-        }
-        return labelGroupDataViewList
-    }
-
-    private fun convertToLabelGroupViewModel(labelGroupModel: ProductLabelGroup): LabelGroupDataView {
-        return LabelGroupDataView(
-                labelGroupModel.position,
-                labelGroupModel.type,
-                labelGroupModel.title,
-                labelGroupModel.url
-        )
-    }
-
     private fun List<ProductLabelGroupVariant>.mapToLabelGroupVariantList() =
             this.map { labelGroupVariant ->
                 LabelGroupVariantDataView(
@@ -292,21 +296,45 @@ class ProductViewModelMapper {
 
     private fun ProductFreeOngkir.mapToFreeOngkirDataView() = FreeOngkirDataView(isActive, imageUrl)
 
-    private fun convertToTickerDataView(searchProductData: SearchProductData): TickerDataView {
-        val (text, query, typeId) = searchProductData.ticker
+    private fun convertToTickerDataView(
+        searchProductData: SearchProductData,
+        keyword: String,
+        dimension90: String,
+    ): TickerDataView {
+        val ticker = searchProductData.ticker
         return TickerDataView(
-                text,
-                query,
-                typeId
+            text = ticker.text,
+            query = ticker.query,
+            typeId = ticker.typeId,
+            componentId = ticker.componentId,
+            trackingOption = ticker.trackingOption,
+            keyword = keyword,
+            dimension90 = dimension90,
         )
     }
 
-    private fun convertToSuggestionDataView(searchProduct: SearchProductData): SuggestionDataView {
-        val (suggestion, query, text) = searchProduct.suggestion
+    private fun convertToSuggestionDataView(
+        searchProductModel: SearchProductModel,
+        keyword: String,
+        dimension90: String,
+    ): SuggestionDataView {
+        val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
+        val suggestion = searchProductData.suggestion
+        val trackingValue =
+            if (searchProductHeader.responseCode == "3")
+                searchProductData.related.relatedKeyword
+            else
+                searchProductData.suggestion.suggestion
+
         return SuggestionDataView(
-                text,
-                query,
-                suggestion
+            suggestionText = suggestion.text,
+            suggestedQuery = suggestion.query,
+            suggestion = suggestion.suggestion,
+            componentId = suggestion.componentId,
+            trackingOption = suggestion.trackingOption,
+            keyword = keyword,
+            dimension90 = dimension90,
+            trackingValue = trackingValue,
         )
     }
 

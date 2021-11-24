@@ -1,0 +1,182 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 3,
+      "totalDataText": "3",
+      "defaultView": 1,
+      "responseCode": -1,
+      "errorMessage": "",
+      "additionalParams": "rf=true",
+      "keywordProcess": "1"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=smsunng",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0,
+        "componentId": "",
+        "trackingOption": 0
+      },
+      "banner": {
+        "position": 0,
+        "text": "",
+        "applink": "",
+        "imageUrl": ""
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "samsung",
+        "query": "q=samsung&rf=true&srp_component_id=03.08.01.00",
+        "text": "Menampilkan hasil untuk <strong>\"smsunng\"</strong>. Apakah yang kamu maksud <strong><font color=\"#42b549\">\"samsung\"</font></strong> ?",
+        "componentId": "03.08.01.00",
+        "trackingOption": 3
+      },
+      "products": [
+        {
+          "id": 45971252,
+          "name": "NEW Wireless Charger Induction Pad For Smsunng Galaxy S7 Edge",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 496908,
+            "name": "Enam 8",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/enam8",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2016/5/30/496908/496908_c4f1b7e0-e4c1-48bf-a5cc-57ef7603672d.jpg",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2016/5/30/496908/496908_c4f1b7e0-e4c1-48bf-a5cc-57ef7603672d.jpg",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2016/5/30/496908/496908_c4f1b7e0-e4c1-48bf-a5cc-57ef7603672d.jpg",
+          "price": "Rp140.000",
+          "priceInt": 140000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/aksesoris-handphone/charger-handphone",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/enam8/new-wireless-charger-induction-pad-for-smsunng-galaxy-s7-edge?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/45971252?extParam=whid%3D0"
+        },
+        {
+          "id": 156871211,
+          "name": "NEW Wireless Charger Induction Pad For Smsunng Galaxy S7 Edge",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 1940715,
+            "name": "Jajakukuji",
+            "city": "Kab. Gresik",
+            "url": "https://www.tokopedia.com/archive-jajakukuji",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2017/3/11/17102669/17102669_81e67e0c-299d-4c99-91f9-940cbf0e0cc0_600_504.png",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2017/3/11/17102669/17102669_81e67e0c-299d-4c99-91f9-940cbf0e0cc0_600_504.png",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2017/3/11/17102669/17102669_81e67e0c-299d-4c99-91f9-940cbf0e0cc0_600_504.png",
+          "price": "Rp144.900",
+          "priceInt": 144900,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/aksesoris-handphone/charger-handphone",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/archive-jajakukuji/new-wireless-charger-induction-pad-for-smsunng-galaxy-s7-edge?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/156871211?extParam=whid%3D0"
+        },
+        {
+          "id": 923966915,
+          "name": "NEW Wireless Charger Induction Pad For Smsunng Galaxy S7 Edge Murah",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": "",
+            "tag": 0
+          },
+          "shop": {
+            "id": 8193794,
+            "name": "keepemshopping12",
+            "city": "Jakarta Barat",
+            "url": "https://www.tokopedia.com/keepemshopping",
+            "isOfficial": false,
+            "isPowerBadge": false
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/6/14/99219362/99219362_fdab559b-8c79-4643-98bd-1e5871f06285_700_700",
+          "imageUrl300": "https://images.tokopedia.net/img/cache/300-square/product-1/2020/6/14/99219362/99219362_fdab559b-8c79-4643-98bd-1e5871f06285_700_700",
+          "imageUrl700": "https://images.tokopedia.net/img/cache/700/product-1/2020/6/14/99219362/99219362_fdab559b-8c79-4643-98bd-1e5871f06285_700_700",
+          "price": "Rp195.000",
+          "priceInt": 195000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/feature-phone",
+          "ratingAverage": "",
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/keepemshopping/new-wireless-charger-induction-pad-for-smsunng-galaxy-s7-edge-murah?refined=true&whid=0",
+          "labelGroups": [],
+          "labelGroupVariant": [],
+          "badges": [],
+          "wishlist": false,
+          "applink": "tokopedia://product/923966915?extParam=whid%3D0"
+        }
+      ]
+    }
+  }
+}

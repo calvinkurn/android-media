@@ -4,6 +4,7 @@ import android.text.Html
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductSuggestionLayoutBinding
@@ -29,13 +30,17 @@ class SuggestionViewHolder(
     }
 
     private fun bindSuggestionView(element: SuggestionDataView) {
-        binding?.root?.let {
-            it.shouldShowWithAction(element.suggestionText.isNotEmpty()) {
-                it.text = Html.fromHtml(element.suggestionText)
-                it.setOnClickListener {
-                    if (element.suggestedQuery.isNotEmpty()) {
-                        suggestionListener.onSuggestionClicked(element)
-                    }
+        val suggestionTextView =  binding?.root ?: return
+
+        suggestionTextView.addOnImpressionListener(element) {
+            suggestionListener.onSuggestionImpressed(element)
+        }
+
+        suggestionTextView.shouldShowWithAction(element.suggestionText.isNotEmpty()) {
+            suggestionTextView.text = Html.fromHtml(element.suggestionText)
+            suggestionTextView.setOnClickListener {
+                if (element.suggestedQuery.isNotEmpty()) {
+                    suggestionListener.onSuggestionClicked(element)
                 }
             }
         }
