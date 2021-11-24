@@ -82,11 +82,11 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
         dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetDataLiveData.observe(this, { result ->
             when (result) {
                 is Success -> {
-                    hideCMHomeWidget()
+                    Timber.e("Success")
                 }
                 is Fail -> {
                     Timber.e(result.throwable, "Failed")
-                    hideCMHomeWidget()
+                    showCMHomeWidget()
                 }
             }
         }
@@ -101,8 +101,13 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
         cmHomeWidget.hide()
     }
 
+    private fun showCMHomeWidget() {
+        cmHomeWidget.show()
+    }
+
     override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {
+        hideCMHomeWidget()
         //passing 0,0 intensionally to avoid data deletion and adding data again and again.
-        dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetData(0, 0)
+        dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetData(parentID, campaignID)
     }
 }
