@@ -4,10 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import android.webkit.URLUtil
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.logger.ServerLogger
@@ -74,7 +77,29 @@ class FirebaseDLWrapper {
 
     private fun launchActivity(activity: Activity?, link: String?, firebaseUrl: Uri?){
         if (activity != null && link !=null && firebaseUrl!=null) {
-            RouteManager.route(activity, link)
+
+            // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
+            // because we need tracking UTM for those notification applink
+            var tokopediaDeeplink: String? = link
+            val intent = Intent()
+            if (URLUtil.isNetworkUrl(link)) {
+                intent.setClassName(
+                    activity.packageName,
+                    GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME
+                )
+            } else {
+                tokopediaDeeplink =
+                    if (link.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                        link
+                    } else {
+                        ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + link
+                    }
+                intent.setClassName(
+                    activity.packageName,
+                    GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME
+                )
+            }
+            RouteManager.route(activity, tokopediaDeeplink)
             processUtmParams(link, firebaseUrl)
         }
     }
