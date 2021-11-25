@@ -21,7 +21,6 @@ import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
-import com.tokopedia.ovop2p.domain.model.WalletDataBase
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 import java.util.*
@@ -74,15 +73,7 @@ object OvoP2pUtil {
         ovoP2pTransferThankyouUseCase.execute(subscriber)
     }
 
-    fun executeOvoGetWalletData(context: Context, subscriber: Subscriber<GraphqlResponse>) {
-        var ovoWalletDataUseCase = GraphqlUseCase()
-        val graphqlRequest = GraphqlRequest(
-                GraphqlHelper.loadRawString(context.resources, R.raw.ovop2p_wallet_detail),
-                WalletDataBase::class.java)
-        ovoWalletDataUseCase.addRequest(graphqlRequest)
-        ovoWalletDataUseCase.execute(subscriber)
 
-    }
 
     fun extractNumbersFromString(srcStr: String): String {
         var numStr = srcStr.split("-").toString()

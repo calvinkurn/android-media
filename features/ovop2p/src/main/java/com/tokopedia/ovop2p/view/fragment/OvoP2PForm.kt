@@ -2,8 +2,6 @@ package com.tokopedia.ovop2p.view.fragment
 
 import android.Manifest
 import android.app.AlertDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,16 +9,22 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.appcompat.widget.SearchView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -41,11 +45,9 @@ import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import java.util.ArrayList
+import java.util.*
+import javax.inject.Inject
 import kotlin.collections.HashMap
-import kotlin.collections.MutableList
-import kotlin.collections.isNotEmpty
-import kotlin.collections.toTypedArray
 import kotlin.coroutines.CoroutineContext
 
 class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQueryTextListener, CoroutineScope {
@@ -57,7 +59,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private lateinit var proceedBtn: Button
     private lateinit var contactsImageView: ImageView
     private lateinit var searchNoHeader: TextView
-    private lateinit var walletBalanceViewModel: GetWalletBalanceViewModel
     private lateinit var alertDialog: AlertDialog
     private lateinit var ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel
     private lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
@@ -73,6 +74,16 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private lateinit var permissionsToRequest: MutableList<String>
     private var isPermissionGotDenied: Boolean = false
     private val REQUEST_CONTACTS__CAMERA_PERMISSION = 123
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val walletDetailViewModel: GetWalletBalanceViewModel by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider =
+            ViewModelProvider(requireParentFragment(), viewModelFactory.get())
+        viewModelProvider.get(GetWalletBalanceViewModel::class.java)
+    }
+
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -208,10 +219,9 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var view: View = inflater.inflate(R.layout.ovo_p2p_transfer_form, container, false)
         initViews(view)
-        createAndSusbcribeToWalletBalVM()
+        createAndSubscribeToWalletBalVM()
         createAndSubscribeTransferRequestVM()
         createAndSubscribeTransferConfirmVM()
-        context?.let { walletBalanceViewModel.fetchWalletDetails(it) }
         (activity as LoaderUiListener).showProgressDialog()
         setTextSenderAmountWatcher()
         return view
@@ -239,13 +249,12 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         }
     }
 
-    private fun createAndSusbcribeToWalletBalVM() {
-        if (!::walletBalanceViewModel.isInitialized) {
-            if (activity != null) {
-                walletBalanceViewModel = ViewModelProviders.of(this.activity!!).get(GetWalletBalanceViewModel::class.java)
-                walletBalanceViewModel.walletLiveData?.observe(this, getWalletVMObserver(activity as LoaderUiListener))
-            }
-        }
+    private fun createAndSubscribeToWalletBalVM() {
+        walletDetailViewModel.fetchWalletDetails()
+        walletDetailViewModel.walletLiveData.observe(
+            viewLifecycleOwner,
+            getWalletVMObserver(activity as LoaderUiListener)
+        )
     }
 
     private fun getWalletVMObserver(loaderUiListener: LoaderUiListener): Observer<WalletBalanceState> {
@@ -266,8 +275,12 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private fun createAndSubscribeTransferRequestVM() {
         if (!::ovoP2pTransferRequestViewModel.isInitialized) {
             if (activity != null) {
-                ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTransferRequestViewModel::class.java)
-                ovoP2pTransferRequestViewModel.transferReqBaseMutableLiveData?.observe(this, getTransferReqObserver(activity as LoaderUiListener))
+                ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.requireActivity())
+                    .get(OvoP2pTransferRequestViewModel::class.java)
+                ovoP2pTransferRequestViewModel.transferReqBaseMutableLiveData.observe(
+                    viewLifecycleOwner,
+                    getTransferReqObserver(activity as LoaderUiListener)
+                )
             }
         }
     }
@@ -299,8 +312,12 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private fun createAndSubscribeTransferConfirmVM() {
         if (!::ovoP2pTransferConfirmViewModel.isInitialized) {
             if (activity != null) {
-                ovoP2pTransferConfirmViewModel = ViewModelProviders.of(this.activity!!).get(OvoP2pTrxnConfirmVM::class.java)
-                ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData?.observe(this, getTransferConfObserver(activity as LoaderUiListener))
+                ovoP2pTransferConfirmViewModel =
+                    ViewModelProviders.of(requireActivity()).get(OvoP2pTrxnConfirmVM::class.java)
+                ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData.observe(
+                    viewLifecycleOwner,
+                    getTransferConfObserver(activity as LoaderUiListener)
+                )
             }
         }
     }
@@ -322,8 +339,10 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                 is OpenPinChlngWebView -> {
                     saveRcvrData()
                     if (context != null) {
-                        var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(context!!, it.pinUrl,
-                                Constants.Headers.TRANSFER_FORM_HEADER)
+                        var intent: Intent = OvoP2pWebViewActivity.getWebViewIntent(
+                            requireContext(), it.pinUrl,
+                            Constants.Headers.TRANSFER_FORM_HEADER
+                        )
                         activity?.startActivity(intent)
                     }
                 }
