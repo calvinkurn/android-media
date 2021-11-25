@@ -114,7 +114,7 @@ class LargeUploaderManager @Inject constructor(
         }
     }
 
-    suspend fun abortUpload(sourceId: String, fileName: String, abort: () -> Unit) {
+    suspend fun abortUpload(sourceId: String, fileName: String, abort: suspend () -> Unit) {
         val data = uploadState.get(sourceId, fileName) ?: return
 
         if (data.uploadId.isEmpty()) {

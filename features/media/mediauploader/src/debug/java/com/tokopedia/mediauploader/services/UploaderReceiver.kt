@@ -8,7 +8,6 @@ import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import com.tokopedia.mediauploader.di.DaggerMediaUploaderTestComponent
 import com.tokopedia.mediauploader.di.MediaUploaderTestModule
-import com.tokopedia.mediauploader.manager.UploadMediaNotificationManager
 import dagger.Lazy
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -18,9 +17,6 @@ class UploaderReceiver : BroadcastReceiver(), CoroutineScope {
 
     @Inject lateinit var lazyUploaderUseCase: Lazy<UploaderUseCase>
     private val uploaderUseCase: UploaderUseCase get() = lazyUploaderUseCase.get()
-
-    @Inject lateinit var lazyNotificationManager: Lazy<UploadMediaNotificationManager>
-    private val notificationManager: UploadMediaNotificationManager get() = lazyNotificationManager.get()
 
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
@@ -40,7 +36,9 @@ class UploaderReceiver : BroadcastReceiver(), CoroutineScope {
                             sourceId = sourceId,
                             filePath = filePath
                         ) {
-                            UploaderWorker.cancelWork(context)
+                            withContext(Dispatchers.Main) {
+                                UploaderWorker.cancelWork(context)
+                            }
                         }
                     }
                 }
