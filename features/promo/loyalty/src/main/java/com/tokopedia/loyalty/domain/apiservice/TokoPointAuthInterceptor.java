@@ -29,8 +29,8 @@ public class TokoPointAuthInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
-        String responseError = response.body().string();
-        if (responseError != null && !responseError.isEmpty() && responseError.contains("header")) {
+        String responseError = response.peekBody(BYTE_COUNT).string();
+        if (!responseError.isEmpty() && responseError.contains("header")) {
             TokoPointErrorResponse tokoPointErrorResponse = new Gson().fromJson(
                     responseError, TokoPointErrorResponse.class
             );
