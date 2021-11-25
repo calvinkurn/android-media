@@ -19,7 +19,6 @@ import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
-import com.tokopedia.saldodetails.commom.utils.SaldoRollence
 import com.tokopedia.saldodetails.commom.utils.TransactionTitle
 import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoHistoryPagerAdapter
@@ -191,7 +190,4 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         } while (totalTabCount > 0)
         return null
     }
-
-    private fun isSalesTabEnabled() = SaldoRollence.isSaldoRevampEnabled()
-
 }
