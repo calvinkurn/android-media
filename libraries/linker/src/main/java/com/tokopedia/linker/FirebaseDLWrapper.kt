@@ -153,10 +153,22 @@ class FirebaseDLWrapper {
                     title = data.ogTitle
                     description = data.description
                 }
-                googleAnalyticsParameters {
-                    source = if(!TextUtils.isEmpty(data.channel)) { data.channel } else{ LinkerData.ARG_UTM_SOURCE }
-                    medium = if(!TextUtils.isEmpty(data.feature)){ data.feature } else { LinkerData.ARG_UTM_MEDIUM }
-                    campaign = data.campaignName
+                if(!(deeplinkdata.contains(LinkerConstants.UTM_SOURCE))
+                            || !(deeplinkdata.contains(LinkerConstants.UTM_MEDIUM))) {
+
+                    googleAnalyticsParameters {
+                        source = if (!TextUtils.isEmpty(data.channel)) {
+                            data.channel
+                        } else {
+                            LinkerData.ARG_UTM_SOURCE
+                        }
+                        medium = if (!TextUtils.isEmpty(data.feature)) {
+                            data.feature
+                        } else {
+                            LinkerData.ARG_UTM_MEDIUM
+                        }
+                        campaign = data.campaignName
+                    }
                 }
             }
 
