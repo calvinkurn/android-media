@@ -297,8 +297,8 @@
     <string name="action_replace_sizechart">Ubah Foto</string>
     <string name="action_edit_sizechart">Edit Foto</string>
     <string name="action_pick_main_variant">Pilih Varian Utama</string>
-    <string name="action_confirm_cancellation">Ya, batalkan</string>
-    <string name="action_cancel_cancellation">Oh, jangan</string>
+    <string name="action_confirm_cancellation">Ya, batal</string>
+    <string name="action_cancel_cancellation">Tetap Gunakan</string>
     <string name="action_variant_delete_all_negative">Batal</string>
     <string name="action_variant_delete_all_positive">Ya, Hapus</string>
     <string name="action_confirm_replacement">Ya, Ganti</string>
@@ -337,8 +337,8 @@
     <string name="label_variant_main_select_bottom_sheet_title">Pilih satu varian utama</string>
     <string name="label_question_mark">\?</string>
     <string name="label_cancel">Batalkan</string>
-    <string name="label_data">Data</string>
-    <string name="label_variant_cancellation_message">akan hilang jika kamu tidak jadi pilih.</string>
+    <string name="label_data">Tipe varian</string>
+    <string name="label_variant_cancellation_message">dan semua pilihannya akan hilang.</string>
     <string name="label_variant_delete_all_title">Hapus semua varian?</string>
     <string name="label_variant_delete_all_description">Dengan hapus semua varian, data yang kamu sudah isi akan hilang.</string>
     <string name="label_variant_wholesale_warning">Harga varian tidak bisa kamu ubah karena harga grosir sedang aktif.</string>
