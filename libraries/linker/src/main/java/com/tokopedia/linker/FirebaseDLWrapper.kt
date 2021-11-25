@@ -10,7 +10,6 @@ import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.logger.ServerLogger
@@ -20,7 +19,7 @@ import java.util.*
 
 
 class FirebaseDLWrapper {
-    private val urlPath = "link"
+    private val linkPath = "link"
     private val androidUrlPath = "android_url"
     private val iosUrlPath = "ios_url"
     private val firebaseBaseUrl = "https://tkpd.page.link"
@@ -53,7 +52,7 @@ class FirebaseDLWrapper {
             if (firebaseUrl != null) {
                 var link: String? = firebaseUrl.getQueryParameter(androidUrlPath)
                 if (link == null) {
-                    link = firebaseUrl.getQueryParameter(urlPath)
+                    link = firebaseUrl.getQueryParameter(linkPath)
                     if (link != null) {
                         val internalLink: String? =
                             Uri.parse(link).getQueryParameter(androidUrlPath)
@@ -109,11 +108,20 @@ class FirebaseDLWrapper {
         if (utmSource == null) {
             utmSource = firebaseUrl.getQueryParameter(LinkerConstants.UTM_SOURCE)
         }
+        val linkParam = firebaseUrl.getQueryParameter(linkPath)
         if (utmMedium == null) {
-            utmMedium = firebaseUrl.getQueryParameter(LinkerConstants.UTM_MEDIUM)
+            utmMedium = if(!TextUtils.isEmpty(linkParam)){
+                Uri.parse(linkParam)?.getQueryParameter(LinkerConstants.UTM_MEDIUM) ?: ""
+            } else {
+                firebaseUrl.getQueryParameter(LinkerConstants.UTM_MEDIUM)
+            }
         }
         if (utmCampaign == null) {
-            utmCampaign = firebaseUrl.getQueryParameter(LinkerConstants.UTM_CAMPAIGN)
+            utmCampaign = if(!TextUtils.isEmpty(linkParam)) {
+                Uri.parse(linkParam)?.getQueryParameter(LinkerConstants.UTM_CAMPAIGN) ?: ""
+            }else {
+                firebaseUrl.getQueryParameter(LinkerConstants.UTM_CAMPAIGN)
+            }
         }
         if (utmTerm == null) {
             utmTerm = firebaseUrl.getQueryParameter(LinkerConstants.UTM_TERM)
@@ -208,7 +216,7 @@ class FirebaseDLWrapper {
             }
         }
         uri = Uri.encode(uri)
-        return "$firebaseBaseUrl/?$urlPath=$uri"
+        return "$firebaseBaseUrl/?$linkPath=$uri"
 
     }
 
