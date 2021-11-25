@@ -7,9 +7,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
@@ -19,8 +17,7 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 
 class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
-                                   private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                                   private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase) :
+                                   private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailContract.Presenter {
 
     private val paramGlobal = "global"
@@ -28,39 +25,12 @@ class PromoCheckoutDetailPresenter(private val getDetailCouponMarketplaceUseCase
 
     val compositeSubscription = CompositeSubscription()
 
+    @Deprecated("Marketplace promo detail page cannot cancel promo")
     override fun cancelPromo(codeCoupon: String) {
-        view.showProgressLoading()
-        val promoCodes = arrayListOf(codeCoupon)
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodes)
-        compositeSubscription.add(
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
-                        .subscribe(object : Subscriber<ClearPromoUiModel>() {
-                            override fun onCompleted() {
-
-                            }
-
-                            override fun onError(e: Throwable) {
-                                if (isViewAttached) {
-                                    view.hideProgressLoading()
-                                    view.onErrorCancelPromo(e)
-                                }
-                            }
-
-                            override fun onNext(response: ClearPromoUiModel) {
-                                if (isViewAttached) {
-                                    view.hideProgressLoading()
-                                    if (response.successDataModel.success) {
-                                        view.onSuccessCancelPromo()
-                                    } else {
-                                        view.onErrorCancelPromo(RuntimeException())
-                                    }
-                                }
-                            }
-
-                        })
-        )
+        /* no-op */
     }
 
+    @Deprecated("Marketplace promo detail page cannot apply promo")
     override fun validatePromoStackingUse(promoCode: String, promo: Promo?, isFromLoadDetail: Boolean) {
         if (promo == null) return
 

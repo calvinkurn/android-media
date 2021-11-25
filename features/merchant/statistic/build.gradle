@@ -32,6 +32,7 @@ buildscript {
 
 dependencies {
     //features
+    implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.sellerHomeCommon)
 

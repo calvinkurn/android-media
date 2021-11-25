@@ -79,7 +79,7 @@ class BalanceWidgetView: FrameLayout {
             view_balance_widget_coachmark.visibility = View.GONE
             view_balance_widget_coachmark_new.visibility = View.GONE
         }
-        containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, R.color.Unify_N0, R.dimen.dp_8, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, R.dimen.dp_2, Gravity.CENTER)
+        containerWidget.background = ViewUtils.generateBackgroundWithShadow(containerWidget, com.tokopedia.unifyprinciples.R.color.Unify_N0, com.tokopedia.home.R.dimen.ovo_corner_radius, com.tokopedia.unifyprinciples.R.color.Unify_N400_32, com.tokopedia.home.R.dimen.ovo_elevation, Gravity.CENTER)
         layoutManager = getLayoutManager(element)
         if (balanceAdapter == null || rvBalance?.adapter == null) {
             balanceAdapter = BalanceAdapter(listener, object: DiffUtil.ItemCallback<BalanceDrawerItemModel>() {

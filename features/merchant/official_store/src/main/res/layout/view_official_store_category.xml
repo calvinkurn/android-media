@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/dp_64"
+    android:layout_height="64dp"
     android:id="@+id/tab_category_container">
 
     <androidx.constraintlayout.motion.widget.MotionLayout
@@ -21,6 +21,7 @@
             android:layout_height="@dimen/layout_lvl4"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/spacing_lvl2"
+            android:contentDescription="@string/content_desc_category_icon"
             app:layout_constraintBottom_toTopOf="@+id/text_view_category_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

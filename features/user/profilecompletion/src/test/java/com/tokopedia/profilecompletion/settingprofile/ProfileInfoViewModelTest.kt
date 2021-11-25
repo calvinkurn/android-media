@@ -77,7 +77,7 @@ class ProfileInfoViewModelTest {
 
         /* Then */
         verify {
-            userProfileInfoUseCase.setGraphqlQuery(any())
+            userProfileInfoUseCase.setGraphqlQuery(any<String>())
             userProfileInfoUseCase.execute(any(), any())
         }
     }
@@ -138,7 +138,7 @@ class ProfileInfoViewModelTest {
         verify {
             submitProfilePictureUseCase.setTypeClass(SubmitProfilePictureData::class.java)
             submitProfilePictureUseCase.setRequestParams(any())
-            submitProfilePictureUseCase.setGraphqlQuery(any())
+            submitProfilePictureUseCase.setGraphqlQuery(any<String>())
             submitProfilePictureUseCase.execute(any(), any())
         }
     }

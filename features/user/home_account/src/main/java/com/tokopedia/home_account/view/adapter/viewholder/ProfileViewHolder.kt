@@ -1,14 +1,13 @@
 package com.tokopedia.home_account.view.adapter.viewholder
 
 import android.content.Context
-import android.content.res.Configuration
 import android.graphics.PorterDuff
 import android.view.View
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -17,8 +16,8 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.ProfileDataView
-import com.tokopedia.home_account.databinding.HomeAccountItemProfileBinding
 import com.tokopedia.home_account.data.model.TierData
+import com.tokopedia.home_account.databinding.HomeAccountItemProfileBinding
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountBalanceAndPointAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
@@ -29,7 +28,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.HOME_ACCOUNT_SHOW_VIEW_MORE_WALLET_TOGGLE
 import com.tokopedia.utils.image.ImageUtils
-import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.utils.resources.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 /**
@@ -45,6 +44,9 @@ class ProfileViewHolder(
 ) : BaseViewHolder(itemView) {
 
     private val binding: HomeAccountItemProfileBinding? by viewBinding()
+
+    fun getMemberTitle(): String =
+            binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text.toString()
 
     fun bind(profile: ProfileDataView) {
         binding?.homeAccountProfileSection?.accountUserItemProfileName?.text = profile.name
@@ -88,10 +90,10 @@ class ProfileViewHolder(
         setupMemberAdapter(itemView)
         setupBalanceAndPointAdapter(itemView)
 
-        setBackground(itemView.context, binding?.accountUserItemProfileContainer)
+        setBackground(itemView.context)
         listener.onItemViewBinded(adapterPosition, itemView, profile)
 
-        setupMemberSection(itemView, profile.memberStatus)
+        setupMemberSection(profile.memberStatus)
         memberAdapter?.let { memberAdapter ->
             listener.onProfileAdapterReady(memberAdapter)
         }
@@ -113,7 +115,7 @@ class ProfileViewHolder(
         }
     }
 
-    private fun setupMemberSection(itemView: View, tierData: TierData) {
+    private fun setupMemberSection(tierData: TierData) {
         binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.text = tierData.nameDesc
         binding?.homeAccountProfileMemberSection?.homeAccountMemberLayoutTitle?.setMargin(AccountConstants.DIMENSION.LAYOUT_TITLE_LEFT_MARGIN, 0, 0, 0)
         if(tierData.imageURL.isNotEmpty()) {
@@ -124,22 +126,11 @@ class ProfileViewHolder(
         }
     }
 
-    private fun setBackground(
-        context: Context?,
-        accountUserItemProfileContainer: ConstraintLayout?
-    ) {
-        val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
-        when (mode) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                accountUserItemProfileContainer?.setBackgroundResource(R.drawable.ic_account_backdrop)
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-            }
-            else -> {
-            }
+    private fun setBackground(context: Context) {
+        if(context.isDarkMode()) {
+            MethodChecker.setBackground(binding?.accountUserItemProfileContainer, MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop_dark))
+        } else {
+            MethodChecker.setBackground(binding?.accountUserItemProfileContainer, MethodChecker.getDrawable(context, R.drawable.ic_account_backdrop))
         }
     }
 

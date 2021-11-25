@@ -101,5 +101,11 @@ data class OrderedItem(
         val itemCount: Int?,
         val itemPrice: String,
         val itemTotalPriceStr: String,
-        val isBBIProduct : Boolean
+        val isBBIProduct : Boolean,
+        val orderItemType: OrderItemType
 )
+enum class OrderItemType {
+    BUNDLE,
+    SINGLE_PRODUCT,
+    BUNDLE_PRODUCT
+}

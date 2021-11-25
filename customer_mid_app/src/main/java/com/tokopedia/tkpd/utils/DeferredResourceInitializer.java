@@ -32,7 +32,7 @@ public class DeferredResourceInitializer implements DeferredCallback {
                 return init(context);
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(libInitWeave, ENABLE_ASYNC_REMOTERESOURCE_INIT, context.getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(libInitWeave, ENABLE_ASYNC_REMOTERESOURCE_INIT, context.getApplicationContext(), true);
     }
 
     private boolean init(Context context) {

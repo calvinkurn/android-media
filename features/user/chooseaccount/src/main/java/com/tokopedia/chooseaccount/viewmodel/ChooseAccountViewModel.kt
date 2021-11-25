@@ -8,7 +8,6 @@ import com.tokopedia.chooseaccount.data.AccountsDataModel
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant.PARAM_LOGIN_TYPE
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant.PARAM_PHONE
 import com.tokopedia.chooseaccount.di.ChooseAccountQueryConstant.PARAM_VALIDATE_TOKEN
-import com.tokopedia.chooseaccount.domain.subscriber.LoginFacebookSubscriber
 import com.tokopedia.chooseaccount.domain.usecase.GetAccountListUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -65,21 +64,6 @@ open class ChooseAccountViewModel @Inject constructor(
         )
     }
 
-    fun loginTokenFacebook(key: String, email: String, phone: String) {
-        loginTokenUseCase.executeLoginSocialMediaPhone(LoginTokenUseCase.generateParamSocialMediaPhone(
-            key,
-            email,
-            LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK
-        ),
-            LoginFacebookSubscriber(
-                userSessionInterface,
-                onSuccessLoginToken(),
-                onFailedLoginToken(),
-                { onSecurityCheck(phone) }
-            )
-        )
-    }
-
     fun getAccountListPhoneNumber(validateToken: String, phone: String) {
         launchCatchError(block = {
             val params = mapOf(
@@ -91,20 +75,6 @@ open class ChooseAccountViewModel @Inject constructor(
             onSuccessGetAccountList(result, "")
         }, onError = {
             handleGetAccountListError(it, "")
-        })
-    }
-
-    fun getAccountListFacebook(validateToken: String) {
-        launchCatchError(block = {
-            val params = mapOf(
-                PARAM_VALIDATE_TOKEN to validateToken,
-                PARAM_PHONE to "",
-                PARAM_LOGIN_TYPE to LOGIN_TYPE_FACEBOOK
-            )
-            val result = getAccountsListUseCase(params)
-            onSuccessGetAccountList(result, LOGIN_TYPE_FACEBOOK)
-        }, onError = {
-            handleGetAccountListError(it, LOGIN_TYPE_FACEBOOK)
         })
     }
 
@@ -145,47 +115,11 @@ open class ChooseAccountViewModel @Inject constructor(
     }
 
     private fun handleGetAccountListSuccess(data: AccountListDataModel, type: String) {
-        when(type) {
-            LOGIN_TYPE_FACEBOOK -> {
-                mutableGetAccountListFBResponse.value = Success(data)
-            }
-            else -> {
-                mutableGetAccountListPhoneResponse.value = Success(data)
-            }
-        }
+        mutableGetAccountListPhoneResponse.value = Success(data)
     }
 
     private fun handleGetAccountListError(throwable: Throwable, type: String) {
-        when(type) {
-            LOGIN_TYPE_FACEBOOK -> {
-                mutableGetAccountListFBResponse.value = Fail(throwable)
-            }
-            else -> {
-                mutableGetAccountListPhoneResponse.value = Fail(throwable)
-            }
-        }
-    }
-
-    private fun onSuccessGetAccountListPhoneNumber(data: AccountsDataModel) {
-        if (data.accountListDataModel.errorResponseDataModels.isEmpty()) {
-            mutableGetAccountListPhoneResponse.value = Success(data.accountListDataModel)
-        } else if (data.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
-            mutableGetAccountListPhoneResponse.value =
-                Fail(MessageErrorException(data.accountListDataModel.errorResponseDataModels[0].message))
-        } else {
-            mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
-        }
-    }
-
-    private fun onSuccessGetAccountListFacebook(data: AccountsDataModel) {
-        if (data.accountListDataModel.errorResponseDataModels.isEmpty()) {
-            mutableGetAccountListFBResponse.value = Success(data.accountListDataModel)
-        } else if (data.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
-            mutableGetAccountListFBResponse.value =
-                Fail(MessageErrorException(data.accountListDataModel.errorResponseDataModels[0].message))
-        } else {
-            mutableGetAccountListFBResponse.value = Fail(RuntimeException())
-        }
+        mutableGetAccountListPhoneResponse.value = Fail(throwable)
     }
 
     override fun onCleared() {
@@ -194,7 +128,6 @@ open class ChooseAccountViewModel @Inject constructor(
     }
 
     companion object {
-        const val LOGIN_TYPE_FACEBOOK = "fb"
         const val LOGIN_TYPE_BIOMETRIC = "biometric"
     }
 }
