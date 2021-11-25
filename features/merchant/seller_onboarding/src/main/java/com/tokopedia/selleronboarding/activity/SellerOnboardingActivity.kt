@@ -1,6 +1,7 @@
 package com.tokopedia.selleronboarding.activity
 
 import android.annotation.SuppressLint
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.tokopedia.selleronboarding.analytic.SellerOnboardingV2Analytic
 import com.tokopedia.selleronboarding.databinding.ActivitySobOnboardingBinding
 import com.tokopedia.selleronboarding.model.*
 import com.tokopedia.selleronboarding.utils.OnboardingUtils
+import timber.log.Timber
 import kotlin.math.abs
 
 /**
@@ -62,6 +64,7 @@ class SellerOnboardingActivity : BaseActivity() {
         binding = ActivitySobOnboardingBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
+        setPageBackground()
         setWhiteStatusBar()
         setupViewsTopMargin()
         setupSlider()
@@ -70,6 +73,14 @@ class SellerOnboardingActivity : BaseActivity() {
         setupButtonClickListener()
 
         binding?.pageIndicatorSob?.setIndicator(sobAdapter.dataSize)
+    }
+
+    private fun setPageBackground() {
+        try {
+            binding?.backgroundSob?.setBackgroundResource(R.drawable.bg_sob_full)
+        } catch (e: Resources.NotFoundException) {
+            Timber.e(e)
+        }
     }
 
     @SuppressLint("WrongConstant")

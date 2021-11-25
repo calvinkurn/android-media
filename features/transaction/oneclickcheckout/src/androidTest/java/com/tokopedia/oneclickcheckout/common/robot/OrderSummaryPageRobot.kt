@@ -765,21 +765,21 @@ class OrderSummaryPageRobot {
                     assertEquals(View.VISIBLE, tickerPromo.visibility)
                     val title = view.findViewById<Typography>(R.id.ticker_shipping_promo_title)
                     if (promoTitle != null) {
-                        assertEquals(promoTitle, title.text)
+                        assertEquals(promoTitle, title.text.toString())
                         assertEquals(View.VISIBLE, title.visibility)
                     } else {
                         assertEquals(View.GONE, title.visibility)
                     }
                     val subtitle = view.findViewById<Typography>(R.id.ticker_shipping_promo_subtitle)
                     if (promoSubtitle != null) {
-                        assertEquals(promoSubtitle, subtitle.text)
+                        assertEquals(promoSubtitle, subtitle.text.toString())
                         assertEquals(View.VISIBLE, subtitle.visibility)
                     } else {
                         assertEquals(View.GONE, subtitle.visibility)
                     }
                     val desc = view.findViewById<Typography>(R.id.ticker_shipping_promo_description)
                     if (promoDescription != null) {
-                        assertEquals(promoDescription, desc.text)
+                        assertEquals(promoDescription, desc.text.toString())
                         assertEquals(View.VISIBLE, desc.visibility)
                     } else {
                         assertEquals(View.GONE, desc.visibility)
