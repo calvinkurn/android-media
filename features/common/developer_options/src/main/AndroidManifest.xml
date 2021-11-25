@@ -3,11 +3,8 @@
     package="com.tokopedia.developer_options">
 
     <application>
-<!--        <activity-->
-<!--            android:name=".presentation.activity.NewDeveloperOptionActivity"-->
-<!--            android:exported="false" />-->
         <activity
-            android:name=".presentation.activity.NewDeveloperOptionActivity"
+            android:name=".presentation.activity.DeveloperOptionActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTask"
@@ -59,7 +56,6 @@
         <service
             android:name=".presentation.service.DeleteFirebaseTokenService"
             android:exported="false" />
-
     </application>
 
 </manifest>

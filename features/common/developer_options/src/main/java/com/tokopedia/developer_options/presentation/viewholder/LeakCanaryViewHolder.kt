@@ -7,9 +7,9 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity.Companion.LEAK_CANARY_DEFAULT_TOGGLE
-import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_KEY
-import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_SP_NAME
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_DEFAULT_TOGGLE
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_KEY
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_SP_NAME
 import com.tokopedia.developer_options.presentation.model.LeakCanaryUiModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 

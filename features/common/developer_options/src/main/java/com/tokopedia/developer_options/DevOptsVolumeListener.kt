@@ -6,7 +6,7 @@ import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_VOLUME_DOWN
 import android.view.KeyEvent.KEYCODE_VOLUME_UP
 import com.tokopedia.abstraction.base.view.listener.DebugVolumeListener
-import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import java.lang.ref.WeakReference
 
 class DevOptsVolumeListener(activity: Activity) : DebugVolumeListener {
@@ -53,7 +53,7 @@ class DevOptsVolumeListener(activity: Activity) : DebugVolumeListener {
     private fun goToDeveloperOptions(){
         val activity = activityRef?.get() ?: return
         if (!activity.isFinishing && !activity.isDestroyed) {
-            activity.startActivity(Intent(activity, NewDeveloperOptionActivity::class.java))
+            activity.startActivity(Intent(activity, DeveloperOptionActivity::class.java))
         }
     }
 }

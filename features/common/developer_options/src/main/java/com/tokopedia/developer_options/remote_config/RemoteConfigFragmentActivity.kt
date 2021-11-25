@@ -13,7 +13,7 @@ import android.view.inputmethod.EditorInfo
 import com.tokopedia.developer_options.R
 
 import com.tokopedia.developer_options.remote_config.adapters.KeyValueListAdapter
-import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -80,7 +80,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), KeyValueListener {
     private fun updateListAdapterData() {
         if (remoteConfig != null) {
             val prefix =
-                intent?.extras?.getString(NewDeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: ""
+                intent?.extras?.getString(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: ""
 
             val configListData = when {
                 prefix.isNotEmpty() -> getPrefixes(prefix)
@@ -107,7 +107,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), KeyValueListener {
         rvConfigList?.adapter = listAdapter
         findViewById<View>(R.id.button_add_empty)?.setOnClickListener {
             showEditRemoteConfigDialog(
-                intent?.extras?.getString(NewDeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: ""
+                intent?.extras?.getString(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX) ?: ""
             )
         }
         updateVisibility(!isListEmpty)
