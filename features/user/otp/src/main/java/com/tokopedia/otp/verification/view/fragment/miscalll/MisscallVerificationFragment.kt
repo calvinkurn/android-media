@@ -1,4 +1,4 @@
-package com.tokopedia.otp.verification.view.fragment
+package com.tokopedia.otp.verification.view.fragment.miscalll
 
 import android.content.Context
 import android.graphics.Typeface
@@ -62,6 +62,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     override fun initView() {
         rollanceType = getAbTestPlatform()?.getString(ROLLANCE_KEY_MISCALL_OTP).toString()
         modeListData.otpListImgUrl = ""
+
         super.initView()
 
         setNewTextTitleAndDescription()
@@ -223,7 +224,9 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     override fun onPause() {
         super.onPause()
         if (::phoneCallBroadcastReceiver.isInitialized) {
-            activity?.let { phoneCallBroadcastReceiver.unregisterReceiver(it) }
+            activity?.let {
+                phoneCallBroadcastReceiver.unregisterReceiver(it)
+            }
         }
     }
 
