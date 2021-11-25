@@ -30,6 +30,7 @@ interface PusherMediator {
     fun destroy()
     fun addListener(listener: PlayLivePusherMediatorListener)
     fun removeListener(listener: PlayLivePusherMediatorListener)
+    fun clearListener()
     fun onCameraChanged(surfaceView: SurfaceAspectRatioView)
     fun onCameraDestroyed()
 }

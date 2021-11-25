@@ -140,7 +140,7 @@ class PlayLivePusherMediator(
         mListeners.remove(listener)
     }
 
-    fun clearListener() {
+    override fun clearListener() {
         mListeners.clear()
     }
 
