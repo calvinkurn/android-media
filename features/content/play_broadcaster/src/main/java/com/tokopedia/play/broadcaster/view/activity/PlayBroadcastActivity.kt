@@ -476,6 +476,11 @@ class PlayBroadcastActivity : BaseActivity(), PlayBaseCoordinator, PlayBroadcast
         }
     }
 
+    fun isDialogContinueLiveStreamOpen(): Boolean {
+        return if(!::pauseLiveDialog.isInitialized) false
+        else pauseLiveDialog.isShowing
+    }
+
     private fun showTermsAndConditionBottomSheet(
         canStream: Boolean,
         tncList: List<TermsAndConditionUiModel>
