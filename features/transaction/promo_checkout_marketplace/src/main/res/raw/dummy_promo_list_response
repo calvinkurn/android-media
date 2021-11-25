@@ -245,6 +245,63 @@
                   ]
                 },
                 {
+                  "code": "DD30OSPM2CN6MKQ55AN",
+                  "title": "Diskon Rp30.000",
+                  "message": "",
+                  "expiry_info": "Berakhir 1 jam lagi!",
+                  "expiry_count_down": 1637341199,
+                  "coupon_url": "",
+                  "coupon_app_link": "",
+                  "unique_id": "",
+                  "shop_id": 0,
+                  "tag_image_urls": [],
+                  "benefit_amount": 30000,
+                  "is_recommended": false,
+                  "is_selected": false,
+                  "is_attempted": false,
+                  "radio_check_state": "enabled",
+                  "clashing_infos": [
+                    {
+                      "code": "NPNVTU0Z",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                    },
+                    {
+                      "code": "NMNVTL01",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                    },
+                    {
+                      "code": "LMNVE0Z9",
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                    }
+                  ],
+                  "currency_details_str": "",
+                  "coachmark": {
+                    "is_shown": false,
+                    "title": "",
+                    "content": ""
+                  },
+                  "is_highlighted": false,
+                  "group_id": 2,
+                  "is_group_header": false,
+                  "promo_infos": [
+                    {
+                      "type": "coupon_info",
+                      "title": "ini kupon info",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "top_banner",
+                      "title": "Jangan lewatkan",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
+                      "type": "bottom_banner",
+                      "title": "Khusus pengguna baru",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    }
+                  ]
+                },
+                {
                   "code": "FSLOC17CN6MK0ANWUEF",
                   "title": "Gratis Ongkir hingga Rp50.000",
                   "message": "",

@@ -158,7 +158,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                 if (element.uiState.isHighlighted) {
                     promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(R.dimen.dp_32).toInt()
                 } else {
-                    promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8).toInt()
+                    promoQuantityIdentifierLayoutParam.topMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()
                 }
             } else {
                 textPromoQuantity.gone()
