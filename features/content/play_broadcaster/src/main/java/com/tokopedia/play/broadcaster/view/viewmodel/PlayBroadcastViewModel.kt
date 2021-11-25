@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -341,8 +342,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
             // configure live streaming duration
             livePusherMediator.setLiveStreamingDuration(
-                if (configUiModel.channelType == ChannelType.Pause) configUiModel.remainingTime
-                else configUiModel.durationConfig.duration
+                if (configUiModel.channelType == ChannelType.Pause) configUiModel.durationConfig.duration - configUiModel.remainingTime
+                else 0,
+                configUiModel.durationConfig.duration
             )
             livePusherMediator.setLiveStreamingPauseDuration(configUiModel.durationConfig.pauseDuration)
 
@@ -826,8 +828,13 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         viewModelScope.launchCatchError(block = {
-            val duration = TimeUnit.SECONDS.toMillis(duration.duration)
-            livePusherMediator.restartLiveCountDownTimer(duration)
+            Log.d("<LOG>", "socket")
+            _configInfo.value?.durationConfig?.duration?.let {
+                Log.d("<LOG>", "duration : ${TimeUnit.SECONDS.toMillis(duration.duration)}")
+                Log.d("<LOG>", "maxDuration : $it")
+                val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
+                livePusherMediator.restartLiveCountDownTimer(durationInMillis, it)
+            }
         }) { }
     }
 

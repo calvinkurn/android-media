@@ -14,16 +14,16 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
 ) : PlayLivePusherCountDownTimer {
 
     override val remainingDurationInMillis: Long
-        get() = mRemainingMillis
+        get() = mMaxDuration - mDuration
 
     private var job: Job? = null
     private var mDuration: Long = 0L
-    private var mRemainingMillis: Long = 0L
+    private var mMaxDuration: Long = 0L
 
     private var mListener: PlayLivePusherCountDownTimerListener? = null
 
-    override fun setDuration(duration: Long) {
-        setupDuration(duration)
+    override fun setDuration(duration: Long, maxDuration: Long) {
+        setupDuration(duration, maxDuration)
     }
 
     override fun setListener(listener: PlayLivePusherCountDownTimerListener) {
@@ -39,14 +39,15 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
         removeLastDurationMillis()
     }
 
-    override fun restart(duration: Long) {
-        setupDuration(duration)
+    override fun restart(duration: Long, maxDuration: Long) {
+        setupDuration(duration, maxDuration)
         startCountUp()
     }
 
     override fun resume() {
         val lastDuration = cacheHandler.getLong(KEY_DURATION_MILLIS, 0L)
-        restart(lastDuration)
+        val lastMaxDuration = cacheHandler.getLong(KEY_MAX_DURATION_MILLIS, 0L)
+        restart(lastDuration, lastMaxDuration)
     }
 
     override fun pause() {
@@ -60,15 +61,15 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
         mListener = null
     }
 
-    private fun setupDuration(duration: Long) {
+    private fun setupDuration(duration: Long, maxDuration: Long) {
         this.mDuration = duration
-        this.mRemainingMillis = mDuration
+        this.mMaxDuration = maxDuration
     }
 
     private fun startCountUp() {
         job?.cancel()
         job = CoroutineScope(dispatcher.io).launch {
-            while(true) {
+            while(mDuration <= mMaxDuration) {
 
                 delay(DEFAULT_INTERVAL)
                 mDuration += DEFAULT_INTERVAL
@@ -77,15 +78,19 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
                     mListener?.onCountDownTimerActive(mDuration)
                 }
             }
+
+            mListener?.onCountDownTimerFinish()
         }
     }
 
     private fun removeLastDurationMillis() {
         cacheHandler.remove(KEY_DURATION_MILLIS)
+        cacheHandler.remove(KEY_MAX_DURATION_MILLIS)
     }
 
     private fun saveLastDurationMillis() {
         cacheHandler.putLong(KEY_DURATION_MILLIS, mDuration)
+        cacheHandler.putLong(KEY_MAX_DURATION_MILLIS, mMaxDuration)
         cacheHandler.applyEditor()
     }
 
@@ -93,5 +98,6 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
         const val DEFAULT_INTERVAL = 1000L
 
         const val KEY_DURATION_MILLIS = "play_broadcast_duration_millis"
+        const val KEY_MAX_DURATION_MILLIS = "play_broadcast_max_duration_millis"
     }
 }

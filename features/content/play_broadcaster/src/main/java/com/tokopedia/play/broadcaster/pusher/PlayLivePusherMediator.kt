@@ -64,8 +64,8 @@ class PlayLivePusherMediator(
         mCountDownTimer.setListener(countDownTimerListener)
     }
 
-    fun setLiveStreamingDuration(durationInMillis: Long) {
-        mCountDownTimer.setDuration(durationInMillis)
+    fun setLiveStreamingDuration(durationInMillis: Long, maxDuration: Long) {
+        mCountDownTimer.setDuration(durationInMillis, maxDuration)
     }
 
     fun setLiveStreamingPauseDuration(durationInMillis: Long) {
@@ -86,8 +86,8 @@ class PlayLivePusherMediator(
         mCountDownTimer.start()
     }
 
-    fun restartLiveCountDownTimer(duration: Long) {
-        mCountDownTimer.restart(duration)
+    fun restartLiveCountDownTimer(duration: Long, maxDuration: Long) {
+        mCountDownTimer.restart(duration, maxDuration)
     }
 
     fun destroy() {
