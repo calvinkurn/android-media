@@ -36,18 +36,22 @@ class GetWalletBalanceViewModel @Inject constructor(
                 walletLiveData.value = WalletData(cashBal, sndrAmt)
             }
         } ?: kotlin.run {
-            walletLiveData.value = WalletError("Ada yang salah. Silakan coba lagi")
+            walletLiveData.value = WalletError(GENERAL_ERROR)
         }
     }
 
     private fun onFailWalletDetail(throwable: Throwable) {
-        walletLiveData.value = WalletError("Ada yang salah. Silakan coba lagi")
+        walletLiveData.value = WalletError(GENERAL_ERROR)
     }
 
 
     override fun onCleared() {
         super.onCleared()
         getWalletBalanceUseCase.cancelJobs()
+    }
+
+    companion object{
+        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
     }
 
 }
