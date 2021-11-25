@@ -25,13 +25,37 @@ class RecomCarouselProductCardViewHolder (view: View,
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.productCardView) }
     override fun bind(element: RecomCarouselProductCardDataModel) {
-        setLayout(itemView.context, element)
+        setLayout(element)
+        setupListener(itemView.context, element)
     }
 
-    private fun setLayout(context: Context, element: RecomCarouselProductCardDataModel){
+    override fun bind(element: RecomCarouselProductCardDataModel, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
+        if (payload != null) {
+            if (payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_PRODUCT_MODEL)) {
+                setLayout(element)
+            }
+            if (
+                payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_RECOM_ITEM) ||
+                payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_COMPONENT_NAME) ||
+                payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_IS_LISTENER_CHANGED)
+            ) {
+                setupListener(itemView.context, element)
+            }
+        } else {
+            bind(element)
+        }
+    }
+
+    private fun setLayout(element: RecomCarouselProductCardDataModel){
         productCardView?.run{
             applyCarousel()
             setProductModel(element.productModel)
+        }
+    }
+
+    private fun setupListener(context: Context, element: RecomCarouselProductCardDataModel) {
+        productCardView?.run {
             addOnImpressionListener(element.recomItem) {
                 if(element.recomItem.isTopAds){
                     TopAdsUrlHitter(context).hitImpressionUrl(

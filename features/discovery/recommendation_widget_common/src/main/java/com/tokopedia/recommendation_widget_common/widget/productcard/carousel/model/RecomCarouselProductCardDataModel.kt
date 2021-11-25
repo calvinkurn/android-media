@@ -28,5 +28,35 @@ data class RecomCarouselProductCardDataModel(
         return recomItem.productId == toCompare.recomItem.productId
     }
 
-    override fun areContentsTheSame(toCompare: RecomCarouselDiffUtilComparable) = false
+    override fun areContentsTheSame(toCompare: RecomCarouselDiffUtilComparable): Boolean {
+        if (toCompare !is RecomCarouselProductCardDataModel) return false
+
+        return productModel == toCompare.productModel && recomItem == toCompare.recomItem &&
+                componentName == toCompare.componentName && listener === toCompare.listener
+    }
+
+    override fun getChangePayload(toCompare: RecomCarouselDiffUtilComparable): Map<String, Any> {
+        if (toCompare !is RecomCarouselProductCardDataModel) return emptyMap()
+        return mutableMapOf<String, Any>().apply {
+            if (productModel != toCompare.productModel) {
+                put(PAYLOAD_PRODUCT_MODEL, toCompare.productModel)
+            }
+            if (recomItem != toCompare.recomItem) {
+                put(PAYLOAD_RECOM_ITEM, toCompare.recomItem)
+            }
+            if (componentName != toCompare.componentName) {
+                put(PAYLOAD_COMPONENT_NAME, toCompare.componentName)
+            }
+            if (listener !== toCompare.listener) {
+                put(PAYLOAD_IS_LISTENER_CHANGED, true)
+            }
+        }
+    }
+
+    companion object {
+        const val PAYLOAD_PRODUCT_MODEL = "productModel"
+        const val PAYLOAD_RECOM_ITEM = "recomItem"
+        const val PAYLOAD_COMPONENT_NAME = "componentName"
+        const val PAYLOAD_IS_LISTENER_CHANGED = "isListenerChanged"
+    }
 }
