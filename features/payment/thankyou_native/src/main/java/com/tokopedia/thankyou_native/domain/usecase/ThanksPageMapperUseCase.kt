@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -28,20 +29,10 @@ class ThanksPageMapperUseCase @Inject constructor() : UseCase<ThanksPageData>() 
             thanksPageData.paymentMethodCount += (size - 1)
         }
 
-        // @TODO test only change
-        /*val configFlagData: ConfigFlag? = thanksPageData.configFlag?.let {
+        val configFlagData: ConfigFlag? = thanksPageData.configFlag?.let {
             Gson().fromJson(it, ConfigFlag::class.java)
-        }*/
-
-        thanksPageData.configFlagData = ConfigFlag(
-            isThanksWidgetEnabled = true,
-            shouldHideSearchBar = true,
-            shouldHideGlobalMenu = true,
-            shouldHideHomeButton = true,
-            shouldHideFeatureRecom = true,
-            shouldHideProductRecom = true,
-            shouldHideDigitalRecom = true
-        )
+        }
+        thanksPageData.configFlagData = configFlagData
 
         return thanksPageData
     }
