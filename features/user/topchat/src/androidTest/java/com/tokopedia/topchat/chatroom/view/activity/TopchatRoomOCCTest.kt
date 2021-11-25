@@ -8,6 +8,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
@@ -48,32 +51,30 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
     }
 
+    @Test
+    fun should_directly_open_occ_when_click_beli_langsung_in_attached_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
 
-    // TODO: cannot validate applink on testapp if the destination page is not included/different module
-//    @Test
-//    fun should_directly_open_occ_when_click_beli_langsung_in_attached_product() {
-//        // Given
-//        getChatUseCase.response = firstPageChatAsBuyer
-//        chatAttachmentUseCase.response = chatAttachmentResponse
-//        launchChatRoomActivity()
-//
-//        //When
-//        Intents.intending(IntentMatchers.anyIntent())
-//            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-//        scrollChatToPosition(0)
-//        onView(
-//            withRecyclerView(R.id.recycler_view_chatroom)
-//                .atPositionOnView(4, R.id.tv_buy)
-//        ).perform(ViewActions.click())
-//
-//        //Then
-//        val intent = RouteManager.getIntent(
-//            context,
-//            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
-//            "1160424090"
-//        )
-////        Intents.intended(IntentMatchers.hasData(intent.data))
-//    }
+        //When
+        Intents.intending(IntentMatchers.anyIntent())
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(0)
+        onView(
+            withRecyclerView(R.id.recycler_view_chatroom)
+                .atPositionOnView(4, R.id.tv_buy)
+        ).perform(ViewActions.click())
+
+        //Then
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
+            "1160424090"
+        )
+        Intents.intended(IntentMatchers.hasData(intent.data))
+    }
 
     @Test
     fun should_show_toaster_when_click_beli_langsung_in_attached_product_and_fail() {
@@ -88,15 +89,12 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         scrollChatToPosition(0)
-        // TODO: separate action implementation for better test readability, do this for other test cases
         ProductCardRobot.clickBuyButtonAt(position = 4)
 
         //Then
-        // TODO: separate assertion implementation for better test readability, do this for other test cases
         ProductCardResult.hasFailedToasterWithMsg(msg = expectedErrorMessage)
     }
 
-    //
     @Test
     fun should_show_toaster_when_click_beli_langsung_in_attached_product_and_error() {
         // Given
@@ -236,8 +234,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
             .check(matches(withText(context.getString(R.string.title_topchat_pre_order_camel))))
 
-        // TODO: cannot validate applink on testapp if the destination page is not included/different module
-//        Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
+        Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
     }
 
     private fun getModifiedChatAttributes(

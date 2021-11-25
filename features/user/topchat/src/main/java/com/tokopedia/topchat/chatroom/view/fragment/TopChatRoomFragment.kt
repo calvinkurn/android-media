@@ -1526,7 +1526,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
             element.getBuyEventAction()
         )
-        RouteManager.route(context, ApplinkConst.CART)
+        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+        startActivity(intent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {

@@ -20,5 +20,7 @@ class ResultProduct constructor(
     val stock: Int = 1,
     val isSupportVariant: Boolean = false,
     val campaignId: Long = 0,
-    val isPreorder: Boolean = false
+    val isPreorder: Boolean = false,
+    val priceInt: Long = 0,
+    val categoryId: Long = 0
 ) : Parcelable

@@ -796,7 +796,9 @@ open class TopChatRoomPresenter @Inject constructor(
                 remainingStock = resultProduct.stock,
                 isSupportVariant = resultProduct.isSupportVariant,
                 campaignId = resultProduct.campaignId,
-                isPreorder = resultProduct.isPreorder
+                isPreorder = resultProduct.isPreorder,
+                priceInt = resultProduct.priceInt,
+                categoryId = resultProduct.categoryId
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)

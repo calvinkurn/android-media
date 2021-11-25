@@ -24,7 +24,9 @@ data class AttachProductItemUiModel(
     val imgUrlFreeOngkir: String,
     val stock: Int,
     val isSupportVariant: Boolean,
-    val isPreorder: Boolean
+    val isPreorder: Boolean,
+    val priceInt: Long,
+    val categoryId: Long
 ) : Visitable<AttachProductListAdapterTypeFactory>, Parcelable {
 
     override fun type(typeFactory: AttachProductListAdapterTypeFactory): Int {
@@ -43,6 +45,8 @@ data class AttachProductItemUiModel(
             this.imgUrlFreeOngkir,
             this.stock,
             this.isSupportVariant,
-            isPreorder = this.isPreorder
+            isPreorder = this.isPreorder,
+            priceInt = this.priceInt,
+            categoryId = this.categoryId
     )
 }

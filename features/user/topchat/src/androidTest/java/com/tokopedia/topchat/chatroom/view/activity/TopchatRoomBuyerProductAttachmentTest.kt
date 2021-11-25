@@ -254,42 +254,40 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         assertVariant()
     }
 
-    // TODO: need to create fake usecase atcusecase to simulate success hit ATC?
-//    @Test
-//    fun should_directly_add_to_cart_when_click_keranjang_in_attached_product() {
-//        // Given
-//        getChatUseCase.response = firstPageChatAsBuyer
-//        chatAttachmentUseCase.response = chatAttachmentResponse
-//        launchChatRoomActivity()
-//
-//        //When
-//        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-//        scrollChatToPosition(4)
-//        onView(withRecyclerView(R.id.recycler_view_chatroom)
-//            .atPositionOnView(4, R.id.tv_atc)).perform(click())
-//
-//        // Then
-//        onView(withText(context.getString(R.string.title_topchat_see_cart)))
-//            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-//    }
+    @Test
+    fun should_directly_add_to_cart_when_click_keranjang_in_attached_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
 
-    // TODO: cannot validate applink on testapp if the destination page is not included/different module
-//    @Test
-//    fun should_open_cart_when_click_beli_in_attached_product() {
-//        // Given
-//        getChatUseCase.response = firstPageChatAsBuyer
-//        chatAttachmentUseCase.response = chatAttachmentResponse
-//        launchChatRoomActivity()
-//
-//        //When
-//        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-//        scrollChatToPosition(4)
-//        onView(withRecyclerView(R.id.recycler_view_chatroom)
-//            .atPositionOnView(4, R.id.tv_buy)).perform(click())
-//
-//        // Then
-//        intended(hasData(ApplinkConst.CART))
-//    }
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(4)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(4, R.id.tv_atc)).perform(click())
+
+        // Then
+        onView(withText(context.getString(R.string.title_topchat_see_cart)))
+            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun should_open_cart_when_click_beli_in_attached_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        launchChatRoomActivity()
+
+        //When
+        intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        scrollChatToPosition(4)
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(4, R.id.tv_buy)).perform(click())
+
+        // Then
+        intended(hasData(ApplinkConst.CART))
+    }
 
     @Test
     fun should_open_bottomsheet_when_click_beli_in_attached_product_variants() {
