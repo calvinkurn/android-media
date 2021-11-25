@@ -251,8 +251,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     private fun setupToolbar() {
         activity?.let {
-            (it as HomeRecommendationActivity).findViewById<Toolbar>(R.id.recom_toolbar).gone()
-            (it as AppCompatActivity).supportActionBar?.hide()
+            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
+            (it as? AppCompatActivity)?.supportActionBar?.hide()
         }
         navToolbar?.let {
             it.setShowShadowEnabled(true)
@@ -355,11 +355,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 getRecyclerView(view)?.smoothScrollToPosition(0)
                 (response.firstOrNull() as? ProductInfoDataModel)?.productDetailData?.let { productDetailData ->
                     addToolbarMenu(productDetailData)
-//                    menu?.findItem(R.id.action_share)?.isVisible = true
-//                    menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {
-//                        shareProduct(productDetailData.id.toString(), productDetailData.name, productDetailData.name, productDetailData.imageUrl)
-//                        true
-//                    }
                 }
             }
         })

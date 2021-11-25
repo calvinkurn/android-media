@@ -191,8 +191,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
     private fun setupToolbar() {
         activity?.let {
-            (it as HomeRecommendationActivity).findViewById<Toolbar>(R.id.recom_toolbar).gone()
-            (it as AppCompatActivity).supportActionBar?.hide()
+            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
+            (it as? AppCompatActivity)?.supportActionBar?.hide()
         }
         navToolbar?.let {
             it.setShowShadowEnabled(true)
