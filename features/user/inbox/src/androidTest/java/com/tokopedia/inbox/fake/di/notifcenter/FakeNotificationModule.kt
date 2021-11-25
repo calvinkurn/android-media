@@ -37,14 +37,6 @@ class FakeNotificationModule {
 
     @Provides
     @NotificationScope
-    fun provideAddWishlistUseCase(
-        @NotificationContext context: Context
-    ): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @Provides
-    @NotificationScope
     fun provideRemoveWishlistUseCase(
         @NotificationContext context: Context
     ): RemoveWishListUseCase {
