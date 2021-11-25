@@ -87,20 +87,22 @@ class OrderExtensionToaster(
     }
 
     private fun showToasterServerError(view: View?, toasterType: Int, toasterMessage: String) {
-        view?.run {
-            val toaster = Toaster
-            try {
-                toaster.toasterCustomBottomHeight =
-                    resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.layout_lvl6)
-            } catch (t: Throwable) {
-                Timber.d(t)
+        if (toasterMessage.isNotBlank()) {
+            view?.run {
+                val toaster = Toaster
+                try {
+                    toaster.toasterCustomBottomHeight =
+                        resources.getDimensionPixelSize(com.tokopedia.unifycomponents.R.dimen.layout_lvl6)
+                } catch (t: Throwable) {
+                    Timber.d(t)
+                }
+                toaster.build(
+                    this,
+                    type = toasterType,
+                    text = toasterMessage,
+                    duration = Toaster.LENGTH_SHORT
+                ).show()
             }
-            toaster.build(
-                this,
-                type = toasterType,
-                text = toasterMessage,
-                duration = Toaster.LENGTH_SHORT
-            ).show()
         }
     }
 }

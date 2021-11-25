@@ -22,8 +22,10 @@ data class OrderExtensionRespondInfoResponse(
         @Expose
         @SerializedName("reason")
         val reason: String = "",
+        @Expose
         @SerializedName("reject_text")
         val rejectText: String = "",
+        @Expose
         @SerializedName("text")
         val text: String = ""
     )

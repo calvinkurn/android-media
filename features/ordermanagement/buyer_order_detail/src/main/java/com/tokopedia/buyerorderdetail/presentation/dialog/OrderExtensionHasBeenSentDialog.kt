@@ -11,15 +11,13 @@ class OrderExtensionHasBeenSentDialog(
 ) : OrderExtensionDialog(context, actionType) {
 
     fun showOrderHasBeenSentDialog() {
-        val confirmedCancelledOrderDialog = context.let {
-            OrderExtensionDialog(
-                it,
-                DialogUnify.SINGLE_ACTION
-            ).apply {
-                setTitle(context.getString(R.string.order_extension_title_order_has_been_sent))
-                setDescription(context.getString(R.string.order_extension_desc_order_has_been_sent))
-                setImageUrl(BuyerOrderDetailOrderExtensionConstant.Image.ORDER_HAS_BEEN_SENT_URL)
-            }
+        val confirmedCancelledOrderDialog = OrderExtensionDialog(
+            context,
+            DialogUnify.SINGLE_ACTION
+        ).apply {
+            setTitle(context.getString(R.string.order_extension_title_order_has_been_sent))
+            setDescription(context.getString(R.string.order_extension_desc_order_has_been_sent))
+            setImageUrl(BuyerOrderDetailOrderExtensionConstant.Image.ORDER_HAS_BEEN_SENT_URL)
         }
         confirmedCancelledOrderDialog.getDialog()?.run {
             setPrimaryCTAText(context.getString(R.string.label_understand))
