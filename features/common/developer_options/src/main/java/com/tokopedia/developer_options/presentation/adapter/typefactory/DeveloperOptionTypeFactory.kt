@@ -2,6 +2,12 @@ package com.tokopedia.developer_options.presentation.adapter.typefactory
 
 import com.tokopedia.developer_options.presentation.model.*
 
+/**
+ * @author Said Faisal on 24/11/2021
+ *
+ * Set type of your UiModel here, so it can be overridden later
+ */
+
 interface DeveloperOptionTypeFactory {
     fun type(uiModel: PdpDevUiModel): Int
     fun type(uiModel: AccessTokenUiModel): Int

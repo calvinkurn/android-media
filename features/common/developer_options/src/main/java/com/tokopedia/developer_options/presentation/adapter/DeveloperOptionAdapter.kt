@@ -5,11 +5,20 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.presentation.adapter.typefactory.DeveloperOptionTypeFactoryImpl
 import com.tokopedia.developer_options.presentation.model.*
 
+/**
+ * @author Said Faisal on 24/11/2021
+ */
+
 class DeveloperOptionAdapter(
     typeFactory: DeveloperOptionTypeFactoryImpl,
     differ: DeveloperOptionDiffer
 ) : BaseDeveloperOptionAdapter<Visitable<*>, DeveloperOptionTypeFactoryImpl>(typeFactory, differ) {
 
+    /**
+     * @see KEYWORD prefix
+     *
+     * Keyword you need while searching something
+     **/
     companion object {
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
@@ -69,6 +78,11 @@ class DeveloperOptionAdapter(
         const val KEYWORD_SHOW_APPLINK_ON_TOAST = "Show Applink on Toast and Copy the Link to Clipboard"
     }
 
+    /**
+     * @see defaultItems
+     *
+     * Variable contains UiModels that you want to show in RecyclerView, put keyword as param
+     **/
     private val defaultItems = mutableListOf(
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),

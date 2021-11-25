@@ -7,6 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.developer_options.presentation.model.*
 import com.tokopedia.developer_options.presentation.viewholder.*
 
+/**
+ * @author Said Faisal on 24/11/2021
+ *
+ * Override the type and set your ViewHolder
+ */
+
 class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,

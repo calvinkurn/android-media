@@ -34,11 +34,17 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import java.lang.RuntimeException
 
+/**
+ * @author Said Faisal on 24/11/2021
+ */
+
 class NewDeveloperOptionActivity : BaseActivity() {
 
     companion object {
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
         private const val API_KEY_TRANSLATOR = "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49"
+        private const val RV_DEFAULT_POSITION = 0
+        private const val RV_CACHE_SIZE = 20
 
         const val SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name"
         const val SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key"
@@ -131,7 +137,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
             override fun afterTextChanged(s: Editable?) {
                 s?.toString()?.let {
                     adapter.searchItem(it)
-                    rvDeveloperOption?.scrollToPosition(0)
+                    rvDeveloperOption?.scrollToPosition(RV_DEFAULT_POSITION)
                 }
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { /* no need to implement */ }
@@ -144,7 +150,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
         rvDeveloperOption?.apply {
             adapter = this@NewDeveloperOptionActivity.adapter
             layoutManager = LinearLayoutManager(context)
-            setItemViewCacheSize(20)
+            setItemViewCacheSize(RV_CACHE_SIZE)
         }
         adapter.setDefaultItem()
     }

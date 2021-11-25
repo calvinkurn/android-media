@@ -5,6 +5,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 
+/**
+ * @author Said Faisal on 24/11/2021
+ */
+
 open class BaseDeveloperOptionAdapter<T, F: AdapterTypeFactory>(
     baseListAdapterTypeFactory: F,
     private val differ: DeveloperOptionDiffer
