@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
@@ -31,7 +32,7 @@ class QuestWidgetView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs), HandleError {
 
-    companion object{
+    companion object {
         const val LOADING = 0
         const val DATA = 1
         const val ERROR = 2
@@ -83,41 +84,64 @@ class QuestWidgetView @JvmOverloads constructor(
         viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
-                    shimmerQuestWidget.show()
+                    if (isConnectedToInternet()) {
+                        shimmerQuestWidget.show()
+                    } else {
+                        showErrorUi()
+                    }
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
                     shimmerQuestWidget.hide()
+                    rvError.hide()
+                    rvQuestWidget.show()
                     constraintLayoutQuestWidget.show()
                     setData(it.data)
                 }
                 LiveDataResult.STATUS.ERROR -> {
-                    shimmerQuestWidget.hide()
-                    rvQuestWidget.hide()
-                    constraintLayoutQuestWidget.show()
-                    rvError.show()
-                    rvError.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                    rvError.adapter = QuestWidgetErrorAdapter(this)
-                    tvLihat.text = context.getString(R.string.lihat_semua)
-                    tvLabel.text = context.getString(R.string.quest_label)
+                    showErrorUi()
                 }
                 LiveDataResult.STATUS.NON_LOGIN -> {
-                    shimmerQuestWidget.hide()
-                    constraintLayoutQuestWidget.show()
-                    rvQuestWidget.hide()
-                    questWidgetLogin.show()
-                    tvLihat.text = context.getString(R.string.lihat_semua)
-                    tvLabel.text = context.getString(R.string.quest_label)
-                    setupNonLoginClickListeners()
+                    if (isConnectedToInternet()) {
+                        shimmerQuestWidget.hide()
+                        constraintLayoutQuestWidget.show()
+                        rvQuestWidget.hide()
+                        questWidgetLogin.show()
+                        tvLihat.text = context.getString(R.string.lihat_semua)
+                        tvLabel.text = context.getString(R.string.quest_label)
+                        setupNonLoginClickListeners()
+                    } else {
+                        showErrorUi()
+                    }
                 }
             }
         })
     }
 
-    fun setupListeners(listener: QuestWidgetLoginClickListener){
+    private fun showErrorUi() {
+
+        shimmerQuestWidget.hide()
+        rvQuestWidget.hide()
+        constraintLayoutQuestWidget.show()
+        rvError.show()
+        rvError.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        rvError.adapter = QuestWidgetErrorAdapter(this)
+        tvLihat.text = context.getString(R.string.lihat_semua)
+        tvLabel.text = context.getString(R.string.quest_label)
+    }
+
+    fun isConnectedToInternet(): Boolean {
+        context?.let {
+            return DeviceConnectionInfo.isConnectCellular(it) ||
+                    DeviceConnectionInfo.isConnectWifi(it)
+        }
+        return false
+    }
+
+    fun setupListeners(listener: QuestWidgetLoginClickListener) {
         questWidgetLoginClickListener = listener
     }
 
-    private fun setupNonLoginClickListeners(){
+    private fun setupNonLoginClickListeners() {
 
         tvLihat.setOnClickListener {
             questWidgetLoginClickListener.questLogin()
@@ -153,20 +177,52 @@ class QuestWidgetView @JvmOverloads constructor(
         val list = data?.widgetData?.questWidgetList
 
         list?.let {
-            rvQuestWidget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            rvQuestWidget.layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             val adapter = QuestWidgetAdapter(
-                    data.widgetData.questWidgetList.questWidgetList,
-                    data.config,
-                    questTracker,
-                    source
-                )
+                data.widgetData.questWidgetList.questWidgetList,
+                data.config,
+                questTracker,
+                source
+            )
+            rvQuestWidget.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                private var direction = ""
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    when (newState) {
+                        RecyclerView.SCROLL_STATE_IDLE -> {
+                            questTracker.slideQuestCard(source, "slide $direction")
+                        }
+                    }
+                }
+
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        when {
+                            dx > 0 -> {
+                                direction = "right"
+                            }
+                            dx < 0 -> {
+                                direction = "left"
+                            }
+                            else -> {
+
+                            }
+                        }
+                }
+            })
             rvQuestWidget.adapter = adapter
         }
 
     }
 
     // the only call required to setup this widget
-    fun getQuestList(channel: Int = 0, channelSlug: String = "", page: String, @QuestSource source: Int = QuestSource.DEFAULT) {
+    fun getQuestList(
+        channel: Int = 0,
+        channelSlug: String = "",
+        page: String,
+        @QuestSource source: Int = QuestSource.DEFAULT
+    ) {
 
         this.source = source
         this.page = page
@@ -174,7 +230,7 @@ class QuestWidgetView @JvmOverloads constructor(
         viewModel.getWidgetList(channel, channelSlug, page, userSession)
     }
 
-    fun setQuestData(questData: QuestData, @QuestSource source: Int){
+    fun setQuestData(questData: QuestData, @QuestSource source: Int) {
         this.source = source
         shimmerQuestWidget.hide()
         constraintLayoutQuestWidget.show()

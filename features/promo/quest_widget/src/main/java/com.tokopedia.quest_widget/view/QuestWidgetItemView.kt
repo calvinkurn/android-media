@@ -14,14 +14,18 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.example.quest_widget.R
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.graphql.util.Const
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.quest_widget.constants.QuestUrls
 import com.tokopedia.quest_widget.constants.QuestUserStatus
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.Progress
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
+import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
+import com.tokopedia.quest_widget.tracker.Tracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -33,6 +37,10 @@ const val LAGITEXT = "x lagi "
 class QuestWidgetItemView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ): CardUnify(context, attrs), ProgressCompletionListener {
+
+    private lateinit var questTracker: QuestTracker
+    private var questId = ""
+    private var source = QuestSource.HOME
 
     private val durationScale: Long = 350
     private var showBox = false
@@ -58,18 +66,19 @@ class QuestWidgetItemView @JvmOverloads constructor(
         progressBar.setProgressCompletionListener(this)
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        questTracker.viewQuestWidget(source, questId)
+    }
+
     @SuppressLint("SetTextI18n")
     fun setData(item: QuestWidgetListItem, config: Config, questTracker: QuestTracker, source: Int) {
 
-        this.setOnClickListener {
+        this.questTracker = questTracker
+        this.source = source
+        this.questId = item.questUser?.id.toString()
 
-            //tracker event
-            questTracker.clickQuestCard(source, item.id.toString())
-
-            item.actionButton?.cta?.applink?.let{
-                RouteManager.route(context, item.actionButton.cta.applink)
-            }
-        }
+        var appLink = ""
 
         tvBannerTitle.text = config.banner_title
         ivBannerIcon.loadImage(config.banner_icon_url)
@@ -77,33 +86,59 @@ class QuestWidgetItemView @JvmOverloads constructor(
         val progress = calculateProgress((item.task?.get(0)?.progress))
 
         when(item.questUser?.status){
+
+            QuestUserStatus.IDLE -> {
+                appLink = QuestUrls.QUEST_URL_STAGING + questId
+
+                startTranslationAnimation()
+                item.questUser.status = QuestUserStatus.ANIMATED
+            }
+
             QuestUserStatus.ON_PROGRESS ->{
+                appLink = QuestUrls.QUEST_URL_STAGING + questId
+
                 scaleUpIconProgress(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
                 item.questUser.status = QuestUserStatus.ANIMATED
             }
             QuestUserStatus.COMPLETED -> {
-                scaleDownIconCompleted(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
-                item.questUser.status = QuestUserStatus.ANIMATED
+
+                item.actionButton?.cta?.applink?.let{
+                    appLink = it
+                }
+
             }
             QuestUserStatus.CLAIMED -> {
 
-            }
-            QuestUserStatus.IDLE -> {
-                startTranslationAnimation()
+                item.actionButton?.cta?.applink?.let{
+                    appLink = it
+                }
+                scaleDownIconCompleted(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
                 item.questUser.status = QuestUserStatus.ANIMATED
             }
             else->{
             }
         }
+
+        this.setOnClickListener {
+            //tracker event
+            this.questTracker.clickQuestCard(source, item.id.toString())
+
+            RouteManager.route(context, appLink)
+        }
+
         val desc = item.actionButton?.shortText + " " + (item.task?.get(0)?.progress?.current?.let {
             item.task[0]?.progress?.target?.minus(
                 it
             )
         })
 
-        tvBannerDesc.text =
-            desc + LAGITEXT + context.resources.getString(R.string.str_dot) + " " + item.label?.title
-
+        if(item.questUser?.status == QuestUserStatus.CLAIMED){
+            tvBannerDesc.text = "Cek hadiah kamu, yuk!"
+        }
+        else {
+            tvBannerDesc.text =
+                desc + LAGITEXT + context.resources.getString(R.string.str_dot) + " " + item.label?.title
+        }
     }
 
     private fun calculateProgress(progress:Progress?):Float{
@@ -283,7 +318,6 @@ class QuestWidgetItemView @JvmOverloads constructor(
         })
         animator.start()
     }
-
 
     private fun translationAnimation(viewOne: ImageUnify, viewTwo: ImageUnify){
 
