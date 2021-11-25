@@ -11,14 +11,14 @@ import com.tokopedia.purchase_platform.common.utils.Utils
 class RecipientAddressViewHolder(private val binding: ItemRecipientAddressRbSelectableBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(address: RecipientAddressModel, listener: ShipmentAddressListAdapter.ActionListener, position: Int) {
-        binding.layoutAddressNormal.tvAddressName.text = Utils.getHtmlFormat(address.addressName)
-        binding.layoutAddressNormal.tvAddressStatus.visibility = if (address.addressStatus == PRIME_ADDRESS) View.VISIBLE else View.GONE
-        binding.layoutAddressNormal.tvRecipientName.text = Utils.getHtmlFormat(address.recipientName)
+        binding.layoutAddressNormal.tvAddressName.text = Utils.getHtmlFormat(address.getAddressName())
+        binding.layoutAddressNormal.tvAddressStatus.visibility = if (address.getAddressStatus() == PRIME_ADDRESS) View.VISIBLE else View.GONE
+        binding.layoutAddressNormal.tvRecipientName.text = Utils.getHtmlFormat(address.getRecipientName())
         binding.layoutAddressNormal.tvRecipientAddress.text = Utils.getHtmlFormat(getFullAddress(address))
-        binding.layoutAddressNormal.tvRecipientPhone.text = address.recipientPhoneNumber
-        binding.buttonAddNewAddress.visibility = if (address.isFooter) View.VISIBLE else View.GONE
+        binding.layoutAddressNormal.tvRecipientPhone.text = address.getRecipientPhoneNumber()
+        binding.buttonAddNewAddress.visibility = if (address.isFooter()) View.VISIBLE else View.GONE
 
-        binding.rbCheckAddress.isChecked = address.isSelected
+        binding.rbCheckAddress.isChecked = address.isSelected()
         binding.buttonChangeAddress.visibility = View.VISIBLE
         binding.buttonChangeAddress.setOnClickListener { v: View? -> listener.onEditClick(address) }
 
@@ -27,10 +27,11 @@ class RecipientAddressViewHolder(private val binding: ItemRecipientAddressRbSele
     }
 
     private fun getFullAddress(recipientAddress: RecipientAddressModel): String {
-        return (recipientAddress.street + ", "
-                + recipientAddress.destinationDistrictName + ", "
-                + recipientAddress.cityName + ", "
-                + recipientAddress.provinceName)
+        return (recipientAddress.getStreet() + ", "
+                + recipientAddress.getDestinationDistrictName() + ", "
+                + recipientAddress.getCityName() + ", "
+                + recipientAddress.getProvinceName())
+
     }
 
     companion object {

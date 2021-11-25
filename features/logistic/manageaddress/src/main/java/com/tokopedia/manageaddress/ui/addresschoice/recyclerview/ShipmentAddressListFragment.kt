@@ -74,7 +74,7 @@ class ShipmentAddressListFragment : BaseCheckoutFragment(), AddressListContract.
 
     override fun showList(list: MutableList<RecipientAddressModel>) {
         maxItemPosition = 0
-        val selectedId = mCurrentAddress?.id ?: ""
+        val selectedId = mCurrentAddress?.getId() ?: ""
         mAdapter.setAddressList(list, selectedId)
         binding?.rvAddressList?.visibility = View.VISIBLE
         binding?.llNetworkErrorView?.visibility = View.GONE
@@ -343,15 +343,15 @@ class ShipmentAddressListFragment : BaseCheckoutFragment(), AddressListContract.
                         val intentModel: Destination? = data.getParcelableExtra(LogisticConstant.EXTRA_ADDRESS)
                         address = RecipientAddressModel()
                         intentModel?.let {
-                            address.id = it.addressId
-                            address.addressName = it.addressName
-                            address.destinationDistrictId = it.districtId
-                            address.cityId = it.cityId
-                            address.provinceId = it.provinceId
-                            address.recipientName = it.receiverName
-                            address.recipientPhoneNumber = it.receiverPhone
-                            address.street = it.addressStreet
-                            address.postalCode = it.postalCode
+                            address.setId(it.addressId)
+                            address.setAddressName(it.addressName)
+                            address.setDestinationDistrictId(it.districtId)
+                            address.setCityId(it.cityId)
+                            address.setProvinceId(it.provinceId)
+                            address.setRecipientName(it.receiverName)
+                            address.setRecipientPhoneNumber(it.receiverPhone)
+                            address.setStreet(it.addressStreet)
+                            address.setPostalCode(it.postalCode)
                         }
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
@@ -366,15 +366,15 @@ class ShipmentAddressListFragment : BaseCheckoutFragment(), AddressListContract.
                     if (data != null && data.hasExtra(EXTRA_ADDRESS_NEW)) {
                         val intentModel: SaveAddressDataModel? = data.getParcelableExtra(EXTRA_ADDRESS_NEW)
                         intentModel?.let {
-                            newAddress.id = it.id.toString()
-                            newAddress.addressName = it.addressName
-                            newAddress.destinationDistrictId = it.districtId.toString()
-                            newAddress.cityId = it.cityId.toString()
-                            newAddress.provinceId = it.provinceId.toString()
-                            newAddress.recipientName = it.receiverName
-                            newAddress.recipientPhoneNumber = it.phone
-                            newAddress.street = it.formattedAddress
-                            newAddress.postalCode = it.postalCode
+                            newAddress.setId(it.id.toString())
+                            newAddress.setAddressName(it.addressName)
+                            newAddress.setDestinationDistrictId(it.districtId.toString())
+                            newAddress.setCityId(it.cityId.toString())
+                            newAddress.setProvinceId(it.provinceId.toString())
+                            newAddress.setRecipientName(it.receiverName)
+                            newAddress.setRecipientPhoneNumber(it.phone)
+                            newAddress.setStreet(it.formattedAddress)
+                            newAddress.setPostalCode(it.postalCode)
                         }
                     }
                     if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {

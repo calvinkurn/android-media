@@ -35,7 +35,7 @@ class ShipmentAddressListAdapter(private val mActionListener: ActionListener) : 
 
     fun setAddressList(addressModelList: List<RecipientAddressModel>, selectedId: String?) {
         for (addressModel in addressModelList) {
-            addressModel.isSelected = addressModel.id == selectedId
+            addressModel.setSelected(addressModel.id == selectedId)
         }
         mAddressModelList.clear()
         mAddressModelList.addAll(addressModelList)
@@ -51,15 +51,15 @@ class ShipmentAddressListAdapter(private val mActionListener: ActionListener) : 
 
     fun updateSelected(position: Int) {
         for (i in mAddressModelList.indices) {
-            mAddressModelList[i].isSelected = position == i
+            mAddressModelList[i].setSelected(position == i)
         }
         notifyDataSetChanged()
     }
 
     private fun updateHeaderAndFooterPosition() {
         for (i in mAddressModelList.indices) {
-            mAddressModelList[i].isHeader = i == 0
-            mAddressModelList[i].isFooter = i == mAddressModelList.size - 1
+            mAddressModelList[i].setHeader(i == 0)
+            mAddressModelList[i].setFooter(i == mAddressModelList.size - 1)
         }
     }
 
