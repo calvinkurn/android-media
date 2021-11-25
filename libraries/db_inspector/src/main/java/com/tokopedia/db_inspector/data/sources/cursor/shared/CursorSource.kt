@@ -13,6 +13,7 @@ internal open class CursorSource {
     fun collectRows(query: Query): QueryResult =
         if (query.database?.isOpen == true) {
             runQuery(query)?.use { cursor ->
+                cursor.moveToFirst()
                 val rows = iterateRowsInTable(cursor)
                 QueryResult(
                     rows = rows
