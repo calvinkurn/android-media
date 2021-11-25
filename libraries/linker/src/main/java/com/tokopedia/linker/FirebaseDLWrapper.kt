@@ -29,7 +29,7 @@ class FirebaseDLWrapper {
             .getDynamicLink(intent)
             .addOnSuccessListener(activity) { pendingDynamicLinkData ->
                 // Get deep link from result ( null if no link found)
-                getParseFirebaseUrl(pendingDynamicLinkData,activity)
+                parseandLaunchFirebaseUrl(pendingDynamicLinkData,activity)
             }
             .addOnFailureListener(activity) { e ->
                     val messageMap = mapOf(
@@ -47,7 +47,7 @@ class FirebaseDLWrapper {
     * 3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
     * ex: https://tkpd.page.link/?link=https://www.tokopedia.com?android_url%3Dtokopedia://home%26ios_url%3Dtokopedia://home
     */
-    private fun getParseFirebaseUrl(pendingDynamicLinkData: PendingDynamicLinkData?, activity: Activity?) {
+    private fun parseandLaunchFirebaseUrl(pendingDynamicLinkData: PendingDynamicLinkData?, activity: Activity?) {
         if (pendingDynamicLinkData==null) return
         val firebaseUrl: Uri? = pendingDynamicLinkData.link
             if (firebaseUrl != null) {
@@ -73,7 +73,6 @@ class FirebaseDLWrapper {
             }
 
     }
-
 
     private fun launchActivity(activity: Activity?, link: String?, firebaseUrl: Uri?){
         if (activity != null && link !=null && firebaseUrl!=null) {
