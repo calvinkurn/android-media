@@ -59,6 +59,7 @@ import dagger.Lazy;
 import timber.log.Timber;
 
 import static android.content.Context.MODE_PRIVATE;
+import java.util.Date;
 
 /**
  * Created by hendry on 28/03/18.
@@ -68,7 +69,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
+    private static final String TIME = "time";
+    private static final String ISRIGHT = "isright";
     public static final String COORD_EGG_PREF = "_egg.pref";
+    public static final String TIME_EGG_PREF = "_eggTime.pref";
     public static final float SCALE_ON_DOWN = 0.95f;
     public static final float SCALE_NORMAL = 1f;
     public static final int SHORT_ANIMATION_DURATION = 300;
@@ -161,6 +165,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         rotateRight.setDuration(SHORT_ANIMATION_DURATION);
         rotateRight.playTogether(rotateMinimizeAnimator, translateEggXAnimator);
         rotateRight.start();
+        saveTimePreference();
         saveCoordPreference((int) newX, (int) vgFloatingEgg.getY());
     }
 
@@ -323,7 +328,19 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private void initEggCoordinate() {
         if (isDraggable && hasCoordPreference()) {
             int coordPref[] = getCoordPreference();
-            setCoordFloatingEgg(coordPref[0], coordPref[1]);
+            boolean isRight  = getSharedPrefTime().getBoolean(ISRIGHT,false);
+            if (!checkMinimumTimeWindow()) {
+                setCoordFloatingEgg(coordPref[0], coordPref[1]);
+            } else {
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
+                if (isRight) {
+                    layoutParams.gravity = Gravity.END;
+                } else {
+                    layoutParams.gravity = Gravity.START;
+                }
+                int finalY = getBoundedY(coordPref[1]);
+                layoutParams.setMargins(0, finalY, 0, 0);
+            }
         } else {
             isRight = true;
             if (initialEggMarginRight != 0 || initialEggMarginBottom != 0) {
@@ -369,9 +386,22 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         editor.apply();
     }
 
+    private void saveTimePreference() {
+        Date date = new Date(System.currentTimeMillis());
+        SharedPreferences.Editor editor = getSharedPrefTime().edit();
+        editor.putLong(TIME, date.getTime());
+        editor.apply();
+    }
+
     private SharedPreferences getSharedPref() {
         return getContext().getSharedPreferences(
                 getActivity().getClass().getSimpleName() + COORD_EGG_PREF
+                , MODE_PRIVATE);
+    }
+
+    private SharedPreferences getSharedPrefTime() {
+        return getContext().getSharedPreferences(
+                getActivity().getClass().getSimpleName() + TIME_EGG_PREF
                 , MODE_PRIVATE);
     }
 
@@ -666,6 +696,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             }
             saveCoordPreference(target, yEgg);
         }
+        getSharedPrefTime().edit().putBoolean(ISRIGHT, isRight).apply();
     }
 
     private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX) {
@@ -726,5 +757,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (screenHeight > 0)
             finalY = Math.min(finalY, screenHeight);
         return finalY;
+    }
+
+    private boolean checkMinimumTimeWindow() {
+        SharedPreferences sharedPreferences = getSharedPrefTime();
+        long savedTime = sharedPreferences.getLong(TIME, -1L);
+        Date date = new Date(System.currentTimeMillis());
+        long currentTime = date.getTime();
+        return currentTime - savedTime > 6L;
     }
 }
