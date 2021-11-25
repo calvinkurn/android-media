@@ -6,13 +6,14 @@ import com.tokopedia.broadcaster.statsnerd.data.StatsNerdDataSource
 import com.tokopedia.broadcaster.statsnerd.data.mapper.mapToData
 import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.mediator.LivePusherStatistic
 import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
 
 class LiveBroadcasterLogger constructor(
     val tracker: BroadcasterTracker = BroadcasterTrackerImpl()
-) {
+) : LivePusherStatistic {
 
     private var mStreamer: LibStreamerGL? = null
     private var mConnectionId: Int? = null
@@ -49,7 +50,7 @@ class LiveBroadcasterLogger constructor(
         mPrevBytes = mStreamer?.getBytesSent(mConnectionId.orZero()).orZero()
     }
 
-    fun getBandwidth(): String {
+    override fun getBandwidth(): String {
         return when {
             mBps < 1000 -> String.format(mLocale, "%4dbps", mBps)
             mBps < 1000 * 1000 -> String.format(mLocale, "%3.1fKbps", mBps.toDouble() / 1000)
@@ -58,7 +59,7 @@ class LiveBroadcasterLogger constructor(
         }
     }
 
-    fun getTraffic(): String {
+    override fun getTraffic(): String {
         return when {
             mPrevBytes < 1024 -> String.format(mLocale, "%4dB", mPrevBytes)
             mPrevBytes < 1024 * 1024 -> String.format(mLocale, "%3.1fKB", mPrevBytes.toDouble() / 1024)
@@ -67,14 +68,14 @@ class LiveBroadcasterLogger constructor(
         }
     }
 
-    fun getFps(): String {
+    override fun getFps(): String {
         val fps = ceil(mFps).toInt()
         return String.format("%d fps", fps)
     }
 
     private fun isPacketLossIncreasing(): Boolean = mPacketLossIncreased
 
-    fun update(context: Context, config: BroadcasterConfig) {
+    fun update(context: Context, url: String, config: BroadcasterConfig) {
         val streamer = mStreamer ?: return
         val connectionId = mConnectionId ?: return
 
@@ -100,7 +101,7 @@ class LiveBroadcasterLogger constructor(
         }
 
         val dataUIModel = LoggerUIModel(
-            url = config.ingestUrl,
+            url = url,
             connectionId = mConnectionId?: 0,
             startTime = mStartTime,
             endTime = mPrevTime,
