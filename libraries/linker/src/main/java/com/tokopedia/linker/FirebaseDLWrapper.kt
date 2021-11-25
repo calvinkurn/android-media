@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.tokopedia.applink.RouteManager
@@ -25,53 +26,57 @@ class FirebaseDLWrapper {
             .getDynamicLink(intent)
             .addOnSuccessListener(activity) { pendingDynamicLinkData ->
                 // Get deep link from result ( null if no link found)
-                /* 3 cases
-                    1- Long link:  link = firebaseUrl.toString()
-                    2- Short link with custom format: link= firebaseUrl.getQueryParameter("android_url")
-                    3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
-                    ex: https://tkpd.page.link/?link=https://www.tokopedia.com?android_url%3Dtokopedia://home%26ios_url%3Dtokopedia://home
-                 */
-                var firebaseUrl: Uri?
-                if (pendingDynamicLinkData != null) {
-                    firebaseUrl = pendingDynamicLinkData.link
-                    if (firebaseUrl != null) {
-                        var link: String? = firebaseUrl.getQueryParameter(androidUrlPath)
-                        if (link == null) {
-                            link = firebaseUrl.getQueryParameter(urlPath)
-                            if (link != null) {
-                                var internalLink: String? =
-                                    firebaseUrl.getQueryParameter(androidUrlPath)
-                                if (internalLink != null) {
-                                    link = internalLink
-                                }
-                            }
-                        }
-                        if (link == null) { // in case of long firebase URL
-                            link = firebaseUrl.toString()
-                        }
-                        if (link != null && activity != null) {
-                            RouteManager.route(activity, link)
-                            processUtmParams(link, firebaseUrl)
-                        }
-
-                        //check link is not null
-                        val messageMap = mapOf("type" to "validation", "reason" to "FdlOpen", "data" to link)
-                        logging(messageMap)
-                    }
-                }
-
+                getParseFirebaseUrl(pendingDynamicLinkData,activity)
             }
             .addOnFailureListener(activity) { e ->
-                if(e?.message != null) {
                     val messageMap = mapOf(
                         "type" to "validation",
                         "reason" to "FdlOpenError",
-                        "data" to e.message.toString()
+                        "data" to (e.message?:"")
                     )
                     logging(messageMap)
                 }
             }
+    /**
+    * There are 3 possible cases
+    * 1- Long link:  link = firebaseUrl.toString()
+    * 2- Short link with custom format: link= firebaseUrl.getQueryParameter("android_url")
+    * 3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
+    * ex: https://tkpd.page.link/?link=https://www.tokopedia.com?android_url%3Dtokopedia://home%26ios_url%3Dtokopedia://home
+    */
+    private fun getParseFirebaseUrl(pendingDynamicLinkData: PendingDynamicLinkData?, activity: Activity?) {
+        if (pendingDynamicLinkData==null) return
+        val firebaseUrl: Uri? = pendingDynamicLinkData.link
+            if (firebaseUrl != null) {
+                var link: String? = firebaseUrl.getQueryParameter(androidUrlPath)
+                if (link == null) {
+                    link = firebaseUrl.getQueryParameter(urlPath)
+                    if (link != null) {
+                        val internalLink: String? =
+                            Uri.parse(link).getQueryParameter(androidUrlPath)
+                        if (internalLink != null) {
+                            link = internalLink
+                        }
+                    }
+                }
+                if (link == null) { // in case of long firebase URL
+                    link = firebaseUrl.toString()
+                }
 
+                launchActivity(activity,link,firebaseUrl)
+                //no need to check link != null as  link = firebaseUrl.toString() and firebaseUrl cant be null in this block
+                val messageMap = mapOf("type" to "validation", "reason" to "FdlOpen", "data" to link)
+                logging(messageMap)
+            }
+
+    }
+
+
+    private fun launchActivity(activity: Activity?, link: String?, firebaseUrl: Uri?){
+        if (activity != null && link !=null && firebaseUrl!=null) {
+            RouteManager.route(activity, link)
+            processUtmParams(link, firebaseUrl)
+        }
     }
 
     private fun processUtmParams(link: String, firebaseUrl: Uri) {
