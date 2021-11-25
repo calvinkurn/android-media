@@ -18,34 +18,13 @@ class NetworkModule {
         @ApplicationContext context: Context,
         @MediaUploaderQualifier userSession: UserSessionInterface
     ): OkHttpClient.Builder {
-        return OkHttpClient.Builder()
-            .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .readTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .writeTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .retryOnConnectionFailure(false)
-            .addInterceptor(NetworkTimeOutInterceptor())
-            .also {
-                // adding tkpdAuth and fingerprint interceptor
-                (context as? NetworkRouter?)?.let { router ->
-                    it.addInterceptor(FingerprintInterceptor(router, userSession))
-                    it.addInterceptor(TkpdAuthInterceptor(context, router, userSession))
-                }
-
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    it.addInterceptor(ChuckerInterceptor(context))
-                }
-            }
+        return MediaUploaderNetwork.okHttpClientBuilder(context, userSession)
     }
 
     @Provides
     @MediaUploaderQualifier
     fun provideMediaUploaderRetrofitBuilder(): Retrofit.Builder {
         return MediaUploaderNetwork.retrofitBuilder()
-    }
-
-    companion object {
-        private const val BASE_URL = "https://upedia.tokopedia.net/"
     }
 
 }
