@@ -33,6 +33,7 @@
             android:visibility="gone"
             app:labelTitle="XXS"
             app:labelType="general_light_grey"
+            app:layout_constraintBottom_toBottomOf="@+id/label_variant1"
             app:layout_constraintStart_toEndOf="@+id/label_variant1"
             app:layout_constraintTop_toTopOf="@+id/label_variant1"
             tools:visibility="visible" />
@@ -69,6 +70,7 @@
             android:paddingBottom="@dimen/spacing_lvl1"
             android:textColor="@color/play_dms_discount_price"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/label_cashback"
             app:layout_constraintStart_toEndOf="@+id/label_cashback"
             app:layout_constraintTop_toTopOf="@+id/label_cashback"
             app:layout_goneMarginStart="0dp"
@@ -84,6 +86,7 @@
             android:layout_marginStart="8dp"
             android:textColor="@color/Unify_N700_44"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/label_cashback"
             app:layout_constraintStart_toEndOf="@+id/tv_product_discount"
             app:layout_constraintTop_toTopOf="@+id/tv_product_discount"
             app:layout_goneMarginStart="0dp"
