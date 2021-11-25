@@ -22,10 +22,7 @@ import com.tokopedia.otp.R
 import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
-import com.tokopedia.otp.verification.domain.data.OtpConstant
-import com.tokopedia.otp.verification.domain.data.OtpRequestData
-import com.tokopedia.otp.verification.domain.data.OtpValidateData
-import com.tokopedia.otp.verification.domain.data.ROLLANCE_KEY_MISCALL_OTP
+import com.tokopedia.otp.verification.domain.data.*
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.fragment.VerificationFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -356,6 +353,10 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
                 clearFocus()
             }
         }
+    }
+
+    override fun sendTrackerAutoSubmit() {
+        analytics.trackAutoSubmitVerification(otpData, modeListData,true, tag = TAG_AUTO_READ)
     }
 
     override fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {

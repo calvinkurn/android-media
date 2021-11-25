@@ -17,6 +17,7 @@ import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.ROLLANCE_KEY_MISCALL_OTP
+import com.tokopedia.otp.verification.domain.data.TAG_AUTO_READ
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -68,8 +69,8 @@ open class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed 
     override fun onBackPressed(): Boolean = true
 
     private fun initView() {
-        analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText)
         viewBound.btnCallMe?.setOnClickListener {
+            analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText + TAG_AUTO_READ)
             (activity as VerificationActivity).goToVerificationPage(modeListData)
         }
 

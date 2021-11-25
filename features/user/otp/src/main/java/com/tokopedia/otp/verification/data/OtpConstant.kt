@@ -6,6 +6,7 @@ package com.tokopedia.otp.verification.domain.data
  */
 
 const val ROLLANCE_KEY_MISCALL_OTP = "otp_miscall_new_ui"
+const val TAG_AUTO_READ = "autoread"
 
 object OtpConstant {
 

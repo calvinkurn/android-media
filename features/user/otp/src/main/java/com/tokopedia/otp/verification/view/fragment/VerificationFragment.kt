@@ -319,8 +319,8 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         when {
             otpValidateData.success -> {
                 // tracker auto submit success
-                analytics.trackAutoSubmitVerification(otpData, modeListData,true)
                 viewModel.done = true
+                sendTrackerAutoSubmit()
                 trackSuccess()
                 resetCountDown()
                 val bundle = Bundle().apply {
@@ -340,6 +340,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 onFailedOtpValidate(Throwable())
             }
         }
+    }
+
+    open fun sendTrackerAutoSubmit() {
+        analytics.trackAutoSubmitVerification(otpData, modeListData,true)
     }
 
     protected open fun trackSuccess() {

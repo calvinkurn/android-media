@@ -631,7 +631,7 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
 
 
     /* Auto Submit Tracker */
-    fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
+    fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "", tag: String = "") {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
@@ -640,7 +640,12 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                     "success"
                 } else {
                     "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                } + " - ${otpData.otpType} - ${modeListData.modeText}" + getTag(tag)
         ))
+    }
+
+    private fun getTag(tag: String): String {
+        return if (tag.isNotEmpty()) " - $tag"
+        else ""
     }
 }
