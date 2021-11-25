@@ -139,7 +139,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         when (position) {
             HOME_MENU -> openFragment(AffiliateHomeFragment.getFragmentInstance(this))
             PROMO_MENU -> openFragment(AffiliatePromoFragment.getFragmentInstance())
-            INCOME_MENU -> openFragment(AffiliateIncomeFragment.getFragmentInstance("",null))
+            INCOME_MENU -> openFragment(AffiliateIncomeFragment.getFragmentInstance(userSessionInterface.name,
+            userSessionInterface.profilePicture))
             HELP_MENU -> openFragment(AffiliateHelpFragment.getFragmentInstance(AFFILIATE_HELP_URL))
         }
         return true
