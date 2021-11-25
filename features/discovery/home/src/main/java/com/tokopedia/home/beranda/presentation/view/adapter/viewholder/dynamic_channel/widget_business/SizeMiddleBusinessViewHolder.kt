@@ -27,7 +27,7 @@ class SizeMiddleBusinessViewHolder (
     }
 
     override fun getSubtitle(): TextView {
-        return itemView.findViewById(R.id.title)
+        return itemView.findViewById(R.id.subtitle)
     }
 
 }
