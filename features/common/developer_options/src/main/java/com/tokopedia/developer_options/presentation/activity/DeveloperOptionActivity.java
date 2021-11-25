@@ -39,6 +39,7 @@ import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
+import com.tokopedia.analyticsdebugger.sse.ui.activity.SSELoggingActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
@@ -171,6 +172,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private PermissionCheckerHelper permissionCheckerHelper;
 
     private UnifyButton alwaysOldBalanceWidget;
+
+    private UnifyButton vGotoSSELogging;
 
     @Override
     public String getScreenName() {
@@ -339,6 +342,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
+
+        vGotoSSELogging = findViewById(R.id.btn_view_sse_log);
 
         UnifyButton buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
         UnifyButton alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
@@ -780,6 +785,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleShowAndCopyApplink.setOnCheckedChangeListener((buttonView, isChecked) -> {
             getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, MODE_PRIVATE).edit().putBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, isChecked).apply();
         });
+
+        vGotoSSELogging.setOnClickListener(v -> startActivity(SSELoggingActivity.newInstance(this)));
     }
 
     private void showApps(boolean isSystemApps) {

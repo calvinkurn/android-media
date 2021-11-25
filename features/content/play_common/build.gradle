@@ -28,6 +28,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
+
+    if(rootProject.ext.debugToolsEnabled) {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+    }
+    else {
+        implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
