@@ -20,7 +20,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@dimen/unify_space_12"
-        android:text="Saldo ini berasal dari transaksi yang dibatalkan. "
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_96"/>
 
