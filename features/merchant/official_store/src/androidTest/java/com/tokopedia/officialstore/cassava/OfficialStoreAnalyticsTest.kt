@@ -1,26 +1,40 @@
 package com.tokopedia.officialstore.cassava
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
+import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.officialstore.OfficialStoreActivity
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.environment.InstrumentationOfficialStoreTestFullActivity
 import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
+import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedBrandCallback
+import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
 import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
+import com.tokopedia.test.application.espresso_component.CommonMatcher
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -39,29 +53,41 @@ class OfficialStoreAnalyticsTest {
             "tracker/official_store/official_store_page.json"
     }
 
-    @get:Rule
-    var activityRule = ActivityTestRule(OfficialStoreActivity::class.java, false, false)
+    private var osRecyclerViewIdlingResource: OSRecyclerViewIdlingResource? = null
 
+    @get:Rule
+    var activityRule = object: IntentsTestRule<InstrumentationOfficialStoreTestFullActivity>(
+            InstrumentationOfficialStoreTestFullActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
+        }
+    }
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-
     @Before
     fun setup() {
         setupGraphqlMockResponse(OfficialStoreMockResponseConfig())
-        activityRule.launchActivity(
-            Intent(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                OfficialStoreActivity::class.java
-            )
+        osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
+                activity = activityRule.activity,
+                limitCountToIdle = 3
         )
+        Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
+//        activityRule.launchActivity(
+//            Intent(
+//                InstrumentationRegistry.getInstrumentation().targetContext,
+//                OfficialStoreActivity::class.java
+//            )
+//        )
     }
 
     @After
-    fun dispose() {
+    fun deleteDatabase() {
+        IdlingRegistry.getInstance().unregister(osRecyclerViewIdlingResource)
     }
-
     private fun initTest() {
         InstrumentationAuthHelper.clearUserSession()
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
@@ -153,10 +179,15 @@ class OfficialStoreAnalyticsTest {
                     viewHolder.itemView.performClick()
                 }
             }
+            is FeaturedBrandViewHolder -> {
+                CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
+            }
         }
     }
     @Test
     fun checkOSAnalyticsWithCassava2() {
+        onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
         OSCassavaTest {
             initTest()
             doActivityTest()

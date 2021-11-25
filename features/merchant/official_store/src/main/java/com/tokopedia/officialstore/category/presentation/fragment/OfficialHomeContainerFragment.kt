@@ -265,6 +265,15 @@ class OfficialHomeContainerFragment
                         this.currentOfficialStoreCategories = it.data
                         removeLoading()
                         populateCategoriesData(it.data)
+                    } else if(currentOfficialStoreCategories?.categories == it.data.categories && !it.data.isCache){
+                            tabAdapter.categoryList.forEachIndexed { index, category ->
+                                tracking.eventImpressionCategory(
+                                        category.title,
+                                        category.categoryId,
+                                        index,
+                                        category.icon
+                                )
+                            }
                     }
                 }
                 is Fail -> {
