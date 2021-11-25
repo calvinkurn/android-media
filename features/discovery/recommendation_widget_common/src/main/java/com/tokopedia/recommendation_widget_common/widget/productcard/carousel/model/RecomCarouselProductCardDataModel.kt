@@ -39,16 +39,16 @@ data class RecomCarouselProductCardDataModel(
         if (toCompare !is RecomCarouselProductCardDataModel) return emptyMap()
         return mutableMapOf<String, Any>().apply {
             if (productModel != toCompare.productModel) {
-                put(PAYLOAD_PRODUCT_MODEL, toCompare.productModel)
+                put(PAYLOAD_PRODUCT_MODEL, Unit)
             }
             if (recomItem != toCompare.recomItem) {
-                put(PAYLOAD_RECOM_ITEM, toCompare.recomItem)
+                put(PAYLOAD_RECOM_ITEM, Unit)
             }
             if (componentName != toCompare.componentName) {
-                put(PAYLOAD_COMPONENT_NAME, toCompare.componentName)
+                put(PAYLOAD_COMPONENT_NAME, Unit)
             }
             if (listener !== toCompare.listener) {
-                put(PAYLOAD_IS_LISTENER_CHANGED, true)
+                put(PAYLOAD_IS_LISTENER_CHANGED, Unit)
             }
         }
     }

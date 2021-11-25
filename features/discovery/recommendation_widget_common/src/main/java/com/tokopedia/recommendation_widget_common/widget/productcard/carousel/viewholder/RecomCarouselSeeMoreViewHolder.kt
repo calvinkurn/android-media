@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.viewholder.RecommendationCarouselSeeMoreViewHolder
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselSeeMoreDataModel
 
 /**
@@ -20,10 +19,35 @@ class RecomCarouselSeeMoreViewHolder(view: View,
     private val bannerBackgroundImage: ImageView by lazy { view.findViewById<ImageView>(R.id.background_banner_mix_more) }
 
     override fun bind(element: RecomCarouselSeeMoreDataModel) {
+        setupListeners(element)
+        setupBannerBackgroundImage(element)
+    }
+
+    override fun bind(element: RecomCarouselSeeMoreDataModel, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
+        if (payload != null) {
+            if (
+                payload.containsKey(RecomCarouselSeeMoreDataModel.PAYLOAD_APPLINK) ||
+                payload.containsKey(RecomCarouselSeeMoreDataModel.PAYLOAD_IS_LISTENER_CHANGED)
+            ) {
+                setupListeners(element)
+            }
+            if (payload.containsKey(RecomCarouselSeeMoreDataModel.PAYLOAD_BACKGROUND_IMAGE)) {
+                setupBannerBackgroundImage(element)
+            }
+        } else {
+            bind(element)
+        }
+    }
+
+    private fun setupBannerBackgroundImage(element: RecomCarouselSeeMoreDataModel) {
+        bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
+    }
+
+    private fun setupListeners(element: RecomCarouselSeeMoreDataModel) {
         bannerBackgroundImage.setOnClickListener {
             element.listener?.onSeeMoreCardClicked(applink = element.applink, data = data)
         }
-        bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
         container.setOnClickListener {
             element.listener?.onSeeMoreCardClicked(applink = element.applink, data = data)
         }
