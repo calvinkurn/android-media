@@ -19,16 +19,14 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
     private val ivProductAtc: UnifyButton = itemView.findViewById(R.id.iv_product_atc)
 
-    init {
-        ivProductAtc.refreshDrawableState()
-    }
-
     override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
         when (item.stock) {
             OutOfStock -> {
+                ivProductAtc.setBackgroundResource(0)
                 btnProductBuy.isEnabled = false
                 ivProductAtc.isEnabled = false
+                ivProductAtc.text = getString(R.string.play_product_empty)
                 btnProductBuy.text = getString(R.string.play_product_empty)
             }
 
