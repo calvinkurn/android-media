@@ -4,8 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import android.webkit.URLUtil
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
@@ -16,7 +19,7 @@ import java.util.*
 
 
 class FirebaseDLWrapper {
-    private val urlPath = "link"
+    private val linkPath = "link"
     private val androidUrlPath = "android_url"
     private val iosUrlPath = "ios_url"
     private val firebaseBaseUrl = "https://tkpd.page.link"
@@ -25,53 +28,68 @@ class FirebaseDLWrapper {
             .getDynamicLink(intent)
             .addOnSuccessListener(activity) { pendingDynamicLinkData ->
                 // Get deep link from result ( null if no link found)
-                /* 3 cases
-                    1- Long link:  link = firebaseUrl.toString()
-                    2- Short link with custom format: link= firebaseUrl.getQueryParameter("android_url")
-                    3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
-                    ex: https://tkpd.page.link/?link=https://www.tokopedia.com?android_url%3Dtokopedia://home%26ios_url%3Dtokopedia://home
-                 */
-                var firebaseUrl: Uri?
-                if (pendingDynamicLinkData != null) {
-                    firebaseUrl = pendingDynamicLinkData.link
-                    if (firebaseUrl != null) {
-                        var link: String? = firebaseUrl.getQueryParameter(androidUrlPath)
-                        if (link == null) {
-                            link = firebaseUrl.getQueryParameter(urlPath)
-                            if (link != null) {
-                                var internalLink: String? =
-                                    firebaseUrl.getQueryParameter(androidUrlPath)
-                                if (internalLink != null) {
-                                    link = internalLink
-                                }
-                            }
-                        }
-                        if (link == null) { // in case of long firebase URL
-                            link = firebaseUrl.toString()
-                        }
-                        if (link != null && activity != null) {
-                            RouteManager.route(activity, link)
-                            processUtmParams(link, firebaseUrl)
-                        }
-
-                        //check link is not null
-                        val messageMap = mapOf("type" to "validation", "reason" to "FdlOpen", "data" to link)
-                        logging(messageMap)
-                    }
-                }
-
+                parseandLaunchFirebaseUrl(pendingDynamicLinkData,activity)
             }
             .addOnFailureListener(activity) { e ->
-                if(e?.message != null) {
                     val messageMap = mapOf(
                         "type" to "validation",
                         "reason" to "FdlOpenError",
-                        "data" to e.message.toString()
+                        "data" to (e.message?:"")
                     )
                     logging(messageMap)
                 }
             }
+    /**
+    * There are 3 possible cases
+    * 1- Long link:  link = firebaseUrl.toString()
+    * 2- Short link with custom format: link= firebaseUrl.getQueryParameter("android_url")
+    * 3- Short link with standard format: link = firebaseUrl.getQueryParameter("link")
+    * ex: https://tkpd.page.link/?link=https://www.tokopedia.com?android_url%3Dtokopedia://home%26ios_url%3Dtokopedia://home
+    */
+    private fun parseandLaunchFirebaseUrl(pendingDynamicLinkData: PendingDynamicLinkData?, activity: Activity?) {
+        if (pendingDynamicLinkData==null) return
+        val firebaseUrl: Uri? = pendingDynamicLinkData.link
+            if (firebaseUrl != null) {
+                var link: String? = firebaseUrl.getQueryParameter(androidUrlPath)
+                if (link == null) {
+                    link = firebaseUrl.getQueryParameter(linkPath)
+                    if (link != null) {
+                        val internalLink: String? =
+                            Uri.parse(link).getQueryParameter(androidUrlPath)
+                        if (internalLink != null) {
+                            link = internalLink
+                        }
+                    }
+                }
+                if (link == null) { // in case of long firebase URL
+                    link = firebaseUrl.toString()
+                }
 
+                launchActivity(activity,link,firebaseUrl)
+                //no need to check link != null as  link = firebaseUrl.toString() and firebaseUrl cant be null in this block
+                val messageMap = mapOf("type" to "validation", "reason" to "FdlOpen", "data" to link)
+                logging(messageMap)
+            }
+
+    }
+
+    private fun launchActivity(activity: Activity?, link: String?, firebaseUrl: Uri?){
+        if (activity != null && link !=null && firebaseUrl!=null) {
+            // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
+            // because we need tracking UTM for those notification applink
+            var tokopediaDeeplink: String? = link
+            if (!URLUtil.isNetworkUrl(link)) {
+                    if (link.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                        tokopediaDeeplink = link
+                    } else {
+                        tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + link
+                    }
+            }
+
+            tokopediaDeeplink?.let {
+                RouteManager.route(activity, tokopediaDeeplink)
+                processUtmParams(tokopediaDeeplink, firebaseUrl) }
+        }
     }
 
     private fun processUtmParams(link: String, firebaseUrl: Uri) {
@@ -90,11 +108,20 @@ class FirebaseDLWrapper {
         if (utmSource == null) {
             utmSource = firebaseUrl.getQueryParameter(LinkerConstants.UTM_SOURCE)
         }
+        val linkParam = firebaseUrl.getQueryParameter(linkPath)
         if (utmMedium == null) {
-            utmMedium = firebaseUrl.getQueryParameter(LinkerConstants.UTM_MEDIUM)
+            utmMedium = if(!TextUtils.isEmpty(linkParam)){
+                Uri.parse(linkParam)?.getQueryParameter(LinkerConstants.UTM_MEDIUM) ?: ""
+            } else {
+                firebaseUrl.getQueryParameter(LinkerConstants.UTM_MEDIUM)
+            }
         }
         if (utmCampaign == null) {
-            utmCampaign = firebaseUrl.getQueryParameter(LinkerConstants.UTM_CAMPAIGN)
+            utmCampaign = if(!TextUtils.isEmpty(linkParam)) {
+                Uri.parse(linkParam)?.getQueryParameter(LinkerConstants.UTM_CAMPAIGN) ?: ""
+            }else {
+                firebaseUrl.getQueryParameter(LinkerConstants.UTM_CAMPAIGN)
+            }
         }
         if (utmTerm == null) {
             utmTerm = firebaseUrl.getQueryParameter(LinkerConstants.UTM_TERM)
@@ -126,10 +153,20 @@ class FirebaseDLWrapper {
                     title = data.ogTitle
                     description = data.description
                 }
-                if (!deeplinkdata.contains(LinkerConstants.UTM_SOURCE)) {
+                if(!(deeplinkdata.contains(LinkerConstants.UTM_SOURCE))
+                            || !(deeplinkdata.contains(LinkerConstants.UTM_MEDIUM))) {
+
                     googleAnalyticsParameters {
-                        source = LinkerData.ARG_UTM_SOURCE
-                        medium = LinkerData.ARG_UTM_MEDIUM
+                        source = if (!TextUtils.isEmpty(data.channel)) {
+                            data.channel
+                        } else {
+                            LinkerData.ARG_UTM_SOURCE
+                        }
+                        medium = if (!TextUtils.isEmpty(data.feature)) {
+                            data.feature
+                        } else {
+                            LinkerData.ARG_UTM_MEDIUM
+                        }
                         campaign = data.campaignName
                     }
                 }
@@ -191,7 +228,7 @@ class FirebaseDLWrapper {
             }
         }
         uri = Uri.encode(uri)
-        return "$firebaseBaseUrl/?$urlPath=$uri"
+        return "$firebaseBaseUrl/?$linkPath=$uri"
 
     }
 
@@ -253,10 +290,9 @@ class FirebaseDLWrapper {
                 deeplinkPath = data.deepLink
             }
         }
-
         if (deeplinkPath != null) {
             if (!deeplinkPath.contains(LinkerConstants.UTM_SOURCE)) {
-                deeplinkPath = data.renderShareUri(deeplinkPath)
+                deeplinkPath = data.renderShareUri()
             }
         }
         return deeplinkPath
