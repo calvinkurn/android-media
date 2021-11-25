@@ -4,6 +4,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleAtcBtnAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleBuyBtnAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleEmptyStockLabelAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasVisibleRemindMeBtnAt
 import org.junit.Test
 
@@ -21,6 +22,7 @@ class BuyerProductOutOfStockTest : TopchatRoomTest() {
         hasVisibleRemindMeBtnAt(position = 1)
         hasNoVisibleAtcBtnAt(position = 1)
         hasNoVisibleBuyBtnAt(position = 1)
+        hasNoVisibleEmptyStockLabelAt(position = 1)
     }
 
     // TODO: should show remind me button and show empty stock label if product is not upcoming campaign and inactive

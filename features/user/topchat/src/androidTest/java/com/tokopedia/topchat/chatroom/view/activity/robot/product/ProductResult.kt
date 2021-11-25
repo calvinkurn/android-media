@@ -12,6 +12,9 @@ object ProductResult {
     fun hasVisibleRemindMeBtnAt(position: Int) {
         assertRemindMeButtonAt(position, isDisplayed())
     }
+    fun hasNoVisibleEmptyStockLabelAt(position: Int) {
+        assertLabelAt(position, not(isDisplayed()))
+    }
 
     fun hasNoVisibleAtcBtnAt(position: Int) {
         assertAtcButtonAt(position, not(isDisplayed()))
@@ -25,6 +28,14 @@ object ProductResult {
         assertViewInRecyclerViewAt(
             position = position,
             viewId = R.id.tv_wishlist,
+            matcher = matcher
+        )
+    }
+
+    private fun assertLabelAt(position: Int, matcher: Matcher<View>) {
+        assertViewInRecyclerViewAt(
+            position = position,
+            viewId = R.id.lb_product_label,
             matcher = matcher
         )
     }
