@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.topads_insight_fragment_keyword.*
 
 class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
 
+    private val dummyResp by lazy { Gson().fromJson(getResp(), TopadsHeadlineKeyword::class.java) }
     private lateinit var viewModel: TopAdsInsightKeywordViewModel
     private val itemsCount = arrayOf(0, 0, 0)
 
@@ -34,10 +35,8 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
             (activity as? TopAdsDashboardActivity)?.bottomLayout()?.let {
                 it.visibility =
                     if (isExpanded) {
-                        accordionUnify.setMargin(0, 0, 0, it.height)
                         View.VISIBLE
                     } else {
-                        accordionUnify.setMargin(0, 0, 0, 0)
                         View.GONE
                     }
             }
@@ -154,42 +153,27 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
     }
 
     //todo view model
-    fun getResp() = "{   \n" +
-            "  shop_id: 123,   \n" +
-            "  recommended_keyword_count: 3,    \n" +
-            "  group_count: 2,    \n" +
-            "  total_impression_count: 369,   \n" +
-            "  recommended_keyword_details: [\n" +
-            "    {         \n" +
-            "      keyword_tag: \"sam ga\",         \n" +
-            "      group_id: 122,         \n" +
-            "      group_name: \"sdsfs\",         \n" +
-            "      total_hits: 432423,         \n" +
-            "      recommended_bid: 2342.32,         \n" +
-            "      min_bid: 22224324,         \n" +
-            "      max_bid: 34242423,\n" +
-            "      impression_count: 122  \n" +
-            "    },\n" +
-            "    {         \n" +
-            "      keyword_tag: \"go to\",         \n" +
-            "      group_id: 123,         \n" +
-            "      group_name: \"temp group\",         \n" +
-            "      total_hits: 4322,         \n" +
-            "      recommended_bid: 2342.32,         \n" +
-            "      min_bid: 22224324,         \n" +
-            "      max_bid: 34242423,\n" +
-            "      impression_count: 123  \n" +
-            "    },\n" +
-            "    {         \n" +
-            "      keyword_tag: \"go me\",         \n" +
-            "      group_id: 123,         \n" +
-            "      group_name: \"temp group\",         \n" +
-            "      total_hits: 4324,         \n" +
-            "      recommended_bid: 2342.32,         \n" +
-            "      min_bid: 22224324,         \n" +
-            "      max_bid: 34242423,\n" +
-            "      impression_count: 124  \n" +
+    fun getResp() = "{\n" +
+            "    \"topadsHeadlineKeywordSuggestion\": {\n" +
+            "      \"data\": {\n" +
+            "        \"shopID\": \"479085\",\n" +
+            "        \"recommendedKeywordCount\": 1,\n" +
+            "        \"groupCount\": 1,\n" +
+            "        \"totalImpressionCount\": \"243\",\n" +
+            "        \"recommendedKeywordDetails\": [\n" +
+            "          {\n" +
+            "            \"keywordTag\": \"svj\",\n" +
+            "            \"groupID\": \"9254\",\n" +
+            "            \"groupName\": \"testing el\",\n" +
+            "            \"totalHits\": \"222\",\n" +
+            "            \"recommendedBid\": 12000,\n" +
+            "            \"minBid\": 12000,\n" +
+            "            \"maxBid\": 500000,\n" +
+            "            \"impressionCount\": \"243\"\n" +
+            "          }\n" +
+            "        ]\n" +
+            "      },\n" +
+            "      \"errors\": []\n" +
             "    }\n" +
-            "  ]\n" +
             "}"
 }
