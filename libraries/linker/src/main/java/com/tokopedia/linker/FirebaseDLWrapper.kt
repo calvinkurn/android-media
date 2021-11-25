@@ -79,23 +79,13 @@ class FirebaseDLWrapper {
             // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
             // because we need tracking UTM for those notification applink
             var tokopediaDeeplink: String? = link
-            val intent = Intent()
-            if (URLUtil.isNetworkUrl(link)) {
-                intent.setClassName(
-                    activity.packageName,
-                    GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME
-                )
-            } else {
+            if (!URLUtil.isNetworkUrl(link)) {
                 tokopediaDeeplink =
                     if (link.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
                         link
                     } else {
                         ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + link
                     }
-                intent.setClassName(
-                    activity.packageName,
-                    GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME
-                )
             }
 
             tokopediaDeeplink?.let {
