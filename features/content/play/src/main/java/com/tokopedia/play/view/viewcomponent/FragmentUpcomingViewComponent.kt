@@ -22,6 +22,8 @@ class FragmentUpcomingViewComponent(
     private var isAlreadyInit: AtomicBoolean = AtomicBoolean(false)
 
     fun safeInit(channelId: String) = synchronized(this) {
+        show()
+
         if (isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(false, true)
 
@@ -33,6 +35,8 @@ class FragmentUpcomingViewComponent(
     }
 
     fun safeRelease() = synchronized(this) {
+        hide()
+
         if (!isAlreadyInit.get()) return@synchronized
         isAlreadyInit.compareAndSet(true, false)
 
