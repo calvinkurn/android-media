@@ -4,12 +4,17 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocompletecomponent.R
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
+import com.tokopedia.autocompletecomponent.databinding.LayoutTitlePopularSearchBinding
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_title_popular_search.view.*
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
+import com.tokopedia.utils.view.binding.viewBinding
 
-class PopularSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<PopularSearchTitleDataView>(itemView) {
+class PopularSearchTitleViewHolder(
+    itemView: View,
+    private val listener: PopularSearchListener,
+) : AbstractViewHolder<PopularSearchTitleDataView>(itemView) {
+
+    private var binding: LayoutTitlePopularSearchBinding? by viewBinding()
 
     override fun bind(element: PopularSearchTitleDataView) {
         bindTitle(element)
@@ -17,16 +22,24 @@ class PopularSearchTitleViewHolder(itemView: View, private val clickListener: In
     }
 
     private fun bindTitle(item: PopularSearchTitleDataView) {
-        itemView.titleTextView?.let { TextAndContentDescriptionUtil.setTextAndContentDescription(it, item.title, getString(R.string.content_desc_titleTextView)) }
+        binding?.titleTextView?.let {
+            TextAndContentDescriptionUtil.setTextAndContentDescription(
+                it,
+                item.title,
+                getString(R.string.content_desc_titleTextView)
+            )
+        }
     }
 
     private fun bindActionRefreshButton(item: PopularSearchTitleDataView) {
-        itemView.actionRefreshButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
-            itemView.actionRefreshButton?.text = item.labelAction
-            itemView.actionRefreshButton?.isEnabled = true
-            itemView.actionRefreshButton?.setOnClickListener {
-                itemView.actionRefreshButton?.isEnabled = false
-                clickListener.onRefreshPopularSearch(item.featureId)
+        val actionRefreshButton = binding?.actionRefreshButton ?: return
+
+        actionRefreshButton.shouldShowWithAction(item.labelAction.isNotEmpty()) {
+            actionRefreshButton.text = item.labelAction
+            actionRefreshButton.isEnabled = true
+            actionRefreshButton.setOnClickListener {
+                actionRefreshButton.isEnabled = false
+                listener.onRefreshPopularSearch(item.featureId)
             }
         }
     }

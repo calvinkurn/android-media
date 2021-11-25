@@ -33,8 +33,7 @@ class DigitalInterceptor(@ApplicationContext context: Context,
 
     @Throws(IOException::class)
     override fun throwChainProcessCauseHttpError(response: Response) {
-        val errorBody = response.body()!!.string()
-        response.body()!!.close()
+        val errorBody = response.peekBody(BYTE_COUNT.toLong()).string()
         Log.d(TAG, "Error body response : $errorBody")
         if (errorBody.isNotEmpty()) {
             val digitalErrorResponse: TkpdDigitalResponse.DigitalErrorResponse = TkpdDigitalResponse.DigitalErrorResponse.factory(errorBody, response.code())

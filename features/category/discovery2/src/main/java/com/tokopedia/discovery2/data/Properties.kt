@@ -61,5 +61,10 @@ data class Properties(
         @SerializedName("tokonow_add_to_cart_active")
         val tokonowATCActive : Boolean = false,
 
+        @SerializedName("calendar_layout")
+        val calendarLayout: String = "",
+
+        @SerializedName("calendar_type")
+        val calendarType: String = "",
 
 )
