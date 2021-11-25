@@ -80,11 +80,10 @@ class FirebaseDLWrapper {
             // because we need tracking UTM for those notification applink
             var tokopediaDeeplink: String? = link
             if (!URLUtil.isNetworkUrl(link)) {
-                tokopediaDeeplink =
                     if (link.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
-                        link
+                        tokopediaDeeplink = link
                     } else {
-                        ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + link
+                        tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + link
                     }
             }
 
