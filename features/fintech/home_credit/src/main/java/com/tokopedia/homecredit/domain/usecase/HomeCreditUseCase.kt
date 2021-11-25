@@ -3,6 +3,7 @@ package com.tokopedia.homecredit.domain.usecase
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.net.Uri
 import com.otaliastudios.cameraview.CameraUtils
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -26,13 +27,15 @@ class HomeCreditUseCase @Inject constructor(
      */
 
     fun saveDetail(
-        success: (ImageDetail) -> Unit,
-        onFail: (Throwable) -> Unit,
-        imageByte: ByteArray,
-        mCaptureNativeSize: Size?,
+            success: (ImageDetail) -> Unit,
+            onFail: (Throwable) -> Unit,
+            imageByte: ByteArray,
+            mCaptureNativeSize: Size?,
     ) {
-
-        useCaseRequestParams = RequestParams().apply { putObject(IMAGE_BYTE_ARRAY, imageByte) }
+        useCaseRequestParams = RequestParams().apply {
+            putObject(IMAGE_BYTE_ARRAY, imageByte)
+            putObject(NATIVE_IMAGE_SIZE, mCaptureNativeSize)
+        }
         execute({
             success(it)
         }, {
@@ -46,16 +49,19 @@ class HomeCreditUseCase @Inject constructor(
      */
     override suspend fun executeOnBackground(): ImageDetail {
         val imgByteArray = (useCaseRequestParams.getObject(IMAGE_BYTE_ARRAY)) as ByteArray
-        val compressedBitmap =
+        val mCaptureNativeSize = (useCaseRequestParams.getObject(NATIVE_IMAGE_SIZE)) as Size?
+        val compressedBitmap = if (mCaptureNativeSize != null)
+            CameraUtils.decodeBitmap(imgByteArray, mCaptureNativeSize.width, mCaptureNativeSize.height)
+        else
             CameraUtils.decodeBitmap(imgByteArray, MAX_IMAGE_DIMEN, MAX_IMAGE_DIMEN)
         try {
 
             val compressedByteArray = bitmapToByteArray(compressedBitmap)
             val cameraResultFile = saveToCacheDirectory(compressedByteArray)
             return ImageDetail(
-                compressedBitmap?.width ?: 0,
-                compressedBitmap?.height ?: 0,
-                cameraResultFile?.absolutePath
+                    compressedBitmap?.width ?: 0,
+                    compressedBitmap?.height ?: 0,
+                    cameraResultFile?.absolutePath
             )
         } finally {
             compressedBitmap?.recycle()
@@ -107,6 +113,7 @@ class HomeCreditUseCase @Inject constructor(
 
     companion object {
         const val IMAGE_QUALITY = 95
+        const val NATIVE_IMAGE_SIZE = "native_image_size"
         const val MAX_IMAGE_DIMEN = 1280
         const val FOLDER_NAME = "extras"
         const val FILE_EXTENSIONS = ".jpg"

@@ -35,27 +35,6 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
         initViewListeners()
     }
 
-    private var cameraOverlayImageKTP: ImageView?
-        get() = super.cameraOverlayImage
-        private set(cameraOverlayImg) {
-            val intent = requireActivity().intent
-            val cameraType = intent.getStringExtra(Constants.CAMERA_TYPE)
-            val cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL)
-            val customHeaderText = intent.getStringExtra(Constants.CUST_HEADER)
-            if (!TextUtils.isEmpty(customHeaderText)) {
-                headerText?.text = customHeaderText
-            }
-            if (!TextUtils.isEmpty(cameraType) && Constants.KTP_NO_OVERLAY.equals(
-                    cameraType,
-                    ignoreCase = true
-                )
-            ) {
-                cameraOverlayImg?.visibility = View.GONE
-            } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
-                ImageHandler.loadImageAndCache(cameraOverlayImg, cutOutImgUrl)
-            }
-        }
-
     private fun initViews(view: View) {
         cameraView = view.findViewById(R.id.camera)
         buttonCancel = view.findViewById(R.id.button_cancel)
@@ -75,7 +54,25 @@ class HomeCreditKTPFragment : HomeCreditBaseCameraFragment() {
         cameraView?.facing = Facing.BACK
         cameraView?.zoom = 0f
         cameraOverlayImage = view.findViewById(R.id.img_cutout)
-        cameraOverlayImage = cameraOverlayImageKTP
+        setCameraOverlayValue(cameraOverlayImage)
+    }
+
+    private fun setCameraOverlayValue(cameraOverlayImage: ImageView?) {
+        if (activity != null) {
+            val intent = requireActivity().intent
+            val cameraType = intent.getStringExtra(Constants.CAMERA_TYPE)
+            val cutOutImgUrl = intent.getStringExtra(Constants.CUST_OVERLAY_URL)
+            val customHeaderText = intent.getStringExtra(Constants.CUST_HEADER)
+            if (!TextUtils.isEmpty(customHeaderText)) {
+                headerText?.text = customHeaderText
+            }
+            if (!TextUtils.isEmpty(cameraType)
+                    && Constants.KTP_NO_OVERLAY.equals(cameraType, ignoreCase = true)) {
+                cameraOverlayImage?.visibility = View.GONE
+            } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
+                ImageHandler.loadImageAndCache(cameraOverlayImage, cutOutImgUrl)
+            }
+        }
     }
 
     private fun initViewListeners() {

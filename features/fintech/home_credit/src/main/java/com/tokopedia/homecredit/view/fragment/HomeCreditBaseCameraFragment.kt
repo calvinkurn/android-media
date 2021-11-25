@@ -47,6 +47,8 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     var imageCaptured: ImageView? = null
     var pictureActionLL: LinearLayout? = null
     var finalCameraResultFilePath: String? = null
+
+
     protected var cameraOverlayImage: ImageView? = null
     protected var headerText: TextView? = null
     var cameraActionsRL: RelativeLayout? = null
