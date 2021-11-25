@@ -77,6 +77,8 @@ class FirebaseDLWrapper {
 
     private fun launchActivity(activity: Activity?, link: String?, firebaseUrl: Uri?){
         if (activity != null && link !=null && firebaseUrl!=null) {
+            // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
+            // because we need tracking UTM for those notification applink
             var tokopediaDeeplink: String? = link
             val intent = Intent()
             if (URLUtil.isNetworkUrl(link)) {
