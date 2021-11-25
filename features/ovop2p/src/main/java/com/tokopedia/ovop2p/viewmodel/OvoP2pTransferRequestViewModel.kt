@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequestBase
 import com.tokopedia.ovop2p.domain.usecase.OvoP2pTransferUseCase
+import com.tokopedia.ovop2p.view.fragment.OvoP2PForm.Companion.GENERAL_ERROR
 import com.tokopedia.ovop2p.view.viewStates.*
 import java.util.*
 import javax.inject.Inject
@@ -52,7 +53,6 @@ class OvoP2pTransferRequestViewModel @Inject constructor(
     }
 
     companion object {
-        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
         const val NON_OVO_ERROR = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
     }
 }

@@ -23,7 +23,6 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.PersistentCacheManager
@@ -60,7 +59,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private lateinit var contactsImageView: ImageView
     private lateinit var searchNoHeader: TextView
     private lateinit var alertDialog: AlertDialog
-    private lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
     private lateinit var trnsfrReqDataMap: HashMap<String, Any>
     private lateinit var amtErrorTxtv: TextView
     private var rcvrPhnNo: String = ""
@@ -89,6 +87,15 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         val viewModelProvider =
             ViewModelProvider(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(OvoP2pTransferRequestViewModel::class.java)
+    }
+
+
+    private val ovoP2pTrxnConfirmViewModel: OvoP2pTrxnConfirmVM by lazy(
+        LazyThreadSafetyMode.NONE
+    ) {
+        val viewModelProvider =
+            ViewModelProvider(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(OvoP2pTrxnConfirmVM::class.java)
     }
 
 
@@ -133,7 +140,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                     //make transfer confirm request
                     if (activity?.isFinishing == false) alertDialog.dismiss()
                     (activity as LoaderUiListener).showProgressDialog()
-                    context?.let { ovoP2pTransferConfirmViewModel.makeTransferConfirmCall(it, trnsfrReqDataMap) }
+                    ovoP2pTrxnConfirmViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
@@ -142,7 +149,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                 R.id.proceed_dlg_non_ovo -> {
                     if (activity?.isFinishing == false) alertDialog.dismiss()
                     (activity as LoaderUiListener).showProgressDialog()
-                    context?.let { ovoP2pTransferConfirmViewModel.makeTransferConfirmCall(it, trnsfrReqDataMap) }
+                    ovoP2pTrxnConfirmViewModel.makeTransferConfirmCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
@@ -312,17 +319,12 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun createAndSubscribeTransferConfirmVM() {
-        if (!::ovoP2pTransferConfirmViewModel.isInitialized) {
-            if (activity != null) {
-                ovoP2pTransferConfirmViewModel =
-                    ViewModelProviders.of(requireActivity()).get(OvoP2pTrxnConfirmVM::class.java)
-                ovoP2pTransferConfirmViewModel.txnConfirmMutableLiveData.observe(
-                    viewLifecycleOwner,
-                    getTransferConfObserver(activity as LoaderUiListener)
-                )
+        ovoP2pTrxnConfirmViewModel.txnConfirmMutableLiveData.observe(
+            viewLifecycleOwner,
+            getTransferConfObserver(activity as LoaderUiListener)
+        )
             }
-        }
-    }
+
 
     private fun getTransferConfObserver(loaderUiListener: LoaderUiListener): Observer<TransferConfirmState> {
         return Observer {
@@ -440,6 +442,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
         fun newInstance(): OvoP2PForm {
             return OvoP2PForm()
         }
+        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
 
         fun newInstance(bundle: Bundle): OvoP2PForm {
             val fragmentOVOP2PForm = newInstance()
@@ -560,4 +563,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
             }
         }
     }
+
+
 }

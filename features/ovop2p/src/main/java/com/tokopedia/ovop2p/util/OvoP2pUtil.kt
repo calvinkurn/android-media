@@ -18,7 +18,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
-import com.tokopedia.ovop2p.domain.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
@@ -49,13 +48,6 @@ object OvoP2pUtil {
     }
 
 
-    fun executeOvoP2pTransferConfirm(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
-        val ovoP2pTransferConfirmUseCase = GraphqlUseCase()
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.ovo_p2p_transfer_confirm),
-                OvoP2pTransferConfirmBase::class.java, gqlMutationDataMap)
-        ovoP2pTransferConfirmUseCase.addRequest(graphqlRequest)
-        ovoP2pTransferConfirmUseCase.execute(subscriber)
-    }
 
     fun executeOvoP2pTransferThankyou(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
         val ovoP2pTransferThankyouUseCase = GraphqlUseCase()

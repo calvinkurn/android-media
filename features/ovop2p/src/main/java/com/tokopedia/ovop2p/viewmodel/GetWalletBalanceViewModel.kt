@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.domain.model.WalletDataBase
 import com.tokopedia.ovop2p.domain.usecase.GetWalletBalanceUseCase
+import com.tokopedia.ovop2p.view.fragment.OvoP2PForm.Companion.GENERAL_ERROR
 import com.tokopedia.ovop2p.view.viewStates.WalletBalanceState
 import com.tokopedia.ovop2p.view.viewStates.WalletData
 import com.tokopedia.ovop2p.view.viewStates.WalletError
@@ -50,8 +51,5 @@ class GetWalletBalanceViewModel @Inject constructor(
         getWalletBalanceUseCase.cancelJobs()
     }
 
-    companion object{
-        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
-    }
 
 }
