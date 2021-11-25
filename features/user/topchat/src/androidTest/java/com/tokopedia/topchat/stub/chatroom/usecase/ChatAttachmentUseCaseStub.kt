@@ -30,6 +30,19 @@ class ChatAttachmentUseCaseStub @Inject constructor(
         "seller/success_get_chat_attachment_srw_reply_prompt.json"
     private val shippingLocationPath =
         "seller/chat_attachment_shipping_location_reply.json"
+    private val upcomingCampaignPath =
+        "buyer/chat_attachment_upcoming_campaign.json"
+
+    /**
+     * <!--- Start Start OOS label --->
+     */
+
+    val upComingCampaignProduct: ChatAttachmentResponse
+        get() = alterResponseOf(upcomingCampaignPath) { response -> }
+
+    /**
+     * <!--- End Start OOS label --->
+     */
 
     /**
      * <!--- Start Shipping Location Seller --->

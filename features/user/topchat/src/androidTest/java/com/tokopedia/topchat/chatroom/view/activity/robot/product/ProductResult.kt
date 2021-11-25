@@ -1,0 +1,47 @@
+package com.tokopedia.topchat.chatroom.view.activity.robot.product
+
+import android.view.View
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.Matcher
+
+object ProductResult {
+
+    fun hasVisibleRemindMeBtnAt(position: Int) {
+        assertRemindMeButtonAt(position, isDisplayed())
+    }
+
+    fun hasNoVisibleAtcBtnAt(position: Int) {
+        assertAtcButtonAt(position, not(isDisplayed()))
+    }
+
+    fun hasNoVisibleBuyBtnAt(position: Int) {
+        assertBuyButtonAt(position, not(isDisplayed()))
+    }
+
+    private fun assertRemindMeButtonAt(position: Int, matcher: Matcher<View>) {
+        assertViewInRecyclerViewAt(
+            position = position,
+            viewId = R.id.tv_wishlist,
+            matcher = matcher
+        )
+    }
+
+    private fun assertAtcButtonAt(position: Int, matcher: Matcher<View>) {
+        assertViewInRecyclerViewAt(
+            position = position,
+            viewId = R.id.tv_atc,
+            matcher = matcher
+        )
+    }
+
+    private fun assertBuyButtonAt(position: Int, matcher: Matcher<View>) {
+        assertViewInRecyclerViewAt(
+            position = position,
+            viewId = R.id.tv_buy,
+            matcher = matcher
+        )
+    }
+}
