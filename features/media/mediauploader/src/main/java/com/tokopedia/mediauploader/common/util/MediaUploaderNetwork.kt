@@ -5,6 +5,7 @@ import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.mediauploader.common.di.MediaHttpLoggingInterceptor
+import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -17,7 +18,6 @@ import java.util.concurrent.TimeUnit
 object MediaUploaderNetwork {
 
     private const val BASE_URL = "https://upedia.tokopedia.net/"
-
     private const val MAX_LENGTH_CHUCKER_CONTENT = 1000L
 
     fun okHttpClientBuilder(
@@ -25,10 +25,10 @@ object MediaUploaderNetwork {
         userSession: UserSessionInterface
     ): OkHttpClient.Builder {
         return OkHttpClient.Builder()
-            .connectTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .readTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .writeTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
-            .callTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .connectTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .readTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .callTimeout(DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
             .addInterceptor(NetworkTimeOutInterceptor())
             .also {
                 (context as? NetworkRouter?)?.let { router ->
