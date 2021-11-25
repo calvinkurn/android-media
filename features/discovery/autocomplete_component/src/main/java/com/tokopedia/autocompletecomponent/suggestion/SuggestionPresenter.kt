@@ -262,8 +262,7 @@ class SuggestionPresenter @Inject constructor(
 
     override fun onSuggestionItemClicked(item: BaseSuggestionDataView) {
         trackSuggestionItemWithUrl(item.urlTracker)
-        if (isTokoNow()) trackTokoNowEventItemClicked(item)
-        else trackEventItemClicked(item)
+        trackSuggestionItemClick(item)
 
         view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)
@@ -298,13 +297,21 @@ class SuggestionPresenter @Inject constructor(
         }
     }
 
+    private fun trackSuggestionItemClick(item: BaseSuggestionDataView) {
+        if (isTokoNow()) trackTokoNowEventItemClicked(item)
+        else trackEventItemClicked(item)
+    }
+
     private fun trackTokoNowEventItemClicked(item: BaseSuggestionDataView) {
         when(item.type) {
             TYPE_KEYWORD -> {
-                view?.trackTokoNowEventClickKeyword(getTokoNowKeywordEventLabelForTracking(item))
+                view?.trackTokoNowEventClickKeyword(
+                    getTokoNowKeywordEventLabelForTracking(item),
+                    item,
+                )
             }
             TYPE_CURATED -> {
-                view?.trackTokoNowEventClickCurated(getCuratedEventLabelForTracking(item))
+                view?.trackTokoNowEventClickCurated(getCuratedEventLabelForTracking(item), item)
             }
         }
     }
@@ -325,6 +332,7 @@ class SuggestionPresenter @Inject constructor(
                 view?.trackEventClickKeyword(
                     getKeywordEventLabelForTracking(item),
                     item.dimension90,
+                    item,
                 )
             }
             TYPE_CURATED -> {
@@ -332,29 +340,36 @@ class SuggestionPresenter @Inject constructor(
                     getCuratedEventLabelForTracking(item),
                     item.trackingCode,
                     item.dimension90,
+                    item,
                 )
             }
             TYPE_SHOP -> {
-                view?.trackEventClickShop(getShopEventLabelForTracking(item), item.dimension90)
+                view?.trackEventClickShop(
+                    getShopEventLabelForTracking(item),
+                    item.dimension90,
+                    item,
+                )
             }
             TYPE_PROFILE -> {
-                view?.trackEventClickProfile(getProfileEventLabelForTracking(item))
+                view?.trackEventClickProfile(getProfileEventLabelForTracking(item), item)
             }
             TYPE_RECENT_KEYWORD -> {
-                view?.trackEventClickRecentKeyword(item.title, item.dimension90)
+                view?.trackEventClickRecentKeyword(item.title, item.dimension90, item)
             }
             TYPE_LOCAL -> {
                 view?.trackEventClickLocalKeyword(
                     getLocalEventLabelForTracking(item),
                     getUserId(),
-                    item.dimension90
+                    item.dimension90,
+                    item,
                 )
             }
             TYPE_GLOBAL -> {
                 view?.trackEventClickGlobalKeyword(
                     getGlobalEventLabelForTracking(item),
                     getUserId(),
-                    item.dimension90
+                    item.dimension90,
+                    item,
                 )
             }
             TYPE_PRODUCT -> {
@@ -369,6 +384,7 @@ class SuggestionPresenter @Inject constructor(
                     getCuratedLightEventLabelForTracking(item),
                     item.trackingCode,
                     item.dimension90,
+                    item,
                 )
             }
         }
@@ -454,7 +470,7 @@ class SuggestionPresenter @Inject constructor(
     }
 
     private fun impressCurated(item: BaseSuggestionDataView, label: String) {
-        view?.trackEventImpressCurated(label, item.trackingCode, item.dimension90)
+        view?.trackEventImpressCurated(label, item.trackingCode, item.dimension90, item)
     }
 
     override fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView) {

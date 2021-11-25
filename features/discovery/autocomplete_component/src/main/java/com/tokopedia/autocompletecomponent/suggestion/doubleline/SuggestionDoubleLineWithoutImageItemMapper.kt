@@ -21,5 +21,7 @@ fun SuggestionItem.convertToDoubleLineWithoutImageVisitableList(searchTerm: Stri
     item.searchTerm = searchTerm
     item.position = position
     item.dimension90 = dimension90
+    item.trackingOption = this.trackingOption
+    item.componentId = this.componentId
     return item
 }

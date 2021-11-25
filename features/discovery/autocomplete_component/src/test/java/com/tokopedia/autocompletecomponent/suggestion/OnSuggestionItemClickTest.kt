@@ -97,7 +97,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickKeyword(expectedEventLabel, item.dimension90)
+            suggestionView.trackEventClickKeyword(expectedEventLabel, item.dimension90, item)
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -122,7 +122,12 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode, item.dimension90)
+            suggestionView.trackEventClickCurated(
+                expectedEventLabel,
+                item.trackingCode,
+                item.dimension90,
+                item,
+            )
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -146,7 +151,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickShop(expectedEventLabel, item.dimension90)
+            suggestionView.trackEventClickShop(expectedEventLabel, item.dimension90, item)
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -173,7 +178,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
                         "- po: ${item.position}"
 
         verify {
-            suggestionView.trackEventClickProfile(expectedEventLabel)
+            suggestionView.trackEventClickProfile(expectedEventLabel, item)
             suggestionView.onClickSuggestion(item.applink)
         }
 
@@ -208,7 +213,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
     private fun `then verify view tracking click item recent keyword is correct`(item: BaseSuggestionDataView) {
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickRecentKeyword(item.title, item.dimension90)
+            suggestionView.trackEventClickRecentKeyword(item.title, item.dimension90, item)
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -237,7 +242,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackTokoNowEventClickKeyword(expectedEventLabel)
+            suggestionView.trackTokoNowEventClickKeyword(expectedEventLabel, item)
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -267,7 +272,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackTokoNowEventClickCurated(expectedEventLabel)
+            suggestionView.trackTokoNowEventClickCurated(expectedEventLabel, item)
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -322,7 +327,12 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
         verify {
             suggestionView.showSuggestionResult(any())
-            suggestionView.trackEventClickCurated(expectedEventLabel, item.trackingCode, item.dimension90)
+            suggestionView.trackEventClickCurated(
+                expectedEventLabel,
+                item.trackingCode,
+                item.dimension90,
+                item,
+            )
             suggestionView.onClickSuggestion(item.applink)
         }
     }

@@ -20,5 +20,7 @@ fun SuggestionItem.convertToSingleLineVisitableList(searchTerm: String, position
     item.position = position
     item.trackingCode = this.tracking.code
     item.dimension90 = dimension90
+    item.trackingOption = this.trackingOption
+    item.componentId = this.componentId
     return item
 }

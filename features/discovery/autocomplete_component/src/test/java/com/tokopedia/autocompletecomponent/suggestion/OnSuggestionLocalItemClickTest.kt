@@ -40,7 +40,12 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
         val userId = "0"
 
         verify {
-            suggestionView.trackEventClickLocalKeyword(expectedEventLabel, userId, item.dimension90)
+            suggestionView.trackEventClickLocalKeyword(
+                expectedEventLabel,
+                userId,
+                item.dimension90,
+                item,
+            )
             suggestionView.onClickSuggestion(item.applink)
         }
     }
@@ -63,7 +68,12 @@ internal class OnSuggestionLocalItemClickTest: SuggestionPresenterTestFixtures()
         val userId = "0"
 
         verify {
-            suggestionView.trackEventClickGlobalKeyword(expectedEventLabel, userId, item.dimension90)
+            suggestionView.trackEventClickGlobalKeyword(
+                expectedEventLabel,
+                userId,
+                item.dimension90,
+                item,
+            )
             suggestionView.onClickSuggestion(item.applink)
         }
     }

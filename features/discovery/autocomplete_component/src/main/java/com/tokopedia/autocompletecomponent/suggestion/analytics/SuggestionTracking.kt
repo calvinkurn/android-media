@@ -38,8 +38,11 @@ import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTracki
 import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTracking.Companion.Action.CLICK_TOP_SHOP_SEE_MORE
 import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTracking.Companion.Action.IMPRESSION_DIGITAL_CURATED_SUGGESTION
 import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTracking.Companion.Misc.PRODUCT_LINE_SUGGESTION_ACTION_FIELD
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingRollence
 import com.tokopedia.iris.Iris
 import com.tokopedia.track.TrackApp
+import com.tokopedia.remoteconfig.RollenceKey.AUTOCOMPLETE_SUGGESTION_COMPONENT_TRACKING as ROLLENCE_KEY
 
 open class SuggestionTracking(
     protected val iris: Iris,
@@ -69,18 +72,24 @@ open class SuggestionTracking(
         }
     }
 
-    open fun eventClickKeyword(label: String, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOP_NAV,
-                EVENT_CATEGORY, TOP_NAV,
-                EVENT_ACTION, CLICK_KEYWORD_SUGGESTION,
-                EVENT_LABEL, label,
-                BUSINESS_UNIT, SEARCH,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                PAGE_SOURCE, pageSource
+    open fun eventClickKeyword(
+        label: String,
+        pageSource: String,
+//        searchComponentTracking: SearchComponentTracking,
+    ) {
+//        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOP_NAV,
+                    EVENT_CATEGORY, TOP_NAV,
+                    EVENT_ACTION, CLICK_KEYWORD_SUGGESTION,
+                    EVENT_LABEL, label,
+                    BUSINESS_UNIT, SEARCH,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                    PAGE_SOURCE, pageSource
+                )
             )
-        )
+//        }
     }
 
     open fun eventClickCurated(label: String, campaignCode: String, pageSource: String) {

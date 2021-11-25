@@ -43,23 +43,31 @@ private fun SuggestionTopShopCardDataView.assertSuggestionTopShopCardDataView(su
     }
 }
 
-internal fun BaseSuggestionDataView.assertBaseSuggestionDataView(template: String, item: SuggestionItem, dimension90: String = "") {
-    template shouldBe template
-    type shouldBe item.type
-    applink shouldBe item.applink
-    url shouldBe item.url
-    title shouldBe item.title
-    subtitle shouldBe item.subtitle
-    iconTitle shouldBe item.iconTitle
-    iconSubtitle shouldBe item.iconSubtitle
-    shortcutUrl shouldBe item.shortcutUrl
-    shortcutImage shouldBe item.shortcutImage
-    imageUrl shouldBe item.imageUrl
-    label shouldBe item.label
-    labelType shouldBe item.labelType
-    urlTracker shouldBe item.urlTracker
-    trackingCode shouldBe item.tracking.code
+internal fun BaseSuggestionDataView.assertBaseSuggestionDataView(
+    template: String,
+    item: SuggestionItem,
+    dimension90: String = "",
+    expectedKeyword: String,
+) {
+    this.template shouldBe template
+    this.type shouldBe item.type
+    this.applink shouldBe item.applink
+    this.url shouldBe item.url
+    this.title shouldBe item.title
+    this.subtitle shouldBe item.subtitle
+    this.iconTitle shouldBe item.iconTitle
+    this.iconSubtitle shouldBe item.iconSubtitle
+    this.shortcutUrl shouldBe item.shortcutUrl
+    this.shortcutImage shouldBe item.shortcutImage
+    this.imageUrl shouldBe item.imageUrl
+    this.label shouldBe item.label
+    this.labelType shouldBe item.labelType
+    this.urlTracker shouldBe item.urlTracker
+    this.trackingCode shouldBe item.tracking.code
     this.dimension90 shouldBe dimension90
+    this.trackingOption shouldBe item.trackingOption
+    this.componentId shouldBe item.componentId
+    this.searchTerm shouldBe expectedKeyword
 }
 
 internal fun SuggestionDoubleLineDataDataView.assertBoldText(expectedValue: Boolean) {

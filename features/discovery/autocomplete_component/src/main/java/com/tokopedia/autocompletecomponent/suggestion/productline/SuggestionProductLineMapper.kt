@@ -22,5 +22,6 @@ fun SuggestionItem.convertToSuggestionProductLineDataView(searchTerm: String, po
     item.discountPercentage = this.discountPercentage
     item.originalPrice = this.originalPrice
     item.dimension90 = dimension90
+    item.trackingOption = this.trackingOption
     return item
 }

@@ -174,23 +174,43 @@ class SuggestionFragment :
         suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
-    override fun trackEventClickKeyword(eventLabel: String, dimension90: String) {
+    override fun trackEventClickKeyword(
+        eventLabel: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView,
+    ) {
         suggestionTracking?.eventClickKeyword(eventLabel, dimension90)
     }
 
-    override fun trackEventClickCurated(eventLabel: String, campaignCode: String, dimension90: String) {
+    override fun trackEventClickCurated(
+        eventLabel: String,
+        campaignCode: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView,
+    ) {
         suggestionTracking?.eventClickCurated(eventLabel, campaignCode, dimension90)
     }
 
-    override fun trackEventClickShop(eventLabel: String, dimension90: String) {
+    override fun trackEventClickShop(
+        eventLabel: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView,
+    ) {
         suggestionTracking?.eventClickShop(eventLabel, dimension90)
     }
 
-    override fun trackEventClickProfile(eventLabel: String) {
+    override fun trackEventClickProfile(
+        eventLabel: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
         suggestionTracking?.eventClickProfile(eventLabel)
     }
 
-    override fun trackEventClickRecentKeyword(eventLabel: String, dimension90: String) {
+    override fun trackEventClickRecentKeyword(
+        eventLabel: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
         suggestionTracking?.eventClickRecentKeyword(eventLabel, dimension90)
     }
 
@@ -210,11 +230,21 @@ class SuggestionFragment :
         suggestionTracking?.eventClickTopShopSeeMore(eventLabel)
     }
 
-    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String, dimension90: String) {
+    override fun trackEventClickLocalKeyword(
+        eventLabel: String,
+        userId: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
         suggestionTracking?.eventClickLocalKeyword(eventLabel, userId, dimension90)
     }
 
-    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String) {
+    override fun trackEventClickGlobalKeyword(
+        eventLabel: String,
+        userId: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
         suggestionTracking?.eventClickGlobalKeyword(eventLabel, userId, dimension90)
     }
 
@@ -232,11 +262,17 @@ class SuggestionFragment :
             }
         } ?: ChooseAddressConstant.emptyAddress
 
-    override fun trackTokoNowEventClickCurated(eventLabel: String) {
+    override fun trackTokoNowEventClickCurated(
+        eventLabel: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
         suggestionTracking?.eventClickTokoNowCurated(eventLabel)
     }
 
-    override fun trackTokoNowEventClickKeyword(eventLabel: String) {
+    override fun trackTokoNowEventClickKeyword(
+        eventLabel: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
         suggestionTracking?.eventClickTokoNowKeyword(eventLabel)
     }
 
@@ -244,7 +280,12 @@ class SuggestionFragment :
         suggestionTracking?.eventClickChipSuggestion(eventLabel, dimension90)
     }
 
-    override fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String) {
+    override fun trackEventImpressCurated(
+        label: String,
+        campaignCode: String,
+        pageSource: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
         suggestionTracking?.eventImpressCurated(label, campaignCode, pageSource)
     }
 

@@ -37,7 +37,12 @@ internal class OnSuggestionItemImpressedTest: SuggestionPresenterTestFixtures() 
                     "- page: ${item.applink}"
 
         verifyOrder {
-            suggestionView.trackEventImpressCurated(expectedEventLabel, item.trackingCode, item.dimension90)
+            suggestionView.trackEventImpressCurated(
+                expectedEventLabel,
+                item.trackingCode,
+                item.dimension90,
+                item,
+            )
         }
     }
 
@@ -59,7 +64,12 @@ internal class OnSuggestionItemImpressedTest: SuggestionPresenterTestFixtures() 
                     "- page: ${item.applink}"
 
         verifyOrder {
-            suggestionView.trackEventImpressCurated(expectedEventLabel, item.trackingCode, item.dimension90)
+            suggestionView.trackEventImpressCurated(
+                expectedEventLabel,
+                item.trackingCode,
+                item.dimension90,
+                item,
+            )
         }
     }
 }

@@ -25,6 +25,8 @@ fun SuggestionItem.convertToSuggestionChipWidgetDataView(searchTerm: String, pos
     item.originalPrice = this.originalPrice
     item.dimension90 = dimension90
     item.childItems = this.suggestionChildItems.convertToChildItems(searchTerm, dimension90)
+    item.trackingOption = this.trackingOption
+    item.componentId = this.componentId
     return item
 }
 
