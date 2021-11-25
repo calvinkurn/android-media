@@ -2,6 +2,7 @@ package com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.ui
 
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     }
 
     private val saldoTabItems = ArrayList<SaldoHistoryTabItem>()
+    private val handler = Handler(Looper.getMainLooper())
+    private val delayStartCoachMarkRunnable = Runnable {
+        (activity as SaldoCoachMarkListener).startCoachMarkFlow(getPenjualanTabView())
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -106,9 +111,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         saldoTransactionTabsUnify.setupWithViewPager(transactionHistoryViewPager)
 
         // tabs are visible now start, coachMark
-        Handler().postDelayed({
-            (activity as SaldoCoachMarkListener).startCoachMarkFlow(getPenjualanTabView())
-        }, 400)
+        handler.postDelayed(delayStartCoachMarkRunnable, DELAY_COACH_MARK_MILLIS)
     }
 
     private fun loadMultipleTabItem() {
@@ -189,5 +192,14 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             totalTabCount--
         } while (totalTabCount > 0)
         return null
+    }
+
+    override fun onDestroyView() {
+        handler.removeCallbacks(delayStartCoachMarkRunnable)
+        super.onDestroyView()
+    }
+
+    companion object {
+        const val DELAY_COACH_MARK_MILLIS = 400L
     }
 }
