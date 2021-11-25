@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
@@ -112,12 +113,18 @@ class OfficialStoreAnalyticsTest {
          */
         removeProgressBarOnOsPage(recyclerView, activityRule.activity)
 
-        /**
-         * This function needed to trigger product recommendation usecase in official store,
-         * official store page only hit recommendation usecase on scroll in the end of current list
-         */
-        preloadRecomOnOSPage(recyclerView)
         for (i in 0 until (itemCount + productRecommendationOffset)) {
+            if (i == itemCount) {
+                /**
+                 * This function needed to trigger product recommendation usecase in official store,
+                 * official store page only hit recommendation usecase on scroll in the end of current list
+                 */
+                preloadRecomOnOSPage(recyclerView)
+                onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view)))
+                        .perform(ViewActions.swipeDown())
+                onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view)))
+                        .perform(ViewActions.swipeUp())
+            }
             scrollRecyclerViewToPosition(recyclerView, i)
             checkProductOnDynamicChannel(recyclerView, i)
         }
