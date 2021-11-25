@@ -22,16 +22,17 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.math.min
 
-class DataVisorWorker(appContext: Context, params: WorkerParameters) : CoroutineWorker(appContext, params) {
+class DataVisorWorker(appContext: Context, params: WorkerParameters) :
+    CoroutineWorker(appContext, params) {
 
     @Inject
     lateinit var submitDVTokenUseCase: SubmitDVTokenUseCase
 
     init {
         DaggerDeviceFingerprintComponent.builder()
-                .deviceFingerprintModule(DeviceFingerprintModule(applicationContext))
-                .build()
-                .inject(this)
+            .deviceFingerprintModule(DeviceFingerprintModule(applicationContext))
+            .build()
+            .inject(this)
     }
 
     override suspend fun doWork(): Result {
@@ -48,10 +49,12 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             try {
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
-                        VisorFingerprintInstance.initToken(applicationContext,
+                        if (isTokenExpired) {
+                            VisorFingerprintInstance.initToken(applicationContext,
                                 userSession.userId,
                                 listener = object : VisorFingerprintInstance.onVisorInitListener {
                                     override fun onSuccessInitToken(token: String) {
+                                        lastToken = token
                                         continuation.resume(token to "")
                                     }
 
@@ -59,6 +62,9 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
                                         continuation.resume("" to error)
                                     }
                                 })
+                        } else {
+                            continuation.resume(lastToken to "")
+                        }
                     } catch (e: Exception) {
                         continuation.resume("" to e.toString())
                     }
@@ -69,10 +75,16 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             val token = resultInit?.first ?: ""
             result = if (token.isNotEmpty()) {
                 try {
-                    val resultServer = sendDataVisorToServer(token, runAttemptCount, "")
+                    val resultServer = sendDataVisorToServer(token, runAttemptCount, "", isTokenExpired)
                     if (!resultServer.subDvcIntlEvent.isError) {
-                        setTokenLocal(applicationContext, token)
-                        Result.success()
+                        setToken(applicationContext, token)
+                        if (resultServer.subDvcIntlEvent.dvData.isExpire) {
+                            setTokenExpired(applicationContext, true)
+                            Result.retry()
+                        } else {
+                            setTokenExpired(applicationContext, false)
+                            Result.success()
+                        }
                     } else {
                         sendLog(token, true, "")
                         Result.retry()
@@ -84,7 +96,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             } else {
                 val error = resultInit?.second ?: ""
                 sendLog(token, false, error)
-                sendErrorDataVisorToServer(runAttemptCount, error)
+                sendErrorDataVisorToServer(runAttemptCount, error, isTokenExpired)
                 Result.retry()
             }
             result
@@ -92,38 +104,34 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     }
 
     private fun sendLog(token: String = "", isError: Boolean = false, throwableString: String) {
-        val throwableTruncate = if (throwableString.isNotEmpty()) {
-            throwableString.substring(0, min(ERR_MAX_LENGTH, throwableString.length))
-        } else {
-            ""
-        }
-        ServerLogger.log(Priority.P1, LOG_TAG,
-                mapOf("token" to token,
-                        "isError" to isError.toString(),
-                        "error" to throwableTruncate))
+        ServerLogger.log(
+            Priority.P1, LOG_TAG,
+            mapOf(
+                "token" to token,
+                "isError" to isError.toString(),
+                "error" to throwableString
+            )
+        )
     }
 
-    fun setTokenLocal(context: Context, token: String) {
-        val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
-        val now = System.currentTimeMillis()
-        val editor = sp.edit()
-        editor.putString(KEY_TOKEN, token).putLong(KEY_TS_TOKEN, now)
-        editor.apply()
-        lastToken = token
-        lastTimestampToken = now
-        FingerprintModelGenerator.expireFingerprint()
+    suspend fun sendErrorDataVisorToServer(
+        runAttemptCount: Int,
+        errorMessage: String,
+        checkForce: Boolean
+    ) {
+        sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage, checkForce)
     }
 
-    suspend fun sendErrorDataVisorToServer(runAttemptCount: Int, errorMessage: String) {
-        sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage)
-    }
-
-    private suspend fun sendDataVisorToServer(token: String = DEFAULT_VALUE_DATAVISOR,
-                                              countAttempt: Int, errorMessage: String): SubmitDeviceInitResponse {
+    private suspend fun sendDataVisorToServer(
+        token: String = DEFAULT_VALUE_DATAVISOR,
+        countAttempt: Int, errorMessage: String,
+        checkForce: Boolean
+    ): SubmitDeviceInitResponse {
         return submitDVTokenUseCase.execute(
-                token,
-                countAttempt,
-                errorMessage
+            token,
+            countAttempt,
+            errorMessage,
+            checkForce = checkForce
         )
     }
 
@@ -131,15 +139,13 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
         const val WORKER_NAME = "DV_WORKER"
         const val MAX_RUN_ATTEMPT = 3
         const val KEY_TOKEN = "tk"
-        const val KEY_TS_TOKEN = "ts_tk"
+        const val KEY_EXPIRED = "is_exp"
         const val KEY_TS_WORKER = "ts_worker"
         const val LOG_TAG = "GQL_ERROR_RISK"
-        const val ERR_MAX_LENGTH = 100
-        val THRES_TOKEN_VALID_AGE = TimeUnit.DAYS.toMillis(30)
         val THRES_WORKER = TimeUnit.DAYS.toMillis(1)
         var lastToken = ""
-        var lastTimestampToken = 0L
         var lastTimestampWorker = 0L
+        var isTokenExpired = false
         var userSession: UserSessionInterface? = null
 
         fun scheduleWorker(context: Context, forceWorker: Boolean) {
@@ -157,27 +163,38 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             }
         }
 
+        fun setToken(context: Context, token: String) {
+            if (lastToken != token) {
+                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                lastToken = token
+                sp.edit().putString(KEY_TOKEN, token).apply()
+                FingerprintModelGenerator.expireFingerprint()
+            }
+        }
+
         fun setTsWorker(context: Context) {
             val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
             val now = System.currentTimeMillis()
             sp.edit().putLong(KEY_TS_WORKER, now)
-                    .apply()
+                .apply()
             lastTimestampWorker = now
+        }
+
+        fun setTokenExpired(context: Context, isExpired: Boolean) {
+            if (isTokenExpired != isExpired) {
+                val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
+                sp.edit().putBoolean(KEY_EXPIRED, isExpired).apply()
+                isTokenExpired = isExpired
+            }
         }
 
         fun needToRun(context: Context): Boolean {
             if (lastToken.isEmpty()) {
                 val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
-                        ?: DEFAULT_VALUE_DATAVISOR
-                lastTimestampToken = sp.getLong(KEY_TS_TOKEN, 0L)
+                    ?: DEFAULT_VALUE_DATAVISOR
                 lastTimestampWorker = sp.getLong(KEY_TS_WORKER, 0L)
-            }
-            if (lastToken != DEFAULT_VALUE_DATAVISOR) {
-                //check token valid age
-                if (System.currentTimeMillis() - lastTimestampToken < THRES_TOKEN_VALID_AGE) {
-                    return false
-                }
+                isTokenExpired = sp.getBoolean(KEY_EXPIRED, false)
             }
             val userSession = getUserSession(context)
             if (!userSession.isLoggedIn) {
@@ -200,14 +217,17 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
             try {
                 setTsWorker(context)
                 WorkManager.getInstance(context).enqueueUniqueWork(
-                        WORKER_NAME,
-                        ExistingWorkPolicy.REPLACE,
-                        OneTimeWorkRequest
-                                .Builder(DataVisorWorker::class.java)
-                                .setConstraints(Constraints.Builder()
-                                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                                        .build())
-                                .build())
+                    WORKER_NAME,
+                    ExistingWorkPolicy.REPLACE,
+                    OneTimeWorkRequest
+                        .Builder(DataVisorWorker::class.java)
+                        .setConstraints(
+                            Constraints.Builder()
+                                .setRequiredNetworkType(NetworkType.CONNECTED)
+                                .build()
+                        )
+                        .build()
+                )
             } catch (ex: Exception) {
                 Timber.w(ex.toString())
             }
