@@ -15,9 +15,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliateIncomeViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val affiliateBalanceDataUseCase: AffiliateBalanceDataUseCase,
-        private val affiliateTransactionHistoryUseCase: AffiliateTransactionHistoryUseCase
+//        private val userSessionInterface: UserSessionInterface,
+//        private val affiliateBalanceDataUseCase: AffiliateBalanceDataUseCase,
+//        private val affiliateTransactionHistoryUseCase: AffiliateTransactionHistoryUseCase
 ) : BaseViewModel(){
 
     private var affiliateBalanceData = MutableLiveData<AffiliateBalance.AffiliateBalance.Data>()
@@ -28,8 +28,8 @@ class AffiliateIncomeViewModel @Inject constructor(
 
     fun getAffiliateBalance() {
         launchCatchError(block = {
-            affiliateBalanceData.value =
-                    affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance.data
+//            affiliateBalanceData.value =
+//                    affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance.data
         }, onError = {
             it.printStackTrace()
             errorMessage.value = it.toString()
@@ -39,12 +39,12 @@ class AffiliateIncomeViewModel @Inject constructor(
     fun getAffiliateTransactionHistory(startData: String, endData:String, page: Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(startData, endData, page).getAffiliateTransactionHistory.data.let {
-                hasNext = it.hasNext
-                convertDataToVisitables(it)?.let { visitables ->
-                    affiliateDataList.value = visitables
-                }
-            }
+//            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(startData, endData, page).getAffiliateTransactionHistory.data.let {
+//                hasNext = it.hasNext
+//                convertDataToVisitables(it)?.let { visitables ->
+//                    affiliateDataList.value = visitables
+//                }
+//            }
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
@@ -71,10 +71,10 @@ class AffiliateIncomeViewModel @Inject constructor(
     fun getErrorMessage(): LiveData<String> = errorMessage
 
     fun getUserName(): String {
-        return userSessionInterface.name
+        return "userSessionInterface.name"
     }
 
     fun getUserProfilePicture(): String {
-        return userSessionInterface.profilePicture
+        return "userSessionInterface.profilePicture"
     }
 }
