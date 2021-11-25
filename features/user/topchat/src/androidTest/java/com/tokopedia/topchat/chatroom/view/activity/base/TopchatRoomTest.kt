@@ -33,6 +33,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepicker.common.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.common.RESULT_IMAGES_FED_INTO_IMAGE_PICKER
 import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
@@ -165,6 +166,9 @@ abstract class TopchatRoomTest {
     @Inject
     protected lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
+
     protected open lateinit var activity: TopChatRoomActivityStub
 
     protected var firstPageChatAsBuyer = GetExistingChatPojo()
@@ -207,6 +211,7 @@ abstract class TopchatRoomTest {
         IdlingRegistry.getInstance().unregister(keyboardStateIdling)
         chatComponentStub = null
         keyboardStateIdling = null
+        GlobalConfig.APPLICATION_TYPE = GlobalConfig.CONSUMER_APPLICATION
     }
 
     protected open fun setupResponse() {
