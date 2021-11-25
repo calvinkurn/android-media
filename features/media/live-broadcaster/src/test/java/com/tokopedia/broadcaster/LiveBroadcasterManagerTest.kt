@@ -116,9 +116,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         `Given audio config`()
         `Given video config`()
 
-        val expectedValueOfConfig = `Given BroadcasterConfig` {
-            ingestUrl = INGEST_URL
-        }
+        val expectedValueOfConfig = `Given BroadcasterConfig`()
 
         // When
         broadcaster.prepare(expectedValueOfConfig)
@@ -180,7 +178,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         `Then the state should be expected with actual`(BroadcasterState.Connecting)
         `Then the connection config url should be equals of`(INGEST_URL)
         `Then a property from BroadcasterConfig equals of`(
-            BroadcasterConfig().apply { ingestUrl = INGEST_URL }
+            BroadcasterConfig()
         )
     }
 
@@ -216,7 +214,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         broadcaster.pause()
 
         // Then
-        `Then the state should be expected with actual`(BroadcasterState.Pause)
+        `Then the state should be expected with actual`(BroadcasterState.Paused)
     }
 
     @Test
@@ -225,7 +223,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
         broadcaster.stop()
 
         // Then
-        `Then the state should be expected with actual`(BroadcasterState.Stop)
+        `Then the state should be expected with actual`(BroadcasterState.Stopped)
     }
 
     @Test

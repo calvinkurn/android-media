@@ -126,7 +126,7 @@ class LiveBroadcasterManager constructor(
 
         broadcastState(BroadcasterState.Connecting)
         mConnection.uri = url
-        mConfig.ingestUrl = url
+
         startStream()
     }
 
@@ -137,7 +137,7 @@ class LiveBroadcasterManager constructor(
 
     override fun pause() {
         stopStream()
-        broadcastState(BroadcasterState.Pause)
+        broadcastState(BroadcasterState.Paused)
     }
 
     override fun reconnect() {
@@ -158,7 +158,7 @@ class LiveBroadcasterManager constructor(
     override fun stop() {
         stopStream()
         stopPreview()
-        broadcastState(BroadcasterState.Stop)
+        broadcastState(BroadcasterState.Stopped)
         job.cancel()
     }
 
@@ -209,7 +209,7 @@ class LiveBroadcasterManager constructor(
                 configureMirrorFrontCamera()
             }
             Streamer.CONNECTION_STATE.DISCONNECTED -> {
-                if (lastState is BroadcasterState.Pause) return // ignore and just call resume()
+                if (lastState is BroadcasterState.Paused) return // ignore and just call resume()
 
                 if (status == null) {
                     broadcastState(BroadcasterState.Error("network: unknown network fail"))
@@ -412,7 +412,7 @@ class LiveBroadcasterManager constructor(
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mContext?.let { logger.update(it, mConfig) }
+                    mContext?.let { logger.update(it, mConnection.uri, mConfig) }
                     mListener?.onUpdateLivePusherStatistic(logger)
                 }
             }
