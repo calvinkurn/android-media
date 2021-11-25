@@ -36,8 +36,20 @@ class ChatAttachmentUseCaseStub @Inject constructor(
      */
 
     val withShippingInfo: ChatAttachmentResponse
-        get() = alterResponseOf(shippingLocationPath) { response ->
+        get() = alterResponseOf(shippingLocationPath) { response -> }
 
+    val withoutShippingInfo: ChatAttachmentResponse
+        get() = alterResponseOf(shippingLocationPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { },
+                attributesAltercation = { attr ->
+                    attr.getAsJsonObject(product_profile)
+                        .getAsJsonObject(location_stock)
+                        .addProperty(district_name_full_text, "")
+                }
+            )
         }
 
     fun getShippingText(position: Int, response: ChatAttachmentResponse): String {

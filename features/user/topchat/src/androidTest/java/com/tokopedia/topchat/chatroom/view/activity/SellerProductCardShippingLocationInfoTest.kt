@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult.hasNoVisibleShippingLocationOn
 import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult.hasShippingLocationOnWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.shippinglocation.ShippingLocationResult.hasVisibleShippingLocationOn
 import org.junit.Test
@@ -22,6 +23,17 @@ class SellerProductCardShippingLocationInfoTest : TopchatRoomTest() {
         // Then
         hasVisibleShippingLocationOn(position = 1)
         hasShippingLocationOnWithText(position = 1, shippingText)
+    }
+
+    @Test
+    fun should_hide_shipping_location_info_if_i_am_seller_and_it_is_empty_on_response() {
+        // Given
+        getChatUseCase.response = getChatUseCase.withShippingInfo
+        chatAttachmentUseCase.response = chatAttachmentUseCase.withoutShippingInfo
+        launchChatRoomActivity()
+
+        // Then
+        hasNoVisibleShippingLocationOn(position = 1)
     }
 
 }
