@@ -75,7 +75,7 @@ class SomBottomSheetCourierProblem(
                     listener.onDoRejectOrder(orderRejectRequest)
                 }
             }
-            btnPrimary.setOnTouchListener(hideKeyboardTouchListener)
+            hideKeyboardHandler.attachListener(btnPrimary)
         }
     }
 

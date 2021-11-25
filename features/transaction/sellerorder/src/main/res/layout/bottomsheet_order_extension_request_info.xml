@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="8dp">
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@id/btnSubmitRequestExtension"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:background="@drawable/bottomsheet_order_extension_request_info_button_container_shadow" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvRequestExtensionInfo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/btnSubmitRequestExtension"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSubmitRequestExtension"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"/>
+</RelativeLayout>
