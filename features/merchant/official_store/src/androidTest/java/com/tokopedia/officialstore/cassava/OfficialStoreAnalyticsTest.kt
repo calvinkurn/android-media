@@ -76,12 +76,6 @@ class OfficialStoreAnalyticsTest {
         )
         Intents.intending(IntentMatchers.isInternal()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         IdlingRegistry.getInstance().register(osRecyclerViewIdlingResource)
-//        activityRule.launchActivity(
-//            Intent(
-//                InstrumentationRegistry.getInstrumentation().targetContext,
-//                OfficialStoreActivity::class.java
-//            )
-//        )
     }
 
     @After
