@@ -252,13 +252,12 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         val expiredTime = if (element.data.endTime.isNotEmpty())
             parser.format(Date(element.data.endTime.toLong())) else ""
         val channel = element.channel.copy(
-                channelHeader = ChannelHeader(
-                        name = element.data.title,
-                        applink = if (element.data.textlink.isNotEmpty()) element.data.applink else "",
-                        subtitle = element.data.subtitle,
-                        expiredTime = expiredTime,
-                        serverTimeUnix = element.channel.channelHeader.serverTimeUnix
-                )
+            channelHeader = element.channel.channelHeader.copy(
+                name = element.data.title,
+                applink = if (element.data.textlink.isNotEmpty()) element.data.applink else "",
+                subtitle = element.data.subtitle,
+                expiredTime = expiredTime
+            )
         )
         headerView.setChannel(channel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
