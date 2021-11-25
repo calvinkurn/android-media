@@ -58,11 +58,11 @@ class DebugView : ScrollView {
         val status = when(state) {
             BroadcasterState.Connecting -> "CONNECTING"
             is BroadcasterState.Error -> "ERROR: \nreason:${state.reason}"
-            BroadcasterState.Pause -> "PAUSED"
+            BroadcasterState.Paused -> "PAUSED"
             BroadcasterState.Recovered -> "RECOVERED"
             is BroadcasterState.Resumed -> if (state.isPushing) "RESUMED" else "RESUME"
             BroadcasterState.Started -> "STARTED"
-            is BroadcasterState.Stop -> "STOPPED"
+            is BroadcasterState.Stopped -> "STOPPED"
             else -> "Unknown"
         }
         tvStatus.text = status
