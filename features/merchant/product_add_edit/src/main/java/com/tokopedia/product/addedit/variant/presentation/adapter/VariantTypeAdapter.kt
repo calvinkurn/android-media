@@ -55,10 +55,15 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         return isConfirmed
     }
 
-    fun addData(variantDetail: VariantDetail) {
+    fun addData(variantDetail: VariantDetail, isSelected: Boolean = true) {
         items.add(variantDetail)
-        selectedItems.add(ViewHolderState.SELECTED)
-        onVariantTypeSelected(selectedItems.lastIndex) // set as selected, trigger onVariantTypeSelected
+        if (isSelected) {
+            selectedItems.add(ViewHolderState.SELECTED)
+            onVariantTypeSelected(selectedItems.lastIndex) // set as selected, trigger onVariantTypeSelected
+        } else {
+            selectedItems.add(ViewHolderState.NORMAL)
+            manageUnselectedItems(getSelectedCount())
+        }
         clickListener.onCustomVariantTypeCountChanged(getCustomVariantCount())
         notifyDataSetChanged()
     }
@@ -149,13 +154,13 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
         notifyDataSetChanged()
     }
 
+    fun getSelectedCount(): Int {
+        return selectedItems.count { it == ViewHolderState.SELECTED }
+    }
+
     private fun manageUnselectedItems(selectedCount: Int) {
         if (selectedCount >= maxSelectedItems) disableUnselectedItems()
         else enableUnselectedItems()
-    }
-
-    private fun getSelectedCount(): Int {
-        return selectedItems.count { it == ViewHolderState.SELECTED }
     }
 
     private fun getCustomVariantCount(): Int {

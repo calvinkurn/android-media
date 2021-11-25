@@ -1143,24 +1143,24 @@ class AddEditProductVariantFragment :
         val selectedIndex = variantTypeAdapter?.getItems().orEmpty().indexOfFirst {
             it.name == newVariantDetail.name
         }
-        val notFoundOnAdapter = selectedIndex.isLessThanZero()
-        val selectedVariantTypeCount = variantTypeAdapter?.getSelectedItems()?.size.orZero()
+        val notOnAdapter = selectedIndex.isLessThanZero()
+        val selectedVariantTypeCount = variantTypeAdapter?.getSelectedCount().orZero()
 
-        if (notFoundOnAdapter) {
-            variantTypeAdapter?.addData(newVariantDetail)
+        if (notOnAdapter) {
+            variantTypeAdapter?.addData(newVariantDetail,
+                    isSelected = selectedVariantTypeCount < MAX_SELECTED_VARIANT_TYPE)
         } else if (selectedVariantTypeCount < MAX_SELECTED_VARIANT_TYPE) {
+            // if variant type already inside adapter, don't add variant, just invoke selected listener
             variantTypeAdapter?.onVariantTypeSelected(selectedIndex)
         }
     }
 
     private fun addCustomVariantType(title: String) {
         val customVariantTypeDetail = viewModel.createCustomVariantTypeModel(title)
-        val selectedVariantCount = variantTypeAdapter?.getSelectedItems()?.size.orZero()
+        val selectedVariantCount = variantTypeAdapter?.getSelectedCount().orZero()
 
-        if (selectedVariantCount >= MAX_CUSTOM_VARIANT_TYPE) {
-            deselectAllVariantType()
-        }
-        variantTypeAdapter?.addData(customVariantTypeDetail)
+        variantTypeAdapter?.addData(customVariantTypeDetail,
+                isSelected = selectedVariantCount < MAX_SELECTED_VARIANT_TYPE)
     }
 
     private fun editVariantType(editedIndex: Int, editedLevel: Int, variantDetail: VariantDetail) {
@@ -1191,7 +1191,7 @@ class AddEditProductVariantFragment :
             if (autoSelectIndex.isLessThanZero()) {
                 variantTypeAdapter?.deselectItem(editedIndex)
                 viewModel.isSingleVariantTypeIsSelected =
-                        variantTypeAdapter?.getSelectedItems()?.size == VARIANT_VALUE_LEVEL_ONE_COUNT
+                        variantTypeAdapter?.getSelectedCount() == VARIANT_VALUE_LEVEL_ONE_COUNT
                 deselectVariantType(editedLevel, editedIndex, variantDetail)
             } else {
                 deleteVariantType(editedIndex, variantDetail)
