@@ -54,7 +54,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class ShopPerformancePageFragment : BaseDaggerFragment(),
+open class ShopPerformancePageFragment : BaseDaggerFragment(),
     ShopPerformanceListener, ShopPerformanceMonitoringContract {
 
     @Inject

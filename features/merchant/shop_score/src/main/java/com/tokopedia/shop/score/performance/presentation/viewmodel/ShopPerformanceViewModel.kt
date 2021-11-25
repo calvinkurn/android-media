@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ShopPerformanceViewModel @Inject constructor(
+open class ShopPerformanceViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val shopScoreMapper: ShopScoreMapper,
     val userSession: UserSessionInterface,

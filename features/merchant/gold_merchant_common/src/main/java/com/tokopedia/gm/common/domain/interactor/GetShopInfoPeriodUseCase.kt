@@ -15,7 +15,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class GetShopInfoPeriodUseCase @Inject constructor(
+open class GetShopInfoPeriodUseCase @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val shopScoreCommonMapper: ShopScoreCommonMapper
 ) : BaseGqlUseCase<ShopInfoPeriodUiModel>() {

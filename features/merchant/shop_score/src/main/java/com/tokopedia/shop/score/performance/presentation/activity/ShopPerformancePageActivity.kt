@@ -15,7 +15,7 @@ import com.tokopedia.shop.score.performance.di.component.DaggerShopPerformanceCo
 import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponent
 import com.tokopedia.shop.score.performance.presentation.fragment.ShopPerformancePageFragment
 
-class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<ShopPerformanceComponent>,
+open class ShopPerformancePageActivity : BaseSimpleActivity(), HasComponent<ShopPerformanceComponent>,
     ShopScorePerformanceMonitoringListener {
 
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null
