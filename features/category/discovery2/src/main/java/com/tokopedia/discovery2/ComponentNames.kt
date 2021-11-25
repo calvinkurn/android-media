@@ -93,4 +93,9 @@ enum class ComponentNames(val componentName: String) {
     MerchantVoucherListItem("merchant_voucher_list_item"),
     MerchantVoucherCarouselItem("merchant_voucher_carousel_item"),
 
+    //Calendar Widget
+    CalendarWidgetCarousel("calendar"),
+    CalendarWidgetGrid("calendar_grid"),
+    CalendarWidgetItem("calendar_item"),
+
 }

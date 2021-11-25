@@ -22,6 +22,7 @@ import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.util.getLink
 import com.tokopedia.home_component.util.invertIfDarkMode
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -243,7 +244,7 @@ class DynamicChannelHeaderView: FrameLayout {
                     }
 
                     visibility = View.VISIBLE
-                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_8))
+                    channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 8f.toDpInt())
                     // calculate date diff
                     targetDate = Calendar.getInstance().apply {
                         val currentDate = Date()
@@ -262,7 +263,7 @@ class DynamicChannelHeaderView: FrameLayout {
         } else {
             countDownView?.let {
                 it.visibility = View.GONE
-                channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, context.resources.getDimensionPixelSize(R.dimen.dp_12))
+                channelTitleContainer.setPadding(channelTitleContainer.paddingLeft, channelTitleContainer.paddingTop, channelTitleContainer.paddingRight, 12f.toDpInt())
             }
         }
     }

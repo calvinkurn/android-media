@@ -14,12 +14,14 @@ class PlayStatusInfoModelBuilder {
             statusType: PlayStatusType = PlayStatusType.Active,
             bannedModel: PlayBannedUiModel = buildBannedModel(),
             freezeModel: PlayFreezeUiModel = buildFreezeModel(),
-            shouldAutoSwipeOnFreeze: Boolean = true
+            shouldAutoSwipeOnFreeze: Boolean = true,
+            waitingDuration: Int = 0,
     ) = PlayStatusInfoUiModel(
             statusType = statusType,
             bannedModel = bannedModel,
             freezeModel = freezeModel,
-            shouldAutoSwipeOnFreeze = shouldAutoSwipeOnFreeze
+            shouldAutoSwipeOnFreeze = shouldAutoSwipeOnFreeze,
+            waitingDuration = waitingDuration,
     )
 
     fun buildBannedModel(

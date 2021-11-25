@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_centerVertical="true"
     android:maxEms="12"
-    android:textSize="@dimen/sp_18"
+    android:textSize="18sp"
     android:lines="1"
     android:ellipsize="end"
     app:layout_constrainedWidth="true"
