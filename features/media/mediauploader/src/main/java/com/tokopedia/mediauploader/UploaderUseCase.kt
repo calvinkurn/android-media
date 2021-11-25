@@ -91,7 +91,7 @@ class UploaderUseCase @Inject constructor(
     suspend fun abortUpload(
         sourceId: String,
         filePath: String,
-        abort: suspend () -> Unit = {}
+        abort: () -> Unit = {}
     ) {
         try {
             val file = File(filePath)

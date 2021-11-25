@@ -41,16 +41,16 @@ class LargeUploaderManager @Inject constructor(
     suspend operator fun invoke(file: File, sourceId: String, policy: SourcePolicy, withTranscode: Boolean): UploadResult {
         if (policy.videoPolicy == null) return UploadResult.Error(POLICY_NOT_FOUND)
 
+        // 1. init the uploader
+        getLastState(sourceId, file.name) {
+            initUpload(sourceId, file)
+        }
+
         // getting the upload size of chunk in MB for calculate the chunk size and as size of part numbers
         val sizePerChunk = policy.videoPolicy.chunkSizePerFileInBytes()
 
         // calculate the chunk total based on file size and upload size of chunk
         chunkTotal = ceil(file.length() / sizePerChunk.toDouble()).toInt()
-
-        // 1. init the uploader
-        getLastState(sourceId, file.name) {
-            initUpload(sourceId, file)
-        }
 
         // 2. upload per chunk in loop until N of part number
         for (part in 1..chunkTotal) {
@@ -114,7 +114,7 @@ class LargeUploaderManager @Inject constructor(
         }
     }
 
-    suspend fun abortUpload(sourceId: String, fileName: String, abort: suspend () -> Unit) {
+    suspend fun abortUpload(sourceId: String, fileName: String, abort: () -> Unit) {
         val data = uploadState.get(sourceId, fileName) ?: return
 
         if (data.uploadId.isEmpty()) {
@@ -145,7 +145,7 @@ class LargeUploaderManager @Inject constructor(
             mUploadId = data.uploadId
             partNumber = data.partNumber
         } else {
-            uploadState.clear()
+            resetUpload()
             init()
         }
     }

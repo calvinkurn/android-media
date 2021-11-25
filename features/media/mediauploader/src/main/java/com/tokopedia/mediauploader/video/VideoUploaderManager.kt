@@ -66,7 +66,7 @@ class VideoUploaderManager @Inject constructor(
         }
     }
 
-    suspend fun abortUpload(sourceId: String, fileName: String, abort: suspend () -> Unit) {
+    suspend fun abortUpload(sourceId: String, fileName: String, abort: () -> Unit) {
         if (isSimpleUpload) error("the upload abort behavior only supported on large video file")
 
         largeUploaderManager.abortUpload(sourceId, fileName) {
