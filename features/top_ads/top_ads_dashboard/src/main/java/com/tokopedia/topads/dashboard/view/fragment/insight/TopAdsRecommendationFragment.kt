@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
@@ -44,6 +45,7 @@ const val CLICK_IKLANKAN = "click - iklankan"
 
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
+    private var isAdTypeProdukSelected = false
     private val adTypeList by lazy { getAdsTypeList() }
     private val adsTypeBottomSheet
             by lazy { TopAdsInsightSelectAdsTypeBottomSheet.getInstance(adTypeList,this::onAdTypeSelected) }
@@ -56,6 +58,9 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var index = 0
 
     companion object {
+        private const val ADTYPE_PRODUK = 0
+        private const val ADTYPE_TOKO = 1
+
         const val HEIGHT = "addp_bar_height"
         const val PRODUCT_RECOM = "productRecommendData"
         const val BUDGET_RECOM = "dailyBudgetRecommendData"
@@ -95,32 +100,43 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupSelectAdsTypeView()
+        loadData()
+    }
+
+    private fun loadData() {
         topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
         topAdsDashboardPresenter.getProductRecommendation(::onSuccessProductRecommendation)
         topAdsDashboardPresenter.getDailyBudgetRecommendation(::onSuccessBudgetRecommendation)
     }
 
-    private fun onAdTypeSelected(item: InsightAdsTypeItem) {
-        txtSelectedAdType.text = item.adName
-        adsTypeBottomSheet.dismiss()
-    }
-
     private fun setupSelectAdsTypeView() {
-        txtSelectedAdType.text = adTypeList[0].adName
+        txtSelectedAdType.text =
+            if(isAdTypeProdukSelected) adTypeList[ADTYPE_PRODUK].adName
+            else adTypeList[ADTYPE_TOKO].adName
         changeAdType.setOnClickListener {
             adsTypeBottomSheet.show(childFragmentManager)
         }
+    }
+
+    private fun onAdTypeSelected(item: InsightAdsTypeItem) {
+        isAdTypeProdukSelected = item.position == ADTYPE_PRODUK
+        txtSelectedAdType.text = item.adName
+
+        loadData()
+        adsTypeBottomSheet.dismiss()
     }
 
     private fun getAdsTypeList(): List<InsightAdsTypeItem> {
         return listOf(
             InsightAdsTypeItem(
                 resources.getString(R.string.topads_dashboard_ad_product_type_selection_title),
-                true
+                isAdTypeProdukSelected,
+                ADTYPE_PRODUK
             ),
             InsightAdsTypeItem(
                 resources.getString(R.string.topads_dashboard_ad_headline_type_selection_title),
-                false
+                !isAdTypeProdukSelected,
+                ADTYPE_TOKO
             )
         )
     }
@@ -158,6 +174,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun setEmptyView() {
+        cardSelectAdType.hide()
         loderRecom?.visibility = View.GONE
         rvTabInsight?.visibility = View.GONE
         empty_view?.visibility = View.VISIBLE
@@ -279,8 +296,12 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             bundle.putParcelable(BUDGET_RECOM, dailyBudgetRecommendData)
             list.add(FragmentTabItem("", TopAdsInsightBaseBidFragment.createInstance(bundle)))
         }
-        if (countKey != 0)
-            list.add(FragmentTabItem("", TopAdsInsightKeywordsFragment.createInstance()))
+        if (countKey != 0) {
+            if(isAdTypeProdukSelected)
+                list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
+            else
+               list.add(FragmentTabItem("", TopAdsInsightKeywordsFragment.createInstance()))
+        }
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
 
         pagerAdapter.setList(list)

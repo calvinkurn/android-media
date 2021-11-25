@@ -58,7 +58,8 @@ class TopAdsInsightSelectAdsTypeAdapter(
     }
 }
 
-class InsightAdsTypeItem(
+data class InsightAdsTypeItem(
     val adName: String,
-    var isSelected: Boolean
+    var isSelected: Boolean,
+    val position : Int
 )

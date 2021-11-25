@@ -4,42 +4,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeyword
-import com.tokopedia.topads.dashboard.data.model.insightkey.TopadsHeadlineKeyword
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.TopAdsInsightRecommKeywordsView
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightKeywordViewModel
 import kotlinx.android.synthetic.main.topads_insight_fragment_keyword.*
-import java.lang.Exception
 
 class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
 
-    private val dummyResp by lazy { Gson().fromJson(getResp(), TopadsHeadlineKeyword::class.java) }
     private lateinit var viewModel: TopAdsInsightKeywordViewModel
     private val itemsCount = arrayOf(0, 0, 0)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        loadRecommendation(0)
         observeLiveData()
         accordionUnify.onItemClick = ::accordionUnifyItemClick
 
-        addAccordion(TopAdsInsightConstants.BID_KEYWORD, dummyResp.suggestion?.recommendedKeyword!!)
-        addAccordion(TopAdsInsightConstants.NEW_KEYWORD, dummyResp.suggestion?.recommendedKeyword!!)
-        addAccordion(TopAdsInsightConstants.NEGATIVE_KEYWORD, dummyResp.suggestion?.recommendedKeyword!!)
+        viewModel.getKeywords("480396", arrayOf())
+
+        val it = TopAdsInsightKeywordViewModel.getInsightKeywordRecommendation().suggestion?.recommendedKeyword!!
+        addAccordion(TopAdsInsightConstants.BID_KEYWORD, it)
+        addAccordion(TopAdsInsightConstants.NEW_KEYWORD, it)
+        addAccordion(TopAdsInsightConstants.NEGATIVE_KEYWORD, it)
     }
 
     private fun observeLiveData() {
         viewModel.recommendedKeyword.observe(viewLifecycleOwner, {
-            val x = it.suggestion?.recommendedKeyword?.shopID
+            Toast.makeText(requireContext(), it.shopID, Toast.LENGTH_SHORT).show()
         })
     }
 
@@ -65,12 +64,9 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
 
         accordionUnify.addGroup(
             AccordionDataUnify(
-                getAccordionTitle(type, 2),
-                "",
-                null,
-                null,
-                instance,
-                false
+                title = getAccordionTitle(type, recommendedKeyword.recommendedKeywordCount),
+                expandableView = instance,
+                isExpanded = false
             )
         )
     }
@@ -92,11 +88,6 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
             }
             isEnabled = count > 0
         }
-    }
-
-    //method to be executed when ad type is changed
-    fun loadRecommendation(type: Int) {
-        viewModel.getKeywords("480396", arrayOf())
     }
 
     private fun getAccordionTitle(type: Int, count: Int): String {
@@ -140,28 +131,4 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
             return TopAdsInsightKeywordsFragment()
         }
     }
-
-    fun getResp() = "{\n" +
-            "    \"topadsHeadlineKeywordSuggestion\": {\n" +
-            "      \"data\": {\n" +
-            "        \"shopID\": \"479085\",\n" +
-            "        \"recommendedKeywordCount\": 1,\n" +
-            "        \"groupCount\": 1,\n" +
-            "        \"totalImpressionCount\": \"243\",\n" +
-            "        \"recommendedKeywordDetails\": [\n" +
-            "          {\n" +
-            "            \"keywordTag\": \"svj\",\n" +
-            "            \"groupID\": \"9254\",\n" +
-            "            \"groupName\": \"testing el\",\n" +
-            "            \"totalHits\": \"222\",\n" +
-            "            \"recommendedBid\": 12000,\n" +
-            "            \"minBid\": 12000,\n" +
-            "            \"maxBid\": 500000,\n" +
-            "            \"impressionCount\": \"243\"\n" +
-            "          }\n" +
-            "        ]\n" +
-            "      },\n" +
-            "      \"errors\": []\n" +
-            "    }\n" +
-            "}"
 }
