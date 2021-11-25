@@ -15,6 +15,7 @@ class SaldoCoachMarkController(val context: Context) {
     private val coachMark by lazy { CoachMark2(context) }
     private val toolBarHeight by lazy { NavToolbarExt.getFullToolbarHeight(context) }
     var anchorViewList: ArrayList<View?> = ArrayList()
+    var eligibleSaldoCoachMarkList: List<SaldoCoachMark> = ArrayList()
     var isSaldoBalanceWidgetReady = false
     var isSalesTabWidgetReady = false
     var balancePreConditions = false
@@ -28,6 +29,10 @@ class SaldoCoachMarkController(val context: Context) {
         isSaldoBalanceWidgetReady && isSalesTabWidgetReady
 
     fun startCoachMark(expandAppBar: () -> Unit) {
+        CoachMarkPreference.setShown(context, KEY_CAN_SHOW_PENJUALAN_COACHMARK, false)
+        CoachMarkPreference.setShown(context, KEY_CAN_SHOW_INCOME_COACHMARK, false)
+        CoachMarkPreference.setShown(context, KEY_CAN_SHOW_REFUND_COACHMARK, false)
+
         if (checkIfCoachMarkReady()) {
             val allCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
 
@@ -35,8 +40,10 @@ class SaldoCoachMarkController(val context: Context) {
             if (!balancePreConditions)  {
                 return
             }
-            val showCoachMarkList =
+            eligibleSaldoCoachMarkList =
                 allCoachMarkList.filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
+
+            val showCoachMarkList = eligibleSaldoCoachMarkList
                     .map { it.coachMarkItem }
             coachMark.showCoachMark(ArrayList(showCoachMarkList))
             // first is shown by and updated
@@ -46,7 +53,7 @@ class SaldoCoachMarkController(val context: Context) {
             updateCoachMarkShown(firstKey)
             coachMark.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    val key = allCoachMarkList.getOrNull(currentIndex)?.coachMarkKey ?: ""
+                    val key = eligibleSaldoCoachMarkList.getOrNull(currentIndex)?.coachMarkKey ?: ""
 
                     if (shouldExpandAppBar(key)) {
                         expandAppBar.invoke()
@@ -105,8 +112,9 @@ class SaldoCoachMarkController(val context: Context) {
         if (coachMark.isDismissed.not() && checkIfCoachMarkReady()) {
             val xOffset = (X_OFFSET).toPx()
             val yOffset = 8.toPx()
-            if (checkIfCoachMarkTypeIsBalance()) {
-                updateBalanceCoachMarkItem(xOffset, expandLayout)
+            val index = getIndexOfBalanceCoachMark()
+            if (index in 0..1) {
+                updateBalanceCoachMarkItem(xOffset, expandLayout, index)
             } else if (coachMark.currentIndex >= 0) {
                 updateSalesCoachMarkItem(xOffset, yOffset)
             }
@@ -120,8 +128,8 @@ class SaldoCoachMarkController(val context: Context) {
         }
     }
 
-    private fun updateBalanceCoachMarkItem(xOffset: Int, expandLayout: Boolean) {
-        val view = anchorViewList.getOrNull(coachMark.currentIndex)
+    private fun updateBalanceCoachMarkItem(xOffset: Int, expandLayout: Boolean, balanceCoachMarkIdx: Int) {
+        val view = anchorViewList.getOrNull(balanceCoachMarkIdx)
         val coordinates = intArrayOf(0, 0)
         view?.getLocationOnScreen(coordinates)
         if (expandLayout && (coordinates.getOrNull(1) ?: 0) >= toolBarHeight) {
@@ -148,15 +156,16 @@ class SaldoCoachMarkController(val context: Context) {
         if (isShow) coachMark.contentView.visible()
         else {
             // prevent sales tab coach-mark from being hidden
-            if (checkIfCoachMarkTypeIsBalance()) {
+                val index = getIndexOfBalanceCoachMark()
+            if (index in 0..1) {
                 coachMark.contentView.gone()
             }
         }
     }
 
-    private fun checkIfCoachMarkTypeIsBalance(): Boolean {
+    private fun getIndexOfBalanceCoachMark(): Int {
         val title = coachMark.coachMarkItem.getOrNull(coachMark.currentIndex)?.title ?: ""
-        return balanceTitleList.contains(title)
+        return balanceTitleList.indexOf(title)
     }
     // return true when balik pressed on sales tab coach-mark
     private fun shouldExpandAppBar(key: String) =
