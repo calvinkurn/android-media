@@ -1,0 +1,52 @@
+package com.tokopedia.mediauploader.common.util
+
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.gson.Gson
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.mediauploader.common.di.MediaHttpLoggingInterceptor
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.user.session.UserSessionInterface
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+
+object MediaUploaderNetwork {
+
+    private const val BASE_URL = "https://upedia.tokopedia.net/"
+
+    fun okHttpClientBuilder(
+        context: Context,
+        userSession: UserSessionInterface
+    ): OkHttpClient.Builder {
+        return OkHttpClient.Builder()
+            .connectTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .readTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .callTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(NetworkTimeOutInterceptor())
+            .addInterceptor(MediaHttpLoggingInterceptor().apply {
+                level = MediaHttpLoggingInterceptor.Level.HEADERS
+            })
+            .also {
+                (context as? NetworkRouter?)?.let { router ->
+                    it.addInterceptor(FingerprintInterceptor(router, userSession))
+                    it.addInterceptor(TkpdAuthInterceptor(context, router, userSession))
+                }
+
+                if (GlobalConfig.isAllowDebuggingTools()) {
+                    it.addInterceptor(ChuckerInterceptor(context))
+                }
+            }
+    }
+
+    fun retrofitBuilder(): Retrofit.Builder {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create(Gson()))
+    }
+
+}

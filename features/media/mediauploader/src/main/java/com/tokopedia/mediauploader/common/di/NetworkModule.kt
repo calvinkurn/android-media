@@ -1,22 +1,13 @@
 package com.tokopedia.mediauploader.common.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor
-import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
-import com.tokopedia.network.NetworkRouter
-import com.tokopedia.network.interceptor.FingerprintInterceptor
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.mediauploader.common.util.MediaUploaderNetwork
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 @Module
 class NetworkModule {
@@ -50,9 +41,7 @@ class NetworkModule {
     @Provides
     @MediaUploaderQualifier
     fun provideMediaUploaderRetrofitBuilder(): Retrofit.Builder {
-        return Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(Gson()))
+        return MediaUploaderNetwork.retrofitBuilder()
     }
 
     companion object {

@@ -66,6 +66,14 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = SupervisorJob() + Dispatchers.IO
 
+    val sourceId: String by lazy {
+        if (isUploadImage) {
+            "tuOYCg" // sourceId for image upload
+        } else {
+            "VsrJDL" // sourceId for video upload (simple and large)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.tokopedia.mediauploader.R.layout.activity_media_uploader)
@@ -192,15 +200,18 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
     private fun abortButtonClicked() {
         btnAbort.setOnClickListener {
             if (!isUploadImage && isLargeUpload) {
-                isAborted = true
-                viewModel.setUploadingStatus(UploadState.Aborted)
-
                 launch {
-                    uploaderUseCase.abortUpload()
-                }
+                    uploaderUseCase.abortUpload(sourceId, mediaFilePath) {
+                        withContext(Dispatchers.Main) {
+                            viewModel.setUploadingStatus(UploadState.Aborted)
+                            isAborted = true
 
-                coroutineContext.cancelChildren()
-                btnAbort.hide()
+                            UploaderWorker.cancelWork(applicationContext)
+                            coroutineContext.cancelChildren()
+                            btnAbort.hide()
+                        }
+                    }
+                }
             } else {
                 Toast.makeText(
                     applicationContext,
@@ -216,12 +227,6 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
         if (mediaFilePath.isEmpty()) return
 
         btnUpload.isEnabled = false
-
-        val sourceId = if (isUploadImage) {
-            "tuOYCg" // sourceId for image upload
-        } else {
-            "VsrJDL" // sourceId for video upload (simple and large)
-        }
 
         if (!withWorker) {
             val param = uploaderUseCase.createParams(

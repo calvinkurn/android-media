@@ -114,8 +114,14 @@ class LargeUploaderManager @Inject constructor(
         }
     }
 
-    suspend fun abortUpload(abort: () -> Unit) {
-        val abortUseCase = abortUseCase(mUploadId)
+    suspend fun abortUpload(sourceId: String, fileName: String, abort: suspend () -> Unit) {
+        val data = uploadState.get(sourceId, fileName) ?: return
+
+        if (data.uploadId.isEmpty()) {
+            error("Seems your session is expired, you cannot abort this upload.")
+        }
+
+        val abortUseCase = abortUseCase(data.uploadId)
 
         if (abortUseCase.isSuccess()) {
             resetUpload()
@@ -130,15 +136,16 @@ class LargeUploaderManager @Inject constructor(
     private suspend fun getLastState(sourceId: String, fileName: String, init: suspend () -> Unit) {
         val data = uploadState.get(sourceId, fileName)
 
-        if (data != null) {
-            if (data.initTimeInMillis.isLessThanHoursOf(THRESHOLD_REQUEST_MAX_TIME)) {
-                mUploadId = data.uploadId
-                partNumber = data.partNumber
-            } else {
-                uploadState.clear()
-                init()
-            }
+        if (data == null) {
+            init()
+            return
+        }
+
+        if (data.initTimeInMillis.isLessThanHoursOf(THRESHOLD_REQUEST_MAX_TIME)) {
+            mUploadId = data.uploadId
+            partNumber = data.partNumber
         } else {
+            uploadState.clear()
             init()
         }
     }

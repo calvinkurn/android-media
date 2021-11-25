@@ -88,9 +88,16 @@ class UploaderUseCase @Inject constructor(
     }
 
     // Public Method
-    suspend fun abortUpload(abort: () -> Unit = {}) {
+    suspend fun abortUpload(
+        sourceId: String,
+        filePath: String,
+        abort: suspend () -> Unit = {}
+    ) {
         try {
-            videoUploaderManager.abortUpload { abort() }
+            val file = File(filePath)
+            videoUploaderManager.abortUpload(sourceId, file.name) {
+                abort()
+            }
         } catch (t: Throwable) {}
     }
 
