@@ -47,7 +47,7 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailS
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.digital.digital_recommendation.data.RecommendationItem
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
