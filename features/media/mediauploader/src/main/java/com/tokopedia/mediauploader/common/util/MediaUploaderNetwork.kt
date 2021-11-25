@@ -18,6 +18,8 @@ object MediaUploaderNetwork {
 
     private const val BASE_URL = "https://upedia.tokopedia.net/"
 
+    private const val MAX_LENGTH_CHUCKER_CONTENT = 1000L
+
     fun okHttpClientBuilder(
         context: Context,
         userSession: UserSessionInterface
@@ -28,9 +30,6 @@ object MediaUploaderNetwork {
             .writeTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
             .callTimeout(NetworkTimeOutInterceptor.DEFAULT_TIMEOUT.toLong(), TimeUnit.SECONDS)
             .addInterceptor(NetworkTimeOutInterceptor())
-            .addInterceptor(MediaHttpLoggingInterceptor().apply {
-                level = MediaHttpLoggingInterceptor.Level.HEADERS
-            })
             .also {
                 (context as? NetworkRouter?)?.let { router ->
                     it.addInterceptor(FingerprintInterceptor(router, userSession))
@@ -38,7 +37,10 @@ object MediaUploaderNetwork {
                 }
 
                 if (GlobalConfig.isAllowDebuggingTools()) {
-                    it.addInterceptor(ChuckerInterceptor(context))
+                    it.addInterceptor(ChuckerInterceptor(
+                        context = context,
+                        maxContentLength = MAX_LENGTH_CHUCKER_CONTENT
+                    ))
                 }
             }
     }
