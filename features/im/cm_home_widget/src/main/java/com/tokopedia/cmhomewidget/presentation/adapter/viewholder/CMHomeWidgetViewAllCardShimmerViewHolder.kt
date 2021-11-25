@@ -14,5 +14,6 @@ class CMHomeWidgetViewAllCardShimmerViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_cm_home_widget_view_all_card_shimmer
+        const val RATIO_WIDTH = 0.367
     }
 }

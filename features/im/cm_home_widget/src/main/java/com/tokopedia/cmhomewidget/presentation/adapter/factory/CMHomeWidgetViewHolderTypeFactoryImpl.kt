@@ -19,6 +19,7 @@ import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetPr
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardViewHolder
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardShimmerViewHolder
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardViewHolder
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -86,11 +87,7 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
             LayoutInflater.from(parent.context),
             parent,
             false
-        ).apply {
-            val layoutParams: ViewGroup.LayoutParams = this.root.layoutParams
-            layoutParams.width = (parent.measuredWidth * 0.689).toInt()
-            this.root.layoutParams = layoutParams
-        }
+        )
     }
 
     private fun getViewAllCardBinding(parent: ViewGroup): LayoutCmHomeWidgetViewAllCardBinding {
@@ -98,11 +95,7 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
             LayoutInflater.from(parent.context),
             parent,
             false
-        ).apply {
-            val layoutParams: ViewGroup.LayoutParams = this.root.layoutParams
-            layoutParams.width = (parent.measuredWidth * 0.367).toInt()
-            this.root.layoutParams = layoutParams
-        }
+        )
     }
 
     private fun getProductCardShimmerBinding(parent: ViewGroup): LayoutCmHomeWidgetProductCardShimmerBinding {
@@ -110,11 +103,7 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
             LayoutInflater.from(parent.context),
             parent,
             false
-        ).apply {
-            val layoutParams: ViewGroup.LayoutParams = this.root.layoutParams
-            layoutParams.width = (parent.measuredWidth * 0.689).toInt()
-            this.root.layoutParams = layoutParams
-        }
+        )
     }
 
     private fun getViewAllCardShimmerBinding(parent: ViewGroup): LayoutCmHomeWidgetViewAllCardShimmerBinding {
@@ -122,10 +111,6 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
             LayoutInflater.from(parent.context),
             parent,
             false
-        ).apply {
-            val layoutParams: ViewGroup.LayoutParams = this.root.layoutParams
-            layoutParams.width = (parent.measuredWidth * 0.367).toInt()
-            this.root.layoutParams = layoutParams
-        }
+        )
     }
 }

@@ -6,8 +6,6 @@
     android:id="@+id/layout_cm_home_widget_product_card"
     android:layout_width="@dimen/cm_home_widget_dp_260"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/cm_home_widget_dp_6"
-    android:layout_marginBottom="@dimen/cm_home_widget_dp_10"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -4,9 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_cm_home_widget_view_all_card_shimmer"
     android:layout_width="@dimen/cm_home_widget_dp_144"
-    android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/cm_home_widget_dp_6"
-    android:layout_marginBottom="@dimen/cm_home_widget_dp_10"
+    android:layout_height="@dimen/cm_home_widget_dp_174"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
