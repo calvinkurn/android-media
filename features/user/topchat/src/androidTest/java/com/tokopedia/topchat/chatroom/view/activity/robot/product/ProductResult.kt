@@ -1,7 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.product
 
 import android.view.View
+import androidx.annotation.StringRes
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.assertViewInRecyclerViewAt
 import org.hamcrest.CoreMatchers.not
@@ -12,6 +14,12 @@ object ProductResult {
     fun hasVisibleRemindMeBtnAt(position: Int) {
         assertRemindMeButtonAt(position, isDisplayed())
     }
+
+    fun hasVisibleLabelAtWithText(position: Int, @StringRes stringRes: Int) {
+        assertLabelAt(position, isDisplayed())
+        assertLabelAt(position, withText(stringRes))
+    }
+
     fun hasNoVisibleEmptyStockLabelAt(position: Int) {
         assertLabelAt(position, not(isDisplayed()))
     }

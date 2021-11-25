@@ -3,6 +3,7 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncementPojo
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
@@ -39,6 +40,22 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     val upComingCampaignProduct: ChatAttachmentResponse
         get() = alterResponseOf(upcomingCampaignPath) { response -> }
+
+    val notUpComingCampaignProduct: ChatAttachmentResponse
+        get() = alterResponseOf(upcomingCampaignPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { },
+                attributesAltercation = { attr ->
+                    val productProfile = attr.getAsJsonObject(product_profile)
+                    productProfile.let {
+                        it.addProperty(is_upcoming_campaign, false)
+                        it.addProperty(status, ProductAttachmentUiModel.statusDeleted)
+                    }
+                }
+            )
+        }
 
     /**
      * <!--- End Start OOS label --->
@@ -204,6 +221,8 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val product_profile = "product_profile"
     private val location_stock = "location_stock"
     private val district_name_full_text = "district_name_full_text"
+    private val is_upcoming_campaign = "is_upcoming_campaign"
+    private val status = "status"
 
     // broadcast attributes
     private val start_date = "start_date"
