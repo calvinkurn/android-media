@@ -238,7 +238,7 @@ class LargeUploaderManager @Inject constructor(
         private const val MAX_RETRY_TRANSCODING = 24
         private const val MAX_PROGRESS_LOADER = 100
 
-        private const val THRESHOLD_REQUEST_MAX_TIME = 2 // hours
+        private const val THRESHOLD_REQUEST_MAX_TIME = 5 // hours
     }
 
 }

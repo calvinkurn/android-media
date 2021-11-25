@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit
 
 fun Long.isLessThanHoursOf(hours: Int): Boolean {
     val currentTime = System.currentTimeMillis()
-    val diff = TimeUnit.MILLISECONDS.toHours(currentTime - this)
+    val diff = TimeUnit.MILLISECONDS.toMinutes(currentTime - this)
     return diff < hours
 }
 
