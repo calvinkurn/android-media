@@ -19,6 +19,7 @@ data class PromoRecommendationUiModel(
     )
 
     data class UiState(
+            var isInitialization: Boolean = false,
             var isButtonSelectEnabled: Boolean = false
     )
 

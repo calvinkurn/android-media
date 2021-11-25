@@ -226,6 +226,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
         // Observe visitable data changes
         observeFragmentUiModel()
+        observePromoRecommendationUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
         observeErrorStateUiModel()
@@ -457,6 +458,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observeEmptyStateUiModel() {
         viewModel.promoEmptyStateUiModel.observe(viewLifecycleOwner, {
             addOrModify(it)
+        })
+    }
+
+    private fun observePromoRecommendationUiModel() {
+        viewModel.promoRecommendationUiModel.observe(viewLifecycleOwner, {
+            if (!it.uiState.isInitialization) {
+                addOrModify(it)
+            }
         })
     }
 

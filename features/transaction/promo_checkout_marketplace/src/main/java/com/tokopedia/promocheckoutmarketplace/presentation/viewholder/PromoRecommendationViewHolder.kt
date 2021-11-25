@@ -26,6 +26,7 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
 
     override fun bind(element: PromoRecommendationUiModel) {
         with(viewBinding) {
+            element.uiState.isInitialization = false
             if (element.uiState.isButtonSelectEnabled) {
                 lottieButtonApplyPromoRecommendation.progress = 0f
                 lottieButtonApplyPromoRecommendation.show()

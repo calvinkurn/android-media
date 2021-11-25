@@ -46,6 +46,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     promoCodes = couponListRecommendation.data.promoRecommendation.codes
                 },
                 uiState = PromoRecommendationUiModel.UiState().apply {
+                    isInitialization = true
                     isButtonSelectEnabled = true
                 }
         )
