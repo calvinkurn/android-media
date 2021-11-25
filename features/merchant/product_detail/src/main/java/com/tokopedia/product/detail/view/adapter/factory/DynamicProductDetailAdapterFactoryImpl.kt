@@ -3,7 +3,10 @@ package com.tokopedia.product.detail.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.play.widget.PlayWidgetViewHolder
+import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
 import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
@@ -33,6 +36,7 @@ import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.viewholder.ContentWidgetViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
@@ -62,9 +66,12 @@ import com.tokopedia.product.detail.view.viewholder.ProductTopAdsImageViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.TopAdsHeadlineViewHolder
 
-class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
-                                             private val variantListener: AtcVariantListener,
-                                             private val userId: String)
+class DynamicProductDetailAdapterFactoryImpl(
+    private val listener: DynamicProductDetailListener,
+    private val variantListener: AtcVariantListener,
+    private val userId: String,
+    private val playWidgetCoordinator: PlayWidgetCoordinator
+)
     : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
@@ -178,6 +185,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductBundlingViewHolder.LAYOUT
     }
 
+    override fun type(data: ContentWidgetDataModel): Int {
+        return ContentWidgetViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
@@ -208,6 +219,9 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(view, listener)
             TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
+            ContentWidgetViewHolder.LAYOUT -> ContentWidgetViewHolder(
+                PlayWidgetViewHolder(itemView = view, coordinator = playWidgetCoordinator)
+            )
             else -> super.createViewHolder(view, type)
         }
     }
