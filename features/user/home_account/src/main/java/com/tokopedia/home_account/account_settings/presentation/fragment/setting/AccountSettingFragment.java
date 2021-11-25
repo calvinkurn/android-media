@@ -374,7 +374,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             dialog.setTitle(getString(R.string.account_home_add_phone_title));
             dialog.setDescription(getString(R.string.account_home_add_phone_message));
             dialog.setPrimaryCTAText(getString(R.string.account_home_add_phone_title));
-            dialog.setSecondaryCTAText(getString(com.tokopedia.resources.common.R.string.general_label_cancel));
+            dialog.setSecondaryCTAText(getString(R.string.new_home_account_label_clear_cache_cancel));
 
             dialog.setPrimaryCTAClickListener(() -> {
                 goToPinOnboarding();
