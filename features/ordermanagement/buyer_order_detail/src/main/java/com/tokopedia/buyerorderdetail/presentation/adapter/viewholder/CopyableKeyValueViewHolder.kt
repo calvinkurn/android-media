@@ -1,6 +1,8 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
 import android.animation.LayoutTransition
+import android.os.Build
+import android.view.HapticFeedbackConstants
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -43,6 +45,11 @@ open class CopyableKeyValueViewHolder<T : CopyableKeyValueUiModel>(itemView: Vie
 
     private fun setupClickListener() {
         icBuyerOrderDetailCopy?.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                it?.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            } else {
+                it?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            }
             copyText()
         }
     }

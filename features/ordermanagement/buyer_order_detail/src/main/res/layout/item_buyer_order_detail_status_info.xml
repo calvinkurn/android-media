@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/spacing_lvl4"
     android:layout_marginTop="@dimen/buyer_order_detail_section_top_margin"
-    android:layout_marginEnd="@dimen/spacing_lvl4">
+    android:layout_marginEnd="@dimen/spacing_lvl4"
+    android:animateLayoutChanges="true">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailInvoice"
@@ -30,6 +30,7 @@
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:hapticFeedbackEnabled="true"
         app:icon_color_light_enable="@color/Unify_N700_96"
         app:icon_name="COPY"
         app:layout_constraintBottom_toBottomOf="@id/tvBuyerOrderDetailInvoice"
