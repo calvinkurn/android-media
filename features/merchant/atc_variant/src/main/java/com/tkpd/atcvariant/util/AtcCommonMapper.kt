@@ -328,7 +328,7 @@ object AtcCommonMapper {
         } else {
             ""
         }
-        val dropPercentage = productInfo?.discountPercentage ?: ""
+        val dropPercentage = productInfo?.roundedDiscountPercentage ?: ""
         val productUrl = productInfo?.url ?: ""
         val isActive = productInfo?.isBuyable ?: true
         val productFsIsActive = freeOngkirImgUrl.isNotEmpty()
@@ -356,7 +356,8 @@ object AtcCommonMapper {
                 dropPercentage = dropPercentage,
                 isActive = isActive,
                 remainingStock = productInfo?.getVariantFinalStock() ?: DEFAULT_MIN_ORDER,
-                isSupportVariant = isSupportVariant
+                isSupportVariant = isSupportVariant,
+                campaignId = productInfo?.campaign?.campaignID.toLongOrZero()
         )
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
