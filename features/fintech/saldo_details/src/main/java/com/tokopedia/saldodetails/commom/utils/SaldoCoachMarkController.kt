@@ -29,27 +29,20 @@ class SaldoCoachMarkController(val context: Context) {
         isSaldoBalanceWidgetReady && isSalesTabWidgetReady
 
     fun startCoachMark(expandAppBar: () -> Unit) {
-        CoachMarkPreference.setShown(context, KEY_CAN_SHOW_PENJUALAN_COACHMARK, false)
-        CoachMarkPreference.setShown(context, KEY_CAN_SHOW_INCOME_COACHMARK, false)
-        CoachMarkPreference.setShown(context, KEY_CAN_SHOW_REFUND_COACHMARK, false)
-
         if (checkIfCoachMarkReady()) {
-            val allCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
-
             // do not show coach mark if balance widget is not visible
-            if (!balancePreConditions)  {
+            if (!balancePreConditions) {
                 return
             }
-            eligibleSaldoCoachMarkList =
-                allCoachMarkList.filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
+            eligibleSaldoCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
+                .filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
 
             val showCoachMarkList = eligibleSaldoCoachMarkList
-                    .map { it.coachMarkItem }
+                .map { it.coachMarkItem }
             coachMark.showCoachMark(ArrayList(showCoachMarkList))
-            // first is shown by and updated
+            // first coachmark is shown by default and updated
             // reset coachmark will be updated in onStep callBack
-            val indexOfFirstCoachMark = allCoachMarkList.size - showCoachMarkList.size
-            val firstKey = allCoachMarkList.getOrNull(indexOfFirstCoachMark)?.coachMarkKey
+            val firstKey = eligibleSaldoCoachMarkList.getOrNull(0)?.coachMarkKey ?: ""
             updateCoachMarkShown(firstKey)
             coachMark.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
@@ -128,7 +121,11 @@ class SaldoCoachMarkController(val context: Context) {
         }
     }
 
-    private fun updateBalanceCoachMarkItem(xOffset: Int, expandLayout: Boolean, balanceCoachMarkIdx: Int) {
+    private fun updateBalanceCoachMarkItem(
+        xOffset: Int,
+        expandLayout: Boolean,
+        balanceCoachMarkIdx: Int
+    ) {
         val view = anchorViewList.getOrNull(balanceCoachMarkIdx)
         val coordinates = intArrayOf(0, 0)
         view?.getLocationOnScreen(coordinates)
@@ -156,17 +153,19 @@ class SaldoCoachMarkController(val context: Context) {
         if (isShow) coachMark.contentView.visible()
         else {
             // prevent sales tab coach-mark from being hidden
-                val index = getIndexOfBalanceCoachMark()
+            val index = getIndexOfBalanceCoachMark()
             if (index in 0..1) {
                 coachMark.contentView.gone()
             }
         }
     }
 
+    // since title text is smaller comparison is favoured on title rather than coachmark key
     private fun getIndexOfBalanceCoachMark(): Int {
         val title = coachMark.coachMarkItem.getOrNull(coachMark.currentIndex)?.title ?: ""
         return balanceTitleList.indexOf(title)
     }
+
     // return true when balik pressed on sales tab coach-mark
     private fun shouldExpandAppBar(key: String) =
         KEY_CAN_SHOW_PENJUALAN_COACHMARK != key && isSaldoCoachMarkShown(
