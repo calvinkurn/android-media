@@ -270,7 +270,11 @@ class FirebaseDLWrapper {
                 deeplinkPath = data.deepLink
             }
         }
-
+        if (deeplinkPath != null) {
+            if (!deeplinkPath.contains(LinkerConstants.UTM_SOURCE)) {
+                deeplinkPath = data.renderShareUri()
+            }
+        }
         return deeplinkPath
     }
 
