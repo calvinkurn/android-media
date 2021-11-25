@@ -1,69 +1,58 @@
 package com.tokopedia.ovop2p.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.ovop2p.Constants
-import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.domain.model.OvoP2pTransferRequestBase
-import com.tokopedia.ovop2p.util.OvoP2pUtil
+import com.tokopedia.ovop2p.domain.usecase.OvoP2pTransferUseCase
 import com.tokopedia.ovop2p.view.viewStates.*
-import rx.Subscriber
 import java.util.*
 import javax.inject.Inject
 
-class OvoP2pTransferRequestViewModel @Inject constructor() : ViewModel() {
+class OvoP2pTransferRequestViewModel @Inject constructor(
+    private val ovoP2pTransferUseCase: OvoP2pTransferUseCase
+) : ViewModel() {
 
     var transferReqBaseMutableLiveData = MutableLiveData<TransferRequestState>()
-    private var transferRequestSubscriber: Subscriber<GraphqlResponse>? = null
 
-    fun makeTransferRequestCall(context: Context, transferReqMap: HashMap<String, Any>) {
-        OvoP2pUtil.executeOvoP2pTransferRequest(
-            context,
-            getTransferRequestSubscriber(context),
-            transferReqMap
-        )
+    fun makeTransferRequestCall(transferReqMap: HashMap<String, Any>) {
+        ovoP2pTransferUseCase.transferOvo(::onSuccessTransfer, ::onFailTransfer, transferReqMap)
     }
 
-    private fun getTransferRequestSubscriber(context: Context): Subscriber<GraphqlResponse> {
-        transferRequestSubscriber = object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(context.resources.getString(R.string.general_error))
-            }
-
-            override fun onNext(graphqlResponse: GraphqlResponse) {
-                val ovoP2pTransferRequestBase = graphqlResponse.getData<OvoP2pTransferRequestBase>(OvoP2pTransferRequestBase::class.java)
-                ovoP2pTransferRequestBase?.ovoP2pTransferRequest?.let { reqObj ->
-                    reqObj.errors?.let { errList ->
-                        if (errList.isNotEmpty()) {
-                            errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
-                                if (errMsg.contentEquals(context.resources.getString(R.string.non_ovo_usr))) {
-                                    transferReqBaseMutableLiveData.value = TransferReqNonOvo()
-                                } else {
-                                    transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
-                                }
-                            }
+    private fun onSuccessTransfer(ovoP2PTransferRequestBase: OvoP2pTransferRequestBase) {
+        ovoP2PTransferRequestBase.ovoP2pTransferRequest?.let { reqObj ->
+            reqObj.errors?.let { errList ->
+                if (errList.isNotEmpty()) {
+                    errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
+                        if (errMsg.contentEquals(NON_OVO_ERROR)) {
+                            transferReqBaseMutableLiveData.value = TransferReqNonOvo
                         } else {
-                            transferReqBaseMutableLiveData.value = reqObj.dstAccName?.let { TransferReqData(it) }
+                            transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
                         }
                     }
-                } ?: run {
-                    transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(context.resources.getString(R.string.general_error))
+                } else {
+                    transferReqBaseMutableLiveData.value =
+                        reqObj.dstAccName?.let { TransferReqData(it) }
                 }
+            } ?: kotlin.run {
+                transferReqBaseMutableLiveData.value =
+                    reqObj.dstAccName?.let { TransferReqData(it) }
             }
+
         }
-        return transferRequestSubscriber as Subscriber<GraphqlResponse>
     }
 
+    private fun onFailTransfer(throwable: Throwable) {
+        transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(GENERAL_ERROR)
+    }
+
+
     override fun onCleared() {
-        super.onCleared()
-        if (transferRequestSubscriber != null) {
-            transferRequestSubscriber!!.unsubscribe()
-        }
+        ovoP2pTransferUseCase.cancelJobs()
+    }
+
+    companion object {
+        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
+        const val NON_OVO_ERROR = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
     }
 }

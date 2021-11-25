@@ -60,7 +60,6 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     private lateinit var contactsImageView: ImageView
     private lateinit var searchNoHeader: TextView
     private lateinit var alertDialog: AlertDialog
-    private lateinit var ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel
     private lateinit var ovoP2pTransferConfirmViewModel: OvoP2pTrxnConfirmVM
     private lateinit var trnsfrReqDataMap: HashMap<String, Any>
     private lateinit var amtErrorTxtv: TextView
@@ -80,8 +79,16 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
 
     private val walletDetailViewModel: GetWalletBalanceViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider =
-            ViewModelProvider(requireParentFragment(), viewModelFactory.get())
+            ViewModelProvider(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(GetWalletBalanceViewModel::class.java)
+    }
+
+    private val ovoP2pTransferRequestViewModel: OvoP2pTransferRequestViewModel by lazy(
+        LazyThreadSafetyMode.NONE
+    ) {
+        val viewModelProvider =
+            ViewModelProvider(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(OvoP2pTransferRequestViewModel::class.java)
     }
 
 
@@ -97,7 +104,7 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                     rcvrMsg = msgEdtxtv.text.toString()
                     addUserDataToMap()
                     (activity as LoaderUiListener).showProgressDialog()
-                    context?.let { ovoP2pTransferRequestViewModel.makeTransferRequestCall(it, trnsfrReqDataMap) }
+                    ovoP2pTransferRequestViewModel.makeTransferRequestCall(trnsfrReqDataMap)
                     context?.let {
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_TRNSFR, "", AnalyticsUtil.EventAction.CLK_LNJKTN)
@@ -273,17 +280,12 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
     }
 
     private fun createAndSubscribeTransferRequestVM() {
-        if (!::ovoP2pTransferRequestViewModel.isInitialized) {
-            if (activity != null) {
-                ovoP2pTransferRequestViewModel = ViewModelProviders.of(this.requireActivity())
-                    .get(OvoP2pTransferRequestViewModel::class.java)
                 ovoP2pTransferRequestViewModel.transferReqBaseMutableLiveData.observe(
                     viewLifecycleOwner,
                     getTransferReqObserver(activity as LoaderUiListener)
                 )
             }
-        }
-    }
+
 
     private fun getTransferReqObserver(loaderUiListener: LoaderUiListener): Observer<TransferRequestState> {
         return Observer {
