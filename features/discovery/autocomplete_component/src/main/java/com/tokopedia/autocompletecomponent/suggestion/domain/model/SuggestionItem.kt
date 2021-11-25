@@ -72,6 +72,14 @@ data class SuggestionItem(
         @Expose
         val originalPrice: String = "",
 
+        @SerializedName("tracking_option")
+        @Expose
+        val trackingOption: Int = 0,
+
+        @SerializedName("component_id")
+        @Expose
+        val componentId: String = "",
+
         @SerializedName("child_items")
         @Expose
         val suggestionChildItems: List<SuggestionChildItem> = listOf()
