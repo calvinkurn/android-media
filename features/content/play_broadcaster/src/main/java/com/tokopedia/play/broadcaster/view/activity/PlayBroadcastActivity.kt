@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.analytics.performance.util.PltPerformanceData
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
@@ -40,7 +41,6 @@ import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
 import com.tokopedia.play.broadcaster.view.contract.PlayBaseCoordinator
 import com.tokopedia.play.broadcaster.view.custom.PlayTermsAndConditionView
-import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.fragment.PlayBeforeLiveFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPrepareFragment
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastUserInteractionFragment

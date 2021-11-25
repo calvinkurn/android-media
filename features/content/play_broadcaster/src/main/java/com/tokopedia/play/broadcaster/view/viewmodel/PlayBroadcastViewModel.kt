@@ -5,6 +5,7 @@ import android.os.Handler
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -34,7 +35,6 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveCountDownTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
-import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.state.isRecovered

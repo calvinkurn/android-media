@@ -1,13 +1,12 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerListener
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
-import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
-
 
 /**
  * Created by mzennis on 04/06/21.

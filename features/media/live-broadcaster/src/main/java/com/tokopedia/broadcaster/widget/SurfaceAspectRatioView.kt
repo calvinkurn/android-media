@@ -7,6 +7,7 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.broadcaster.R
+import kotlin.math.abs
 
 class SurfaceAspectRatioView : FrameLayout {
 
@@ -62,7 +63,7 @@ class SurfaceAspectRatioView : FrameLayout {
             initialHeight -= vertPadding
             val viewAspectRatio = initialWidth.toDouble() / initialHeight
             val aspectDiff = mTargetAspect / viewAspectRatio - 1
-            if (Math.abs(aspectDiff) < 0.01) {
+            if (abs(aspectDiff) < 0.01) {
                 // We're very close already.  We don't want to risk switching from e.g. non-scaled
                 // 1280x720 to scaled 1280x719 because of some floating-point round-off error,
                 // so if we're really close just leave it alone.
