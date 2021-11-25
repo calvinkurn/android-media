@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailData
+import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -57,8 +57,8 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
         })
     }
 
-    private fun setData(commissionData: AffiliateCommissionDetailData.GetAffiliateCommissionDetail?) {
-        commissionData?.data?.cardDetail?.image?.android?.let { url ->
+    private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
+        commissionData?.data?.cardDetail?.image?.androidURL?.let { url ->
             findViewById<ImageUnify>(R.id.product_image).setImageUrl(
                 url
             )
@@ -71,7 +71,7 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
 
     }
 
-    private fun setCommissionDetails(detail: List<AffiliateCommissionDetailData.GetAffiliateCommissionDetail.Data.Detail?>?) {
+    private fun setCommissionDetails(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?) {
         if(detail?.isNotEmpty() == true)
         {
             detail.getOrNull(0)?.let {

@@ -1,47 +1,47 @@
 package com.tokopedia.affiliate.model.raw
 
 val GQL_Affiliate_Commission: String = """query getAffiliateCommissionDetail(${"$"}transactionID: String! ){
- getAffiliateCommissionDetail(TransactionID: ${"$"}transactionID) {
+ getAffiliateCommissionDetail(transactionID: ${"$"}transactionID) {
     Data {
       Status             
       Error {             
-        ErrorType         
+        ErrorType        
         Message           
-        CtaText           
+        CtaText          
         CtaLink {
-          DesktopURL         
-          MobileURL          
-          AndroidURL         
-          IosURL             
+          DesktopURL  
+          MobileURL        
+          AndroidURL        
+          IosURL           
         }
       }
       CardDetail {
-        ProductID                 
-        OrderID                   
+        ProductID        
+        OrderID                 
         ShopName
         ShopBadge
         CardTitle
         CardPrice
         CardPriceFormatted
         Image {
-          DesktopURL         
-          MobileURL          
-          AndroidURL         
-          IosURL             
+          DesktopURL      
+          MobileURL      
+          AndroidURL      
+          IosURL         
         }
       }
-      DetailTitle               
+      DetailTitle             
       Detail {
-        DetailStyle             
+        DetailStyle            
         DetailTitle             
-        DetailTooltip           
-        DetailDescription       
+        DetailTooltip          
+        DetailDescription     
       }
-      Notes                     
-      CreatedAt                 
-      CreatedAtFormatted        
-      UpdatedAt                 
-      UpdatedAtFormatted        
+      Notes                  
+      CreatedAt               
+      CreatedAtFormatted      
+      UpdatedAt                
+      UpdatedAtFormatted      
     }
   }
 }""".trimIndent()
