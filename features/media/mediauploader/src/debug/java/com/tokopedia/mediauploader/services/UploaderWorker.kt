@@ -73,7 +73,11 @@ class UploaderWorker(
         notificationManager.onStart()
 
         uploaderUseCase.trackProgress { progress ->
-            notificationManager.onProgress(progress)
+            notificationManager.onProgress(
+                sourceId = getSourceId(),
+                file = getFilePath(),
+                progress = progress
+            )
         }
     }
 

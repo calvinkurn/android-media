@@ -202,14 +202,12 @@ class MediaUploaderActivity : AppCompatActivity(), CoroutineScope {
             if (!isUploadImage && isLargeUpload) {
                 launch {
                     uploaderUseCase.abortUpload(sourceId, mediaFilePath) {
-                        withContext(Dispatchers.Main) {
-                            viewModel.setUploadingStatus(UploadState.Aborted)
-                            isAborted = true
+                        viewModel.setUploadingStatus(UploadState.Aborted)
+                        isAborted = true
 
-                            UploaderWorker.cancelWork(applicationContext)
-                            coroutineContext.cancelChildren()
-                            btnAbort.hide()
-                        }
+                        UploaderWorker.cancelWork(applicationContext)
+                        coroutineContext.cancelChildren()
+                        btnAbort.hide()
                     }
                 }
             } else {
