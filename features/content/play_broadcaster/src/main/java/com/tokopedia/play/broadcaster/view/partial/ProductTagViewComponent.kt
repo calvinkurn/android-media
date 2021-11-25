@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.ui.itemdecoration.ProductTagItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductUiModel
 import com.tokopedia.play.broadcaster.view.adapter.PlayProductTagAdapter
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -24,9 +26,19 @@ class ProductTagViewComponent(
         rvProductTag.layoutManager = LinearLayoutManager(rvProductTag.context, RecyclerView.HORIZONTAL, false)
         rvProductTag.adapter = adapter
         rvProductTag.addItemDecoration(ProductTagItemDecoration(rvProductTag.context))
+
+        setLoading()
     }
 
-    fun setProducts(products: List<ProductContentUiModel>) {
+    fun setProducts(products: List<ProductUiModel>) {
         adapter.setItemsAndAnimateChanges(products)
+    }
+
+    private fun setLoading() {
+        setProducts(List(MAX_PLACEHOLDER) { ProductLoadingUiModel })
+    }
+
+    companion object {
+        private const val MAX_PLACEHOLDER = 5
     }
 }
