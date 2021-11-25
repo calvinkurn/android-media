@@ -87,6 +87,6 @@ class GetUohOrdersNavUseCase (
 
     companion object{
         private const val PARAM_INPUT = "input"
-        private const val VERTICAL_CATEGORY = "marketplace,tokonow"
+        private const val VERTICAL_CATEGORY = "marketplace,tokonow,mp_pym,mp_pym_tokonow"
     }
 }
