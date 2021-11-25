@@ -34,7 +34,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String AUTHORIZATION = "authorization";
     private static final String TOKEN = "token";
     private static final String ACCOUNTS_AUTHORIZATION = "accounts-authorization";
-    public static final int BYTE_COUNT = 512;
+    public static final int BYTE_COUNT = 2048;
     private final String authKey;
 
     private static final String RESPONSE_STATUS_INVALID_GRANT = "INVALID_GRANT";
