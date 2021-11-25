@@ -17,7 +17,8 @@ open class BuyerOrderDetailTypeFactory(
     private val digitalRecommendationListener: DigitalRecommendationViewHolder.ActionListener,
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     protected val productViewListener: ProductViewHolder.ProductViewListener,
-    protected val navigator: BuyerOrderDetailNavigator
+    protected val navigator: BuyerOrderDetailNavigator,
+    private val  buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
 ) : BaseAdapterTypeFactory() {
 
     fun type(awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel): Int {
@@ -87,6 +88,9 @@ open class BuyerOrderDetailTypeFactory(
     fun type(digitalRecommendationUiModel: DigitalRecommendationUiModel): Int =
             DigitalRecommendationViewHolder.LAYOUT
 
+    fun type(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel): Int =
+            PgRecommendationViewHolder.LAYOUT
+
     fun type(driverTippingInfoUiModel: ShipmentInfoUiModel.DriverTippingInfoUiModel): Int {
         return DriverTippingInfoViewHolder.LAYOUT
     }
@@ -110,6 +114,7 @@ open class BuyerOrderDetailTypeFactory(
             ThinDividerViewHolder.LAYOUT -> ThinDividerViewHolder(parent)
             TickerViewHolder.LAYOUT -> TickerViewHolder(parent, navigator, tickerViewHolderListener)
             DigitalRecommendationViewHolder.LAYOUT -> DigitalRecommendationViewHolder(parent, digitalRecommendationData, digitalRecommendationListener)
+            PgRecommendationViewHolder.LAYOUT -> PgRecommendationViewHolder(parent, buyerOrderDetailBindRecomWidgetListener)
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
         }

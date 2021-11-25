@@ -52,6 +52,8 @@ data class GetBuyerOrderDetailResponse(
             val tickerInfo: TickerInfo = TickerInfo(),
             @SerializedName("dropship")
             val dropship: Dropship = Dropship(),
+            @SerializedName("ads_page_name")
+            val adsPageName: String = "",
             @SerializedName("logistic_section_info")
             val logisticSections: List<LogisticSectionInfo> = listOf()
         ) {

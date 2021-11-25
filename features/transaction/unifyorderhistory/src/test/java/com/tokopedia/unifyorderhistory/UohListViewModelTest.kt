@@ -45,6 +45,9 @@ class UohListViewModelTest {
     private var listMsg = arrayListOf<String>()
 
     @RelaxedMockK
+    lateinit var getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase
+
+    @RelaxedMockK
     lateinit var uohListUseCase: UohListUseCase
 
     @RelaxedMockK
@@ -77,7 +80,7 @@ class UohListViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        uohListViewModel = UohListViewModel(dispatcher, uohListUseCase,
+        uohListViewModel = UohListViewModel(dispatcher, getUohFilterCategoryUseCase, uohListUseCase,
                 getRecommendationUseCase, uohFinishOrderUseCase, atcMultiProductsUseCase,
                 lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase,
                 rechargeSetFailUseCase, topAdsImageViewUseCase, atcUseCase)
@@ -107,6 +110,54 @@ class UohListViewModelTest {
         finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer(1)
 
         listMsg.add("Test")
+    }
+
+    // uoh filter category
+    @Test
+    fun getFilterCategoryData_shouldReturnSuccess() {
+        //given
+        coEvery {
+            getUohFilterCategoryUseCase.executeSuspend()
+        } returns Success(UohFilterCategory.Data())
+
+        //when
+        uohListViewModel.loadFilterCategory()
+
+        //then
+        assert(uohListViewModel.filterCategoryResult.value is Success)
+    }
+
+    @Test
+    fun getFilterCategoryData_shouldReturnFail() {
+        //given
+        coEvery {
+            getUohFilterCategoryUseCase.executeSuspend()
+        } returns Fail(Throwable())
+
+        //when
+        uohListViewModel.loadFilterCategory()
+
+        //then
+        assert(uohListViewModel.filterCategoryResult.value is Fail)
+    }
+
+    @Test
+    fun getFilterCategoryData_shouldNotReturnEmpty() {
+        //given
+        coEvery {
+            getUohFilterCategoryUseCase.executeSuspend()
+        } returns Success(UohFilterCategory.Data(uohFilterCategoryData = UohFilterCategory.Data.UohFilterCategoryData(
+                v2Filters = listOf(UohFilterCategory.Data.UohFilterCategoryData.FilterV2()),
+                categories = listOf(UohFilterCategory.Data.UohFilterCategoryData.Category())
+        )))
+
+        //when
+        uohListViewModel.loadFilterCategory()
+
+        //then
+        assert(uohListViewModel.filterCategoryResult.value is Success)
+        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory.Data>).data.uohFilterCategoryData.v2Filters.isNotEmpty())
+        assert((uohListViewModel.filterCategoryResult.value as Success<UohFilterCategory.Data>).data.uohFilterCategoryData.categories.isNotEmpty())
     }
 
     // order_history_list

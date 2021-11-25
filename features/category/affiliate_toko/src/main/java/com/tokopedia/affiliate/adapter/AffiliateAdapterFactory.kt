@@ -22,6 +22,8 @@ class AffiliateAdapterFactory(
             AffiliateShareItemViewHolder.LAYOUT -> AffiliateShareItemViewHolder(parent, shareButtonInterface)
             AffiliatePromotionCardItemVH.LAYOUT -> AffiliatePromotionCardItemVH(parent,promotionClickInterface)
             AffiliatePromotionErrorCardItemVH.LAYOUT -> AffiliatePromotionErrorCardItemVH(parent,promotionClickInterface)
+            AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
+            AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -44,5 +46,13 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliatePromotionErrorCardModel): Int {
         return AffiliatePromotionErrorCardItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateStaggeredShimmerModel): Int {
+        return AffiliateStaggeredShimmerCardItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateStaggeredPromotionCardModel): Int {
+        return AffiliateStaggeredPromotionCardItemVH.LAYOUT
     }
 }

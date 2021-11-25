@@ -4,6 +4,7 @@ import android.graphics.Rect
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.util.toDpInt
 
 class BannerChannelDecoration : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(outRect: Rect,
@@ -14,6 +15,6 @@ class BannerChannelDecoration : RecyclerView.ItemDecoration() {
             outRect.left = view.context.resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
         }
 
-        outRect.right = view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+        outRect.right = 8f.toDpInt()
     }
 }
