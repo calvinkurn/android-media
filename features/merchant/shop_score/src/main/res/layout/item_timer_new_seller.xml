@@ -11,7 +11,7 @@
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/containerTimerNewSeller"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
+            android:layout_height="0dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

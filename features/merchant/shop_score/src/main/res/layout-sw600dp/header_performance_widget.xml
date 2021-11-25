@@ -10,7 +10,7 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/containerHeaderShopPerformance"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constrainedHeight="true"

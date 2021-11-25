@@ -320,7 +320,4 @@
 
     <!-- Shop Penalty Tablet -->
     <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
-    <dimen name="detail_penalty_tablet_welcome_illustration_width">199.14dp</dimen>
-    <dimen name="detail_penalty_tablet_welcome_illustration_height">152.25dp</dimen>
-    <dimen name="detail_penalty_tablet_welcome_illustration_horizontal_margin">50dp</dimen>
 </resources>

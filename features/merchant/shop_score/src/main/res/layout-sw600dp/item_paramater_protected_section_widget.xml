@@ -10,7 +10,7 @@
         android:id="@+id/icProtectionCheck"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="12dp"
         app:icon_name="PROTECTION_CHECK"
         app:layout_constraintStart_toStartOf="parent"
