@@ -128,7 +128,7 @@
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/container_promo_infos">
+                app:layout_constraintTop_toBottomOf="@+id/container_promo_info_list">
 
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_time_validity"
