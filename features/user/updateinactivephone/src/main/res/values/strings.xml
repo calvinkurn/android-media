@@ -11,7 +11,7 @@
   <string name="text_title_id_card">Foto kartu identitas</string>
   <string name="text_title_selfie">Foto wajah dan kartu identitas</string>
   <string name="text_onboarding_button">Lanjut Ubah</string>
-  <string name="text_onboarding_title">Mau mengubah nomor HP?</string>
+  <string name="text_onboarding_title">Verifikasi datamu dulu, ya!</string>
   <string name="text_onboarding_description">Kamu bisa mengajukan perubahan nomor HP dan akan diminta upload kartu identitas untuk verifikasi data diri</string>
   <string name="text_onboarding_protected">Tokopedia menjamin keamanan datamu.</string>
   <string name="text_onboarding_id_card_description_title">Ikuti cara ini agar kartumu berhasil diverifikasi:</string>
