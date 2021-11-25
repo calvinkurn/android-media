@@ -37,7 +37,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/promo_checkout_marketplace_module_ic_highlighted_identifier_enabled"
                 app:unify_image_corner_radius="0"
-                app:unify_image_type="rect" />
+                app:unify_image_type="rect"
+                tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_promo_highlight_identifier"
@@ -115,6 +116,7 @@
                 android:id="@+id/container_promo_info_list"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toStartOf="@+id/imaginary_view"
                 app:layout_constraintStart_toStartOf="parent"
@@ -133,8 +135,9 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_time_validity"
                     android:layout_width="13dp"
-                    android:layout_height="13dp"
+                    android:layout_height="0dp"
                     android:layout_marginStart="12dp"
+                    android:scaleType="fitCenter"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
                     tools:srcCompat="@drawable/ic_action_x" />
@@ -173,8 +176,9 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_user_validity"
                     android:layout_width="13dp"
-                    android:layout_height="13dp"
+                    android:layout_height="0dp"
                     android:layout_marginStart="12dp"
+                    android:scaleType="fitCenter"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
                     tools:srcCompat="@drawable/ic_action_x" />
@@ -197,7 +201,7 @@
                 android:id="@+id/container_clash_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_GN100"
+                android:background="@color/Unify_NN0"
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -206,8 +210,9 @@
                 <com.tokopedia.unifycomponents.ImageUnify
                     android:id="@+id/image_clash_info"
                     android:layout_width="13dp"
-                    android:layout_height="13dp"
+                    android:layout_height="0dp"
                     android:layout_marginStart="12dp"
+                    android:scaleType="fitCenter"
                     app:unify_image_corner_radius="0"
                     app:unify_image_type="rect"
                     tools:srcCompat="@drawable/ic_action_x" />
@@ -253,7 +258,7 @@
         android:id="@+id/promo_quantity_identifier_top"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/dp_32"
         android:translationX="-3dp"
         app:layout_constraintEnd_toEndOf="@+id/card_promo_item"
         app:layout_constraintTop_toTopOf="@+id/card_promo_item"
