@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
@@ -69,7 +70,7 @@ class DigitalHomePageSearchViewModel @Inject constructor(
     }
 
     fun cancelAutoComplete(){
-        launch{
+        viewModelScope.launch{
             if (::job.isInitialized && job.isActive){
                 job.cancelAndJoin()
             }
