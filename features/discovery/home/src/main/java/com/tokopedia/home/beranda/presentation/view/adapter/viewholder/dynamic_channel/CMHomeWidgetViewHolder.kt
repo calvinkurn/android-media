@@ -8,11 +8,12 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CMHomeWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
+import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import kotlinx.android.synthetic.main.home_dc_cm_home_widget_item.view.*
 
 class CMHomeWidgetViewHolder(
     val view: View,
-    private val listener: CMHomeWidgetCloseClickListener
+    private val callback: CMHomeWidgetCallback
 ) :
     AbstractViewHolder<CMHomeWidgetDataModel>(view) {
 
@@ -25,7 +26,7 @@ class CMHomeWidgetViewHolder(
                     CMHomeWidgetCloseClickListener {
                     override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {
                         cmHomeWidget.visibility = View.GONE
-                        listener.onCMHomeWidgetDismissClick(0, 0)
+                        callback.onCMHomeWidgetDismissClick()
                     }
                 })
                 cmHomeWidget.loadCMHomeWidgetData(cmHomeWidgetData)
