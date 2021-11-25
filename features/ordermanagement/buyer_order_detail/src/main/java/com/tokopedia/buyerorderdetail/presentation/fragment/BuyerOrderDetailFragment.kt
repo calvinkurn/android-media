@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +47,7 @@ import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailS
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationData
@@ -58,7 +57,6 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -72,12 +70,12 @@ import java.util.HashMap
 import javax.inject.Inject
 
 open class BuyerOrderDetailFragment : BaseDaggerFragment(),
-        ProductViewHolder.ProductViewListener,
-        ProductBundlingViewHolder.Listener,
-        TickerViewHolder.TickerViewHolderListener,
-        DigitalRecommendationViewHolder.ActionListener,
-        CourierInfoViewHolder.CourierInfoViewHolderListener,
-        PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
+    ProductViewHolder.ProductViewListener,
+    ProductBundlingViewHolder.Listener,
+    TickerViewHolder.TickerViewHolderListener,
+    DigitalRecommendationViewHolder.ActionListener,
+    CourierInfoViewHolder.CourierInfoViewHolderListener,
+    PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
 
     companion object {
         @JvmStatic
@@ -132,7 +130,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this,
             this,
             navigator,
-                this
+            this
         )
     }
     private val adapter: BuyerOrderDetailAdapter by lazy {
@@ -235,10 +233,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             BuyerOrderDetailIntentCode.REQUEST_CODE_CREATE_RESOLUTION -> handleComplaintResult()
             BuyerOrderDetailIntentCode.REQUEST_CODE_REFRESH_ONLY -> handleResultRefreshOnly()
             BuyerOrderDetailIntentCode.REQUEST_CODE_ORDER_EXTENSION -> {
-                when (resultCode) {
-                    Activity.RESULT_OK -> {
-                        handleResultOrderExtension(data)
-                    }
+                if (resultCode == Activity.RESULT_OK) {
+                    handleResultOrderExtension(data)
                 }
             }
         }
@@ -676,7 +672,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showEtaBottomSheet(etaChangedDescription: String) {
-        val delayedEtaBottomSheetFragment = DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)
+        val delayedEtaBottomSheetFragment =
+            DelayedEtaBottomSheetFragment.newInstance(etaChangedDescription)
         parentFragmentManager?.run {
             delayedEtaBottomSheetFragment.show(this, "")
         }
@@ -688,7 +685,14 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onProductCardImpress(recommendationItem: RecommendationItem) {
-        context?.let { TrackingQueue(it).putEETracking(RecommendationWidgetTracker.getImpressionTracker(recommendationItem, userSession.userId) as HashMap<String, Any>) }
+        context?.let {
+            TrackingQueue(it).putEETracking(
+                RecommendationWidgetTracker.getImpressionTracker(
+                    recommendationItem,
+                    userSession.userId
+                ) as HashMap<String, Any>
+            )
+        }
     }
 
     override fun onSeeAllProductCardClick(appLink: String) {

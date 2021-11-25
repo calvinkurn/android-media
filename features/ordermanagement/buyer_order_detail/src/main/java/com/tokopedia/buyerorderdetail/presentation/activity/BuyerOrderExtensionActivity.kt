@@ -45,9 +45,7 @@ class BuyerOrderExtensionActivity: BaseSimpleActivity(), HasComponent<BuyerOrder
 
     fun setResultFinish(resultCode: Int, isOrderExtended: Boolean? = null) {
         val toasterType: Int? = null
-        val intent = Intent()
-
-        intent.apply {
+        val intent = Intent().apply {
             putExtra(
                 ApplinkConstInternalOrder.OrderExtensionKey.TOASTER_MESSAGE,
                 ""
