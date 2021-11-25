@@ -16,6 +16,7 @@ import org.junit.Test
 
 class ChatRoomCassavaTest : TopchatRoomTest() {
 
+    // TODO: change send validation result to true
     @get:Rule
     var cassavaTestRule = CassavaTestRule(true, false)
 
