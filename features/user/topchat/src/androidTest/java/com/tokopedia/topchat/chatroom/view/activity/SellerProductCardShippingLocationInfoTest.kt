@@ -36,4 +36,15 @@ class SellerProductCardShippingLocationInfoTest : TopchatRoomTest() {
         hasNoVisibleShippingLocationOn(position = 1)
     }
 
+    @Test
+    fun should_hide_shipping_location_info_if_i_am_buyer_and_it_exist_on_response() {
+        // Given
+        getChatUseCase.response = getChatUseCase.withShippingInfoBuyer
+        chatAttachmentUseCase.response = chatAttachmentUseCase.withoutShippingInfo
+        launchChatRoomActivity()
+
+        // Then
+        hasNoVisibleShippingLocationOn(position = 1)
+    }
+
 }

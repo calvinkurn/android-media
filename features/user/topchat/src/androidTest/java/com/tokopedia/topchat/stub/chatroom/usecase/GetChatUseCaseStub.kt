@@ -75,9 +75,35 @@ class GetChatUseCaseStub @Inject constructor(
      */
 
     val withShippingInfo: GetExistingChatPojo
-        get() = alterResponseOf(shippingLocationPath) { response ->
+        get() = alterResponseOf(shippingLocationPath) { response -> }
 
+    val withShippingInfoBuyer: GetExistingChatPojo
+        get() = alterResponseOf(shippingLocationPath) { response ->
+            swapInterlocutor(response)
+            alterRepliesAttribute(
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
+                altercation = { replies ->
+                    replies.forEach {
+                        it.asJsonObject.addProperty(isOpposite, false)
+                    }
+                }
+            )
         }
+
+    private fun swapInterlocutor(response: JsonObject) {
+        val contacts = response.getAsJsonObject(chatReplies)
+            .getAsJsonArray(contacts)
+        val interLoc = contacts.find { contact ->
+            contact.asJsonObject.get(interlocutor).asBoolean
+        }
+        val notInterLoc = contacts.find { contact ->
+            !contact.asJsonObject.get(interlocutor).asBoolean
+        }
+        interLoc?.asJsonObject?.addProperty(interlocutor, false)
+        notInterLoc?.asJsonObject?.addProperty(interlocutor, true)
+    }
 
     /**
      * <!--- End Shipping Location Seller --->
@@ -213,6 +239,7 @@ class GetChatUseCaseStub @Inject constructor(
             broadcastCampaignLabelPath,
             GetExistingChatPojo::class.java
         )
+
     /**
      * <!--- End Broadcast responses --->
      */
@@ -291,6 +318,7 @@ class GetChatUseCaseStub @Inject constructor(
                 .getAsJsonArray(replies).get(0).asJsonObject
                 .remove(attachment)
         }
+
     /**
      * <!--- End SRW responses --->
      */
