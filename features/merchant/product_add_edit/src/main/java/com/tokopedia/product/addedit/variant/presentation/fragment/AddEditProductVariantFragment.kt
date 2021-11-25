@@ -377,8 +377,8 @@ class AddEditProductVariantFragment :
 
     private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
         val variantTypeName = variantDetail.name
-        val title = getString(R.string.label_cancel) + " " + variantTypeName + getString(R.string.label_question_mark)
-        val message = getString(R.string.label_variant_type) + " " + variantTypeName + " " + getString(R.string.label_variant_cancellation_message)
+        val title = getString(R.string.label_cancel_use) + " " + variantTypeName + getString(R.string.label_question_mark)
+        val message = getString(R.string.label_variant_cancellation_message, variantTypeName)
         cancellationDialog?.setTitle(title)
         cancellationDialog?.setDescription(message)
         cancellationDialog?.setSecondaryCTAClickListener {
