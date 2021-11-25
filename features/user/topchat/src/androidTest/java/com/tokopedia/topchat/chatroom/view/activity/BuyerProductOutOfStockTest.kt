@@ -6,6 +6,9 @@ import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleAtcBtnAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleBuyBtnAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleEmptyStockLabelAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasNoVisibleRemindMeBtnAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasVisibleAtcBtnAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasVisibleBuyBtnAt
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasVisibleLabelAtWithText
 import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductResult.hasVisibleRemindMeBtnAt
 import org.junit.Test
@@ -31,7 +34,7 @@ class BuyerProductOutOfStockTest : TopchatRoomTest() {
     fun should_show_remind_me_button_and_show_empty_stock_label_if_product_is_not_upcoming_campaign_and_inactive() {
         // Given
         getChatUseCase.response = getChatUseCase.upComingCampaignProduct
-        chatAttachmentUseCase.response = chatAttachmentUseCase.notUpComingCampaignProduct
+        chatAttachmentUseCase.response = chatAttachmentUseCase.notUpComingCampaignProductAndInactive
         launchChatRoomActivity()
 
         // Then
@@ -44,6 +47,17 @@ class BuyerProductOutOfStockTest : TopchatRoomTest() {
         )
     }
 
-    // TODO: should show buy and atc button and hide empty stock label if product is not upcoming campaign and active
+    @Test
+    fun should_show_buy_and_atc_button_and_hide_empty_stock_label_if_product_is_not_upcoming_campaign_and_active() {
+        // Given
+        getChatUseCase.response = getChatUseCase.upComingCampaignProduct
+        chatAttachmentUseCase.response = chatAttachmentUseCase.notUpComingCampaignProductAndActive
+        launchChatRoomActivity()
 
+        // Then
+        hasNoVisibleRemindMeBtnAt(position = 1)
+        hasVisibleAtcBtnAt(position = 1)
+        hasVisibleBuyBtnAt(position = 1)
+        hasNoVisibleEmptyStockLabelAt(position = 1)
+    }
 }

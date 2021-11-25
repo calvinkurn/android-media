@@ -15,6 +15,10 @@ object ProductResult {
         assertRemindMeButtonAt(position, isDisplayed())
     }
 
+    fun hasNoVisibleRemindMeBtnAt(position: Int) {
+        assertRemindMeButtonAt(position, not(isDisplayed()))
+    }
+
     fun hasVisibleLabelAtWithText(position: Int, @StringRes stringRes: Int) {
         assertLabelAt(position, isDisplayed())
         assertLabelAt(position, withText(stringRes))
@@ -24,8 +28,16 @@ object ProductResult {
         assertLabelAt(position, not(isDisplayed()))
     }
 
+    fun hasVisibleAtcBtnAt(position: Int) {
+        assertAtcButtonAt(position, isDisplayed())
+    }
+
     fun hasNoVisibleAtcBtnAt(position: Int) {
         assertAtcButtonAt(position, not(isDisplayed()))
+    }
+
+    fun hasVisibleBuyBtnAt(position: Int) {
+        assertBuyButtonAt(position, isDisplayed())
     }
 
     fun hasNoVisibleBuyBtnAt(position: Int) {
