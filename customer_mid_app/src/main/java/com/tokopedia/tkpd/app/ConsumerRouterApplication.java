@@ -51,7 +51,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
-import com.tokopedia.interceptors.refreshtoken.RefreshTokenUseCase;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
@@ -147,7 +146,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
-        return TkpdAuthenticatorGql.Companion.createAuthenticator(this, this, new UserSession(context), new RefreshTokenGql());
+        return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
     }
 
     private void warmUpGQLClient() {

@@ -229,9 +229,5 @@ class TkpdAuthenticatorGql(
         fun formatThrowable(throwable: Throwable): String {
             return Log.getStackTraceString(throwable).take(LIMIT_STACKTRACE)
         }
-
-        fun createAuthenticator(context: Application, networkRouter: NetworkRouter, userSession: UserSessionInterface, refreshTokenUseCaseGql: RefreshTokenGql): TkpdAuthenticatorGql {
-            return TkpdAuthenticatorGql(context, networkRouter, userSession, refreshTokenUseCaseGql)
-        }
     }
 }

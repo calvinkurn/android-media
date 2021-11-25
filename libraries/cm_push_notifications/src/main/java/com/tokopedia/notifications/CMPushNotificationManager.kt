@@ -94,7 +94,7 @@ class CMPushNotificationManager : CoroutineScope {
     }
 
     private fun initGraphql(application: Application) {
-        val authenticator = TkpdAuthenticatorGql.createAuthenticator(application, application as NetworkRouter, UserSession(application), RefreshTokenGql())
+        val authenticator = TkpdAuthenticatorGql(application, application as NetworkRouter, UserSession(application), RefreshTokenGql())
         GraphqlClient.init(application, authenticator)
     }
 

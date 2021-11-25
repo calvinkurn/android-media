@@ -135,7 +135,7 @@ public class SellerMainApplication extends SellerRouterApplication {
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
-        return TkpdAuthenticatorGql.Companion.createAuthenticator(this, this, new UserSession(context), new RefreshTokenGql());
+        return new TkpdAuthenticatorGql(this, this, new UserSession(context), new RefreshTokenGql());
     }
 
     private void initCacheManager() {
