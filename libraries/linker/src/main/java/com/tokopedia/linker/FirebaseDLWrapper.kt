@@ -146,12 +146,10 @@ class FirebaseDLWrapper {
                     title = data.ogTitle
                     description = data.description
                 }
-                if (!deeplinkdata.contains(LinkerConstants.UTM_SOURCE)) {
-                    googleAnalyticsParameters {
-                        source = LinkerData.ARG_UTM_SOURCE
-                        medium = LinkerData.ARG_UTM_MEDIUM
-                        campaign = data.campaignName
-                    }
+                googleAnalyticsParameters {
+                    source = if(!TextUtils.isEmpty(data.channel)) { data.channel } else{ LinkerData.ARG_UTM_SOURCE }
+                    medium = if(!TextUtils.isEmpty(data.feature)){ data.feature } else { LinkerData.ARG_UTM_MEDIUM }
+                    campaign = data.campaignName
                 }
             }
 
@@ -274,11 +272,6 @@ class FirebaseDLWrapper {
             }
         }
 
-        if (deeplinkPath != null) {
-            if (!deeplinkPath.contains(LinkerConstants.UTM_SOURCE)) {
-                deeplinkPath = data.renderShareUri(deeplinkPath)
-            }
-        }
         return deeplinkPath
     }
 
