@@ -90,7 +90,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         transactionHistoryViewModel.refreshAllTabsData(
             selectedDateFrom,
             selectedDateTo,
-            isSalesTabEnabled()
         )
     }
 
@@ -122,11 +121,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         })
 
         //penjualan tab
-        if (isSalesTabEnabled())
-            saldoTabItems.add(SaldoHistoryTabItem().apply {
-                title = TransactionTitle.SALDO_SALES
-                fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
-            })
+        saldoTabItems.add(SaldoHistoryTabItem().apply {
+            title = TransactionTitle.SALDO_SALES
+            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
+        })
 
         //Saldo Refund
         saldoTabItems.add(SaldoHistoryTabItem().apply {
@@ -176,8 +174,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     fun onRefresh() {
         transactionHistoryViewModel.refreshAllTabsData(
             selectedDateFrom,
-            selectedDateTo,
-            isSalesTabEnabled()
+            selectedDateTo
         )
     }
 
