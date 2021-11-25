@@ -74,6 +74,7 @@ class CMHomeWidget @JvmOverloads constructor(
             )
             addItemDecoration(HorizontalSpaceItemDecorator(10, 0))
             adapter = (this@CMHomeWidget).adapter.get()
+            setHasFixedSize(true)
         }
     }
 

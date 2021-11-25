@@ -31,7 +31,7 @@ class HorizontalSpaceItemDecorator(
 
         setItemWidth(parent, view, currentViewType)
 
-        setViewAllCardHeight(parent, view, currentItemPosition, currentViewType)
+//        setViewAllCardHeight(parent, view, currentItemPosition, currentViewType)
     }
 
     private fun setItemSpacing(outRect: Rect, currentItemPosition: Int, totalItems: Int) {
@@ -58,17 +58,13 @@ class HorizontalSpaceItemDecorator(
     ) {
         var ratio = CMHomeWidgetProductCardViewHolder.RATIO_WIDTH
         when (currentViewType) {
-            CMHomeWidgetProductCardViewHolder.LAYOUT -> {
+            CMHomeWidgetProductCardViewHolder.LAYOUT,
+            CMHomeWidgetProductCardShimmerViewHolder.LAYOUT -> {
                 ratio = CMHomeWidgetProductCardViewHolder.RATIO_WIDTH
             }
-            CMHomeWidgetProductCardShimmerViewHolder.LAYOUT -> {
-                ratio = CMHomeWidgetProductCardShimmerViewHolder.RATIO_WIDTH
-            }
-            CMHomeWidgetViewAllCardViewHolder.LAYOUT -> {
-                ratio = CMHomeWidgetViewAllCardViewHolder.RATIO_WIDTH
-            }
+            CMHomeWidgetViewAllCardViewHolder.LAYOUT,
             CMHomeWidgetViewAllCardShimmerViewHolder.LAYOUT -> {
-                ratio = CMHomeWidgetViewAllCardShimmerViewHolder.RATIO_WIDTH
+                ratio = CMHomeWidgetViewAllCardViewHolder.RATIO_WIDTH
             }
         }
         val layoutParams: ViewGroup.LayoutParams = view.layoutParams
@@ -87,8 +83,7 @@ class HorizontalSpaceItemDecorator(
                 CMHomeWidgetViewAllCardViewHolder.LAYOUT,
                 CMHomeWidgetViewAllCardShimmerViewHolder.LAYOUT -> {
                     val layoutParams: ViewGroup.LayoutParams = view.layoutParams
-                    layoutParams.height =
-                        parent.measuredHeight - parent.paddingTop - parent.paddingBottom
+                    layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
                     view.layoutParams = layoutParams
                 }
             }
