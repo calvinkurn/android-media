@@ -1,11 +1,20 @@
 package com.tokopedia.mediauploader.manager
 
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.mediauploader.services.UploaderReceiver
+import com.tokopedia.mediauploader.services.UploaderReceiver.Companion.BROADCAST_CANCEL_UPLOAD
+import com.tokopedia.mediauploader.services.UploaderReceiver.Companion.BROADCAST_FILE_PATH
+import com.tokopedia.mediauploader.services.UploaderReceiver.Companion.BROADCAST_NOTIFICATION_ID
+import com.tokopedia.mediauploader.services.UploaderReceiver.Companion.BROADCAST_SOURCE_ID
+import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -44,9 +53,9 @@ class UploadMediaNotificationManager @Inject constructor(
 
     fun onStart() {
         val notification = notificationBuilder
-            .setContentTitle(TITLE_SUBMITTING_ATTACHMENT)
-            .setContentText(MESSAGE_SUBMITTING_ATTACHMENT)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_SUBMITTING_ATTACHMENT))
+            .setContentTitle(TITLE_SUBMITTING_UPLOAD)
+            .setContentText(MESSAGE_SUBMITTING_UPLOAD)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_SUBMITTING_UPLOAD))
             .setProgress(0, 0, true)
             .setOngoing(false)
             .setShowWhen(true)
@@ -55,11 +64,30 @@ class UploadMediaNotificationManager @Inject constructor(
         notificationManager.notify(notificationId, notification)
     }
 
-    fun onProgress(progress: Int) {
+    @SuppressLint("UnspecifiedImmutableFlag", "RestrictedApi")
+    fun onProgress(sourceId: String, file: File, progress: Int) {
+        if (notificationBuilder.mActions.isEmpty()) {
+            val intent = Intent(context, UploaderReceiver::class.java).apply {
+                putExtra(BROADCAST_CANCEL_UPLOAD, "cancel")
+                putExtra(BROADCAST_NOTIFICATION_ID, notificationId)
+                putExtra(BROADCAST_SOURCE_ID, sourceId)
+                putExtra(BROADCAST_FILE_PATH, file.absolutePath)
+            }
+
+            val cancelPendingIntent = PendingIntent.getBroadcast(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+
+            notificationBuilder.addAction(0, "Cancel", cancelPendingIntent)
+        }
+
         val notification = notificationBuilder
-            .setContentTitle(TITLE_SUBMITTING_ATTACHMENT)
-            .setContentText(MESSAGE_SUBMITTING_ATTACHMENT)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_SUBMITTING_ATTACHMENT))
+            .setContentTitle(TITLE_SUBMITTING_UPLOAD)
+            .setContentText(MESSAGE_SUBMITTING_UPLOAD)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_SUBMITTING_UPLOAD))
             .setProgress(100, progress, false)
             .build()
 
@@ -68,9 +96,9 @@ class UploadMediaNotificationManager @Inject constructor(
 
     fun onSuccess() {
         val notification = notificationBuilder
-            .setContentTitle(TITLE_ATTACHMENT_SUBMITTED)
-            .setContentText(MESSAGE_ATTACHMENT_SUBMITTED)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_ATTACHMENT_SUBMITTED))
+            .setContentTitle(TITLE_UPLOAD_SUBMITTED)
+            .setContentText(MESSAGE_UPLOAD_SUBMITTED)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_UPLOAD_SUBMITTED))
             .setProgress(100, 100, false)
             .setOngoing(false)
             .setShowWhen(true)
@@ -81,9 +109,9 @@ class UploadMediaNotificationManager @Inject constructor(
 
     fun onError() {
         val notification = notificationBuilder
-            .setContentTitle(TITLE_ATTACHMENT_ERROR)
-            .setContentText(MESSAGE_ATTACHMENT_ERROR)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_ATTACHMENT_ERROR))
+            .setContentTitle(TITLE_UPLOAD_ERROR)
+            .setContentText(MESSAGE_UPLOAD_ERROR)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(MESSAGE_UPLOAD_ERROR))
             .build()
 
         notificationManager.notify(notificationId, notification)
@@ -96,12 +124,13 @@ class UploadMediaNotificationManager @Inject constructor(
     companion object {
         private const val CHANNEL_GENERAL = "ANDROID_GENERAL_CHANNEL"
         private const val NOTIFICATION_GROUP = "com.tokopedia"
-        private const val TITLE_SUBMITTING_ATTACHMENT = "Mengirim Lampiran"
-        private const val TITLE_ATTACHMENT_SUBMITTED = "Lampiran selesai dikirim \uD83D\uDCAB"
-        private const val TITLE_ATTACHMENT_ERROR = "Lampiran gagal dikirim :pepesad:"
-        private const val MESSAGE_SUBMITTING_ATTACHMENT = "Mengirim lampiran"
-        private const val MESSAGE_ATTACHMENT_SUBMITTED = "Lampiran terkirim"
-        private const val MESSAGE_ATTACHMENT_ERROR = "Lampiran gagal dikirim. Coba lagi"
+
+        private const val TITLE_SUBMITTING_UPLOAD = "Mengirim File"
+        private const val TITLE_UPLOAD_SUBMITTED = "File selesai dikirim \uD83D\uDCAB"
+        private const val TITLE_UPLOAD_ERROR = "File gagal dikirim \uD83D\uDC38"
+        private const val MESSAGE_SUBMITTING_UPLOAD = "Mengirim file"
+        private const val MESSAGE_UPLOAD_SUBMITTED = "File terkirim"
+        private const val MESSAGE_UPLOAD_ERROR = "File gagal dikirim. Coba lagi"
     }
 
 }
