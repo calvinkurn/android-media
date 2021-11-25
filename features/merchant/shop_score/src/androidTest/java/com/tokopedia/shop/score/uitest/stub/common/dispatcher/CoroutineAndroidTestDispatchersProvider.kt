@@ -1,4 +1,4 @@
-package com.tokopedia.shop.score.stub.common.dispatcher
+package com.tokopedia.shop.score.uitest.stub.common.dispatcher
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers

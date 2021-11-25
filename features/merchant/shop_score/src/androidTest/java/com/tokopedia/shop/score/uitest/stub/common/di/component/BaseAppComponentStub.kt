@@ -1,11 +1,11 @@
-package com.tokopedia.shop.score.stub.common.di.component
+package com.tokopedia.shop.score.uitest.stub.common.di.component
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shop.score.stub.common.di.module.AppModuleStub
+import com.tokopedia.shop.score.uitest.stub.common.di.module.AppModuleStub
 import dagger.Component
 
 @ApplicationScope

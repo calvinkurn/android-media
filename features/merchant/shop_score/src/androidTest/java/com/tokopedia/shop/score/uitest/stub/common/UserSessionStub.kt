@@ -1,4 +1,4 @@
-package com.tokopedia.shop.score.stub.common
+package com.tokopedia.shop.score.uitest.stub.common
 
 import android.content.Context
 import com.tokopedia.user.session.UserSession
