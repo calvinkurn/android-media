@@ -11,14 +11,19 @@ import com.tokopedia.ovop2p.domain.model.OvoP2pTransferConfirmBase
 import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.viewStates.*
 import rx.Subscriber
+import javax.inject.Inject
 
-class OvoP2pTrxnConfirmVM : ViewModel() {
+class OvoP2pTrxnConfirmVM @Inject constructor() : ViewModel() {
 
     var txnConfirmMutableLiveData = MutableLiveData<TransferConfirmState>()
     private var transferConfirmSubscriber: Subscriber<GraphqlResponse>? = null
 
     fun makeTransferConfirmCall(context: Context, transferReqMap: HashMap<String, Any>) {
-        OvoP2pUtil.executeOvoP2pTransferConfirm(context, getTransferConfirmSubscriber(context), transferReqMap)
+        OvoP2pUtil.executeOvoP2pTransferConfirm(
+            context,
+            getTransferConfirmSubscriber(context),
+            transferReqMap
+        )
     }
 
     override fun onCleared() {

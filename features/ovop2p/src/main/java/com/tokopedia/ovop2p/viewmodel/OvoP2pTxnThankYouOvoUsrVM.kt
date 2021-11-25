@@ -13,8 +13,9 @@ import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
 import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
 import rx.Subscriber
+import javax.inject.Inject
 
-class OvoP2pTxnThankYouOvoUsrVM : ViewModel() {
+class OvoP2pTxnThankYouOvoUsrVM @Inject constructor() : ViewModel() {
 
     var transferThankyouLiveData = MutableLiveData<ThankYouPageState>()
     private var transferThankyouSubscriber: Subscriber<GraphqlResponse>? = null

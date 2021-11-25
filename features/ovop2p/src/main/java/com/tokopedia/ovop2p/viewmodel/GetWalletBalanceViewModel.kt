@@ -12,8 +12,9 @@ import com.tokopedia.ovop2p.view.viewStates.WalletBalanceState
 import com.tokopedia.ovop2p.view.viewStates.WalletData
 import com.tokopedia.ovop2p.view.viewStates.WalletError
 import rx.Subscriber
+import javax.inject.Inject
 
-class GetWalletBalanceViewModel : ViewModel() {
+class GetWalletBalanceViewModel @Inject constructor() : ViewModel() {
     var walletLiveData: MutableLiveData<WalletBalanceState> = MutableLiveData()
     var walletBalanceSubscriber: Subscriber<GraphqlResponse>? = null
     fun fetchWalletDetails(context: Context) {

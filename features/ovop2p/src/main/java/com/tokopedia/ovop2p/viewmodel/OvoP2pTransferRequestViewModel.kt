@@ -11,17 +11,22 @@ import com.tokopedia.ovop2p.util.OvoP2pUtil
 import com.tokopedia.ovop2p.view.viewStates.*
 import rx.Subscriber
 import java.util.*
+import javax.inject.Inject
 
-class OvoP2pTransferRequestViewModel: ViewModel() {
+class OvoP2pTransferRequestViewModel @Inject constructor() : ViewModel() {
 
     var transferReqBaseMutableLiveData = MutableLiveData<TransferRequestState>()
     private var transferRequestSubscriber: Subscriber<GraphqlResponse>? = null
 
     fun makeTransferRequestCall(context: Context, transferReqMap: HashMap<String, Any>) {
-        OvoP2pUtil.executeOvoP2pTransferRequest(context, getTransferRequestSubscriber(context), transferReqMap)
+        OvoP2pUtil.executeOvoP2pTransferRequest(
+            context,
+            getTransferRequestSubscriber(context),
+            transferReqMap
+        )
     }
 
-    private fun getTransferRequestSubscriber(context:Context): Subscriber<GraphqlResponse> {
+    private fun getTransferRequestSubscriber(context: Context): Subscriber<GraphqlResponse> {
         transferRequestSubscriber = object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
