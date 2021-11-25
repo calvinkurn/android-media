@@ -59,6 +59,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val EMPTY_STRING = ""
         private const val FORMAT_STRING_COLOR = "#%06x"
         private const val FORMAT_HEX_COLOR = 0xffffff
+        private const val FORMAT_PREFIX_HEX_COLOR = "#"
     }
 
     init {
@@ -133,8 +134,8 @@ class ShopHomeFlashSaleViewHolder(
     private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackgroundColor: String?, endBackgroundColor: String?) {
         // set flash sale background color
         val colors = intArrayOf(
-            Color.parseColor(startBackgroundColor ?: getStringColor(R.color.fs_toko_bg_start_gradient_color)),
-            Color.parseColor(endBackgroundColor ?: getStringColor(R.color.fs_toko_bg_end_gradient_color))
+            Color.parseColor(getStringColor(startBackgroundColor, R.color.fs_toko_bg_start_gradient_color)),
+            Color.parseColor(getStringColor(endBackgroundColor, R.color.fs_toko_bg_end_gradient_color))
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         singleBackGroundView?.background = gradientDrawable
@@ -255,7 +256,15 @@ class ShopHomeFlashSaleViewHolder(
         return statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, true)
     }
 
-    private fun getStringColor(colorRes: Int) : String {
-        return String.format(FORMAT_STRING_COLOR, ContextCompat.getColor(itemView.context, colorRes) and FORMAT_HEX_COLOR)
+    private fun getStringColor(color: String?, colorRes: Int): String {
+        return if (color.isNullOrEmpty()) {
+            String.format(FORMAT_STRING_COLOR, ContextCompat.getColor(itemView.context, colorRes) and FORMAT_HEX_COLOR)
+        } else {
+            if (!color.startsWith(FORMAT_PREFIX_HEX_COLOR)) {
+                FORMAT_PREFIX_HEX_COLOR + color
+            } else {
+                color
+            }
+        }
     }
 }
