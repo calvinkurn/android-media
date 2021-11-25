@@ -16,9 +16,8 @@ import org.junit.Test
 
 class ChatRoomCassavaTest : TopchatRoomTest() {
 
-    // TODO: change send validation result to true
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(true, false)
+    var cassavaTestRule = CassavaTestRule(true, true)
 
     private val gtmLogDbSource = GtmLogDBSource(context)
 
