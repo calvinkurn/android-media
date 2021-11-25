@@ -22,6 +22,7 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
         var LAYOUT = R.layout.affiliate_transaction_history_item_layout
 
         const val TRANSACTION_TYPE_DEPOSIT = "TRANSACTION_TYPE_DEPOSIT"
+        const val TRANSACTION_TYPE_WITHDRAWAL = "TRANSACTION_TYPE_WITHDRAWAL"
         const val DANGER = "DANGER"
         const val SUCCESS = "SUCCESS"
         const val WARNING = "WARNING"
@@ -30,7 +31,13 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
 
     override fun bind(element: AffiliateTransactionHistoryItemModel?) {
         itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener {
-            itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
+            when(element?.transaction?.transactionType){
+                TRANSACTION_TYPE_DEPOSIT -> {
+                    itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
+                }
+                TRANSACTION_TYPE_WITHDRAWAL -> {
+                    }
+            }
         }
         itemView.findViewById<Typography>(R.id.transaction_history_heading).text = element?.transaction?.title
         itemView.findViewById<Typography>(R.id.transaction_history_amount).apply {
