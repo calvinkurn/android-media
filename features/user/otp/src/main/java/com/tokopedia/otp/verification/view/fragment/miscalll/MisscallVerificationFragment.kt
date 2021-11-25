@@ -355,10 +355,6 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
         }
     }
 
-    override fun sendTrackerAutoSubmit() {
-        analytics.trackAutoSubmitVerification(otpData, modeListData,true, tag = TAG_AUTO_READ)
-    }
-
     override fun onSuccessOtpValidate(otpValidateData: OtpValidateData) {
         if (isOtpMiscallNew()) {
             setSuccessImage()

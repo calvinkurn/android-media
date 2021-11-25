@@ -11,6 +11,7 @@ import com.tokopedia.otp.common.analytics.TrackingOtpConstant.EVENT_USER_ID
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Event
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label
 import com.tokopedia.otp.verification.data.OtpData
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -608,11 +609,9 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_METHOD_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
     }
 
@@ -621,31 +620,21 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_CLICK_RESEND_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}"
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
     }
 
-
     /* Auto Submit Tracker */
-    fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "", tag: String = "") {
+    fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,
                 Category.CATEGORY_OTP_PAGE,
                 Action.ACTION_AUTO_SUBMIT_OTP,
-                if (isSuccess) {
-                    "success"
-                } else {
-                    "fail - $message"
-                } + " - ${otpData.otpType} - ${modeListData.modeText}" + getTag(tag)
+                if (isSuccess) { "success" } else { "fail - $message" }
+                        + " - ${otpData.otpType} - ${modeListData.modeText}"
+                        + if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) " - autoread" else ""
         ))
-    }
-
-    private fun getTag(tag: String): String {
-        return if (tag.isNotEmpty()) " - $tag"
-        else ""
     }
 }
