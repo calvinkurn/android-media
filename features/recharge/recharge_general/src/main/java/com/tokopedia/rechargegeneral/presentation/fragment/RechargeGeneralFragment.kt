@@ -568,7 +568,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         productId = 0
         inputData = hashMapOf()
         // Reset product info ticker
-        ticker_recharge_general_product_info.hide()
+        ticker_recharge_general_product_info?.hide()
         toggleEnquiryButton()
     }
 
@@ -1266,22 +1266,24 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     // Show product info ticker
                     val description = attributes.detailCompact
                     if (description.isNotEmpty()) {
-                        ticker_recharge_general_product_info.show()
-                        ticker_recharge_general_product_info.setHtmlDescription(description)
-                        ticker_recharge_general_product_info.setDescriptionClickEvent(object : TickerCallback {
-                            override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                                context?.let {
-                                    RouteManager.route(it, attributes.detailUrl)
+                        ticker_recharge_general_product_info?.let {
+                            it.show()
+                            it.setHtmlDescription(description)
+                            it.setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    context?.let {
+                                        RouteManager.route(it, attributes.detailUrl)
+                                    }
                                 }
-                            }
 
-                            override fun onDismiss() {
-                                // no op
-                            }
+                                override fun onDismiss() {
+                                    // no op
+                                }
 
-                        })
+                            })
+                        }
                     } else {
-                        ticker_recharge_general_product_info.hide()
+                        ticker_recharge_general_product_info?.hide()
                     }
                 }
             }
@@ -1304,7 +1306,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         adapter.hideLoading()
     }
 
-    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         // do nothing
     }
 

@@ -94,20 +94,20 @@ class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetail
 
         with(binding) {
             reviewCount.apply {
-                text = if (listener.shouldShowRatingAndReviewCount()) {
-                    if (formattedReviewCount == "0") {
-                        context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
-                    } else {
-                        context.getString(R.string.pdp_review_rating_and_review_count, formattedRatingCount, formattedReviewCount)
-                    }
+                text = if (formattedReviewCount == "0") {
+                    context.getString(R.string.pdp_review_rating_only_count, formattedRatingCount)
                 } else {
-                    context.getString(R.string.review_out_of_total_reviews, totalRating)
+                    context.getString(
+                        R.string.pdp_review_rating_and_review_count,
+                        formattedRatingCount,
+                        formattedReviewCount
+                    )
                 }
                 show()
             }
             reviewRating.apply {
                 setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(context, R.drawable.ic_review_rating_star), null, null, null)
-                text = if (listener.shouldShowRatingAndReviewCount()) formattedRating else ratingScore.toString()
+                text = formattedRating
                 show()
             }
 

@@ -5,16 +5,51 @@ import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.AtcVariantMapper
-import com.tokopedia.product.detail.common.data.model.pdplayout.*
+import com.tokopedia.product.detail.common.data.model.pdplayout.Component
+import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
+import com.tokopedia.product.detail.common.data.model.pdplayout.Content
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
+import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
+import com.tokopedia.product.detail.common.data.model.pdplayout.Wholesale
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
+import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.track.TrackApp
 
 object DynamicProductDetailMapper {
@@ -289,10 +324,10 @@ object DynamicProductDetailMapper {
     fun generateUserLocationRequest(localData: LocalCacheModel): UserLocationRequest {
         val latlong = if (localData.lat.isEmpty() && localData.long.isEmpty()) "" else "${localData.lat},${localData.long}"
         return UserLocationRequest(
-            localData.district_id,
-            localData.address_id,
-            localData.postal_code,
-            latlong)
+                localData.district_id.checkIfNumber("district_id"),
+                localData.address_id.checkIfNumber("address_id"),
+                localData.postal_code.checkIfNumber("postal_code"),
+                latlong)
     }
 
     fun generateUserLocationRequestRates(localData: LocalCacheModel): String {

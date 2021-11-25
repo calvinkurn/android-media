@@ -4,7 +4,9 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformance
 
 data class ProtectedParameterSectionUiModel(
     val itemProtectedParameterList: List<ItemProtectedParameterUiModel> = emptyList(),
-    val protectedParameterDate: String = ""
+    val titleParameterRelief: String = "",
+    val descParameterRelief: String = "",
+    val descParameterReliefBottomSheet: String = ""
 ) : BaseShopPerformance {
     override fun type(typeFactory: ShopPerformanceAdapterTypeFactory): Int {
         return typeFactory.type(this)

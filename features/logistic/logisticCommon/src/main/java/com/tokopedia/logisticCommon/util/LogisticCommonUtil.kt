@@ -13,4 +13,5 @@ object LogisticCommonUtil {
         val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(ANA_REVAMP_ROLLENCE, "")
         return rollenceValue == ANA_REVAMP_ROLLENCE
     }
+
 }

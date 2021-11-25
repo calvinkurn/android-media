@@ -81,11 +81,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.CartNotifyListener
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -99,6 +97,7 @@ import com.tokopedia.purchase_platform.common.exception.CartResponseErrorExcepti
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
@@ -111,8 +110,6 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.rxCompoundButtonCheckDebounce
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -527,7 +524,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initRecyclerView() {
-        val gridLayoutManager = GridLayoutManager(context, 2)
+        val gridLayoutManager = object: GridLayoutManager(context, 2) {
+            override fun supportsPredictiveItemAnimations() = false
+
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                try {
+                    super.onLayoutChildren(recycler, state)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
         binding?.rvCart?.apply {
             layoutManager = gridLayoutManager
             adapter = cartAdapter
@@ -655,20 +662,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (binding?.topLayout?.root?.visibility == View.VISIBLE) {
             if (show) {
                 binding?.topLayoutShadow?.show()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-                }
+                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
             } else {
                 binding?.topLayoutShadow?.gone()
             }
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (show) {
-                    binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
-                    binding?.topLayoutShadow?.gone()
-                } else {
-                    binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
-                }
+            if (show) {
+                binding?.appBarLayout?.elevation = HAS_ELEVATION.toFloat()
+                binding?.topLayoutShadow?.gone()
+            } else {
+                binding?.appBarLayout?.elevation = NO_ELEVATION.toFloat()
             }
         }
     }
@@ -1028,8 +1031,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
 
                     it.voucherOrderUiModels.forEach {
-                        val promoCode = it?.code ?: ""
-                        if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                        val promoCode = it.code
+                        if (promoCode.isNotBlank() && it.messageUiModel.state == "red" && !redStatePromo.contains(promoCode)) {
                             redStatePromo.add(promoCode)
                         }
                     }
@@ -1047,8 +1050,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
 
                 it.voucherOrderUiModels.forEach {
-                    val promoCode = it?.code ?: ""
-                    if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                    val promoCode = it.code
+                    if (promoCode.isNotBlank() && it.messageUiModel.state == "red" && !redStatePromo.contains(promoCode)) {
                         redStatePromo.add(promoCode)
                     }
                 }
@@ -1477,7 +1480,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         recommendationItemClick?.let {
             cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                    index.toString(),
                     dPresenter.generateRecommendationDataOnClickAnalytics(it, FLAG_IS_CART_EMPTY, index)
             )
         }
@@ -2183,19 +2185,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         var isPromoApplied = false
         val allPromoApplied = arrayListOf<String>()
         if (params.orders.isNotEmpty()) {
-            params.orders.forEach {
-                it?.let { orderItem ->
-                    if (orderItem.codes.isNotEmpty()) {
-                        orderItem.codes.forEach { merchantCode ->
-                            allPromoApplied.add(merchantCode)
-                        }
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
                     }
                 }
             }
-            params.codes.forEach {
-                it?.let { globalCode ->
-                    allPromoApplied.add(globalCode)
-                }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
             }
         }
         if (params.orders.isNotEmpty() && allPromoApplied.isNotEmpty()) isPromoApplied = true
@@ -2205,19 +2203,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun getAllAppliedPromoCodes(params: ValidateUsePromoRequest): List<String> {
         val allPromoApplied = arrayListOf<String>()
         if (params.orders.isNotEmpty()) {
-            params.orders.forEach {
-                it?.let { orderItem ->
-                    if (orderItem.codes.isNotEmpty()) {
-                        orderItem.codes.forEach { merchantCode ->
-                            allPromoApplied.add(merchantCode)
-                        }
+            params.orders.forEach { orderItem ->
+                if (orderItem.codes.isNotEmpty()) {
+                    orderItem.codes.forEach { merchantCode ->
+                        allPromoApplied.add(merchantCode)
                     }
                 }
             }
-            params.codes.forEach {
-                it?.let { globalCode ->
-                    allPromoApplied.add(globalCode)
-                }
+            params.codes.forEach { globalCode ->
+                allPromoApplied.add(globalCode)
             }
         }
         return allPromoApplied
@@ -2686,10 +2680,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (cartAdapter.hasAvailableItemLeft()) {
             binding?.topLayout?.root?.show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                    isShowToolbarShadow = true
-                }
+            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
+                isShowToolbarShadow = true
             }
         } else {
             binding?.topLayout?.root?.gone()
@@ -2703,10 +2695,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         if (isShow) {
             binding?.topLayout?.root?.show()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
-                    isShowToolbarShadow = true
-                }
+            if (binding?.appBarLayout?.elevation == HAS_ELEVATION.toFloat()) {
+                isShowToolbarShadow = true
             }
         } else {
             binding?.topLayout?.root?.gone()

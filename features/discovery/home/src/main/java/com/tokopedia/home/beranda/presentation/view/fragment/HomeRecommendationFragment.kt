@@ -19,13 +19,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking.getRecommendationAddWishlistLogin
@@ -54,11 +53,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.homeRecommen
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationItemViewHolder.Companion.LAYOUT
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -88,7 +87,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private val adapter by lazy { HomeRecommendationAdapter(appExecutors, adapterFactory, this) }
     private val recyclerView by lazy { view?.findViewById<RecyclerView>(R.id.home_feed_fragment_recycler_view) }
 
-    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL) }
+    private val staggeredGridLayoutManager by lazy { StaggeredGridLayoutManager(DynamicChannelTabletConfiguration.getSpanCountForHomeRecommendationAdapter(requireContext()), StaggeredGridLayoutManager.VERTICAL) }
     private var endlessRecyclerViewScrollListener: HomeFeedEndlessScrollListener? = null
 
     private var totalScrollY = 0
@@ -207,7 +206,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
     private fun setupRecyclerView() {
         recyclerView?.layoutManager = staggeredGridLayoutManager
         (recyclerView?.layoutManager as StaggeredGridLayoutManager?)?.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-        recyclerView?.addItemDecoration(HomeFeedItemDecoration(resources.getDimensionPixelSize(R.dimen.dp_4)))
+        recyclerView?.addItemDecoration(HomeFeedItemDecoration(4f.toDpInt()))
         recyclerView?.adapter = adapter
         parentPool?.setMaxRecycledViews(
                 LAYOUT,

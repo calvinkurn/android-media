@@ -418,7 +418,17 @@ open class WishlistFragment : BaseDaggerFragment(), WishlistListener, TopAdsList
     }
 
     private fun initRecyclerView() {
-        recyclerView?.layoutManager = staggeredGridLayoutManager
+        recyclerView?.layoutManager = object: StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL) {
+            override fun supportsPredictiveItemAnimations() = false
+
+            override fun onLayoutChildren(recycler: RecyclerView.Recycler?, state: RecyclerView.State?) {
+                try {
+                    super.onLayoutChildren(recycler, state)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
         recyclerView?.adapter = adapter
         GravitySnapHelper(Gravity.TOP, true).attachToRecyclerView(recyclerView)
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {

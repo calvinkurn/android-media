@@ -13,8 +13,8 @@ import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUse
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
-import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
+import com.tokopedia.tokopedianow.category.domain.model.CategoryTrackerModel
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
@@ -85,8 +85,8 @@ class TokoNowCategoryViewModel @Inject constructor (
         userSession,
 ) {
 
-    protected val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<String>()
-    val openScreenTrackingUrlLiveData: LiveData<String> = openScreenTrackingUrlMutableLiveData
+    protected val openScreenTrackingUrlMutableLiveData = SingleLiveEvent<CategoryTrackerModel>()
+    val openScreenTrackingUrlLiveData: LiveData<CategoryTrackerModel> = openScreenTrackingUrlMutableLiveData
 
     val categoryIdTracking: String
 
@@ -274,7 +274,11 @@ class TokoNowCategoryViewModel @Inject constructor (
         "$TOKOPEDIA_NOW.$TOKONOW_CATEGORY.$LOCAL_SEARCH.$warehouseId"
 
     private fun sendOpenScreenTrackingUrl(categoryModel: CategoryModel) {
-        openScreenTrackingUrlMutableLiveData.value = categoryModel.categoryDetail.data.url
+        openScreenTrackingUrlMutableLiveData.value = CategoryTrackerModel(
+            id = categoryModel.categoryDetail.data.id,
+            name = categoryModel.categoryDetail.data.name,
+            url = categoryModel.categoryDetail.data.url
+        )
     }
 
     override fun executeLoadMore() {

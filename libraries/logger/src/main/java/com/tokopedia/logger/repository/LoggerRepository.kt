@@ -20,14 +20,16 @@ import kotlinx.coroutines.*
 import org.json.JSONObject
 import kotlin.coroutines.CoroutineContext
 
-class LoggerRepository(private val logDao: LoggerDao,
-                       private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
-                       private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
-                       private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
-                       private val scalyrConfigs: List<ScalyrConfig>,
-                       private val newRelicConfig: NewRelicConfig,
-                       private val encrypt: ((String) -> (String))? = null,
-                       private val decrypt: ((String) -> (String))? = null) : LoggerRepositoryContract, CoroutineScope {
+class LoggerRepository(
+    private val logDao: LoggerDao,
+    private val loggerCloudScalyrDataSource: LoggerCloudDataSource,
+    private val loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl,
+    private val loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl,
+    private val scalyrConfigs: List<ScalyrConfig>,
+    private val newRelicConfig: NewRelicConfig,
+    private val encrypt: ((String) -> (String))? = null,
+    private val decrypt: ((String) -> (String))? = null
+) : LoggerRepositoryContract, CoroutineScope {
 
     override suspend fun insert(logger: Logger) {
         var encryptedLogger = logger
@@ -51,17 +53,28 @@ class LoggerRepository(private val logDao: LoggerDao,
 
     override suspend fun deleteExpiredData() {
         val currentTimestamp = System.currentTimeMillis()
+        logDao.deleteExpiredSFPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
         logDao.deleteExpiredHighPrio(currentTimestamp - Constants.OFFLINE_TAG_THRESHOLD)
         logDao.deleteExpiredLowPrio(currentTimestamp - Constants.ONLINE_TAG_THRESHOLD)
     }
 
     override suspend fun sendLogToServer(queryLimits: List<Int>) {
-        sendLogToServer(Constants.SEVERITY_HIGH, logDao.getServerChannel(LoggerReporting.P1, queryLimits[0]))
-        sendLogToServer(Constants.SEVERITY_MEDIUM, logDao.getServerChannel(LoggerReporting.P2, queryLimits[1]))
+        sendLogToServer(
+            Constants.SEVERITY_SF,
+            logDao.getServerChannel(LoggerReporting.SF, queryLimits[0])
+        )
+        sendLogToServer(
+            Constants.SEVERITY_HIGH,
+            logDao.getServerChannel(LoggerReporting.P1, queryLimits[0])
+        )
+        sendLogToServer(
+            Constants.SEVERITY_MEDIUM,
+            logDao.getServerChannel(LoggerReporting.P2, queryLimits[1])
+        )
     }
 
-    private suspend fun sendLogToServer(priority: Int, logs: List<Logger>) {
-        val tokenIndex = priority - 1
+    private suspend fun sendLogToServer(priorityScalyr: Int, logs: List<Logger>) {
+        val priorityScalyrIndex = priorityScalyr - 1
 
         coroutineScope {
             launch {
@@ -73,12 +86,19 @@ class LoggerRepository(private val logDao: LoggerDao,
                 val embraceMessageList = mappedList.embraceMessageList
 
                 if (scalyrMessageList.isNotEmpty()) {
-                    val jobScalyr = async { sendScalyrLogToServer(scalyrConfigs[tokenIndex], logs, scalyrMessageList) }
+                    val jobScalyr = async {
+                        sendScalyrLogToServer(
+                            scalyrConfigs[priorityScalyrIndex],
+                            logs,
+                            scalyrMessageList
+                        )
+                    }
                     jobList.add(jobScalyr)
                 }
 
                 if (newRelicMessageList.isNotEmpty()) {
-                    val jobNewRelic = async { sendNewRelicLogToServer(newRelicConfig, logs, newRelicMessageList) }
+                    val jobNewRelic =
+                        async { sendNewRelicLogToServer(newRelicConfig, logs, newRelicMessageList) }
                     jobList.add(jobNewRelic)
                 }
 
@@ -95,7 +115,11 @@ class LoggerRepository(private val logDao: LoggerDao,
         }
     }
 
-    suspend fun sendScalyrLogToServer(config: ScalyrConfig, logs: List<Logger>, scalyrEventList: List<ScalyrEvent>): Boolean {
+    suspend fun sendScalyrLogToServer(
+        config: ScalyrConfig,
+        logs: List<Logger>,
+        scalyrEventList: List<ScalyrEvent>
+    ): Boolean {
         if (logs.isEmpty()) {
             return true
         }
@@ -123,18 +147,25 @@ class LoggerRepository(private val logDao: LoggerDao,
             val obj = JSONObject(message)
             val tagValue = obj.getString(Constants.TAG_LOG) ?: ""
             val priorityValue = obj.getString(Constants.PRIORITY_LOG).toIntOrNull()
-                    ?: 0
+                ?: 0
             val priorityName = when (priorityValue) {
                 Constants.SEVERITY_HIGH -> LoggerReporting.P1
                 Constants.SEVERITY_MEDIUM -> LoggerReporting.P2
+                Constants.SEVERITY_SF -> LoggerReporting.SF
                 else -> ""
             }
-            val tagMapsValue = StringBuilder(priorityName).append(LoggerReporting.DELIMITER_TAG_MAPS).append(tagValue).toString()
+            val tagMapsValue =
+                StringBuilder(priorityName).append(LoggerReporting.DELIMITER_TAG_MAPS)
+                    .append(tagValue).toString()
             LoggerReporting.getInstance().tagMapsScalyr[tagMapsValue]?.let {
                 scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncate(message))))
             }
             LoggerReporting.getInstance().tagMapsNewRelic[tagMapsValue]?.let {
-                messageNewRelicList.add(addEventNewRelic(message))
+                if (priorityName == LoggerReporting.SF) {
+                    messageNewRelicList.add(addEventNewRelicSF(message))
+                } else {
+                    messageNewRelicList.add(addEventNewRelic(message))
+                }
             }
             LoggerReporting.getInstance().tagMapsEmbrace[tagMapsValue]?.let {
                 messageEmbraceList.add(EmbraceBody(tagValue, jsonToMapEmbrace(message)))
@@ -143,7 +174,11 @@ class LoggerRepository(private val logDao: LoggerDao,
         return LoggerCloudModelWrapper(scalyrEventList, messageNewRelicList, messageEmbraceList)
     }
 
-    suspend fun sendNewRelicLogToServer(config: NewRelicConfig, logs: List<Logger>, messageList: List<String>): Boolean {
+    private suspend fun sendNewRelicLogToServer(
+        config: NewRelicConfig,
+        logs: List<Logger>,
+        messageList: List<String>
+    ): Boolean {
         if (logs.isEmpty()) {
             return false
         }
@@ -151,7 +186,10 @@ class LoggerRepository(private val logDao: LoggerDao,
         return loggerCloudNewRelicImpl.sendToLogServer(config, messageList)
     }
 
-    suspend fun sendEmbraceLogToServer(logs: List<Logger>, embraceBodyList: List<EmbraceBody>): Boolean {
+    private suspend fun sendEmbraceLogToServer(
+        logs: List<Logger>,
+        embraceBodyList: List<EmbraceBody>
+    ): Boolean {
         if (logs.isEmpty()) {
             return false
         }
@@ -161,6 +199,13 @@ class LoggerRepository(private val logDao: LoggerDao,
     private fun addEventNewRelic(message: String): String {
         val gson = Gson().fromJson(message, JsonObject::class.java)
         gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_NEW_RELIC)
+        return gson.toString()
+    }
+
+    private fun addEventNewRelicSF(message: String): String {
+        val gson = Gson().fromJson(message, JsonObject::class.java)
+        gson.addProperty(Constants.EVENT_TYPE_NEW_RELIC, Constants.EVENT_ANDROID_SF_NEW_RELIC)
+        gson.remove(Constants.PRIORITY_LOG)
         return gson.toString()
     }
 
