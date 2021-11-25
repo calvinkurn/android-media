@@ -19,14 +19,6 @@ class ChatRoomCassavaTest : TopchatRoomTest() {
     @get:Rule
     var cassavaTestRule = CassavaTestRule(true, true)
 
-    private val gtmLogDbSource = GtmLogDBSource(context)
-
-    @Before
-    override fun before() {
-        super.before()
-        gtmLogDbSource.deleteAll().subscribe()
-    }
-
     @Test
     fun chat_follow_shop_tracker() {
         // Given
