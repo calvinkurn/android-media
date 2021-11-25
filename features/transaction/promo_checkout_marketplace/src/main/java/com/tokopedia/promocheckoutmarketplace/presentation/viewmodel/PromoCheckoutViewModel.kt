@@ -455,8 +455,14 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
             couponList.add(eligibilityHeader)
 
+            // Initialize promo recommendation
             if (eligibilityHeader.uiState.isEnabled) {
-                initPromoRecommendation(response)
+                val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
+                if (promoRecommendation.codes.isNotEmpty()) {
+                    val promoRecommendationUiModel = uiModelMapper.mapPromoRecommendationUiModel(response.couponListRecommendation)
+                    _promoRecommendationUiModel.value = promoRecommendationUiModel
+                    couponList.add(promoRecommendationUiModel)
+                }
             }
 
             // Initialize promo list header
@@ -542,14 +548,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         // Initialize promo input model
         val promoInputUiModel = uiModelMapper.mapPromoInputUiModel()
         _promoInputUiModel.value = promoInputUiModel
-    }
-
-    private fun initPromoRecommendation(response: CouponListRecommendationResponse) {
-        // Initialize promo recommendation
-        val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
-        if (promoRecommendation.codes.isNotEmpty()) {
-            _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(response.couponListRecommendation)
-        }
     }
 
     private fun updateRecommendationState() {
