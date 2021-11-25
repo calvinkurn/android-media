@@ -111,7 +111,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         scrollToPosition: Int = 0
     ) {
         try {
-            widgetMetadata = RecomWidgetMetadata(
+            widgetMetadata = widgetMetadata.copy(
                 adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition
             )
@@ -151,8 +151,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isTokonow: Boolean = false
     ) {
         try {
-            widgetMetadata = RecomWidgetMetadata(
-                adapterPosition = adapterPosition,
+            widgetMetadata = widgetMetadata.copy(adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition,
                 pageName = pageName,
                 isForceRefresh = isForceRefresh,
@@ -179,6 +178,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             RecommendationWidget(title = tempHeaderName),
             null
         )
+        recyclerView.gone()
         itemView.loadingRecom.visible()
     }
 
@@ -424,6 +424,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         getMiniCartData()
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
+            recyclerView.gone()
             itemView.loadingRecom.visible()
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
@@ -433,6 +434,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 isTokonow = isTokonow
             )
         } else {
+            recyclerView.visible()
             itemView.loadingRecom.gone()
         }
     }
@@ -443,9 +445,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         initVar()
         doActionBasedOnRecomState(carouselData.state,
             onLoad = {
+                recyclerView.gone()
                 itemView.loadingRecom.visible()
             },
             onReady = {
+                recyclerView.visible()
                 itemView.loadingRecom.gone()
                 impressChannel(carouselData)
                 setHeaderComponent(carouselData)
@@ -453,6 +457,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 scrollCarousel(widgetMetadata.scrollToPosition)
             },
             onFailed = {
+                recyclerView.gone()
                 itemView.loadingRecom.gone()
             }
         )
