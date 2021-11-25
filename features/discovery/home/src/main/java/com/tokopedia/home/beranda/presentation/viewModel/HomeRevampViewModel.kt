@@ -11,6 +11,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
+import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataResponse
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetDataUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
 import com.tokopedia.config.GlobalConfig
@@ -79,6 +83,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
@@ -122,7 +128,9 @@ open class HomeRevampViewModel @Inject constructor(
     private val homeDispatcher: Lazy<CoroutineDispatchers>,
     private val playWidgetTools: Lazy<PlayWidgetTools>,
     private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
-    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>
+    private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
+    private val getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase,
+    private val deleteCMHomeWidgetDataUseCase: DeleteCMHomeWidgetDataUseCase
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -262,6 +270,8 @@ open class HomeRevampViewModel @Inject constructor(
     private var getTopAdsBannerDataJob: Job? = null
     private var getTabRecommendationJob: Job? = null
     private var getHeaderDataJob: Job? = null
+    private var getCMHomeWidgetDataJob: Job? = null
+    private var getCMHomeWidgetDeleteDataJob: Job? = null
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -1639,6 +1649,7 @@ open class HomeRevampViewModel @Inject constructor(
         getTopAdsBannerData()
         getRechargeRecommendation()
         getSalamWidget()
+        getCMHomeWidgetData()
     }
 
     private fun getTopAdsBannerData() {
@@ -1663,6 +1674,49 @@ open class HomeRevampViewModel @Inject constructor(
             }){
                 it.printStackTrace()
                 deleteWidget(topAdsModel, index)
+            }
+        }
+    }
+
+    private fun getCMHomeWidgetData() {
+        if (getCMHomeWidgetDataJob?.isActive == true) return
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            getCMHomeWidgetDataJob = launchCatchError(coroutineContext, {
+                getCMHomeWidgetDataUseCase.getCMHomeWidgetData(
+                    {
+                        val newCMHomeWidgetDataModel =
+                            cmHomeWidgetDataModel.copy(cmHomeWidgetData = it.cmHomeWidgetData)
+                        updateWidget(newCMHomeWidgetDataModel, index)
+                    }, {
+                        it.printStackTrace()
+                        deleteWidget(cmHomeWidgetDataModel, index)
+                    })
+            }) {
+                it.printStackTrace()
+                deleteWidget(cmHomeWidgetDataModel, index)
+            }
+        }
+    }
+
+    fun deleteCMHomeWidgetData() {
+        if (getCMHomeWidgetDeleteDataJob?.isActive == true) return
+        findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
+            getCMHomeWidgetDeleteDataJob = launchCatchError(coroutineContext, {
+                cmHomeWidgetDataModel.cmHomeWidgetData?.let { it ->
+                    deleteCMHomeWidgetDataUseCase.deleteCMHomeWidgetData(
+                        {
+                            deleteWidget(cmHomeWidgetDataModel, index)
+                        }, {
+                            it.printStackTrace()
+                            val newCMHomeWidgetDataModel = cmHomeWidgetDataModel.copy()
+                            updateWidget(newCMHomeWidgetDataModel, index)
+                        }, it.parentId, it.campaignId
+                    )
+                }
+            }) {
+                it.printStackTrace()
+                val newCMHomeWidgetDataModel = cmHomeWidgetDataModel.copy()
+                updateWidget(newCMHomeWidgetDataModel, index)
             }
         }
     }

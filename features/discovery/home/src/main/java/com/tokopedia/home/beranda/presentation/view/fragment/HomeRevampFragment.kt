@@ -47,6 +47,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_REQUEST_CODE
@@ -200,7 +201,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         FramePerformanceIndexInterface,
         HomeAutoRefreshListener,
         PlayWidgetListener,
-        RecommendationWidgetListener {
+        RecommendationWidgetListener, CMHomeWidgetCloseClickListener {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -1910,7 +1911,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             bannerCarouselCallback,
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
-            CampaignWidgetComponentCallback(context, this)
+            CampaignWidgetComponentCallback(context, this),
+                    this
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -3214,5 +3216,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             it.startActivities(arrayOf(intentHome, intentNewUser))
             it.finish()
         }
+    }
+
+    override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {
+        getHomeViewModel().deleteCMHomeWidgetData()
     }
 }

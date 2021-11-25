@@ -1,6 +1,7 @@
 package com.tokopedia.cmhomewidget.presentation.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -68,7 +69,7 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
         dummyTestCMHomeWidgetViewModel.getCMHomeWidgetDataLiveData.observe(this, { result ->
             when (result) {
                 is Success -> {
-                    result.data.cmHomeWidgetData?.let { cmHomeWidget.onCMHomeWidgetDataReceived(it) }
+                    result.data.cmHomeWidgetData?.let { cmHomeWidget.loadCMHomeWidgetData(it) }
                         ?: hideCMHomeWidget()
                 }
                 is Fail -> {
@@ -98,11 +99,11 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
     }
 
     private fun hideCMHomeWidget() {
-        cmHomeWidget.hide()
+        cmHomeWidget.visibility = View.GONE
     }
 
     private fun showCMHomeWidget() {
-        cmHomeWidget.show()
+        cmHomeWidget.visibility = View.VISIBLE
     }
 
     override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {

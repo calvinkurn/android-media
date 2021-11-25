@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cmhomewidget.R
-import com.tokopedia.cmhomewidget.communicator.CMHomeWidgetCommunicator
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetBinding
 import com.tokopedia.cmhomewidget.di.component.DaggerCMHomeWidgetComponent
 import com.tokopedia.cmhomewidget.di.module.CMHomeWidgetModule
@@ -27,8 +26,8 @@ class CMHomeWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     @AttrRes defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr), CMHomeWidgetCommunicator,
-    CMHomeWidgetProductCardListener, CMHomeWidgetViewAllCardListener {
+) : BaseCustomView(context, attrs, defStyleAttr), CMHomeWidgetProductCardListener,
+    CMHomeWidgetViewAllCardListener {
 
     @Inject
     lateinit var adapter: dagger.Lazy<CMHomeWidgetAdapter>
@@ -88,7 +87,7 @@ class CMHomeWidget @JvmOverloads constructor(
     private fun getShimmerDataList() =
         listOf(CMHomeWidgetProductCardShimmerData(), CMHomeWidgetViewAllCardShimmerData())
 
-    override fun onCMHomeWidgetDataReceived(cmHomeWidgetData: CMHomeWidgetData) {
+    fun loadCMHomeWidgetData(cmHomeWidgetData: CMHomeWidgetData) {
         this.cmHomeWidgetData = cmHomeWidgetData
         setUpUi()
     }
@@ -114,15 +113,7 @@ class CMHomeWidget @JvmOverloads constructor(
         if (itemsList.isNotEmpty()) adapter.get().loadData(itemsList)
     }
 
-    override fun hide() {
-        this.visibility = View.GONE
-    }
-
-    override fun show() {
-        this.visibility = View.VISIBLE
-    }
-
-    override fun setOnCMHomeWidgetCloseClickListener(cmHomeWidgetCloseClickListener: CMHomeWidgetCloseClickListener) {
+    fun setOnCMHomeWidgetCloseClickListener(cmHomeWidgetCloseClickListener: CMHomeWidgetCloseClickListener) {
         binding.ivCmHomeWidgetClose.setOnClickListener {
             if (this::cmHomeWidgetData.isInitialized) {
                 cmHomeWidgetCloseClickListener.onCMHomeWidgetDismissClick(
@@ -133,7 +124,7 @@ class CMHomeWidget @JvmOverloads constructor(
         }
     }
 
-    override fun removeCMHomeWidgetDismissListener() {
+    fun removeCMHomeWidgetDismissListener() {
         binding.ivCmHomeWidgetClose.setOnClickListener(null)
     }
 

@@ -186,6 +186,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
+                DynamicHomeChannel.Channels.LAYOUT_HOME_TODO -> {
+                    createHomeToDoWidget(channel)
+                }
             }
         }
         if (addLoadingMore) {
@@ -585,5 +588,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
         val listOfRegisteredPlayWidget = visitableList.filterIsInstance(CarouselPlayWidgetDataModel::class.java)
         if (listOfRegisteredPlayWidget.isEmpty()) visitableList.add(dataModel)
+    }
+
+    private fun createHomeToDoWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(CMHomeWidgetDataModel(null, channel))
     }
 }
