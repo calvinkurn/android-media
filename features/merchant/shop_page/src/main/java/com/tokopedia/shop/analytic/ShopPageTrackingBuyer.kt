@@ -941,10 +941,9 @@ class ShopPageTrackingBuyer(
     }
 
     fun clickApplyFilter(
-            selectedSortName: String,
-            selectedFilterMap: Map<String, String>,
-            shopId: String,
-            userId: String
+        selectedSortName: String,
+        selectedFilterMap: Map<String, String>,
+        userId: String
     ) {
         var eventLabel = ShopPageTrackingConstant.LABEL_CLICK_APPLY_FILTER_CHIP
         if(selectedSortName.isNotBlank()){
@@ -966,7 +965,6 @@ class ShopPageTrackingBuyer(
                 ShopPageTrackingConstant.EVENT_LABEL to eventLabel,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.PHYSICAL_GOODS,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
-                ShopPageTrackingConstant.SHOP_ID to shopId,
                 ShopPageTrackingConstant.USER_ID to userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)

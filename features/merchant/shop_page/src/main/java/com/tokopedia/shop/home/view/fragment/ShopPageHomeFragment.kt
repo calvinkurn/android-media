@@ -926,9 +926,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun setShopHomeWidgetLayoutData(data: ShopPageHomeWidgetLayoutUiModel) {
         shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
-                data.masterLayoutId,
-                shopId,
-                userId
+            data.masterLayoutId,
+            shopId
         )
         listWidgetLayout = data.listWidgetLayout.toMutableList()
         val shopHomeWidgetContentData = ShopPageHomeMapper.mapShopHomeWidgetLayoutToListShopHomeWidget(

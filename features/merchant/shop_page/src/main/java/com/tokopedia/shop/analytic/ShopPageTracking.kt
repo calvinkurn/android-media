@@ -119,16 +119,14 @@ open class ShopPageTracking(
     }
 
     fun sendScreenShopPage(
-            shopId: String,
-            shopType: String,
-            isLogin: Boolean,
-            selectedTabName: String
+        shopId: String,
+        isLogin: Boolean,
+        selectedTabName: String
     ) {
         val screenName = joinDash(SHOPPAGE, shopId)
         val loginNonLoginEventValue = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
         val pageSource = String.format(ShopPageTrackingConstant.FIRST_LANDING_PAGE, selectedTabName)
         val customDimension: MutableMap<String, String> = HashMap()
-        customDimension[ShopPageTrackingConstant.SHOP_TYPE] = shopType
         customDimension[ShopPageTrackingConstant.PAGE_TYPE] = SHOPPAGE
         customDimension[ShopPageTrackingConstant.BUSINESS_UNIT] = ShopPageTrackingConstant.PHYSICAL_GOODS
         customDimension[ShopPageTrackingConstant.CURRENT_SITE] = ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE

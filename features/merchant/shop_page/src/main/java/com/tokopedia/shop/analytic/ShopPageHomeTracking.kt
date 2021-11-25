@@ -22,9 +22,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CLOSE_TNC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DEACTIVATE_REMINDER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_CHIP
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_PRICE
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_RATING
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_SHORT_BY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW_UNFOLLOW_TNC_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OCC_RECOMMENDATION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OK_TOASTER_NOTIFY_ME
@@ -1840,9 +1837,8 @@ class ShopPageHomeTracking(
     }
 
     fun sendUserViewHomeTabWidgetTracker(
-            masterLayoutId: String,
-            shopId: String,
-            userId: String
+        masterLayoutId: String,
+        shopId: String
     ) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 EVENT to VIEW_SHOP_PAGE_IRIS,
@@ -1851,8 +1847,7 @@ class ShopPageHomeTracking(
                 EVENT_LABEL to masterLayoutId,
                 BUSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-                SHOP_ID to shopId,
-                USER_ID to userId
+                SHOP_ID to shopId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }

@@ -1582,7 +1582,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
         if(!isOwner) {
-            shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, shopId, userId)
+            shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, userId)
         }
     }
 

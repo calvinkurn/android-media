@@ -1424,7 +1424,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun applySortFilterTracking(selectedSortName: String, selectedFilterMap: Map<String, String>) {
         if(!isMyShop) {
-            shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, shopId.orEmpty(), userId)
+            shopPageTracking?.clickApplyFilter(selectedSortName, selectedFilterMap, userId)
         }
     }
 

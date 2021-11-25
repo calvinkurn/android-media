@@ -885,13 +885,10 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
-        if(isOwner) {
-            shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
-                    data.masterLayoutId.toString(),
-                    shopId,
-                    userId
-            )
-        }
+        shopPageHomeTracking.sendUserViewHomeTabWidgetTracker(
+            data.masterLayoutId.toString(),
+            shopId
+        )
         shopHomeAdapter.hideLoading()
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
         checkProductWidgetWishListStatus(data)

@@ -6,8 +6,10 @@ package com.tokopedia.shop.analytic
 object ShopPageTrackingConstant {
     const val FEATURED_PRODUCT = "Produk Unggulan"
     const val HIGHLIGHT_SOLD_PRODUCT = "Produk Terjual"
+    const val SCREEN_NAME = "screenName"
 
     //event
+    const val EVENT_OPEN_SCREEN = "openScreen"
     const val CLICK_SHOP_PAGE = "clickShopPage"
     const val CLICK_SHOP_SETTING = "clickShopSetting"
     const val CLICK_PROFILE = "clickProfile"
@@ -111,7 +113,7 @@ object ShopPageTrackingConstant {
     const val ACTION_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header"
     const val ACTION_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller"
     const val CLICK_SHARE_BUTTON = "click - share button"
-    const val CLICK_GLOBAL_HEADER = "click - global header"
+    const val CLICK_GLOBAL_HEADER = "click global header"
     const val CLICK_CLOSE_SHARE_BOTTOM_SHEET = "click - close share bottom sheet"
     const val CLICK_CLOSE_SCREENSHOT_SHARE_BOTTOM_SHEET = "click - close screenshot share bottom sheet"
     const val CLICK_SHARE_BOTTOM_SHEET_OPTION = "click - sharing channel"

@@ -168,9 +168,7 @@ class ShopPageShowcaseTracking(
                 EVENT_LABEL to eventLabel,
                 BUSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-                PAGE_TYPE to SHOPPAGE,
                 SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
-                SHOP_TYPE to customDimensionShopPage.shopType.orEmpty(),
                 USER_ID to userId
         )
         ecommerceMap?.let {
