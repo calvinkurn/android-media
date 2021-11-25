@@ -5,5 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-class OvoP2pTransferThankyouBase(@SerializedName("goalP2PThanks")
-                                 var ovoP2pTransferThankyou: OvoP2pTransferThankyou = OvoP2pTransferThankyou()) : Parcelable
+class OvoP2pTransferThankyouBase(
+    @SerializedName("goalP2PThanks")
+    var ovoP2pTransferThankyou: OvoP2pTransferThankyou? = null
+) : Parcelable

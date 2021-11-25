@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -26,6 +26,7 @@ import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
 import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
+import javax.inject.Inject
 
 class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
@@ -40,13 +41,22 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     private lateinit var backToApp: Button
     private lateinit var infoIcon: ImageView
     private var transferId: String = ""
-    private lateinit var txnThankYouPageVM: OvoP2pTxnThankYouOvoUsrVM
     private lateinit var thankYouDataCntnr: OvoP2pTransferThankyouBase
     private lateinit var errorSnackbar: Snackbar
 
 
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val ovoP2pTxnThankYouOvoUsrVM: OvoP2pTxnThankYouOvoUsrVM by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider =
+            ViewModelProvider(requireActivity(), viewModelFactory.get())
+        viewModelProvider.get(OvoP2pTxnThankYouOvoUsrVM::class.java)
+    }
+
+
     override fun initInjector() {
-        getComponent<OvoP2pTransferComponent>(OvoP2pTransferComponent::class.java).inject(this)
+        getComponent(OvoP2pTransferComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String {
@@ -80,9 +90,9 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     private fun setRcvrUserData() {
-        thankYouDataCntnr.ovoP2pTransferThankyou.destination.let {
-            rcvrName.text = it.name
-            var number = it.phone
+        thankYouDataCntnr.ovoP2pTransferThankyou?.destination.let {
+            rcvrName.text = it?.name
+            var number = it?.phone
             if (!TextUtils.isEmpty(number)) {
                 number = Constants.Prefixes.OVO + number
             } else {
@@ -98,10 +108,9 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         if (!TextUtils.isEmpty(transferId)) {
             var dataMap: HashMap<String, Any> = HashMap()
             dataMap.put(Constants.Keys.TRANSFER_ID, transferId.toInt())
-            context?.let {
-                (activity as LoaderUiListener).showProgressDialog()
-                txnThankYouPageVM.makeThankyouDataCall(it, dataMap)
-            }
+            (activity as LoaderUiListener).showProgressDialog()
+            ovoP2pTxnThankYouOvoUsrVM.makeThankyouDataCall(dataMap)
+
         }
     }
 
@@ -109,14 +118,12 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
         transferId = arguments?.getString(Constants.Keys.TRANSFER_ID) ?: ""
     }
 
-    private fun createAndSubscribeToThankYouVM() {
-        if (!::txnThankYouPageVM.isInitialized) {
-            if (activity != null) {
-                txnThankYouPageVM = ViewModelProviders.of(this.activity!!).get(OvoP2pTxnThankYouOvoUsrVM::class.java)
-                txnThankYouPageVM.transferThankyouLiveData.observe(this, getThankYouObsvr(activity as LoaderUiListener))
-            }
-        }
-    }
+    private fun createAndSubscribeToThankYouVM() =
+        ovoP2pTxnThankYouOvoUsrVM.transferThankyouLiveData.observe(
+            viewLifecycleOwner,
+            getThankYouObsvr(activity as LoaderUiListener)
+        )
+
 
     private fun getThankYouObsvr(loaderUiListener: LoaderUiListener): Observer<ThankYouPageState> {
         return Observer {
@@ -151,18 +158,19 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
 
     private fun assignThankYouData(thankYouData: OvoP2pTransferThankyouBase) {
         thankYouDataCntnr = thankYouData
-        date.text = thankYouData.ovoP2pTransferThankyou.trnsfrDate
-        val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(thankYouData.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
-        trnsfrAmt.text = rpFormattedString.formattedString
-        var sourceName = thankYouData.ovoP2pTransferThankyou.source.name
+        date.text = thankYouData.ovoP2pTransferThankyou?.trnsfrDate
+        val rpFormattedString = thankYouData.ovoP2pTransferThankyou?.amt?.toDouble()
+            ?.let { CurrencyFormatUtil.getThousandSeparatorString(it, false, 0) }
+        trnsfrAmt.text = rpFormattedString?.formattedString
+        var sourceName = thankYouData.ovoP2pTransferThankyou?.source?.name
         if (TextUtils.isEmpty(sourceName)) {
             sourceName = context?.let {
                 OvoP2pUtil.getUserName(it)
             }.toString()
-            thankYouDataCntnr.ovoP2pTransferThankyou.source.name = sourceName
+            thankYouDataCntnr.ovoP2pTransferThankyou?.source?.name = sourceName
         }
         sndrName.text = sourceName
-        sndrNum.text = Constants.Prefixes.OVO + thankYouData.ovoP2pTransferThankyou.source.phone
+        sndrNum.text = Constants.Prefixes.OVO + thankYouData.ovoP2pTransferThankyou?.source?.phone
         setRcvrUserData()
     }
 
@@ -201,6 +209,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
     }
 
     companion object {
+        const val GENERAL_ERROR = "Ada yang salah. Silakan coba lagi"
         fun newInstance(): TxnSucsOvoUser {
             return TxnSucsOvoUser()
         }

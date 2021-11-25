@@ -10,17 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
-import com.tokopedia.ovop2p.domain.model.OvoP2pTransferThankyouBase
 import com.tokopedia.user.session.UserSession
-import rx.Subscriber
 import java.util.*
 import java.util.regex.Pattern
 
@@ -46,17 +40,6 @@ object OvoP2pUtil {
         dialogBuilder.setView(dialogView)
         return dialogBuilder
     }
-
-
-
-    fun executeOvoP2pTransferThankyou(context: Context, subscriber: Subscriber<GraphqlResponse>, gqlMutationDataMap: HashMap<String, Any>) {
-        val ovoP2pTransferThankyouUseCase = GraphqlUseCase()
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.ovo_p2p_thank_you_page),
-                OvoP2pTransferThankyouBase::class.java, gqlMutationDataMap)
-        ovoP2pTransferThankyouUseCase.addRequest(graphqlRequest)
-        ovoP2pTransferThankyouUseCase.execute(subscriber)
-    }
-
 
 
     fun extractNumbersFromString(srcStr: String): String {
