@@ -1,19 +1,17 @@
 package com.tokopedia.homecredit.view.fragment
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.annotation.TargetApi
-import android.app.Activity
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Build
+import android.os.Bundle
 import android.view.View
-import android.widget.*
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.CameraOptions
@@ -23,17 +21,18 @@ import com.otaliastudios.cameraview.controls.Flash
 import com.otaliastudios.cameraview.size.Size
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.homecredit.R
 import com.tokopedia.homecredit.di.component.HomeCreditComponent
 import com.tokopedia.homecredit.domain.model.ImageDetail
 import com.tokopedia.homecredit.viewModel.HomeCreditViewModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.unifyprinciples.R
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.util.*
 import javax.inject.Inject
 
 open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
+
     var cameraView: CameraView? = null
     var reverseCamera: View? = null
     var cameraListener: CameraListener? = null
@@ -46,28 +45,38 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     var buttonCancel: IconUnify? = null
     var imageCaptured: ImageView? = null
     var pictureActionLL: LinearLayout? = null
-    var finalCameraResultFilePath: String? = null
-
+    var cameraActionsRL: RelativeLayout? = null
+    var loaderDialog : LoaderDialog?= null
 
     protected var cameraOverlayImage: ImageView? = null
     protected var headerText: TextView? = null
-    var cameraActionsRL: RelativeLayout? = null
 
-    @JvmField
-    @Inject
-    var viewModelFactory: ViewModelProvider.Factory? = null
-    var homeCreditViewModel: HomeCreditViewModel? = null
+    var finalCameraResultFilePath: String? = null
+
     private var mCapturingPicture = false
     private var flashIndex = 0
     private var supportedFlashList: MutableList<Flash>? = null
     private var mCaptureNativeSize: Size? = null
-    private var progressDialog: ProgressDialog? = null
+
+    @Inject
+    lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+
+    private val homeCreditViewModel: HomeCreditViewModel? by lazy(LazyThreadSafetyMode.NONE) {
+        val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
+        viewModelProvider.get(HomeCreditViewModel::class.java)
+    }
+
     override fun initInjector() {
         getComponent(HomeCreditComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String? {
         return null
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
     }
 
     fun initialFlash() {
@@ -104,31 +113,23 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         setUIFlashCamera(flash.ordinal)
     }
 
-    @SuppressLint("ResourcePackage")
     private fun setUIFlashCamera(flashEnum: Int) {
-        val colorWhite = ContextCompat.getColor(requireContext(), R.color.Unify_Static_White)
-        if (flashEnum == Flash.AUTO.ordinal) {
-            flashControl?.setImageDrawable(
-                MethodChecker.getDrawable(
-                    activity, com.tokopedia.imagepicker.common.R.drawable.ic_auto_flash
+        val colorWhite = ContextCompat.getColor(requireContext(),
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White)
+        when (flashEnum) {
+            Flash.AUTO.ordinal -> {
+                flashControl?.setImageDrawable(MethodChecker.getDrawable(activity,
+                        R.drawable.home_credit_ic_auto_flash))
+            }
+            Flash.ON.ordinal -> {
+                flashControl?.setImage(IconUnify.FLASH_ON, colorWhite,
+                        colorWhite, colorWhite, colorWhite)
+            }
+            Flash.OFF.ordinal -> {
+                flashControl?.setImage(IconUnify.FLASH_OFF, colorWhite,
+                        colorWhite, colorWhite, colorWhite
                 )
-            )
-        } else if (flashEnum == Flash.ON.ordinal) {
-            flashControl?.setImage(
-                IconUnify.FLASH_ON,
-                colorWhite,
-                colorWhite,
-                colorWhite,
-                colorWhite
-            )
-        } else if (flashEnum == Flash.OFF.ordinal) {
-            flashControl?.setImage(
-                IconUnify.FLASH_OFF,
-                colorWhite,
-                colorWhite,
-                colorWhite,
-                colorWhite
-            )
+            }
         }
     }
 
@@ -141,9 +142,21 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     }
 
     fun initListeners() {
-        homeCreditViewModel = ViewModelProviders.of(requireActivity(), viewModelFactory).get(
-            HomeCreditViewModel::class.java
-        )
+        initCameraListener()
+        captureImage?.setOnClickListener { capturePicture() }
+        flashControl?.setOnClickListener {
+            if (supportedFlashList != null && supportedFlashList?.size ?: 0 > 0) {
+                flashIndex = (flashIndex + 1) % supportedFlashList?.size!!
+                setCameraFlash()
+            }
+        }
+        reverseCamera?.setOnClickListener { toggleCamera() }
+        retakePhoto?.setOnClickListener { initCameraProp() }
+        buttonCancel?.setOnClickListener { requireActivity().finish() }
+        cameraView?.addCameraListener(cameraListener as CameraListener)
+    }
+
+    private fun initCameraListener(){
         cameraListener = object : CameraListener() {
             override fun onCameraOpened(options: CameraOptions) {
                 initialFlash()
@@ -163,38 +176,17 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
                 }
             }
         }
-        captureImage?.setOnClickListener { v: View? -> capturePicture() }
-        flashControl?.setOnClickListener { v: View? ->
-            if (supportedFlashList != null && supportedFlashList?.size ?: 0 > 0) {
-                flashIndex = (flashIndex + 1) % supportedFlashList?.size!!
-                setCameraFlash()
-            }
-        }
-        reverseCamera?.setOnClickListener { v: View? -> toggleCamera() }
-        retakePhoto?.setOnClickListener { v: View? -> initCameraProp() }
-        buttonCancel?.setOnClickListener { v: View? -> requireActivity().finish() }
-        cameraView?.addCameraListener(cameraListener as CameraListener)
-        progressDialog = ProgressDialog(activity)
-        progressDialog?.setCancelable(false)
-        progressDialog?.setMessage(getString(com.tokopedia.homecredit.R.string.title_loading))
     }
 
     private fun generateImage(imageByte: ByteArray) {
         if (mCaptureNativeSize == null) {
             mCaptureNativeSize = cameraView?.pictureSize
         }
-
-        homeCreditViewModel?.computeImageArray(
-            imageByte, mCaptureNativeSize
-        )
-
-        observeViewModel()
-        reset()
+        homeCreditViewModel?.computeImageArray(imageByte, mCaptureNativeSize)
     }
 
     private fun observeViewModel() {
-        homeCreditViewModel?.imageDetailLiveData?.observe(
-            this,
+        homeCreditViewModel?.imageDetailLiveData?.observe(viewLifecycleOwner,
             { imageDetail: Result<ImageDetail>? ->
                 captureImage?.isClickable = true
                 when (imageDetail) {
@@ -203,8 +195,10 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
                         loadImageFromBitmap(imageCaptured, imageDetail.data)
                     }
 
-
+                    else ->{}
                 }
+                reset()
+                hideLoading()
                 hideCameraProp()
             })
     }
@@ -233,7 +227,6 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     private fun reset() {
         mCapturingPicture = false
         mCaptureNativeSize = null
-        hideLoading()
     }
 
     private fun capturePicture() {
@@ -248,14 +241,18 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun showLoading() {
-        if (isAdded) {
-            progressDialog?.show()
+        if (isAdded && context!= null) {
+            loaderDialog = LoaderDialog(requireContext()).apply {
+                setLoadingText(getString(R.string.title_loading))
+            }
+            loaderDialog?.show()
         }
     }
 
     private fun hideLoading() {
         if (isAdded) {
-            progressDialog?.dismiss()
+            loaderDialog?.dialog?.dismiss()
+            loaderDialog = null
         }
     }
 
@@ -274,21 +271,12 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         pictureActionLL?.visibility = View.VISIBLE
     }
 
-    @SuppressLint("ObsoleteSdkInt")
-    fun onVisible() {
-        if (requireActivity().isFinishing) {
+    private fun onVisible() {
+        if (requireActivity().isFinishing)
             return
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            val permission = Manifest.permission.CAMERA
-            if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
-                    permission
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                startCamera()
-            }
-        } else {
+        val permission = Manifest.permission.CAMERA
+        if (ActivityCompat.checkSelfPermission(requireContext(), permission)
+                == PackageManager.PERMISSION_GRANTED) {
             startCamera()
         }
     }
@@ -300,19 +288,6 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
             cameraView?.open()
         } catch (e: Throwable) {
             e.printStackTrace()
-        }
-    }
-
-    @TargetApi(23)
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        onAttachActivity(context)
-    }
-
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            onAttachActivity(activity)
         }
     }
 
@@ -333,6 +308,5 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
         cameraView?.close()
         super.onDestroy()
     }
-
 
 }
