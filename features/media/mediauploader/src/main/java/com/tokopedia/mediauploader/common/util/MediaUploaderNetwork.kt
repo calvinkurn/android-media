@@ -4,7 +4,6 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.mediauploader.common.di.MediaHttpLoggingInterceptor
 import com.tokopedia.mediauploader.common.util.NetworkTimeOutInterceptor.Companion.DEFAULT_TIMEOUT
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
