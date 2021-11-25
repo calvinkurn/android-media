@@ -6,8 +6,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.recommendation_widget_common.R
-import kotlinx.android.synthetic.main.view_specs.view.*
 
 class SpecsComparedView: FrameLayout  {
     constructor(context: Context) : super(context)
@@ -24,9 +24,10 @@ class SpecsComparedView: FrameLayout  {
 
     fun setSpecsInfo(specsListModel: SpecsListModel) {
         val layoutManager = LinearLayoutManager(context)
-        rootView.rv_specs.layoutManager = layoutManager
-        rootView.rv_specs.adapter =
+        val rv_specs = rootView.findViewById<RecyclerView>(R.id.rv_specs)
+        rv_specs.layoutManager = layoutManager
+        rv_specs.adapter =
             SpecsComparedAdapter(specsListModel)
-        rootView.rv_specs.suppressLayout(true)
+        rv_specs.suppressLayout(true)
     }
 }

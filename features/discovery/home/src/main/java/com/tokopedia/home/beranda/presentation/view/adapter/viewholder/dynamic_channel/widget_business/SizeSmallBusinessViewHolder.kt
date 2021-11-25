@@ -4,6 +4,7 @@ import android.graphics.Paint
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -15,15 +16,19 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
-import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
-import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
-import kotlinx.android.synthetic.main.layout_template_small_business.view.*
 
 open class SizeSmallBusinessViewHolder (
         itemView: View,
         private val listener: BusinessUnitItemViewListener
 ) : RecyclerView.ViewHolder(itemView) {
+
+    private var icon: AppCompatImageView = itemView.findViewById(R.id.icon)
+    private var tagLine: TextView? = itemView.findViewById(R.id.tagLine)
+    private var strikeThroughPrice: TextView = itemView.findViewById(R.id.strikeThroughPrice)
+    private var pricePrefix: TextView? = itemView.findViewById(R.id.pricePrefix)
+    private var price: TextView? = itemView.findViewById(R.id.price)
     fun bind(element: BusinessUnitItemDataModel) {
+
         element.content.let {
             renderImage(it)
             renderProduct(it)
@@ -43,7 +48,7 @@ open class SizeSmallBusinessViewHolder (
     }
 
     open fun addImpressionListener(element: BusinessUnitItemDataModel) {
-        itemView.icon.addOnImpressionListener(element as ImpressHolder,
+        icon?.addOnImpressionListener(element as ImpressHolder,
                 object: ViewHintListener {
                     override fun onViewHint() {
                         listener.onImpressed(element, adapterPosition)
@@ -53,23 +58,23 @@ open class SizeSmallBusinessViewHolder (
     }
 
     open fun getProductName(): TextView {
-        return itemView.productName
+        return itemView.findViewById(R.id.productName)
     }
 
     open fun getIcon(): AppCompatImageView {
-        return itemView.icon
+        return icon
     }
 
     open fun getTitle(): TextView {
-        return itemView.title
+        return itemView.findViewById(R.id.title)
     }
 
     open fun getSubtitle(): TextView {
-        return itemView.subtitle
+        return itemView.findViewById(R.id.subtitle)
     }
 
     open fun renderImage(element: HomeWidget.ContentItemTab?) {
-        element?.imageUrl?.let { itemView.icon.loadImage(it) }
+        element?.imageUrl?.let { icon.loadImage(it) }
     }
 
     open fun renderProduct(element: HomeWidget.ContentItemTab?) {
@@ -122,11 +127,11 @@ open class SizeSmallBusinessViewHolder (
 
     open fun renderFooter(element: HomeWidget.ContentItemTab?) {
         if (hasPrice(element) || hasTagLabel(element)) {
-            itemView.footer.visibility = View.VISIBLE
+            itemView.findViewById<ConstraintLayout>(R.id.footer).visibility = View.VISIBLE
             renderLabel(element)
             renderPrice(element)
         } else {
-            itemView.footer.visibility = View.GONE
+            itemView.findViewById<ConstraintLayout>(R.id.footer).visibility = View.GONE
         }
     }
 
@@ -144,67 +149,67 @@ open class SizeSmallBusinessViewHolder (
         if (hasPrice(element)) {
 
             if (element?.pricePrefix.isNullOrEmpty()) {
-                itemView.pricePrefix.visibility = View.GONE
+                pricePrefix?.visibility = View.GONE
             } else {
-                itemView.pricePrefix.visibility = View.VISIBLE
-                itemView.pricePrefix.text = MethodChecker.fromHtml(element?.pricePrefix)
+                pricePrefix?.visibility = View.VISIBLE
+                pricePrefix?.text = MethodChecker.fromHtml(element?.pricePrefix)
             }
 
             if (element?.originalPrice.isNullOrEmpty()) {
-                itemView.strikeThroughPrice.visibility = View.GONE
+                strikeThroughPrice?.visibility = View.GONE
             } else {
-                itemView.strikeThroughPrice.visibility = View.VISIBLE
-                itemView.strikeThroughPrice.text = MethodChecker.fromHtml(element?.originalPrice)
-                itemView.strikeThroughPrice.paintFlags = itemView.strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                strikeThroughPrice?.visibility = View.VISIBLE
+                strikeThroughPrice?.text = MethodChecker.fromHtml(element?.originalPrice)
+                strikeThroughPrice?.paintFlags = strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             }
 
             if (element?.price.isNullOrEmpty()) {
-                itemView.price.visibility = View.GONE
+                price?.visibility = View.GONE
             } else {
-                itemView.price.visibility = View.VISIBLE
-                itemView.price.text = MethodChecker.fromHtml(element?.price)
+                price?.visibility = View.VISIBLE
+                price?.text = MethodChecker.fromHtml(element?.price)
             }
 
         } else {
-            itemView.price.visibility = View.GONE
-            itemView.pricePrefix.visibility = View.GONE
-            itemView.strikeThroughPrice.visibility = View.GONE
+            price?.visibility = View.GONE
+            pricePrefix?.visibility = View.GONE
+            strikeThroughPrice?.visibility = View.GONE
         }
     }
 
     open fun renderLabel(element: HomeWidget.ContentItemTab?) {
         if (hasTagLabel(element)) {
-            itemView.tagLine.visibility = View.VISIBLE
-            itemView.tagLine.text = MethodChecker.fromHtml(element?.tagName)
+            tagLine?.visibility = View.VISIBLE
+            tagLine?.text = MethodChecker.fromHtml(element?.tagName)
             if (element != null) {
                 when (element.tagType) {
                     1 -> {
-                        itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_pink_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
+                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_pink_label)
+                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                     }
                     2 -> {
-                        itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_green_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_green_label)
+                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                     }
                     3 -> {
-                        itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_blue_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
+                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_blue_label)
+                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
                     }
                     4 -> {
-                        itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_yellow_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
+                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_yellow_label)
+                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                     }
                     5 -> {
-                        itemView.tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_grey_label)
-                        itemView.tagLine.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                        tagLine?.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_grey_label)
+                        tagLine?.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     }
                     else -> {
-                        itemView.tagLine.visibility = View.GONE
+                        tagLine?.visibility = View.GONE
                     }
                 }
             }
         } else {
-            itemView.tagLine.visibility = View.GONE
+            tagLine?.visibility = View.GONE
         }
     }
 
