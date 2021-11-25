@@ -8,15 +8,16 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
+import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeyword
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopadsHeadlineKeyword
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.TopAdsInsightRecommKeywordsView
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightKeywordViewModel
 import kotlinx.android.synthetic.main.topads_insight_fragment_keyword.*
+import java.lang.Exception
 
 class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
 
@@ -29,71 +30,52 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
 
         loadRecommendation(0)
         observeLiveData()
-        setAccordion()
-        accordionUnify.onItemClick = { position, isExpanded ->
+        accordionUnify.onItemClick = ::accordionUnifyItemClick
 
-            (activity as? TopAdsDashboardActivity)?.bottomLayout()?.let {
-                it.visibility =
-                    if (isExpanded) {
-                        View.VISIBLE
-                    } else {
-                        View.GONE
-                    }
-            }
-            if (isExpanded) onItemSelected(position, itemsCount[position])
-        }
-    }
-
-    //method to be executed when ad type is changed
-    fun loadRecommendation(type: Int) {
-        viewModel.getKeywords("480396", arrayOf())
+        addAccordion(TopAdsInsightConstants.BID_KEYWORD, dummyResp.suggestion?.recommendedKeyword!!)
+        addAccordion(TopAdsInsightConstants.NEW_KEYWORD, dummyResp.suggestion?.recommendedKeyword!!)
+        addAccordion(TopAdsInsightConstants.NEGATIVE_KEYWORD, dummyResp.suggestion?.recommendedKeyword!!)
     }
 
     private fun observeLiveData() {
         viewModel.recommendedKeyword.observe(viewLifecycleOwner, {
-            //Toast.makeText(requireContext(), it.shopId, Toast.LENGTH_SHORT).show()
+            val x = it.suggestion?.recommendedKeyword?.shopID
         })
     }
 
-    private fun setAccordion() {
-        accordionUnify.addGroup(
-            newAccordion(
-                R.string.topads_insight_recomm_keyword_cost,
-                1,
-                getAccordionSubView(TopAdsInsightConstants.BID_KEYWORD)
-            )
-        )
-
-        accordionUnify.addGroup(
-            newAccordion(
-                R.string.topads_insight_new_recomm_keyword,
-                1,
-                getAccordionSubView(TopAdsInsightConstants.NEW_KEYWORD)
-            )
-        )
-
-        accordionUnify.addGroup(
-            newAccordion(
-                R.string.topads_insight_negative_recomm_keyword,
-                1,
-                getAccordionSubView(TopAdsInsightConstants.NEGATIVE_KEYWORD)
-            )
-        )
+    private fun accordionUnifyItemClick(position: Int, isExpanded: Boolean) {
+        (activity as? TopAdsDashboardActivity)?.bottomLayout()?.let {
+            it.visibility =
+                if (isExpanded) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+        }
+        if (isExpanded) onKeywordSelected(position, itemsCount[position])
     }
 
-    private fun getAccordionSubView(type: Int): TopAdsInsightRecommKeywordsView {
+    private fun addAccordion(type: Int, recommendedKeyword: RecommendedKeyword) {
         val instance = TopAdsInsightRecommKeywordsView.createInstance(
             requireContext(),
             type,
-            TopadsHeadlineKeyword()
+            recommendedKeyword,
+            ::onKeywordSelected
         )
-        instance.itemSelectedListener = { t, c ->
-            onItemSelected(t, c)
-        }
-        return instance
+
+        accordionUnify.addGroup(
+            AccordionDataUnify(
+                getAccordionTitle(type, 2),
+                "",
+                null,
+                null,
+                instance,
+                false
+            )
+        )
     }
 
-    fun onItemSelected(type: Int, count: Int) {
+    private fun onKeywordSelected(type: Int, count: Int) {
         itemsCount[type] = count
         (activity as? TopAdsDashboardActivity)?.multiActionButton()?.apply {
             text = when (type) {
@@ -112,14 +94,21 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun newAccordion(stringId: Int, value: Int, view: View): AccordionDataUnify {
-        return AccordionDataUnify(
-            String.format(resources.getString(stringId), value),
-            "",
-            null,
-            null,
-            view,
-            false
+    //method to be executed when ad type is changed
+    fun loadRecommendation(type: Int) {
+        viewModel.getKeywords("480396", arrayOf())
+    }
+
+    private fun getAccordionTitle(type: Int, count: Int): String {
+        return String.format(
+            resources.getString(
+                when (type) {
+                    TopAdsInsightConstants.BID_KEYWORD -> R.string.topads_insight_title_bid_keyword
+                    TopAdsInsightConstants.NEW_KEYWORD -> R.string.topads_insight_title_new_keyword
+                    TopAdsInsightConstants.NEGATIVE_KEYWORD -> R.string.topads_insight_title_negative_keyword
+                    else -> throw Exception("Wrong type")
+                }
+            ), count
         )
     }
 
@@ -152,7 +141,6 @@ class TopAdsInsightKeywordsFragment : BaseDaggerFragment() {
         }
     }
 
-    //todo view model
     fun getResp() = "{\n" +
             "    \"topadsHeadlineKeywordSuggestion\": {\n" +
             "      \"data\": {\n" +

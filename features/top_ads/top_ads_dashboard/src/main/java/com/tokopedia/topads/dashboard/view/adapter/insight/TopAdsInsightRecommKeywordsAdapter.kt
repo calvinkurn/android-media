@@ -12,11 +12,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
+import kotlinx.android.synthetic.main.topads_dash_recon_product_item.view.*
 import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
 class TopAdsInsightRecommKeywordsAdapter(
     private val list: List<RecommendedKeywordDetail>,
-    private val type: Int
+    private val type: Int,
+    private val lstnr: (Boolean) -> Unit
 ) : RecyclerView.Adapter<TopAdsInsightRecommKeywordsAdapter.Companion.KeywordsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordsViewHolder {
@@ -29,28 +31,35 @@ class TopAdsInsightRecommKeywordsAdapter(
         with(holder.view) {
             initView()
 
-            txtTitle.text = item.keywordTag
-            textGroupName.text = item.groupName
-            txtSubTitle1Value.text =
-                String.format(resources.getString(R.string.per_click_value), 110)
-            txtSubTitle2Value.text =
-                Html.fromHtml(
-                    String.format(resources.getString(R.string.per_click_bold_value), 100)
-                )
-            txtFooter.text =
-                Html.fromHtml(String.format(resources.getString(R.string.max_times_month), 500))
+            bindData(item)
 
             btnEditFee.setOnClickListener {
                 openEditTextFee()
             }
-            setOnClickListener { closeEditTextFee() }
+            setOnClickListener {
+                closeEditTextFee()
+            }
             checkBox.setOnCheckedChangeListener { _, isChecked ->
-                itemSelectedListener?.invoke(item, isChecked)
+                lstnr.invoke(isChecked)
             }
         }
     }
 
+    private fun View.bindData(item: RecommendedKeywordDetail) {
+        txtTitle.text = item.keywordTag
+        textGroupName.text = item.groupName
+        txtSubTitle1Value.text =
+            String.format(resources.getString(R.string.per_click_value), 110)
+        txtSubTitle2Value.text =
+            Html.fromHtml(
+                String.format(resources.getString(R.string.per_click_bold_value), 100)
+            )
+        txtFooter.text =
+            Html.fromHtml(String.format(resources.getString(R.string.max_times_month), 500))
+    }
+
     private fun View.initView() {
+        txtRecommendedBudget.hide()
         when (type) {
             TopAdsInsightConstants.BID_KEYWORD -> {
                 searchGroup.hide()
@@ -62,7 +71,6 @@ class TopAdsInsightRecommKeywordsAdapter(
                 newKeywordGroup.hide()
                 searchGroup.show()
 
-
                 txtNoOfSearches.text =
                     Html.fromHtml(String.format(resources.getString(R.string.no_of_searches), 10))
             }
@@ -71,10 +79,6 @@ class TopAdsInsightRecommKeywordsAdapter(
                 btnEditFee.hide()
             }
         }
-    }
-
-    override fun getItemCount(): Int {
-        return list.size
     }
 
     private fun View.closeEditTextFee() {
@@ -87,7 +91,9 @@ class TopAdsInsightRecommKeywordsAdapter(
         edtBid.show()
     }
 
-    var itemSelectedListener: ((RecommendedKeywordDetail, Boolean) -> Unit)? = null
+    override fun getItemCount(): Int {
+        return list.size
+    }
 
     companion object {
         class KeywordsViewHolder(val view: View) : RecyclerView.ViewHolder(view)
@@ -96,8 +102,9 @@ class TopAdsInsightRecommKeywordsAdapter(
 
         fun createInstance(
             list: List<RecommendedKeywordDetail>,
-            type: Int
-        ) = TopAdsInsightRecommKeywordsAdapter(list, type)
+            type: Int,
+            lstnr: (Boolean) -> Unit
+        ) = TopAdsInsightRecommKeywordsAdapter(list, type, lstnr)
     }
 
 }

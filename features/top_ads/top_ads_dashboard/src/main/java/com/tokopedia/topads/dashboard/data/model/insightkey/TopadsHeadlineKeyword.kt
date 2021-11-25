@@ -22,7 +22,7 @@ data class RecommendedKeyword(
     val recommendedKeywordCount: Int = 0,
     val groupCount: Int = 0,
     val totalImpressionCount: String? = null,
-    val recommendedKeywordDetails: List<RecommendedKeywordDetail>? = null,
+    val recommendedKeywordDetails: List<RecommendedKeywordDetail> = listOf(),
     val topadsHeadlineKeywordSuggestion: TopadsHeadlineKeywordSuggestion? = null
 )
 

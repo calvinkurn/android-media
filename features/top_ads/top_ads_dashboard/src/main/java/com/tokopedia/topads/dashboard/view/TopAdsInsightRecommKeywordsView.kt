@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
-import com.tokopedia.topads.dashboard.data.model.insightkey.TopadsHeadlineKeyword
+import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeyword
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightRecommKeywordsAdapter
 import kotlinx.android.synthetic.main.topads_insight_keywords_layout.view.*
@@ -14,14 +14,14 @@ import kotlinx.android.synthetic.main.topads_insight_keywords_layout.view.*
 class TopAdsInsightRecommKeywordsView(
     context: Context,
     private val type: Int,
-    private val topadsHeadlineKeyword: TopadsHeadlineKeyword
+    private val recommendedKeyword: RecommendedKeyword,
+    private val lstnr: (Int, Int) -> Unit
 ) : ConstraintLayout(context) {
 
     private var selectedItemCount = 0
     private val mAdapter by lazy {
         TopAdsInsightRecommKeywordsAdapter.createInstance(
-            listOf(RecommendedKeywordDetail()),
-            type
+            recommendedKeyword.recommendedKeywordDetails, type, ::onKeywordSelected
         )
     }
 
@@ -35,16 +35,12 @@ class TopAdsInsightRecommKeywordsView(
         with(recyclerViewKeyword) {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context)
-            hasFixedSize()
             addItemDecoration(
                 DividerItemDecoration(
                     context,
                     DividerItemDecoration.VERTICAL
                 )
             )
-            mAdapter.itemSelectedListener = { item, isChecked ->
-                onItemSelected(item, isChecked)
-            }
         }
     }
 
@@ -83,19 +79,18 @@ class TopAdsInsightRecommKeywordsView(
         }
     }
 
-    private fun onItemSelected(item: RecommendedKeywordDetail, isChecked: Boolean) {
+    private fun onKeywordSelected(isChecked: Boolean) {
         if (isChecked) selectedItemCount++ else selectedItemCount--
-        itemSelectedListener?.invoke(type, selectedItemCount)
+        lstnr.invoke(type, selectedItemCount)
     }
-
-    var itemSelectedListener: ((Int, Int) -> Unit)? = null
 
     companion object {
         private val layout = R.layout.topads_insight_keywords_layout
         fun createInstance(
             context: Context, type: Int,
-            recommendedKeyword: TopadsHeadlineKeyword
-        ) = TopAdsInsightRecommKeywordsView(context, type, recommendedKeyword)
+            recommendedKeyword: RecommendedKeyword,
+            lstnr: (Int, Int) -> Unit
+        ) = TopAdsInsightRecommKeywordsView(context, type, recommendedKeyword, lstnr)
     }
 
 }
