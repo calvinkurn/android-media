@@ -130,4 +130,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     }
     open fun trackMerchantVoucherLihatSemuaClick(dataItem: DataItem?){}
     open fun setOldTabPageIdentifier(pageIdentifier: String) {}
+    open fun viewCalendarsList(componentsItems: ComponentsItem, userID: String) {}
+    open fun trackEventClickCalendarWidget(componentsItems: ComponentsItem, userID: String) {}
+    open fun trackEventClickCalendarCTA(componentsItems: ComponentsItem, userID: String) {}
 }

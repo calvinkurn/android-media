@@ -52,10 +52,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -145,6 +141,8 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 
 
 /**
@@ -161,7 +159,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     RoomSettingFraudAlertViewHolder.Listener, ReviewViewHolder.Listener,
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
-    FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener {
+    FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
+    ReminderTickerViewHolder.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -400,16 +399,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initTextComposeBackground() {
         val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
-            composeArea,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_1,
-            Gravity.CENTER
+            view = composeArea,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            topLeftRadius = R.dimen.dp_topchat_20,
+            topRightRadius = R.dimen.dp_topchat_20,
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = R.color.topchat_dms_chat_bubble_shadow,
+            elevation = R.dimen.dp_topchat_2,
+            shadowRadius = R.dimen.dp_topchat_1,
+            shadowGravity = Gravity.CENTER
         )
         val paddingStart =
             resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
@@ -520,6 +519,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
         presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
+        renderTickerReminderIfNotYet()
+    }
+
+    private fun renderTickerReminderIfNotYet() {
+        val ticker = viewModel.srwTickerReminder.value
+        if (ticker != null && ticker is Success) {
+            onSuccessGetTickerReminder(ticker.data)
+        }
     }
 
     private fun onErrorGetTopChat(throwable: Throwable) {
@@ -718,10 +725,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         presenter.getTemplate(chatRoom.isSeller())
         presenter.getStickerGroupList(chatRoom)
         replyCompose?.setReplyListener(this)
-        when {
-            !isSeller() -> presenter.getSmartReplyWidget(messageId)
-            isSeller() -> presenter.adjustInterlocutorWarehouseId(messageId)
+        if (isSeller()) {
+            setupFirstTimeForSeller()
+        } else {
+            setupFirstTimeForBuyer()
         }
+    }
+
+    private fun setupFirstTimeForSeller() {
+        presenter.adjustInterlocutorWarehouseId(messageId)
+        if (!presenter.isInTheMiddleOfThePage()) {
+            viewModel.getTickerReminder()
+        }
+    }
+
+    private fun setupFirstTimeForBuyer() {
+        presenter.getSmartReplyWidget(messageId)
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -949,7 +968,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             this, this, this, this,
             this, this, this, this,
-            this
+            this, this
         )
     }
 
@@ -2418,6 +2437,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 }
             }
         })
+
+        viewModel.srwTickerReminder.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> onSuccessGetTickerReminder(it.data)
+            }
+        })
+    }
+
+    private fun onSuccessGetTickerReminder(
+        data: ReminderTickerUiModel
+    ) {
+        if (!data.enable) return
+        val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
+        adapter.addElement(eligiblePosition, data)
+        viewModel.removeTicker()
     }
 
     override fun changeAddress(attachment: HeaderCtaButtonAttachment) {
@@ -2477,6 +2511,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
     }
 
+    override fun getCommonShopId(): Long {
+        return shopId
+    }
+
     private fun copyToClipboard(text: CharSequence) {
         val clipboard = context?.getSystemService(
             CLIPBOARD_SERVICE
@@ -2515,6 +2553,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
 
         return widgets
+    }
+
+    override fun closeReminderTicker(element: ReminderTickerUiModel, position: Int) {
+        viewModel.closeTickerReminder(element)
+        adapter.removeViewHolder(element, position)
     }
 
     companion object {
