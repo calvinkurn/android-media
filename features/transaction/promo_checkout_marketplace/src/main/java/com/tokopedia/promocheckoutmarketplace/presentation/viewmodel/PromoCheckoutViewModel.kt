@@ -1,10 +1,12 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -12,6 +14,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
+import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.ClearPromoResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
@@ -151,25 +154,30 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Get Promo List */
     //---------------------------------------//
 
-    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null) {
+    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context) {
         launchCatchError(block = {
-            doGetPromoList(mutation, promoRequest, promoCode, chosenAddress)
+            doGetPromoList(mutation, promoRequest, promoCode, chosenAddress, tmpContext)
         }) { throwable ->
             setFragmentStateLoadPromoListFailed(throwable)
         }
     }
 
-    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String, chosenAddress: ChosenAddress?) {
+    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String, chosenAddress: ChosenAddress?, tmpContext: Context) {
         // Set request data
         val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest, chosenAddress)
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
-        val response = withContext(dispatcher) {
-            val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, getPromoRequestParam)
-            graphqlRepository.response(listOf(request))
-                    .getSuccessData<CouponListRecommendationResponse>()
-        }
+//        val response = withContext(dispatcher) {
+//            val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, getPromoRequestParam)
+//            graphqlRepository.response(listOf(request))
+//                    .getSuccessData<CouponListRecommendationResponse>()
+//        }
+
+        // Todo : remove dummy
+        val responseText = GraphqlHelper.loadRawString(tmpContext.resources, R.raw.dummy_promo_list_response)
+        val response = Gson().fromJson(responseText, CouponListRecommendationResponse::class.java)
+
         PromoCheckoutIdlingResource.decrement()
 
         // Handle response data

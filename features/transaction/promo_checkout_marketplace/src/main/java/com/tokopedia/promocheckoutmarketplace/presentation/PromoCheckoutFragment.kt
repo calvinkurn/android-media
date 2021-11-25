@@ -823,7 +823,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
             val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-            viewModel.getPromoList(mutation, promoRequest, "", chosenAddress)
+            viewModel.getPromoList(mutation, promoRequest, "", chosenAddress, it)
         }
     }
 
@@ -1002,7 +1002,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
             val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-            viewModel.getPromoList(mutation, promoRequest, promoCode, chosenAddress)
+            viewModel.getPromoList(mutation, promoRequest, promoCode, chosenAddress, it)
         }
     }
 
