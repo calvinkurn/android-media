@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
-import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -27,7 +26,6 @@ class ThanksPageDataViewModel @Inject constructor(
     private val getDefaultAddressUseCase: GetDefaultAddressUseCase,
     private val thankYouTopAdsViewModelUseCase: ThankYouTopAdsViewModelUseCase,
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
-    @CoroutineBackgroundDispatcher val dispatcherIO: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
@@ -73,6 +71,7 @@ class ThanksPageDataViewModel @Inject constructor(
         topAdsRequestParams: TopAdsRequestParams,
         thanksPageData: ThanksPageData
     ) {
+        thankYouTopAdsViewModelUseCase.cancelJobs()
         thankYouTopAdsViewModelUseCase.getTopAdsData(topAdsRequestParams, thanksPageData, {
             if (it.isNotEmpty()) {
                 topAdsRequestParams.topAdsUIModelList = it
@@ -90,12 +89,14 @@ class ThanksPageDataViewModel @Inject constructor(
     }
 
     private fun postGyroRecommendation(engineData: FeatureEngineData?) {
-        gyroEngineMapperUseCase.populateThanksPageDataFields(engineData, {
+        gyroEngineMapperUseCase.cancelJobs()
+        gyroEngineMapperUseCase.getFeatureListData(engineData, {
             gyroRecommendationLiveData.postValue(it)
         }, { it.printStackTrace() })
     }
 
     private fun onThanksPageDataSuccess(thanksPageData: ThanksPageData) {
+        thanksPageMapperUseCase.cancelJobs()
         thanksPageMapperUseCase.populateThanksPageDataFields(thanksPageData, {
             thanksPageDataResultLiveData.postValue(Success(it))
         }, {
@@ -128,6 +129,8 @@ class ThanksPageDataViewModel @Inject constructor(
         thanksPageDataUseCase.cancelJobs()
         gyroEngineRequestUseCase.cancelJobs()
         thankYouTopAdsViewModelUseCase.cancelJobs()
+        thanksPageMapperUseCase.cancelJobs()
+        gyroEngineMapperUseCase.cancelJobs()
         super.onCleared()
     }
 

@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GyroEngineMapperUseCase @Inject constructor() : UseCase<GyroRecommendation>() {
     private lateinit var featureEngineData: FeatureEngineData
 
-    fun populateThanksPageDataFields(
+    fun getFeatureListData(
         featureEngineData: FeatureEngineData?,
         onSuccess: (GyroRecommendation) -> Unit,
         onError: (Throwable) -> Unit
