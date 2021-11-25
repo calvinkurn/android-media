@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.affiliate.WITHDRAWAL_ID
+import com.tokopedia.affiliate.TRANSACTION_ID
 import com.tokopedia.affiliate.adapter.AffiliateSaldoWithdrawalStatusAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -39,8 +39,8 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
 
     private lateinit var withdrawalDetailViewModel : WithdrawalDetailViewModel
 
-    private val withdrawalId: Long by lazy {
-        arguments?.getLong(WITHDRAWAL_ID) ?: run { 0 }
+    private val transactionId: String by lazy {
+        arguments?.getString(TRANSACTION_ID) ?: run { "0" }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,7 +56,7 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
 
     private fun loadWithdrawalDetail() {
         view?.findViewById<LoaderUnify>(R.id.withdrawalProgress)?.visible()
-        withdrawalDetailViewModel.getWithdrawalInfo(withdrawalId.toString())
+        withdrawalDetailViewModel.getWithdrawalInfo(transactionId)
     }
 
     private fun initAdapter() {
@@ -142,9 +142,9 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
     }
 
     companion object {
-        fun newInstance(withdrawalId: Long): AffiliateSaldoWithdrawalDetailFragment {
+        fun newInstance(transactionId: String): AffiliateSaldoWithdrawalDetailFragment {
             val fragment = AffiliateSaldoWithdrawalDetailFragment()
-            val bundle = Bundle().apply { putLong(WITHDRAWAL_ID, withdrawalId) }
+            val bundle = Bundle().apply { putString(TRANSACTION_ID, transactionId) }
             fragment.arguments = bundle
             return fragment
         }

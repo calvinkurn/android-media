@@ -1,47 +1,47 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Withdrawal_Detail : String = """query getAffiliateWithdrawalDetail(${"$"}TransactionID: String){
+val GQL_Affiliate_Withdrawal_Detail : String = """query getAffiliateWithdrawalDetail(${"$"}TransactionID: String!){
   getAffiliateWithdrawalDetail(TransactionID: ${"$"}TransactionID) {
     Data {
       Status              
-      Error {             
-        ErrorType         
-        Message           
-        CtaText           
+      Error {            
+        ErrorType        
+        Message          
+        CtaText          
         CtaLink {
-          Desktop         
-          Mobile          
-          Android         
-          Ios             
+          DesktopURL         
+          MobileURL         
+          AndroidURL         
+          IosURL            
         }
       }
       Ticker {
         TickerTitle               
-        TickerDescription         
+        TickerDescription        
       }
-      WithdrawalAmount            
-      WithdrawalAmountFormatted   
-      BankName                    
-      AccountName                 
-      WithdrawalFee               
-      WithdrawalFeeFormatted      
+      WithdrawalAmount           
+      WithdrawalAmountFormatted  
+      BankName                   
+      AccountName               
+      WithdrawalFee             
+      WithdrawalFeeFormatted     
       FinalTransferred            
       FinalTransferredFormatted   
-      Notes                       
+      Notes                      
       Label {
         LabelType                 
-        LabelText                 
+        LabelText                
       }
-      CreatedAt                 
+      CreatedAt                
       CreatedAtFormatted        
       UpdatedAt                 
       UpdatedAtFormatted        
       Detail {
-        DetailTitle             
-        DetailDescription       
+        DetailTitle            
+        DetailDescription      
         DetailStatus            
-        CreatedAt               
-        CreatedAtFormatted      
+        CreatedAt             
+        CreatedAtFormatted    
       }
     }
   }

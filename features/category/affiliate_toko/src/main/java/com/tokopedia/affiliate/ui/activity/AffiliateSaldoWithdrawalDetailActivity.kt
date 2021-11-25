@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.affiliate.WITHDRAWAL_ID
+import com.tokopedia.affiliate.TRANSACTION_ID
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.ui.fragment.withdrawal.AffiliateSaldoWithdrawalDetailFragment
@@ -74,15 +74,15 @@ class AffiliateSaldoWithdrawalDetailActivity :  BaseViewModelActivity<AffiliateV
     }
 
     override fun getNewFragment() = AffiliateSaldoWithdrawalDetailFragment.newInstance(
-            intent.getLongExtra(WITHDRAWAL_ID, 0)
+            intent.getStringExtra(TRANSACTION_ID) ?: ""
     )
 
     override fun getTagFragment() = TAG
 
     companion object {
-        fun newInstance(context: Context, withdrawalId: Long): Intent {
+        fun newInstance(context: Context, withdrawalId: String): Intent {
             val intent = Intent(context, AffiliateSaldoWithdrawalDetailActivity::class.java)
-            intent.putExtra(WITHDRAWAL_ID, withdrawalId)
+            intent.putExtra(TRANSACTION_ID, withdrawalId)
             return intent
         }
 
