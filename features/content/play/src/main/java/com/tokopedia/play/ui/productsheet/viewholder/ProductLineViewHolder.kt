@@ -1,9 +1,12 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.view.type.OutOfStock
@@ -18,11 +21,13 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
 
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
     private val ivProductAtc: UnifyButton = itemView.findViewById(R.id.iv_product_atc)
+    private val tvProductStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
 
     override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
         when (item.stock) {
             OutOfStock -> {
+                tvProductStock.gone()
                 ivProductAtc.setBackgroundResource(0)
                 btnProductBuy.isEnabled = false
                 ivProductAtc.isEnabled = false
@@ -31,6 +36,8 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             }
 
             is StockAvailable -> {
+                tvProductStock.show()
+                tvProductStock.text = getString(R.string.play_product_item_stock, item.stock.stock)
                 btnProductBuy.isEnabled = true
                 ivProductAtc.isEnabled = true
                 btnProductBuy.text = getString(R.string.play_product_buy)

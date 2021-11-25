@@ -18,15 +18,18 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_out_of_stock"
-        android:layout_width="@dimen/play_product_image_size"
+        android:layout_width="wrap_content"
+        android:maxLines="1"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginStart="8dp"
-        android:text="Stok 5"
-        android:visibility="invisible"
+        android:textColor="@color/Unify_N700_96"
+        android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/iv_product_image"
         app:layout_constraintTop_toTopOf="@+id/iv_product_image"
+        app:typographyType="body_2"
         app:typographyWeight="bold"
+        tools:text="Stok : 5"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
