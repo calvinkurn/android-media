@@ -7,7 +7,7 @@ import com.tokopedia.mediauploader.common.data.consts.UPLOAD_ABORT
 import com.tokopedia.mediauploader.common.data.entity.SourcePolicy
 import com.tokopedia.mediauploader.common.state.ProgressUploader
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.mediauploader.common.util.isLessThan2Hours
+import com.tokopedia.mediauploader.common.util.isLessThanHoursOf
 import com.tokopedia.mediauploader.common.util.slice
 import com.tokopedia.mediauploader.common.util.trimLastZero
 import com.tokopedia.mediauploader.video.data.internal.LargeUploadStateHandler
@@ -131,10 +131,11 @@ class LargeUploaderManager @Inject constructor(
         val data = uploadState.get(sourceId, fileName)
 
         if (data != null) {
-            if (data.initTimeInMillis.isLessThan2Hours()) {
+            if (data.initTimeInMillis.isLessThanHoursOf(THRESHOLD_REQUEST_MAX_TIME)) {
                 mUploadId = data.uploadId
                 partNumber = data.partNumber
             } else {
+                uploadState.clear()
                 init()
             }
         } else {
@@ -236,6 +237,8 @@ class LargeUploaderManager @Inject constructor(
     companion object {
         private const val MAX_RETRY_TRANSCODING = 24
         private const val MAX_PROGRESS_LOADER = 100
+
+        private const val THRESHOLD_REQUEST_MAX_TIME = 2 // hours
     }
 
 }
