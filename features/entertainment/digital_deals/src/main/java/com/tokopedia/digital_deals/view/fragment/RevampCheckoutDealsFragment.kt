@@ -12,6 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
@@ -95,7 +96,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == PAYMENT_SUCCESS) {
             val taskStackBuilder = TaskStackBuilder.create(context)
-            val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalEntertainment.EVENT_HOME)
+            val intentHomeEvent = RouteManager.getIntent(context, ApplinkConstInternalDeals.DEALS_HOMEPAGE)
             taskStackBuilder.addNextIntent(intentHomeEvent)
             taskStackBuilder.startActivities()
 
