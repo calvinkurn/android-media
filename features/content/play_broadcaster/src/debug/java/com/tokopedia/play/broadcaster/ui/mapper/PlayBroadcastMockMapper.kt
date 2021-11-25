@@ -5,11 +5,11 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
@@ -261,7 +261,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
 
     override fun mapLiveInfo(
         activeIngestUrl: String,
-        config: PlayLivePusherConfig
+        config: LivePusherConfig
     ): PlayLiveInfoUiModel {
         return PlayLiveInfoUiModel(
             "rtmp://tkpd.com",

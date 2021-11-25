@@ -1,10 +1,10 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
+import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
@@ -144,7 +144,7 @@ class PlayBroadcastConfigurableMapper(
 
     override fun mapLiveInfo(
         activeIngestUrl: String,
-        config: PlayLivePusherConfig
+        config: LivePusherConfig
     ): PlayLiveInfoUiModel {
         return if (!isMock) uiMapper.mapLiveInfo(activeIngestUrl, config)
         else mockMapper.mapLiveInfo(activeIngestUrl, config)

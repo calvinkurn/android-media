@@ -1,7 +1,11 @@
-package com.tokopedia.play.broadcaster.pusher
+package com.tokopedia.play.broadcaster.pusher.mediator
 
+import android.content.Context
+import android.os.Handler
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.broadcaster.mediator.LivePusherStatistic
 import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
+import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerListener
@@ -14,10 +18,16 @@ import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
 class PlayLivePusherMediator(
     private val livePusher: PlayLivePusher,
     private val cacheHandler: LocalCacheHandler
-): PlayLivePusher by livePusher {
+): PlayLivePusher by livePusher, PusherMediator {
 
-    val remainingDurationInMillis: Long
+    override val remainingDurationInMillis: Long
         get() = mCountDownTimer.remainingDurationInMillis
+
+    override val ingestUrl: String
+        get() = livePusher.ingestUrl
+
+    override val config: PlayLivePusherConfig
+        get() = livePusher.config
 
     private val mCountDownTimer: PlayLivePusherCountDownTimer = PlayLivePusherCountDownTimerImpl(cacheHandler)
     private val mListeners = mutableListOf<PlayLivePusherMediatorListener>()
@@ -39,7 +49,7 @@ class PlayLivePusherMediator(
             }
         }
 
-        override fun onUpdateLivePusherStatistic(pusherStatistic: PlayLivePusherStatistic) {
+        override fun onUpdateLivePusherStatistic(pusherStatistic: LivePusherStatistic) {
             broadcastStatsUpdated(pusherStatistic)
         }
     }
@@ -59,46 +69,78 @@ class PlayLivePusherMediator(
         mCountDownTimer.setListener(countDownTimerListener)
     }
 
-    fun setLiveStreamingDuration(durationInMillis: Long) {
+    override fun init(context: Context, handler: Handler) {
+        livePusher.init(context, handler)
+    }
+
+    override fun switchCamera() {
+        livePusher.switchCamera()
+    }
+
+    override fun start(url: String) {
+        livePusher.start(url)
+    }
+
+    override fun resume() {
+        livePusher.resume()
+    }
+
+    override fun pause() {
+        livePusher.pause()
+    }
+
+    override fun stop() {
+        livePusher.stop()
+    }
+
+    override fun release() {
+        livePusher.release()
+    }
+
+    override fun getLivePusherState(): PlayLivePusherState {
+        return state
+    }
+
+    override fun setLiveStreamingDuration(durationInMillis: Long) {
         mCountDownTimer.setDuration(durationInMillis)
     }
 
-    fun setLiveStreamingPauseDuration(durationInMillis: Long) {
+    override fun setLiveStreamingPauseDuration(durationInMillis: Long) {
         mPauseDuration = durationInMillis
     }
 
-    fun startLiveStreaming(ingestUrl: String, withTimer: Boolean = true) {
+    override fun startLiveStreaming(ingestUrl: String, withTimer: Boolean) {
         livePusher.start(ingestUrl)
         if (withTimer) startLiveCountDownTimer()
     }
 
-    fun stopLiveStreaming() {
+    override fun stopLiveStreaming() {
         mCountDownTimer.stop()
         livePusher.stop()
     }
 
-    fun startLiveCountDownTimer() {
+    override fun startLiveCountDownTimer() {
         mCountDownTimer.start()
     }
 
-    fun restartLiveCountDownTimer(duration: Long) {
+    override fun restartLiveCountDownTimer(duration: Long) {
         mCountDownTimer.restart(duration)
     }
 
-    fun destroy() {
+    override fun destroy() {
         mCountDownTimer.destroy()
         release()
     }
 
-    fun addListener(listener: PlayLivePusherMediatorListener) {
+    override fun addListener(listener: PlayLivePusherMediatorListener) {
         mListeners.add(listener)
     }
 
-    fun removeListener(listener: PlayLivePusherMediatorListener) {
+    override fun removeListener(listener: PlayLivePusherMediatorListener) {
         mListeners.remove(listener)
     }
 
-    fun onCameraChanged(surfaceView: SurfaceAspectRatioView) {
+    override fun onCameraChanged(surfaceView: SurfaceAspectRatioView) {
         if (livePusher.state.isStopped) return
 
         livePusher.startPreview(surfaceView)
@@ -108,7 +150,7 @@ class PlayLivePusherMediator(
         }
     }
 
-    fun onCameraDestroyed() {
+    override fun onCameraDestroyed() {
         if (livePusher.state.isPushing) {
             livePusher.pause()
             setLastPauseMillis()
@@ -138,7 +180,7 @@ class PlayLivePusherMediator(
         mListeners.forEach { it.onLivePusherStateChanged(state) }
     }
 
-    private fun broadcastStatsUpdated(stats: PlayLivePusherStatistic) {
+    private fun broadcastStatsUpdated(stats: LivePusherStatistic) {
         mListeners.forEach { it.onLivePusherStatsUpdated(stats) }
     }
 
