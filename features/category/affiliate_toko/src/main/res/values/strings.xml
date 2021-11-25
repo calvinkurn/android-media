@@ -39,4 +39,16 @@
     <string name="affiliate_beta_info_text">Di versi ini, tim bisnis kami akan mengirimkan laporan Performa Affiliate &amp; pendapatanmu. Nantikan fitur yang lebih optimal di versi berikutnya, ya!</string>
     <string name="affiliate_beta">BETA</string>
     <string name="affiliate_product_link_invalid">Pastikan link yang kamu masukkan benar, ya.</string>
+    <string name="produk_ditemukan">Produk ditemukan.</string>
+    <string name="tunggu_ya_produknya_lagi_dicari">Tunggu, ya. Produknya lagi dicari</string>
+    <string name="pernah_dibeli">Pernah Dibeli</string>
+    <string name="terakhir_dilihat">Terakhir Dilihat</string>
+    <string name="no_product_bought_on_tokopedia_yet">Kamu belum pernah beli produk di Tokopedia</string>
+    <string name="no_product_bought_on_tokopedia_yet_content">Tidak apa-apa, kamu tetap bisa promosikan produk yang ada di Tokopedia</string>
+    <string name="no_product_seen_on_tokopedia_yet">Belum ada produk yang dilihat di Tokopedia</string>
+    <string name="no_product_seen_on_tokopedia_yet_content">Kamu bisa cari produk affiliate di Tokopedia, lalu tempel link di sini untuk dapat link affiliate</string>
+    <string name="system_down_title">Saat ini lagi ada pemeliharaan sistem</string>
+    <string name="system_down_description">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
+    <string name="affiliate_black_list_title">Oops, akun kamu bermasalah </string>
+    <string name="affiliate_black_list_description"><![CDATA[Untuk melanjutkan aktivitas di Tokopedia Affiliate, segera Perbaiki Akunmu]]></string>
 </resources>

@@ -478,6 +478,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                         SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
+
+                    navigator?.run {
+                        if (isHomePageSelected()) {
+                            supportActionBar?.title = userSession.shopName
+                        }
+
+                        setHomeTitle(userSession.shopName)
+                    }
                 }
             }
         })
@@ -580,7 +588,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         menu.add(
             BottomMenu(
                 R.id.menu_order,
-                resources.getString(R.string.sah_sale),
+                resources.getString(R.string.sah_order),
                 R.raw.anim_bottom_nav_order,
                 R.raw.anim_bottom_nav_order_to_enabled,
                 R.drawable.ic_sah_bottom_nav_order_active,
