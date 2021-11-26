@@ -11,4 +11,4 @@ import dagger.Component
     modules = [ShopPerformanceModuleStub::class],
     dependencies = [BaseAppComponentStub::class]
 )
-interface ShopPerformanceComponentStub : ShopPerformanceComponent
+interface ShopPerformanceComponentStub: ShopPerformanceComponent

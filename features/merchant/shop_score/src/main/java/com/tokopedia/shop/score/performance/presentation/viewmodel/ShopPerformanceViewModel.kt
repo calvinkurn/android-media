@@ -45,7 +45,7 @@ open class ShopPerformanceViewModel @Inject constructor(
     val shopInfoPeriod: LiveData<Result<ShopInfoPeriodUiModel>>
         get() = _shopInfoPeriod
 
-    private val _shopPerformancePage =
+    protected val _shopPerformancePage =
         MutableLiveData<Result<Pair<List<BaseShopPerformance>, ShopScoreWrapperResponse>>>()
 
     private val _shopInfoLevel = MutableLiveData<ShopInfoLevelUiModel>()
@@ -68,7 +68,7 @@ open class ShopPerformanceViewModel @Inject constructor(
         })
     }
 
-    fun getShopScoreLevel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
+    open fun getShopScoreLevel(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
         launchCatchError(block = {
             val shopScoreLevelResponse = withContext(dispatchers.io) {
                 getShopPerformanceUseCase.get().requestParams =
