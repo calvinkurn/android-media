@@ -120,6 +120,17 @@
 
             </LinearLayout>
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:maxLines="1"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                tools:text="Rp7.999.000" />
+
             <LinearLayout
                 android:id="@+id/ll_slash_price"
                 android:layout_width="match_parent"
@@ -155,17 +166,6 @@
                     tools:visibility="visible" />
 
             </LinearLayout>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_lvl2"
-                android:maxLines="1"
-                android:textColor="@color/Unify_N700_96"
-                app:typographyType="body_2"
-                app:typographyWeight="bold"
-                tools:text="Rp7.999.000" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_shipping_location"
