@@ -1,6 +1,7 @@
 package com.tokopedia.broadcaster.bitrate
 
 import com.tokopedia.broadcaster.LibStreamerGL
+import com.tokopedia.broadcaster.data.BitrateMode
 import com.wmspanel.libstream.Streamer.FpsRange
 import java.util.*
 import kotlin.math.abs
@@ -189,23 +190,21 @@ abstract class BitrateAdapter {
 
     companion object {
 
-        fun ladderAscend(
+        fun instance(
             bitrate: Long,
+            bitrateMode: BitrateMode,
             fpsRanges: Array<FpsRange?>
         ): BitrateAdapter {
-            return BitrateLadderAscendMode().apply {
-                this.setBitrate(bitrate)
-                this.setFpsRanges(fpsRanges)
-            }
-        }
-
-        fun logarithmicDescend(
-            bitrate: Long,
-            fpsRanges: Array<FpsRange?>
-        ): BitrateAdapter {
-            return LogarithmicDescendMode().apply {
-                this.setBitrate(bitrate)
-                this.setFpsRanges(fpsRanges)
+            return if (bitrateMode == BitrateMode.LadderAscend) {
+                BitrateLadderAscendMode().apply {
+                    this.setBitrate(bitrate)
+                    this.setFpsRanges(fpsRanges)
+                }
+            } else {
+                LogarithmicDescendMode().apply {
+                    this.setBitrate(bitrate)
+                    this.setFpsRanges(fpsRanges)
+                }
             }
         }
 

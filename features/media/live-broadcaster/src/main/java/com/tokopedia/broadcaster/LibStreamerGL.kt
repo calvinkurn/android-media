@@ -1,6 +1,8 @@
 package com.tokopedia.broadcaster
 
+import android.view.Surface
 import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.utils.safeExecute
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.AudioConfig
 import com.wmspanel.libstream.Streamer
@@ -10,7 +12,9 @@ import com.wmspanel.libstream.VideoConfig
 interface LibStreamerGL {
     val fps: Double
     val activeCameraId: String
+    val portrait: Int
 
+    fun setSurface(surface: Surface)
     fun stopAudioCapture()
     fun stopVideoCapture()
     fun flip()
@@ -34,76 +38,85 @@ class LibStreamerGLFactory constructor(
     private var streamerGL: StreamerGL? = null
 ) : LibStreamerGL {
 
-    override val fps get() = streamerGL?.fps?: 0.0
+    override val fps
+        get() = streamerGL?.safeExecute { fps } ?: 0.0
 
-    override val activeCameraId get() = streamerGL?.activeCameraId?: ""
+    override val activeCameraId
+        get() = streamerGL?.safeExecute { activeCameraId } ?: ""
+
+    override val portrait: Int
+        get() = StreamerGL.ORIENTATIONS.PORTRAIT
 
     override fun stopAudioCapture() {
-        streamerGL?.stopAudioCapture()
+        streamerGL?.safeExecute { stopAudioCapture() }
     }
 
     override fun stopVideoCapture() {
-        streamerGL?.stopVideoCapture()
+        streamerGL?.safeExecute { stopVideoCapture() }
     }
 
     override fun flip() {
-        streamerGL?.flip()
+        streamerGL?.safeExecute { flip() }
     }
 
     override fun release() {
-        streamerGL?.release()
+        streamerGL?.safeExecute { release() }
     }
 
     override fun startVideoCapture() {
-        streamerGL?.startVideoCapture()
+        streamerGL?.safeExecute { startVideoCapture() }
     }
 
     override fun startAudioCapture() {
-        streamerGL?.startAudioCapture()
+        streamerGL?.safeExecute { startAudioCapture() }
     }
 
     override fun createConnection(mConnection: BroadcasterConnection): Int? {
-        return streamerGL?.createConnection(mConnection)
+        return streamerGL?.safeExecute { createConnection(mConnection) }
     }
 
     override fun releaseConnection(id: Int) {
-        streamerGL?.releaseConnection(id)
+        streamerGL?.safeExecute { releaseConnection(id) }
     }
 
     override fun changeAudioConfig(config: AudioConfig) {
-        streamerGL?.changeAudioConfig(config)
+        streamerGL?.safeExecute { changeAudioConfig(config) }
     }
 
     override fun changeVideoConfig(config: VideoConfig) {
-        streamerGL?.changeVideoConfig(config)
+        streamerGL?.safeExecute { changeVideoConfig(config) }
     }
 
     override fun changeBitRate(bitrate: Int) {
-        streamerGL?.changeBitRate(bitrate)
+        streamerGL?.safeExecute { changeBitRate(bitrate) }
     }
 
     override fun changeFpsRange(newRange: Streamer.FpsRange?) {
-        streamerGL?.changeFpsRange(newRange)
+        streamerGL?.safeExecute { changeFpsRange(newRange) }
     }
 
     override fun setFrontMirror(isPreview: Boolean, isStream: Boolean) {
-        streamerGL?.setFrontMirror(isPreview, isStream)
+        streamerGL?.safeExecute { setFrontMirror(isPreview, isStream) }
     }
 
     override fun getBytesSent(connectionId: Int): Long {
-        return streamerGL?.getBytesSent(connectionId).orZero()
+        return streamerGL?.safeExecute { getBytesSent(connectionId) }.orZero()
     }
 
     override fun getAudioPacketsLost(connectionId: Int): Long {
-        return streamerGL?.getAudioPacketsLost(connectionId)?: 0L
+        return streamerGL?.safeExecute { getAudioPacketsLost(connectionId) } ?: 0L
     }
 
     override fun getVideoPacketsLost(connectionId: Int): Long {
-        return streamerGL?.getVideoPacketsLost(connectionId)?: 0L
+        return streamerGL?.safeExecute { getVideoPacketsLost(connectionId) } ?: 0L
     }
 
     override fun getUdpPacketsLost(connectionId: Int): Long {
-        return streamerGL?.getUdpPacketsLost(connectionId)?: 0L
+        return streamerGL?.safeExecute { getUdpPacketsLost(connectionId) } ?: 0L
+    }
+
+    override fun setSurface(surface: Surface) {
+        streamerGL?.safeExecute { setSurface(surface) }
     }
 
 }

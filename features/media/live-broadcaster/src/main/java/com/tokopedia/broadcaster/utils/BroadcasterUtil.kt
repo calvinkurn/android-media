@@ -1,13 +1,25 @@
 package com.tokopedia.broadcaster.utils
 
 import android.media.MediaCodecList
+import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.wmspanel.libstream.AudioConfig
+import com.wmspanel.libstream.CameraConfig
 import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.VideoConfig
 
 object BroadcasterUtil {
+
+    fun getCameraConfig(
+        cameraInfo: CameraInfo,
+        cameraSize: Streamer.Size
+    ): CameraConfig {
+        return CameraConfig().apply {
+            cameraId = cameraInfo.cameraId
+            videoSize = cameraSize
+        }
+    }
 
     // default config: 44.1kHz, Mono, CAMCORDER input
     fun getAudioConfig(config: BroadcasterConfig) = AudioConfig().apply {
