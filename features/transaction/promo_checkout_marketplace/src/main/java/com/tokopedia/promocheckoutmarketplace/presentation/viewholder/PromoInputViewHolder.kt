@@ -2,6 +2,7 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewholder
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,16 +21,43 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
     }
 
     override fun bind(element: PromoInputUiModel) {
+        renderErrorState(viewBinding, element)
+        renderLoadingState(viewBinding, element)
+        renderCloseIcon(viewBinding, element)
+        renderTextField(viewBinding, element)
+        renderApplyPromoButton(viewBinding, element)
+        element.uiState.viewHeight = itemView.height
+    }
+
+    private fun renderApplyPromoButton(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding, element: PromoInputUiModel) {
         with(viewBinding) {
-            renderErrorState(viewBinding, element)
-            renderLoadingState(viewBinding, element)
-            renderCloseIcon(viewBinding, element)
-            renderTextField(viewBinding, element)
+            if (element.uiData.promoCode.isNotBlank()) {
+                buttonApplyPromo.show()
+            } else {
+                buttonApplyPromo.gone()
+            }
 
-            setOnClickListeners(viewBinding, element)
-
-            element.uiState.viewHeight = itemView.height
+            buttonApplyPromo.setOnClickListener {
+                val promoCode = textFieldInputPromo.editText.text.toString()
+                if (promoCode.isNotEmpty()) {
+                    listener.onClickApplyManualInputPromo(promoCode, element.uiState.isValidLastSeenPromo)
+                }
+            }
         }
+    }
+
+    private fun setTextFieldInputPromoMargin(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding, element: PromoInputUiModel) {
+        with(viewBinding) {
+            val textFieldInputPromoLayoutParams = textFieldInputPromo.layoutParams as ViewGroup.MarginLayoutParams
+            if (element.uiData.promoCode.isNotBlank()) {
+                buttonApplyPromo.show()
+                textFieldInputPromoLayoutParams.rightMargin = itemView.context.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_16).toInt()
+            } else {
+                buttonApplyPromo.gone()
+                textFieldInputPromoLayoutParams.rightMargin = 0
+            }
+        }
+
     }
 
     private fun renderTextField(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding, element: PromoInputUiModel) {
@@ -57,12 +85,16 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
                         buttonApplyPromo.gone()
                         textFieldInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                     }
+                    setTextFieldInputPromoMargin(viewBinding, element)
                 }
             })
+
+            setTextFieldInputListener(viewBinding, element)
+            setTextFieldInputPromoMargin(viewBinding, element)
         }
     }
 
-    private fun setOnClickListeners(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding, element: PromoInputUiModel) {
+    private fun setTextFieldInputListener(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding, element: PromoInputUiModel) {
         with(viewBinding) {
             textFieldInputPromo.editText.setOnClickListener {
                 listener.onClickPromoManualInputTextField()
@@ -72,23 +104,14 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
                 textFieldInputPromo.editText.text.clear()
                 listener.onCLickClearManualInputPromo()
             }
-
-            buttonApplyPromo.setOnClickListener {
-                val promoCode = textFieldInputPromo.editText.text.toString()
-                if (promoCode.isNotEmpty()) {
-                    listener.onClickApplyManualInputPromo(promoCode, element.uiState.isValidLastSeenPromo)
-                }
-            }
         }
     }
 
     private fun renderCloseIcon(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding, element: PromoInputUiModel) {
         with(viewBinding) {
             if (element.uiData.promoCode.isNotBlank()) {
-                buttonApplyPromo.show()
                 textFieldInputPromo.setFirstIcon(com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_close)
             } else {
-                buttonApplyPromo.gone()
                 textFieldInputPromo.setFirstIcon(com.tokopedia.unifyprinciples.R.color.Unify_N0)
             }
         }

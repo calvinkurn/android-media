@@ -11,7 +11,6 @@
         android:id="@+id/text_field_input_promo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button_apply_promo"
         app:layout_constraintStart_toStartOf="parent"
