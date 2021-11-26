@@ -497,7 +497,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             val context = WeakReference<Activity>(activity)
             if(!::eventShare.isInitialized) eventShare = EventShare(context)
             val titleShare = getString(R.string.ent_pdp_share_title, productDetailData.title)
-            eventShare.shareEvent(productDetailData, titleShare, { showShareLoading() }, { hideShareLoading() })
+            eventShare.shareEvent(productDetailData, titleShare, requireContext(), { showShareLoading() }, { hideShareLoading() })
         }
     }
 
