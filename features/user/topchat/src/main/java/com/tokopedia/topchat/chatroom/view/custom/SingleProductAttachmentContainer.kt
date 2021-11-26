@@ -59,6 +59,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var btnUpdateStockContainer: LinearLayout? = null
     private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
+    private var shippingLocation: Typography? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: TopchatProductAttachmentListener? = null
@@ -148,6 +149,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnUpdateStockContainer = findViewById(R.id.ll_seller_update_stock)
         btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
+        shippingLocation = findViewById(R.id.tv_shipping_location)
     }
 
     private fun initLayoutView() {
@@ -208,7 +210,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindVariant(product)
             bindCampaign(product)
             bindPrice(product)
-            bindStatusContainer(product)
             bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
@@ -221,6 +222,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindSellerUpdateStockClick(product)
             bindMargin(product)
             bindContentPadding(product)
+            bindShippingLocation(product)
             listener.trackSeenProduct(product)
         }
     }
@@ -422,6 +424,17 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
+    private fun bindShippingLocation(product: ProductAttachmentUiModel) {
+        if (commonListener?.isSeller() == true &&
+            product.locationStock.districtFullName.isNotEmpty()
+        ) {
+            shippingLocation?.show()
+            shippingLocation?.text = product.locationStock.districtFullName
+        } else {
+            shippingLocation?.hide()
+        }
+    }
+
     private fun bindMargin(product: ProductAttachmentUiModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
@@ -491,23 +504,17 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         tv_price?.text = product.productPrice
     }
 
-    private fun bindStatusContainer(product: ProductAttachmentUiModel) {
-        if (product.hasFreeShipping() || (product.hasReview() && product.fromBroadcast())) {
-            statusContainer?.show()
-        } else {
-            statusContainer?.hide()
-        }
-    }
-
     @SuppressLint("SetTextI18n")
     private fun bindRating(product: ProductAttachmentUiModel) {
         if (product.hasReview() && commonListener?.isSeller() == false) {
             reviewScore?.text = product.rating.score.toString()
             reviewCount?.text = "(${product.rating.count})"
+            statusContainer?.show()
             reviewStar?.show()
             reviewScore?.show()
             reviewCount?.show()
         } else {
+            statusContainer?.hide()
             reviewStar?.hide()
             reviewScore?.hide()
             reviewCount?.hide()
