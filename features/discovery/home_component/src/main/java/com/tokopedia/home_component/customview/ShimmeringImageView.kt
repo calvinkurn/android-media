@@ -35,9 +35,9 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
     private var imageView: ImageView? = null
 
     private fun init(){
-        View.inflate(context, R.layout.layout_shimmering_image_view, this)
+        val view = View.inflate(context, R.layout.layout_shimmering_image_view, this)
         loaderImageView = LoaderImageView(context, attrs)
-        imageView = loaderImageView?.findViewById(R.id.imageView)
+        imageView = view?.findViewById(R.id.imageView)
         this.addView(loaderImageView)
     }
 
