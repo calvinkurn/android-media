@@ -141,6 +141,7 @@ class PlayBroadcastUiMapper(
                 price = if(it.discount != 0) {
                     DiscountedPrice(
                         originalPrice = it.originalPriceFormatted,
+                        originalPriceNumber = it.originalPrice,
                         discountedPrice = it.priceFormatted,
                         discountedPriceNumber = it.price,
                         discountPercent = it.discount
@@ -219,6 +220,7 @@ class PlayBroadcastUiMapper(
                 price = if(it.discount.toInt() != 0) {
                             DiscountedPrice(
                                 originalPrice = it.originalPriceFmt,
+                                originalPriceNumber = it.originalPrice.toDouble(),
                                 discountedPrice = it.priceFmt,
                                 discountedPriceNumber = it.price.toDouble(),
                                 discountPercent = it.discount.toInt()
