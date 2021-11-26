@@ -285,10 +285,9 @@ class OtherMenuViewModel @Inject constructor(
 
     fun startToggleTopadsCredit() {
         if (topadsTopupToggleJob?.isCompleted != false) {
-            topadsTopupToggleJob =
-                launchCatchError(block = {
-                    toggleTopadsTopupWithDelay()
-                }) {}
+            topadsTopupToggleJob = launch {
+                toggleTopadsTopupWithDelay()
+            }
         }
     }
 
@@ -330,6 +329,10 @@ class OtherMenuViewModel @Inject constructor(
                 OtherMenuDataType.FreeShipping to false
             )
         }
+    }
+
+    fun setDefaultToasterState(isShown: Boolean) {
+        _isToasterAlreadyShown.value = isShown
     }
 
     private fun getFreeShippingStatusData() {
@@ -467,7 +470,7 @@ class OtherMenuViewModel @Inject constructor(
         launchCatchError(
             block = {
                 val balanceInfo = withContext(dispatcher.io) {
-                    balanceInfoUseCase.executeOnBackground().totalBalance.orEmpty()
+                    balanceInfoUseCase.executeOnBackground().totalBalance
                 }
                 _balanceInfoLiveData.value = SettingResponseState.SettingSuccess(balanceInfo)
             },
@@ -571,5 +574,4 @@ class OtherMenuViewModel @Inject constructor(
             }
         }
     }
-
 }

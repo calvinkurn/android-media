@@ -620,6 +620,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun observeToasterAlreadyShown() {
+        viewModel.setDefaultToasterState(false)
         viewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
             canShowErrorToaster = !isToasterAlreadyShown
         }
