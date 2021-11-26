@@ -1,11 +1,7 @@
 package com.tokopedia.chat_common.data
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.chat_common.domain.pojo.productattachment.FreeShipping
-import com.tokopedia.chat_common.domain.pojo.productattachment.PlayStoreData
-import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
-import com.tokopedia.chat_common.domain.pojo.productattachment.TopchatProductRating
+import com.tokopedia.chat_common.domain.pojo.productattachment.*
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
@@ -78,6 +74,11 @@ open class ProductAttachmentUiModel protected constructor(
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
 
+    var isUpcomingCampaign: Boolean = false
+        private set
+    var locationStock: LocationStock = LocationStock()
+        private set
+
     init {
         if (variants.isNotEmpty()) {
             setupVariantsField()
@@ -118,6 +119,8 @@ open class ProductAttachmentUiModel protected constructor(
             }
             this.isLoading = false
             parentId = attribute.productProfile.parentId
+            isUpcomingCampaign = attribute.productProfile.isUpcomingCampaign
+            locationStock = attribute.productProfile.locationStock
         }
     }
 
