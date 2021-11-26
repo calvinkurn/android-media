@@ -52,7 +52,6 @@ class PlayBroadcastModule(private val mContext: Context) {
         return LocalCacheHandler(mContext, KEY_GROUP_CHAT_PREFERENCES)
     }
 
-    @PlayBroadcastScope
     @Provides
     fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler): PusherMediator {
         return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
