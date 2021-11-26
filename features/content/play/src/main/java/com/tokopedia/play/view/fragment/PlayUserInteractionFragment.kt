@@ -133,7 +133,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val partnerInfoView by viewComponentOrNull { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
-    private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
+    private val likeView by viewComponent { LikeViewComponent(it, this) }
+    private val likeCountView by viewComponent { LikeCountViewComponent(it) }
     private val shareLinkView by viewComponentOrNull { ShareLinkViewComponent(it, R.id.view_share_link, this) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
@@ -800,6 +801,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
             if (it.statusType.isFreeze || it.statusType.isBanned) {
                 gradientBackgroundView.hide()
+                likeCountView.hide()
                 likeView.hide()
                 quickReplyView?.hide()
                 chatListView?.hide()
@@ -1533,10 +1535,16 @@ class PlayUserInteractionFragment @Inject constructor(
             likeView.setIsLiked(likeState.isLiked)
         }
 
-        likeView.setTotalLikes(likeState.totalLike)
+        likeCountView.setTotalLikes(likeState.totalLike)
 
-        if (likeState.shouldShow) likeView.show()
-        else likeView.hide()
+        if (likeState.shouldShow) {
+            likeView.show()
+            likeCountView.show()
+        }
+        else {
+            likeView.hide()
+            likeCountView.hide()
+        }
     }
 
     private fun renderLikeBubbleView(likeState: PlayLikeUiState) {
