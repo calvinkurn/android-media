@@ -31,9 +31,9 @@
   <string name="phone_id_idn">+62</string>
   <string name="label_new_phone_number">Nomor HP Baru</string>
   <string name="text_exit_title">Keluar dari halaman ini?</string>
-  <string name="text_exit_description">Foto barusan tidak akan tersimpan dan kamu harus mengulang proses verifikasi dari awal.</string>
+  <string name="text_exit_description">Kamu harus mengulang proses verifikasi dari awal kalau mau ubah nomor HP.</string>
   <string name="text_exit_cta_primary">Keluar</string>
-  <string name="text_exit_cta_secondary">Lanjut Verifikasi</string>
+  <string name="text_exit_cta_secondary">Lanjut Ubah Nomor</string>
   <string name="text_success_title">Perubahan sudah diajukan</string>
   <string name="text_success_description_single_account"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat e-mail ke alamat <b>%s</b> dan SMS ke nomor <b>%s</b>.]]></string>
   <string name="text_success_description_has_no_email"><![CDATA[Datamu akan diproses maks. 1x24 jam ke depan. Informasi seputar pengajuan ini akan dikirim lewat SMS ke nomor <b>%s</b>.]]></string>
