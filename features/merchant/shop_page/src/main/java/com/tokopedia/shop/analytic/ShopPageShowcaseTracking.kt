@@ -23,6 +23,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SHOWCASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
@@ -116,26 +118,27 @@ class ShopPageShowcaseTracking(
 
     fun clickAllShowcaseItem(
             allShowcaseItem: ShopEtalaseUiModel,
+            maxShowcaseList: Int,
             isOwner: Boolean,
             position: Int,
             customDimensionShopPage: CustomDimensionShopPage,
             userId: String
     ) {
         // send tracker for all showcase item clicked
-        sendDataLayerEvent(createEventMap(
+        sendDataLayerEvent(createNewEventMap(
                 eventName = PROMO_CLICK,
                 eventCategory = getShopPageCategory(isOwner),
-                eventAction = CLICK,
-                eventLabel = joinDash(ALL_SHOWCASE_LIST, customDimensionShopPage.shopId),
+                eventAction = "$CLICK $SHOP_SHOWCASE_LIST",
+                eventLabel = joinDash(CLICK, SHOP_SHOWCASE, allShowcaseItem.id, maxShowcaseList.toString()),
                 userId = userId,
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_CLICK to mapOf(
                                 PROMOTIONS to listOf(
                                         mapOf(
-                                                CREATIVE to allShowcaseItem.imageUrl.orEmpty(),
-                                                ID to joinDash(allShowcaseItem.id, customDimensionShopPage.shopId),
-                                                NAME to joinDash(ALL_SHOWCASE_LIST, allShowcaseItem.name),
+                                                CREATIVE to allShowcaseItem.name,
+                                                ID to allShowcaseItem.id,
+                                                NAME to SHOP_SHOWCASE.replace(" ", "_"),
                                                 POSITION to position
                                         )
                                 )
@@ -193,6 +196,31 @@ class ShopPageShowcaseTracking(
                 PAGE_TYPE to SHOPPAGE,
                 SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
                 SHOP_TYPE to customDimensionShopPage.shopType.orEmpty(),
+                USER_ID to userId
+        )
+        ecommerceMap?.let {
+            eventMap[ECOMMERCE] = ecommerceMap
+        }
+        return eventMap
+    }
+
+    private fun createNewEventMap(
+            eventName: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            userId: String,
+            customDimensionShopPage: CustomDimensionShopPage,
+            ecommerceMap: Map<String, Any>? = null
+    ): Map<String, Any> {
+        val eventMap = mutableMapOf<String, Any>(
+                EVENT to eventName,
+                EVENT_CATEGORY to eventCategory,
+                EVENT_ACTION to eventAction,
+                EVENT_LABEL to eventLabel,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
                 USER_ID to userId
         )
         ecommerceMap?.let {

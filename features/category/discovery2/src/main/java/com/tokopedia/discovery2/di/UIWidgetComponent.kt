@@ -1,6 +1,9 @@
 package com.tokopedia.discovery2.di
 
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetCarouselViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.calendarwidget.CalendarWidgetGridViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorybestseller.CategoryBestSellerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
@@ -55,5 +58,8 @@ interface UIWidgetComponent {
     fun inject(discoMerchantVoucherViewModel: DiscoMerchantVoucherViewModel)
     fun inject(merchantVoucherCarouselViewModel: MerchantVoucherCarouselViewModel)
     fun inject(merchantVoucherListViewModel: MerchantVoucherListViewModel)
+    fun inject(calendarWidgetGridViewModel: CalendarWidgetGridViewModel)
+    fun inject(calendarWidgetItemViewModel: CalendarWidgetItemViewModel)
+    fun inject(calendarWidgetCarouselViewModel: CalendarWidgetCarouselViewModel)
 
 }
