@@ -209,7 +209,7 @@ class FirebaseDLWrapper {
     }
 
     private fun getDeeplinkData(data: LinkerData): String? {
-        var uri = data.uri // FDL require URL starting with https
+        var uri = data.renderShareUri() // FDL require URL starting with https
         if (uri == null && data.desktopUrl != null) {
             uri = data.desktopUrl
         } else if (uri == null) {
@@ -228,6 +228,9 @@ class FirebaseDLWrapper {
             }
         }
         uri = Uri.encode(uri)
+        if(uri.startsWith(firebaseBaseUrl)){
+            return uri
+        }
         return "$firebaseBaseUrl/?$linkPath=$uri"
 
     }
