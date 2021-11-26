@@ -8,10 +8,11 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_close"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/play_offset_12"
         android:layout_marginTop="@dimen/play_offset_12"
+        android:padding="@dimen/spacing_lvl2"
         android:visibility="invisible"
         app:icon_color_light_enable="@color/Unify_Static_White"
         app:icon_color_night_enable="@color/Unify_Static_White"
