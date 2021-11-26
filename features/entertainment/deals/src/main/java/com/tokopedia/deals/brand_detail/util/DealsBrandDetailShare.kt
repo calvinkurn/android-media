@@ -70,6 +70,7 @@ class DealsBrandDetailShare (private val activity: WeakReference<Activity>) {
                 id = data.id
                 name = data.title
                 description = data.description
+                type = "entertainment"
                 ogUrl = null
                 imgUri = data.featuredImage
                 uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.deals_brand_detail_share_web_link, data.seoUrl)
