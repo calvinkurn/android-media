@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
 
-class InitialStateProductListAdapter(private val listener: InitialStateItemClickListener) : RecyclerView.Adapter<InitialStateProductLineViewHolder>() {
+class InitialStateProductListAdapter(
+    private val listener: ProductLineListener,
+) : RecyclerView.Adapter<InitialStateProductLineViewHolder>() {
 
     private var data: List<BaseItemInitialStateSearch> = ArrayList()
 
@@ -17,8 +18,13 @@ class InitialStateProductListAdapter(private val listener: InitialStateItemClick
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InitialStateProductLineViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.layout_autocomplete_product_list_item, parent, false)
+        val itemView = LayoutInflater
+            .from(parent.context)
+            .inflate(
+                R.layout.layout_autocomplete_product_list_item,
+                parent,
+                false
+            )
         return InitialStateProductLineViewHolder(itemView, listener)
     }
 

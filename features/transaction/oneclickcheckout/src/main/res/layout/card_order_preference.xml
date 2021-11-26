@@ -186,7 +186,7 @@
                         app:layout_constraintStart_toEndOf="@+id/ticker_shipping_promo_icon"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
-                        app:typographyWeight="bold" />
+                        app:typographyWeight="reguler" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/ticker_shipping_promo_subtitle"
@@ -288,7 +288,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration_eta"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
+                app:typographyWeight="reguler"
                 tools:ignore="RtlSymmetry" />
 
             <com.tokopedia.unifyprinciples.Typography
