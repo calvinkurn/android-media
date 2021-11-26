@@ -25,6 +25,7 @@ data class ProductPostTagViewModelNew(
     val rating: Int = 0,
     var mods: List<Any>,
     var shopId: String = "0",
+    var shopName: String = "",
     override var feedType: String = "",
     override var positionInFeed: Int = 0,
     override var postId: Int = 0,
@@ -32,7 +33,8 @@ data class ProductPostTagViewModelNew(
     var isFollowed:Boolean = false,
     var description:String = "",
     var isTopads:Boolean = false,
-    var adClickUrl:String = ""
+    var adClickUrl:String = "",
+    var playChannelId:String = ""
 ) : BasePostTagViewModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {
         return typeFactory.type(this)

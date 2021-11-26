@@ -1,0 +1,161 @@
+[
+  {
+    "data": {
+      "orderDetails": {
+        "purchasedItems": [
+          {
+            "name": "Special Promo",
+            "price": "Rp116.100"
+          }
+        ],
+        "status": {
+          "status": 800,
+          "statusText": "Transaksi tidak berhasil",
+          "statusLabel": "Status",
+          "iconUrl": "https://ecs7.tokopedia.net/img/recharge/category/pulsa/widget-active.png",
+          "textColor": "#d50000",
+          "backgroundColor": "",
+          "fontSize": "16sp"
+        },
+        "title": [
+          {
+            "label": "Tanggal Transaksi",
+            "value": "09 Nov 2021 16:12  WIB",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          },
+          {
+            "label": "Kategori Produk",
+            "value": "Special Promo",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "metadata": "",
+        "invoice": {
+          "invoiceRefNum": "IVR/20211109/XXI/XI/921304016",
+          "invoiceUrl": "https://pulsa.tokopedia.com/invoice/?pdf\u003dInvoice-Recharge-17211378-8990-20211109161205-uWunMcy4iWvI.pdf\u0026id\u003d921268201"
+        },
+        "items": [],
+        "pricing": [
+          {
+            "label": "Metode Pembayaran",
+            "value": "Saldo Tokopedia",
+            "textColor": "",
+            "backgroundColor": "",
+            "imageUrl": ""
+          }
+        ],
+        "detail": [
+          {
+            "label": "Jenis Layanan",
+            "value": "XL XTRA Combo Double Youtube 15GB + 30GB, 30hr"
+          },
+          {
+            "label": "Nomor",
+            "value": "081908878591"
+          },
+          {
+            "label": "Harga",
+            "value": "Rp116.100"
+          }
+        ],
+        "paymentData": {
+          "label": "Total Pembayaran",
+          "value": "Rp116.100",
+          "textColor": "#ff5722",
+          "backgroundColor": "",
+          "imageUrl": ""
+        },
+        "actionButtons": [
+          {
+            "label": "Primary Button",
+            "buttonType": "primary",
+            "uri": "tokopedia://digital/cart?category_id\u003d1\u0026client_number\u003d0811111111111\u0026idem_potency_key\u003d1636531133_1_0811111111111_68_12\u0026instant_checkout\u003dfalse\u0026operator_id\u003d12\u0026product_id\u003d68\u0026slug\u003dpulsa%2F",
+            "mappingUri": "reorder",
+            "weight": 1,
+            "key": "",
+            "method": "",
+            "uriWeb": "https://pulsa.tokopedia.com/?action\u003dinit_data\u0026category_id\u003d1\u0026client_number\u003d0811111111111\u0026idem_potency_key\u003d1636531133_1_0811111111111_68_12\u0026instant_checkout\u003dfalse\u0026operator_id\u003d12\u0026product_id\u003d68\u0026slug\u003dpulsa%2F",
+            "value": "",
+            "name": "",
+            "control": "",
+            "header": "",
+            "color": {
+              "textColor": "#FFFFFF",
+              "border": "",
+              "background": "#42B549"
+            },
+            "body": {
+              "appURL": "",
+              "webURL": "",
+              "method": "",
+              "body": ""
+            }
+          },
+          {
+            "label": "Secondary Button",
+            "buttonType": "secondary",
+            "uri": "tokopedia://digital/cart?category_id\u003d1\u0026client_number\u003d0811111111111\u0026idem_potency_key\u003d1636531133_1_0811111111111_68_12\u0026instant_checkout\u003dfalse\u0026operator_id\u003d12\u0026product_id\u003d68\u0026slug\u003dpulsa%2F",
+            "mappingUri": "reorder",
+            "weight": 1,
+            "key": "",
+            "method": "",
+            "uriWeb": "https://pulsa.tokopedia.com/?action\u003dinit_data\u0026category_id\u003d1\u0026client_number\u003d0811111111111\u0026idem_potency_key\u003d1636531133_1_0811111111111_68_12\u0026instant_checkout\u003dfalse\u0026operator_id\u003d12\u0026product_id\u003d68\u0026slug\u003dpulsa%2F",
+            "value": "",
+            "name": "",
+            "control": "",
+            "header": "",
+            "color": {
+              "textColor": "#FFFFFF",
+              "border": "",
+              "background": "#42B549"
+            },
+            "body": {
+              "appURL": "",
+              "webURL": "",
+              "method": "",
+              "body": ""
+            }
+          }
+        ],
+        "conditionalInfo": {
+          "text": "Dana pembayaran telah dikembalikan ke Saldo Tokopedia kamu.",
+          "url": "https://tokopedia.link/saldo",
+          "color": {
+            "border": "#ecdb77",
+            "background": "#fffbcd"
+          }
+        },
+        "contactUs": {
+          "helpText": "Untuk bantuan silakan klik \u003chyperlink\u003edisini\u003c/hyperlink\u003e",
+          "helpUrl": "https://www.tokopedia.com/help/reference-article?refnum\u003dIVR%2F20211109%2FXXI%2FXI%2F921304016\u0026refnum_id\u003d921268201\u0026transaction_type_id\u003d2\u0026order_status\u003d800\u0026invoice_type_id\u003d3\u0026product_type_id\u003d55\u0026payment_gateway_id\u003d0\u0026payment_status_id\u003d-4"
+        },
+        "paymentMethod": {
+          "label": "Metode Pembayaran",
+          "value": "Saldo Tokopedia"
+        },
+        "payMethod": [
+          {
+            "label": "Metode Pembayaran",
+            "value": "Saldo Tokopedia"
+          }
+        ],
+        "beforeOrderId": 0,
+        "resolutionId": 0,
+        "driverDetails": {
+          "name": "",
+          "phone": "",
+          "photo": "",
+          "licenseNumber": "",
+          "trackingURL": ""
+        },
+        "promoCode": "",
+        "additionalInfo": [],
+        "additionalTickerInfo": []
+      }
+    }
+  }
+]

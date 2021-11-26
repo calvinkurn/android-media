@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
@@ -23,6 +24,7 @@ import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 
+@UiTest
 class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview

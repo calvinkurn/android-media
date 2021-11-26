@@ -6,6 +6,7 @@ import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.notifications.common.CMConstant
 
 /**
  * @author lalit.singh
@@ -116,5 +117,10 @@ data class AmplificationCMInApp (
     var isAmplification: Boolean? = false,
 
     @ColumnInfo(name = "customValues")
-    var customValues: String? = ""
+    var customValues: String? = "",
+
+    @Expose
+    @SerializedName(CMConstant.PayloadKeys.SHOP_ID)
+    @ColumnInfo(name = "shopId")
+    var shopId: String? = null
 )

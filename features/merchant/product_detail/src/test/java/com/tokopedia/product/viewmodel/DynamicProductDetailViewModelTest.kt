@@ -40,7 +40,6 @@ import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
 import com.tokopedia.product.util.ProductDetailTestUtil.getMockP2Data
 import com.tokopedia.product.util.getOrAwaitValue
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -1270,41 +1269,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         verify {
             updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
         }
-    }
-
-    /**
-     * HitSubmitTicket
-     */
-    @Test
-    fun onSuccessHitSubmitTicket() {
-        val data = SubmitTicketResult()
-        val request = AddToCartDataModel()
-        val requestParams = RequestParams()
-        val onError = mockk<((Throwable?) -> Unit)>()
-
-        every {
-            submitHelpTicketUseCase.createObservable(requestParams)
-        } returns Observable.just(data)
-
-        viewModel.hitSubmitTicket(request, onError, {
-            Assert.assertEquals(it, data)
-        })
-    }
-
-    @Test
-    fun onErrorHitSubmitTicket() {
-        val data = SubmitTicketResult()
-        val request = AddToCartDataModel(errorReporter = ErrorReporterModel(texts = ErrorReporterTextModel(submitDescription = "error")), errorMessage = arrayListOf("error ganteng"))
-        val requestParams = RequestParams()
-        val onSuccess = mockk<((SubmitTicketResult) -> Unit)>()
-
-        every {
-            submitHelpTicketUseCase.createObservable(requestParams)
-        } returns Observable.just(data)
-
-        viewModel.hitSubmitTicket(request, {
-            Assert.assertTrue(it is Throwable)
-        }, onSuccess)
     }
 
     /**

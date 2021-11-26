@@ -6,7 +6,9 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
+import com.tokopedia.search.result.presentation.model.GlobalNavDataView
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.slot
 import io.mockk.verify
@@ -19,7 +21,7 @@ internal class SearchProductBannedProductsTest: ProductListPresenterTestFixtures
     private val bannedProductsVisitableList by lazy { bannedProductsVisitableListSlot.captured }
 
     @Test
-    fun `Test show banned products message`() {
+    fun `Show banned products message`() {
         val searchProductModel = "searchproduct/bannedproducts/banned-products.json".jsonToObject<SearchProductModel>()
 
         `Given search product API will return empty search with error message`(searchProductModel)
@@ -52,6 +54,31 @@ internal class SearchProductBannedProductsTest: ProductListPresenterTestFixtures
         bannedProductsVisitableList.size shouldBe 1
 
         val bannedProductsViewModel = bannedProductsVisitableList[0] as BannedProductsEmptySearchDataView
+
+        bannedProductsViewModel.errorMessage shouldBe searchProductModel.searchProduct.header.errorMessage
+    }
+
+    @Test
+    fun `Show banned products message with global nav`() {
+        val bannedProductsJSON = "searchproduct/bannedproducts/banned-products-with-global-nav.json"
+        val searchProductModel = bannedProductsJSON.jsonToObject<SearchProductModel>()
+
+        `Given search product API will return empty search with error message`(searchProductModel)
+
+        `When load data`()
+
+        `Then verify view interaction for banned products`()
+        `Then verify visitable list contains global nav and banned products`(searchProductModel)
+    }
+
+    private fun `Then verify visitable list contains global nav and banned products`(
+        searchProductModel: SearchProductModel
+    ) {
+        val globalNavWidgetDataView = bannedProductsVisitableList[0]
+        globalNavWidgetDataView.shouldBeInstanceOf<GlobalNavDataView>()
+
+        val bannedProductsViewModel =
+            bannedProductsVisitableList[1] as BannedProductsEmptySearchDataView
 
         bannedProductsViewModel.errorMessage shouldBe searchProductModel.searchProduct.header.errorMessage
     }
