@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
+import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity
 import java.io.File
 
 class SharedPreferenceListFragment :
@@ -72,7 +72,7 @@ class SharedPreferenceListFragment :
                 context,
                 SharedPrefDetailFragmentActivity::class.java
             )
-            intent.putExtra(DeveloperOptionActivity.SHARED_PREF_FILE, visitable.id)
+            intent.putExtra(NewDeveloperOptionActivity.SHARED_PREF_FILE, visitable.id)
             startActivity(intent)
         }
     }

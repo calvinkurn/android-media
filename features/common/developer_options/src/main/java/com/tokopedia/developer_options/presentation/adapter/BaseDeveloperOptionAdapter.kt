@@ -22,7 +22,6 @@ open class BaseDeveloperOptionAdapter<T, F: AdapterTypeFactory>(
         result.dispatchUpdatesTo(this)
     }
 
-
     override fun showLoading() {
         if (!isLoading) {
             val items = getItems()

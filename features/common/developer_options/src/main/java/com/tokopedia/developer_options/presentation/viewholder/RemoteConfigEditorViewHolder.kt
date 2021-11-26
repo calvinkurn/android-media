@@ -6,7 +6,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
+import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.RemoteConfigEditorUiModel
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -33,7 +33,7 @@ class RemoteConfigEditorViewHolder(
     private fun startRemoteConfigEditor(prefix: String) {
         itemView.context.apply {
             val intent = Intent(this, RemoteConfigFragmentActivity::class.java)
-            intent.putExtra(DeveloperOptionActivity.REMOTE_CONFIG_PREFIX, prefix.trim { it <= ' ' })
+            intent.putExtra(NewDeveloperOptionActivity.REMOTE_CONFIG_PREFIX, prefix.trim { it <= ' ' })
             startActivity(intent)
         }
     }
