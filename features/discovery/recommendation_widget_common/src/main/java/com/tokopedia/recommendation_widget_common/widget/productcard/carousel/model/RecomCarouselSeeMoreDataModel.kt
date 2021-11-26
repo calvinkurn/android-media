@@ -19,10 +19,7 @@ data class RecomCarouselSeeMoreDataModel(
     }
 
     override fun areItemsTheSame(toCompare: RecomCarouselDiffUtilComparable): Boolean {
-        if (toCompare !is RecomCarouselSeeMoreDataModel) return false
-
-        return applink == toCompare.applink && componentName == toCompare.componentName &&
-                backgroundImage == toCompare.backgroundImage
+        return toCompare !is RecomCarouselSeeMoreDataModel
     }
 
     override fun areContentsTheSame(toCompare: RecomCarouselDiffUtilComparable): Boolean {
