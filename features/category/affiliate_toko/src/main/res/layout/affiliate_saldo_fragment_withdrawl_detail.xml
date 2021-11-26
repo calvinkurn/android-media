@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -34,6 +32,17 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="gone" />
 
+        <com.tokopedia.unifycomponents.ticker.Ticker
+            android:id="@+id/saldoTicker"
+            app:tickerType="error"
+            app:closeButtonVisibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvWithdrawalAmount"
             android:layout_width="wrap_content"
@@ -41,7 +50,7 @@
             android:layout_marginStart="@dimen/unify_space_16"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/saldoTicker"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
             tools:text="Rp600.00" />

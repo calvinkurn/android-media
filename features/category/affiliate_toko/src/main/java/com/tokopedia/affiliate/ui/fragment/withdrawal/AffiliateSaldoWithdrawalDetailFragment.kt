@@ -23,9 +23,12 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -109,6 +112,16 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
     }
 
     private fun setHeaderData(data: WithdrawalInfoData) {
+        data.ticker?.let { ticker ->
+            view?.findViewById<Ticker>(R.id.saldoTicker)?.apply {
+                show()
+                if(!ticker.tickerTitle.isNullOrBlank()){
+                    tickerTitle = ticker.tickerTitle
+                    setTextDescription(ticker.tickerDescription ?: "")
+                }
+                else { hide() }
+            }
+        }
         view?.findViewById<Typography>(R.id.tvWithdrawalAmount)?.text = data.amountFormatted
         view?.findViewById<Typography>(R.id.tvBankName)?.text = data.bankName
         view?.findViewById<Typography>(R.id.tvAccountName)?.text = data.accountName

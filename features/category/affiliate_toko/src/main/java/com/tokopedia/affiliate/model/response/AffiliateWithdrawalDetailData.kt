@@ -48,16 +48,16 @@ data class WithdrawalInfoData(
 
     data class Ticker(
             @SerializedName("TickerTitle")
-            val tickerTitle: String,
+            val tickerTitle: String?,
             @SerializedName("TickerDescription")
-            val tickerDescription: String
+            val tickerDescription: String?
     )
 
     data class Label(
             @SerializedName("LabelType")
-            val labelType: String,
+            val labelType: String?,
             @SerializedName("LabelText")
-            val labelText: String
+            val labelText: String?
     )
 
     data class Error(
