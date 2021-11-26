@@ -6,6 +6,8 @@ import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey.THANK_STACKED_CASHBACK_TITLE
+import com.tokopedia.thankyou_native.domain.model.BundleGroupItem
+import com.tokopedia.thankyou_native.domain.model.PurchaseItem
 
 class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
@@ -137,19 +139,53 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         }
     }
 
-
+    /*
+    * @param: bundleToProductMap: stores map of bundleId to OrderedItems with same bundle Id
+    * to be rendered in view
+    * @param: bundleMap: to enable O(1) access of bundleData while looping item_list from bundle_group_id
+    * */
     private fun createShopsSummery(thanksPageData: ThanksPageData) {
         if (thanksPageData.shopOrder.isNotEmpty())
             visitableList.add(PurchasedProductTag())
         var currentIndex = 0
+        val bundleToProductMap = mutableMapOf<String, ArrayList<OrderedItem>>()
+        var bundleMap: MutableMap<String, BundleGroupItem>
         thanksPageData.shopOrder.forEach { shopOrder ->
+
             if (currentIndex > 0)
                 visitableList.add(ShopDivider())
             val orderedItemList = arrayListOf<OrderedItem>()
             var totalProductProtectionForShop = 0.0
+
+            // Map population
+            bundleMap = shopOrder.bundleGroupList.associateBy({it.groupId}, {it}).toMutableMap()
+
+            // Map population
             shopOrder.purchaseItemList.forEach { purchasedItem ->
-                orderedItemList.add(OrderedItem(purchasedItem.productName, purchasedItem.quantity,
-                        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct))
+                val bundleGroupId = purchasedItem.bundleGroupId
+                if (bundleGroupId.isNotEmpty()) {
+                    if (bundleToProductMap.containsKey(bundleGroupId))
+                        bundleToProductMap[bundleGroupId]?.add(createOrderItemFromPurchase(purchasedItem))
+                     else bundleToProductMap[bundleGroupId] = arrayListOf(createOrderItemFromPurchase(purchasedItem))
+                }
+            }
+
+            shopOrder.purchaseItemList.forEach { purchasedItem ->
+                val bundleGroupId = purchasedItem.bundleGroupId
+                // Normal Product
+                if (bundleGroupId.isEmpty())
+                    orderedItemList.add(createOrderItemFromPurchase(purchasedItem, OrderItemType.SINGLE_PRODUCT))
+                else {
+                    if (bundleToProductMap.containsKey(bundleGroupId)) {
+                        // add bundle data name
+                        // add product data having same bundle Id
+                        // prevent same products from re-calculation in the current loop
+                        orderedItemList.add(createOrderItemFromBundle(bundleMap[bundleGroupId]))
+                        orderedItemList.addAll(bundleToProductMap[bundleGroupId]?: arrayListOf())
+                        bundleToProductMap.remove(bundleGroupId)
+                    }
+                }
+
                 totalProductProtectionForShop += purchasedItem.productPlanProtection
             }
 
@@ -186,8 +222,21 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     shopOrder.address)
             visitableList.add(shopInvoice)
             currentIndex++
+
+            bundleToProductMap.clear()
+            bundleMap.clear()
         }
     }
+
+    private fun createOrderItemFromPurchase(purchasedItem: PurchaseItem, orderItemType: OrderItemType = OrderItemType.BUNDLE_PRODUCT) = OrderedItem(purchasedItem.productName, purchasedItem.quantity,
+        purchasedItem.priceStr, purchasedItem.totalPriceStr, purchasedItem.isBBIProduct, orderItemType)
+
+    private fun createOrderItemFromBundle(bundleGroupItem: BundleGroupItem?) = OrderedItem(
+        bundleGroupItem?.bundleTitle ?: "",
+        null,
+        bundleGroupItem?.totalPrice.toString(),
+        bundleGroupItem?.totalPriceStr ?: "",
+        false, OrderItemType.BUNDLE)
 
 }
 

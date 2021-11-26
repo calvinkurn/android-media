@@ -18,11 +18,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Slide
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.*
@@ -293,12 +294,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindImage(product: ProductAttachmentUiModel) {
-        ImageHandler.loadImageRounded2(
-                context,
-                thumbnail,
-                product.productImage,
-                8f.toPx()
-        )
+        thumbnail?.loadImageRounded(product.productImage, 8f.toPx())
     }
 
     private fun bindProductName(product: ProductAttachmentUiModel) {
@@ -382,7 +378,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindSellerFullfilment(product: ProductAttachmentUiModel) {
         if (commonListener?.isSeller() == true && product.isFulfillment) {
             sellerFullfilment?.show()
-            ImageHandler.LoadImage(sellerFullfilmentImage, product.urlTokocabang)
+            sellerFullfilmentImage?.loadImage(product.urlTokocabang) {
+                fitCenter()
+            }
         } else {
             sellerFullfilment?.hide()
         }
@@ -499,7 +497,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private fun bindFreeShipping(product: ProductAttachmentUiModel) {
         if (product.hasFreeShipping() && commonListener?.isSeller() == false) {
             freeShippingImage?.show()
-            ImageHandler.loadImageRounded2(context, freeShippingImage, product.getFreeShippingImageUrl())
+            freeShippingImage?.loadImageRounded(product.getFreeShippingImageUrl())
         } else {
             freeShippingImage?.hide()
         }

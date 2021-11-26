@@ -35,7 +35,7 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
         private const val FIELD_BO_METADATA = "{\"bo_metadata\":{\"bo_type\":3,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"}]}}\""
 
         fun createParams(productWeight: Float, shopDomain: String, origin: String?, productId: String,
-                         shopId: String, isFulfillment: Boolean, destination: String, free_shipping_flag: Int,
+                         shopId: String, isFulfillment: Boolean, destination: String, freeShippingFlag: Int,
                          poTime: Long, shopTier: Int): Map<String, Any?> = mapOf(
                 PARAM_PRODUCT_WEIGHT to productWeight,
                 PARAM_SHOP_DOMAIN to shopDomain,
@@ -45,9 +45,9 @@ class GetRatesEstimateUseCase @Inject constructor(private val graphqlRepository:
                 PARAM_IS_FULFILLMENT to isFulfillment,
                 PARAM_DESTINATION to destination,
                 PARAM_PO_TIME to poTime,
-                PARAM_FREE_SHIPPING to free_shipping_flag,
+                PARAM_FREE_SHIPPING to freeShippingFlag,
                 PARAM_SHOP_TIER to shopTier,
-                PARAM_BO_META_DATA to if (free_shipping_flag == BO_TOKONOW) FIELD_BO_METADATA else "")
+                PARAM_BO_META_DATA to if (freeShippingFlag == BO_TOKONOW) FIELD_BO_METADATA else "")
 
         val QUERY = """
             query RateEstimate(${'$'}weight: Float!, ${'$'}domain: String!, ${'$'}origin: String, ${'$'}shop_id: String, ${'$'}product_id: String, ${'$'}destination: String!, ${'$'}is_fulfillment: Boolean,${'$'}free_shipping_flag: Int, ${'$'}po_time: Int, ${'$'}shop_tier: Int, ${'$'}bo_metadata:String) {

@@ -105,17 +105,17 @@ object DeeplinkMapper {
         val mappedDeepLink: String = when (uri.scheme) {
             DeeplinkConstant.SCHEME_HTTP,
             DeeplinkConstant.SCHEME_HTTPS -> {
-                val query = uri.query
+                val query = getQuery(deeplink, uri)
                 val tempDeeplink = getRegisteredNavigationFromHttp(context, uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_TOKOPEDIA -> {
-                val query = uri.query
+                val query = getQuery(deeplink, uri)
                 val tempDeeplink = getRegisteredNavigationFromTokopedia(context, uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
             DeeplinkConstant.SCHEME_SELLERAPP -> {
-                val query = uri.query
+                val query = getQuery(deeplink, uri)
                 val tempDeeplink = getRegisteredNavigationFromSellerapp(uri, deeplink)
                 UriUtil.appendDiffDeeplinkWithQuery(tempDeeplink, query)
             }
@@ -125,6 +125,21 @@ object DeeplinkMapper {
             else -> deeplink
         }
         return mappedDeepLink
+    }
+
+    /**
+     * Improvement from uri.query
+     * Example url:
+     * tokopedia://webview?url=https://registeruat.dbank.co.id/web-verification/#/tokopedia/
+     * Expected query = https://registeruat.dbank.co.id/web-verification/#/tokopedia/
+     */
+    private fun getQuery(uriString: String, uri: Uri): String? {
+        val uriStringAfterQMark = uriString.substringAfter("?")
+        if (uriStringAfterQMark.contains("#")) {
+            return uriStringAfterQMark
+        } else {
+            return uri.query
+        }
     }
 
     private fun getRegisteredNavigationProductTalk(productId: String?): String {
@@ -144,9 +159,9 @@ object DeeplinkMapper {
         if (GlobalConfig.isSellerApp()) {
             if (uri.getQueryParameter(paramFilter)?.isNotBlank() == true) {
                 return Uri.parse(deepLinkInternal)
-                        .buildUpon()
-                        .appendQueryParameter(paramFilter, uri.getQueryParameter(paramFilter))
-                        .build().toString()
+                    .buildUpon()
+                    .appendQueryParameter(paramFilter, uri.getQueryParameter(paramFilter))
+                    .build().toString()
             }
         }
         if (path.isNotEmpty()) {

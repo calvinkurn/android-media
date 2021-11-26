@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.changeTimeStampTo
@@ -28,6 +29,7 @@ import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 
+@UiTest
 class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
 
     lateinit var productPreview: ProductPreview

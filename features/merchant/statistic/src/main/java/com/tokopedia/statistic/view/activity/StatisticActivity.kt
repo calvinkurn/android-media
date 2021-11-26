@@ -101,6 +101,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
         observeWhiteListStatus()
         observeUserRole()
+        fetchPMStatus()
     }
 
     override fun getComponent(): StatisticComponent {
@@ -232,6 +233,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             }
         })
         viewModel.getUserRole()
+    }
+
+    private fun fetchPMStatus() {
+        viewModel.fetchPMStatus()
     }
 
     private fun setupTabs() = binding?.run {

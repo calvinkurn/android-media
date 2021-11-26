@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataResponse
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT
 import com.tokopedia.discovery2.data.gqlraw.GQL_COMPONENT_QUERY_NAME
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import javax.inject.Inject
 
@@ -34,6 +35,9 @@ class ProductCardsGQLRepository @Inject constructor() : BaseRepository(), Produc
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleItem.componentName, componentProperties, creativeName)
             ComponentNames.ProductCardSprintSaleCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleCarouselItem.componentName, componentProperties, creativeName)
+            ComponentNames.CalendarWidgetGrid.componentName, ComponentNames.CalendarWidgetCarousel.componentName ->
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.CalendarWidgetItem.componentName, componentProperties, creativeName,
+                    parentComponentPosition = getComponent(componentId, pageEndPoint)?.position)
             else ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName)
 

@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
-import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
 import com.tokopedia.utils.currency.CurrencyFormatUtil.convertPriceValueToIdrFormat
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCostModel
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 
 class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutInflater) : RecyclerView.ViewHolder(itemView) {
@@ -52,7 +52,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
     fun bindViewHolder(shipmentCost: ShipmentCostModel) {
         mRlShipmentCostLayout.visibility = View.VISIBLE
         mTvTotalItemLabel.text = getTotalItemLabel(mTvTotalItemLabel.context, shipmentCost.totalItem)
-        mTvTotalItemPrice.setTextAndContentDescription(if (shipmentCost.totalItemPrice == 0.0) "-" else removeDecimalSuffix(convertPriceValueToIdrFormat(shipmentCost.totalItemPrice.toLong(), false)), R.string.content_desc_tv_total_item_price_summary)
+        mTvTotalItemPrice.setTextAndContentDescription(if (shipmentCost.totalItemPrice == 0.0) "-" else convertPriceValueToIdrFormat(shipmentCost.totalItemPrice.toLong(), false).removeDecimalSuffix(), R.string.content_desc_tv_total_item_price_summary)
         mTvShippingFeeLabel.text = mTvShippingFeeLabel.context.getString(com.tokopedia.purchase_platform.common.R.string.label_shipment_fee)
         mTvShippingFee.setTextAndContentDescription(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.shippingFee), R.string.content_desc_tv_shipping_fee_summary)
         mTvInsuranceFee.setTextAndContentDescription(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.insuranceFee), R.string.content_desc_tv_insurance_fee_summary)
@@ -157,7 +157,7 @@ class ShipmentCostViewHolder(itemView: View, private val layoutInflater: LayoutI
         } else {
             textViewLabel.visibility = View.VISIBLE
             textViewPrice.visibility = View.VISIBLE
-            removeDecimalSuffix(convertPriceValueToIdrFormat(price.toLong(), false))
+            convertPriceValueToIdrFormat(price.toLong(), false).removeDecimalSuffix()
         }
     }
 

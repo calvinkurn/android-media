@@ -112,6 +112,9 @@ public class CmInAppBundleConvertor {
 
             CMLayout cmLayout = amplificationCMInApp.getCmLayout();
             cmInApp.setCmLayout(cmLayout);
+
+            cmInApp.setShopId(amplificationCMInApp.getShopId());
+
             return cmInApp;
 
         } catch (Exception e) {
@@ -207,6 +210,10 @@ public class CmInAppBundleConvertor {
         String ui = map.get(RulesUtil.Constants.Payload.UI);
         CMLayout cmLayout = gson.fromJson(ui, CMLayout.class);
         cmInApp.setCmLayout(cmLayout);
+
+        if (map.containsKey(RulesUtil.Constants.Payload.SHOP_ID))
+            cmInApp.setShopId(map.get(RulesUtil.Constants.Payload.SHOP_ID));
+
         return cmInApp;
     }
 
