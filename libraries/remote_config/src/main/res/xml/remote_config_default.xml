@@ -441,6 +441,11 @@
         <key>android_async_hansel_init</key>
         <value>true</value>
     </entry>
+
+    <entry>
+        <key>android_async_gratification_init</key>
+        <value>false</value>
+    </entry>
     <entry>
         <key>android_async_home_dagger</key>
         <value>false</value>

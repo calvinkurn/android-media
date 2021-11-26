@@ -141,7 +141,6 @@ class ProductListPresenter @Inject constructor(
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
-        private val trackRelatedKeywordResponseCodeList = listOf("3", "6")
         private val showInspirationCarouselLayout = listOf(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
@@ -165,6 +164,8 @@ class ProductListPresenter @Inject constructor(
                 SearchApiConst.SRP_PAGE_ID,
                 SearchApiConst.SRP_PAGE_TITLE,
         )
+        private const val RESPONSE_CODE_RELATED = "3"
+        private const val RESPONSE_CODE_SUGGESTION = "6"
         private const val EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11"
     }
 
@@ -207,6 +208,8 @@ class ProductListPresenter @Inject constructor(
     private var chooseAddressData: LocalCacheModel? = null
     private var bannerDataView: BannerDataView? = null
     private var categoryIdL2 = ""
+    private var suggestionKeyword = ""
+    private var relatedKeyword = ""
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -446,13 +449,16 @@ class ProductListPresenter @Inject constructor(
         totalData = productDataView.totalData
     }
 
-    private fun createProductDataView(searchProductModel: SearchProductModel): ProductDataView {
+    private fun createProductDataView(
+        searchProductModel: SearchProductModel,
+        pageTitleEventLabel: String = "",
+    ): ProductDataView {
         val lastProductItemPosition = view.lastProductItemPositionFromCache
 
         val productDataView = ProductViewModelMapper().convertToProductViewModel(
                 lastProductItemPosition,
                 searchProductModel,
-                pageTitle,
+                pageTitleEventLabel,
                 isLocalSearch(),
                 dimension90,
         )
@@ -735,6 +741,8 @@ class ProductListPresenter @Inject constructor(
         autoCompleteApplink = productDataView.autocompleteApplink ?: ""
         totalData = productDataView.totalData
         categoryIdL2 = productDataView.categoryIdL2
+        relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
+        suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
 
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
@@ -942,7 +950,7 @@ class ProductListPresenter @Inject constructor(
     private fun createProductViewModelMapperLocalSearchRecommendation(searchProductModel: SearchProductModel): ProductDataView {
         if (startFrom == 0) view.clearLastProductItemPositionFromCache()
 
-        return createProductDataView(searchProductModel)
+        return createProductDataView(searchProductModel, pageTitle)
     }
 
     private fun getGlobalSearchRecommendation() {
@@ -1844,12 +1852,10 @@ class ProductListPresenter @Inject constructor(
         view.sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword())
     }
 
-    private fun getSuggestedRelatedKeyword(): String {
-        if (!trackRelatedKeywordResponseCodeList.contains(responseCode)) return ""
-        val relatedDataView = relatedDataView ?: return ""
-
-        return if (relatedDataView.relatedKeyword.isNotEmpty()) relatedDataView.relatedKeyword
-        else ""
+    private fun getSuggestedRelatedKeyword(): String = when (responseCode) {
+        RESPONSE_CODE_RELATED -> relatedKeyword
+        RESPONSE_CODE_SUGGESTION -> suggestionKeyword
+        else -> ""
     }
 
     private fun checkShouldShowBOELabelOnBoarding(position: Int) {
