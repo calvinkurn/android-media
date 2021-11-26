@@ -27,7 +27,7 @@ object DeeplinkMapperDeals {
                 UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG, uri.pathSegments[0])
 
             //tokopedia://deals/brand/{slug}
-            uri.pathSegments.size == 2 && uri.pathSegments[0] == "brand" ->
+            uri.pathSegments.size == 2 && (uri.pathSegments[0] == "brand" || uri.pathSegments[0] == "b") ->
                 if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_REVAMP_DEALS_EVENT, true)){
                     "${ApplinkConstInternalDeals.DEALS_BRAND_DETAIL_PAGE}?${uri.pathSegments[1]}"
                 } else UriUtil.buildUri(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL, uri.pathSegments[1])
