@@ -217,6 +217,7 @@ class FirebaseDLWrapper {
         }
 
         var deeplink = createLinkProperties(data)
+        deeplink= Uri.encode(deeplink)
         if (uri != null) {
             if (uri.contains("?")) {
                 uri = "$uri&$androidUrlPath=$deeplink"
