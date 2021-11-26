@@ -6,7 +6,7 @@
         android:bottomRightRadius="@dimen/dp_30"
         android:topRightRadius="@dimen/dp_30" />
 
-    <solid android:color="@color/clr_EF144A" />
+    <solid android:color="@color/clr_dms_EF144A" />
 
     <padding
         android:bottom="@dimen/dp_6"

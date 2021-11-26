@@ -152,9 +152,9 @@ data class ShopLayoutWidget(
 
             data class BackgroundGradientColor(
                     @SerializedName("firstColor")
-                    val firstColor: String = "#008849",
+                    val firstColor: String = "",
                     @SerializedName("secondColor")
-                    val secondColor: String = "#00AA5B"
+                    val secondColor: String = ""
             )
 
             data class Product(

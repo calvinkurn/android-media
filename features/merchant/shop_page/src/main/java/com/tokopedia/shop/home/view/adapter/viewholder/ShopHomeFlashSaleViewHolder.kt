@@ -76,8 +76,8 @@ class ShopHomeFlashSaleViewHolder(
         setupCtaSeeAll(productSize)
         setupFlashSaleBackgroundView(
             productList = flashSaleItem?.productList.orEmpty(),
-            startBackgroundColor = flashSaleItem?.firstBackgroundColor,
-            endBackgroundColor = flashSaleItem?.secondBackgroundColor,
+            startBackGroundColor = flashSaleItem?.firstBackgroundColor,
+            endBackGroundColor = flashSaleItem?.secondBackgroundColor,
         )
         setupFlashSaleCountDownTimer(element)
         setupFlashSaleReminder(flashSaleItem)
@@ -131,11 +131,11 @@ class ShopHomeFlashSaleViewHolder(
         else ctaSeeAllView?.show()
     }
 
-    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackgroundColor: String?, endBackgroundColor: String?) {
+    private fun setupFlashSaleBackgroundView(productList: List<ShopHomeProductUiModel>, startBackGroundColor: String?, endBackGroundColor: String?) {
         // set flash sale background color
         val colors = intArrayOf(
-            Color.parseColor(getStringColor(startBackgroundColor, R.color.fs_toko_bg_start_gradient_color)),
-            Color.parseColor(getStringColor(endBackgroundColor, R.color.fs_toko_bg_end_gradient_color))
+            getBackGroundColor(startBackGroundColor, R.color.fs_toko_bg_start_dms_gradient_color),
+            getBackGroundColor(endBackGroundColor, R.color.fs_toko_bg_end_dms_gradient_color)
         )
         val gradientDrawable = GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP, colors)
         singleBackGroundView?.background = gradientDrawable
@@ -254,6 +254,14 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun isStatusCampaignUpcoming(statusCampaign: String): Boolean {
         return statusCampaign.equals(StatusCampaign.UPCOMING.statusCampaign, true)
+    }
+
+    private fun getBackGroundColor(color: String?, colorRes: Int): Int {
+        return try {
+            Color.parseColor(getStringColor(color, colorRes))
+        } catch (e: Exception) {
+            Color.parseColor(String.format(FORMAT_STRING_COLOR, ContextCompat.getColor(itemView.context, colorRes) and FORMAT_HEX_COLOR))
+        }
     }
 
     private fun getStringColor(color: String?, colorRes: Int): String {

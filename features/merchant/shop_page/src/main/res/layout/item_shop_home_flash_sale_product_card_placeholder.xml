@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/shop_page_label_see_all"
-                android:textColor="@color/unify_G500"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:typographyType="body_3"
