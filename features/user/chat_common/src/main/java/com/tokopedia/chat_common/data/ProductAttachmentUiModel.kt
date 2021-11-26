@@ -65,9 +65,10 @@ open class ProductAttachmentUiModel protected constructor(
     val hasDiscount: Boolean
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
+                    && priceBefore != productPrice && dropPercentage != "0"
         }
     val stringBlastId: String get() = blastId.toString()
-    var campaignId: Long = 0
+    var campaignId: Long = builder.campaignId
     var isFulfillment: Boolean = false
     var urlTokocabang: String = ""
     var parentId: String = "0"
