@@ -265,19 +265,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_PRODUCT_NONLOGIN)
         }
     }
-
-    @Test
-    fun testComponentCategoryWidget() {
-        HomeDCCassavaTest {
-            initTest()
-            doActivityTestByModelClass(dataModelClass = DynamicChannelDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnCategoryWidgetSection(viewHolder, i)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET)
-        }
-    }
+//
+//    @Test
+//    fun testComponentCategoryWidget() {
+//        HomeDCCassavaTest {
+//            initTest()
+//            doActivityTestByModelClass(dataModelClass = DynamicChannelDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+//                clickOnCategoryWidgetSection(viewHolder, i)
+//            }
+//        } validateAnalytics {
+//            addDebugEnd()
+//            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CATEGORY_WIDGET)
+//        }
+//    }
 
     @Test
     fun testRechargeBUWidget() {
