@@ -538,7 +538,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                     if (payment.isOvo) {
                                         listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                                     } else {
-                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
+                                        listener.onWalletTopUpClicked(payment.walletData.walletType, payment.walletData.topUp.urlLink, payment.walletData.callbackUrl,
+                                                payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
                                     }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
                                     if (payment.isOvo) {
@@ -565,7 +566,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                                     if (payment.isOvo) {
                                         listener.onOvoTopUpClicked(payment.walletErrorData.callbackUrl, payment.walletErrorData.isHideDigital, payment.ovoData.customerData)
                                     } else {
-                                        listener.onWalletTopUpClicked(payment.walletData.topUp.urlLink, payment.walletData.callbackUrl, payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
+                                        listener.onWalletTopUpClicked(payment.walletData.walletType, payment.walletData.topUp.urlLink, payment.walletData.callbackUrl,
+                                                payment.walletErrorData.isHideDigital, payment.walletData.topUp.headerTitle)
                                     }
                                 } else if (payment.walletErrorData.type == OrderPaymentWalletErrorData.TYPE_ACTIVATION) {
                                     if (payment.isOvo) {
@@ -581,6 +583,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
                         tvPaymentOvoErrorAction.gone()
                         if (payment.walletErrorData.type != OrderPaymentWalletErrorData.TYPE_TOP_UP) {
                             tvPaymentDetail.gone()
+                        } else if (payment.walletData.walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
+                            orderSummaryAnalytics.eventViewTopUpGoPayButton()
                         }
                     } else {
                         // only show message
@@ -848,6 +852,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
 
         fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData)
 
-        fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: String)
+        fun onWalletTopUpClicked(walletType: Int, url: String, callbackUrl: String, isHideDigital: Int, title: String)
     }
 }

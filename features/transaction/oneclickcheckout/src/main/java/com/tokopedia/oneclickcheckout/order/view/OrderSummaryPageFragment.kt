@@ -1322,9 +1322,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun onWalletTopUpClicked(url: String, callbackUrl: String, isHideDigital: Int, title: String) {
+        override fun onWalletTopUpClicked(walletType: Int, url: String, callbackUrl: String, isHideDigital: Int, title: String) {
             context?.let {
                 startActivityForResult(PaymentTopUpWebViewActivity.createIntent(it, title, url = url, redirectUrl = callbackUrl, isHideDigital = isHideDigital), REQUEST_CODE_PAYMENT_TOP_UP)
+                if (walletType == OrderPaymentWalletAdditionalData.WALLET_TYPE_GOPAY) {
+                    orderSummaryAnalytics.eventClickTopUpGoPayButton()
+                }
             }
         }
     }
