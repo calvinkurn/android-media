@@ -1041,11 +1041,10 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }.coAnswers {
             val onError = lambda<(Throwable) -> Unit>()
             onError.invoke(Throwable(""))
-
-            ProductInfoP2UiData(
-                    miniCart = if (!hitMiniCart) mutableMapOf()
-                    else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap(),
-                    upcomingCampaigns = generateNotifyMeMock())
+            val p2Mock = getMockP2Data()
+            p2Mock.miniCart = if (!hitMiniCart) mutableMapOf() else generateMiniCartMock(dataP1.layoutData.basic.productID).toMutableMap()
+            p2Mock.upcomingCampaigns = generateNotifyMeMock()
+            p2Mock
         }
 
         coEvery {
