@@ -6,7 +6,7 @@ import androidx.annotation.LayoutRes
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.SendFirebaseCrashExceptionUiModel
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -28,7 +28,7 @@ class SendFirebaseCrashExceptionViewHolder(
             if (crashMessage.isBlank()) {
                 Toast.makeText(itemView.context, "Crash message should not be empty", Toast.LENGTH_SHORT).show()
             } else {
-                FirebaseCrashlytics.getInstance().recordException(NewDeveloperOptionActivity.DeveloperOptionException(crashMessage))
+                FirebaseCrashlytics.getInstance().recordException(DeveloperOptionActivity.DeveloperOptionException(crashMessage))
             }
         }
     }

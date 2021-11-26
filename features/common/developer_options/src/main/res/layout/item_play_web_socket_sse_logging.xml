@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="5dp"
         android:text="@string/play_websocket_and_sse_logging_title"/>
 
     <com.tokopedia.unifycomponents.UnifyButton

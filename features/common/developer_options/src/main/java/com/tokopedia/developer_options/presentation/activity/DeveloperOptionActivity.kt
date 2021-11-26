@@ -38,7 +38,7 @@ import java.lang.RuntimeException
  * @author Said Faisal on 24/11/2021
  */
 
-class NewDeveloperOptionActivity : BaseActivity() {
+class DeveloperOptionActivity : BaseActivity() {
 
     companion object {
         private const val CACHE_FREE_RETURN = "CACHE_FREE_RETURN"
@@ -123,7 +123,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
             isHomeMacrobenchmarkApplink -> userSession?.apply { handleHomeMacrobenchmarkUri(this) }
             isCoachmarkApplink -> uri?.apply { handleCoachmarkUri(this) }
             else -> {
-                setContentView(R.layout.activity_new_developer_option)
+                setContentView(R.layout.activity_developer_option)
                 setRecyclerView()
                 setSearchBar()
                 initTranslator()
@@ -148,7 +148,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
     private fun setRecyclerView() {
         rvDeveloperOption = findViewById(R.id.rvDeveloperOption)
         rvDeveloperOption?.apply {
-            adapter = this@NewDeveloperOptionActivity.adapter
+            adapter = this@DeveloperOptionActivity.adapter
             layoutManager = LinearLayoutManager(context)
             setItemViewCacheSize(RV_CACHE_SIZE)
         }
@@ -231,7 +231,7 @@ class NewDeveloperOptionActivity : BaseActivity() {
             val sharedPref = getSharedPreferences(CACHE_FREE_RETURN, MODE_PRIVATE)
             val editor = sharedPref.edit().clear()
             editor.apply()
-            Toast.makeText(this@NewDeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
         }
     }
 

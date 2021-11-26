@@ -77,6 +77,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_ENABLE_SELLER_APP_REVIEW_DEBUGGING = "Enable Seller App Review Debugging"
         const val KEYWORD_SHOW_APPLINK_ON_TOAST = "Show Applink on Toast and Copy the Link to Clipboard"
         const val KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING = "Play - Web Socket and SSE Logging"
+        const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
     }
 
     /**
@@ -152,7 +153,10 @@ class DeveloperOptionAdapter(
             KEYWORD_OLD_CART_CHECKOUT,
             KEYWORD_NEW_CART_CHECKOUT
         )),
-        PlayWebSocketSseLoggingUiModel(listOf(KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING))
+        PlayWebSocketSseLoggingUiModel(listOf(
+            KEYWORD_PLAY_WEB_SOCKET_SSE_LOGGING,
+            KEYWORD_VIEW_SSE_LOGGING
+        ))
     )
 
     init {

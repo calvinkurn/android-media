@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.NewDeveloperOptionActivity
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity
 import com.tokopedia.developer_options.presentation.model.ForceCrashUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -20,7 +20,7 @@ class ForceCrashViewHolder(
     override fun bind(element: ForceCrashUiModel) {
         val btn = itemView.findViewById<UnifyButton>(R.id.force_crash_btn)
         btn.setOnClickListener {
-            throw NewDeveloperOptionActivity.DeveloperOptionException("Throw Runtime Exception")
+            throw DeveloperOptionActivity.DeveloperOptionException("Throw Runtime Exception")
         }
     }
 }
