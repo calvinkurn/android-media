@@ -210,6 +210,8 @@ class ProductListPresenter @Inject constructor(
     private var categoryIdL2 = ""
     private var suggestionKeyword = ""
     private var relatedKeyword = ""
+    override var pageComponentId: String = ""
+        private set
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -454,13 +456,15 @@ class ProductListPresenter @Inject constructor(
         pageTitleEventLabel: String = "",
     ): ProductDataView {
         val lastProductItemPosition = view.lastProductItemPositionFromCache
+        val keyword = view.queryKey
 
         val productDataView = ProductViewModelMapper().convertToProductViewModel(
-                lastProductItemPosition,
-                searchProductModel,
-                pageTitleEventLabel,
-                isLocalSearch(),
-                dimension90,
+            lastProductItemPosition,
+            searchProductModel,
+            pageTitleEventLabel,
+            isLocalSearch(),
+            dimension90,
+            keyword,
         )
 
         saveLastProductItemPositionToCache(lastProductItemPosition, productDataView.productList)
@@ -743,6 +747,7 @@ class ProductListPresenter @Inject constructor(
         categoryIdL2 = productDataView.categoryIdL2
         relatedKeyword = searchProductModel.searchProduct.data.related.relatedKeyword
         suggestionKeyword = searchProductModel.searchProduct.data.suggestion.suggestion
+        pageComponentId = productDataView.pageComponentId
 
         view.setAutocompleteApplink(productDataView.autocompleteApplink)
         view.setDefaultLayoutType(productDataView.defaultView)
@@ -1024,10 +1029,8 @@ class ProductListPresenter @Inject constructor(
             list.add(ChooseAddressDataView())
 
         productDataView.tickerModel?.let {
-            if (!isTickerHasDismissed && it.text.isNotEmpty()) {
+            if (!isTickerHasDismissed && it.text.isNotEmpty())
                 list.add(it)
-                view.trackEventImpressionTicker(it.typeId)
-            }
         }
 
         if (shouldShowSuggestion(productDataView)) {
