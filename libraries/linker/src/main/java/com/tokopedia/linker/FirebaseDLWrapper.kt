@@ -220,18 +220,12 @@ class FirebaseDLWrapper {
         deeplink= Uri.encode(deeplink)
         if (uri != null) {
             if (uri.contains("?")) {
-                uri = "$uri&$androidUrlPath=$deeplink"
-                uri = "$uri&$iosUrlPath=$deeplink"
-
+                uri = "$uri&$androidUrlPath=$deeplink&$iosUrlPath=$deeplink"
             } else {
-                uri = "$uri?$androidUrlPath=$deeplink"
-                uri = "$uri&$iosUrlPath=$deeplink"
+                uri = "$uri?$androidUrlPath=$deeplink&$iosUrlPath=$deeplink"
             }
         }
         uri = Uri.encode(uri)
-        if(uri.startsWith(firebaseBaseUrl)){
-            return uri
-        }
         return "$firebaseBaseUrl/?$linkPath=$uri"
 
     }
