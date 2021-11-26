@@ -35,7 +35,6 @@ class RecipientAddressViewHolder(private val binding: ItemRecipientAddressRbSele
     }
 
     companion object {
-        val TYPE = R.layout.item_recipient_address_rb_selectable
         private const val PRIME_ADDRESS = 2
     }
 }
