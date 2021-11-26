@@ -209,4 +209,15 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 }
         )
     }
+
+    fun mapPromoTabsUiModel(sectionTabs: List<SectionTab>): PromoTabUiModel {
+        return PromoTabUiModel(
+                uiData = PromoTabUiModel.UiData().apply {
+                    tabs = sectionTabs
+                },
+                uiState = PromoTabUiModel.UiState().apply {
+                    selectedTabId = sectionTabs.firstOrNull()?.id ?: "0"
+                }
+        )
+    }
 }

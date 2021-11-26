@@ -73,6 +73,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     val promoRecommendationUiModel: LiveData<PromoRecommendationUiModel>
         get() = _promoRecommendationUiModel
 
+    // Promo Recommendation UI Model
+    private val _promoTabUiModel = MutableLiveData<PromoTabUiModel>()
+    val promoTabUiModel: LiveData<PromoTabUiModel>
+        get() = _promoTabUiModel
+
     // Promo Input UI Model
     private val _promoInputUiModel = MutableLiveData<PromoInputUiModel>()
     val promoInputUiModel: LiveData<PromoInputUiModel>
@@ -455,14 +460,19 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
             couponList.add(eligibilityHeader)
 
-            // Initialize promo recommendation
             if (eligibilityHeader.uiState.isEnabled) {
+                // Initialize promo recommendation
                 val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
                 if (promoRecommendation.codes.isNotEmpty()) {
                     val promoRecommendationUiModel = uiModelMapper.mapPromoRecommendationUiModel(response.couponListRecommendation)
                     _promoRecommendationUiModel.value = promoRecommendationUiModel
                     couponList.add(promoRecommendationUiModel)
                 }
+
+                // Initialize promo tab
+                val promoTabUiModel = uiModelMapper.mapPromoTabsUiModel(response.couponListRecommendation.data.sectionTabs)
+                _promoTabUiModel.value = promoTabUiModel
+                couponList.add(promoTabUiModel)
             }
 
             // Initialize promo list header

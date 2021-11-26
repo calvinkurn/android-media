@@ -1,6 +1,9 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewholder
 
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleItemPromoTabBinding
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
@@ -15,7 +18,17 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
     }
 
     override fun bind(element: PromoTabUiModel) {
-
+        with(viewBinding) {
+            tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
+            if (element.uiData.tabs.isNotEmpty()) {
+                element.uiData.tabs.forEach {
+                    tabsPromo.addNewTab(it.title)
+                }
+                tabsPromo.show()
+            } else {
+                tabsPromo.gone()
+            }
+        }
     }
 
 }

@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
@@ -290,7 +289,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (recyclerView.canScrollVertically(-1)) {
+                if (recyclerView.canScrollVertically(-1) && viewBinding?.tabsPromoHeader?.tabsPromo?.visibility != View.VISIBLE) {
                     setToolbarShadowVisibility(true)
                 } else {
                     setToolbarShadowVisibility(false)
@@ -381,41 +380,18 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun renderStickyPromoHeader(recyclerView: RecyclerView) {
         if (adapter.data.isNotEmpty()) {
-            var lastHeaderUiModel: PromoListHeaderUiModel? = null
+            val promoTabUiModel: PromoTabUiModel? = viewModel.promoTabUiModel.value
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             if (topItemPosition == RecyclerView.NO_POSITION) return
-            val lastData = adapter.data[topItemPosition]
-            if (lastData == lastHeaderUiModel) return
+            val topVisibleUiModel = adapter.data[topItemPosition]
 
-            val isShow: Boolean
-            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
-                lastHeaderUiModel = lastData
-                isShow = true
-            } else if (lastHeaderUiModel != null && lastData is PromoListItemUiModel &&
-                    lastData.uiData.parentIdentifierId == lastHeaderUiModel.uiData.identifierId &&
-                    lastData.uiState.isParentEnabled) {
-                isShow = true
-            } else if (lastData is PromoListItemUiModel && lastData.uiState.isParentEnabled) {
-                if (lastHeaderUiModel != null && lastData.uiData.parentIdentifierId == lastHeaderUiModel.uiData.identifierId) {
-                    isShow = true
-                } else {
-                    var foundHeader = false
-                    adapter.data.forEach {
-                        if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
-                            lastHeaderUiModel = it
-                            foundHeader = true
-                            return@forEach
-                        }
-                    }
-                    isShow = foundHeader
-                }
-            } else {
-                isShow = false
-            }
+            val isShow: Boolean = topVisibleUiModel !is PromoInputUiModel && topVisibleUiModel !is PromoRecommendationUiModel && topVisibleUiModel !is PromoEligibilityHeaderUiModel
 
             // View logic here should be same as view logic on #PromoTabViewHolder
-            if (lastHeaderUiModel != null) {
-
+            if (promoTabUiModel != null && isShow && viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(0) == null) {
+                promoTabUiModel.uiData.tabs.forEach {
+                    viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
+                }
             }
 
             if (isShow) {
