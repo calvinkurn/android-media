@@ -100,7 +100,6 @@ class PlayUserInteractionFragment @Inject constructor(
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
         private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
-        private val castPlayer: CastPlayer,
         private val castAnalyticHelper: CastAnalyticHelper
 ) :
         TkpdBaseV4Fragment(),
