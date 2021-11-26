@@ -760,7 +760,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty(),
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
@@ -781,7 +781,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty()
             )
         }
@@ -808,7 +808,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty(),
                     isEtalaseCampaign,
                     shopProductUiModel.isUpcoming,
@@ -829,7 +829,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             shopRef
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId.orEmpty()
             )
         }

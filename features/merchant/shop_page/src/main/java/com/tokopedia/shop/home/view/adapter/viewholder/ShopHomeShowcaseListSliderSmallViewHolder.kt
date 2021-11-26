@@ -61,13 +61,13 @@ class ShopHomeShowcaseListSliderSmallViewHolder (
         }
 
         itemView.addOnImpressionListener(element) {
-            itemWidgetListener.onShowcaseListWidgetItemImpression(element, (adapterPosition+1))
+            itemWidgetListener.onShowcaseListWidgetItemImpression(element, adapterPosition)
         }
         itemView.setOnClickListener {
             itemWidgetListener.onShowcaseListWidgetItemClicked(
                     shopHomeShowcaseListSliderUiModel,
                     element,
-                    (adapterPosition+1),
+                    adapterPosition,
                     parentPosition
             )
         }

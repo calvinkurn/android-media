@@ -116,6 +116,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_ONGOING_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SEE_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_SHOP_DECOR
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_STRING_ZERO
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_UPCOMING_CAMPAIGN
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VARIANT
@@ -1461,12 +1462,12 @@ class ShopPageHomeTracking(
             eventLabel+= " - $selectedSortName"
         }
         if (!selectedFilterMap[PMAX_PARAM_KEY].isNullOrBlank() || !selectedFilterMap[PMIN_PARAM_KEY].isNullOrBlank()) {
-            val minPrice = selectedFilterMap[PMIN_PARAM_KEY] ?: "0"
-            val maxPrice = selectedFilterMap[PMAX_PARAM_KEY] ?: "0"
+            val minPrice = selectedFilterMap[PMIN_PARAM_KEY] ?: VALUE_STRING_ZERO
+            val maxPrice = selectedFilterMap[PMAX_PARAM_KEY] ?: VALUE_STRING_ZERO
             eventLabel+= " - $minPrice - $maxPrice"
         }
         if (!selectedFilterMap[RATING_PARAM_KEY].isNullOrBlank()) {
-            val rating = selectedFilterMap[RATING_PARAM_KEY] ?: "0"
+            val rating = selectedFilterMap[RATING_PARAM_KEY] ?: VALUE_STRING_ZERO
             eventLabel+= " - $rating"
         }
         val eventMap: MutableMap<String, Any> = mutableMapOf(

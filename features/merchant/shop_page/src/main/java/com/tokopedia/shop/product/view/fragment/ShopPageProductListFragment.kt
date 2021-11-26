@@ -438,7 +438,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
-                        productPosition + 1,
+                        ShopUtil.getActualPositionFromIndex(productPosition),
                         shopId,
                         shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                         false,
@@ -459,7 +459,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
-                        productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
+                        ShopUtil.getActualPositionFromIndex(productPosition) - shopProductAdapter.shopProductFirstViewModelPosition,
                         shopId,
                         shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                         shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
@@ -480,7 +480,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                                 shopProductUiModel.isShowFreeOngkir
                         ),
                         shopProductUiModel,
-                        productPosition + 1,
+                        ShopUtil.getActualPositionFromIndex(productPosition),
                         shopId,
                         shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                         shopProductAdapter.getEtalaseNameHighLightType(shopProductUiModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
@@ -514,7 +514,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                     false,
@@ -535,7 +535,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
-                    productPosition + 1 - shopProductAdapter.shopProductFirstViewModelPosition,
+                    ShopUtil.getActualPositionFromIndex(productPosition) - shopProductAdapter.shopProductFirstViewModelPosition,
                     shopId,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
@@ -556,7 +556,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                             shopProductUiModel.isShowFreeOngkir
                     ),
                     shopProductUiModel,
-                    productPosition + 1,
+                    ShopUtil.getActualPositionFromIndex(productPosition),
                     shopId,
                     shopProductUiModel.etalaseType == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,
                     shopProductAdapter.getEtalaseNameHighLightType(shopProductUiModel) == ShopEtalaseTypeDef.ETALASE_CAMPAIGN,

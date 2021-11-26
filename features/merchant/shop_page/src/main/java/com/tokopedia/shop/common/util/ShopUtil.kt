@@ -153,4 +153,8 @@ object ShopUtil {
             ShopProductViewGridType.BIG_GRID -> ShopPageTrackingConstant.BIG_GRID_VIEW_TYPE
         }
     }
+
+    fun getActualPositionFromIndex(indexPosition: Int): Int{
+        return indexPosition + 1
+    }
 }

@@ -334,6 +334,8 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_DECOR_PRODUCT = "Product"
     const val VALUE_SHOP_DECOR_SHOWCASE = "Etalase"
     const val VALUE_SHOP_DECOR_PLAY = "Play"
+    const val VALUE_STRING_ZERO = "0"
+    const val VALUE_INT_ONE = 1
 
 
     //dimension83
