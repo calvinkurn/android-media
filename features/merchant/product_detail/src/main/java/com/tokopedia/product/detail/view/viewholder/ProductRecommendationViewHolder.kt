@@ -81,12 +81,7 @@ class ProductRecommendationViewHolder(
                     })
                     binding.chipFilterRecyclerview.adapter = annotationChipAdapter
                 }
-                element.filterData?.let {
-                    if(it.isNotEmpty()) {
-                        annotationChipAdapter?.submitList(it)
-                        binding.chipFilterRecyclerview.visible()
-                    }
-                }
+                annotationChipAdapter?.submitList(element.filterData ?: listOf())
                 initAdapter(element, this, element.cardModel, getComponentTrackData(element))
 
                 binding.titleRecom.text = title
@@ -117,12 +112,7 @@ class ProductRecommendationViewHolder(
             ProductDetailConstant.PAYLOAD_UPDATE_FILTER_RECOM -> {
                 element?.recomWidgetData?.let {
                     initAdapter(element, it, element.cardModel, getComponentTrackData(element))
-                    element.filterData?.let { listChip ->
-                        if(listChip.isNotEmpty()) {
-                            annotationChipAdapter?.submitList(listChip)
-                            binding.chipFilterRecyclerview.visible()
-                        }
-                    }
+                    annotationChipAdapter?.submitList(element.filterData ?: listOf())
                     binding.loadingRecom.gone()
                     binding.rvProductRecom.show()
                 }
