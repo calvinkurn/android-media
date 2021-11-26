@@ -401,10 +401,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun updateTicker(ticker: String?) {
         ticker?.let {
-            if (ticker.isEmpty()) {
-                binding?.tickerInfo?.gone()
-            } else {
-                binding?.tickerInfo?.run { 
+            binding?.tickerInfo?.run {
+                if (it.isEmpty()) {
+                    gone()
+                } else {
                     visible()
                     setHtmlDescription(ticker)
                 }
@@ -415,7 +415,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun updateButton(btnLabel: String?) {
         btnLabel?.let {
             binding?.llBtn?.visible()
-            binding?.btnChooseAddress?.text = if (it.isEmpty()) getString(R.string.pilih_alamat) else btnLabel
+            binding?.btnChooseAddress?.text = if (it.isEmpty()) getString(R.string.pilih_alamat) else it
         }
     }
 
