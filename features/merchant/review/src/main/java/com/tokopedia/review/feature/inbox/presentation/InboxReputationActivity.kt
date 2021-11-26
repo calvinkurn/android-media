@@ -36,7 +36,6 @@ import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracki
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTrackingConstant
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.SectionsPagerAdapter
 import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment
-import com.tokopedia.review.feature.inbox.buyerreview.view.fragment.InboxReputationFragment.Companion.createInstance
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.GlobalMainTabSelectedListener
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationListener
 import com.tokopedia.review.feature.inbox.di.DaggerInboxReputationComponent
@@ -62,6 +61,7 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
         const val TAB_BUYER_REVIEW = 3
         const val TAB_SELLER_REPUTATION_HISTORY = 2
         const val TAB_SELLER_INBOX_REVIEW = 1
+        const val NOTIFICATION = 100
         private const val MARGIN_TAB = 8
         private const val MARGIN_START_END_TAB = 16
         private const val SELLER_INBOX_REVIEW_TAB = "inbox-ulasan"
@@ -91,6 +91,7 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
     private var isAppLinkProccessed = false
     private var pageLoadTimePerformance: PageLoadTimePerformanceInterface? = null
     private var tickerTitle: String? = null
+    private var fragmentList: List<Fragment> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -186,12 +187,16 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
     }
 
     fun getFragmentList(): List<Fragment> {
+        return fragmentList
+    }
+
+    private fun populateFragmentList() {
         val fragmentList = mutableListOf<Fragment>()
         reviewSellerFragment?.let { fragmentList.add(it) }
         inboxReviewFragment?.let { fragmentList.add(it) }
-        fragmentList.add(createInstance(TAB_BUYER_REVIEW))
+        fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW))
         sellerReputationPenaltyFragment?.let { fragmentList.add(it) }
-        return fragmentList
+        this.fragmentList = fragmentList
     }
 
     private fun initView(tab: String?) {
@@ -229,11 +234,11 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
                     super.onTabSelected(tab)
                     val position = tab.position
                     if (position != selectedTabPosition) {
-                        getFragmentList()
-                        for (i in getFragmentList().indices) {
-                            val fragment = getFragmentList()[i]
+                        populateFragmentList()
+                        for (i in fragmentList.indices) {
+                            val fragment = fragmentList[i]
                             if (fragment is InboxReviewFragment) {
-                                val onTabChangeListener = getFragmentList()[i] as OnTabChangeListener?
+                                val onTabChangeListener = fragmentList[i] as OnTabChangeListener?
                                 onTabChangeListener?.onTabChange(position)
                             }
                         }
@@ -254,10 +259,10 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
         setupTabName()
         sectionAdapter = SectionsPagerAdapter(
             supportFragmentManager,
-            getFragmentList(),
+            fragmentList,
             indicator?.getUnifyTabLayout()
         )
-        viewPager?.offscreenPageLimit = getFragmentList().size
+        viewPager?.offscreenPageLimit = fragmentList.size
         viewPager?.adapter = sectionAdapter
         if (GlobalConfig.isSellerApp()) {
             if (isExistParamTab(tab)) {
@@ -380,7 +385,7 @@ class InboxReputationActivity : BaseActivity(), HasComponent<InboxReputationComp
             if (intent.getBooleanExtra(ReviewInboxConstants.EXTRA_FROM_PUSH, false)) {
                 val notificationManager =
                     getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-                notificationManager.cancel(100)
+                notificationManager.cancel(NOTIFICATION)
                 LocalCacheHandler.clearCache(this, ReviewInboxConstants.GCM_NOTIFICATION)
             }
         }
