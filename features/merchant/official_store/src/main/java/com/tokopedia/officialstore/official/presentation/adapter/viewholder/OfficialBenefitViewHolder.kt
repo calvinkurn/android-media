@@ -19,7 +19,6 @@ class OfficialBenefitViewHolder(view: View) : AbstractViewHolder<OfficialBenefit
     override fun bind(element: OfficialBenefitDataModel) {
         if(adapter == null){
             adapter = BenefitAdapter(itemView.context)
-            itemView.recyclerview_official_benefit?.addItemDecoration(GridSpacingItemDecoration(3, 0))
             itemView.recyclerview_official_benefit?.adapter = adapter
         }
         element.benefit.let {
