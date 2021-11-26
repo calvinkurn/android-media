@@ -62,7 +62,7 @@ class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
 
         //make sure the notify me changed
         val upcomingData = viewModel.p2Data.value?.upcomingCampaigns?.get(
-                requestParamsSlotResult.getLong("productId", 0L).toString()
+                requestParamsSlotResult.getLong("product_id_64", 0L).toString()
         )
 
         Assert.assertNotNull(upcomingData)
@@ -109,7 +109,7 @@ class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
 
         //make sure the notify me changed
         val upcomingData = viewModel.p2Data.value?.upcomingCampaigns?.get(
-                requestParamsSlotResult.getLong("productId", 0L).toString()
+                requestParamsSlotResult.getLong("product_id_64", 0L).toString()
         )
 
         Assert.assertNotNull(upcomingData)
@@ -146,7 +146,7 @@ class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
 
         //make sure the notify me NOT changed
         val upcomingData = viewModel.p2Data.value?.upcomingCampaigns?.get(
-                requestParamsSlotResult.getLong("productId", 0L).toString()
+                requestParamsSlotResult.getLong("product_id_64", 0L).toString()
         )
 
         Assert.assertNotNull(upcomingData)
