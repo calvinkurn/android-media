@@ -47,6 +47,7 @@ class OfficialCategoriesTab(context: Context,
         clearOnTabSelectedListeners()
         viewPager.clearOnPageChangeListeners()
         setupWithViewPager(viewPager)
+        setupListener()
 
         for (i in 0 until tabCount) {
             val tab = getTabAt(i)
@@ -156,6 +157,57 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
+    private fun setupListener() {
+
+        addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabReselected(tab: Tab) {
+                tab.customView?.apply {
+                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
+                        setTextColor(
+                            MethodChecker.getColor(
+                                context,
+                                R.color.Unify_P600
+                            )
+                        )
+                        setWeight(Typography.BOLD)
+                    }
+                }
+            }
+
+            override fun onTabUnselected(tab: Tab) {
+                tab.customView?.apply {
+                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].inactiveIconUrl)
+                    this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
+                        setTextColor(
+                            MethodChecker.getColor(
+                                context,
+                                R.color.Unify_N700_96
+                            )
+                        )
+                        setWeight(Typography.REGULAR)
+                    }
+                }
+            }
+
+            override fun onTabSelected(tab: Tab) {
+                tab.customView?.apply {
+                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
+                        setTextColor(
+                            MethodChecker.getColor(
+                                context,
+                                R.color.Unify_P600
+                            )
+                        )
+                        setWeight(Typography.BOLD)
+                    }
+                }
+                expandAllTab()
+            }
+        })
+    }
+
     private fun getTabView(context: Context, position: Int): View {
         val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
         with(view) {
@@ -182,53 +234,6 @@ class OfficialCategoriesTab(context: Context,
                 categoriesItemTab[position].minHeight = height - 32.dp
                 categoriesItemTab[position].maxHeight = height
             }
-            addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabReselected(tab: Tab) {
-                    tab.customView?.apply {
-                        image_view_category_icon?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
-                        text_view_category_title?.apply {
-                            setTextColor(
-                                MethodChecker.getColor(
-                                    context,
-                                    R.color.Unify_P600
-                                )
-                            )
-                            setWeight(Typography.BOLD)
-                        }
-                    }
-                }
-
-                override fun onTabUnselected(tab: Tab) {
-                    tab.customView?.apply {
-                        image_view_category_icon?.loadImageWithCache(categoriesItemTab[tab.position].inactiveIconUrl)
-                        text_view_category_title?.apply {
-                            setTextColor(
-                                MethodChecker.getColor(
-                                    context,
-                                    R.color.Unify_N700_96
-                                )
-                            )
-                            setWeight(Typography.REGULAR)
-                        }
-                    }
-                }
-
-                override fun onTabSelected(tab: Tab) {
-                    tab.customView?.apply {
-                        image_view_category_icon?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
-                        text_view_category_title?.apply {
-                            setTextColor(
-                                MethodChecker.getColor(
-                                    context,
-                                    R.color.Unify_P600
-                                )
-                            )
-                            setWeight(Typography.BOLD)
-                        }
-                    }
-                    expandAllTab()
-                }
-            })
         }
         return view
     }
