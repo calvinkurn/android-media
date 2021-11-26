@@ -27,7 +27,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
     private var notFilledDob = 33
     private var notLogin = 44
     private var selection = 0
-    private var isLogedIn = false
+    private var isLoggedIn = false
 
     companion object {
         private const val EXTRA_IS_LOGIN = "is_login"
@@ -188,7 +188,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         arHomeViewModel.userAdult.observe(this, Observer {
             val intent = Intent()
             val bundle = Bundle()
-            if (isLogedIn) {
+            if (isLoggedIn) {
                 bundle.putBoolean(EXTRA_IS_LOGIN, true)
             }
 
@@ -244,7 +244,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
         when (requestCode) {
             LOGIN_REQUEST -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    isLogedIn = true
+                    isLoggedIn = true
                     arHomeViewModel.fetchUserDOB()
                 } else {
                     selection = notLogin
