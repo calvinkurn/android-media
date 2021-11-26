@@ -186,7 +186,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMDependencies(){
-        GratifCmInitializer.INSTANCE.start(this);
+        WeaveInterface gratiWeave = () -> {
+            GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gratiWeave, RemoteConfigKey.ENABLE_ASYNC_GRATIFICATION_INIT, getApplicationContext(), false);
+
+
     }
 
     private void initialiseHansel() {

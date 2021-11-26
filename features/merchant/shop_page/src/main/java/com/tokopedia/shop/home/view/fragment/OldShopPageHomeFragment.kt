@@ -135,6 +135,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener,
         ShopHomeCarouselProductListener,
         ShopHomeCampaignNplWidgetListener,
+        ShopHomeFlashSaleWidgetListener,
         ShopProductChangeGridSectionListener,
         SortFilterBottomSheet.Callback,
         PlayWidgetListener,
@@ -249,6 +250,7 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
                 shopHomeCarouselProductListener= this,
                 shopProductEtalaseListViewHolderListener= this,
                 shopHomeCampaignNplWidgetListener= this,
+                shopHomeFlashSaleWidgetListener = this,
                 shopProductChangeGridSectionListener= this,
                 playWidgetCoordinator = playWidgetCoordinator,
                 isShowTripleDot = !_isMyShop,
@@ -2649,6 +2651,29 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
         true
     } catch (e: PackageManager.NameNotFoundException) {
         false
+    }
+
+    override fun onClickTncFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+    }
+
+    override fun onClickSeeAllFlashSaleWidget(model: ShopHomeFlashSaleUiModel) {
+    }
+
+    override fun onClickFlashSaleReminder(model: ShopHomeFlashSaleUiModel) {
+    }
+
+    override fun onTimerFinished(model: ShopHomeFlashSaleUiModel) {
+    }
+
+    override fun onFlashSaleProductClicked(model: ShopHomeProductUiModel) {
+    }
+
+    override fun onFlashSaleWidgetImpressed(model: ShopHomeFlashSaleUiModel, position: Int) {
+
+    }
+
+    override fun onPlaceHolderClickSeeAll(model: ShopHomeFlashSaleUiModel) {
+
     }
 
     override fun onPlayWidgetImpression(model: CarouselPlayWidgetUiModel, position: Int) {

@@ -3,7 +3,9 @@ package com.tokopedia.recommendation_widget_common.widget.productcard.carousel.v
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.recommendations.viewholder.RecommendationCarouselSeeMoreViewHolder
@@ -20,10 +22,15 @@ class RecomCarouselSeeMoreViewHolder(view: View,
     private val bannerBackgroundImage: ImageView by lazy { view.findViewById<ImageView>(R.id.background_banner_mix_more) }
 
     override fun bind(element: RecomCarouselSeeMoreDataModel) {
-        bannerBackgroundImage.setOnClickListener {
-            element.listener?.onSeeMoreCardClicked(applink = element.applink, data = data)
+        if (element.backgroundImage.isNotEmpty()) {
+            bannerBackgroundImage.visible()
+            bannerBackgroundImage.setOnClickListener {
+                element.listener?.onSeeMoreCardClicked(applink = element.applink, data = data)
+            }
+            bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
+        } else {
+            bannerBackgroundImage.gone()
         }
-        bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
         container.setOnClickListener {
             element.listener?.onSeeMoreCardClicked(applink = element.applink, data = data)
         }

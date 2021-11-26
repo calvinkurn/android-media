@@ -116,6 +116,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     private var shopAttribution: String? = ""
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
+    private var maxShowcaseList: Int = 0
     private val viewBinding : FragmentShopPageShowcaseBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -204,14 +205,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onShowcaseListItemSelected(element: ShopEtalaseUiModel, position: Int) {
         // track click all showcase item
-        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
-            shopPageShowcaseTracking.clickAllShowcaseItem(
-                    allShowcaseItem = element,
-                    position = position,
-                    customDimensionShopPage = customDimensionShopPage,
-                    userId = shopPageShowcaseViewModel.userId.orEmpty()
-            )
-        }
+        shopPageShowcaseTracking.clickAllShowcaseItem(
+                allShowcaseItem = element,
+                maxShowcaseList = maxShowcaseList,
+                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
+                position = position,
+                customDimensionShopPage = customDimensionShopPage,
+                userId = shopPageShowcaseViewModel.userId.orEmpty()
+        )
 
         // open showcase product result list page
         val showcaseId = if (element.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) element.alias else element.id
@@ -437,6 +438,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     private fun renderAllShowcaseSection(list: List<ShopEtalaseUiModel>) {
         if (list.isNotEmpty()) {
             // show all showcase section if data is not empty
+            maxShowcaseList = list.size
             allShowcaseListAdapter?.updateShowcaseList(list)
             shouldShowAllShowcaseLocalLoad(false)
         }

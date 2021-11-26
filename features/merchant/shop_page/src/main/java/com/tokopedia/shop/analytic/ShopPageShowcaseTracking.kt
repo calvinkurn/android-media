@@ -2,6 +2,7 @@ package com.tokopedia.shop.analytic
 
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_IMPRESSION_SHOP_ALL_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH_ETALASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CREATIVE
@@ -21,6 +22,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SHOWCASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
@@ -96,16 +99,18 @@ class ShopPageShowcaseTracking(
 
     fun clickAllShowcaseItem(
             allShowcaseItem: ShopEtalaseUiModel,
+            maxShowcaseList: Int,
+            isOwner: Boolean,
             position: Int,
             customDimensionShopPage: CustomDimensionShopPage,
             userId: String
     ) {
         // send tracker for all showcase item clicked
-        sendDataLayerEvent(createEventMap(
+        sendDataLayerEvent(createNewEventMap(
                 eventName = PROMO_CLICK,
-                eventCategory = ShopPageTrackingConstant.SHOP_PAGE_BUYER,
-                eventAction = ShopPageTrackingConstant.CLICK_SHOP_SHOWCASE_LIST,
-                eventLabel = String.format(ShopPageTrackingConstant.LABEL_CLICK_SHOP_SHOWCASE_LIST, allShowcaseItem.id, allShowcaseItem.count),
+                eventCategory = getShopPageCategory(isOwner),
+                eventAction = "$CLICK $SHOP_SHOWCASE_LIST",
+                eventLabel = joinDash(CLICK, SHOP_SHOWCASE, allShowcaseItem.id, maxShowcaseList.toString()),
                 userId = userId,
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
@@ -114,7 +119,7 @@ class ShopPageShowcaseTracking(
                                         mapOf(
                                                 CREATIVE to allShowcaseItem.name,
                                                 ID to allShowcaseItem.id,
-                                                NAME to ShopPageTrackingConstant.ALL_SHOP_ETALASE,
+                                                NAME to SHOP_SHOWCASE.replace(" ", "_"),
                                                 POSITION to position
                                         )
                                 )
@@ -153,6 +158,31 @@ class ShopPageShowcaseTracking(
     }
 
     private fun createEventMap(
+            eventName: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            userId: String,
+            customDimensionShopPage: CustomDimensionShopPage,
+            ecommerceMap: Map<String, Any>? = null
+    ): Map<String, Any> {
+        val eventMap = mutableMapOf<String, Any>(
+                EVENT to eventName,
+                EVENT_CATEGORY to eventCategory,
+                EVENT_ACTION to eventAction,
+                EVENT_LABEL to eventLabel,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
+                USER_ID to userId
+        )
+        ecommerceMap?.let {
+            eventMap[ECOMMERCE] = ecommerceMap
+        }
+        return eventMap
+    }
+
+    private fun createNewEventMap(
             eventName: String,
             eventCategory: String,
             eventAction: String,
