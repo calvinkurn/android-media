@@ -260,7 +260,7 @@ class ShopHomeFlashSaleViewHolder(
         return try {
             Color.parseColor(getStringColor(color, colorRes))
         } catch (e: Exception) {
-            Color.parseColor(String.format(FORMAT_STRING_COLOR, ContextCompat.getColor(itemView.context, colorRes) and FORMAT_HEX_COLOR))
+            ContextCompat.getColor(itemView.context, colorRes)
         }
     }
 
