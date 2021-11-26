@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -42,7 +43,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListe
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
-import com.tokopedia.universal_sharing.view.model.EligibleCommission
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -302,11 +303,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
          val job  = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
-                val affiliateEligibleCommission: EligibleCommission = affiliateUseCase.apply {
+                val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUseCase.apply {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
                 }.executeOnBackground()
                 withContext(Dispatchers.Main) {
-                    showAffiliateCommission(affiliateEligibleCommission)
+                    showAffiliateCommission(generateAffiliateLinkEligibility)
                 }
             }
         }, onError = {
@@ -323,12 +324,17 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
 
-    private fun showAffiliateCommission(affiliateEligibleCommission: EligibleCommission){
+    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
         clearLoader()
-        if(affiliateEligibleCommission.isEligible) {
-            if (!TextUtils.isEmpty(affiliateEligibleCommission.message)) {
-                affiliateCommissionTextView?.text =
-                    Html.fromHtml(affiliateEligibleCommission.message)
+        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true) {
+            val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
+            if (!TextUtils.isEmpty(commissionMessage)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
+                        Html.FROM_HTML_MODE_LEGACY).toString()
+                } else {
+                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage).toString()
+                }
                 affiliateCommissionTextView?.visibility = View.VISIBLE
                 return
             }

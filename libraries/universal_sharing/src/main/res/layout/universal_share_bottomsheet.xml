@@ -77,7 +77,6 @@
         android:id="@+id/affilate_commision"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_19"
-        android:text="Komisi Rp16.000/barang terjual"
         android:textColor="@color/Unify_N700"
         android:textSize="14sp"
         app:typographyType="body_3"

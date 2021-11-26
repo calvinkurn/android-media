@@ -12,18 +12,18 @@ import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibili
 
 class AffiliateEligibilityCheckUseCase constructor(
     private val graphqlRepository: GraphqlRepository
-): GraphqlUseCase<EligibleCommission>(graphqlRepository) {
+): GraphqlUseCase<GenerateAffiliateLinkEligibility>(graphqlRepository) {
 
     var params: HashMap<String, Any> = HashMap()
 
-    override suspend fun executeOnBackground(): EligibleCommission {
+    override suspend fun executeOnBackground(): GenerateAffiliateLinkEligibility {
         val gqlRequest = GraphqlRequest(QUERY, GenerateAffiliateLinkEligibility.Response::class.java, params)
         val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
             .Builder(CacheType.CACHE_FIRST).build())
 
         val response = gqlResponse.getData<GenerateAffiliateLinkEligibility.Response>(GenerateAffiliateLinkEligibility.Response::class.java)
         if (response.generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true) {
-            return response.generateAffiliateLinkEligibility.eligibleCommission!!
+            return response.generateAffiliateLinkEligibility!!
         } else {
             throw MessageErrorException("Error in affiliate eligibility check")
         }
