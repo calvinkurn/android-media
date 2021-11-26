@@ -5,9 +5,7 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProductCategoryAdapter
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
@@ -110,13 +108,13 @@ class AddEditProductCategoryViewHolder(
     }
 
     private fun setIndentation(level: Int) {
-        val displayMetrics = itemView.context?.resources?.displayMetrics?.density ?: 0.0F
-        val dp = level * 16.toFloat()
-        val marginStart = (dp * displayMetrics + 0.5).toInt()
+        val resources = itemView.context?.resources ?: return
+        val marginStart = level *
+                resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.dp_16)
         val params = LinearLayout.LayoutParams(
-                0,
+                Int.ZERO,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
-                1F
+                WEIGHT_ITEM_VIEW
         )
         params.marginStart = marginStart
         itemView.tvCategoryNameParent.layoutParams = params
@@ -125,5 +123,9 @@ class AddEditProductCategoryViewHolder(
     interface CategoryItemViewHolderListener {
         fun selectCategoryItem(category: CategoryUiModel, isHasChild: Boolean, adapter: AddEditProductCategoryAdapter, position: Int)
         fun selectCategoryItem(categoryId: String, categories: List<CategoryUiModel>?)
+    }
+
+    companion object {
+        private const val WEIGHT_ITEM_VIEW = 1F
     }
 }
