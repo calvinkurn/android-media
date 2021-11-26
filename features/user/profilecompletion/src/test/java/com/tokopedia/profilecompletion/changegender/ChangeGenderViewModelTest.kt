@@ -60,7 +60,7 @@ class ChangeGenderViewModelTest {
 
         /* Then */
         verify {
-            graphqlUseCase.setGraphqlQuery(any())
+            graphqlUseCase.setGraphqlQuery(any<String>())
             graphqlUseCase.setTypeClass(any())
             graphqlUseCase.setRequestParams(mockParam)
             graphqlUseCase.execute(any(), any())

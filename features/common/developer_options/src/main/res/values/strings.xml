@@ -89,5 +89,7 @@
     <string name="old_cart_checkout">Old Cart Checkout</string>
     <string name="new_cart_checkout_bundling">New Cart Checkout Bundling</string>
     <string name="type_anything">Type Anything Here</string>
+    <string name="play_websocket_and_sse_logging_title">Play - Web Socket and SSE Logging</string>
+    <string name="view_sse_logging">View SSE Logging</string>
 
 </resources>
