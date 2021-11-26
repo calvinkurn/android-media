@@ -50,7 +50,7 @@ class ChatAttachmentUseCaseStub @Inject constructor(
                 attributesAltercation = { attr ->
                     val productProfile = attr.getAsJsonObject(product_profile)
                     productProfile.let {
-                        it.addProperty(is_upcoming_campaign, false)
+                        it.addProperty(is_upcoming_campaign_product, false)
                         it.addProperty(status, ProductAttachmentUiModel.statusDeleted)
                     }
                 }
@@ -66,7 +66,7 @@ class ChatAttachmentUseCaseStub @Inject constructor(
                 attributesAltercation = { attr ->
                     val productProfile = attr.getAsJsonObject(product_profile)
                     productProfile.let {
-                        it.addProperty(is_upcoming_campaign, false)
+                        it.addProperty(is_upcoming_campaign_product, false)
                         it.addProperty(status, ProductAttachmentUiModel.statusActive)
                     }
                 }
@@ -237,7 +237,7 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val product_profile = "product_profile"
     private val location_stock = "location_stock"
     private val district_name_full_text = "district_name_full_text"
-    private val is_upcoming_campaign = "is_upcoming_campaign"
+    private val is_upcoming_campaign_product = "is_upcoming_campaign_product"
     private val status = "status"
 
     // broadcast attributes
