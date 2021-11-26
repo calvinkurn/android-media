@@ -414,8 +414,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun updateButton(btnLabel: String?) {
         btnLabel?.let {
-            binding?.llBtn?.visible()
-            binding?.btnChooseAddress?.text = if (it.isEmpty()) getString(R.string.pilih_alamat) else it
+            binding?.run {
+                llBtn.visible()
+                btnChooseAddress.text = if (it.isEmpty()) getString(R.string.pilih_alamat) else it
+            }
         }
     }
 
