@@ -4,101 +4,50 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkContentPosition
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMark
 import com.tokopedia.unifycomponents.toPx
 
-class SaldoCoachMarkController(val context: Context) {
+class SaldoCoachMarkController(private val context: Context, private val expandAppBar: () -> Unit) : CoachMark2.OnStepListener {
 
-    private val coachMark by lazy { CoachMark2(context) }
-    private val toolBarHeight by lazy { NavToolbarExt.getFullToolbarHeight(context) }
-    var anchorViewList: ArrayList<View?> = ArrayList()
-    var eligibleSaldoCoachMarkList: List<SaldoCoachMark> = ArrayList()
-    var isSaldoBalanceWidgetReady = false
-    var isSalesTabWidgetReady = false
-    var balancePreConditions = false
+    private val coachMark by lazy(LazyThreadSafetyMode.NONE) { CoachMark2(context) }
+    private val toolBarHeight by lazy(LazyThreadSafetyMode.NONE) { NavToolbarExt.getFullToolbarHeight(context) }
+    private var anchorViewList: ArrayList<View?> = ArrayList()
+    private var eligibleSaldoCoachMarkList: List<SaldoCoachMark> = ArrayList()
+    private var isSaldoBalanceWidgetReady = false
+    private var isSalesTabWidgetReady = false
+    private var isBalancePreConditionsFulfilled = false
 
     private val balanceTitleList = listOf(
         context.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_buyer),
         context.getString(com.tokopedia.saldodetails.R.string.saldo_total_balance_seller),
     )
 
-    private fun checkIfCoachMarkReady() =
-        isSaldoBalanceWidgetReady && isSalesTabWidgetReady
+    private fun checkIfCoachMarkReady() = isSaldoBalanceWidgetReady && isSalesTabWidgetReady
 
-    fun startCoachMark(expandAppBar: () -> Unit) {
+    fun startCoachMark() {
         if (checkIfCoachMarkReady()) {
             // do not show coach mark if balance widget is not visible
-            if (!balancePreConditions) {
-                return
-            }
-            eligibleSaldoCoachMarkList = buildSaldoCoachMarkListByKey(anchorViewList)
-                .filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
+            if (!isBalancePreConditionsFulfilled) return
+
+            eligibleSaldoCoachMarkList = SaldoCoachMark.buildSaldoCoachMarkListByKey(
+                context, anchorViewList
+            ).filterNot { isSaldoCoachMarkShown(it.coachMarkKey) }
+
+            if (eligibleSaldoCoachMarkList.isEmpty()) return
 
             val showCoachMarkList = eligibleSaldoCoachMarkList
                 .map { it.coachMarkItem }
+
             coachMark.showCoachMark(ArrayList(showCoachMarkList))
             // first coachmark is shown by default and updated
             // reset coachmark will be updated in onStep callBack
             val firstKey = eligibleSaldoCoachMarkList.getOrNull(0)?.coachMarkKey ?: ""
             updateCoachMarkShown(firstKey)
-            coachMark.setStepListener(object : CoachMark2.OnStepListener {
-                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    val key = eligibleSaldoCoachMarkList.getOrNull(currentIndex)?.coachMarkKey ?: ""
-
-                    if (shouldExpandAppBar(key)) {
-                        expandAppBar.invoke()
-                    }
-                    if (isSaldoCoachMarkShown(key).not()) {
-                        updateCoachMarkShown(key)
-                    }
-                }
-            })
+            coachMark.setStepListener(this)
         }
-    }
-
-
-    private fun buildSaldoCoachMarkListByKey(anchorViewList: ArrayList<View?>): ArrayList<SaldoCoachMark> {
-        val list = arrayListOf<SaldoCoachMark>()
-        anchorViewList.getOrNull(0)?.let {
-            val item = SaldoCoachMark(
-                KEY_CAN_SHOW_REFUND_COACHMARK,
-                CoachMark2Item(
-                    it,
-                    balanceTitleList.getOrNull(0) ?: "",
-                    context.getString(com.tokopedia.saldodetails.R.string.saldo_balance_buyer_desc)
-                )
-            )
-            list.add(item)
-        }
-
-        anchorViewList.getOrNull(1)?.let {
-            val item = SaldoCoachMark(
-                KEY_CAN_SHOW_INCOME_COACHMARK,
-                CoachMark2Item(
-                    it,
-                    balanceTitleList.getOrNull(1) ?: "",
-                    context.getString(com.tokopedia.saldodetails.R.string.saldo_intro_description_seller)
-                )
-            )
-            list.add(item)
-        }
-
-        anchorViewList.getOrNull(2)?.let {
-            val item = SaldoCoachMark(
-                KEY_CAN_SHOW_PENJUALAN_COACHMARK,
-                CoachMark2Item(
-                    it,
-                    context.getString(com.tokopedia.saldodetails.R.string.saldo_penjualan_coachmark_title),
-                    context.getString(com.tokopedia.saldodetails.R.string.saldo_penjualan_coachmark_desc),
-                    CoachMarkContentPosition.BOTTOM.position
-                )
-            )
-            list.add(item)
-        }
-        return list
     }
 
     fun updateCoachMarkOnScroll(expandLayout: Boolean) {
@@ -168,20 +117,38 @@ class SaldoCoachMarkController(val context: Context) {
 
     // return true when balik pressed on sales tab coach-mark
     private fun shouldExpandAppBar(key: String) =
-        KEY_CAN_SHOW_PENJUALAN_COACHMARK != key && isSaldoCoachMarkShown(
-            KEY_CAN_SHOW_PENJUALAN_COACHMARK
+        SaldoCoachMark.KEY_CAN_SHOW_PENJUALAN_COACHMARK != key && isSaldoCoachMarkShown(
+            SaldoCoachMark.KEY_CAN_SHOW_PENJUALAN_COACHMARK
         )
 
+    fun addBalanceAnchorsForCoachMark(isBalanceShown: Boolean, anchorViewList: List<View?>) {
+        if (!isSaldoBalanceWidgetReady) {
+            this.anchorViewList.add(0, anchorViewList[0])
+            this.anchorViewList.add(1, anchorViewList[1])
+        }
+        isSaldoBalanceWidgetReady = true
+        isBalancePreConditionsFulfilled = isBalanceShown
+    }
+
+    fun setSalesTabWidgetReady(anchorView: View?) {
+        isSalesTabWidgetReady = true
+        anchorViewList.add(anchorView)
+    }
+
+    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+        val key = eligibleSaldoCoachMarkList.getOrNull(currentIndex)?.coachMarkKey ?: ""
+
+        if (shouldExpandAppBar(key)) {
+            expandAppBar.invoke()
+        }
+        if (isSaldoCoachMarkShown(key).not()) {
+            updateCoachMarkShown(key)
+        }
+    }
+
     companion object {
-        const val KEY_CAN_SHOW_REFUND_COACHMARK = "com.tokopedia.saldodetails.refund_coach_mark"
-        const val KEY_CAN_SHOW_INCOME_COACHMARK = "com.tokopedia.saldodetails.income_coach_mark"
-        const val KEY_CAN_SHOW_PENJUALAN_COACHMARK = "penjualan_coach_mark"
         const val X_OFFSET = -70
         private const val PENJUALAN_TAB_INDEX = 2
     }
-}
 
-data class SaldoCoachMark(
-    val coachMarkKey: String,
-    val coachMarkItem: CoachMark2Item
-)
+}

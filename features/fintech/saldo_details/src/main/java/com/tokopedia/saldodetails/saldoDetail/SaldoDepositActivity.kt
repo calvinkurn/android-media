@@ -143,9 +143,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     override fun startCoachMarkFlow(anchorView: View?) {
-        if (supportFragmentManager.findFragmentByTag(TAG) == null) {
-            finish()
-        } else {
+        if (supportFragmentManager.findFragmentByTag(TAG) == null) { } else {
             (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).startSaldoCoachMarkFlow(anchorView)
         }
     }

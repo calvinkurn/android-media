@@ -161,7 +161,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private lateinit var saldoDetailViewModel: SaldoDetailViewModel
 
     private val saldoCoachMarkController: SaldoCoachMarkController by lazy {
-        SaldoCoachMarkController(requireContext())
+        SaldoCoachMarkController(requireContext()) {
+            sp_app_bar_layout.setExpanded(true)
+        }
     }
 
 
@@ -210,27 +212,18 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun addBalanceAnchorsForCoachMark(isBalanceShown: Boolean) {
-        if (!saldoCoachMarkController.isSaldoBalanceWidgetReady) {
-            saldoCoachMarkController.anchorViewList.add(0, saldo_buyer_deposit_text)
-            saldoCoachMarkController.anchorViewList.add(1, saldo_seller_deposit_text)
-        }
-        saldoCoachMarkController.isSaldoBalanceWidgetReady = true
-        saldoCoachMarkController.balancePreConditions = isBalanceShown
-
+        saldoCoachMarkController.addBalanceAnchorsForCoachMark(isBalanceShown, listOf(saldo_buyer_deposit_text, saldo_seller_deposit_text))
         prepareSaldoCoachMark()
     }
 
     fun startSaldoCoachMarkFlow(anchorView: View?) {
-        saldoCoachMarkController.isSalesTabWidgetReady = true
-        saldoCoachMarkController.anchorViewList.add(anchorView)
+        saldoCoachMarkController.setSalesTabWidgetReady(anchorView)
         prepareSaldoCoachMark()
     }
 
     private fun prepareSaldoCoachMark() {
         if (activity is SaldoDepositActivity) {
-            saldoCoachMarkController.startCoachMark {
-                sp_app_bar_layout.setExpanded(true)
-            }
+            saldoCoachMarkController.startCoachMark()
             sp_app_bar_layout.addOnOffsetChangedListener(AppBarLayout
                 .OnOffsetChangedListener { _, _ -> saldoCoachMarkController.updateCoachMarkOnScroll(expandLayout) })
         }

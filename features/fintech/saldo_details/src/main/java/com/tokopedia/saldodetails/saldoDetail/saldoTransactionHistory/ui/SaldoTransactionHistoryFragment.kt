@@ -51,7 +51,9 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
 
     private val saldoTabItems = ArrayList<SaldoHistoryTabItem>()
     private val handler = Handler(Looper.getMainLooper())
+    private var isCoachMarkStarted = false
     private val delayStartCoachMarkRunnable = Runnable {
+        isCoachMarkStarted = true
         (activity as SaldoCoachMarkListener).startCoachMarkFlow(getPenjualanTabView())
     }
 
@@ -109,9 +111,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         saldoTransactionTabsUnify.customTabMode = TabLayout.MODE_SCROLLABLE
         saldoTransactionTabsUnify.customTabGravity = TabLayout.GRAVITY_START
         saldoTransactionTabsUnify.setupWithViewPager(transactionHistoryViewPager)
-
-        // tabs are visible now start, coachMark
-        handler.postDelayed(delayStartCoachMarkRunnable, DELAY_COACH_MARK_MILLIS)
     }
 
     private fun loadMultipleTabItem() {
@@ -180,6 +179,18 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         )
     }
 
+    override fun onResume() {
+        super.onResume()
+        // tabs are visible now start, coachMark
+        if (!isCoachMarkStarted)
+          handler.postDelayed(delayStartCoachMarkRunnable, DELAY_COACH_MARK_MILLIS)
+    }
+
+    override fun onPause() {
+        handler.removeCallbacks(delayStartCoachMarkRunnable)
+        super.onPause()
+    }
+
     private fun getPenjualanTabView(): View? {
         var totalTabCount = saldoTransactionTabsUnify.tabLayout.tabCount
         do {
@@ -192,11 +203,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             totalTabCount--
         } while (totalTabCount > 0)
         return null
-    }
-
-    override fun onDestroyView() {
-        handler.removeCallbacks(delayStartCoachMarkRunnable)
-        super.onDestroyView()
     }
 
     companion object {
