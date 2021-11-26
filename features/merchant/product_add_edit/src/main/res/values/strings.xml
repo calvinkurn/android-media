@@ -340,7 +340,7 @@
     <string name="label_cancel_use">Batal gunakan</string>
     <string name="label_variant_cancellation_message">Tipe varian %1s dan semua pilihannya akan hilang.</string>
     <string name="label_variant_delete_all_title">Hapus semua varian?</string>
-    <string name="label_variant_delete_all_description">Dengan hapus semua varian, data yang kamu sudah isi akan hilang.</string>
+    <string name="label_variant_delete_all_description">Semua varian yang kamu masukkan akan hilang.</string>
     <string name="label_variant_wholesale_warning">Harga varian tidak bisa kamu ubah karena harga grosir sedang aktif.</string>
     <string name="label_variant_max">Max</string>
     <string name="label_variant_exit_dialog_title">Yakin ingin keluar?</string>
