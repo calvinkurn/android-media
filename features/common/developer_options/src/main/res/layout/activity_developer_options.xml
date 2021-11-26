@@ -731,5 +731,24 @@
                 app:unifyButtonVariant="ghost"/>
         </LinearLayout>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/play_websocket_and_sse_logging_title"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_view_sse_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="@string/view_sse_logging"
+            app:unifyButtonType="main"
+            app:unifyButtonSize="medium" />
+
     </LinearLayout>
 </ScrollView>

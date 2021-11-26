@@ -12,7 +12,7 @@ ext {
     lifeCycleVersion = "2.2.0"
     lifeCycleExtensionsVersion = "2.2.0"
     archCoreVersion = "2.1.0"
-    workManagerVersion = "2.5.0"
+    workManagerVersion = "2.6.0"
 
     biometricVersion = "1.1.0"
     appCompatVersion = '1.2.0-rc01'
@@ -120,7 +120,7 @@ ext {
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.8'
     unifyAccordionVersion = '1.1.4-beta-1' // to-do update into stable version
-    unifyTotalAmountVersion = '1.0.3'
+    unifyTotalAmountVersion = '1.0.5'
     unifyExplorePromoVersion = '1.0.2'
     unifyImageGalleryVersion = '1.0.1'
     unifyViewAllCardVersion = '1.0.1'

@@ -231,7 +231,7 @@
                 app:layout_constraintCircleRadius="4dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -247,7 +247,8 @@
                         android:layout_height="wrap_content"
                         app:typographyType="heading_6"
                         app:typographyWeight="bold"
-                        tools:text="Pengiriman Bebas Ongkir (2-3 Hari)" />
+                        tools:text="Pengiriman Bebas Ongkir (2-3 Hari)"
+                        tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/label_free_shipping_original_price_eta_partial"
@@ -466,7 +467,7 @@
                 app:layout_constraintCircleRadius="4dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_failed_shipping_title"

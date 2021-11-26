@@ -9,6 +9,7 @@
       "isLoggedInStatus": "true|false",
       "appsflyerId": ".*",
       "shopId": ".*",
+      "theme": ".*",
       "screenName": "review detail page",
       "event": "openScreen",
       "userId": ".*",
@@ -20,7 +21,7 @@
       "eventAction" : "click - three dots on review detail page",
       "eventLabel" : ".*",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
+      "productId": ".*",
       "sessionIris": ".{1,}",
       "screenName" : "review detail page"
     },
@@ -31,7 +32,7 @@
       "sessionIris": ".{1,}",
       "eventLabel" : "options:.*",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
+      "productId": ".*",
       "screenName" : "review detail page"
     }
   ]
