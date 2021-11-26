@@ -69,7 +69,7 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
     private fun startCountUp() {
         job?.cancel()
         job = CoroutineScope(dispatcher.io).launch {
-            while(mDuration <= mMaxDuration) {
+            while(mDuration < mMaxDuration) {
 
                 delay(DEFAULT_INTERVAL)
                 mDuration += DEFAULT_INTERVAL
@@ -79,7 +79,9 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
                 }
             }
 
-            mListener?.onCountDownTimerFinish()
+            withContext(Dispatchers.Main) {
+                mListener?.onCountDownTimerFinish()
+            }
         }
     }
 

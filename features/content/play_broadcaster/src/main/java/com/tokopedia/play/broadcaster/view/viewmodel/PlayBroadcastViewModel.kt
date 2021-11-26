@@ -344,7 +344,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
             livePusherMediator.setLiveStreamingDuration(
                 if (configUiModel.channelType == ChannelType.Pause) configUiModel.durationConfig.duration - configUiModel.remainingTime
                 else 0,
-                configUiModel.durationConfig.duration
+                5000
             )
             livePusherMediator.setLiveStreamingPauseDuration(configUiModel.durationConfig.pauseDuration)
 
