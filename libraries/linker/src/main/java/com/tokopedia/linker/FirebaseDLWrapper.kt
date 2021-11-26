@@ -209,7 +209,7 @@ class FirebaseDLWrapper {
     }
 
     private fun getDeeplinkData(data: LinkerData): String? {
-        var uri = data.uri // FDL require URL starting with https
+        var uri = data.renderShareUri() // FDL require URL starting with https
         if (uri == null && data.desktopUrl != null) {
             uri = data.desktopUrl
         } else if (uri == null) {
@@ -217,19 +217,15 @@ class FirebaseDLWrapper {
         }
 
         var deeplink = createLinkProperties(data)
+        deeplink= Uri.encode(deeplink)
         if (uri != null) {
             if (uri.contains("?")) {
-                uri = "$uri&$androidUrlPath=$deeplink"
-                uri = "$uri&$iosUrlPath=$deeplink"
-
+                uri = "$uri&$androidUrlPath=$deeplink&$iosUrlPath=$deeplink"
             } else {
-                uri = "$uri?$androidUrlPath=$deeplink"
-                uri = "$uri&$iosUrlPath=$deeplink"
+                uri = "$uri?$androidUrlPath=$deeplink&$iosUrlPath=$deeplink"
             }
         }
-        uri = Uri.encode(uri)
-        return "$firebaseBaseUrl/?$linkPath=$uri"
-
+        return uri.toString()
     }
 
     private fun needFallbakUrl(data: LinkerData): Boolean {
@@ -242,11 +238,16 @@ class FirebaseDLWrapper {
     }
 
     private fun getFallbackUrl(data: LinkerData): Uri {
-        var fallbackUrl = data.desktopUrl
-        if (LinkerData.GROUPCHAT_TYPE.equals(data.type, ignoreCase = true)) {
-            fallbackUrl = LinkerConstants.DESKTOP_GROUPCHAT_URL
-        } else if (LinkerData.REFERRAL_TYPE.equals(data.type, ignoreCase = true)) {
-            fallbackUrl = LinkerConstants.REFERRAL_DESKTOP_URL
+        var fallbackUrl = data.renderShareUri()
+        if (fallbackUrl == null){
+            if (LinkerData.GROUPCHAT_TYPE.equals(data.type, ignoreCase = true)) {
+                fallbackUrl = LinkerConstants.DESKTOP_GROUPCHAT_URL
+            } else if (LinkerData.REFERRAL_TYPE.equals(data.type, ignoreCase = true)||
+                LinkerData.APP_SHARE_TYPE.equals(data.type, ignoreCase = true)) {
+                fallbackUrl = LinkerConstants.REFERRAL_DESKTOP_URL
+            }else{
+                fallbackUrl = data.desktopUrl
+            }
         }
         if (fallbackUrl == null) fallbackUrl = LinkerConstants.WEB_DOMAIN
         return Uri.parse(fallbackUrl)
@@ -292,7 +293,7 @@ class FirebaseDLWrapper {
         }
         if (deeplinkPath != null) {
             if (!deeplinkPath.contains(LinkerConstants.UTM_SOURCE)) {
-                deeplinkPath = data.renderShareUri()
+                deeplinkPath = data.renderShareUri(deeplinkPath)
             }
         }
         return deeplinkPath
