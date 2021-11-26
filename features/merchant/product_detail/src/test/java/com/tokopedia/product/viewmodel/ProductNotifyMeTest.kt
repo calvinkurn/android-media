@@ -51,7 +51,7 @@ class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
 
         val requestParamsSlotResult = requestParamsSlot.captured
         Assert.assertEquals(requestParamsSlotResult.getLong("campaignId", 0L), 1234L)
-        Assert.assertEquals(requestParamsSlotResult.getLong("productId", 0L), 518076293L)
+        Assert.assertEquals(requestParamsSlotResult.getLong("product_id_64", 0L), 518076293L)
         Assert.assertEquals(requestParamsSlotResult.getString("action", ""), "REGISTER")
         Assert.assertEquals(requestParamsSlotResult.getString("source", ""), "pdp")
 
@@ -98,7 +98,7 @@ class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
 
         val requestParamsSlotResult = requestParamsSlot.captured
         Assert.assertEquals(requestParamsSlotResult.getLong("campaignId", 0L), 1234L)
-        Assert.assertEquals(requestParamsSlotResult.getLong("productId", 0L), 518076286L)
+        Assert.assertEquals(requestParamsSlotResult.getLong("product_id_64", 0L), 518076286L)
         Assert.assertEquals(requestParamsSlotResult.getString("action", ""), "UNREGISTER")
         Assert.assertEquals(requestParamsSlotResult.getString("source", ""), "pdp")
 
@@ -137,7 +137,7 @@ class ProductNotifyMeTest : DynamicProductDetailViewModelTest() {
 
         val requestParamsSlotResult = requestParamsSlot.captured
         Assert.assertEquals(requestParamsSlotResult.getLong("campaignId", 0L), 1234L)
-        Assert.assertEquals(requestParamsSlotResult.getLong("productId", 0L), 518076286L)
+        Assert.assertEquals(requestParamsSlotResult.getLong("product_id_64", 0L), 518076286L)
         Assert.assertEquals(requestParamsSlotResult.getString("action", ""), "UNREGISTER")
         Assert.assertEquals(requestParamsSlotResult.getString("source", ""), "pdp")
 
