@@ -25,15 +25,15 @@ class RecomCarouselSeeMoreViewHolder(view: View,
 
     override fun bind(element: RecomCarouselSeeMoreDataModel, payloads: MutableList<Any>) {
         val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
-        if (payload != null) {
+        if (payload.isNullOrEmpty()) {
+            bind(element)
+        } else {
             if (payload.containsKey(RecomCarouselSeeMoreDataModel.PAYLOAD_SHOULD_RECREATE_LISTENERS)) {
                 setupListeners(element)
             }
             if (payload.containsKey(RecomCarouselSeeMoreDataModel.PAYLOAD_BACKGROUND_IMAGE)) {
                 setupBannerBackgroundImage(element)
             }
-        } else {
-            bind(element)
         }
     }
 

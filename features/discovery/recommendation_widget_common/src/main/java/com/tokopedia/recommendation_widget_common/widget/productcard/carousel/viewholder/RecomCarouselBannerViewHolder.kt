@@ -28,7 +28,9 @@ class RecomCarouselBannerViewHolder(view: View,
 
     override fun bind(element: RecomCarouselBannerDataModel, payloads: MutableList<Any>) {
         val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
-        if (payload != null) {
+        if (payload.isNullOrEmpty()) {
+            bind(element)
+        } else {
             if (payload.containsKey(RecomCarouselBannerDataModel.PAYLOAD_SHOULD_RECREATE_LISTENERS)) {
                 setupListeners(element)
             }
@@ -38,8 +40,6 @@ class RecomCarouselBannerViewHolder(view: View,
             if (payload.containsKey(RecomCarouselBannerDataModel.PAYLOAD_BACKGROUND_COLOR)) {
                 setupBackground(element)
             }
-        } else {
-            bind(element)
         }
     }
 

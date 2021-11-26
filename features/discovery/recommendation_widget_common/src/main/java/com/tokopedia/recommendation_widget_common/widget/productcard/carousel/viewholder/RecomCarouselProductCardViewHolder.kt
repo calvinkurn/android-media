@@ -31,7 +31,9 @@ class RecomCarouselProductCardViewHolder (view: View,
 
     override fun bind(element: RecomCarouselProductCardDataModel, payloads: MutableList<Any>) {
         val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
-        if (payload != null) {
+        if (payload.isNullOrEmpty()) {
+            bind(element)
+        } else {
             if (payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_PRODUCT_MODEL)) {
                 setLayout(element)
             }
@@ -42,8 +44,6 @@ class RecomCarouselProductCardViewHolder (view: View,
             ) {
                 setupListener(itemView.context, element)
             }
-        } else {
-            bind(element)
         }
     }
 
