@@ -98,7 +98,12 @@ public class BranchWrapper implements WrapperInterface {
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
 
-            if (isFDLActivated(context)){
+            if(((LinkerShareData)linkerShareRequest.getDataObj()).getLinkerData().isAffiliate()){
+                generateAffiliateLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }
+            else if (isFDLActivated(context)){
                 generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
@@ -349,10 +354,19 @@ public class BranchWrapper implements WrapperInterface {
         return branchUniversalObject;
     }
 
+    private void generateAffiliateLink(){
+
+    }
+
     private void generateFirebaseLink(final LinkerData data, final Context context,
                                       final ShareCallback shareCallback, final UserData userData) {
         new FirebaseDLWrapper().createShortLink(shareCallback,data);
 
+    }
+
+    private void generateAffiliateLink(final LinkerData data, final Context context,
+                                      final ShareCallback shareCallback, final UserData userData) {
+        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback);
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,

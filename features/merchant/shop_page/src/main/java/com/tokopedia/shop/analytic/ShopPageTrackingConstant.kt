@@ -55,6 +55,9 @@ object ShopPageTrackingConstant {
     const val SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result"
     const val CLICK_SEARCH = "click search"
     const val CLICK_SEARCH_ETALASE = "click search etalase"
+    const val SHOP_SHOWCASE_LIST = "etalase toko list"
+    const val SHOP_SHOWCASE = "etalase toko"
+    const val FLASH_SALE = "flash sale"
     const val SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click %1s - etalase shop"
     const val SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE_EMPTY = "click %1s - etalase shop - no result"
     const val SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click %1s - tokopedia"
@@ -209,6 +212,9 @@ object ShopPageTrackingConstant {
     const val LABEL_CLICK_SHOP_HEADER_SELLER = "click shop header seller - %s"
     const val LABEL_IMPRESSION_SHOP_HEADER_BUYER = "impression shop header - %s"
     const val LABEL_IMPRESSION_SHOP_HEADER_SELLER = "impression shop header seller - %s"
+    const val CLICK_REMINDER_FLASH_SALE_WIDGET = "click reminder button on $FLASH_SALE"
+    const val CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET = "click view all on $FLASH_SALE"
+    const val CLICK_TNC_BUTTON_FLASH_SALE_WIDGET = "click information icon"
 
     //key
     const val EVENT = "event"
