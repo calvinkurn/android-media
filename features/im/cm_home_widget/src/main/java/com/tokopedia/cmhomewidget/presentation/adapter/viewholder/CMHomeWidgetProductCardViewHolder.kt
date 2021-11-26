@@ -45,6 +45,9 @@ class CMHomeWidgetProductCardViewHolder(
             root.setOnClickListener {
                 listener.onProductCardClick(dataItem)
             }
+            root.post {
+                listener.setProductCardHeight(root.measuredHeight)
+            }
         }
     }
 

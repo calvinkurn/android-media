@@ -17,7 +17,7 @@ import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
 import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
-import com.tokopedia.cmhomewidget.presentation.adapter.decorator.HorizontalSpaceItemDecorator
+import com.tokopedia.cmhomewidget.presentation.adapter.decorator.CMHomeWidgetItemDecorator
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
 import javax.inject.Inject
@@ -30,12 +30,17 @@ class CMHomeWidget @JvmOverloads constructor(
     CMHomeWidgetViewAllCardListener {
 
     @Inject
+    lateinit var binding: LayoutCmHomeWidgetBinding
+
+    @Inject
     lateinit var adapter: dagger.Lazy<CMHomeWidgetAdapter>
 
     @Inject
-    lateinit var binding: LayoutCmHomeWidgetBinding
+    lateinit var itemDecorator: dagger.Lazy<CMHomeWidgetItemDecorator>
 
     private lateinit var cmHomeWidgetData: CMHomeWidgetData
+
+    private var productCardHeight = 0
 
     private var isShowShimmer = false
 
@@ -72,7 +77,7 @@ class CMHomeWidget @JvmOverloads constructor(
                 (this@CMHomeWidget).context, RecyclerView.HORIZONTAL,
                 false
             )
-            addItemDecoration(HorizontalSpaceItemDecorator(10, 0))
+            addItemDecoration(itemDecorator.get())
             adapter = (this@CMHomeWidget).adapter.get()
             setHasFixedSize(true)
         }
@@ -129,16 +134,24 @@ class CMHomeWidget @JvmOverloads constructor(
         binding.ivCmHomeWidgetClose.setOnClickListener(null)
     }
 
-    override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {
-        startRequiredActivity(dataItem.appLink)
-    }
-
     override fun onProductCardClick(dataItem: CMHomeWidgetProductCardData) {
         startRequiredActivity(dataItem.appLink)
     }
 
     override fun onBuyDirectBtnClick(dataItem: CMHomeWidgetProductCardData) {
         startRequiredActivity(dataItem.cmHomeWidgetActionButtons?.get(0)?.appLink)
+    }
+
+    override fun setProductCardHeight(height: Int) {
+        productCardHeight = height
+    }
+
+    override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {
+        startRequiredActivity(dataItem.appLink)
+    }
+
+    override fun getProductCardHeight(): Int {
+        return productCardHeight
     }
 
     private fun startRequiredActivity(appLink: String?) {

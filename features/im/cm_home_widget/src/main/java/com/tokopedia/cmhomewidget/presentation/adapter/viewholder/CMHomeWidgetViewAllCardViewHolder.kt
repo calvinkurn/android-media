@@ -1,5 +1,6 @@
 package com.tokopedia.cmhomewidget.presentation.adapter.viewholder
 
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.cmhomewidget.R
@@ -19,6 +20,14 @@ class CMHomeWidgetViewAllCardViewHolder(
             cmHomeWidgetViewAllCard.setCta(dataItem.label.toString())
             root.setOnClickListener {
                 listener.onViewAllCardClick(dataItem)
+            }
+            root.post {
+                val height = listener.getProductCardHeight()
+                if (height != 0) {
+                    val layoutParams: ViewGroup.LayoutParams = root.layoutParams
+                    layoutParams.height = height
+                    root.layoutParams = layoutParams
+                }
             }
         }
     }
