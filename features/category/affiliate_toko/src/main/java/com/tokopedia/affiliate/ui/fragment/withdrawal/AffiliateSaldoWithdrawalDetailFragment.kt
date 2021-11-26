@@ -16,6 +16,7 @@ import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.model.response.FeeDetailData
 import com.tokopedia.affiliate.model.response.WithdrawalInfoData
 import com.tokopedia.affiliate.ui.custom.AffiliateWithdrawalDetailsList
+import com.tokopedia.affiliate.ui.viewholder.AffiliateTransactionHistoryItemVH
 import com.tokopedia.affiliate.viewmodel.WithdrawalDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -113,7 +114,12 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
         view?.findViewById<Typography>(R.id.tvAccountName)?.text = data.accountName
         view?.findViewById<Typography>(R.id.tvWithdrawalDate)?.text = data.createdTime
         view?.findViewById<Label>(R.id.withdrawalStatusLabel)?.apply {
-            //setLabelType(SaldoDateUtil.getLocalLabelColor(data.labelColor))
+            when (data.statusLabel?.labelType) {
+                AffiliateTransactionHistoryItemVH.DANGER -> setLabelType(Label.HIGHLIGHT_LIGHT_RED)
+                AffiliateTransactionHistoryItemVH.SUCCESS -> setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+                AffiliateTransactionHistoryItemVH.WARNING -> setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
+                AffiliateTransactionHistoryItemVH.GRAY -> setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
+            }
             setLabel(data.statusLabel?.labelText ?: "")
         }
     }

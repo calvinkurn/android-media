@@ -18,6 +18,8 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
                 com.tokopedia.unifyprinciples.R.color.Unify_G500,com.tokopedia.unifyprinciples.R.color.Unify_NN600, true, 1f, 3f))
         menu.add(BottomMenu(R.id.menu_promo_affiliate, context.resources.getString(R.string.affiliate_promo), null, null, R.drawable.ic_bottom_nav_promo_active_affiliate, R.drawable.ic_bottom_nav_promo_inactive_affiliate,
                 com.tokopedia.unifyprinciples.R.color.Unify_G500,com.tokopedia.unifyprinciples.R.color.Unify_NN600, true, 1f, 3f))
+        menu.add(BottomMenu(R.id.menu_withdrawal_affiliate, context.resources.getString(R.string.affiliate_withdrawal), null, null, R.drawable.ic_bottom_nav_finance_active_affiliate, R.drawable.ic_bottom_nav_finance_inactive_affiliate,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500,com.tokopedia.unifyprinciples.R.color.Unify_NN600, true, 1f, 3f))
         menu.add(BottomMenu(R.id.menu_help_affiliate, context.resources.getString(R.string.affiliate_bantuan), null , null , R.drawable.ic_bottom_nav_help_active_affiliate, R.drawable.ic_bottom_nav_help_inactive_affiliate,
                 com.tokopedia.unifyprinciples.R.color.Unify_G500,com.tokopedia.unifyprinciples.R.color.Unify_NN600, true, 1f, 3f))
         bottomNavigation?.setMenu(menu, isNewNavigation)

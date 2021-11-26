@@ -29,6 +29,7 @@ class AffiliateAdapterFactory(
             AffiliateTermsAndConditionVH.LAYOUT -> AffiliateTermsAndConditionVH(parent)
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
+            AffiliateTransactionHistoryItemVH.LAYOUT -> AffiliateTransactionHistoryItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -75,5 +76,9 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateStaggeredPromotionCardModel): Int {
         return AffiliateStaggeredPromotionCardItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateTransactionHistoryItemModel): Int {
+        return AffiliateTransactionHistoryItemVH.LAYOUT
     }
 }

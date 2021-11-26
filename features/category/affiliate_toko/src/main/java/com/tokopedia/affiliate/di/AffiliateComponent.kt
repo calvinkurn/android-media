@@ -4,11 +4,10 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
-import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.*
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
@@ -27,6 +26,8 @@ interface AffiliateComponent {
 
     fun injectWithdrawalDetailActivity(affiliateAffiliateSaldoActivity : AffiliateSaldoWithdrawalDetailActivity)
 
+    fun injectTransactionDetailActivity(affiliateTransactionDetailActivity: AffiliateTransactionDetailActivity)
+
     fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
@@ -44,4 +45,7 @@ interface AffiliateComponent {
     fun injectRecommendedProductFragment(affiliateRecommendedProductFragment: AffiliateRecommendedProductFragment)
 
     fun injectWithdrawalDetailFragment(affiliateSaldoWithdrawalDetailFragment: AffiliateSaldoWithdrawalDetailFragment)
+
+    fun injectIncomeFragment(affiliateIncomeFragment: AffiliateIncomeFragment)
+
 }
