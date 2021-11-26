@@ -81,10 +81,12 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
 
-        binding?.postalCode?.textFieldInput?.setOnTouchListener { _, _ -> if (!(binding?.postalCode?.textFieldInput?.isPopupShowing ?: false)) binding?.postalCode?.textFieldInput?.showDropDown()
-            false }
-        binding?.postalCode?.textFieldInput?.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !binding?.postalCode?.textFieldInput?.text.toString()[0].isDigit())
-            binding?.postalCode?.textFieldInput?.setText("")}
+        binding?.postalCode?.textFieldInput?.let {
+            it.setOnTouchListener { _, _ -> if (!(it.isPopupShowing)) it.showDropDown()
+                false }
+            it.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !it.text.toString()[0].isDigit())
+                it.setText("")}
+        }
 
         binding?.editTextDistrict?.textFieldInput?.run {
             isFocusable = false
@@ -96,19 +98,21 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     private fun initializeFillData() {
         shopLocationOldUiModel?.let {
-            binding?.editTextName?.textFieldInput?.setText(it.name)
-            binding?.editTextAddress?.textFieldInput?.setText(it.address)
-            val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
-            binding?.editTextDistrict?.textFieldInput?.setText(district)
-            binding?.postalCode?.textFieldInput?.setText(it.postalCode.toString())
-            if (!TextUtils.isEmpty(it.phone)){
-                binding?.editTextPhone?.textFieldInput?.setText(it.phone)
-            }
-            if (!TextUtils.isEmpty(it.email)){
-                binding?.editTextEmail?.textFieldInput?.setText(it.email)
-            }
-            if (!TextUtils.isEmpty(it.fax)){
-                binding?.editTextFax?.textFieldInput?.setText(it.fax)
+            binding?.run {
+                editTextName.textFieldInput.setText(it.name)
+                editTextAddress.textFieldInput.setText(it.address)
+                val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
+                editTextDistrict.textFieldInput.setText(district)
+                postalCode.textFieldInput.setText(it.postalCode.toString())
+                if (!TextUtils.isEmpty(it.phone)){
+                    editTextPhone.textFieldInput.setText(it.phone)
+                }
+                if (!TextUtils.isEmpty(it.email)){
+                    editTextEmail.textFieldInput.setText(it.email)
+                }
+                if (!TextUtils.isEmpty(it.fax)){
+                    editTextFax.textFieldInput.setText(it.fax)
+                }   
             }
         }
 
@@ -116,38 +120,51 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     private fun isDataValidToSave(): Boolean {
         var valid = true
+        binding?.run {
+            editTextName.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_address_name_required))
+                } else if (it.textFieldInput.text.toString().length > 128){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_address_name_max_length_error))
+                }
+            }
 
-        if (TextUtils.isEmpty(binding?.editTextName?.textFieldInput?.text.toString())){
-            valid = false
-            binding?.editTextName?.setError(true)
-            binding?.editTextName?.setMessage(getString(R.string.shop_address_name_required))
-        } else if (binding?.editTextName?.textFieldInput?.text.toString().length > 128){
-            valid = false
-            binding?.editTextName?.setError(true)
-            binding?.editTextName?.setMessage(getString(R.string.shop_address_name_max_length_error))
-        }
+            editTextAddress.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_address_required))
+                }
+            }
 
-        if (TextUtils.isEmpty(binding?.editTextAddress?.textFieldInput?.text.toString())){
-            valid = false
-            binding?.editTextAddress?.setError(true)
-            binding?.editTextAddress?.setMessage(getString(R.string.shop_address_required))
-        }
-        if (TextUtils.isEmpty(binding?.editTextDistrict?.textFieldInput?.text.toString())){
-            valid = false
-            binding?.editTextDistrict?.setError(true)
-            binding?.editTextDistrict?.setMessage(getString(R.string.shop_district_required))
-        }
-        if (TextUtils.isEmpty(binding?.postalCode?.textFieldInput?.text.toString())){
-            valid = false
-            binding?.postalCode?.setError(true)
-            binding?.postalCode?.setMessage(getString(R.string.shop_postal_code_required))
-        }
-        if (!TextUtils.isEmpty(binding?.editTextEmail?.textFieldInput?.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(binding?.editTextEmail?.textFieldInput?.text.toString()).matches()){
-            valid = false
-            binding?.editTextEmail?.setError(true)
-            binding?.editTextEmail?.setMessage(getString(R.string.shop_email_invalid))
-        }
+            editTextDistrict.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_district_required))
+                }
+            }
 
+            postalCode.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_postal_code_required))
+                }
+            }
+
+            editTextEmail.let {
+                if (!TextUtils.isEmpty(it.textFieldInput.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(it.textFieldInput.text.toString()).matches()){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_email_invalid))
+                }
+            }
+        }
         return valid
     }
 

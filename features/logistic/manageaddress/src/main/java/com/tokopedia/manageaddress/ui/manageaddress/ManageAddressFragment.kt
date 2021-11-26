@@ -108,8 +108,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         initHeader()
         initView()
         initViewModel()
-        binding?.addressList?.adapter = adapter
-        binding?.addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding?.addressList?.let {
+            it.adapter = adapter
+            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        }
         isFromCheckoutChangeAddress = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS)
         isFromCheckoutSnippet = arguments?.getBoolean(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET)
         isLocalization = arguments?.getBoolean(ManageAddressConstant.EXTRA_IS_LOCALIZATION)
@@ -187,8 +189,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
         viewModel.addressList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ManageAddressState.Success -> {
-                    binding?.swipeRefresh?.isRefreshing = false
-                    binding?.globalError?.gone()
+                    binding?.run {
+                        swipeRefresh.isRefreshing = false
+                        globalError.gone()
+                    }
                     if (viewModel.isClearData) clearData()
                     if (it.data.listAddress.isNotEmpty()) {
                         updateTicker(it.data.pageInfo?.ticker)
@@ -337,24 +341,26 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun setEmptyState() {
-        if (adapter.addressList.isNotEmpty()) {
-            binding?.emptyStateManageAddress?.root?.gone()
-            binding?.searchInputView?.visible()
-            binding?.addressList?.visible()
-            binding?.emptySearch?.gone()
-        } else if (viewModel.savedQuery.isEmpty()) {
-            binding?.emptyStateManageAddress?.btnAddEmpty?.setOnClickListener {
-                openFormAddressView(null)
+        binding?.run {
+            if (adapter.addressList.isNotEmpty()) {
+                emptyStateManageAddress.root.gone()
+                searchInputView.visible()
+                addressList.visible()
+                emptySearch.gone()
+            } else if (viewModel.savedQuery.isEmpty()) {
+                emptyStateManageAddress.btnAddEmpty.setOnClickListener {
+                    openFormAddressView(null)
+                }
+                emptyStateManageAddress.root.visible()
+                searchInputView.gone()
+                addressList.gone()
+                emptySearch.gone()
+            } else {
+                emptySearch.visible()
+                emptyStateManageAddress.root.gone()
+                searchInputView.visible()
+                addressList.gone()
             }
-            binding?.emptyStateManageAddress?.root?.visible()
-            binding?.searchInputView?.gone()
-            binding?.addressList?.gone()
-            binding?.emptySearch?.gone()
-        } else {
-            binding?.emptySearch?.visible()
-            binding?.emptyStateManageAddress?.root?.gone()
-            binding?.searchInputView?.visible()
-            binding?.addressList?.gone()
         }
     }
 
@@ -366,25 +372,27 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun initSearchView() {
-        binding?.searchInputView?.searchBarTextField?.setOnClickListener {
-            binding?.searchInputView?.searchBarTextField?.isCursorVisible = true
-            openSoftKeyboard()
-        }
-
-        binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener { _, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                binding?.searchInputView?.clearFocus()
-                performSearch(binding?.searchInputView?.searchBarTextField?.text?.toString() ?: "", null)
-                return@setOnEditorActionListener true
+        binding?.searchInputView?.run { 
+            searchBarTextField.setOnClickListener {
+                searchBarTextField.isCursorVisible = true
+                openSoftKeyboard()
             }
-            return@setOnEditorActionListener false
-        }
 
-        binding?.searchInputView?.clearListener = {
-            performSearch("", null)
-        }
+            searchBarTextField.setOnEditorActionListener { _, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    clearFocus()
+                    performSearch(searchBarTextField.text.toString() ?: "", null)
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
 
-        binding?.searchInputView?.searchBarPlaceholder = "Cari Alamat"
+            clearListener = {
+                performSearch("", null)
+            }
+
+            searchBarPlaceholder = "Cari Alamat"   
+        }
     }
 
     private fun updateData(data: List<RecipientAddressModel>) {
@@ -396,8 +404,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
             if (ticker.isEmpty()) {
                 binding?.tickerInfo?.gone()
             } else {
-                binding?.tickerInfo?.visible()
-                binding?.tickerInfo?.setHtmlDescription(ticker)
+                binding?.tickerInfo?.run { 
+                    visible()
+                    setHtmlDescription(ticker)
+                }
             }
         }
     }
@@ -405,11 +415,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun updateButton(btnLabel: String?) {
         btnLabel?.let {
             binding?.llBtn?.visible()
-            if (btnLabel.isEmpty()) {
-                binding?.btnChooseAddress?.text = getString(R.string.pilih_alamat)
-            } else {
-                binding?.btnChooseAddress?.text = btnLabel
-            }
+            binding?.btnChooseAddress?.text = if (it.isEmpty()) getString(R.string.pilih_alamat) else btnLabel
         }
     }
 
@@ -554,17 +560,19 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     }
 
     private fun showGlobalError(type: Int) {
-        binding?.globalError?.setType(type)
-        binding?.globalError?.setActionClickListener {
-            context?.let {
-                viewModel.searchAddress("", prevState, getChosenAddrId(), true)
+        binding?.run {
+            globalError.setType(type)
+            globalError.setActionClickListener {
+                context?.let {
+                    viewModel.searchAddress("", prevState, getChosenAddrId(), true)
+                }
             }
+            searchInputView.gone()
+            addressList.gone()
+            emptyStateManageAddress.root.gone()
+            globalError.visible()
+            emptySearch.gone()   
         }
-        binding?.searchInputView?.gone()
-        binding?.addressList?.gone()
-        binding?.emptyStateManageAddress?.root?.gone()
-        binding?.globalError?.visible()
-        binding?.emptySearch?.gone()
     }
 
     fun setListener(listener: ManageAddressListener) {
@@ -601,8 +609,10 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 val resultIntent = Intent().apply {
                     putExtra(ChooseAddressConstant.EXTRA_SELECTED_ADDRESS_DATA, _selectedAddressItem)
                 }
-                activity?.setResult(Activity.RESULT_OK, resultIntent)
-                activity?.finish()
+                activity?.let {
+                    it.setResult(Activity.RESULT_OK, resultIntent)
+                    it.finish()
+                }
             } else {
                 _selectedAddressItem?.let { viewModel.setStateChosenAddress(it) }
             }
@@ -646,7 +656,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
     private fun setButtonEnabled(isEnabled: Boolean) {
         if (isEnabled) {
             isStayOnPageState = false
-            binding?.btnChooseAddress?.apply {
+            binding?.btnChooseAddress?.run {
                 setEnabled(true)
                 setOnClickListener { setChosenAddress() }
             }
