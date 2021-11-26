@@ -88,10 +88,10 @@ class RefreshTokenGql {
             val result = responseCall.execute()
             val resultToken = mapRefreshTokenResponse(result.body())
             resultToken?.run {
-                if(accessToken.isNotEmpty()) {
+                if(accessToken?.isNotEmpty() == true) {
                     userSession.setToken(accessToken, tokenType)
                 }
-                if(refreshToken.isNotEmpty()) {
+                if(refreshToken?.isNotEmpty() == true) {
                     userSession.setRefreshToken(
                         EncoderDecoder.Encrypt(refreshToken, userSession.refreshTokenIV)
                     )

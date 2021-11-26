@@ -16,6 +16,7 @@ import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
 import okio.Buffer
+import timber.log.Timber
 import java.util.*
 import java.util.regex.Pattern
 
@@ -60,10 +61,10 @@ class TkpdAuthenticatorGql(
             result += if (matcher.find()) {
                 matcher.group()
             } else {
-                path.substring(0, Math.min(path.length, 150))
+                path.substring(0, Math.min(path.length, PATH_LENGTH_SUBSTRING))
             }
-        } catch (ex: java.lang.Exception) {
-            ex.printStackTrace()
+        } catch (ex: Exception) {
+            Timber.e(ex)
             return result
         }
         return result
@@ -85,11 +86,11 @@ class TkpdAuthenticatorGql(
                     if(isEnableGqlRefreshToken()) {
                         val tokenResponse = refreshTokenUseCaseGql.refreshToken(application.applicationContext, userSession, networkRouter)
                         if(tokenResponse != null) {
-                            return if(tokenResponse.accessToken.isEmpty()) {
+                            return if(tokenResponse.accessToken?.isEmpty() == true) {
                                 logRefreshTokenEvent(ERROR_GQL_ACCESS_TOKEN_EMPTY, TYPE_REFRESH_WITH_GQL, path, trimToken(userSession.accessToken))
                                 return refreshWithOldMethod(response)
                             } else {
-                                onRefreshTokenSuccess(accessToken = tokenResponse.accessToken, refreshToken = tokenResponse.refreshToken, tokenType = tokenResponse.tokenType)
+                                onRefreshTokenSuccess(accessToken = tokenResponse.accessToken ?:"", refreshToken = tokenResponse.refreshToken ?:"", tokenType = tokenResponse.tokenType ?: "")
                                 updateRequestWithNewToken(originalRequest)
                             }
                         } else {
@@ -225,6 +226,7 @@ class TkpdAuthenticatorGql(
         const val ROLLOUT_REFRESH_TOKEN = "refresh_token_gql"
 
         const val LIMIT_STACKTRACE = 1000
+        const val PATH_LENGTH_SUBSTRING = 150
 
         fun formatThrowable(throwable: Throwable): String {
             return Log.getStackTraceString(throwable).take(LIMIT_STACKTRACE)
