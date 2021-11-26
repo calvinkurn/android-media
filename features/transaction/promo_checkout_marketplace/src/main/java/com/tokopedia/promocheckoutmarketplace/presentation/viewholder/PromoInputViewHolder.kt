@@ -120,30 +120,14 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
             if (element.uiData.exception != null) {
                 textFieldInputPromo.setMessage(element.uiData.exception?.message
                         ?: "Terjadi kesalahan. Ulangi beberapa saat lagi")
-                setPaddingViewHasError(viewBinding)
-            } else {
-                setPaddingViewHasNoError(viewBinding)
             }
         }
-    }
-
-    private fun setPaddingViewHasNoError(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding) {
-        val padding16 = itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt()
-                ?: 0
-        viewBinding.root.setPadding(padding16, padding16, padding16, 0)
-    }
-
-    private fun setPaddingViewHasError(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding) {
-        val padding16 = itemView.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt()
-                ?: 0
-        viewBinding.root.setPadding(padding16, padding16, padding16, padding16)
     }
 
     private fun renderPromoInputNotError(viewBinding: PromoCheckoutMarketplaceModuleItemPromoInputBinding) {
         with(viewBinding) {
             textFieldInputPromo.isInputError = false
             textFieldInputPromo.setMessage("")
-            setPaddingViewHasNoError(viewBinding)
         }
     }
 
