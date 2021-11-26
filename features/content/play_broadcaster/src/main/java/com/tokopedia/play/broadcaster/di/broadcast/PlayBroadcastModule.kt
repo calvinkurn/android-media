@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
 import com.tokopedia.play.broadcaster.pusher.mediator.LiveBroadcasterMediator
 import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.rollence.AbTestBroadcaster
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -54,12 +55,10 @@ class PlayBroadcastModule(private val mContext: Context) {
     @PlayBroadcastScope
     @Provides
     fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler): PusherMediator {
-        var isSdkTest = true
-
-        if (isSdkTest) {
-            return LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler)
+        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
+            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler)
         } else {
-            return PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler)
+            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler)
         }
     }
 
