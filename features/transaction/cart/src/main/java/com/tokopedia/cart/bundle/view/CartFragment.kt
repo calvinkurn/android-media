@@ -235,6 +235,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
+        const val PROMO_POSITION_BUFFER = 10
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val ANIMATED_IMAGE_ALPHA = 0.5f
         const val ANIMATED_IMAGE_FILLED = 1.0f
@@ -781,7 +782,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             delayShowPromoButtonJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
                 binding?.apply {
-                    val initialPosition = bottomLayout.y - llPromoCheckout.height + 10.dpToPx(resources.displayMetrics)
+                    val initialPosition = bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(resources.displayMetrics)
                     llPromoCheckout.animate()
                             .y(initialPosition)
                             .setDuration(PROMO_ANIMATION_DURATION)
@@ -818,7 +819,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun animatePromoButtonToStartingPosition() {
         binding?.apply {
-            val initialPosition = bottomLayout.y - llPromoCheckout.height + 10.dpToPx(resources.displayMetrics)
+            val initialPosition = bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(resources.displayMetrics)
             llPromoCheckout.animate()
                     .y(initialPosition)
                     .setDuration(0)
