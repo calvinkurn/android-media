@@ -142,9 +142,10 @@ class OfficialStoreAnalyticsTest {
                  * This function needed to trigger product recommendation usecase in official store,
                  * official store page only hit recommendation usecase on scroll in the end of current list
                  */
-                preloadRecomOnOSPage(recyclerView)
                 onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view)))
                         .perform(ViewActions.swipeDown())
+                onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view)))
+                        .perform(ViewActions.swipeUp())
                 onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view)))
                         .perform(ViewActions.swipeUp())
             }
