@@ -68,7 +68,7 @@ class ProductPostTagViewHolderNew(
             productPrice.text = item.priceDiscountFmt
 
         }
-        productPrice.text = item.priceFmt
+        productPrice.text = item.priceDiscountFmt
 
         freeShipping.showWithCondition(item.isFreeShipping)
         if (item.isFreeShipping) {
