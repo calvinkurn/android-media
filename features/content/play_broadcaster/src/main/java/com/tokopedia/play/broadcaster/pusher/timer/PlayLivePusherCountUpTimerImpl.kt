@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.pusher.timer
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import kotlinx.coroutines.*
+import com.tokopedia.play.broadcaster.util.countup.PlayCountUp
+import com.tokopedia.play.broadcaster.util.countup.PlayCountUpListener
 import javax.inject.Inject
 
 /**
@@ -10,13 +10,12 @@ import javax.inject.Inject
  */
 class PlayLivePusherCountUpTimerImpl @Inject constructor(
     private val cacheHandler: LocalCacheHandler,
-    private val dispatcher: CoroutineDispatchers
+    private val countUp: PlayCountUp,
 ) : PlayLivePusherCountDownTimer {
 
     override val remainingDurationInMillis: Long
         get() = mMaxDuration - mDuration
 
-    private var job: Job? = null
     private var mDuration: Long = 0L
     private var mMaxDuration: Long = 0L
 
@@ -35,7 +34,7 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
     }
 
     override fun stop() {
-        job?.cancel()
+        countUp.stop()
         removeLastDurationMillis()
     }
 
@@ -51,13 +50,12 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
     }
 
     override fun pause() {
-        job?.cancel()
+        countUp.stop()
         saveLastDurationMillis()
     }
 
     override fun destroy() {
-        job?.cancel()
-        job = null
+        countUp.stop()
         mListener = null
     }
 
@@ -67,22 +65,18 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
     }
 
     private fun startCountUp() {
-        job?.cancel()
-        job = CoroutineScope(dispatcher.io).launch {
-            while(mDuration < mMaxDuration) {
-
-                delay(DEFAULT_INTERVAL)
-                mDuration += DEFAULT_INTERVAL
-
-                withContext(Dispatchers.Main) {
-                    mListener?.onCountDownTimerActive(mDuration)
-                }
+        countUp.stop()
+        countUp.start(mDuration, mMaxDuration)
+        countUp.setListener(object: PlayCountUpListener{
+            override fun onTick(duration: Long) {
+                mDuration = duration
+                mListener?.onCountDownTimerActive(mDuration)
             }
 
-            withContext(Dispatchers.Main) {
+            override fun onFinish() {
                 mListener?.onCountDownTimerFinish()
             }
-        }
+        })
     }
 
     private fun removeLastDurationMillis() {
@@ -97,8 +91,6 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
     }
 
     companion object {
-        const val DEFAULT_INTERVAL = 1000L
-
         const val KEY_DURATION_MILLIS = "play_broadcast_duration_millis"
         const val KEY_MAX_DURATION_MILLIS = "play_broadcast_max_duration_millis"
     }
