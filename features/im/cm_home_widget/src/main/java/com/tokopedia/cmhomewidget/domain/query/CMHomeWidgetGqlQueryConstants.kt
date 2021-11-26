@@ -1,6 +1,6 @@
 package com.tokopedia.cmhomewidget.domain.query
 
-const val GQL_GET_CM_HOME_WIDGET_DATA = """query{
+const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
     notifier_getHtdw(){
         status
         data {
@@ -41,7 +41,7 @@ const val GQL_GET_CM_HOME_WIDGET_DATA = """query{
     }
 }"""
 
-const val GQL_DELETE_CM_HOME_WIDGET_DATA = """
+const val GQL_QUERY_DISMISS_CM_HOME_WIDGET = """
     mutation(${'$'}parentID:Int!, ${'$'}campaignID:Int!) {
     notifier_dismissHtdw(parentID: ${'$'}parentID, campaignID: ${'$'}campaignID){
       status

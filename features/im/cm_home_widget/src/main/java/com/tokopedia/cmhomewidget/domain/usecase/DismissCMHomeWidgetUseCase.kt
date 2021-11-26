@@ -1,16 +1,17 @@
 package com.tokopedia.cmhomewidget.domain.usecase
 
 
-import com.tokopedia.cmhomewidget.domain.query.GQL_DELETE_CM_HOME_WIDGET_DATA
 import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataGqlResponse
 import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataResponse
+import com.tokopedia.cmhomewidget.domain.query.DismissCMHomeWidgetGQLQuery
+import com.tokopedia.cmhomewidget.domain.query.GQL_QUERY_DISMISS_CM_HOME_WIDGET
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
-@GqlQuery("DeleteCMHomeWidgetData", GQL_DELETE_CM_HOME_WIDGET_DATA)
-class DeleteCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+@GqlQuery("DeleteCMHomeWidgetData", GQL_QUERY_DISMISS_CM_HOME_WIDGET)
+class DismissCMHomeWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<DeleteCMHomeWidgetDataGqlResponse>(graphqlRepository) {
 
     fun deleteCMHomeWidgetData(
@@ -22,7 +23,7 @@ class DeleteCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: Graph
         try {
             this.setTypeClass(DeleteCMHomeWidgetDataGqlResponse::class.java)
             this.setRequestParams(getRequestParams(parentID.toInt(), campaignID.toInt()))
-            this.setGraphqlQuery(DeleteCMHomeWidgetData.GQL_QUERY)
+            this.setGraphqlQuery(DismissCMHomeWidgetGQLQuery())
             this.execute(
                 { result ->
                     onSuccess(result.deleteCMHomeWidgetDataResponse)

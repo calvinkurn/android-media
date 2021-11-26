@@ -11,9 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
-import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataResponse
-import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetDataUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.DismissCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
@@ -83,8 +81,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.*
@@ -130,7 +126,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
     private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
     private val getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase,
-    private val deleteCMHomeWidgetDataUseCase: DeleteCMHomeWidgetDataUseCase
+    private val dismissCMHomeWidgetUseCase: DismissCMHomeWidgetUseCase
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -1703,7 +1699,7 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             getCMHomeWidgetDeleteDataJob = launchCatchError(coroutineContext, {
                 cmHomeWidgetDataModel.cmHomeWidgetData?.let { it ->
-                    deleteCMHomeWidgetDataUseCase.deleteCMHomeWidgetData(
+                    dismissCMHomeWidgetUseCase.deleteCMHomeWidgetData(
                         {
                             deleteWidget(cmHomeWidgetDataModel, index)
                         }, {
