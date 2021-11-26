@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import android.content.Context
 import android.os.Handler
-import android.util.Log
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -744,6 +743,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
             is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
             is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
             is LiveDuration -> {
+                // TODO: need to change this validation, instead of remaining changes this to currDuration == maxDuration
                 if (result.remaining <= 0) logger.logSocketType(result)
                 restartLiveDuration(result)
             }
@@ -828,10 +828,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         viewModelScope.launchCatchError(block = {
-            Log.d("<LOG>", "socket")
             _configInfo.value?.durationConfig?.duration?.let {
-                Log.d("<LOG>", "duration : ${TimeUnit.SECONDS.toMillis(duration.duration)}")
-                Log.d("<LOG>", "maxDuration : $it")
                 val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
                 livePusherMediator.restartLiveCountDownTimer(durationInMillis, it)
             }
