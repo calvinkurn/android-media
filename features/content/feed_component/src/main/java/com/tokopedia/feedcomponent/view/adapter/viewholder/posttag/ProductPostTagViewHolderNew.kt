@@ -62,7 +62,7 @@ class ProductPostTagViewHolderNew(
         if (item.isDiscount) {
             productTag.apply {
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                text = item.priceDiscountFmt
+                text = item.originalPriceFmt
             }
             label.text = item.discountFmt
             productPrice.text = item.priceDiscountFmt
