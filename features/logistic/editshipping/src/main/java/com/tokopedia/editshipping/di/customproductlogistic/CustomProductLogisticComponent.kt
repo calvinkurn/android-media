@@ -6,7 +6,7 @@ import com.tokopedia.editshipping.ui.customproductlogistic.CustomProductLogistic
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [CustomProductLogisticModule::class, CustomProductLogisticViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [CustomProductLogisticViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface CustomProductLogisticComponent {
     fun inject(customProductLogisticFragment: CustomProductLogisticFragment)
 }

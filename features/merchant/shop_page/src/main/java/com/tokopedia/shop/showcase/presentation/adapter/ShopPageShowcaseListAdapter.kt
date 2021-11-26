@@ -3,8 +3,8 @@ package com.tokopedia.shop.showcase.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.shop.common.databinding.ItemShopShowcaseListImageBinding
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
-import com.tokopedia.shop.common.view.viewholder.ShopShowcaseListImageBaseViewHolder
 import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopShowcaseListImageViewHolder
 
@@ -18,12 +18,13 @@ class ShopPageShowcaseListAdapter(
     private var showcaseList: List<ShopEtalaseUiModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcaseListImageViewHolder {
+        val binding = ItemShopShowcaseListImageBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+        )
         return ShopShowcaseListImageViewHolder(
-                itemView = LayoutInflater.from(parent.context).inflate(
-                        ShopShowcaseListImageBaseViewHolder.LAYOUT,
-                        parent,
-                        false
-                ),
+                itemViewBinding = binding,
                 listener = shopShowcaseListImageListener
         )
     }

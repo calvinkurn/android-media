@@ -13,7 +13,7 @@ import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.processor.*
-import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
@@ -82,10 +82,11 @@ open class BaseOrderSummaryPageViewModelTest {
         MockKAnnotations.init(this)
         helper = OrderSummaryPageViewModelTestHelper()
         orderSummaryPageViewModel = OrderSummaryPageViewModel(testDispatchers,
-                OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, creditCardTenorListUseCase, testDispatchers),
+                OrderSummaryPageCartProcessor(addToCartOccMultiExternalUseCase, getOccCartUseCase, updateCartOccUseCase, testDispatchers),
                 OrderSummaryPageLogisticProcessor(ratesUseCase, ratesResponseStateConverter, chooseAddressRepository, chooseAddressMapper, editAddressUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPageCheckoutProcessor(checkoutOccUseCase, orderSummaryAnalytics, testDispatchers),
                 OrderSummaryPagePromoProcessor(validateUsePromoRevampUseCase, clearCacheAutoApplyStackUseCase, orderSummaryAnalytics, testDispatchers),
+                { OrderSummaryPagePaymentProcessor(creditCardTenorListUseCase, testDispatchers) },
                 OrderSummaryPageCalculator(orderSummaryAnalytics, testDispatchers),
                 userSessionInterface, orderSummaryAnalytics)
     }

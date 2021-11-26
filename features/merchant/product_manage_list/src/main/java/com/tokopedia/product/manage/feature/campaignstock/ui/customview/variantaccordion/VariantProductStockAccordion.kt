@@ -8,10 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.LayoutCampaignStockVariantAccordionBinding
 import com.tokopedia.product.manage.feature.campaignstock.ui.adapter.decoration.CampaignStockVariantDividerDecoration
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
-import kotlinx.android.synthetic.main.item_campaign_stock_variant_action.view.*
-import kotlinx.android.synthetic.main.layout_campaign_stock_variant_accordion.view.*
 
 class VariantProductStockAccordion @JvmOverloads constructor(
         context: Context,
@@ -23,9 +22,14 @@ class VariantProductStockAccordion @JvmOverloads constructor(
         private const val CHEVRON_OPENED_ROTATION = 180f
     }
 
+    private var binding: LayoutCampaignStockVariantAccordionBinding? = null
+
     init {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_campaign_stock_variant_accordion, this, false)
-        addView(view)
+        binding = LayoutCampaignStockVariantAccordionBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            true
+        )
     }
 
     private val linearLayoutManager by lazy {
@@ -40,13 +44,13 @@ class VariantProductStockAccordion @JvmOverloads constructor(
 
     fun setEventVariantInfo(variantsProductList: List<ReservedStockProductModel>,
                             isAccordionOpened: Boolean) {
-        layout_campaign_stock_variant_action?.run {
+        binding?.layoutCampaignStockVariantAction?.run {
             setOnClickListener {
                 onActionClickListener(!isAccordionOpened)
             }
         }
 
-        rv_campaign_stock_variant_list?.run {
+        binding?.rvCampaignStockVariantList?.run {
             adapter = VariantProductStockAccordionAdapter(variantsProductList)
             layoutManager = linearLayoutManager
             addItemDecoration(itemDecorator)
@@ -64,14 +68,14 @@ class VariantProductStockAccordion @JvmOverloads constructor(
     private fun setDisplay(isAccordionOpened: Boolean) {
         setChevronRotation(isAccordionOpened)
         if (isAccordionOpened) {
-            rv_campaign_stock_variant_list?.show()
+            binding?.rvCampaignStockVariantList?.show()
         } else {
-            rv_campaign_stock_variant_list?.gone()
+            binding?.rvCampaignStockVariantList?.gone()
         }
     }
 
     private fun setChevronRotation(isOpened: Boolean) {
-        layout_campaign_stock_variant_action?.iv_campaign_stock_chevron?.rotation =
+        binding?.layoutCampaignStockVariantAction?.ivCampaignStockChevron?.rotation =
                 if (isOpened) {
                     CHEVRON_OPENED_ROTATION
                 } else {

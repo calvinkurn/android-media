@@ -59,7 +59,7 @@ class RechargeUploadImageViewModelTest {
         result[objectType] = RechargeOcrResponse(ResultOcr(expectedData))
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         //when
         rechargeUploadImageViewModel.uploadImageRecharge("", "")
@@ -109,7 +109,7 @@ class RechargeUploadImageViewModelTest {
         errors[objectType] = listOf(errorGql)
 
         val gqlResponseFail = GraphqlResponse(result, errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         // when
         rechargeUploadImageViewModel.uploadImageRecharge("", "")

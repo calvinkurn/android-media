@@ -5,15 +5,16 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToLabelGroupVariant
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToNonVariant
 import com.tokopedia.tokopedianow.searchcategory.presentation.mapper.mapToVariant
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductItemViewHolder(
         itemView: View,
@@ -22,52 +23,53 @@ class ProductItemViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_search_category_product
+        val LAYOUT = R.layout.item_tokopedianow_product_grid_card
     }
 
-    private val productCard: ProductCardGridView? =
-            itemView.findViewById(R.id.tokoNowSearchCategoryProductCard)
+    private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
     override fun bind(element: ProductItemDataView?) {
         element ?: return
 
-        productCard?.setProductModel(
+        binding?.tokoNowGridProductCard?.apply {
+            setProductModel(
                 ProductCardModel(
-                        productImageUrl = element.imageUrl300,
-                        productName = element.name,
-                        formattedPrice = element.price,
-                        slashedPrice = element.originalPrice,
-                        discountPercentage = element.discountPercentageString,
-                        countSoldRating = element.ratingAverage,
-                        labelGroupList = element.labelGroupDataViewList.mapToLabelGroup(),
-                        labelGroupVariantList = element.labelGroupVariantDataViewList.mapToLabelGroupVariant(),
-                        variant = element.variantATC?.mapToVariant(),
-                        nonVariant = element.nonVariantATC?.mapToNonVariant(),
+                    productImageUrl = element.imageUrl300,
+                    productName = element.name,
+                    formattedPrice = element.price,
+                    slashedPrice = element.originalPrice,
+                    discountPercentage = element.discountPercentageString,
+                    countSoldRating = element.ratingAverage,
+                    labelGroupList = element.labelGroupDataViewList.mapToLabelGroup(),
+                    labelGroupVariantList = element.labelGroupVariantDataViewList.mapToLabelGroupVariant(),
+                    variant = element.variantATC?.mapToVariant(),
+                    nonVariant = element.nonVariantATC?.mapToNonVariant(),
                 )
-        )
+            )
 
-        productCard?.setImageProductViewHintListener(element, object: ViewHintListener {
-            override fun onViewHint() {
-                productItemListener.onProductImpressed(element)
+            setImageProductViewHintListener(element, object: ViewHintListener {
+                override fun onViewHint() {
+                    productItemListener.onProductImpressed(element)
+                }
+            })
+
+            setOnClickListener {
+                productItemListener.onProductClick(element)
             }
-        })
 
-        productCard?.setOnClickListener {
-            productItemListener.onProductClick(element)
-        }
-
-        productCard?.setAddVariantClickListener {
-            productItemListener.onProductChooseVariantClicked(element)
-        }
-
-        productCard?.setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-            override fun onQuantityChanged(quantity: Int) {
-                productItemListener.onProductNonVariantQuantityChanged(element, quantity)
+            setAddVariantClickListener {
+                productItemListener.onProductChooseVariantClicked(element)
             }
-        })
+
+            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
+                override fun onQuantityChanged(quantity: Int) {
+                    productItemListener.onProductNonVariantQuantityChanged(element, quantity)
+                }
+            })
+        }
     }
 
     override fun onViewRecycled() {
-        productCard?.recycle()
+        binding?.tokoNowGridProductCard?.recycle()
     }
 }

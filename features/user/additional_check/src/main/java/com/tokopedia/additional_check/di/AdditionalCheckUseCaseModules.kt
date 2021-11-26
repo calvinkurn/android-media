@@ -8,7 +8,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
 import dagger.Provides
 
-
 @Module
 class AdditionalCheckUseCaseModules {
 

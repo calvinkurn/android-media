@@ -65,7 +65,7 @@ class DailyBudgetViewModel @Inject constructor(
                 val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POST_AUTO_ADS],
                         TopAdsAutoAds.Response::class.java, getParams(param).parameters)
                 val cacheStrategy = RequestHelper.getCacheStrategy()
-                repository.getReseponse(listOf(request), cacheStrategy)
+                repository.response(listOf(request), cacheStrategy)
             }
             data.getSuccessData<TopAdsAutoAds.Response>().autoAds.data.let {
                 autoAdsData.postValue(it)
@@ -92,7 +92,7 @@ class DailyBudgetViewModel @Inject constructor(
                 val request = RequestHelper.getGraphQlRequest(rawQueries[RawQueryKeyObject.QUERY_POTENTIAL_REACH_ESTIMATION],
                         EstimationResponse::class.java, hashMapOf(SHOP_ID to shopId, TYPE to 1, SOURCE to source))
                 val cacheStrategy = RequestHelper.getCacheStrategy()
-                repository.getReseponse(listOf(request), cacheStrategy)
+                repository.response(listOf(request), cacheStrategy)
             }
             onSuccess(data.getSuccessData<EstimationResponse>().topadsStatisticsEstimationAttribute.data[0])
         }) {

@@ -1,16 +1,17 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
+import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetPmTermAndConditionBinding
 import com.tokopedia.webview.BaseSessionWebViewFragment
-import kotlinx.android.synthetic.main.bottom_sheet_pm_term_and_condition.view.*
 
 /**
  * Created By @ilhamsuaib on 25/05/21
  */
 
-class PMTermAndConditionBottomSheet : BaseBottomSheet() {
+class PMTermAndConditionBottomSheet : BaseBottomSheet<BottomSheetPmTermAndConditionBinding>() {
 
     companion object {
         private const val TAG = "PMTermAndConditionBottomSheet"
@@ -20,9 +21,12 @@ class PMTermAndConditionBottomSheet : BaseBottomSheet() {
         }
     }
 
+
+    override fun bind(view: View) = BottomSheetPmTermAndConditionBinding.bind(view)
+
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_pm_term_and_condition
 
-    override fun setupView() = childView?.run {
+    override fun setupView() = binding?.run {
         showFragment()
         btnPmTncOke.setOnClickListener {
             dismiss()

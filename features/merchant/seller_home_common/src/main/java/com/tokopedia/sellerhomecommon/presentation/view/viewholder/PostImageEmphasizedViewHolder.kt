@@ -9,27 +9,32 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcItemPostImageEmphasizedBinding
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
-import kotlinx.android.synthetic.main.shc_item_post_image_emphasized.view.*
 import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 20/05/20
  */
 
-class PostImageEmphasizedViewHolder(view: View?) :
-    AbstractViewHolder<PostItemUiModel.PostImageEmphasizedUiModel>(view) {
+class PostImageEmphasizedViewHolder(
+    view: View?
+) : AbstractViewHolder<PostItemUiModel.PostImageEmphasizedUiModel>(view) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_item_post_image_emphasized
     }
 
+    private val binding by lazy {
+        ShcItemPostImageEmphasizedBinding.bind(itemView)
+    }
+
     override fun bind(element: PostItemUiModel.PostImageEmphasizedUiModel) {
-        with(itemView) {
+        with(binding) {
             try {
-                parentViewShcItemPost.background = context.getResDrawable(
+                parentViewShcItemPost.background = root.context.getResDrawable(
                     R.drawable.shc_bg_ripple_radius_4dp
                 )
             } catch (e: Exception) {
@@ -44,9 +49,9 @@ class PostImageEmphasizedViewHolder(view: View?) :
             if (element.isPinned) {
                 tvPostDescription.setUnifyDrawableEnd(
                     iconId = IconUnify.PUSH_PIN_FILLED,
-                    colorIcon = context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500),
-                    width = context.dpToPx(12),
-                    height = context.dpToPx(12)
+                    colorIcon = root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_NN500),
+                    width = root.context.dpToPx(12),
+                    height = root.context.dpToPx(12)
                 )
             } else {
                 tvPostDescription.clearUnifyDrawableEnd()

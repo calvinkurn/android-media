@@ -441,6 +441,11 @@
         <key>android_async_hansel_init</key>
         <value>true</value>
     </entry>
+
+    <entry>
+        <key>android_async_gratification_init</key>
+        <value>false</value>
+    </entry>
     <entry>
         <key>android_async_home_dagger</key>
         <value>false</value>
@@ -607,6 +612,18 @@
     </entry>
     <entry>
         <key>android_customer_sticky_login_reminder_tokonow</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_deals_revamp_phase_2</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_add_bills_sbm</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_new_recharge_order_detail</key>
         <value>true</value>
     </entry>
 </defaultsMap>

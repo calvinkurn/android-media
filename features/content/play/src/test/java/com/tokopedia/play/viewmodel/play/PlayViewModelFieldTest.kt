@@ -5,9 +5,7 @@ import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -39,13 +37,12 @@ class PlayViewModelFieldTest {
                 videoMetaInfo = videoModelBuilder.buildVideoMeta(videoPlayer = videoPlayer)
         )
 
-        val expectedModel = videoPlayer
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.videoPlayer
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(videoPlayer)
         }
     }
 
@@ -58,14 +55,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = statusType
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.statusType
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(statusType)
         }
     }
 
@@ -80,14 +75,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = videoOrientation
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.videoOrientation
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(videoOrientation)
         }
     }
 
@@ -102,14 +95,12 @@ class PlayViewModelFieldTest {
                 )
         )
 
-        val expectedModel = channelType
-
         givenPlayViewModelRobot(
         ) andWhen {
             createPage(channelData)
         } thenVerify {
             viewModel.channelType
-                    .isEqualTo(expectedModel)
+                    .isEqualTo(channelType)
         }
     }
 
@@ -130,14 +121,14 @@ class PlayViewModelFieldTest {
             )
             createPage(channelData)
         } thenVerify {
-            viewModel.isFreezeOrBanned.isFalse()
+            viewModel.isFreezeOrBanned.assertFalse()
         } andWhen {
             val channelData = channelDataBuilder.buildChannelData(
                     statusInfo = freezeStatusInfo
             )
             createPage(channelData)
         } thenVerify {
-            viewModel.isFreezeOrBanned.isTrue()
+            viewModel.isFreezeOrBanned.assertTrue()
         }
     }
 

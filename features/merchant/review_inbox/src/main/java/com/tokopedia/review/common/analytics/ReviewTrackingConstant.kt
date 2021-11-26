@@ -20,4 +20,11 @@ object ReviewTrackingConstant {
     const val KEY_PAGE_SOURCE = "pageSource"
     const val ACTION_CLICK = "click"
     const val CLICK_SMILEY = "$ACTION_CLICK - smiley"
+
+    const val KEY_BUSINESS_UNIT = "businessUnit"
+    const val KEY_CURRENT_SITE = "currentSite"
+    const val KEY_PRODUCT_ID = "productId"
+
+    const val BUSINESS_UNIT = "product detail page"
+    const val CURRENT_SITE = "tokopediamarketplace"
 }

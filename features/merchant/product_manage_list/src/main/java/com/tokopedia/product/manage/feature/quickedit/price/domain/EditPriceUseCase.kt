@@ -30,7 +30,7 @@ class EditPriceUseCase @Inject constructor(repository: GraphqlRepository): Graph
         setTypeClass(ProductUpdateV3Response::class.java)
     }
 
-    fun setParams(shopId: String, productId: String, price: Float) {
+    fun setParams(shopId: String, productId: String, price: Double) {
         val requestParams = RequestParams.create()
         val productEditPriceParam = ProductEditPriceParam()
         productEditPriceParam.shop.shopId = shopId

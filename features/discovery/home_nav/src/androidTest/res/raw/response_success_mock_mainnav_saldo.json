@@ -1,0 +1,16 @@
+[
+  {
+    "data": {
+      "balance": {
+        "buyer_hold": 19000,
+        "buyer_hold_fmt": "Rp19.000",
+        "buyer_usable": 19000,
+        "buyer_usable_fmt": "Rp19.000",
+        "seller_hold": 19000,
+        "seller_hold_fmt": "Rp19.000",
+        "seller_usable": 19000,
+        "seller_usable_fmt": "Rp19.000"
+      }
+    }
+  }
+]

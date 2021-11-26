@@ -30,7 +30,7 @@
         android:id="@+id/ec_divider1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:background="@color/divider_color"
         app:layout_constraintTop_toBottomOf="@id/ec_grid_layout2" />
 
@@ -45,7 +45,7 @@
         android:id="@+id/ec_divider2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:background="@color/divider_color"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion2" />
 
@@ -60,7 +60,7 @@
         android:id="@+id/ec_divider3"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:background="@color/divider_color"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion3" />
 
@@ -75,7 +75,7 @@
         android:id="@+id/ec_divider4"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:background="@color/divider_color"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion4" />
 
@@ -90,7 +90,7 @@
         android:id="@+id/ec_divider5"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:background="@color/divider_color"
         app:layout_constraintTop_toBottomOf="@id/ec_accordion5" />
 

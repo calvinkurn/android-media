@@ -20,15 +20,18 @@ class CampaignStockActivity : BaseSimpleActivity() {
         @JvmStatic
         fun createIntent(context: Context,
                          shopId: String,
-                         productId: Array<String>): Intent {
+                         productId: Array<String>,
+                         isBundling: Boolean = false): Intent {
             return Intent(context, CampaignStockActivity::class.java).apply {
                 putExtra(SHOP_ID, shopId)
                 putExtra(PRODUCT_ID, productId)
+                putExtra(IS_BUNDLING, isBundling)
             }
         }
 
         const val SHOP_ID = "extra_shop_id"
         const val PRODUCT_ID = "extra_product_id"
+        const val IS_BUNDLING = "extra_is_bundling"
 
         private const val PRODUCT_ID_SEGMENT_INDEX = 1
         private const val SHOP_ID_SEGMENT_INDEX = 2

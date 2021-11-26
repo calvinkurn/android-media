@@ -11,15 +11,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.SslErrorHandler
-import android.webkit.WebResourceResponse
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
@@ -57,6 +60,9 @@ class PaymentListingFragment : BaseDaggerFragment() {
         private const val ARG_PROFILE_CODE = "profile_code"
         private const val ARG_PAYMENT_BID = "bid"
 
+        private const val REQUEST_CODE_LINK_ACCOUNT = 101
+        private const val REQUEST_CODE = 191
+
         fun newInstance(paymentAmount: Double, addressId: String, profileCode: String, bid: String): PaymentListingFragment {
             val fragment = PaymentListingFragment()
             fragment.arguments = Bundle().apply {
@@ -89,6 +95,29 @@ class PaymentListingFragment : BaseDaggerFragment() {
     }
 
     private var binding by autoClearedNullable<FragmentPaymentMethodBinding>()
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_LINK_ACCOUNT && view != null) {
+            if (resultCode == Activity.RESULT_OK) {
+                val status = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+                if (status.isNotEmpty()) {
+                    handleStatusMatching(status)
+                }
+            }
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+        } else if (requestCode == REQUEST_CODE && view != null) {
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
+        }
+    }
+
+    private fun handleStatusMatching(status: String) {
+        val message = LinkStatusMatcher.getStatus(status)
+        val v = view
+        if (message.isNotEmpty() && v != null) {
+            Toaster.build(v, message, Toaster.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -227,6 +256,14 @@ class PaymentListingFragment : BaseDaggerFragment() {
         parent.finish()
     }
 
+    private fun goToLinkAccount(context: Context) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
+        }
+        startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+    }
+
     inner class PaymentMethodWebViewClient : WebViewClient() {
 
         override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
@@ -243,6 +280,25 @@ class PaymentListingFragment : BaseDaggerFragment() {
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
             binding?.progressBar?.gone()
+        }
+
+        override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+            // applink
+            val url = request?.url?.toString() ?: ""
+            context?.let {
+                if (url.isNotEmpty() && url.startsWith(ApplinkConst.LINK_ACCOUNT)) {
+                    goToLinkAccount(it)
+                    return true
+                }
+                if (!URLUtil.isNetworkUrl(url) && RouteManager.isSupportApplink(it, url)) {
+                    val intent = RouteManager.getIntent(it, url).apply {
+                        data = Uri.parse(url)
+                    }
+                    startActivityForResult(intent, REQUEST_CODE)
+                    return true
+                }
+            }
+            return super.shouldOverrideUrlLoading(view, request)
         }
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {

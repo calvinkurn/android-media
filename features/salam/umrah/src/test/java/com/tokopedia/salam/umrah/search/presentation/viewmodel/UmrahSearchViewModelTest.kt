@@ -115,7 +115,7 @@ class UmrahSearchViewModelTest{
         result[objectType] = UmrahSearchProductEntity(umrahSearchProducts)
         val gqlResponseSuccess = GraphqlResponse(result, errors, false)
 
-        coEvery { mGraphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+        coEvery { mGraphqlRepository.response(any(), any()) } returns gqlResponseSuccess
 
         // when
         umrahSearchViewModel.searchUmrahProducts(1, "")
@@ -140,7 +140,7 @@ class UmrahSearchViewModelTest{
 
         val gqlResponseFail = GraphqlResponse(result, errors, false)
 
-        coEvery { mGraphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
+        coEvery { mGraphqlRepository.response(any(), any()) } returns gqlResponseFail
 
         // when
         umrahSearchViewModel.searchUmrahProducts(1, "")

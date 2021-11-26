@@ -7,7 +7,6 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent

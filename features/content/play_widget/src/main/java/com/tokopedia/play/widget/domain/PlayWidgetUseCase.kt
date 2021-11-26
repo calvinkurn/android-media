@@ -21,7 +21,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
     override suspend fun executeOnBackground(): PlayWidget {
         val gqlRequest = GraphqlRequest(GetPlayWidgetV2Query.GQL_QUERY, PlayWidgetResponse::class.java, params)
-        val gqlResponse = repository.getReseponse(
+        val gqlResponse = repository.response(
                 listOf(gqlRequest),
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
         )

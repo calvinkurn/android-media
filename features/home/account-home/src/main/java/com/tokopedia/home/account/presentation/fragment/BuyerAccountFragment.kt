@@ -34,20 +34,16 @@ import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
 import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
-import com.tokopedia.home.account.presentation.viewmodel.AccountRecommendationTitleViewModel
-import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel
-import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
-import com.tokopedia.home.account.presentation.viewmodel.TopadsHeadlineUiModel
+import com.tokopedia.home.account.presentation.viewmodel.*
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountMapper
 import com.tokopedia.home.account.revamp.domain.data.mapper.BuyerAccountStaticMapper
 import com.tokopedia.home.account.revamp.viewmodel.BuyerAccountViewModel
+import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
@@ -86,8 +82,6 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
-    private var UOH_AB_TEST_KEY = "uoh_android_v2"
-    private var UOH_AB_TEST_VALUE = "uoh_android_v2"
     private var canGoToShopAccount = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -175,9 +169,9 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             when (it) {
                 is Success -> {
                     val visitable = ArrayList<Visitable<*>>()
-                    visitable.add(AccountRecommendationTitleViewModel(it.data.title))
+                    visitable.add(AccountRecommendationTitleViewModel(it.data.recommendationWidget.title))
                     addTopAdsHeadLine(visitable)
-                    visitable.addAll(getRecommendationVisitable(it.data))
+                    visitable.addAll(getRecommendationWithTdn(it.data))
                     adapter?.addElement(visitable)
                 }
                 is Fail -> {
@@ -205,6 +199,24 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         viewModel.canGoToSellerAccount.observe(viewLifecycleOwner, Observer {
             canGoToShopAccount = it
         })
+    }
+
+    private fun getRecommendationWithTdn(data: RecommendationWidgetWithTDN): Collection<Visitable<*>> {
+        val visitableList = arrayListOf<Visitable<*>>()
+        data.recommendationWidget.recommendationItemList.forEachIndexed { index, recommendationItem ->
+            if (index == com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX) data.tdnBanner?.let {
+                visitableList.add(
+                    TdnBannerViewModel(it)
+                )
+            }
+            visitableList.add(
+                RecommendationProductViewModel(
+                    recommendationItem,
+                    data.recommendationWidget.title
+                )
+            )
+        }
+        return visitableList
     }
 
     private fun sendBuyerAccountItemImpression() {

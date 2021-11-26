@@ -72,21 +72,12 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
         updateTitle("")
         component.inject(this)
         sendOpenScreenEvent(intent.data)
         idlingResource = TkpdIdlingResourceProvider.provideIdlingResource("Purchase")
         idlingResource?.increment()
     }
-
-
-    private fun setSecureWindowFlag() {
-        if (GlobalConfig.APPLICATION_TYPE == GlobalConfig.CONSUMER_APPLICATION || GlobalConfig.APPLICATION_TYPE == GlobalConfig.SELLER_APPLICATION) {
-            runOnUiThread { window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) }
-        }
-    }
-
 
     override fun getLayoutRes() = R.layout.thank_activity_thank_you
 
@@ -96,7 +87,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         val bundle = Bundle()
         intent.data?.getQueryParameter(ARG_PAYMENT_ID)?.let {
             intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter(ARG_MERCHANT))
-            intent.putExtra(ARG_PAYMENT_ID, it.toLong())
+            intent.putExtra(ARG_PAYMENT_ID, it)
             if (intent.extras != null) {
                 bundle.putAll(intent.extras)
             }
@@ -134,7 +125,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
         if (selectedFragment is InstantPaymentFragment && !isGratifDisabled()) {
-            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID.toLong(),
+            dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID,
                     object : GratificationPresenter.AbstractGratifPopupCallback() {
                 override fun onIgnored(reason: Int) {
                     showAppFeedbackBottomSheet(thanksPageData)
@@ -240,17 +231,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         val isNewNavigationEnabled = FirebaseRemoteConfigImpl(this).getBoolean(KEY_CONFIG_NEW_NAVIGATION,
                 false)
         if(isNewNavigationEnabled) {
-            getAbTestPlatform()?.let {
-                return (it.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV,
-                    RollenceKey.NAVIGATION_VARIANT_OLD
-                )
-                        == RollenceKey.NAVIGATION_VARIANT_REVAMP) || (it.getString(
-                    RollenceKey.NAVIGATION_EXP_TOP_NAV2,
-                    RollenceKey.NAVIGATION_VARIANT_OLD
-                )
-                        == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-            }
+            return true
         }
         return false
     }
@@ -286,7 +267,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     override fun onBackPressed() {
         if (::thanksPageData.isInitialized)
             thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
-                    thanksPageData.paymentID.toString())
+                thanksPageData.paymentID
+            )
         if (!isOnBackPressOverride()) {
             gotoHomePage()
             finish()

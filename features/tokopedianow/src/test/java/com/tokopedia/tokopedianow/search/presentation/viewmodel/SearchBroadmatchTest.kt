@@ -10,7 +10,7 @@ import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel.Companion.NO_VARIANT_PARENT_PRODUCT_ID
+import com.tokopedia.tokopedianow.searchcategory.utils.NO_VARIANT_PARENT_PRODUCT_ID
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils
 import io.mockk.every
 import org.hamcrest.CoreMatchers.instanceOf

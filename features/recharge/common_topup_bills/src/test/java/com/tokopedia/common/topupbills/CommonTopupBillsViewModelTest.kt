@@ -45,11 +45,13 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import junit.framework.Assert.assertNotNull
 import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Assert
 import org.junit.Test
 import java.lang.reflect.Type
 
+@ExperimentalCoroutinesApi
 class CommonTopupBillsViewModelTest {
 
     @get:Rule
@@ -79,7 +81,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[TopupBillsEnquiryData::class.java] = topUpEnquiryData
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getEnquiry("", listOf())
@@ -99,7 +101,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TopupBillsEnquiryData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getEnquiry("", listOf())
@@ -121,7 +123,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[TelcoCatalogMenuDetailData::class.java] = telcoCatalogMenuDetailData
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getMenuDetail("", hashMapOf())
@@ -144,7 +146,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TelcoCatalogMenuDetailData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getMenuDetail("", hashMapOf())
@@ -165,7 +167,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[RechargeCatalogPlugin.Response::class.java] = rechargeCatalogPluginData
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getCatalogPluginData("", hashMapOf())
@@ -186,7 +188,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[RechargeCatalogPlugin.Response::class.java] = rechargeCatalogPluginData
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getCatalogPluginData("", hashMapOf())
@@ -208,7 +210,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[RechargeCatalogPlugin.Response::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getCatalogPluginData("", hashMapOf())
@@ -229,7 +231,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[TopupBillsFavNumberData::class.java] = favoriteNumber
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getFavoriteNumbers("", hashMapOf())
@@ -255,7 +257,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TopupBillsFavNumberData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getFavoriteNumbers("", hashMapOf())
@@ -276,7 +278,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[TopupBillsSeamlessFavNumberData::class.java] = favoriteNumber
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getSeamlessFavoriteNumbers("", hashMapOf())
@@ -289,7 +291,7 @@ class CommonTopupBillsViewModelTest {
         val resultData = (actualData as Success).data
         assertNotNull(resultData)
 
-        assertThat(resultData.favoriteNumbers[0].clientNumber == "081288888888")
+        assertThat(resultData.first.favoriteNumbers[0].clientNumber == "081288888888")
     }
 
     @Test
@@ -301,7 +303,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TopupBillsSeamlessFavNumberData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.getSeamlessFavoriteNumbers("", hashMapOf())
@@ -322,7 +324,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[TopupBillsSeamlessFavNumberModData::class.java] = favoriteNumber
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
@@ -348,7 +350,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TopupBillsSeamlessFavNumberModData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
@@ -370,7 +372,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[TopupBillsSeamlessFavNumberModData::class.java] = favoriteNumber
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
@@ -396,7 +398,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TopupBillsSeamlessFavNumberModData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
@@ -418,7 +420,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[TopupBillsSeamlessFavNumberModData::class.java] = favoriteNumber
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
@@ -444,7 +446,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TopupBillsSeamlessFavNumberModData::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
@@ -562,7 +564,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[RechargeExpressCheckout.Response::class.java] = expressCheckout
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.processExpressCheckout("", hashMapOf())
@@ -585,7 +587,7 @@ class CommonTopupBillsViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[RechargeExpressCheckout.Response::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.processExpressCheckout("", hashMapOf())
@@ -607,7 +609,7 @@ class CommonTopupBillsViewModelTest {
         val result = HashMap<Type, Any>()
         result[RechargeExpressCheckout.Response::class.java] = expressCheckout
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // When
         topupBillsViewModel.processExpressCheckout("", hashMapOf())

@@ -7,24 +7,24 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_new_other_topads_topup_value"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_NN950"
         android:alpha="1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:ellipsize="end"
+        android:lines="1"
         app:typographyType="heading_5"
         tools:text="Rp0"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_sah_new_other_topads_topup_message"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sah_new_other_topads_topup_now"
         android:textColor="@color/Unify_NN950"
         android:alpha="0"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:ellipsize="end"
+        android:lines="1"
         app:typographyType="heading_5"/>
 
 </FrameLayout>

@@ -17,6 +17,7 @@ interface InboxDetailContract {
         fun updateAddComment(newItem: CommentsItem)
         fun addImage(image: ImageUpload)
         fun setSubmitButtonEnabled(enabled: Boolean)
+        fun setMessageMaxLengthReached()
         val imageList: List<ImageUpload>
         val userMessage: String
         val ticketID: String

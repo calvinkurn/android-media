@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
-import kotlinx.android.synthetic.main.confirm_req_pickup_notes_item.view.*
+import com.tokopedia.sellerorder.databinding.ConfirmReqPickupNotesItemBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by fwidjaja on 2019-11-14.
  */
-class SomConfirmReqPickupCourierNotesAdapter : RecyclerView.Adapter<SomConfirmReqPickupCourierNotesAdapter.ViewHolder>() {
+class SomConfirmReqPickupCourierNotesAdapter :
+    RecyclerView.Adapter<SomConfirmReqPickupCourierNotesAdapter.ViewHolder>() {
     var listCourierNotes = mutableListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,11 +24,20 @@ class SomConfirmReqPickupCourierNotesAdapter : RecyclerView.Adapter<SomConfirmRe
         return listCourierNotes.size
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.label_index.text = "${position + 1}."
-        holder.itemView.label_notes.text = listCourierNotes[position]
+        holder.bind(listCourierNotes.getOrNull(position).orEmpty())
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private val binding by viewBinding<ConfirmReqPickupNotesItemBinding>()
+
+        @SuppressLint("SetTextI18n")
+        fun bind(element: String) {
+            binding?.run {
+                labelIndex.text = "${adapterPosition + 1}."
+                labelNotes.text = element
+            }
+        }
+    }
 }

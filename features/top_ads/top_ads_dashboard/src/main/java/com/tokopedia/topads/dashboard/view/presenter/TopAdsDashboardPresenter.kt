@@ -386,7 +386,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
 
     @GqlQuery("ProductRecommend", PRODUCT_RECOMMENDATION)
     fun getProductRecommendation(onSuccess: ((ProductRecommendationModel)) -> Unit) {
-        val params = mapOf(ParamObject.SHOP_id to userSession.shopId.toIntOrZero())
+        val params = mapOf(ParamObject.SHOP_id to userSession.shopId)
         productRecomUseCase.setTypeClass(ProductRecommendationModel::class.java)
         productRecomUseCase.setRequestParams(params)
         productRecomUseCase.setGraphqlQuery(ProductRecommend.GQL_QUERY)

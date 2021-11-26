@@ -3,16 +3,14 @@ package com.tokopedia.sellerhomecommon.presentation.view.bottomsheet
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcWidgetFilterBottomSheetBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetFilterAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.shc_widget_filter_bottom_sheet.view.*
 
 /**
  * Created By @ilhamsuaib on 06/11/20
@@ -23,6 +21,7 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
     companion object {
         const val POST_FILTER_TAG = "PostFilterBottomSheet"
         const val TABLE_FILTER_TAG = "TableFilterBottomSheet"
+
         fun newInstance(): WidgetFilterBottomSheet {
             return WidgetFilterBottomSheet().apply {
                 showCloseIcon = false
@@ -61,12 +60,10 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
         }
 
         setTitle(context.getString(titleRes))
-        val inflater = LayoutInflater.from(context)
-        val child = inflater.inflate(
-            R.layout.shc_widget_filter_bottom_sheet,
-            LinearLayout(context), false
+        val childBinding = ShcWidgetFilterBottomSheetBinding.inflate(
+            LayoutInflater.from(context), null, false
         )
-        with(child) {
+        with(childBinding) {
             rvShcWidgetFilter.layoutManager = LinearLayoutManager(context)
             rvShcWidgetFilter.adapter = widgetFilterAdapter
             btnShcWidgetFilterApply.setOnClickListener {
@@ -77,12 +74,11 @@ class WidgetFilterBottomSheet : BottomSheetUnify(), WidgetFilterAdapter.Listener
                 dismiss()
             }
         }
-        setChild(child)
+        setChild(childBinding.root)
         setShowListener {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
         return this
     }
-
 }

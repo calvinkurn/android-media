@@ -42,7 +42,7 @@ class PinnedViewComponent(
         }
         tvPinnedMessage.text = spannableString
 
-        if (!pinnedMessage.applink.isNullOrEmpty()) {
+        if (pinnedMessage.applink.isNotEmpty()) {
             tvPinnedAction.show()
 
             tvPinnedAction.setOnClickListener {

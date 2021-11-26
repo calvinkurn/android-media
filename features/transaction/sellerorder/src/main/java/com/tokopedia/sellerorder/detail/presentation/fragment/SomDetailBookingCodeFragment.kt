@@ -19,9 +19,10 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_COPY_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
+import com.tokopedia.sellerorder.databinding.FragmentSomBookingCodeBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_som_booking_code.*
+import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
 /**
  * Created by fwidjaja on 2019-11-27.
@@ -37,6 +38,8 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     private val API_BARCODE_TYPE93 = "93"
     val BARCODE_WIDTH = 256
     val BARCODE_HEIGHT = 61
+
+    private val binding by viewBinding(FragmentSomBookingCodeBinding::bind)
 
     companion object {
         @JvmStatic
@@ -69,9 +72,9 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun initLayout() {
-        booking_code?.text = bookingCode
+        binding?.bookingCode?.text = bookingCode
         somBookingCodeMsgAdapter = SomDetailBookingCodeMessageAdapter()
-        rv_message?.apply {
+        binding?.rvMessage?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             adapter = somBookingCodeMsgAdapter
         }
@@ -82,13 +85,15 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun initListeners() {
-        ll_code?.setOnClickListener { copyCode() }
-        text_tap_barcode?.setOnClickListener { zoomBarcode() }
-        card_barcode?.setOnClickListener { zoomBarcode() }
+        binding?.run {
+            llCode.setOnClickListener { copyCode() }
+            textTapBarcode.setOnClickListener { zoomBarcode() }
+            cardBarcode.setOnClickListener { zoomBarcode() }
+        }
     }
 
     private fun copyCode() {
-        val code = booking_code?.text.toString().trim { it <= ' ' }
+        val code = binding?.bookingCode?.text.toString().trim { it <= ' ' }
         activity?.let {
             val clipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             clipboardManager.setPrimaryClip(ClipData.newPlainText(LABEL_COPY_BOOKING_CODE, code))
@@ -97,26 +102,26 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun zoomBarcode() {
-        card_barcode?.isClickable = false
+        binding?.cardBarcode?.isClickable = false
         changeBarcodeSize(CONST_INCREASE_DP)
-        filter_view?.visibility = View.VISIBLE
-        filter_view?.setOnClickListener { view ->
+        binding?.filterView?.visibility = View.VISIBLE
+        binding?.filterView?.setOnClickListener { view ->
             view.visibility = View.GONE
             changeBarcodeSize(CONST_REDUCE_DP)
-            card_barcode?.isClickable = true
+            binding?.cardBarcode?.isClickable = true
         }
     }
 
     private fun changeBarcodeSize(dp: Int) {
         val displayMetrics = context?.resources?.displayMetrics
-        val params = barcode_img?.layoutParams
+        val params = binding?.barcodeImg?.layoutParams
         var widthHeight = dp
         displayMetrics?.let {
             widthHeight = dp.dpToPx(it)
         }
-        params?.width = barcode_img?.width?.plus(widthHeight)
-        params?.height = barcode_img?.height?.plus(widthHeight)
-        barcode_img?.layoutParams = params
+        params?.width = binding?.barcodeImg?.width?.plus(widthHeight)
+        params?.height = binding?.barcodeImg?.height?.plus(widthHeight)
+        binding?.barcodeImg?.layoutParams = params
     }
 
     private fun showCommonToaster(message: String) {
@@ -127,7 +132,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun showBarcode(bitmap: Bitmap) {
-        barcode_img?.setImageBitmap(bitmap)
+        binding?.barcodeImg?.setImageBitmap(bitmap)
     }
 
     private fun generateBarcode(code: String, type: String): Bitmap? {

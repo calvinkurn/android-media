@@ -40,6 +40,7 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_B
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.databinding.FragmentShopSearchProductBinding
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
@@ -60,6 +61,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -135,6 +137,7 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     }
 
     private lateinit var viewModel: ShopSearchProductViewModel
+    private val viewBinding : FragmentShopSearchProductBinding? by viewBinding()
 
     private val isMyShop: Boolean
         get() = if (::viewModel.isInitialized) {
@@ -345,9 +348,9 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     }
 
     private fun initViewNew(view: View) {
-        textCancel = view.findViewById(R.id.textCancel)
-        editTextSearchProduct = view.findViewById(R.id.editTextSearchProduct)
-        imageViewClearButton = view.findViewById(R.id.image_view_clear_button)
+        textCancel = viewBinding?.textCancel
+        editTextSearchProduct = viewBinding?.editTextSearchProduct
+        imageViewClearButton = viewBinding?.imageViewClearButton
         hideClearButton()
         (getRecyclerView(view) as? VerticalRecyclerView)?.run {
             clearItemDecoration()

@@ -22,7 +22,28 @@ class TeleporterPattern(
         val queryOptional: String? = "",
         @Expose
         @SerializedName("target")
-        val target: String = ""
+        val target: String = "",
+        @Expose
+        @SerializedName("environment")
+        val environment: String = "",
+        @Expose
+        @SerializedName("min_app_ver_code")
+        val minAppVer: String = "",
+        @Expose
+        @SerializedName("max_app_ver_code")
+        val maxAppVer: String = "",
+        @Expose
+        @SerializedName("device_manufacturers")
+        val manufacturers: String = "",
+        @Expose
+        @SerializedName("device_models")
+        val models: String = "",
+        @Expose
+        @SerializedName("min_os_ver")
+        val minOsVer: String = "",
+        @Expose
+        @SerializedName("max_os_ver")
+        val maxOsVer: String = ""
 ) {
     val pathPatternList by lazy { path.split("/").filter { it.isNotEmpty() } }
     val queryMustHavePatternMap by lazy { UriUtil.stringQueryParamsToMap(query) }

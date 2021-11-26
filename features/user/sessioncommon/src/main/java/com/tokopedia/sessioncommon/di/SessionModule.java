@@ -16,6 +16,8 @@ import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.sessioncommon.data.SessionCommonUrl;
 import com.tokopedia.sessioncommon.data.TokenApi;
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference;
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager;
 import com.tokopedia.sessioncommon.network.AccountsBearerInterceptor;
 import com.tokopedia.sessioncommon.network.BasicInterceptor;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
@@ -141,6 +143,12 @@ public class SessionModule {
     @Provides
     TokenApi provideTokenApi(@Named(TOKEN) Retrofit retrofit) {
         return retrofit.create(TokenApi.class);
+    }
+
+    @SessionCommonScope
+    @Provides
+    FingerprintPreference provideFingerprintPreferenceManager(@ApplicationContext Context context) {
+        return new FingerprintPreferenceManager(context);
     }
 
     public static String getUserAgent() {

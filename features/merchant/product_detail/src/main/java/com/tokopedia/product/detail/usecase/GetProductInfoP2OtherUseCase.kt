@@ -49,7 +49,7 @@ class GetProductInfoP2OtherUseCase @Inject constructor(private val rawQueries: M
         val requests = mutableListOf(discussionMostHelpfulRequest)
 
         try {
-            val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
+            val gqlResponse = graphqlRepository.response(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
             //region Discussion
             if (gqlResponse.getError(DiscussionMostHelpfulResponseWrapper::class.java)?.isNotEmpty() != true) {

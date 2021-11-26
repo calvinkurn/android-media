@@ -17,10 +17,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16">
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp">
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/textInputLayoutCoupon"
@@ -47,12 +47,12 @@
                 style="@style/TextView.Micro.WhitePrimary"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginLeft="16dp"
                 android:background="@drawable/green_button_rounded"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="8dp"
                 android:text="@string/use_promo_label_button" />
 
         </RelativeLayout>
@@ -61,8 +61,8 @@
             android:id="@+id/holder_item_cart_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginLeft="@dimen/dp_14"
-            android:layout_marginRight="@dimen/dp_14"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
             android:background="@color/Unify_N100" />
 
         <LinearLayout
@@ -71,16 +71,16 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_2">
+            android:paddingLeft="8dp"
+            android:paddingRight="2dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvVoucherList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_8" />
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp" />
 
         </LinearLayout>
 
@@ -98,8 +98,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:visibility="gone" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

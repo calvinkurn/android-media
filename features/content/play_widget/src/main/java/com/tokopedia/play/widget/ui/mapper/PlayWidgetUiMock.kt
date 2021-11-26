@@ -57,9 +57,11 @@ object PlayWidgetUiMock {
                 0 -> getSampleMediumCardOverlayBanner()
                 4 -> getSampleMediumCardBanner()
                 else -> {
-                    val channelType = when (cardItemTypeRandom.nextInt(0, 4)) {
+                    val channelType = when (cardItemTypeRandom.nextInt(0, 5)) {
                         0 -> PlayWidgetChannelType.Upcoming
                         1 -> PlayWidgetChannelType.Vod
+                        2 -> PlayWidgetChannelType.Transcoding
+                        3 -> PlayWidgetChannelType.FailedTranscoding
                         else -> PlayWidgetChannelType.Live
                     }
                     getSampleMediumChannelCardBanner(channelType)

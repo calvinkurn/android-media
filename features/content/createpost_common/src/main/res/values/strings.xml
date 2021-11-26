@@ -1,0 +1,21 @@
+<resources>
+    <string name="cp_common_progress_bar_text">Memproses...</string>
+    <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
+    <string name="cp_common_coba_lagi_text">Coba Lagi</string>
+    <string name="cp_common_notif_uploading">Meng-upload post</string>
+    <string name="cp_notif_media" formatted="false">%d dari %d Media…</string>
+    <string name="cp_common_notif_submit">Menyiapkan post…</string>
+    <string name="cp_common_notif_success">Selesai! Cek post kamu di sini ya</string>
+    <string name="cp_common_notif_error">Gagal mengunggah post, klik untuk coba lagi</string>
+
+    <string name="cp_common_share_tokopedia">Follower</string>
+    <string name="cp_common_share_facebook">Facebook</string>
+    <string name="cp_common_share_twitter">Twitter</string>
+    <string name="cp_common_share_tokopedia_hint">%s orang akan melihat post ini</string>
+    <string name="cp_common_share_tokopedia_option">Share ke Follower</string>
+    <string name="cp_common_share_facebook_option">Post ke Facebook</string>
+    <string name="cp_common_share_twitter_option">Share di Twitter</string>
+    <string name="cp_common_error_create_post">Ada sedikit kendala nih. Coba beberapa saat lagi ya.</string>
+
+
+</resources>

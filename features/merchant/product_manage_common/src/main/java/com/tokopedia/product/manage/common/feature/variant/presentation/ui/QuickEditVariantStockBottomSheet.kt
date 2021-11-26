@@ -24,11 +24,11 @@ class QuickEditVariantStockBottomSheet(
     ProductCampaignInfoListener {
 
     companion object {
-        private const val EXTRA_PRODUCT_ID = "extra_product_id"
         val TAG: String = QuickEditVariantStockBottomSheet::class.java.simpleName
 
         fun createInstance(
             productId: String,
+            isBundling: Boolean = false,
             onClickCampaignInfo: (List<ProductCampaignType>) -> Unit,
             onSaveVariantsStock: (EditVariantResult) -> Unit
         ): QuickEditVariantStockBottomSheet {
@@ -38,6 +38,7 @@ class QuickEditVariantStockBottomSheet(
             ).apply {
                 val bundle = Bundle()
                 bundle.putString(EXTRA_PRODUCT_ID, productId)
+                bundle.putBoolean(EXTRA_IS_BUNDLING, isBundling)
                 arguments = bundle
             }
         }

@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,9 +16,11 @@ public class ProductData implements Parcelable {
     @SerializedName("shipper_name")
     @Expose
     private String shipperName;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipper_id")
     @Expose
     private int shipperId;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("shipper_product_id")
     @Expose
     private int shipperProductId;
@@ -48,6 +51,7 @@ public class ProductData implements Parcelable {
     @SerializedName("promo_code")
     @Expose
     private String promoCode;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     @Expose
     private PriceData price;

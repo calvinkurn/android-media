@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/cu_item_category"
     android:padding="@dimen/spacing_lvl3"
     app:card_type="shadow">
 
@@ -12,14 +13,14 @@
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/imageCategory"
+            android:id="@+id/iu_category"
             android:layout_width="@dimen/layout_lvl6"
             android:layout_height="@dimen/layout_lvl6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/textCategory"
+            android:id="@+id/tp_category"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             android:layout_marginStart="@dimen/spacing_lvl3"
@@ -27,10 +28,10 @@
             android:gravity="center_vertical"
             android:maxLines="2"
             android:textColor="@color/Unify_N700"
-            app:layout_constraintBottom_toBottomOf="@id/imageCategory"
+            app:layout_constraintBottom_toBottomOf="@id/iu_category"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/imageCategory"
-            app:layout_constraintTop_toTopOf="@id/imageCategory"
+            app:layout_constraintStart_toEndOf="@id/iu_category"
+            app:layout_constraintTop_toTopOf="@id/iu_category"
             app:typographyType="small"
             tools:text="Long Category Title" />
     </androidx.constraintlayout.widget.ConstraintLayout>

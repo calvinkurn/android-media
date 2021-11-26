@@ -71,8 +71,10 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     }
                 },
                 onError = {
-                        errorReport.value = it
-                        isItRefreshing.value = false
+                        if (it !is CancellationException){
+                            errorReport.value = it
+                            isItRefreshing.value = false
+                        }
                 }
         )
     }
@@ -88,7 +90,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     EventSearchLocationResponse.Data::class.java, mapOf(SEARCHQUERY to text)
             )
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
-            gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventSearchLocationResponse.Data>()
+            gqlRepository.response(listOf(req), cacheStrategy).getSuccessData<EventSearchLocationResponse.Data>()
         }
     }
 
@@ -98,7 +100,7 @@ class EventSearchViewModel @Inject constructor(private val dispatcher: Coroutine
                     query,
                     EventSearchHistoryResponse.Data::class.java)
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
-            gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventSearchHistoryResponse.Data>()
+            gqlRepository.response(listOf(req), cacheStrategy).getSuccessData<EventSearchHistoryResponse.Data>()
         }
     }
 

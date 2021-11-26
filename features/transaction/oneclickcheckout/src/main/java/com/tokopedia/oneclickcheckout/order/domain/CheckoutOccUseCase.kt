@@ -20,7 +20,7 @@ class CheckoutOccUseCase @Inject constructor(@ApplicationContext private val gra
 
     suspend fun executeSuspend(param: CheckoutOccRequest): CheckoutOccData {
         val request = GraphqlRequest(QUERY, CheckoutOccGqlResponse::class.java, generateParam(param))
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<CheckoutOccGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<CheckoutOccGqlResponse>()
         return mapCheckoutData(response)
     }
 

@@ -4,21 +4,19 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.ChannelStyle
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.home_component.usecase.featuredshop.DisplayHeadlineAdsEntity
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.usecase.featuredshop.mappingTopAdsHeaderToChannelGrid
 import com.tokopedia.home_component.visitable.FeaturedShopDataModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -371,7 +369,7 @@ class OfficialStoreHomeViewModelTest {
         val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
         dynamicChannelResponse.addAll(
                 listOf(
-                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
                 )
         )
 
@@ -412,7 +410,7 @@ class OfficialStoreHomeViewModelTest {
         val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
         dynamicChannelResponse.addAll(
                 listOf(
-                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelIdentifiers.LAYOUT_FEATURED_SHOP, id = channelId))
+                        OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_FEATURED_SHOP, id = channelId))
                 )
         )
 
@@ -495,7 +493,7 @@ class OfficialStoreHomeViewModelTest {
         verifyGetOfficialStoreBannersUseCaseCalled()
 
         viewModel.officialStoreBannersResult
-                .assertSuccess(expectedOSBanners)
+                .assertPairSuccess(expectedOSBanners)
     }
 
     private fun verifyOfficialStoreBenefitsEquals(
@@ -554,7 +552,7 @@ class OfficialStoreHomeViewModelTest {
         coVerify { getOfficialStoreBannersUseCase.executeOnBackground(any()) }
 
         viewModel.officialStoreBannersResult
-                .assertError(expectedError)
+                .assertPairError(expectedError)
     }
 
     private fun verifyOfficialStoreBenefitsError(expectedError: Fail) {
@@ -607,12 +605,23 @@ class OfficialStoreHomeViewModelTest {
         assertEquals(expectedValue, actualValue)
     }
 
+    private fun <T> LiveData<T>.assertPairSuccess(expectedValue: Success<*>) {
+        val actualValue = (value as? Pair<Any, Any>)?.second
+        assertEquals(expectedValue, actualValue)
+    }
+
     private fun ((Boolean, Throwable?) -> Unit).assertSuccess() {
         coVerify { this@assertSuccess.invoke(true, null) }
     }
 
     private fun <T> LiveData<T>.assertError(error: Fail) {
         val actualError = value.toString()
+        val expectedError = error.toString()
+        assertEquals(expectedError, actualError)
+    }
+
+    private fun <T> LiveData<T>.assertPairError(error: Fail) {
+        val actualError = (value as? Pair<Any, Any>)?.second.toString()
         val expectedError = error.toString()
         assertEquals(expectedError, actualError)
     }

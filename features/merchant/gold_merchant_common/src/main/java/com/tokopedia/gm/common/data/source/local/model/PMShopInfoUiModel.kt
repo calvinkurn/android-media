@@ -5,6 +5,7 @@ package com.tokopedia.gm.common.data.source.local.model
  */
 
 data class PMShopInfoUiModel(
+        val shopCreatedDate: String = "",
         val isNewSeller: Boolean = true,
         val is30DaysFirstMonday: Boolean = false,
         val isKyc: Boolean = false,

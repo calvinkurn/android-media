@@ -29,7 +29,7 @@ class CheckWhitelistedStatusUseCase @Inject constructor(
         val gqlRequest = GraphqlRequest(
             QUERY, CheckWhitelistedStatusResponse::class.java, params.parameters
         )
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
         val errors: List<GraphqlError>? = gqlResponse.getError(
             CheckWhitelistedStatusResponse::class.java
         )

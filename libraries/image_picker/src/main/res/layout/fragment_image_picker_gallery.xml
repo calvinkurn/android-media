@@ -18,11 +18,11 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
             android:foreground="?attr/selectableItemBackground"
-            android:paddingLeft="@dimen/dp_20"
-            android:paddingStart="@dimen/dp_20"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingBottom="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_16"
+            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
             tools:lv_content="@string/default_all_album"
             app:lv_title_color="@color/Unify_N700"
             app:lv_sub_title_color="@color/Unify_N700"
@@ -39,7 +39,7 @@
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@color/Unify_N0"
-        android:paddingBottom="@dimen/dp_4"/>
+        android:paddingBottom="4dp"/>
 
     <ProgressBar
         android:id="@+id/loading"

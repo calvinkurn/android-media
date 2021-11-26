@@ -30,7 +30,6 @@ import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**

@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.buyerorder.common.ResourceProvider
 import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
 import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
@@ -8,6 +9,7 @@ import com.tokopedia.buyerorder.detail.data.requestcancel.BuyerRequestCancelData
 import com.tokopedia.buyerorder.detail.domain.BuyerGetCancellationReasonUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerInstantCancelUseCase
 import com.tokopedia.buyerorder.detail.domain.BuyerRequestCancelUseCase
+import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.model.BuyerCancelRequestReasonValidationResult
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -16,7 +18,7 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.verify
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -50,11 +52,16 @@ class BuyerCancellationViewModelTest {
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
 
+    @RelaxedMockK
+    lateinit var buyerNormalProductObserver: Observer<in List<BuyerNormalProductUiModel>?>
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         buyerCancellationViewModel = BuyerCancellationViewModel(dispatcher, resourceProvider, getCancellationUseCase,
-                buyerInstantCancelUseCase, buyerRequestCancelUseCase)
+                buyerInstantCancelUseCase, buyerRequestCancelUseCase).also {
+                    it.buyerNormalProductUiModelListLiveData.observeForever(buyerNormalProductObserver)
+        }
 
         listReason.add(BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem(title = "test1"))
         listReason.add(BuyerGetCancellationReasonData.Data.GetCancellationReason.ReasonsItem(title = "test2"))
@@ -66,6 +73,11 @@ class BuyerCancellationViewModelTest {
         coEvery {
             resourceProvider.getBuyerRequestCancelReasonShouldNotContainsSpecialCharsErrorMessage()
         } returns "Hindari penggunaan karakter spesial (@#\$%^*)"
+    }
+
+    @After
+    fun cleanUp() {
+        buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.removeObserver(buyerNormalProductObserver)
     }
 
     // get cancel reason data
@@ -256,5 +268,55 @@ class BuyerCancellationViewModelTest {
 
         val result = buyerCancellationViewModel.buyerRequestCancelReasonValidationResult.value
         assert(expectedResult == result)
+    }
+
+    @Test
+    fun validateBuyerNormalProductList_shouldReturnNullWhenGivenHaveProductBundleFalse() {
+        //given
+        val cancellationReason =
+            BuyerGetCancellationReasonData.Data(
+                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
+                    haveProductBundle = false
+                ))
+        coEvery {
+            getCancellationUseCase.execute(any(), any())
+        } returns Success(cancellationReason)
+
+        //when
+        buyerCancellationViewModel.getCancelReasons("", "", "")
+
+        //then
+        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
+        assert(result == null)
+    }
+
+    @Test
+    fun validateBuyerNormalProductList_shouldReturnMappedListGivenHaveProductBundleTrue() {
+        //given
+        val cancellationReason =
+            BuyerGetCancellationReasonData.Data(
+                getCancellationReason = BuyerGetCancellationReasonData.Data.GetCancellationReason(
+                    haveProductBundle = true,
+                    bundleDetail = BuyerGetCancellationReasonData.Data.GetCancellationReason.BundleDetail(
+                        nonBundleList = listOf(
+                            BuyerGetCancellationReasonData.Data.GetCancellationReason.OrderDetailsCancellation(
+                                productId = "123",
+                                productName = "satuduatiga",
+                                productPrice = "Rp123",
+                                picture = "www.123.com/123.jpg"
+                            )
+                        )
+                    )
+                ))
+        coEvery {
+            getCancellationUseCase.execute(any(), any())
+        } returns Success(cancellationReason)
+
+        //when
+        buyerCancellationViewModel.getCancelReasons("", "", "")
+
+        //then
+        val result = buyerCancellationViewModel.buyerNormalProductUiModelListLiveData.value
+        assert(result != null)
     }
 }

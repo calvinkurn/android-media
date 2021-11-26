@@ -80,7 +80,7 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
                 .setSessionIncluded(false)
                 .build()
 
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error: List<GraphqlError>? = gqlResponse.getError(BottomSheetProductDetailInfoResponse::class.java)
         val data = gqlResponse.getData<BottomSheetProductDetailInfoResponse>(BottomSheetProductDetailInfoResponse::class.java)
 

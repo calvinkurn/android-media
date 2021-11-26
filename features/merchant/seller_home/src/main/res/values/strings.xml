@@ -14,9 +14,10 @@
     <string name="sah_home">Home</string>
     <string name="sah_product">Produk</string>
     <string name="sah_chat">Chat</string>
-    <string name="sah_sale">Penjualan</string>
+    <string name="sah_som_list">Daftar Pesanan</string>
     <string name="sah_others">Lainnya</string>
 
+    <string name="sah_order">Pesanan</string>
     <string name="sah_product_list">Daftar Produk</string>
 
     <!--toolbar menu-->
@@ -39,7 +40,6 @@
     <string name="setting_menu_product_package">Kemasan Produk</string>
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
     <string name="setting_menu_set_activation_page_cod">Layanan Bayar di Tempat</string>
-    <string name="setting_menu_exclusive_feature">FITUR EKSKLUSIF</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
     <string name="setting_menu_self_profile">Profil Diri</string>
     <string name="setting_menu_bank_account">Rekening Bank</string>
@@ -50,6 +50,8 @@
     <string name="setting_screen_recorder">Perekam Layar</string>
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
+    <string name="setting_menu_give_feedback">Beri Feedback</string>
+    <string name="setting_new_tag">BARU</string>
     <string name="setting_menu_developer_options">Developer Options</string>
     <string name="setting_header_error_message">Error when get %s in other setting</string>
     <string name="setting_header_multiple_error_message">Beberapa data gagal ditampilkan</string>
@@ -126,7 +128,6 @@
     <string name="sah_recommendation_coach_mark_description">Cek semua update dan kendala tokomu di sini dan baca tips untuk meningkatkan Performamu, ya!</string>
     <string name="sah_other_menu_coach_mark_title">Lihat detail Performamu di sini, ya!</string>
     <string name="sah_other_menu_coach_mark_description">Cek level, skor, dan status tokomu lebih lanjut dari menu Lainnya lalu pilih Performa Toko.</string>
-    <string name="settings_shop_status_label">Status toko:</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
     <string name="settings_operational_hour_not_set">LIBUR</string>
@@ -136,4 +137,11 @@
     <string name="sah_share_action_copy_success">Teks berhasil disalin</string>
     <string name="sah_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
     <string name="sah_share_to_social_media_text">Bagikan ke media sosial</string>
+    <string name="sah_empty_layout_message">Oops, kamu tidak punya izin untuk melihat konten di halaman Home</string>
+
+    <!-- Admin Restriction -->
+    <string name="sah_admin_restriction_label">Admin Restriction</string>
+    <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
+    <string name="sah_admin_restriction_desc">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="sah_admin_restriction_button">Oke, Saya Mengerti</string>
 </resources>

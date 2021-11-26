@@ -35,7 +35,7 @@ class ChangeStatusPushNotifUseCase @Inject constructor(
                 ChangeStatusPushNotifPojo::class.java,
                 parameter
         )
-        return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
     }.getSuccessData()
 
     companion object {

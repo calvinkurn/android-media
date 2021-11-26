@@ -11,7 +11,7 @@
         android:id="@+id/itemCategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16">
+        android:padding="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCategoryNameParent"
@@ -22,8 +22,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivCategoryParent"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_weight="0"
             app:srcCompat="@drawable/product_add_edit_ic_chevron_down" />
 

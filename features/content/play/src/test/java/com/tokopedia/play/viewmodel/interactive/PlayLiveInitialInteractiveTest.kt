@@ -8,23 +8,18 @@ import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
+import com.tokopedia.play.util.assertFalse
 import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -40,7 +35,9 @@ class PlayLiveInitialInteractiveTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val testDispatcher = CoroutineTestDispatchers
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+    private val testDispatcher = coroutineTestRule.dispatchers
 
     private val socketResponseBuilder = PlaySocketResponseBuilder()
     private val channelDataBuilder = PlayChannelDataModelBuilder()
@@ -64,16 +61,6 @@ class PlayLiveInitialInteractiveTest {
         every { mockRemoteConfig.getBoolean(any(), any()) } returns true
     }
 
-    @Before
-    fun setUp() {
-        Dispatchers.setMain(testDispatcher.coroutineDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
-
     @Test
     fun `given no active interactive, when retrieved, there should be no interactive`() {
         val socketFlow = MutableStateFlow<WebSocketAction>(
@@ -91,7 +78,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
             }
@@ -126,7 +113,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.PreStart(timeBeforeStartTap, title)
                 )
             }
@@ -160,7 +147,7 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.Ongoing(durationTap)
                 )
             }
@@ -195,10 +182,10 @@ class PlayLiveInitialInteractiveTest {
             focusPage(mockChannelData)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                showWinnerBadge.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }

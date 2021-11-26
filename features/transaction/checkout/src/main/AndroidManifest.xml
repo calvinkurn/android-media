@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.checkout.view.ShipmentActivity"
+            android:name="com.tokopedia.checkout.ShipmentActivity"
             android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify">
@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.checkout.subfeature.webview.CheckoutWebViewActivity"
+            android:name="com.tokopedia.checkout.bundle.subfeature.webview.CheckoutWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"/>
 

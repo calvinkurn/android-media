@@ -3,7 +3,7 @@
     android:id="@+id/creditOptionChipItem"
     android:layout_width="@dimen/dp_150"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginTop="8dp"
     app:centerText="true"
     app:chipSize="medium"
     app:chipType="normal" />

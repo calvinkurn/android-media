@@ -14,7 +14,6 @@ buildscript {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.profileCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)

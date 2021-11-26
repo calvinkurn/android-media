@@ -50,32 +50,6 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaL
     }
 }
 
-fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
-        fitCenter()
-        listener({ resource, dataSource ->
-            handleOnResourceReady(dataSource, resource, performanceMonitoring, fpmItemLabel)
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-        })
-    }
-}
-
-fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadIcon(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
-        fitCenter()
-        listener({ resource, dataSource ->
-            handleOnResourceReady(dataSource, resource, performanceMonitoring, fpmItemLabel)
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-        })
-    }
-}
-
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
 
@@ -127,14 +101,6 @@ fun ImageView.loadMiniImage(
         }, {
             onFailed()
         })
-    }
-}
-
-fun ImageView.loadImageCenterCrop(url: String){
-    this.loadImage(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
-        setRoundedRadius(15.toFloat())
-        centerCrop()
     }
 }
 

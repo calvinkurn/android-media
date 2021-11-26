@@ -26,7 +26,6 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
     private val masterJob = SupervisorJob()
-    private var isInitialized = false
 
     override val coroutineContext = masterJob + Dispatchers.Main
 
@@ -114,15 +113,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     }
 
     private fun initBindCarousel(isGrid: Boolean, recyclerViewPool: RecyclerView.RecycledViewPool?) {
-        if (isInitialized) return
-
         initLayoutManager()
 
         if (isGrid) initGridAdapter()
         else initListAdapter()
         initRecyclerView(recyclerViewPool)
-
-        isInitialized = true
     }
 
     private fun createCarouselProductCardListenerInfo(

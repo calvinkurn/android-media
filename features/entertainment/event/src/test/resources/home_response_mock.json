@@ -208,7 +208,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jakarta-toys-and-comics-fair-2020-25787?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "jakarta-toys-and-comics-fair-2020-25787"
+              "is_free": 1,
+              "seo_url": "jakarta-toys-and-comics-fair-2020-25787",
+              "min_start_date": "1622653260"
             },
             {
               "id": "26423",
@@ -226,7 +228,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jakarta-sneaker-day-2020-26423?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "jakarta-sneaker-day-2020-26423"
+              "is_free": 1,
+              "seo_url": "jakarta-sneaker-day-2020-26423",
+              "min_start_date": "1622653260"
             },
             {
               "id": "26794",
@@ -244,7 +248,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/indofest-indofishing-2020-jakarta?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "indofest-indofishing-2020-jakarta"
+              "is_free": 1,
+              "seo_url": "indofest-indofishing-2020-jakarta",
+              "min_start_date": "1622653260"
             },
             {
               "id": "472",
@@ -262,7 +268,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jungleland?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "jungleland"
+              "is_free": 1,
+              "seo_url": "jungleland",
+              "min_start_date": "1622653260"
             },
             {
               "id": "518",
@@ -280,7 +288,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/atlantis-water-adventure?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "atlantis-water-adventure"
+              "is_free": 1,
+              "seo_url": "atlantis-water-adventure",
+              "min_start_date": "1622653260"
             },
             {
               "id": "491",
@@ -298,7 +308,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/seaworld?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "seaworld"
+              "is_free": 1,
+              "seo_url": "seaworld",
+              "min_start_date": "1622653260"
             },
             {
               "id": "507",
@@ -316,7 +328,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ocean-dream-samudra?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "ocean-dream-samudra"
+              "is_free": 1,
+              "seo_url": "ocean-dream-samudra",
+              "min_start_date": "1622653260"
             },
             {
               "id": "22281",
@@ -334,7 +348,9 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-alam-sutera?cities=",
               "is_liked": false,
               "is_promo": 0,
-              "seo_url": "pandora-experience-alam-sutera"
+              "is_free": 1,
+              "seo_url": "pandora-experience-alam-sutera",
+              "min_start_date": "1622653260"
             }
           ]
         },
@@ -361,6 +377,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/seaworld?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "seaworld"
             },
             {
@@ -379,6 +396,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ocean-dream-samudra?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "ocean-dream-samudra"
             },
             {
@@ -397,6 +415,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/tiket-wisata-the-colorville-alam-sari-wates-purwakarta-16495?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "tiket-wisata-the-colorville-alam-sari-wates-purwakarta-16495"
             },
             {
@@ -415,6 +434,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/hugo-city-food-centrum-17971?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "hugo-city-food-centrum-17971"
             },
             {
@@ -433,6 +453,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/bali-zoo-park---international-tourist-18425?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "bali-zoo-park---international-tourist-18425"
             },
             {
@@ -451,6 +472,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/saloka-theme-park-semarang-25361?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "saloka-theme-park-semarang-25361"
             },
             {
@@ -469,6 +491,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/candi-ratu-boko?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "candi-ratu-boko"
             },
             {
@@ -487,6 +510,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/go-wet?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "go-wet"
             },
             {
@@ -505,6 +529,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/youreka?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "youreka"
             },
             {
@@ -523,6 +548,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/bali-zoo-park---domestic-tourist-18422?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "bali-zoo-park---domestic-tourist-18422"
             },
             {
@@ -541,6 +567,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-puri?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "pandora-experience-puri"
             },
             {
@@ -559,6 +586,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-surabaya?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "pandora-experience-surabaya"
             },
             {
@@ -577,6 +605,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/waterbom-bali-21355?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "waterbom-bali-21355"
             },
             {
@@ -595,6 +624,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/bali-bird-park-21374?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "bali-bird-park-21374"
             },
             {
@@ -613,6 +643,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/snowbay?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "snowbay"
             },
             {
@@ -631,6 +662,7 @@
               "url": "taman-legenda-keong-emas",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "taman-legenda-keong-emas"
             },
             {
@@ -649,6 +681,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/dufan?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "dufan"
             },
             {
@@ -667,6 +700,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-baywalk?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "pandora-experience-baywalk"
             },
             {
@@ -685,6 +719,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jungleland?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "jungleland"
             },
             {
@@ -703,6 +738,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/atlantis-water-adventure?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "atlantis-water-adventure"
             },
             {
@@ -721,6 +757,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-mall-ciputra-jakarta?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "pandora-experience-mall-ciputra-jakarta"
             },
             {
@@ -739,6 +776,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/candi-borobudur?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "candi-borobudur"
             },
             {
@@ -757,6 +795,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ancol?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "ancol"
             },
             {
@@ -775,6 +814,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/secret-garden-village-18536?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "secret-garden-village-18536"
             },
             {
@@ -793,6 +833,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/candi-prambanan?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "candi-prambanan"
             },
             {
@@ -811,6 +852,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-alam-sutera?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "pandora-experience-alam-sutera"
             },
             {
@@ -829,6 +871,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/pandora-experience-kelapa-gading?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "pandora-experience-kelapa-gading"
             }
           ]
@@ -856,6 +899,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/limited-offer-teseum-teddy-bear-theme-park-ticket-in-seoul-27316?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "limited-offer-teseum-teddy-bear-theme-park-ticket-in-seoul-27316"
             },
             {
@@ -874,6 +918,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ifly-singapore-26154?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "ifly-singapore-26154"
             },
             {
@@ -892,6 +937,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/legoland-johor-bahru-20662?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "legoland-johor-bahru-20662"
             },
             {
@@ -910,6 +956,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/sea-life-bangkok-ocean-world-21329?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "sea-life-bangkok-ocean-world-21329"
             },
             {
@@ -928,6 +975,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/hong-kong-airport-train-21335?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "hong-kong-airport-train-21335"
             },
             {
@@ -946,6 +994,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/legoland-japan-21350?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "legoland-japan-21350"
             },
             {
@@ -964,6 +1013,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/legend-heroes-sports-gaming-experience-ticket-in-seoul-27329?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "legend-heroes-sports-gaming-experience-ticket-in-seoul-27329"
             },
             {
@@ -982,6 +1032,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/vright-vr-theme-park-ticket-in-seoul-27332?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "vright-vr-theme-park-ticket-in-seoul-27332"
             },
             {
@@ -1000,6 +1051,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/adventure-cove-waterpark-21348?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "adventure-cove-waterpark-21348"
             },
             {
@@ -1018,6 +1070,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/south-korea-railplus-transport-card-27321?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "south-korea-railplus-transport-card-27321"
             },
             {
@@ -1036,6 +1089,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/gyobokmall-korean-school-uniform-rental-seoul-jamsil-store-27322?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "gyobokmall-korean-school-uniform-rental-seoul-jamsil-store-27322"
             },
             {
@@ -1054,6 +1108,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/seoul-zoo-included-sky-lift-elephant-train-combo-ticket-seoul-27324?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "seoul-zoo-included-sky-lift-elephant-train-combo-ticket-seoul-27324"
             },
             {
@@ -1072,6 +1127,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/3d-trick-eye-museum-in-busan-27327?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "3d-trick-eye-museum-in-busan-27327"
             },
             {
@@ -1090,6 +1146,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/hong-kong-airport-express-72-hour-unlimited-mtr-travel-pass-26203?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "hong-kong-airport-express-72-hour-unlimited-mtr-travel-pass-26203"
             },
             {
@@ -1108,6 +1165,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/qr-code-direct-entry-peak-tram-sky-pass-peak-tram-sky-terrace-428-26208?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "qr-code-direct-entry-peak-tram-sky-pass-peak-tram-sky-terrace-428-26208"
             },
             {
@@ -1126,6 +1184,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/mtr-tourist-day-pass-26153?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "mtr-tourist-day-pass-26153"
             },
             {
@@ -1144,6 +1203,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/universal-studios-japan-21324?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "universal-studios-japan-21324"
             },
             {
@@ -1162,6 +1222,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/meal-coupon-hong-kong-disneyland-21338?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "meal-coupon-hong-kong-disneyland-21338"
             },
             {
@@ -1180,6 +1241,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/tokyo-sanrio-puroland-21351?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "tokyo-sanrio-puroland-21351"
             },
             {
@@ -1198,6 +1260,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/singapore-river-safari-21345?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "singapore-river-safari-21345"
             },
             {
@@ -1216,6 +1279,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/tokyo-tower-observatory-24281?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "tokyo-tower-observatory-24281"
             },
             {
@@ -1234,6 +1298,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/skip-the-line-universal-studios-singapore-express-pass-25940?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "skip-the-line-universal-studios-singapore-express-pass-25940"
             },
             {
@@ -1252,6 +1317,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jeju-land-horseback-riding-27318?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "jeju-land-horseback-riding-27318"
             },
             {
@@ -1270,6 +1336,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jeju-land-atv-27319?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "jeju-land-atv-27319"
             },
             {
@@ -1288,6 +1355,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/hanbok-experience-in-myeongdong-27320?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "hanbok-experience-in-myeongdong-27320"
             },
             {
@@ -1306,6 +1374,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/arex-incheon-airport-express-one-way-train-ticket-27310?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "arex-incheon-airport-express-one-way-train-ticket-27310"
             },
             {
@@ -1324,6 +1393,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/art-in-paradise-pattaya-26171?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "art-in-paradise-pattaya-26171"
             },
             {
@@ -1342,6 +1412,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/khao-kheow-open-zoo-26172?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "khao-kheow-open-zoo-26172"
             },
             {
@@ -1360,6 +1431,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/singapore-zoo-breakfast-26155?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "singapore-zoo-breakfast-26155"
             },
             {
@@ -1378,6 +1450,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/trickeye-ar-museum-in-seoul-26186?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "trickeye-ar-museum-in-seoul-26186"
             }
           ]
@@ -1405,6 +1478,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/lolo-land-26454?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "lolo-land-26454"
             },
             {
@@ -1423,6 +1497,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/painting-made-easy-with-karea-art-27618?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "painting-made-easy-with-karea-art-27618"
             },
             {
@@ -1441,6 +1516,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/proball-football?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "proball-football"
             },
             {
@@ -1459,6 +1535,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/proball-mastery?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "proball-mastery"
             },
             {
@@ -1477,6 +1554,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/anfa-futsal-academy?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "anfa-futsal-academy"
             },
             {
@@ -1495,6 +1573,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/indofest-indofishing-2020-jakarta?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "indofest-indofishing-2020-jakarta"
             },
             {
@@ -1513,6 +1592,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/gianyar-run-2020-26916?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "gianyar-run-2020-26916"
             }
           ]
@@ -1540,6 +1620,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/romantic-valentine-concert-with-ronan-keating-christian-bautista-and-bunga-citra-lestari-25685?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "romantic-valentine-concert-with-ronan-keating-christian-bautista-and-bunga-citra-lestari-25685"
             },
             {
@@ -1558,6 +1639,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/imperial-sounds---yogyakarta-27606?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "imperial-sounds---yogyakarta-27606"
             },
             {
@@ -1576,6 +1658,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jpcc-worship-brighter-live-worship-creative-talks-25319?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "jpcc-worship-brighter-live-worship-creative-talks-25319"
             },
             {
@@ -1594,6 +1677,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/raisa-live-in-concert-jakarta-2020-27477?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "raisa-live-in-concert-jakarta-2020-27477"
             },
             {
@@ -1612,6 +1696,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jogjarockarta-international-rock-music-festival-2020-25522?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "jogjarockarta-international-rock-music-festival-2020-25522"
             },
             {
@@ -1630,6 +1715,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/we-are-connected-26440?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "we-are-connected-26440"
             },
             {
@@ -1648,6 +1734,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ubud-village-jazz-festival-2020-25676?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "ubud-village-jazz-festival-2020-25676"
             }
           ]
@@ -1675,6 +1762,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ideacloud-2020-26871?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "ideacloud-2020-26871"
             },
             {
@@ -1693,6 +1781,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jakarta-toys-and-comics-fair-2020-25787?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "jakarta-toys-and-comics-fair-2020-25787"
             },
             {
@@ -1711,6 +1800,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ngobrol-aja-dulu-4-the-risen-of-mental-health-awareness-27294?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "ngobrol-aja-dulu-4-the-risen-of-mental-health-awareness-27294"
             },
             {
@@ -1729,6 +1819,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/ngulik-berkah-malang-bersama-tokopedia-salam-27563?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "ngulik-berkah-malang-bersama-tokopedia-salam-27563"
             },
             {
@@ -1747,6 +1838,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/free-fire-indonesia-masters-2020-spring-27453?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "free-fire-indonesia-masters-2020-spring-27453"
             },
             {
@@ -1765,6 +1857,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/a-tribute-to-the-legends---queen-gun-n-roses-the-beatles-27454?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "a-tribute-to-the-legends---queen-gun-n-roses-the-beatles-27454"
             },
             {
@@ -1783,6 +1876,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/jakarta-sneaker-day-2020-26423?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "jakarta-sneaker-day-2020-26423"
             },
             {
@@ -1801,6 +1895,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/seminar-masa-muda-terencana-dengan-reksa-dana?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "seminar-masa-muda-terencana-dengan-reksa-dana"
             },
             {
@@ -1819,6 +1914,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/seocon?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "seocon"
             },
             {
@@ -1837,6 +1933,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/3d-modelling-with-sketchup-27619?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "3d-modelling-with-sketchup-27619"
             },
             {
@@ -1855,6 +1952,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/icion-8th-annual-bali-confrence-exhibition-25737?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "icion-8th-annual-bali-confrence-exhibition-25737"
             }
           ]
@@ -1882,6 +1980,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/chipmunks-kota-kasablanka?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "chipmunks-kota-kasablanka"
             },
             {
@@ -1900,6 +1999,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/land-of-zoomoov-pacific-place?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "land-of-zoomoov-pacific-place"
             },
             {
@@ -1918,6 +2018,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/playtopia-pluit-village?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "playtopia-pluit-village"
             },
             {
@@ -1936,6 +2037,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/tinytoes-academy?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "tinytoes-academy"
             },
             {
@@ -1954,6 +2056,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/cinepolis-junior?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "cinepolis-junior"
             },
             {
@@ -1972,6 +2075,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/apple-bee-kids-playground?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "apple-bee-kids-playground"
             },
             {
@@ -1990,6 +2094,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/banana-kick-futsal-academy?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "banana-kick-futsal-academy"
             },
             {
@@ -2008,6 +2113,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/land-of-zoomoov-summarecon-mall-serpong?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "land-of-zoomoov-summarecon-mall-serpong"
             },
             {
@@ -2026,6 +2132,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/bee-bee-land-depok?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "bee-bee-land-depok"
             },
             {
@@ -2044,6 +2151,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/playtopia-pesona-square-depok?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "playtopia-pesona-square-depok"
             },
             {
@@ -2062,6 +2170,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/chipmunks-neo-soho?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "chipmunks-neo-soho"
             },
             {
@@ -2080,6 +2189,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/rumah-tumbuh-daycare?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "rumah-tumbuh-daycare"
             },
             {
@@ -2098,6 +2208,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/toddlers-town?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "toddlers-town"
             },
             {
@@ -2116,6 +2227,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/bee-bee-land-cipinang-indah?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "bee-bee-land-cipinang-indah"
             },
             {
@@ -2134,6 +2246,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/playtopia?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "playtopia"
             },
             {
@@ -2152,6 +2265,7 @@
               "url": "https://booking.tokopedia.com/v1/api/p/playtopia-pondok-indah-mall?cities=",
               "is_liked": false,
               "is_promo": 0,
+              "is_free": 1,
               "seo_url": "playtopia-pondok-indah-mall"
             }
           ]

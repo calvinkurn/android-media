@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.data.model.VerifyFingerprint
+import com.tokopedia.loginfingerprint.databinding.ActivityVerifyFingerprintLayoutBinding
 import com.tokopedia.loginfingerprint.di.DaggerLoginFingerprintComponent
 import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
 import com.tokopedia.loginfingerprint.tracker.BiometricTracker
@@ -22,7 +23,7 @@ import com.tokopedia.loginfingerprint.view.helper.BiometricPromptHelper
 import com.tokopedia.loginfingerprint.viewmodel.FingerprintLandingViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.activity_verify_fingerprint_layout.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class VerifyFingerprintActivity: BaseActivity() {
@@ -32,6 +33,8 @@ class VerifyFingerprintActivity: BaseActivity() {
 
     @Inject
     lateinit var tracker: BiometricTracker
+
+    private val binding: ActivityVerifyFingerprintLayoutBinding? by viewBinding()
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
 
@@ -94,36 +97,48 @@ class VerifyFingerprintActivity: BaseActivity() {
     }
 
     private fun onErrorVerifyFingerprint() {
-        fingerprint_landing_loader?.hide()
+        binding?.fingerprintLandingLoader?.hide()
         finishWithCanceled()
+    }
+
+    fun onFingerprintValid() {
+        tracker.trackClickOnLoginWithFingerprintSuccessDevice()
+        verifyFingerprint()
+    }
+
+    fun onFingerprintInvalid() {
+        tracker.trackClickOnLoginWithFingerprintFailedDevice("")
+    }
+
+    fun onFingerprintError(errCode: Int, errString: String) {
+        if(errCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
+            tracker.trackButtonCloseVerify()
+        } else {
+            tracker.trackOpenVerifyFingerprintFailed(errString)
+        }
+        if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
+            FingerprintDialogHelper.showFingerprintLockoutDialog(this, onPositiveButtonClick = {
+                onErrorVerifyFingerprint()
+            }, onDismiss = { onErrorVerifyFingerprint() })
+        } else {
+            onErrorVerifyFingerprint()
+        }
     }
 
     private fun showBiometricPrompt() {
         BiometricPromptHelper.showBiometricPrompt(this,
             onSuccess = {
-                tracker.trackClickOnLoginWithFingerprintSuccessDevice()
-                verifyFingerprint()
+                onFingerprintValid()
             }, onFailed = {
-                tracker.trackClickOnLoginWithFingerprintFailedDevice("")
+                onFingerprintInvalid()
             },
             onError = { errCode, errString ->
-                if(errCode == BiometricPrompt.ERROR_NEGATIVE_BUTTON) {
-                    tracker.trackButtonCloseVerify()
-                } else {
-                    tracker.trackOpenVerifyFingerprintFailed(errString)
-                }
-                if(errCode == BiometricPrompt.ERROR_LOCKOUT) {
-                    FingerprintDialogHelper.showFingerprintLockoutDialog(this, onPositiveButtonClick = {
-                        onErrorVerifyFingerprint()
-                    }, onDismiss = { onErrorVerifyFingerprint() })
-                } else {
-                    onErrorVerifyFingerprint()
-                }
+                onFingerprintError(errCode, errString)
             })
     }
 
     private fun verifyFingerprint() {
-        fingerprint_landing_loader?.show()
+        binding?.fingerprintLandingLoader?.show()
         viewModel.verifyFingerprint()
     }
 }

@@ -10,10 +10,14 @@ import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawStrin
  */
 
 class HotelDetailMockResponseConfig: MockModelConfig() {
+
     companion object {
+        var isPDPNearby = false
+
         const val KEY_QUERY_GET_HOTEL_DETAIL = "propertyDetail"
         const val KEY_QUERY_GET_HOTEL_ROOM = "propertySearchRoom"
         const val KEY_QUERY_GET_PROPERTY_REVIEW = "propertyReview"
+        const val KEY_QUERY_GET_NEARBY_LANDMARK = "propertySearchPlace"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -34,6 +38,13 @@ class HotelDetailMockResponseConfig: MockModelConfig() {
                 getRawString(context, R.raw.response_mock_property_review),
                 FIND_BY_CONTAINS
         )
+        if(isPDPNearby) {
+            addMockResponse(
+                KEY_QUERY_GET_NEARBY_LANDMARK,
+                getRawString(context, R.raw.response_mock_nearby_landmark),
+                FIND_BY_CONTAINS
+            )
+        }
         return this
     }
 

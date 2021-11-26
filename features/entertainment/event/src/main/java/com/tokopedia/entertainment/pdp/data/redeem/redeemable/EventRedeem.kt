@@ -35,7 +35,7 @@ data class Data(
 data class Product(
         @SerializedName("category_id")
         @Expose
-        val categoryId: Int = 0,
+        val categoryId: String = "0",
         @SerializedName("created_at")
         @Expose
         val createdAt: String = "",
@@ -44,10 +44,10 @@ data class Product(
         val displayName: String = "",
         @SerializedName("facility_group_id")
         @Expose
-        val facilityGroupId: Int = 0,
+        val facilityGroupId: String = "0",
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "0",
         @SerializedName("image_app")
         @Expose
         val imageApp: String = "",
@@ -68,7 +68,7 @@ data class Product(
         val mrp: Int = 0,
         @SerializedName("provider_id")
         @Expose
-        val providerId: Int = 0,
+        val providerId: String = "0",
         @SerializedName("provider_product_id")
         @Expose
         val providerProductId: String = "",

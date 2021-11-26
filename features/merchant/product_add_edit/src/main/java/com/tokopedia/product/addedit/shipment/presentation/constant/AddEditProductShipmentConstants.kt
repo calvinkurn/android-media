@@ -13,6 +13,9 @@ class AddEditProductShipmentConstants {
         const val UNIT_KILOGRAM = 1
         const val DEFAULT_WEIGHT_VALUE = 500
         const val DEFAULT_WEIGHT_UNIT = UNIT_GRAM
+        const val CPL_CONVENTIONAL_INDEX = 1
+        const val CPL_THRESHOLD_SIZE = 2
+        const val CPL_STANDARD_SHIPMENT_STATUS = 0
 
         const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         const val EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID"

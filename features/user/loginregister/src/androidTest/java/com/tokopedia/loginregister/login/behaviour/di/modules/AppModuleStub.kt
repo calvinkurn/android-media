@@ -14,6 +14,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCaseInterface
 import com.tokopedia.loginregister.login.stub.CoroutineAndroidTestDispatchersProvider
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 @Module(includes = [NetModule::class])
 class AppModuleStub(private val context: Context) {
@@ -54,4 +56,8 @@ class AppModuleStub(private val context: Context) {
         return CoroutineAndroidTestDispatchersProvider
     }
 
+    @Provides
+    fun provideCoroutineDispatcher(): CoroutineDispatcher {
+        return Dispatchers.Main
+    }
 }

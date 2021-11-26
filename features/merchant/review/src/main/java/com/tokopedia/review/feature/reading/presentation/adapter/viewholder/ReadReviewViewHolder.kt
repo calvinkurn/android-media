@@ -9,13 +9,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
+import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
-import com.tokopedia.review.feature.reading.data.LikeDislike
-import com.tokopedia.review.feature.reading.data.ProductReview
-import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
-import com.tokopedia.review.feature.reading.data.ProductReviewResponse
+import com.tokopedia.review.feature.reading.data.*
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
@@ -25,7 +23,11 @@ import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewSeller
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadReviewItemListener, private val attachedImagesClickListener: ReadReviewAttachedImagesListener) : AbstractViewHolder<ReadReviewUiModel>(view) {
+class ReadReviewViewHolder(view: View,
+                           private val readReviewItemListener: ReadReviewItemListener,
+                           private val attachedImagesClickListener: ReadReviewAttachedImagesListener,
+                           private val reviewBasicInfoListener: ReviewBasicInfoListener
+) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_read_review
@@ -68,9 +70,12 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             itemView.addOnImpressionListener(element.impressHolder) {
                 readReviewItemListener.onItemImpressed(feedbackID, adapterPosition, message.length, imageAttachments.size)
             }
+            setBasicInfoDataAndListener(isAnonymous, user.userID, feedbackID)
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
+            setReviewerStats(userReviewStats)
+            setProfilePicture(user.image)
             setVariantName(variantName)
             showReportOptionWithCondition(isReportable && !element.isShopViewHolder, feedbackID, element.shopId)
             setReview(message, feedbackID, element.productId)
@@ -290,5 +295,18 @@ class ReadReviewViewHolder(view: View, private val readReviewItemListener: ReadR
             setImages(imageAttachments, attachedImagesClickListener, productReview, shopId, adapterPosition)
             show()
         }
+    }
+
+    private fun setReviewerStats(userStats: List<UserReviewStats>) {
+        basicInfo?.setStats(userStats)
+    }
+
+    private fun setProfilePicture(imageUrl: String) {
+        basicInfo?.setReviewerImage(imageUrl)
+    }
+
+    private fun setBasicInfoDataAndListener(isAnonymous: Boolean, userId: String, feedbackId: String) {
+        basicInfo?.setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
+        basicInfo?.setListener(reviewBasicInfoListener)
     }
 }

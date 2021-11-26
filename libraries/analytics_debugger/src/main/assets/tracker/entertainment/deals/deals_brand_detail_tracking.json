@@ -1,0 +1,59 @@
+{
+  "readme": "tracking for deals brand detail",
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": ".+",
+      "eventCategory": "digital - deals",
+      "screenName": "",
+      "userId": ".*",
+      "eventAction": "impression product brand",
+      "sessionIris": ".+",
+      "eventLabel": ".+",
+      "currentSite": "tokopediadigitaldeals",
+      "item_list": ".+",
+      "category": "deals",
+      "event": "view_item_list",
+      "items": [
+        {
+          "item_id": ".+",
+          "price": ".+",
+          "dimension40": ".+",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": "none/others",
+          "item_category": "none / other"
+        }
+      ]
+    },
+    {
+      "businessUnit": "travel & entertainment",
+      "clientId": ".+",
+      "eventCategory": "digital - deals",
+      "screenName": "",
+      "userId": ".*",
+      "eventAction": "click product brand",
+      "sessionIris": ".+",
+      "eventLabel": ".+",
+      "currentSite": "tokopediadigitaldeals",
+      "item_list": ".+",
+      "category": "deals",
+      "event": "select_content",
+      "items": [
+        {
+          "item_id": ".+",
+          "price": ".+",
+          "dimension40": "",
+          "attribution": "none/others",
+          "index": ".+",
+          "item_name": ".+",
+          "item_brand": ".+",
+          "item_variant": "none/others",
+          "item_category": "none / other"
+        }
+      ]
+    }
+  ]
+}

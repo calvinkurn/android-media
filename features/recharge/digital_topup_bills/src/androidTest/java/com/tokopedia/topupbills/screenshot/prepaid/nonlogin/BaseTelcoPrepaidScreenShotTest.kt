@@ -12,16 +12,14 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.view.adapter.TopupBillsPromoListAdapter
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsSearchNumberFragment
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -29,7 +27,6 @@ import com.tokopedia.test.application.util.setupDarkModeTest
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.telco.common.activity.BaseTelcoActivity
-import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import com.tokopedia.topupbills.telco.prepaid.activity.TelcoPrepaidActivity
 import com.tokopedia.topupbills.telco.prepaid.adapter.viewholder.TelcoProductViewHolder
@@ -42,7 +39,6 @@ import org.hamcrest.core.IsNot
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.StringBuilder
 
 abstract class BaseTelcoPrepaidScreenShotTest {
 
@@ -86,10 +82,6 @@ abstract class BaseTelcoPrepaidScreenShotTest {
 
     @Test
     fun screenshot() {
-        CommonTelcoActions.stubSearchNumber(
-            VALID_PHONE_NUMBER,
-            TopupBillsSearchNumberFragment.InputNumberActionType.MANUAL
-        )
         take_screenshot_visible_screen()
         take_screenshot_interaction_menu()
         take_screenshot_input_number()
@@ -112,14 +104,13 @@ abstract class BaseTelcoPrepaidScreenShotTest {
 
     fun take_screenshot_input_number() {
         CommonActions.findViewAndScreenShot(R.id.telco_input_number, generatePrefix(), "input_number_widget")
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
+        CommonTelcoActions.clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         CommonActions.findViewAndScreenShot(R.id.telco_input_number, generatePrefix(), "input_number_widget_filled")
     }
 
     fun take_screenshot_interaction_product_not_login() {
-        onView(withId(com.tokopedia.unifycomponents.R.id.text_field_input)).perform(click())
-        Thread.sleep(3000)
+        Thread.sleep(2000)
 
         // Pulsa
         CommonActions.findViewAndScreenShot(R.id.telco_product_rv, generatePrefix(),
@@ -174,7 +165,7 @@ abstract class BaseTelcoPrepaidScreenShotTest {
     }
 
     fun take_screenshot_interaction_promo() {
-        onView(withId(R.id.telco_clear_input_number_btn)).perform(click())
+        onView(withId(R.id.text_field_icon_close)).perform(click())
         Thread.sleep(2000)
         val viewInteraction = onView(AllOf.allOf(
             CoreMatchers.allOf(

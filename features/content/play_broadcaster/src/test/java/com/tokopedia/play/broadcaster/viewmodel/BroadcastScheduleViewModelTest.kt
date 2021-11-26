@@ -33,7 +33,6 @@ class BroadcastScheduleViewModelTest {
 
     val dispatcher = CoroutineTestDispatchers
 
-    private val responseBuilder = PlayBroadcasterResponseBuilder()
     private val testModelBuilder = TestDoubleModelBuilder()
 
     @Before
@@ -66,7 +65,7 @@ class BroadcastScheduleViewModelTest {
             getUpdateScheduleResult()
         }.thenVerify {
             it.assertSuccess()
-            it.isEqualTo(successResult)
+            it.assertEqualTo(successResult)
         }
     }
 
@@ -115,7 +114,7 @@ class BroadcastScheduleViewModelTest {
             getDeleteScheduleResult()
         }.thenVerify {
             it.assertSuccess()
-            it.isEqualTo(successResult)
+            it.assertEqualTo(successResult)
         }
     }
 
@@ -161,7 +160,7 @@ class BroadcastScheduleViewModelTest {
         }.andWhen {
             getDefaultScheduleDate()
         }.thenVerify {
-            it.isEqualTo(scheduleModel.time)
+            it.assertEqualTo(scheduleModel.time)
         }
     }
 
@@ -186,7 +185,7 @@ class BroadcastScheduleViewModelTest {
         }.andWhen {
             getDefaultScheduleDate()
         }.thenVerify {
-            it.isEqualTo(defaultDate)
+            it.assertEqualTo(defaultDate)
         }
     }
 
@@ -203,7 +202,7 @@ class BroadcastScheduleViewModelTest {
         }.andWhen {
             getMinimumScheduleDate()
         }.thenVerify {
-            it.isEqualTo(minDate)
+            it.assertEqualTo(minDate)
         }
     }
 
@@ -220,7 +219,7 @@ class BroadcastScheduleViewModelTest {
         }.andWhen {
             getMaximumScheduleDate()
         }.thenVerify {
-            it.isEqualTo(maxDate)
+            it.assertEqualTo(maxDate)
         }
     }
 
@@ -241,7 +240,7 @@ class BroadcastScheduleViewModelTest {
         }.andWhen {
             getSchedule()
         }.thenVerify {
-            it.isEqualTo(scheduleModel)
+            it.assertEqualTo(scheduleModel)
         }
     }
 
@@ -260,7 +259,7 @@ class BroadcastScheduleViewModelTest {
         }.andWhen {
             getSchedule()
         }.thenVerify {
-            it.isEqualTo(BroadcastScheduleUiModel.NoSchedule)
+            it.assertEqualTo(BroadcastScheduleUiModel.NoSchedule)
         }
     }
 }

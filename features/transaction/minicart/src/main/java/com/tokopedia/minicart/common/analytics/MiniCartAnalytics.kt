@@ -12,7 +12,7 @@ import javax.inject.Inject
 class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterface) {
 
     enum class Page {
-        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE
+        HOME_PAGE, SEARCH_PAGE, CATEGORY_PAGE,DISCOVERY_PAGE, RECOMMENDATION_INFINITE
     }
 
     companion object {
@@ -34,6 +34,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
         // EXTRA KEY'S VALUE
         const val VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM = "purchase platform"
+        const val VALUE_BUSINESS_UNIT_HOME_AND_BROWSE = "home & browse"
         const val VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE = "tokopediamarketplace"
         const val VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART = "click beli in minicart"
         const val VALUE_CHECKOUT_OPTION_VIEW_MINI_CART_PAGE = "view minicart page"
@@ -49,7 +50,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
 
         // EVENT CATEGORY
         const val EVENT_CATEGORY_MINICART = "minicart"
-        const val EVENT_CATEGORY_CLICK_BUY = "tokonow - %s"
+        const val EVENT_CATEGORY_CLICK_BUY = "tokonow %s"
 
         // EVENT ACTION
         const val EVENT_ACTION_CLICK_PRODUCT_NAME = "click product name"
@@ -81,6 +82,7 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         const val EVENT_LABEL_SUCCESS = "success"
         const val EVENT_LABEL_TICK = "tick"
         const val EVENT_LABEL_UNTICK = "untick"
+        const val EVENT_LABEL_MINICART  = "minicart"
 
         // EE CUSTOM DIMENSION
         const val DIMENSION_104 = "dimension104" // Campaign id
@@ -287,15 +289,23 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         when (page) {
             Page.HOME_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "landing")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "homepage")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- homepage")
             }
             Page.SEARCH_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "search")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "search result")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- search result")
             }
             Page.CATEGORY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "category")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "category page")
+            }
+            Page.DISCOVERY_PAGE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "discovery")
+                eventCategory = "discovery page"
+            }
+            Page.RECOMMENDATION_INFINITE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "recommendation")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "recommendation infinite page")
             }
         }
 
@@ -303,8 +313,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
-            putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
-            putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            putString(TrackAppUtils.EVENT_LABEL, getLabelForBuyEvent(page))
+            putString(KEY_BUSINESS_UNIT, getBusinessUnitForBuyEvent(page))
             putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             putString(KEY_USER_ID, userSession.userId)
             putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART)
@@ -331,15 +341,23 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         when (page) {
             Page.HOME_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "landing")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "homepage")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- homepage")
             }
             Page.SEARCH_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "search")
-                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "search result")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "- search result")
             }
             Page.CATEGORY_PAGE -> {
                 eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "category")
                 eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "category page")
+            }
+            Page.DISCOVERY_PAGE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "discovery")
+                eventCategory = "discovery page"
+            }
+            Page.RECOMMENDATION_INFINITE -> {
+                eventAction = String.format(EVENT_ACTION_CLICK_BUY, if (isOCCFlow) AB_TEST_DIRECT_BUY else AB_TEST_BUY, "recommendation")
+                eventCategory = String.format(EVENT_CATEGORY_CLICK_BUY, "recommendation infinite page")
             }
         }
 
@@ -347,8 +365,8 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
             putString(TrackAppUtils.EVENT, if (isOCCFlow) EVENT_NAME_CHECKOUT else EVENT_NAME_BEGIN_CHECKOUT)
             putString(TrackAppUtils.EVENT_CATEGORY, eventCategory)
             putString(TrackAppUtils.EVENT_ACTION, eventAction)
-            putString(TrackAppUtils.EVENT_LABEL, EVENT_LABEL_SUCCESS)
-            putString(KEY_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM)
+            putString(TrackAppUtils.EVENT_LABEL, getLabelForBuyEvent(page))
+            putString(KEY_BUSINESS_UNIT, getBusinessUnitForBuyEvent(page))
             putString(KEY_CURRENT_SITE, VALUE_CURRENT_SITE_TOKOPEDIA_MARKETPLACE)
             putString(KEY_USER_ID, userSession.userId)
             putString(KEY_CHECKOUT_OPTION, VALUE_CHECKOUT_OPTION_CLICK_BUY_IN_MINICART)
@@ -365,6 +383,20 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
                 eventName = EVENT_NAME_BEGIN_CHECKOUT,
                 bundle = dataLayer
         )
+    }
+
+    fun getLabelForBuyEvent(page:Page):String{
+        return when(page){
+            Page.DISCOVERY_PAGE-> EVENT_LABEL_MINICART
+            else->EVENT_LABEL_SUCCESS
+        }
+    }
+
+    fun getBusinessUnitForBuyEvent(page:Page):String{
+        return when(page){
+            Page.DISCOVERY_PAGE-> VALUE_BUSINESS_UNIT_HOME_AND_BROWSE
+            else->VALUE_BUSINESS_UNIT_PURCHASE_PLATFORM
+        }
     }
 
     // 13 - DONE

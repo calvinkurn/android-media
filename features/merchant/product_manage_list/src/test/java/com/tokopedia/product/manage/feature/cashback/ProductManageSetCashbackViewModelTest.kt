@@ -65,7 +65,7 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
     }
 
     @Test
-    fun `when set cashback fail  should return succes result`() {
+    fun `when set cashback fail  should return fail result`() {
         runBlocking {
             val productId = "0"
             val cashback = 0
@@ -89,8 +89,31 @@ class ProductManageSetCashbackViewModelTest: ProductManageSetCashbackViewModelTe
         }
     }
 
+    @Test
+    fun `when set cashback error should return fail result`() {
+        runBlocking {
+            val productId = "0"
+            val cashback = 0
+            val productName = "Amazing Product"
+            val error = NullPointerException()
+
+            onSetCashback_thenThrow(error)
+
+            viewModel.setCashback(productId, productName, cashback)
+
+            val expectedSetCashbackResult = Fail(SetCashbackResult())
+
+            verifySetCashbackUseCaseCalled()
+            verifySetCashbackFailed(expectedSetCashbackResult)
+        }
+    }
+
     private fun onSetCashback_thenReturn(setCashbackResponse: SetCashbackResponse)  {
         coEvery { setCashbackUseCase.executeOnBackground() } returns setCashbackResponse
+    }
+
+    private fun onSetCashback_thenThrow(ex: Exception)  {
+        coEvery { setCashbackUseCase.executeOnBackground() } throws ex
     }
 
     private fun verifySetCashbackUseCaseCalled() {

@@ -20,6 +20,8 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.usecase.featuredshop.GetDisplayHeadlineAds
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
@@ -50,7 +52,6 @@ fun createHomeViewModel(
         getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase = mockk(relaxed = true),
         getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
         getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),
-        getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase = mockk(relaxed = true),
         getHomeTokopointsListDataUseCase: GetHomeTokopointsListDataUseCase = mockk(relaxed = true),
         getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
         getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
@@ -70,7 +71,8 @@ fun createHomeViewModel(
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
         dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
-        getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true)
+        getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true),
+        getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeRevampViewModel(
@@ -102,8 +104,8 @@ fun createHomeViewModel(
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
-            getHomeTokopointsDataUseCase = Lazy { getHomeTokopointsDataUseCase },
-            getWalletAppBalanceUseCase = Lazy { getWalletAppBalanceUseCase }
+            getWalletAppBalanceUseCase = Lazy { getWalletAppBalanceUseCase },
+            getWalletEligibilityUseCase = Lazy { getWalletEligibilityUseCase }
     )
 }
 

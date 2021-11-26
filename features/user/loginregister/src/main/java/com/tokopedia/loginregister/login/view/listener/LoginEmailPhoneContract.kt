@@ -4,13 +4,11 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import java.util.*
 
 /**
  * @author by nisie on 18/01/19.
@@ -40,9 +38,7 @@ interface LoginEmailPhoneContract {
 
         fun onErrorDiscoverLogin(throwable: Throwable)
 
-        fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemDataModel>)
-
-        fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener
+        fun onSuccessDiscoverLogin(discoverData: DiscoverData)
 
         fun stopTrace()
 
@@ -51,12 +47,6 @@ interface LoginEmailPhoneContract {
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
         fun onErrorReloginAfterSQ(): Function1<Throwable, Unit>
-
-        fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
-
-        fun onSuccessLoginFacebookPhone(): Function1<LoginTokenPojo, Unit>
-
-        fun onErrorLoginFacebookPhone(): Function1<Throwable, Unit>
 
         fun onErrorLoginGoogle(email: String?): Function1<Throwable, Unit>
 
@@ -107,8 +97,6 @@ interface LoginEmailPhoneContract {
         fun routeToVerifyPage(phoneNumber: String, requestCode: Int, otpType: Int)
 
         fun goToChooseAccountPage(accessToken: String, phoneNumber: String)
-
-        fun goToChooseAccountPageFacebook(accessToken: String)
 
         fun goToChooseAccountPageFingerprint(validateToken: String)
 

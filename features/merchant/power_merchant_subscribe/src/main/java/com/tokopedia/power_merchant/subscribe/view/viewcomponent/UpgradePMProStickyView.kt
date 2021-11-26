@@ -2,16 +2,18 @@ package com.tokopedia.power_merchant.subscribe.view.viewcomponent
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.tokopedia.power_merchant.subscribe.R
-import kotlinx.android.synthetic.main.view_pm_upgrade_pm_pro_sticky.view.*
+import com.tokopedia.power_merchant.subscribe.databinding.ViewPmUpgradePmProStickyBinding
 
 /**
  * Created By @ilhamsuaib on 24/05/21
  */
 
 class UpgradePMProStickyView : LinearLayout {
+
+    private var binding: ViewPmUpgradePmProStickyBinding? = null
 
     constructor (context: Context) : super(context)
 
@@ -20,7 +22,7 @@ class UpgradePMProStickyView : LinearLayout {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        View.inflate(context, R.layout.view_pm_upgrade_pm_pro_sticky, this)
-        viewPmUpgradePmProSticky.setBackgroundResource(R.drawable.bg_pm_upgrade_pm_pro_sticky)
+        binding = ViewPmUpgradePmProStickyBinding.inflate(LayoutInflater.from(context), this, true)
+        binding?.viewPmUpgradePmProSticky?.setBackgroundResource(R.drawable.bg_pm_upgrade_pm_pro_sticky)
     }
 }

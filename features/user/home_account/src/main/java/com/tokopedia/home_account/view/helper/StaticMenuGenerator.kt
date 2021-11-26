@@ -11,7 +11,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.pref.AccountPreference
-import com.tokopedia.home_account.view.viewholder.CommonViewHolder
+import com.tokopedia.home_account.view.adapter.viewholder.CommonViewHolder
 import com.tokopedia.iconunify.IconUnify
 import javax.inject.Inject
 
@@ -28,7 +28,8 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(applink = ApplinkConstInternalGlobal.SETTING_BANK, title = context?.getString(R.string.menu_account_title_bank), body = context?.getString(R.string.menu_account_desc_bank), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.FINANCE, id = AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID),
                 CommonDataView(applink = ApplinkConstInternalGlobal.PAYMENT_SETTING, title = context?.getString(R.string.menu_account_title_instant_payment), body = context?.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.CARD, id = AccountConstants.SettingCode.SETTING_INSTANT_PAYMENT),
                 CommonDataView(applink = ApplinkConstInternalGlobal.ACCOUNT_SETTING, title = context?.getString(R.string.menu_account_title_security), body = context?.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LOCK, id = AccountConstants.SettingCode.SETTING_SECURITY),
-                CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION)
+                CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.BELL_RING, id = AccountConstants.SettingCode.SETTING_NOTIFICATION),
+                CommonDataView(applink = ApplinkConstInternalGlobal.LINK_ACCOUNT, title = context?.getString(R.string.menu_account_title_account_link), body = context?.getString(R.string.menu_account_desc_account_link), type = CommonViewHolder.TYPE_DEFAULT, icon = IconUnify.LINK, id = AccountConstants.SettingCode.SETTING_LINK_ACCOUNT, labelText = "BARU")
         ), isExpanded = true)
     }
 
@@ -48,7 +49,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
         CommonDataView(id = AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID, title = context?.getString(R.string.menu_account_title_safe_mode), body = context?.getString(R.string.menu_account_desc_safe_mode), type = CommonViewHolder.TYPE_SWITCH, icon = IconUnify.PROTECTION,
                 isChecked = accountPref.isItemSelected(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, false)))
 
-        if(showDarkModeToggle && showDarkModeSetting()) {
+        if(showDarkModeToggle) {
             listSetting.add(CommonDataView(id = AccountConstants.SettingCode.SETTING_DARK_MODE,
                     title = context?.getString(R.string.menu_account_title_dark_mode),
                     body = context?.getString(R.string.menu_account_desc_dark_mode),
@@ -89,12 +90,6 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(title = context.getString(R.string.menu_account_old_account), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = IconUnify.SETTING, id = AccountConstants.SettingCode.SETTING_OLD_ACCOUNT))
 
         , showArrowDown = true)
-    }
-
-    //Request to hide Dark Mode regardless RemoteConfig
-    private fun showDarkModeSetting(): Boolean {
-        val showDarkModeSetting = false
-        return showDarkModeSetting
     }
 
     private fun getLabelText(id: Int): String {

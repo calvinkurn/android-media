@@ -4,8 +4,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_3"
-    android:layout_marginRight="@dimen/dp_2"
-    android:layout_marginLeft="@dimen/dp_2">
+    android:layout_marginRight="2dp"
+    android:layout_marginLeft="2dp">
 
     <TextView
         android:id="@+id/dummy"
@@ -20,10 +20,10 @@
         android:minHeight="@dimen/dp_32"
         android:gravity="center"
         android:background="@drawable/interactive_label_template_chat"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_8"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
         android:singleLine="true"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/tkpd_main_green"

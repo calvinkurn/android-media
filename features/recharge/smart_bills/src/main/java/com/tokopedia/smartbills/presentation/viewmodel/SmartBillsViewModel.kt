@@ -44,6 +44,14 @@ class SmartBillsViewModel @Inject constructor(
     val multiCheckout: LiveData<Result<RechargeMultiCheckoutResponse>>
         get() = mutableMultiCheckout
 
+    private val mutableCatalogList = MutableLiveData<Result<List<SmartBillsCatalogMenu>>>()
+    val catalogList: LiveData<Result<List<SmartBillsCatalogMenu>>>
+        get() = mutableCatalogList
+
+    private val mutableDeleteSBM = MutableLiveData<Result<RechargeDeleteSBM>>()
+    val deleteSBM: LiveData<Result<RechargeDeleteSBM>>
+        get() = mutableDeleteSBM
+
     fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
@@ -54,7 +62,7 @@ class SmartBillsViewModel @Inject constructor(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
 
             if (!data.response.isNullOrEmpty()) {
@@ -77,14 +85,14 @@ class SmartBillsViewModel @Inject constructor(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
             val response = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+                graphqlRepository.response(listOf(graphqlRequest), graphqlCacheStrategy)
             }
 
             val error = response.getError(RechargeListSmartBills.Response::class.java)
             if(error.isNullOrEmpty()){
                 val data = response.getSuccessData<RechargeListSmartBills.Response>()
                 if (data.response != null) {
-                    mutableStatementBills.postValue(Success(data.response))
+                mutableStatementBills.postValue(Success(data.response))
                 } else {
                     throw(MessageErrorException(STATEMENT_BILLS_ERROR))
                 }
@@ -101,7 +109,7 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun getSBMWithAction(mapParams: Map<String, Any>, rechargeListSmartBills: RechargeListSmartBills){
+    fun getSBMWithAction(mapParams: Map<String, Any>, rechargeListSmartBills: RechargeListSmartBills) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(
                     SmartBillsQueries.GET_SBM_RELOAD_ACTION_QUERY,
@@ -109,7 +117,7 @@ class SmartBillsViewModel @Inject constructor(
             )
 
             val data = withContext(dispatcher.io) {
-                graphqlRepository.getReseponse(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
             }.getSuccessData<RechargeMultipleSBMBill.Response>()
 
             if (data.response != null) {
@@ -117,14 +125,33 @@ class SmartBillsViewModel @Inject constructor(
             } else {
                 throw(MessageErrorException(STATEMENT_BILLS_ERROR))
             }
-        }){
+        }) {
             mutableStatementBills.postValue(Fail(it))
+        }
+    }
+
+    fun getCatalogAddBills(mapParams: Map<String, Any>) {
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.GET_CATALOG_ADD_BILLS,
+                    RechargeCatalogMenuAddBills::class.java, mapParams
+            )
+
+            val data = withContext(dispatcher.io) {
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<RechargeCatalogMenuAddBills>()
+
+            mutableCatalogList.postValue(Success(data.response))
+          }
+        ) {
+            mutableCatalogList.postValue(Fail(it))
         }
     }
 
     fun runMultiCheckout(request: MultiCheckoutRequest?, userId: String) {
         if (request != null) {
             val idempotencyKey = userId.generateRechargeCheckoutToken()
+
             val mapParam: HashMap<String, String> = hashMapOf()
             mapParam[IDEMPOTENCY_KEY] = idempotencyKey
             mapParam[CONTENT_TYPE] = "application/json"
@@ -143,13 +170,35 @@ class SmartBillsViewModel @Inject constructor(
             }
         } else {
             mutableMultiCheckout.postValue(
-                Fail(MessageErrorException(MULTI_CHECKOUT_EMPTY_REQUEST))
+                    Fail(MessageErrorException(MULTI_CHECKOUT_EMPTY_REQUEST))
             )
+        }
+    }
+
+    fun deleteProductSBM(mapParams: Map<String, Any>){
+        launchCatchError(block = {
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.DELETE_SBM,
+                    RechargeDeleteSBM::class.java, mapParams
+            )
+
+            val data = withContext(dispatcher.io) {
+                graphqlRepository.response(listOf(graphqlRequest), GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            }.getSuccessData<RechargeDeleteSBM>()
+
+            mutableDeleteSBM.postValue(Success(data))
+        }
+        ) {
+            mutableDeleteSBM.postValue(Fail(it))
         }
     }
 
     fun createStatementMonthsParams(limit: Int): Map<String, Int> {
         return mapOf(PARAM_LIMIT to limit)
+    }
+
+    fun createCatalogIDParam(platformID: Int): Map<String, Int> {
+        return mapOf(PARAM_PLATFORM_ID to platformID)
     }
 
     fun createStatementBillsParams(month: Int, year: Int, source: Int? = null): Map<String, Int> {
@@ -176,9 +225,14 @@ class SmartBillsViewModel @Inject constructor(
         } else null
     }
 
-    fun createRefreshActionParams(uuids:List<String>, month: Int, year: Int, source: Int? = null): Map<String, Any> {
+    fun createRefreshActionParams(uuids: List<String>, month: Int, year: Int, source: Int? = null): Map<String, Any> {
         val map = mutableMapOf(PARAM_UUIDS to uuids, PARAM_MONTH to month, PARAM_YEAR to year)
         source?.run { map[PARAM_SOURCE] = source }
+        return map
+    }
+
+    fun createParamDeleteSBM(request : RechargeSBMDeleteBillRequest): Map<String, Any> {
+        val map = mutableMapOf(PARAM_DELETE_SBM to request)
         return map
     }
 
@@ -192,6 +246,8 @@ class SmartBillsViewModel @Inject constructor(
         const val PARAM_YEAR = "year"
         const val PARAM_SOURCE = "source"
         const val PARAM_UUIDS = "uuids"
+        const val PARAM_PLATFORM_ID = "platformID"
+        const val PARAM_DELETE_SBM = "req"
 
         const val STATEMENT_MONTHS_ERROR = "STATEMENT_MONTHS_ERROR"
         const val STATEMENT_BILLS_ERROR = "STATEMENT_BILLS_ERROR"

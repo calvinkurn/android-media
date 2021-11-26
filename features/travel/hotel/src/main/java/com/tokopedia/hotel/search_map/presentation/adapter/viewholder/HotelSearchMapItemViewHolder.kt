@@ -5,12 +5,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.databinding.ItemPropertySearchResultHorizontalBinding
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.hotel.search_map.data.model.Property
 import com.tokopedia.hotel.search_map.data.model.PropertyPrice
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 
 class HotelSearchMapItemViewHolder(val binding: ItemPropertySearchResultHorizontalBinding) : AbstractViewHolder<Property>(binding.root) {
     override fun bind(element: Property) {

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="16dp"
+    android:paddingBottom="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/keywordFilterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Sembunyikan barang"/>
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/keywordFilterNewNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:notificationTitle="BARU"
+        app:notificationType="text_type"
+        app:layout_constraintStart_toEndOf="@id/keywordFilterTitle"
+        app:layout_constraintTop_toTopOf="@id/keywordFilterTitle"
+        app:layout_constraintBottom_toBottomOf="@id/keywordFilterTitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/keywordFilterSubTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_68"
+        android:layout_marginTop="4dp"
+        app:typographyType="body_3"
+        app:layout_constraintTop_toBottomOf="@id/keywordFilterTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Tambahkan kata kunci tertentu untuk sembunyikan barang yang tidak kamu inginkan di hasil pencarian."/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify2
+        android:id="@+id/keywordFilterTextField"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/keywordFilterSubTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:text_field_input_type="text"
+        app:unify_text_field_label="@string/keyword_filter_enter_keyword"
+        app:unify_text_field_message="@string/keyword_filter_use_add_icon_to_add" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/keywordFilterRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/keywordFilterTextField"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:orientation="horizontal"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

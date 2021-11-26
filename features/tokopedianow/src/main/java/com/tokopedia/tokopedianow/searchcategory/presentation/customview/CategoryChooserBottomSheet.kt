@@ -18,19 +18,24 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowCategoryChooserBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryChooserBinding
 import com.tokopedia.tokopedianow.searchcategory.utils.copyParcelable
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
+
+    private var binding by autoClearedNullable<BottomsheetTokopedianowCategoryChooserBinding>()
 
     private var filter: Filter? = null
     private var callback: Callback? = null
     private var initialSelectedOptionIndex = 0
     private var selectedOption: IndexedValue<Option>? = null
 
-    private var categoryChooserView: View? = null
     private var adapter: CategoryChooserAdapter? = null
     private var recyclerView: RecyclerView? = null
     private var buttonApplyContainer: LinearLayout? = null
@@ -50,16 +55,14 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
         setTitle(filter?.subTitle ?: "")
         setCloseClickListener { dismiss() }
 
-        categoryChooserView = View.inflate(context, R.layout.bottomsheet_tokopedianow_category_chooser, null)
-        setChild(categoryChooserView)
+        binding = BottomsheetTokopedianowCategoryChooserBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
     }
 
     private fun findViews() {
-        val categoryChooserView = categoryChooserView ?: return
-
-        recyclerView = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserRecyclerView)
-        buttonApply = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserButtonApply)
-        buttonApplyContainer = categoryChooserView.findViewById(R.id.tokoNowCategoryChooserButtonApplyContainer)
+        recyclerView = binding?.tokoNowCategoryChooserRecyclerView
+        buttonApply = binding?.tokoNowCategoryChooserButtonApply
+        buttonApplyContainer = binding?.tokoNowCategoryChooserButtonApplyContainer
     }
 
     private fun configureViews() {
@@ -160,9 +163,11 @@ class CategoryChooserBottomSheet: BottomSheetUnify(), OptionRadioListener {
             private val optionRadioListener: OptionRadioListener,
     ): RecyclerView.ViewHolder(view) {
 
-        private val container: ConstraintLayout? = itemView.findViewById(R.id.tokoNowCategoryChooserItemContainer)
-        private val title: TextView? = itemView.findViewById(R.id.tokoNowCategoryChooserItemTitle)
-        private val radio: RadioButtonUnify? = itemView.findViewById(R.id.tokoNowCategoryChooserItemRadio)
+        private var binding: ItemTokopedianowCategoryChooserBinding? by viewBinding()
+
+        private val container: ConstraintLayout? = binding?.tokoNowCategoryChooserItemContainer
+        private val title: TextView? = binding?.tokoNowCategoryChooserItemTitle
+        private val radio: RadioButtonUnify? = binding?.tokoNowCategoryChooserItemRadio
 
         fun bind(item: Option) {
             val checkedOption = optionRadioListener.getCheckedOption()

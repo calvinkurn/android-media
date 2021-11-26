@@ -12,14 +12,14 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.YoutubeVideo
 import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.thumbnailUrl
+import com.tokopedia.product.detail.databinding.BsItemProductDetailExpandableBinding
+import com.tokopedia.product.detail.databinding.BsItemProductDetailYoutubeImgBinding
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
 import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifycomponents.HtmlLinkHelper
-import kotlinx.android.synthetic.main.bs_item_product_detail_expandable.view.*
-import kotlinx.android.synthetic.main.bs_item_product_detail_youtube_img.view.*
 
 
 /**
@@ -31,53 +31,56 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
         val LAYOUT = R.layout.bs_item_product_detail_expandable
     }
 
+    private val binding = BsItemProductDetailExpandableBinding.bind(view)
+
     override fun bind(element: ProductDetailInfoExpandableDataModel) {
-        view.expandable_title_chevron?.titleText = element.title
+        binding.expandableTitleChevron.titleText = element.title
         setupExpandableItem(element)
         setupVideoItem(element.youtubeVideo, element.isShowable)
     }
 
-    private fun setupVideoItem(youtubeVideo: List<YoutubeVideo>, isShowable: Boolean) = with(view) {
-        horizontal_scroll_container.showWithCondition(isShowable && youtubeVideo.isNotEmpty())
-        horizontal_view_container.removeAllViews()
+    private fun setupVideoItem(youtubeVideo: List<YoutubeVideo>, isShowable: Boolean) = with(binding) {
+        horizontalScrollContainer.showWithCondition(isShowable && youtubeVideo.isNotEmpty())
+        horizontalViewContainer.removeAllViews()
         youtubeVideo.forEachIndexed { index, it ->
-            val layout = context.layoutInflater.inflate(R.layout.bs_item_product_detail_youtube_img, null)
-            layout.img_youtube_item.loadImage(it.thumbnailUrl)
+            val layout = view.context.layoutInflater.inflate(R.layout.bs_item_product_detail_youtube_img, null)
+            val youtubeImgBinding = BsItemProductDetailYoutubeImgBinding.bind(layout)
+            youtubeImgBinding.imgYoutubeItem.loadImage(it.thumbnailUrl)
             layout.setOnClickListener {
                 listener.goToVideoPlayer(youtubeVideo.map { it.url }, index)
             }
-            horizontal_view_container.addView(layout)
+            horizontalViewContainer.addView(layout)
         }
     }
 
-    private fun setupExpandableItem(element: ProductDetailInfoExpandableDataModel) = with(view) {
-        product_detail_value?.showWithCondition(element.isShowable)
-        expandable_title_chevron?.isExpand = element.isShowable
+    private fun setupExpandableItem(element: ProductDetailInfoExpandableDataModel) = with(binding) {
+        productDetailValue.showWithCondition(element.isShowable)
+        expandableTitleChevron.isExpand = element.isShowable
 
-        expandable_title_chevron?.setOnClickListener {
-            expandable_title_chevron?.isExpand = expandable_title_chevron?.isExpand != true
-            listener.closeAllExpand(element.uniqueIdentifier(), expandable_title_chevron?.isExpand
+        expandableTitleChevron.setOnClickListener {
+            expandableTitleChevron.isExpand = expandableTitleChevron.isExpand != true
+            listener.closeAllExpand(element.uniqueIdentifier(), expandableTitleChevron.isExpand
                     ?: false)
         }
-        view.product_detail_value?.text = HtmlLinkHelper(view.context,
+        binding.productDetailValue.text = HtmlLinkHelper(view.context,
                 element.textValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
         setSelectableText()
         setSelectClickableTextView()
     }
 
-    private fun setSelectableText() = with(view) {
+    private fun setSelectableText() = with(binding) {
         val selectable = when (Build.VERSION.SDK_INT) {
             Build.VERSION_CODES.O -> false
             else -> true
         }
-        product_detail_value?.setTextIsSelectable(selectable)
+        productDetailValue.setTextIsSelectable(selectable)
     }
 
-    private fun setSelectClickableTextView() = with(view) {
+    private fun setSelectClickableTextView() = with(binding) {
 
-        product_detail_value?.autoLinkMask = 0
-        Linkify.addLinks(product_detail_value, Linkify.WEB_URLS)
-        product_detail_value?.movementMethod = ProductCustomMovementMethod(listener::onBranchLinkClicked)
+        productDetailValue.autoLinkMask = 0
+        Linkify.addLinks(productDetailValue, Linkify.WEB_URLS)
+        productDetailValue.movementMethod = ProductCustomMovementMethod(listener::onBranchLinkClicked)
     }
 
     override fun bind(element: ProductDetailInfoExpandableDataModel, payloads: MutableList<Any>) {
@@ -87,19 +90,19 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
             if (bundle.containsKey(DIFFUTIL_PAYLOAD_TOGGLE)) {
                 val toggle = bundle.getBoolean(DIFFUTIL_PAYLOAD_TOGGLE)
                 if (toggle) {
-                    view.product_detail_value?.setTextIsSelectable(true)
-                    ExpandableAnimation.expand(view.product_detail_value, customParentWidth = view.width) {
-                        view.horizontal_scroll_container.showWithCondition(toggle)
+                    binding.productDetailValue.setTextIsSelectable(true)
+                    ExpandableAnimation.expand(binding.productDetailValue, customParentWidth = view.width) {
+                        binding.horizontalScrollContainer.showWithCondition(toggle)
                     }
                 } else {
                     //Need to set selectable to false, to prevent glitch
-                    view.product_detail_value?.setTextIsSelectable(false)
-                    view.horizontal_scroll_container.hide()
-                    ExpandableAnimation.collapse(view.product_detail_value)
+                    binding.productDetailValue.setTextIsSelectable(false)
+                    binding.horizontalScrollContainer.hide()
+                    ExpandableAnimation.collapse(binding.productDetailValue)
                 }
                 //Also we need to re-assign linkify, if not the link will not be clickable
                 setSelectClickableTextView()
-                view.expandable_title_chevron?.isExpand = toggle
+                binding.expandableTitleChevron.isExpand = toggle
             }
         }
     }

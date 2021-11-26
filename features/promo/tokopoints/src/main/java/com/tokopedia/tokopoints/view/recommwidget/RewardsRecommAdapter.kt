@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.view.tokopointhome.RecommendationWrapper
+import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
 import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
-class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper> , val listener : RewardsRecomListener) :
+class RewardsRecommAdapter(val list: ArrayList<RecommendationWrapper>, val listener : RewardsRecomListener) :
     RecyclerView.Adapter<RewardsRecommAdapter.ProductCardViewHolder>() {
 
     inner class ProductCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

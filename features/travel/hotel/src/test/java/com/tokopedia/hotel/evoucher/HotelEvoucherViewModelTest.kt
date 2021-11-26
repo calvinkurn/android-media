@@ -82,7 +82,7 @@ class HotelEvoucherViewModelTest {
                 mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlSuccessResponse
 
         //when
@@ -101,7 +101,7 @@ class HotelEvoucherViewModelTest {
                 mapOf<Type, List<GraphqlError>>(SharePdfDataResponse::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
-            graphqlRepository.getReseponse(any(), any())
+            graphqlRepository.response(any(), any())
         } returns graphqlErrorResponse
 
         //when

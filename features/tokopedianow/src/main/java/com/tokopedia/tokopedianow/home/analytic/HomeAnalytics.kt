@@ -69,6 +69,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_VARIANT
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENCY_CODE_IDR
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
@@ -95,6 +96,7 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITHOUT_VARI
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_HALAL_LABEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.WITH_VARIANT
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_CLICK_SHARE_TO_OTHERS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -125,6 +127,7 @@ class HomeAnalytics {
         const val EVENT_ACTION_CLICK_PAST_PURCHASE = "click product on past purchase widget"
         const val EVENT_ACTION_ATC_PAST_PURCHASE = "click atc on past purchase widget"
         const val EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART = "click add to cart on tokonow product recom homepage"
+        const val EVENT_ACTION_CLICK_SHARE_TO_OTHERS = "click share to others"
     }
 
     object VALUE {
@@ -138,6 +141,7 @@ class HomeAnalytics {
         const val WITH_VARIANT = "with variant"
         const val WITHOUT_VARIANT = "without variant"
         const val PRODUCT_TOPADS = "product topads"
+        const val HOMEPAGE_TOKONOW = "homepage tokonow"
     }
 
     fun onClickSearchBar() {
@@ -160,7 +164,6 @@ class HomeAnalytics {
         )
     }
 
-    //this is not P0 and right now we will not implement it
     fun onClickShareButton() {
         hitCommonHomeTracker(
                 getDataLayer(
@@ -168,6 +171,18 @@ class HomeAnalytics {
                         action = EVENT_ACTION_CLICK_SHARE_BUTTON,
                         category = EVENT_CATEGORY_TOP_NAV
                 )
+        )
+    }
+
+    fun onClickShareToOthers(userId: String) {
+        val dataLayer = getDataLayer(
+            event = EVENT_CLICK_TOKONOW,
+            action = EVENT_ACTION_CLICK_SHARE_TO_OTHERS,
+            category = EVENT_CATEGORY_HOME_PAGE
+        )
+        dataLayer[KEY_USER_ID] = userId
+        hitCommonHomeTracker(
+            dataLayer
         )
     }
 
@@ -199,7 +214,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun onImpressBannerPromo(userId: String, channelModel: ChannelModel) {
+    fun onImpressBannerPromo(userId: String, channelModel: ChannelModel, warehouseId: String) {
         val promotions = arrayListOf<Bundle>()
         channelModel.channelGrids.forEachIndexed { position, channelGrid ->
             promotions.add(
@@ -218,8 +233,8 @@ class HomeAnalytics {
                 affinityLabel = channelModel.trackingAttributionModel.persona,
                 userId = userId,
                 promotions = promotions
-
         )
+        dataLayer.putString(KEY_WAREHOUSE_ID, warehouseId)
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
@@ -341,7 +356,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_ADD_TO_CART, dataLayer)
     }
 
-    fun onImpressRecentPurchase(userId: String, data: TokoNowProductCardUiModel, products: List<TokoNowProductCardUiModel>) {
+    fun onImpressRepurchase(userId: String, data: TokoNowProductCardUiModel, products: List<TokoNowProductCardUiModel>) {
         val productList = arrayListOf<Bundle>().apply {
             products.forEachIndexed { position, item ->
                 add(
@@ -370,7 +385,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_VIEW, dataLayer)
     }
 
-    fun onClickRecentPurchase(position: Int, userId: String, data: TokoNowProductCardUiModel) {
+    fun onClickRepurchase(position: Int, userId: String, data: TokoNowProductCardUiModel) {
         val products = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),
@@ -394,7 +409,7 @@ class HomeAnalytics {
         getTracker().sendEnhanceEcommerceEvent(EVENT_PRODUCT_CLICK, dataLayer)
     }
 
-    fun onRecentPurchaseAddToCart(position: Int, quantity: Int, userId: String, data: TokoNowProductCardUiModel) {
+    fun onRepurchaseAddToCart(position: Int, quantity: Int, userId: String, data: TokoNowProductCardUiModel) {
         val products = arrayListOf(
             productCardItemDataLayer(
                 position = position.toString(),

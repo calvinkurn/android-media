@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Unify_N0"
-    android:padding="@dimen/dp_16">
+    android:padding="16dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/tokonowEmptyStateIcon"
@@ -31,65 +31,30 @@
         app:typographyType="heading_2" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokonowBullet1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_16"
-        android:text="@string/tokopedianow_common_empty_state_bullet_symbol"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc1" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokonowEmptyStateDesc1"
+        android:id="@+id/tokonowEmptyStateDesc"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_8"
         android:layout_marginTop="@dimen/unify_space_16"
-        android:text="@string/tokopedianow_common_empty_state_desc_1"
+        android:text="@string/tokopedianow_common_empty_state_desc"
         android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateDesc2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tokonowBullet1"
-        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateTitle"
-        app:typographyType="body_2" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokonowBullet2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/unify_space_16"
-        android:text="@string/tokopedianow_common_empty_state_bullet_symbol"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintBottom_toBottomOf="@id/tokonowEmptyStateDesc2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tokonowEmptyStateDesc2" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tokonowEmptyStateDesc2"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:text="@string/tokopedianow_common_empty_state_desc_2"
-        android:textColor="@color/Unify_NN600"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButtonChangeAddress"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tokonowBullet2"
-        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateTitle"
         app:typographyType="body_2" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/tokonowEmptyStateButtonChangeAddress"
         android:layout_width="@dimen/dp_240"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_height="40dp"
+        android:layout_marginTop="24dp"
         android:text="@string/tokopedianow_common_empty_state_button_change_address"
         app:layout_constraintBottom_toTopOf="@id/tokonowEmptyStateButtonReturn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc2"
+        app:layout_constraintTop_toBottomOf="@id/tokonowEmptyStateDesc"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled" />
 
@@ -97,7 +62,7 @@
         android:id="@+id/tokonowEmptyStateButtonReturn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:text="@string/tokopedianow_common_empty_state_button_return"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

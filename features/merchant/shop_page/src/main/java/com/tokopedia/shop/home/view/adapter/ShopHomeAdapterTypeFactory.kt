@@ -13,6 +13,7 @@ import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
@@ -41,28 +42,29 @@ class ShopHomeAdapterTypeFactory(
         private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
         private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+        private val shopHomeFlashSaleWidgetListener: ShopHomeFlashSaleWidgetListener,
         private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
         private val playWidgetCoordinator: PlayWidgetCoordinator,
         private val isShowTripleDot: Boolean,
         private val shopHomeShowcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
-    var adapter: ShopHomeAdapter? = null
     var productCardType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
     private var previousViewHolder: AbstractViewHolder<*>? = null
     private var showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_LINEAR_HORIZONTAL
     private var showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_DEFAULT_COLUMN_SIZE
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        when (baseShopHomeWidgetUiModel.name) {
-            DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
-            SLIDER_SQUARE_BANNER -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
-            SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
-            VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
-            PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
-            VOUCHER_STATIC -> return ShopHomeVoucherViewHolder.LAYOUT
-            RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> return ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
-            NEW_PRODUCT_LAUNCH_CAMPAIGN -> return ShopHomeNplCampaignViewHolder.LAYOUT
-            PLAY_CAROUSEL_WIDGET -> return CarouselPlayWidgetViewHolder.LAYOUT
+        return when (baseShopHomeWidgetUiModel.name) {
+            DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel)
+            SLIDER_SQUARE_BANNER -> getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel)
+            SLIDER_BANNER -> getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel)
+            VIDEO -> ShopHomeVideoViewHolder.LAYOUT_RES
+            PRODUCT -> getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel)
+            VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
+            RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
+            NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
+            FLASH_SALE_TOKO -> ShopHomeFlashSaleViewHolder.LAYOUT
+            PLAY_CAROUSEL_WIDGET -> CarouselPlayWidgetViewHolder.LAYOUT
             SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             SHOWCASE_SLIDER_TWO_ROWS -> {
                 showcaseWidgetLayoutType = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_HORIZONTAL
@@ -79,8 +81,54 @@ class ShopHomeAdapterTypeFactory(
                 showcaseWidgetGridColumnSize = ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT_TYPE_GRID_TWO_COLUMN_SIZE
                 return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             }
-            else -> return HideViewHolder.LAYOUT
+            else -> HideViewHolder.LAYOUT
         }
+    }
+
+    private fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeNplCampaignViewHolder.LAYOUT
+    }
+
+    private fun getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT
+    }
+
+    private fun getShopHomeCarousellProductViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT
+        else
+            ShopHomeCarousellProductViewHolder.LAYOUT
+    }
+
+    private fun getShopHomeSliderBannerViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES
+        else
+            ShopHomeSliderBannerViewHolder.LAYOUT_RES
+    }
+
+    private fun getShopHomeSliderSquareViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES
+        else
+            ShopHomeSliderSquareViewHolder.LAYOUT_RES
+    }
+
+    private fun getShopHomeMultipleImageColumnViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
+        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+            ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES
+        else
+            ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
+    }
+
+    private fun isShowHomeWidgetPlaceHolder(model: BaseShopHomeWidgetUiModel): Boolean {
+        return model.widgetState == WidgetState.PLACEHOLDER || model.widgetState == WidgetState.LOADING
     }
 
     override fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int {
@@ -115,6 +163,10 @@ class ShopHomeAdapterTypeFactory(
 
     fun type(shopHomeProductChangeGridSectionUiModel: ShopHomeProductChangeGridSectionUiModel): Int {
         return ShopHomeProductChangeGridSectionViewHolder.LAYOUT
+    }
+
+    fun type(model: ProductGridListPlaceholderUiModel): Int {
+        return ProductGridListPlaceholderViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -164,6 +216,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }
+            ShopHomeFlashSaleViewHolder.LAYOUT -> return ShopHomeFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator))
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)
@@ -173,6 +226,12 @@ class ShopHomeAdapterTypeFactory(
                     showcaseWidgetLayoutType,
                     showcaseWidgetGridColumnSize
             )
+            ProductGridListPlaceholderViewHolder.LAYOUT -> ProductGridListPlaceholderViewHolder(parent)
+            ShopHomeNplCampaignPlaceholderViewHolder.LAYOUT -> ShopHomeNplCampaignPlaceholderViewHolder(parent)
+            ShopHomeCarousellProductPlaceholderViewHolder.LAYOUT -> ShopHomeCarousellProductPlaceholderViewHolder(parent)
+            ShopHomeSliderBannerPlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderBannerPlaceholderViewHolder(parent)
+            ShopHomeSliderSquarePlaceholderViewHolder.LAYOUT_RES -> ShopHomeSliderSquarePlaceholderViewHolder(parent)
+            ShopHomeMultipleImageColumnPlaceholderViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnPlaceholderViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
         previousViewHolder = viewHolder

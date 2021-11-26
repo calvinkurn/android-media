@@ -64,19 +64,6 @@ class AutoBidSelectionSheet : BottomSheetUnify() {
             onItemClick?.invoke("auto_bid")
             dismiss()
         }
-
-        manualRadioBtn?.setOnCheckedChangeListener { _, isChecked ->
-            manualRadioBtn?.isChecked = true
-            otomatisRadioBtn?.isChecked = false
-            onItemClick?.invoke("")
-            dismiss()
-        }
-        otomatisRadioBtn?.setOnCheckedChangeListener { _, isChecked ->
-            otomatisRadioBtn?.isChecked = true
-            manualRadioBtn?.isChecked = false
-            onItemClick?.invoke("auto_bid")
-            dismiss()
-        }
     }
 
     fun setChecked(current: String) {

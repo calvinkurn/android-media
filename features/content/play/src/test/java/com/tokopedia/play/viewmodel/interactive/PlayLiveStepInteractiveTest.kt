@@ -80,7 +80,7 @@ class PlayLiveStepInteractiveTest {
             viewModel.submitAction(InteractivePreStartFinishedAction)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.Ongoing(durationTap)
                 )
             }
@@ -107,7 +107,7 @@ class PlayLiveStepInteractiveTest {
             viewModel.submitAction(InteractiveOngoingFinishedAction)
         }.thenVerify {
             withState {
-                interactive.isEqualTo(
+                interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.Finished(com.tokopedia.play.R.string.play_interactive_finish_initial_text)
                 )
             }

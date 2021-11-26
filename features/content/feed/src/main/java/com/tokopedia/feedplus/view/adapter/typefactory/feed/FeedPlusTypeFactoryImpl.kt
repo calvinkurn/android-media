@@ -20,9 +20,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRecommendationViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.shimmer.ShimmerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
@@ -31,6 +29,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -78,7 +77,7 @@ class FeedPlusTypeFactoryImpl(
     private val retryViewHolderListener: RetryViewHolder.RetryViewHolderListener
     private val emptyFeedViewHolderListener: EmptyFeedViewHolder.EmptyFeedListener
     private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
-    private val topAdsHeadlineListener: TopAdsHeadlineViewHolder.TopAdsHeadlineListener
+    private val topAdsHeadlineListener: TopAdsHeadlineListener
 
     init {
         this.kolPostListener = context
@@ -131,6 +130,9 @@ class FeedPlusTypeFactoryImpl(
 
     override fun type(topadsHeadlineUiModel: TopadsHeadlineUiModel): Int {
         return TopAdsHeadlineViewHolder.LAYOUT
+    }
+    override fun type(topadsHeadlineUiModel: TopadsHeadLineV2Model): Int {
+        return TopAdsHeadlineV2ViewHolder.LAYOUT
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
@@ -190,6 +192,13 @@ class FeedPlusTypeFactoryImpl(
             }
             TopAdsHeadlineViewHolder.LAYOUT -> {
                 viewHolder = TopAdsHeadlineViewHolder(view, userSession, topAdsHeadlineListener)
+            }
+            TopAdsHeadlineV2ViewHolder.LAYOUT -> {
+                viewHolder = TopAdsHeadlineV2ViewHolder(view, userSession, topAdsHeadlineListener,
+                    dynamicPostListener,
+                    videoViewListener,
+                    gridItemListener,
+                    imagePostListener)
             }
             OnboardingViewHolder.LAYOUT -> {
                 viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)

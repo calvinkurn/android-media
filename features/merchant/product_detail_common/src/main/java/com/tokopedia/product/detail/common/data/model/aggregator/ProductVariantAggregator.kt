@@ -60,5 +60,10 @@ data class ProductVariantAggregator(
 
         @SerializedName("isCashback")
         @Expose
-        var isCashback: Cashback = Cashback()
+        var isCashback: Cashback = Cashback(),
+
+        @SerializedName("isCOD")
+        @Expose
+        var isCod: Boolean = false
+
 )

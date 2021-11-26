@@ -33,7 +33,7 @@
             android:id="@+id/tvShcMilestoneLoadingItem2"
             android:layout_width="@dimen/shc_dimen_190dp"
             android:layout_height="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             app:corners="8"
             app:layout_constraintEnd_toEndOf="parent"

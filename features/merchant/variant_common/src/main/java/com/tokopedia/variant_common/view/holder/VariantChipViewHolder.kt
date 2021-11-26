@@ -11,8 +11,8 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.R
-import kotlinx.android.synthetic.main.item_variant_chip_view_holder.view.*
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import com.tokopedia.variant_common.databinding.ItemVariantChipViewHolderBinding
 
 /**
  * Created by Yehezkiel on 08/03/20
@@ -24,17 +24,20 @@ class VariantChipViewHolder(val view: View,
         val LAYOUT = R.layout.item_variant_chip_view_holder
     }
 
+    private val binding = ItemVariantChipViewHolderBinding.bind(view)
+    private val context = binding.root.context
+
     override fun bind(element: VariantOptionWithAttribute, payload: Int) {
         setState(element)
     }
 
-    override fun bind(element: VariantOptionWithAttribute) = with(view) {
+    override fun bind(element: VariantOptionWithAttribute) = with(binding) {
         txtChipVariant.contentDescription = context.getString(R.string.content_desc_txtChipVariant, element.variantName)
         txtChipVariant.text = element.variantName
         setState(element)
     }
 
-    private fun setState(element: VariantOptionWithAttribute) = with(view) {
+    private fun setState(element: VariantOptionWithAttribute) = with(binding) {
         view.setOnClickListener {
             listener.onVariantClicked(element)
         }

@@ -9,7 +9,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.variant_common.R
-import kotlinx.android.synthetic.main.item_variant_image_view_holder.view.*
+import com.tokopedia.variant_common.databinding.ItemVariantImageViewHolderBinding
 
 /**
  * Created by Yehezkiel on 08/03/20
@@ -22,16 +22,19 @@ class VariantImageViewHolder(val view: View,
         val LAYOUT = R.layout.item_variant_image_view_holder
     }
 
+    private val binding = ItemVariantImageViewHolderBinding.bind(view)
+    private val context = binding.root.context
+
     override fun bind(element: VariantOptionWithAttribute, payload: Int) {
         setState(element)
     }
 
-    override fun bind(element: VariantOptionWithAttribute) = with(view) {
+    override fun bind(element: VariantOptionWithAttribute) = with(binding) {
         ImageHandler.LoadImage(variantImg, element.image100)
         setState(element)
     }
 
-    private fun setState(element: VariantOptionWithAttribute) = with(view) {
+    private fun setState(element: VariantOptionWithAttribute) = with(binding) {
         if (element.flashSale) {
             promoVariantImage.show()
         } else {

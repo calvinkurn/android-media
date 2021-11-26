@@ -14,6 +14,7 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.databinding.ItemNewShopProductCarouselBinding
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.EtalaseHighlightCarouselUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedUiModel
@@ -21,6 +22,7 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductUiModel
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductImpressionListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -33,13 +35,14 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
                                     @ShopTrackProductTypeDef private val shopTrackType: Int,
                                     private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?) : AbstractViewHolder<Visitable<*>>(itemView) {
 
+    private val viewBinding : ItemNewShopProductCarouselBinding? by viewBinding()
     private var tvTitle: TextView? = null
     private var tvSeeAll: TextView? = null
     private var recyclerView: CarouselProductCardView? = null
     private var ivBadge: ImageView? = null
 
     init {
-        findViews(itemView)
+        findViews()
         tvTitle!!.text = titleString
     }
 
@@ -127,11 +130,11 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
         }
     }
 
-    private fun findViews(view: View) {
-        tvTitle = view.findViewById(R.id.tv_title)
-        ivBadge = view.findViewById(R.id.image_view_etalase_badge)
-        tvSeeAll = view.findViewById(R.id.tvSeeAll)
-        recyclerView = view.findViewById(R.id.recyclerViewCarousel)
+    private fun findViews() {
+        tvTitle = viewBinding?.layoutShopProductCarouselTitle?.tvTitle
+        ivBadge = viewBinding?.layoutShopProductCarouselTitle?.imageViewEtalaseBadge
+        tvSeeAll = viewBinding?.layoutShopProductCarouselTitle?.tvSeeAll
+        recyclerView = viewBinding?.recyclerViewCarousel
     }
 
     companion object {

@@ -53,6 +53,10 @@ class ReviewImagePreviewViewModel @Inject constructor(
         return userSession.userId
     }
 
+    fun getProductId(): String {
+        return productId
+    }
+
     fun toggleLikeReview(reviewId: String, shopId: String, productId: String, likeStatus: Int) {
         launchCatchError(block = {
             toggleLikeReviewUseCase.setParams(

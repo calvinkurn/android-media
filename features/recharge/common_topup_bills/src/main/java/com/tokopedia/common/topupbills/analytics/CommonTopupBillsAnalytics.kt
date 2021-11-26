@@ -1,9 +1,24 @@
 package com.tokopedia.common.topupbills.analytics
 
+import android.os.Bundle
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.INDEX
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEMS
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_BRAND
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_CATEGORY
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_ID
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_LIST
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_NAME
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.ITEM_VARIANT
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.PRICE
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralClick
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralClickAddBills
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addGeneralViewAddBills
+import com.tokopedia.common.topupbills.analytics.CommonSmartBillsConstant.addListBottomSheet
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.*
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.EnhanceEccomerce.Companion.ECOMMERCE
 import com.tokopedia.common_digital.common.constant.DigitalTrackingConst
+import com.tokopedia.common.topupbills.data.RechargeAddBillsProductTrackData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -129,6 +144,122 @@ class CommonTopupBillsAnalytics {
         )
     }
 
+    //Add Bills
+    //#5
+    fun clickBackTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click back",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#6
+    fun clickCloseTickerTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x - top information box",
+                TrackAppUtils.EVENT_LABEL, category)
+
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#7
+    fun clickInputFieldTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click input field",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#8
+    fun clickDropDownListTelcoAddBills(category: String, dropdownName: String, position: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, String.format("%s %s", "click drop down list ", position),
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", category, dropdownName)
+        )
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#9
+    fun clickCloseDropDownListTelcoAddBills(category: String, dropdownName: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x - drop down list product",
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", category, dropdownName)
+        )
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#10
+    fun viewBottomSheetAddBills(userId:String, categoryName: String, dropdownName: String,
+                                products: List<RechargeAddBillsProductTrackData>){
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT_ACTION, "click product")
+            putString(TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, dropdownName))
+            putString(ITEM_LIST, "")
+            putParcelableArrayList(ITEMS, getProductFromMetaData(products))
+        }
+
+        eventDataLayer.addListBottomSheet(userId)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CommonSmartBillsConstant.SELECT_CONTENT, eventDataLayer)
+    }
+
+    //#12
+    fun clickTambahTagihanTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click tambah tagihan / lanjut",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClickAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#13
+    fun clickViewErrorToasterTelcoAddBills(category: String) {
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "view error - toaster box",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralViewAddBills()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#21
+    fun clickOnCloseInquiry(category: String){
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click x detail tagihan",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#22
+    fun clickAddInquiry(category: String){
+        val data = DataLayer.mapOf(
+                TrackAppUtils.EVENT_ACTION, "click tambah tagihan ini",
+                TrackAppUtils.EVENT_LABEL, category)
+        data.addGeneralClick()
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    private fun getProductFromMetaData(products: List<RechargeAddBillsProductTrackData>): ArrayList<Bundle>{
+        val list = arrayListOf<Bundle>()
+        products.forEach { it ->
+            val itemBundle = Bundle().apply {
+                putString(INDEX, it.index.toString())
+                putString(ITEM_BRAND, it.itemBrand)
+                putString(ITEM_CATEGORY, it.itemCategory)
+                putString(ITEM_ID, it.itemId)
+                putString(ITEM_NAME, it.itemName)
+                putString(ITEM_VARIANT, it.itemVariant)
+                putString(PRICE, it.price.toString())
+            }
+            list.add(itemBundle)
+        }
+        return list
+    }
+
     fun eventImpressionFavoriteNumberEmptyState(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
@@ -157,13 +288,13 @@ class CommonTopupBillsAnalytics {
         )
     }
 
-    fun eventClickFavoriteNumberContinue(categoryName: String, operatorName: String, userId: String) {
+    fun eventClickFavoriteNumberContinue(categoryName: String, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                         TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
                         TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_CONTINUE,
-                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName",
+                        TrackAppUtils.EVENT_LABEL, categoryName,
                         DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
                         DigitalTrackingConst.Label.USER_ID, userId
@@ -266,6 +397,34 @@ class CommonTopupBillsAnalytics {
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
                         DigitalTrackingConst.Label.USER_ID, userId
                 )
+        )
+    }
+
+    fun eventImpressionTotalFavoriteNumber(totalUnnamedFavNumber: Int, totalNamedFavNumber: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT_IRIS,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_IMPRESSION_FAV_NUMBER_AND_CONTACT,
+                TrackAppUtils.EVENT_LABEL, "$totalUnnamedFavNumber - $totalNamedFavNumber",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
+        )
+    }
+
+    fun eventClickTotalFavoriteNumber(totalUnnamedFavNumber: Int, totalNamedFavNumber: Int, clickPosition: Int, userId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, Event.DIGITAL_GENERAL_EVENT,
+                TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_PDP_FAVORITE_NUMBER,
+                TrackAppUtils.EVENT_ACTION, Action.FAVNUMBER_CLICK_FAV_NUMBER_AND_CONTACT,
+                TrackAppUtils.EVENT_LABEL, "$totalUnnamedFavNumber - $totalNamedFavNumber - $clickPosition",
+                DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+                DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+                DigitalTrackingConst.Label.USER_ID, userId
+            )
         )
     }
 }

@@ -23,7 +23,7 @@ class UpdateCartOccUseCase @Inject constructor(@ApplicationContext private val g
 
     suspend fun executeSuspend(param: UpdateCartOccRequest): OccUIMessage? {
         val request = GraphqlRequest(QUERY, UpdateCartOccGqlResponse::class.java, generateParam(param))
-        val response = graphqlRepository.getReseponse(listOf(request)).getSuccessData<UpdateCartOccGqlResponse>()
+        val response = graphqlRepository.response(listOf(request)).getSuccessData<UpdateCartOccGqlResponse>()
         if (response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
             return null
         }

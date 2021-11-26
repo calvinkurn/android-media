@@ -10,7 +10,6 @@ import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created by mzennis on 15/02/21.
  */
@@ -505,6 +504,73 @@ class PlayAnalytic(
     fun getTrackingQueue() = trackingQueue
 
     /**
+     * Cast
+     */
+    fun impressCast(channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "impression on chromecast button",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    fun clickCast() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_EVENT_ACTION to "click chromecast button",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$mChannelId - ${mChannelType.value}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    fun connectCast(isSuccess: Boolean, id: String = mChannelId, type: PlayChannelType = mChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
+                KEY_EVENT_ACTION to "chromecast connecting state",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$id - ${type.value} - ${if(isSuccess) "success" else "failed"}",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    fun recordCastDuration(duration: Long) {
+        /**
+         * When swipe screen, recordCastDuration() will be called first, followed by sendScreen()
+         * So, it will send tracking from the previous screen
+         */
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
+                KEY_EVENT_ACTION to "chromecast disconnected",
+                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
+                KEY_EVENT_LABEL to "$channelId - ${mChannelType.value} - $duration",
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+            )
+        )
+    }
+
+    /**
      * Private methods
      */
     private fun convertProductsToListOfObject(
@@ -580,7 +646,7 @@ class PlayAnalytic(
                                                     shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
-                    KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK buy in bottom sheet",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"
@@ -679,7 +745,7 @@ class PlayAnalytic(
                                          shopInfo: PlayPartnerInfo) {
         trackingQueue.putEETracking(
                 EventModel(
-                    KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK beli in varian page",
                         "$mChannelId - ${product.id} - ${mChannelType.value}"

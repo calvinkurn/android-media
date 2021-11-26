@@ -2,12 +2,13 @@ package com.tokopedia.digital.home.presentation.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * @author by jessica on 21/01/21
  */
-class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment() {
+class DigitalHomepageSearchByDynamicIconsFragment : DigitalHomePageSearchFragment() {
 
     private var platformId: Int = 0
     private var enablePersonalized: Boolean = true
@@ -23,12 +24,17 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
                     ?: arrayListOf()).map { sectionId ->
                 sectionId.toIntOrZero()
             })
+            searchBarScreenName = it.getString(EXTRA_SEARCH_BAR_SCREEN_NAME, SCREEN_NAME_TOPUP_BILLS)
             initSearchBarView(it.getString(EXTRA_SEARCH_BAR_PLACE_HOLDER, ""))
         }
     }
 
     override fun searchCategory(searchQuery: String) {
-        viewModel.searchByDynamicIconsCategory(searchQuery, platformId, sectionId, enablePersonalized)
+        if (!searchQuery.isNullOrEmpty()) {
+            viewModel.searchByDynamicIconsCategory(searchQuery, platformId, sectionId, enablePersonalized)
+        } else {
+            viewModel.cancelAutoComplete()
+        }
     }
 
     private fun initSearchBarView(placeHolder: String) {
@@ -40,10 +46,12 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
         private const val EXTRA_ENABLE_PERSONALIZE = "personalize"
         private const val EXTRA_SECTION_ID = "section_id"
         private const val EXTRA_SEARCH_BAR_PLACE_HOLDER = "search_bar_place_holder"
+        private const val EXTRA_SEARCH_BAR_SCREEN_NAME = "search_bar_screen_name"
 
         fun newInstance(platformId: Int, enablePersonalize: Boolean = false,
                         sectionId: ArrayList<String>,
-                        searchBarPlaceHolder: String = "")
+                        searchBarPlaceHolder: String = "",
+                        searchBarScreenName: String)
                 : DigitalHomepageSearchByDynamicIconsFragment {
             val fragment = DigitalHomepageSearchByDynamicIconsFragment()
             val bundle = Bundle()
@@ -51,6 +59,7 @@ class DigitalHomepageSearchByDynamicIconsFragment: DigitalHomePageSearchFragment
             bundle.putBoolean(EXTRA_ENABLE_PERSONALIZE, enablePersonalize)
             bundle.putStringArrayList(EXTRA_SECTION_ID, sectionId)
             bundle.putString(EXTRA_SEARCH_BAR_PLACE_HOLDER, searchBarPlaceHolder)
+            bundle.putString(EXTRA_SEARCH_BAR_SCREEN_NAME, searchBarScreenName)
             fragment.arguments = bundle
             return fragment
         }

@@ -1,14 +1,14 @@
 package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.asCamelCase
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.ItemBenefitPackageHeaderBinding
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageHeaderUiModel
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BenefitPackageHeaderViewHolder(view: View) :
     AbstractViewHolder<BenefitPackageHeaderUiModel>(view) {
@@ -17,20 +17,13 @@ class BenefitPackageHeaderViewHolder(view: View) :
         val LAYOUT = R.layout.item_benefit_package_header
     }
 
-    private val tvTitleHeaderBenefitPackage: Typography =
-        itemView.findViewById(R.id.tvTitleHeaderBenefitPackage)
-    private val containerHeaderBenefitPackage: ConstraintLayout =
-        itemView.findViewById(R.id.containerHeaderBenefitPackage)
-    private val tvDescHeaderBenefitPackage: Typography =
-        itemView.findViewById(R.id.tvDescHeaderBenefitPackage)
-    private val tvNextUpdateBenefitPackage: Typography =
-        itemView.findViewById(R.id.tvNextUpdateBenefitPackage)
+    private val binding: ItemBenefitPackageHeaderBinding? by viewBinding()
 
     override fun bind(element: BenefitPackageHeaderUiModel?) {
-        with(itemView) {
+        binding?.run {
             containerHeaderBenefitPackage.setBackgroundColor(
                 ContextCompat.getColor(
-                    context,
+                    root.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N50
                 )
             )

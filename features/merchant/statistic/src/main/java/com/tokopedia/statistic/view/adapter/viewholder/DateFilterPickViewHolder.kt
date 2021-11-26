@@ -11,9 +11,9 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.Const
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
+import com.tokopedia.statistic.databinding.ItemStcDateRangePickBinding
 import com.tokopedia.statistic.view.bottomsheet.CalendarPicker
 import com.tokopedia.statistic.view.model.DateFilterItem
-import kotlinx.android.synthetic.main.item_stc_date_range_pick.view.*
 import java.util.*
 
 /**
@@ -21,7 +21,7 @@ import java.util.*
  */
 
 class DateFilterPickViewHolder(
-    itemView: View?,
+    itemView: View,
     private val fm: FragmentManager,
     private val onClick: (DateFilterItem) -> Unit
 ) : AbstractViewHolder<DateFilterItem.Pick>(itemView) {
@@ -31,19 +31,23 @@ class DateFilterPickViewHolder(
         val RES_LAYOUT = R.layout.item_stc_date_range_pick
     }
 
+    private val binding by lazy {
+        ItemStcDateRangePickBinding.bind(itemView)
+    }
+
     private var element: DateFilterItem.Pick? = null
     private var datePicker: CalendarPicker? = null
 
     override fun bind(element: DateFilterItem.Pick) {
         this.element = element
         initCalendarPicker(element)
-        with(itemView) {
+        with(binding) {
             tvStcSingleLabel.text = element.label
             radStcSingleDateRange.isChecked = element.isSelected
 
             showCustomForm(element.isSelected)
 
-            setOnClickListener {
+            root.setOnClickListener {
                 onItemClickListener(element)
             }
 
@@ -90,8 +94,8 @@ class DateFilterPickViewHolder(
         onClick(element)
     }
 
-    private fun setupDatePicker() = with(itemView) {
-        edtStcSingle.label = context.getString(R.string.stc_date)
+    private fun setupDatePicker() = with(binding) {
+        edtStcSingle.label = root.context.getString(R.string.stc_date)
         edtStcSingle.setOnClickListener {
             datePicker?.showDatePicker(fm)
         }
@@ -108,7 +112,7 @@ class DateFilterPickViewHolder(
         if (startDate != null && endDate != null) {
             element?.startDate = startDate
             element?.endDate = endDate
-            itemView.edtStcSingle.valueStr = if (element?.type == DateFilterItem.TYPE_PER_DAY) {
+            binding.edtStcSingle.valueStr = if (element?.type == DateFilterItem.TYPE_PER_DAY) {
                 DateTimeUtil.format(startDate.time, Const.FORMAT_DD_MM_YYYY)
             } else {
                 DateFilterFormatUtil.getDateRangeStr(startDate, endDate)
@@ -116,13 +120,13 @@ class DateFilterPickViewHolder(
         }
     }
 
-    private fun showCustomForm(isShown: Boolean) = with(itemView) {
+    private fun showCustomForm(isShown: Boolean) = with(binding) {
         edtStcSingle.isVisible = isShown
 
         val lineMarginTop = if (isShown) {
-            context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+            root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
         } else {
-            context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
+            root.context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2)
         }
         verLineStcCustom.setMargin(0, lineMarginTop.toInt(), 0, 0)
     }

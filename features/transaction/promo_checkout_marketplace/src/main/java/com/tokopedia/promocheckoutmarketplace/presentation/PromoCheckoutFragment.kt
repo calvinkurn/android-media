@@ -71,6 +71,7 @@ import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.VALIDATE_USE_QUERY
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -364,7 +365,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                         ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
+                viewModel.applyPromo(VALIDATE_USE_QUERY, validateUsePromoRequest, bboPromoCodes
                         ?: ArrayList())
             }
         }
@@ -808,7 +809,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializeToolbar(view: View) {
         activity?.let {
-            val appbar = view.findViewById<Toolbar>(R.id.toolbar)
+            val appbar = view.findViewById<Toolbar>(R.id.toolbar_promo_checkout)
             appbar.removeAllViews()
             toolbar = getToolbarPromoCheckout()
             toolbar?.let {
@@ -893,7 +894,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                                 ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
+                        viewModel.applyPromo(VALIDATE_USE_QUERY, validateUsePromoRequest, bboPromoCodes
                                 ?: ArrayList())
                     } else {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)

@@ -2,8 +2,8 @@ package com.tokopedia.tokopedianow.home.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowListAdapter
+import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeChooseAddressWidgetUiModel
 
 class HomeAdapter(
         typeFactory: HomeAdapterTypeFactory,
@@ -12,7 +12,7 @@ class HomeAdapter(
 
     fun removeHomeChooseAddressWidget() {
         val items = data.toMutableList()
-        val widget = getItem(HomeChooseAddressWidgetUiModel::class.java)
+        val widget = getItem(TokoNowChooseAddressWidgetUiModel::class.java)
         widget?.let {
             items.remove(it)
             submitList(items)

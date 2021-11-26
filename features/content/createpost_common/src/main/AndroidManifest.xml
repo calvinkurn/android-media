@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.createpost.common">
+
+    <application>
+        <service
+            android:name="com.tokopedia.createpost.common.view.service.SubmitPostService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name="com.tokopedia.createpost.common.view.service.SubmitPostServiceNew"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+    </application>
+
+</manifest>

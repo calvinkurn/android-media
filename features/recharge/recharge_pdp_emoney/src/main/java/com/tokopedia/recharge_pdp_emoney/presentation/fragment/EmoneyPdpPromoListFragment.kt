@@ -15,9 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
-import com.tokopedia.recharge_pdp_emoney.R
 import com.tokopedia.recharge_pdp_emoney.databinding.FragmentEmoneyPromoListBinding
-import com.tokopedia.recharge_pdp_emoney.databinding.FragmentEmoneyRecentNumberBinding
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivity
 import com.tokopedia.recharge_pdp_emoney.presentation.widget.EmoneyPdpPromoListSpaceID
@@ -63,7 +61,7 @@ class EmoneyPdpPromoListFragment : BaseDaggerFragment(), TopupBillsPromoListWidg
         binding.emoneyPdpPromoListWidget.setListener(this)
     }
 
-    override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
+    override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
         binding.emoneyPdpPromoListWidget.notifyPromoItemChanges(promoId)
 
         activity?.let {

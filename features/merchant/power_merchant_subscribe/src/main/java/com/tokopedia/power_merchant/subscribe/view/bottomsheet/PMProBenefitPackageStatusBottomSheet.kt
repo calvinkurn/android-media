@@ -1,6 +1,7 @@
 package com.tokopedia.power_merchant.subscribe.view.bottomsheet
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -9,24 +10,24 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.constant.Constant
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
+import com.tokopedia.power_merchant.subscribe.databinding.BottomSheetBenefitPackagePmProStatusBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.PMProStatusStepperAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PMProStatusStepperUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class PMProBenefitPackageStatusBottomSheet : BaseBottomSheet() {
+class PMProBenefitPackageStatusBottomSheet :
+    BaseBottomSheet<BottomSheetBenefitPackagePmProStatusBinding>() {
 
     private var pmProStatus = ""
-    private var rvBenefitPackagePmProStatus: RecyclerView? = null
-    private var tvDescBenefitPackagePmProStatus: Typography? = null
     private val pmProStatusStepperAdapter by lazy { PMProStatusStepperAdapter() }
+
+    override fun bind(view: View) = BottomSheetBenefitPackagePmProStatusBinding.bind(view)
 
     override fun getChildResLayout(): Int = R.layout.bottom_sheet_benefit_package_pm_pro_status
 
-    override fun setupView() = childView?.run {
+    override fun setupView() = binding?.run {
         pmProStatus = arguments?.getString(PM_PRO_STATUS_KEY) ?: ""
-        rvBenefitPackagePmProStatus = findViewById(R.id.rvBenefitPackagePmProStatus)
-        tvDescBenefitPackagePmProStatus = findViewById(R.id.tvDescBenefitPackagePmProStatus)
-        tvDescBenefitPackagePmProStatus?.setTextMakeHyperlink(
+        tvDescBenefitPackagePmProStatus.setTextMakeHyperlink(
             getString(R.string.pm_desc_benefit_package_pm_pro_status)
         ) {
             context?.let {
@@ -55,7 +56,7 @@ class PMProBenefitPackageStatusBottomSheet : BaseBottomSheet() {
                 } else SPAN_WIDTH_DEFAULT
             }
         }
-        rvBenefitPackagePmProStatus?.apply {
+        binding?.rvBenefitPackagePmProStatus?.apply {
             layoutManager = gridLayoutManager
             adapter = pmProStatusStepperAdapter
         }

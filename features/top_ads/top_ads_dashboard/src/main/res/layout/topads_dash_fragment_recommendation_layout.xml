@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loderRecom"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,7 +19,7 @@
         android:id="@+id/rvTabInsight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginStart="16dp"
         android:background="@color/white"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent" />

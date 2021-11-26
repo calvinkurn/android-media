@@ -1,18 +1,19 @@
 package com.tokopedia.shop_settings.viewmodel.shopeditbasicinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.gql.ShopBasicDataMutation
 import com.tokopedia.shop.common.graphql.data.shopopen.ShopDomainSuggestionData
+import com.tokopedia.shop.common.graphql.data.shopopen.ValidateDomainShopName
 import com.tokopedia.shop.common.graphql.data.shopopen.ValidateShopDomainNameResult
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.GetShopDomainNameSuggestionUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainShopNameUseCase
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges
-import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
-import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
@@ -38,7 +39,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
     lateinit var updateShopBasicDataUseCase: UpdateShopBasicDataUseCase
 
     @RelaxedMockK
-    lateinit var uploadShopImageUseCase: UploadShopImageUseCase
+    lateinit var uploaderUseCase: UploaderUseCase
 
     @RelaxedMockK
     lateinit var getAllowShopNameDomainChangesUseCase: GetAllowShopNameDomainChanges
@@ -59,7 +60,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         shopEditBasicInfoViewModel = ShopEditBasicInfoViewModel(
                 getShopBasicDataUseCase,
                 updateShopBasicDataUseCase,
-                uploadShopImageUseCase,
+                uploaderUseCase,
                 getAllowShopNameDomainChangesUseCase,
                 getShopDomainNameSuggestionUseCase,
                 validateDomainShopNameUseCase,
@@ -75,26 +76,48 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         }
     }
 
-    protected fun onCheckAllowShopNameDomainChanges_thenReturn() {
+    protected fun onCheckAllowShopNameDomainChanges_thenReturnSuccess() {
         coEvery { getAllowShopNameDomainChangesUseCase.executeOnBackground() } returns AllowShopNameDomainChanges()
     }
 
-    protected fun onValidateShopName_thenReturn() {
+    protected fun onCheckAllowShopNameDomainChanges_thenReturnFail() {
+        coEvery { getAllowShopNameDomainChangesUseCase.executeOnBackground() } throws Exception()
+    }
+
+    protected fun onValidateShopDomainName_thenReturnSuccess() {
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
         } returns ValidateShopDomainNameResult()
     }
 
-    protected fun onValidateDomainName_thenReturn() {
+    protected fun onValidateShopDomainName_thenReturnSuccessIsValid() {
         coEvery {
             validateDomainShopNameUseCase.executeOnBackground()
-        } returns ValidateShopDomainNameResult()
+        } returns ValidateShopDomainNameResult(ValidateDomainShopName(isValid = true))
     }
 
-    protected fun onGetShopDomainNameSuggestion_thenReturn() {
+    protected fun onValidateShopDomainName_thenReturnException() {
+        coEvery {
+            validateDomainShopNameUseCase.executeOnBackground()
+        } throws Exception()
+    }
+
+    protected fun onValidateShopDomainName_thenReturnThrowable() {
+        coEvery {
+            validateDomainShopNameUseCase.executeOnBackground()
+        } throws Throwable()
+    }
+
+    protected fun onGetShopDomainNameSuggestion_thenReturnSuccess() {
         coEvery {
             getShopDomainNameSuggestionUseCase.executeOnBackground()
         } returns ShopDomainSuggestionData()
+    }
+
+    protected fun onGetShopDomainNameSuggestion_thenReturnFail() {
+        coEvery {
+            getShopDomainNameSuggestionUseCase.executeOnBackground()
+        } throws Exception()
     }
 
     protected fun _onUpdateShopBasicData_thenReturn() {
@@ -104,16 +127,41 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
         } returns ShopBasicDataMutation()
     }
 
-    protected fun _onGetShopBasicData_thenReturn() {
+    protected fun _onGetShopBasicData_thenReturnSuccess() {
         every {
             getShopBasicDataUseCase.getData(any())
         } returns ShopBasicDataModel()
     }
 
-    protected fun _onUploadShopImage_thenReturn() {
+    protected fun _onGetShopBasicData_thenReturnFail() {
         every {
-            uploadShopImageUseCase.getData(any())
-        } returns UploadShopEditImageModel()
+            getShopBasicDataUseCase.getData(any())
+        } throws Exception()
+    }
+
+    protected fun _onUploadShopImage_thenReturnUploadResultSuccess() {
+        coEvery {
+            uploaderUseCase(any())
+        } returns UploadResult.Success("1231")
+    }
+
+    protected fun _onUploadShopImage_thenReturnUploadResultError() {
+        coEvery {
+            uploaderUseCase(any())
+        } returns UploadResult.Error("error")
+    }
+
+    protected fun _onUploadShopImage_thenReturnNull() {
+        coEvery {
+            uploaderUseCase(any())
+        } returns mockk<UploadResult>()
+    }
+
+
+    protected fun _onUploadShopImage_thenReturnFail() {
+        coEvery {
+            uploaderUseCase(any())
+        } throws Exception()
     }
 
     protected fun verifySuccessGetAllowShopNameDomainChangesCalled() {

@@ -17,13 +17,13 @@ import com.tokopedia.rechargegeneral.presentation.adapter.viewholder.RechargeGen
  * @author by resakemal on 12/08/19
  */
 
-class RechargeGeneralAdapterFactory(val listener: OnInputListener): BaseAdapterTypeFactory() {
+class RechargeGeneralAdapterFactory(val listener: OnInputListener, val isAddSBM: Boolean = false): BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val layoutParams = RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         parent.layoutParams = layoutParams
         return when (type) {
-            R.layout.view_recharge_general_product_input_holder -> RechargeGeneralInputViewHolder(parent, listener)
+            R.layout.view_recharge_general_product_input_holder -> RechargeGeneralInputViewHolder(parent, listener, isAddSBM)
             R.layout.view_recharge_general_product_select_holder -> RechargeGeneralProductSelectViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }

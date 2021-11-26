@@ -46,6 +46,8 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
         className = CLASS_NAME
     }
 
+    var issuerActive = ISSUER_ID_EMONEY
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -104,7 +106,6 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                 onNavigateToHome()
             } else {
                 // nfc enabled and process Mandiri NFC as default
-                showLoading()
                 executeCard(intent)
             }
         }
@@ -113,10 +114,14 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
     private fun executeCard(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (CardUtils.isTapcashCard(intent) && goToNewTapcash()) {
+            issuerActive = ISSUER_ID_TAP_CASH
+            showLoading(getOperatorName(issuerActive))
             tapcashBalanceViewModel.processTapCashTagIntent(IsoDep.get(tag),
                     DigitalEmoneyGqlQuery.rechargeBniTapcashQuery)
         } else if (CardUtils.isEmoneyCard(intent)){
             if (tag != null) {
+                issuerActive = ISSUER_ID_EMONEY
+                showLoading(getOperatorName(issuerActive))
                 emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                         DigitalEmoneyGqlQuery.rechargeEmoneyInquiryBalance,
                         0)
@@ -314,7 +319,7 @@ open class EmoneyCheckBalanceFragment : NfcCheckBalanceFragment() {
                     nfcDisabledView.visibility = View.GONE
 
                     if (eTollUpdateBalanceResultView.visibility == View.GONE) {
-                        emoneyAnalytics.onEnableNFC()
+                        emoneyAnalytics.onEnableNFC(getOperatorName(issuerActive))
                         tapETollCardView.visibility = View.VISIBLE
                     } else {
                         //do nothing

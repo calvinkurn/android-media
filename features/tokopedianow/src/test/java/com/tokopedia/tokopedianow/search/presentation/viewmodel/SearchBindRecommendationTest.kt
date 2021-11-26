@@ -52,6 +52,12 @@ class SearchBindRecommendationTest: SearchTestFixtures(), BindRecommendationCaro
     }
 
     @Test
+    fun `bind recommendation success with empty product list should remove recom widget`() {
+        bindRecommendationTestHelper.
+            `bind recommendation success with empty product list should remove recom widget`()
+    }
+
+    @Test
     fun `bind recommendation with quantity from mini cart`() {
         bindRecommendationTestHelper.`bind recommendation with quantity from mini cart`()
     }

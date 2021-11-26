@@ -26,6 +26,7 @@
         tools:text="Performa toko" />
 
     <include
+        android:id="@+id/shcRecommendationCommonErrorView"
         layout="@layout/shc_partial_common_widget_state_error"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"

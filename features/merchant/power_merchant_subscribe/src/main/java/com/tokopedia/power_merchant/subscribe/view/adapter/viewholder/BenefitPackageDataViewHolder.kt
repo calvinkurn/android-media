@@ -8,10 +8,11 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.common.utils.BenefitPackageSectionDecoration
 import com.tokopedia.power_merchant.subscribe.common.utils.PowerMerchantSpannableUtil.setTextMakeHyperlink
+import com.tokopedia.power_merchant.subscribe.databinding.ItemBenefitPackageDataSectionBinding
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageDataListener
 import com.tokopedia.power_merchant.subscribe.view.adapter.BenefitPackageGradeAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.BenefitPackageDataUiModel
-import kotlinx.android.synthetic.main.item_benefit_package_data_section.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class BenefitPackageDataViewHolder(
     view: View,
@@ -22,12 +23,14 @@ class BenefitPackageDataViewHolder(
         val LAYOUT = R.layout.item_benefit_package_data_section
     }
 
+    private val binding: ItemBenefitPackageDataSectionBinding? by viewBinding()
+
     override fun bind(element: BenefitPackageDataUiModel?) {
-        with(itemView) {
-            tvAdditionalInfoBenefitPackage?.text =
+        binding?.run {
+            tvAdditionalInfoBenefitPackage.text =
                 MethodChecker.fromHtml(getString(R.string.pm_additional_info_benefit_package_section))
 
-            tvLearnMoreBenefitPackage?.setTextMakeHyperlink(
+            tvLearnMoreBenefitPackage.setTextMakeHyperlink(
                 getString(R.string.pm_learn_more_shop_performance)
             ) {
                 benefitPackageDataListener.onLearnMoreToShopScoreClicked()
@@ -38,8 +41,8 @@ class BenefitPackageDataViewHolder(
 
     private fun setupBenefitPackageAdapter(element: BenefitPackageDataUiModel?) {
         val benefitPackageGradeAdapter = BenefitPackageGradeAdapter()
-        with(itemView) {
-            rvBenefitPackageList?.apply {
+        binding?.run {
+            rvBenefitPackageList.run {
                 if (itemDecorationCount.isZero()) {
                     addItemDecoration(BenefitPackageSectionDecoration())
                 }

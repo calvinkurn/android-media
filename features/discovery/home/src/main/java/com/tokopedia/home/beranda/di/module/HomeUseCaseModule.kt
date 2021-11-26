@@ -45,6 +45,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.play.widget.di.PlayWidgetModule
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
@@ -107,14 +108,6 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ProductrevDismissSuggestion>(graphqlRepository)
         useCase.setGraphqlQuery(dismissSuggestedQuery)
         return DismissHomeReviewUseCase(useCase)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideHomeTokopointsDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsDataUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerHomeData>(graphqlRepository)
-        useCase.setGraphqlQuery(tokopointsQuery)
-        return GetHomeTokopointsDataUseCase(useCase)
     }
 
     @Provides
@@ -191,6 +184,13 @@ class HomeUseCaseModule {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
         useCase.setGraphqlQuery(dynamicChannelQuery)
         return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
+    }
+
+
+    @Provides
+    @HomeScope
+    fun provideWalletEligibilityUseCase(graphqlRepository: GraphqlRepository): GetWalletEligibilityUseCase{
+        return GetWalletEligibilityUseCase(graphqlRepository)
     }
 
     @Provides

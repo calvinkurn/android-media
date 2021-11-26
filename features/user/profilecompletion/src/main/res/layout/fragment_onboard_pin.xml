@@ -9,7 +9,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:visibility="gone"
         tools:visibility="visible">
 

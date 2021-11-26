@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -25,13 +24,13 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEditProductViewModel
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -43,7 +42,7 @@ import javax.inject.Inject
  */
 class SimpleEditProductBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
         private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetDialogFragment() {
 
@@ -69,7 +68,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
     private var toasterBottomMargin = 0
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+        override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
             viewModel.selectProduct(productId, isSelected)
         }
 
@@ -194,22 +193,18 @@ class SimpleEditProductBottomSheet @Inject constructor(
 
     private fun onUploadFailed(e: Throwable) {
         btnAction.isLoading = false
-        showToaster(
-                message = e.localizedMessage,
-                type = Toaster.TYPE_ERROR
-        )
+        showErrorToaster(e)
     }
 
-    private fun showToaster(message: String, type: Int, duration: Int = Toaster.LENGTH_SHORT) {
+    private fun showErrorToaster(err: Throwable, duration: Int = Toaster.LENGTH_SHORT) {
         if (toasterBottomMargin == 0) {
             toasterBottomMargin = llBtnContainer.height
         }
 
-        coordinatorEdit.showToaster(
-                message = message,
-                type = type,
-                duration = duration,
-                bottomMargin = toasterBottomMargin
+        coordinatorEdit.showErrorToaster(
+            err = err,
+            duration = duration,
+            bottomMargin = toasterBottomMargin
         )
     }
 
@@ -217,14 +212,14 @@ class SimpleEditProductBottomSheet @Inject constructor(
      * Observe
      */
     private fun observeSelectedProducts() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
             updateTitle(it.size)
             btnAction.isEnabled = (it.size != selectableProductAdapter.itemCount) && it.isNotEmpty()
-        })
+        }
     }
 
     private fun observeUploadProduct() {
-        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner) {
             when (it) {
                 NetworkResult.Loading -> btnAction.isLoading = true
                 is NetworkResult.Fail -> onUploadFailed(it.error)
@@ -233,7 +228,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
                     if (data != null) onUploadSuccess()
                 }
             }
-        })
+        }
     }
 
     companion object {

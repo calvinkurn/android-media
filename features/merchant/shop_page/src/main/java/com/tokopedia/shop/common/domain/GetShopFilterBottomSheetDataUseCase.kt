@@ -22,13 +22,14 @@ class GetShopFilterBottomSheetDataUseCase @Inject constructor(
         private const val KEY_DEVICE = "device"
         private const val VALUE_SOURCE = "shop_product"
         private const val DEVICE_VALUE = "android"
+        private const val KEY_SHOP_ID = "shop_id"
 
-        fun createParams() = mapOf(
+        fun createParams(shopId: String = "") = mapOf(
                 KEY_PARAMS to UrlParamUtil.convertMapToStringParam(mapOf(
                         KEY_SOURCE to VALUE_SOURCE,
-                        KEY_DEVICE to DEVICE_VALUE
-                ))
-        )
+                        KEY_DEVICE to DEVICE_VALUE,
+                        KEY_SHOP_ID to shopId
+                )))
     }
 
     var params = mapOf<String, Any>()
@@ -36,7 +37,7 @@ class GetShopFilterBottomSheetDataUseCase @Inject constructor(
     override suspend fun executeOnBackground(): DynamicFilterModel {
         val request = GraphqlRequest(GQL_QUERY, GqlDynamicFilterResponse::class.java, params)
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(GqlDynamicFilterResponse::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<GqlDynamicFilterResponse>(GqlDynamicFilterResponse::class.java).dynamicFilterModel

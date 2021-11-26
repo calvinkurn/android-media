@@ -56,10 +56,12 @@
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
+                android:layout_weight="1"
                 android:id="@+id/smart_bills_item_info_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/smart_bills_item_text_margin"
+                android:layout_marginRight="@dimen/spacing_lvl1"
                 android:orientation="vertical">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -177,6 +179,14 @@
                     app:typographyType="small" />
 
             </LinearLayout>
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_menu_sbm_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon_name="MENU_KEBAB_VERTICAL"
+                android:visibility="invisible"
+                />
 
         </LinearLayout>
 

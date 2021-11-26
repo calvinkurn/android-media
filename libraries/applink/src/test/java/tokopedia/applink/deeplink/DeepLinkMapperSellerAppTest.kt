@@ -6,7 +6,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.applink.shopscore.DeepLinkMapperShopScore
 import com.tokopedia.config.GlobalConfig
 import io.mockk.every
 import org.junit.Test

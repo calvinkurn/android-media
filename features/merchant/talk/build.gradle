@@ -1,7 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
@@ -9,12 +8,21 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 repositories {
     maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
 }
+
+kapt {
+    correctErrorTypes = true
+    useBuildCache = true
+}
+
 buildscript {
     repositories {
         google()
@@ -28,6 +36,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.attachcommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.features.inboxCommon)
     implementation projectOrAar(rootProject.ext.features.sellerActiveCommon)
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
@@ -41,6 +50,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -89,6 +99,7 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+    androidTestImplementation rootProject.ext.miscDependencies.rxJava
 }
 
 project.ext {

@@ -24,7 +24,8 @@ data class ProductUiModel(
         val topAdsInfo: TopAdsInfo?,
         val access: ProductManageAccess?,
         val isCampaign: Boolean,
-        val campaignTypeList: List<ProductCampaignType>?
+        val campaignTypeList: List<ProductCampaignType>?,
+        val isProductBundling: Boolean,
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

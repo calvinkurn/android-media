@@ -26,17 +26,12 @@ class ProductCategoryCarouselViewHolder(view: View,
         val LAYOUT = R.layout.item_dynamic_category_carousel_view_holder
     }
 
-    private var header: PartialContentView? = null
     private var categoryCarouselTitle: Typography? = itemView.findViewById(R.id.product_category_title)
     private var categoryCarouselLink: Typography? = itemView.findViewById(R.id.product_category_link)
     private var categoryCarouselRv: RecyclerView? = itemView.findViewById(R.id.product_category_rv)
 
     private val adapter = ProductCategoryCarouselAdapter(listener)
     private var componentTrackDataModel: ComponentTrackDataModel? = null
-
-    init {
-        header = PartialContentView(view, listener)
-    }
 
     override fun bind(element: ProductCategoryCarouselDataModel) {
         if (componentTrackDataModel == null) {

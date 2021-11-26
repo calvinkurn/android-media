@@ -9,7 +9,6 @@ import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -486,24 +485,7 @@ public class AccountAnalytics {
     }
 
     public void setUserAttributes(UserAttributeData profileData) {
-        if(context != null){
-            MoengageInteractor.INSTANCE.setUserDataGraphQL(profileData.getProfile() == null ? "" : profileData.getProfile().getFullName(),
-                    profileData.getProfile() != null && profileData.getProfile().getFirstName() != null ? profileData.getProfile().getFirstName() : "",
-                    profileData.getProfile() == null ? "" : profileData.getProfile().getUserId(),
-                    profileData.getProfile() == null ? "" : profileData.getProfile().getEmail(),
-                    profileData.getProfile() == null || profileData.getProfile().getPhone() == null ? "" : profileData.getProfile().getPhone(),
-                    profileData.getProfile().getBday() != null ? profileData.getProfile().getBday() : "",
-                    profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopName() : "",
-                    profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getInfo().getShopId() : "",
-                    profileData.getUserShopInfo() != null ? profileData.getUserShopInfo().getStats().getShopItemSold() : "0",
-                    profileData.getTopadsDeposit() != null ? profileData.getTopadsDeposit().getTopadsAmount() + "" : "",
-                    profileData.getPaymentAdminProfile() != null ? profileData.getPaymentAdminProfile().getLastPurchaseDate() : "",
-                    profileData.getProfile().getGender() != null ? profileData.getProfile().getGender() : "0",
-                    profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() != null ? profileData.getPaymentAdminProfile().getIsPurchasedMarketplace() : false);
-            //update on the basis of moengage flag
-            if (!TextUtils.isEmpty(userSessionInterface.getDeviceId()))
-                MoengageInteractor.INSTANCE.refreshToken(userSessionInterface.getDeviceId());
-        }
+
     }
 
     public static void clickOpenShopFree() {

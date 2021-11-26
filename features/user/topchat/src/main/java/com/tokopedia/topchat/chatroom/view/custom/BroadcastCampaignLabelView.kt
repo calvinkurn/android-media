@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel
-import com.tokopedia.chat_common.data.ImageAnnouncementViewModel.CampaignStatus
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
+import com.tokopedia.chat_common.data.ImageAnnouncementUiModel.CampaignStatus
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topchat.R
@@ -54,7 +54,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         startDateText = findViewById(R.id.tp_broadcast_start_date)
     }
 
-    fun renderState(banner: ImageAnnouncementViewModel) {
+    fun renderState(banner: ImageAnnouncementUiModel) {
         if (banner.eligibleToRenderCampaignLabel()) {
             show()
             bindDescText(banner)
@@ -73,7 +73,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         countdown?.onFinish = null
     }
 
-    private fun bindDescText(banner: ImageAnnouncementViewModel) {
+    private fun bindDescText(banner: ImageAnnouncementUiModel) {
         val description = when (banner.statusCampaign) {
             CampaignStatus.ENDED -> banner.finishedDescription
             else -> banner.campaignLabel
@@ -81,7 +81,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         desc?.text = description
     }
 
-    private fun bindDescWeight(banner: ImageAnnouncementViewModel) {
+    private fun bindDescWeight(banner: ImageAnnouncementUiModel) {
         val weightType = when (banner.statusCampaign) {
             CampaignStatus.STARTED,
             CampaignStatus.ON_GOING -> Typography.BOLD
@@ -91,7 +91,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         desc?.setWeight(weightType)
     }
 
-    private fun bindDescColor(banner: ImageAnnouncementViewModel) {
+    private fun bindDescColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when (banner.statusCampaign) {
             CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
             else -> com.tokopedia.unifyprinciples.R.color.Unify_N0
@@ -100,7 +100,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         desc?.setTextColor(color)
     }
 
-    private fun bindLabelBackgroundColor(banner: ImageAnnouncementViewModel) {
+    private fun bindLabelBackgroundColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when {
             banner.hasEndedCampaign() -> com.tokopedia.unifyprinciples.R.color.Unify_T200
             banner.isHideBanner -> R.drawable.bg_chat_broadcast_campaign_label_without_banner
@@ -109,7 +109,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         setBackgroundResource(colorRes)
     }
 
-    private fun bindStartDate(banner: ImageAnnouncementViewModel) {
+    private fun bindStartDate(banner: ImageAnnouncementUiModel) {
         if (banner.hasStartedCampaign()) {
             showStartDate()
             startDateText?.text = banner.startDateFormatted
@@ -118,7 +118,7 @@ class BroadcastCampaignLabelView : LinearLayout {
         }
     }
 
-    private fun bindCountDown(banner: ImageAnnouncementViewModel) {
+    private fun bindCountDown(banner: ImageAnnouncementUiModel) {
         if (banner.hasOngoingCampaign()) {
             countdown?.show()
             val calendar = Calendar.getInstance().apply {

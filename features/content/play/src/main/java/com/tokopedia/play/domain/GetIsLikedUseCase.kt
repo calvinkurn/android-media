@@ -22,7 +22,7 @@ class GetIsLikeUseCase @Inject constructor(
     override suspend fun executeOnBackground(): Boolean {
         val gqlRequest = GraphqlRequest(GetIsLikeUseCaseQuery.GQL_QUERY, IsLikedContent.Response::class.java, params)
 
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val error = gqlResponse.getError(IsLikedContent.Response::class.java)
         if (error != null) return false

@@ -1,22 +1,15 @@
 package com.tokopedia.vouchergame.detail.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.topupbills.data.product.CatalogData
-import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
-import com.tokopedia.common.topupbills.data.product.CatalogProduct
-import com.tokopedia.common.topupbills.data.product.CatalogProductData
-import com.tokopedia.common.topupbills.data.product.CatalogProductInput
+import com.tokopedia.common.topupbills.data.product.*
 import com.tokopedia.common.topupbills.usecase.RechargeCatalogProductInputUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
-import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
-import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel.Companion.VOUCHER_NOT_FOUND_ERROR
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
@@ -75,7 +68,7 @@ class VoucherGameDetailViewModelTest {
         val catalogData = CatalogData.Response(CatalogData(
                 enquiryFields = listOf(CatalogProductInput("1",
                         dataCollections = listOf(CatalogProductInput.DataCollection(name = "name")),
-                        validations = listOf(CatalogProductInput.Validation(1)))),
+                        validations = listOf(CatalogProductInput.Validation("1")))),
                 product = CatalogProductData("data", dataCollections = dataCollection)
         ))
 
@@ -94,7 +87,7 @@ class VoucherGameDetailViewModelTest {
         assert(response.enquiryFields[0].dataCollections.isNotEmpty())
         assertEquals(response.enquiryFields[0].dataCollections[0].name, "name")
         assert(response.enquiryFields[0].validations.isNotEmpty())
-        assertEquals(response.enquiryFields[0].validations[0].id, 1)
+        assertEquals(response.enquiryFields[0].validations[0].id, "1")
 
         // Products
         assertEquals(response.product.name, "data")
@@ -130,8 +123,8 @@ class VoucherGameDetailViewModelTest {
     fun getVoucherGameOperators_Success() {
         // given
         val attributes = CatalogOperatorAttributes(name = "vouchergame1")
-        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = 1, attributes = attributes),
-                VoucherGameOperator(id = 3)))
+        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = "1", attributes = attributes),
+                VoucherGameOperator(id = "3")))
         coEvery {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
         } returns Success(useCaseResultSuccess)
@@ -144,7 +137,7 @@ class VoucherGameDetailViewModelTest {
         val actualData = voucherGameDetailViewModel.voucherGameOperatorDetails.value
         assert(actualData is Success)
         val response = actualData as Success
-        assert(response.data.id == 1)
+        assert(response.data.id == "1")
         assert(response.data.attributes.name == "vouchergame1")
     }
 
@@ -152,8 +145,8 @@ class VoucherGameDetailViewModelTest {
     fun getVoucherGameOperators_FailToFindCertainId() {
         // given
         val attributes = CatalogOperatorAttributes(name = "vouchergame1")
-        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = 1, attributes = attributes),
-                VoucherGameOperator(id = 3)))
+        val useCaseResultSuccess = VoucherGameListData(operators = listOf(VoucherGameOperator(id = "1", attributes = attributes),
+                VoucherGameOperator(id = "3")))
         coEvery {
             voucherGameListUseCase.getVoucherGameOperators(any(), any(), any(), any())
         } returns Success(useCaseResultSuccess)

@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
@@ -19,8 +21,8 @@ class ShopSecondaryInfoAdapter(
     typeFactory: ShopSecondaryInfoAdapterTypeFactory,
     val context: Context
 ) : BaseListAdapter<Visitable<ShopSecondaryInfoAdapterFactory>, ShopSecondaryInfoAdapterTypeFactory>(
-        typeFactory
-    ) {
+    typeFactory
+) {
 
     companion object {
         private const val START_INDEX = 0
@@ -73,7 +75,7 @@ class ShopSecondaryInfoAdapter(
     }
 
     fun setFreeShippingData(state: SettingResponseState<Pair<Boolean, String>>) {
-        when(state) {
+        when (state) {
             is SettingResponseState.SettingSuccess -> setFreeShippingSuccess(state)
             is SettingResponseState.SettingError -> setFreeShippingError(state.throwable)
             else -> setFreeShippingLoading()
@@ -86,7 +88,9 @@ class ShopSecondaryInfoAdapter(
             indexOfFirst { it is FreeShippingWidgetUiModel }.let { index ->
                 when {
                     index >= START_INDEX && isActive -> {
-                        this[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingSuccess(freeShippingUrl))
+                        this[index] = FreeShippingWidgetUiModel(
+                            SettingResponseState.SettingSuccess(freeShippingUrl)
+                        )
                         notifyItemChanged(index)
                     }
                     index >= START_INDEX && !isActive -> {
@@ -94,7 +98,13 @@ class ShopSecondaryInfoAdapter(
                         notifyItemRemoved(index)
                     }
                     isActive -> {
-                        addElement(FreeShippingWidgetUiModel(SettingResponseState.SettingSuccess(freeShippingUrl)))
+                        addElement(
+                            FreeShippingWidgetUiModel(
+                                SettingResponseState.SettingSuccess(
+                                    freeShippingUrl
+                                )
+                            )
+                        )
                         notifyItemInserted(lastIndex)
                     }
                 }
@@ -105,10 +115,17 @@ class ShopSecondaryInfoAdapter(
     private fun setFreeShippingError(throwable: Throwable) {
         visitables?.indexOfFirst { it is FreeShippingWidgetUiModel }?.let { index ->
             if (index >= START_INDEX) {
-                visitables[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingError(throwable))
+                visitables[index] =
+                    FreeShippingWidgetUiModel(SettingResponseState.SettingError(throwable))
                 notifyItemChanged(index)
             } else {
-                visitables?.add(FreeShippingWidgetUiModel(SettingResponseState.SettingError(throwable)))
+                visitables?.add(
+                    FreeShippingWidgetUiModel(
+                        SettingResponseState.SettingError(
+                            throwable
+                        )
+                    )
+                )
                 notifyItemInserted(lastIndex)
             }
         }
@@ -194,8 +211,15 @@ class ShopSecondaryInfoAdapter(
             }
         val rmTransactionIndex = shopStatusIndex + 1
         if (visitables?.get(rmTransactionIndex) is RMTransactionWidgetUiModel) {
-            visitables[rmTransactionIndex] = rmTransactionWidget
-            notifyItemChanged(rmTransactionIndex)
+            val totalTransaction =
+                (rmTransactionWidget.state as? SettingResponseState.SettingSuccess)?.data?.totalTransaction.orZero()
+            if (totalTransaction > Constant.ShopStatus.THRESHOLD_TRANSACTION) {
+                visitables.removeAt(rmTransactionIndex)
+                notifyItemRemoved(rmTransactionIndex)
+            } else {
+                visitables[rmTransactionIndex] = rmTransactionWidget
+                notifyItemChanged(rmTransactionIndex)
+            }
         } else {
             visitables?.add(rmTransactionIndex, rmTransactionWidget)
             notifyItemInserted(rmTransactionIndex)

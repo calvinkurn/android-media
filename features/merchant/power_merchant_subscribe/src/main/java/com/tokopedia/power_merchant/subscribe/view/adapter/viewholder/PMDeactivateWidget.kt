@@ -3,8 +3,9 @@ package com.tokopedia.power_merchant.subscribe.view.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.databinding.WidgetPmDeactivateWidgetBinding
 import com.tokopedia.power_merchant.subscribe.view.model.WidgetPMDeactivateUiModel
-import kotlinx.android.synthetic.main.widget_pm_deactivate_widget.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created By @ilhamsuaib on 19/03/21
@@ -19,8 +20,10 @@ class PMDeactivateWidget(
         val RES_LAYOUT = R.layout.widget_pm_deactivate_widget
     }
 
+    private val binding: WidgetPmDeactivateWidgetBinding? by viewBinding()
+
     override fun bind(element: WidgetPMDeactivateUiModel) {
-        itemView.tvPmDeactivateCta.setOnClickListener {
+        binding?.tvPmDeactivateCta?.setOnClickListener {
             listener.setOnDeactivatePMClickListener()
         }
     }

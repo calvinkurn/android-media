@@ -20,7 +20,7 @@ class VoucherPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     }
 
     private fun bindVoucherView(model: SendableVoucherPreview) {
-        val voucherModel = MerchantVoucherViewModel(model.voucherViewModel)
+        val voucherModel = MerchantVoucherViewModel(model.voucher)
         itemView.voucher?.setData(voucherModel, false)
     }
 

@@ -62,15 +62,11 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                         btnSave.isEnabled = true
                         if(fromDetail)
                            min_suggested_bid.visibility = View.VISIBLE
+                        checkResultIsMultipleOfFifty(result)
                     }
                     result > maxBid.toDouble() -> {
                         min_suggested_bid.visibility = View.GONE
                         setMessageErrorField(getString(R.string.max_bid_error_new), maxBid, true)
-                    }
-
-                    result % 50 != 0 -> {
-                        min_suggested_bid.visibility = View.GONE
-                        setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
                     }
 
                     else -> {
@@ -78,10 +74,18 @@ class TopAdsEditKeywordBidSheet : BottomSheetUnify() {
                         budget.setError(false)
                         budget.setMessage("")
                         btnSave.isEnabled = true
+                        checkResultIsMultipleOfFifty(result)
                     }
                 }
             }
         })
+    }
+
+    private fun checkResultIsMultipleOfFifty(result: Int) {
+        if(result % 50 != 0) {
+            min_suggested_bid.visibility = View.GONE
+            setMessageErrorField(getString(R.string.topads_common_error_multiple_50), "50", true)
+        }
     }
 
     private fun sendAnalyticsData() {

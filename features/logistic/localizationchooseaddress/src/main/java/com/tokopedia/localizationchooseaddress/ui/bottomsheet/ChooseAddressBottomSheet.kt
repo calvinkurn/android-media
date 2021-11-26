@@ -177,12 +177,10 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
             }
             REQUEST_CODE_GET_DISTRICT_RECOM -> {
                 val discomModel = data?.getParcelableExtra<DistrictRecommendationAddress>(DISTRICT_RECOMMENDATION_ADDRESS)
-                val latitude = data?.getDoubleExtra(LATITUDE, 0.0)
-                val longitude = data?.getDoubleExtra(LONGITUDE, 0.0)
                 if (discomModel != null) {
                     val param = StateChooseAddressParam(
                         ADDRESS_STATUS_FROM_DISCOM, null, "", "",
-                        latitude.toString(), longitude.toString(), discomModel.districtId, "",
+                        "", "", discomModel.districtId, "",
                         isSupportWarehouseLoc
                     )
                     viewModel.setStateChosenAddress(param)
@@ -195,9 +193,9 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
                 val isFromANA = data?.getBooleanExtra(EXTRA_IS_FROM_ANA, false)
                 if (recipientAddress != null && isFromANA == false) {
                     val param = StateChooseAddressParam(
-                        recipientAddress.addressStatus, recipientAddress.id.toInt(), recipientAddress.recipientName,
+                        recipientAddress.addressStatus, recipientAddress.id.toLong(), recipientAddress.recipientName,
                         recipientAddress.addressName, recipientAddress.latitude, recipientAddress.longitude,
-                        recipientAddress.destinationDistrictId.toInt(), recipientAddress.postalCode,
+                        recipientAddress.destinationDistrictId.toLong(), recipientAddress.postalCode,
                         isSupportWarehouseLoc
                     )
                     viewModel.setStateChosenAddress(param)
@@ -530,8 +528,8 @@ class ChooseAddressBottomSheet : BottomSheetUnify(), HasComponent<ChooseAddressC
     override fun onItemClicked(address: ChosenAddressList) {
         isCardAddressClicked = true
         val param = StateChooseAddressParam(
-            address.status, address.addressId.toInt(), address.receiverName, address.addressname,
-            address.latitude, address.longitude, address.districtId.toInt(), address.postalCode,
+            address.status, address.addressId.toLong(), address.receiverName, address.addressname,
+            address.latitude, address.longitude, address.districtId.toLong(), address.postalCode,
             isSupportWarehouseLoc
         )
         viewModel.setStateChosenAddress(param)

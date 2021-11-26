@@ -22,12 +22,12 @@ class GetPMShopInfoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): PMShopInfoUiModel {
         val gqlRequest = GraphqlRequest(QUERY, GMShopInfoResponse::class.java, params.parameters)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors: List<GraphqlError>? = gqlResponse.getError(GMShopInfoResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val response = gqlResponse.getData<GMShopInfoResponse>()
-            return mapper.mapRemoteModelToUiModel(response.goldGetPMShopInfo)
+            return mapper.mapRemoteModelToUiModel(response.goldGetPMShopInfo, response.shopInfoByID)
         } else {
             throw MessageErrorException(errors.joinToString(" - ") { it.message })
         }
@@ -58,6 +58,21 @@ class GetPMShopInfoUseCase @Inject constructor(
               niv_one_month
               niv_pm_pro_threshold
             }
+            shopInfoByID(input: {
+                shopIDs: [${'$'}shop_id]
+                fields: ["create_info"]
+                domain: ""
+                source: "sellerapp"
+            }) {
+                result{
+                  createInfo{
+                    shopCreated
+                  }
+                }
+                error{
+                  message
+                }
+              }
           }
         """.trimIndent()
 

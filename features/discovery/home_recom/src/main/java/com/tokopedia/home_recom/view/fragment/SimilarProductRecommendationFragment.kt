@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -25,12 +26,17 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.model.entity.ProductDetailData
 import com.tokopedia.home_recom.util.*
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_PRODUCT_ID
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_REF
+import com.tokopedia.home_recom.util.RecomPageConstant.SAVED_SOURCE
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.SimilarProductRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.viewholder.RecommendationEmptyViewHolder
@@ -40,11 +46,13 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 /**
@@ -71,14 +79,12 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     private var productId: String = ""
     private var internalRef: String = ""
     private var hasNextPage: Boolean = true
+    private var navToolbar: NavToolbar? = null
 
     companion object{
         private const val SPAN_COUNT = 2
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
-        private const val SAVED_PRODUCT_ID = "saved_product_id"
-        private const val SAVED_REF = "saved_ref"
-        private const val SAVED_SOURCE = "saved_source"
         private const val REQUEST_FROM_PDP = 399
 
         @SuppressLint("SyntheticAccessor")
@@ -93,9 +99,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.run{
-            (this as AppCompatActivity).supportActionBar?.title = getString(R.string.recom_similar_recommendation)
-        }
+        setupToolbar()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
@@ -104,7 +108,9 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
+        val view = inflater.inflate(R.layout.fragment_simillar_recommendation, container, false)
+        navToolbar = view.findViewById(R.id.navToolbar)
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -183,6 +189,24 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         }
         RecommendationPageTracking.sendScreenSimilarProductRecommendationPage("/rekomendasi/d", ref, productId)
     }
+    private fun setupToolbar() {
+        activity?.let {
+            (it as? HomeRecommendationActivity)?.findViewById<Toolbar>(R.id.recom_toolbar)?.gone()
+            (it as? AppCompatActivity)?.supportActionBar?.hide()
+        }
+        navToolbar?.let {
+            it.setShowShadowEnabled(true)
+            navToolbar?.setToolbarTitle(getString(R.string.recom_similar_recommendation))
+            activity?.let { actv ->
+                it.setupToolbarWithStatusBar(
+                    activity = actv,
+                    applyPadding = false,
+                    applyPaddingNegative = true
+                )
+            }
+            it.setOnBackButtonClickListener { (activity as HomeRecommendationActivity).onBackPressed() }
+        }
+    }
 
     private fun setupBackToTop(view: View){
         view.recom_back_to_top?.circleMainMenu?.setOnClickListener {
@@ -206,9 +230,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                             val recommendationItems = pair.first
                             if (recommendationItems.isNotEmpty()) {
                                 recommendationItems.getOrNull(0)?.let {
-                                    activity?.run {
-                                        (this as AppCompatActivity).supportActionBar?.title = if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation)
-                                    }
+                                    navToolbar?.setToolbarTitle(if (it.header.isNotEmpty()) it.header else getString(R.string.recom_similar_recommendation))
                                 }
                                 hasNextPage = pair.second
                                 renderList(mapDataModel(recommendationItems), pair.second)
@@ -348,13 +370,17 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         activity?.finish()
     }
 
-    private fun setRecommendationFilterAndSort(filters: List<SortFilterItem>, dynamicFilterModel: DynamicFilterModel){
+    override fun onShowSnackbarError(throwable: Throwable) {
+        showToastError(throwable)
+    }
+
+    private fun setRecommendationFilterAndSort(filters: List<SortFilterItem>, dynamicFilterModel: DynamicFilterModel) {
         sortFilterView?.let { sortFilterView ->
-            if(dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()){
+            if (dynamicFilterModel.data.filter.isEmpty() && dynamicFilterModel.data.sort.isEmpty()) {
                 sortFilterView.sortFilterPrefix.hide()
                 sortFilterView.hide()
             } else {
-                if(!sortFilterView.isVisible){
+                if (!sortFilterView.isVisible) {
                     sortFilterView.resetAllFilters()
                     sortFilterView.show()
                     sortFilterView.sortFilterPrefix.show()

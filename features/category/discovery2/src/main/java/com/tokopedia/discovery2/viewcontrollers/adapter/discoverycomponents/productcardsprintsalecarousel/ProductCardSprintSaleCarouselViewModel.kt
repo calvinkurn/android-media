@@ -31,6 +31,7 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
         productCarouselComponentData.value = components
         components.getComponentsItem()?.let {
             productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?

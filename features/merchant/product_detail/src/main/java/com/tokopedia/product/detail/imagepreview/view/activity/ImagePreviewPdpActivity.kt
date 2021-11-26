@@ -18,6 +18,7 @@ import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.databinding.ActivityImagePreviewPdpBinding
 import com.tokopedia.product.detail.imagepreview.data.ImagePreviewTracking
 import com.tokopedia.product.detail.imagepreview.di.DaggerImagePreviewPdpComponent
 import com.tokopedia.product.detail.imagepreview.view.listener.ImagePreviewPdpView
@@ -25,7 +26,6 @@ import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpV
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.activity_image_preview_pdp.*
 import java.util.*
 import javax.inject.Inject
 
@@ -54,12 +54,15 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     private var isWishlisted: Boolean = false
     private var shopId: String = ""
 
+    private var binding: ActivityImagePreviewPdpBinding? = null
+
     override fun layoutId(): Int {
         return R.layout.activity_image_preview_pdp
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityImagePreviewPdpBinding.bind(findViewById(R.id.imagePreviewPdpContainer))
 
         val extraData = intent?.extras
         if (extraData != null) {
@@ -84,30 +87,30 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
         findViewById<Button>(com.tokopedia.imagepreview.R.id.ivDownload)?.hide()
 
         if (viewModel.isShopOwner(shopId)) {
-            btnAddToWishlist?.hide()
+            binding?.btnAddToWishlist?.hide()
             return
         }
 
         val isCanShowing = remoteConfig.getBoolean(KEY_WISHLIST_BUTTON, false)
         if (isCanShowing) {
-            btnAddToWishlist?.show()
+            binding?.btnAddToWishlist?.show()
         } else {
-            btnAddToWishlist?.hide()
+            binding?.btnAddToWishlist?.hide()
         }
 
         if (userSession.isLoggedIn) {
             if (isWishlisted) {
-                btnAddToWishlist?.text = resources.getString(R.string.image_preview_remove_wishlist)
+                binding?.btnAddToWishlist?.text = resources.getString(R.string.image_preview_remove_wishlist)
             } else {
-                btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
+                binding?.btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
             }
         } else {
-            btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
+            binding?.btnAddToWishlist?.text = resources.getString(R.string.image_preview_add_wishlist)
         }
     }
 
     private fun initListener() {
-        btnAddToWishlist?.setOnClickListener {
+        binding?.btnAddToWishlist?.setOnClickListener {
             if (userSession.isLoggedIn) {
                 if (isWishlisted) {
                     removeWishlist()
@@ -204,11 +207,11 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     }
 
     override fun showLoading() {
-        progressBar?.show()
+        binding?.progressBar?.show()
     }
 
     override fun hideLoading() {
-        progressBar?.hide()
+        binding?.progressBar?.hide()
     }
 
     override fun onSuccessAddWishlist() {

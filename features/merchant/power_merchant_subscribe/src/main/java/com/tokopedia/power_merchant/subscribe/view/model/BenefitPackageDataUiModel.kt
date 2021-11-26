@@ -16,6 +16,7 @@ data class BenefitPackageGradeUiModel(
     val iconBenefitUrl: String = "",
     val descBenefit: String = "",
     val backgroundUrl: String = "",
+    val isDowngrade: Boolean = false,
     val benefitItemList: List<BenefitItem> = emptyList()
 )
 

@@ -1,0 +1,94 @@
+[
+  {
+    "data": {
+      "get_all_profiles_occ": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "messages": [],
+          "tickers": [],
+          "success": 1,
+          "max_profile": 5,
+          "profiles": [
+            {
+              "profile_id": 1,
+              "status": 1,
+              "enable": true,
+              "address": {
+                "address_id": 1,
+                "receiver_name": "User 1",
+                "address_name": "Address 1",
+                "address_street": "Address Street 1",
+                "district_id": 1,
+                "district_name": "District 1",
+                "city_id": 1,
+                "city_name": "City 1",
+                "province_id": 1,
+                "province_name": "Province 1",
+                "phone": "1",
+                "longitude": "1",
+                "latitude": "1",
+                "geolocation": "1,1",
+                "postal_code": "1"
+              },
+              "payment": {
+                "enable": 1,
+                "active": 1,
+                "gateway_code": "PAYMENT1",
+                "gateway_name": "Payment 1",
+                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
+                "description": "Payment Desc 1",
+                "url": "",
+                "metadata": "{}"
+              },
+              "shipment": {
+                "service_id": 1,
+                "service_duration": "Durasi 1",
+                "service_name": "Service 1",
+                "estimation": "Estimasi tiba besok"
+              }
+            },
+            {
+              "profile_id": 2,
+              "status": 2,
+              "enable": true,
+              "address": {
+                "address_id": 2,
+                "receiver_name": "User 1",
+                "address_name": "Address 2",
+                "address_street": "Address Street 2",
+                "district_id": 2,
+                "district_name": "District 2",
+                "city_id": 2,
+                "city_name": "City 2",
+                "province_id": 2,
+                "province_name": "Province 2",
+                "phone": "2",
+                "longitude": "2",
+                "latitude": "2",
+                "geolocation": "2,2",
+                "postal_code": "2"
+              },
+              "payment": {
+                "enable": 1,
+                "active": 1,
+                "gateway_code": "PAYMENT2",
+                "gateway_name": "Payment 2",
+                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/alfamart.png",
+                "description": "",
+                "url": "",
+                "metadata": ""
+              },
+              "shipment": {
+                "service_id": 2,
+                "service_duration": "Durasi (2)",
+                "service_name": "Service 2",
+                "estimation": "Estimasi tiba besok - 3 Feb"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+]

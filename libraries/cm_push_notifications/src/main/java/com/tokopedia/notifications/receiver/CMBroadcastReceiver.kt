@@ -355,18 +355,14 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 it.type?.let { type ->
                     if (type == ADD_TO_CART) { // internal ATC
                         handleAddToCartProduct(notificationData, it.addToCart)
+                        sendElementClickPushEvent(context, notificationData, it.element_id)
                     } else if (it.type == ATC || it.type == OCC) { // external appLink
                         handleProductPurchaseClick(context, notificationData, this)
+                    } else { // applink handler for action button
+                        startActivity(context, it.appLink, intent)
+                        sendElementClickPushEvent(context, notificationData, it.element_id)
                     }
                 }
-
-                // applink handler for action button
-                startActivity(context, it.appLink, intent)
-                sendElementClickPushEvent(
-                        context,
-                        notificationData,
-                        it.element_id
-                )
             }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)

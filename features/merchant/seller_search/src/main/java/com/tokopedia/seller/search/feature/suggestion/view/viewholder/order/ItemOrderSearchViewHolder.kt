@@ -8,9 +8,10 @@ import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.CUSTOMER
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.INV
 import com.tokopedia.seller.search.common.GlobalSearchSellerConstant.SHIPPING
 import com.tokopedia.seller.search.common.util.bindTitleText
+import com.tokopedia.seller.search.databinding.ItemSearchResultOrderBinding
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.OrderSearchListener
 import com.tokopedia.seller.search.feature.suggestion.view.model.sellersearch.OrderSellerSearchUiModel
-import kotlinx.android.synthetic.main.item_search_result_order.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemOrderSearchViewHolder(
     itemViewOrder: View,
@@ -21,38 +22,40 @@ class ItemOrderSearchViewHolder(
         val LAYOUT = R.layout.item_search_result_order
     }
 
+    private val binding: ItemSearchResultOrderBinding? by viewBinding()
+
     override fun bind(element: OrderSellerSearchUiModel) {
-        with(itemView) {
+        binding?.run {
             if (element.imageUrl?.isBlank() == true) {
                 when (element.id) {
                     INV, SHIPPING -> {
-                        ivSearchResultOrder?.setImageDrawable(
+                        ivSearchResultOrder.setImageDrawable(
                             ContextCompat.getDrawable(
-                                context,
+                                root.context,
                                 R.drawable.ic_invoice_seller_search
                             )
                         )
                     }
                     CUSTOMER -> {
-                        ivSearchResultOrder?.setImageDrawable(
+                        ivSearchResultOrder.setImageDrawable(
                             ContextCompat.getDrawable(
-                                context,
+                                root.context,
                                 R.drawable.ic_buyers
                             )
                         )
                     }
                 }
             } else {
-                ivSearchResultOrder?.setImageUrl(element.imageUrl.orEmpty())
+                ivSearchResultOrder.setImageUrl(element.imageUrl.orEmpty())
             }
 
-            tvSearchResultOrderTitle?.bindTitleText(
+            tvSearchResultOrderTitle.bindTitleText(
                 element.title.orEmpty(),
                 element.keyword.orEmpty()
             )
-            tvSearchResultOrderDesc?.text = element.desc
+            tvSearchResultOrderDesc.text = element.desc
 
-            setOnClickListener {
+            root.setOnClickListener {
                 orderSearchListener.onOrderItemClicked(element, adapterPosition)
             }
         }

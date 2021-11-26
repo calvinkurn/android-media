@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeNplCampaignTncBottomSheetViewModel
+import com.tokopedia.shop.home.view.viewmodel.OldShopHomeViewModel
+import com.tokopedia.shop.home.view.viewmodel.ShopHomeFlashSaleTncBottomSheetViewModel
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import dagger.Binds
 import dagger.Module
@@ -20,6 +22,11 @@ abstract class ShopPageHomeViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(OldShopHomeViewModel::class)
+    internal abstract fun oldShopPageHomeViewModel(viewModel: OldShopHomeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ViewModelKey(ShopHomeViewModel::class)
     internal abstract fun shopPageHomeViewModel(viewModel: ShopHomeViewModel): ViewModel
 
@@ -28,4 +35,8 @@ abstract class ShopPageHomeViewModelModule {
     @ViewModelKey(ShopHomeNplCampaignTncBottomSheetViewModel::class)
     internal abstract fun shopHomeNplCampaignTncBottomSheetViewModel(viewModel: ShopHomeNplCampaignTncBottomSheetViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(ShopHomeFlashSaleTncBottomSheetViewModel::class)
+    internal abstract fun shopFlashSaleTncBottomSheetViewModel(viewModel: ShopHomeFlashSaleTncBottomSheetViewModel): ViewModel
 }

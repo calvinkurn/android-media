@@ -72,6 +72,6 @@ data class AvailableButton(
         val onboardingMessage: String = ""
 ) {
     fun isCartTypeDisabledOrRemindMe(): Boolean {
-        return cartType == ProductDetailCommonConstant.KEY_BUTTON_DISABLE || cartType == ProductDetailCommonConstant.KEY_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST
+        return cartType == ProductDetailCommonConstant.KEY_DEFAULT_OOS || cartType == ProductDetailCommonConstant.KEY_REMIND_ME || cartType == ProductDetailCommonConstant.KEY_CHECK_WISHLIST
     }
 }

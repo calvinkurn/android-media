@@ -134,7 +134,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
                 ::singleItemDelete, ::statusChange, ::editGroup, ::onGroupClicked))
     }
 
-    private fun editGroup(groupId: Int) {
+    private fun editGroup(groupId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_EDIT)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 0)
             putExtra(ParamObject.GROUP_ID, groupId.toString())
@@ -236,7 +236,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         }
     }
 
-    private fun onGroupClicked(id: Int, priceSpent: String) {
+    private fun onGroupClicked(id: String, priceSpent: String) {
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendHeadlineAdsEvent(CLICK_GRUP_CARD, "{${userSession.shopId}} - {$id}", userSession.userId)
         val intent = Intent(context, TopAdsHeadlineAdDetailViewActivity::class.java)
         intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)

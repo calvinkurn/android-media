@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsAddTelcoViewModel
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import dagger.Binds
 import dagger.Module
@@ -19,5 +20,10 @@ abstract class SmartBillsViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SmartBillsViewModel::class)
-    internal abstract fun rechargeCCViewModel(customViewModel: SmartBillsViewModel): ViewModel
+    internal abstract fun smartBillsViewModel(customViewModel: SmartBillsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SmartBillsAddTelcoViewModel::class)
+    internal abstract fun smartBillsAdd(customViewModel: SmartBillsAddTelcoViewModel): ViewModel
 }

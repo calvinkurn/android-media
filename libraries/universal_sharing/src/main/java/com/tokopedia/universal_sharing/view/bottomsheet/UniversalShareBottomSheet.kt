@@ -32,6 +32,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -84,6 +85,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
         const val CUSTOM_SHARE_SHEET = 1
         const val SCREENSHOT_SHARE_SHEET = 2
+        const val PREVIEW_IMG_SCREENSHOT_HEIGHT = 600
+        const val PREVIEW_IMG_SCREENSHOT_WIDTH = 1080
+        const val THUMBNAIL_IMG_SCREENSHOT_HEIGHT = 200
+        const val THUMBNAIL_IMG_SCREENSHOT_WIDTH = 360
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -423,13 +428,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }else{
             socialMediaList.add(ShareModel.Instagram().apply {
                 packageName = PACKAGE_NAME_INSTAGRAM
-                socialMediaName = context?.resources?.getString(R.string.label_instagram_msg)
+                socialMediaName = context?.resources?.getString(R.string.label_instagram_dm)
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelIgMessage
                 shareOnlyLink = false
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram_dm) }
             })
         }
         socialMediaList.add(ShareModel.Line().apply {
@@ -573,7 +578,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun setUserVisualData(){
         thumbNailTitleTxTv?.text = thumbNailTitle
         if(isImageOnlySharing){
-            thumbNailImage?.setImageURI(Uri.parse(File(thumbNailImageUrl).toString()))
+            context?.let { thumbNailImage?.let { imgView ->
+                Glide.with(it).load(thumbNailImageUrl).override(THUMBNAIL_IMG_SCREENSHOT_WIDTH, THUMBNAIL_IMG_SCREENSHOT_HEIGHT).into(
+                    imgView
+                )
+            } }
         }
         else{
             thumbNailImage?.setImageUrl(thumbNailImageUrl)
@@ -583,7 +592,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
         else {
             previewImage?.visibility = View.VISIBLE
-            previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+            if(isImageOnlySharing){
+                context?.let { previewImage?.let { imgView ->
+                    Glide.with(it).load(previewImageUrl).override(PREVIEW_IMG_SCREENSHOT_WIDTH, PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
+                        imgView
+                    )
+                } }
+            }
+            else{
+                previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
+            }
         }
         if(imageOptionsList != null){
             imageListViewGroup?.visibility = View.VISIBLE

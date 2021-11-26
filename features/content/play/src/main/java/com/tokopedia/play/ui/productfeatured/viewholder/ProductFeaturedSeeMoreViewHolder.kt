@@ -1,7 +1,6 @@
 package com.tokopedia.play.ui.productfeatured.viewholder
 
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.R
 import com.tokopedia.play.view.custom.ProductIconView

@@ -15,20 +15,23 @@ import com.tokopedia.media.loader.loadImageWithTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
+import com.tokopedia.shop.score.databinding.ItemPromoCreationShopPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.model.SectionShopRecommendationUiModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.item_promo_creation_shop_performance.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 
 class ItemFeatureRecommendationAdapter(
-    private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener) :
-    RecyclerView.Adapter<ItemFeatureRecommendationAdapter.ItemFeatureRecommendationViewHolder>() {
+    private val itemRecommendationFeatureListener: ItemRecommendationFeatureListener
+) : RecyclerView.Adapter<ItemFeatureRecommendationAdapter.ItemFeatureRecommendationViewHolder>() {
 
     private val itemRecommendationList =
         mutableListOf<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>()
 
-    fun setItemRecommendationList(itemRecommendationList:
-                                  List<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>) {
+    fun setItemRecommendationList(
+        itemRecommendationList:
+        List<SectionShopRecommendationUiModel.ItemShopRecommendationUiModel>
+    ) {
         if (itemRecommendationList.isNullOrEmpty()) return
         this.itemRecommendationList.clear()
         this.itemRecommendationList.addAll(itemRecommendationList)
@@ -54,30 +57,32 @@ class ItemFeatureRecommendationAdapter(
 
     inner class ItemFeatureRecommendationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding: ItemPromoCreationShopPerformanceBinding? by viewBinding()
+
         fun bind(data: SectionShopRecommendationUiModel.ItemShopRecommendationUiModel) {
-            with(itemView) {
-                tvItemRecommendedTitle?.text = data.titleRecommendation
-                tvItemRecommendedDescription?.text = data.descRecommendation
+            binding?.run {
+                tvItemRecommendedTitle.text = data.titleRecommendation
+                tvItemRecommendedDescription.text = data.descRecommendation
 
-                ivRecommendedPromo?.loadImage(data.iconRecommendationUrl)
+                ivRecommendedPromo.loadImage(data.iconRecommendationUrl)
 
-                cardContent?.setBackgroundColor(
+                cardContent.setBackgroundColor(
                     ContextCompat.getColor(
-                        context,
+                        root.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_N0
                     )
                 )
 
-                loadImageWithTarget(context,
+                loadImageWithTarget(root.context,
                     ShopScoreConstant.IC_SQUIRCLE_RECOMMENDATION_URL,
                     {},
                     MediaTarget(
-                        findViewById<AppCompatImageView>(R.id.ivRecommendedPromo),
+                        root.findViewById<AppCompatImageView>(R.id.ivRecommendedPromo),
                         onReady = { recommendedPromoView, resourceBitmap ->
-                            val bitmapRecommended = BitmapDrawable(resources, resourceBitmap)
-                            if (context.isDarkMode()) {
+                            val bitmapRecommended = BitmapDrawable(root.resources, resourceBitmap)
+                            if (root.context.isDarkMode()) {
                                 val bgColorRecommendPromo = ContextCompat.getColor(
-                                    context,
+                                    root.context,
                                     com.tokopedia.unifyprinciples.R.color.Unify_N0
                                 )
                                 bitmapRecommended.colorFilter =
@@ -89,12 +94,12 @@ class ItemFeatureRecommendationAdapter(
                             recommendedPromoView.background = bitmapRecommended
                         },
                         onFailed = { _, _ ->
-                            ivRecommendedPromo?.hide()
+                            ivRecommendedPromo.hide()
                         }
                     ))
 
 
-                setOnClickListener {
+                root.setOnClickListener {
                     itemRecommendationFeatureListener.onItemClickedRecommendationFeature(
                         data.appLinkRecommendation,
                         data.identifier

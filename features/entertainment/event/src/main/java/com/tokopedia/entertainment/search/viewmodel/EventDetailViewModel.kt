@@ -156,7 +156,7 @@ class EventDetailViewModel(private val dispatcher: CoroutineDispatcher,
                     query,
                     EventDetailResponse.Data::class.java, mapOf(CATEGORYID to category, CITIES to cityID, PAGE to page))
             val cacheStrategy = GraphqlCacheStrategy.Builder(cacheType).build()
-            gqlRepository.getReseponse(listOf(req), cacheStrategy).getSuccessData<EventDetailResponse.Data>()
+            gqlRepository.response(listOf(req), cacheStrategy).getSuccessData<EventDetailResponse.Data>()
         }
     }
 }

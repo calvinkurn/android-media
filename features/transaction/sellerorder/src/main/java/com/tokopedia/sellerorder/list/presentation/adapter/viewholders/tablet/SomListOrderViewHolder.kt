@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
-import kotlinx.android.synthetic.main.item_som_list_order.view.*
 
 class SomListOrderViewHolder(
-        itemView: View?,
+        itemView: View,
         listener: SomListOrderItemListener
 ) : com.tokopedia.sellerorder.list.presentation.adapter.viewholders.SomListOrderViewHolder(itemView, listener) {
 
@@ -44,19 +42,21 @@ class SomListOrderViewHolder(
     }
 
     override fun setupOrderCard(element: SomListOrderUiModel) {
-        if ((listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
-            itemView.cardSomOrder?.animateFadeOut()
-        } else {
-            itemView.cardSomOrder?.animateFadeIn()
-        }
-        if (element.isOpen) {
-            itemView.somOrderListOpenIndicator?.show()
-        } else {
-            itemView.somOrderListOpenIndicator?.gone()
-        }
-        itemView.setOnClickListener {
-            if (listener.isMultiSelectEnabled()) touchCheckBox(element)
-            else listener.onOrderClicked(element)
+        binding?.run {
+            if ((listener.isMultiSelectEnabled() && element.cancelRequest != 0 && element.cancelRequestStatus != 0)) {
+                cardSomOrder.animateFadeOut()
+            } else {
+                cardSomOrder.animateFadeIn()
+            }
+            if (element.isOpen) {
+                somOrderListOpenIndicator?.show()
+            } else {
+                somOrderListOpenIndicator?.gone()
+            }
+            root.setOnClickListener {
+                if (listener.isMultiSelectEnabled()) touchCheckBox(element)
+                else listener.onOrderClicked(element)
+            }
         }
     }
 

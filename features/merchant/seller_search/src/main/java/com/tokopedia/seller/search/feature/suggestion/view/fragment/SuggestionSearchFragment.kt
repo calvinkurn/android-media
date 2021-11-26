@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -14,10 +13,10 @@ import com.tokopedia.seller.search.R
 import com.tokopedia.seller.search.common.plt.GlobalSearchSellerPerformanceMonitoringListener
 import com.tokopedia.seller.search.common.util.OnScrollListenerAutocomplete
 import com.tokopedia.seller.search.common.util.addWWWPrefix
+import com.tokopedia.seller.search.databinding.SuggestionSearchFragmentBinding
 import com.tokopedia.seller.search.feature.analytics.SellerSearchTracking
 import com.tokopedia.seller.search.feature.initialsearch.di.component.InitialSearchComponent
 import com.tokopedia.seller.search.feature.initialsearch.view.activity.InitialSellerSearchActivity
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.HighlightInitialSearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.viewholder.*
 import com.tokopedia.seller.search.feature.suggestion.view.adapter.SuggestionSearchAdapter
 import com.tokopedia.seller.search.feature.suggestion.view.adapter.SuggestionSearchAdapterTypeFactory
@@ -30,7 +29,7 @@ import com.tokopedia.seller.search.feature.suggestion.view.viewmodel.SuggestionS
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.suggestion_search_fragment.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class SuggestionSearchFragment : BaseDaggerFragment(),
@@ -42,6 +41,8 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val binding: SuggestionSearchFragmentBinding? by viewBinding()
 
     private val searchSellerAdapterTypeFactory by lazy {
         SuggestionSearchAdapterTypeFactory(this, this, this, this, this, this)
@@ -85,7 +86,6 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     override fun onDestroy() {
         viewModel.getSellerSearch.removeObservers(this)
         viewModel.insertSuccessSearch.removeObservers(this)
-        viewModel.flush()
         super.onDestroy()
     }
 
@@ -96,7 +96,7 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     }
 
     private fun observeLiveData() {
-        viewModel.getSellerSearch.observe(viewLifecycleOwner, Observer {
+        viewModel.getSellerSearch.observe(viewLifecycleOwner, {
             (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.startRenderPerformanceMonitoring()
             when (it) {
                 is Success -> {
@@ -106,7 +106,7 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
             }
         })
 
-        viewModel.insertSuccessSearch.observe(viewLifecycleOwner, Observer {
+        viewModel.insertSuccessSearch.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     dropKeyBoard()
@@ -139,10 +139,12 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     }
 
     private fun initRecyclerView(view: View) {
-        rvSearchSuggestionSeller?.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = suggestionSearchAdapter
-            addOnScrollListener(OnScrollListenerAutocomplete(view.context, view))
+        binding?.run {
+            rvSearchSuggestionSeller.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = suggestionSearchAdapter
+                addOnScrollListener(OnScrollListenerAutocomplete(view.context, view))
+            }
         }
     }
 
@@ -161,13 +163,15 @@ class SuggestionSearchFragment : BaseDaggerFragment(),
     }
 
     private fun stopSearchResultPagePerformanceMonitoring() {
-        rvSearchSuggestionSeller?.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
-                rvSearchSuggestionSeller?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-            }
-        })
+        binding?.run {
+            rvSearchSuggestionSeller.viewTreeObserver?.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    (activity as? GlobalSearchSellerPerformanceMonitoringListener)?.finishMonitoring()
+                    rvSearchSuggestionSeller.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
+        }
     }
 
     private fun dropKeyBoard() {

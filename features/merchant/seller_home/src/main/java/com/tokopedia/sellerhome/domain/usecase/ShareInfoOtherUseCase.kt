@@ -4,9 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sellerhome.domain.model.ShopShareOtherResponse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.mapper.OtherMenuShopShareMapper
+import com.tokopedia.sellerhome.domain.model.ShopShareOtherResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -52,7 +52,7 @@ class ShareInfoOtherUseCase @Inject constructor(
 
     suspend fun execute(shopId: String): OtherMenuShopShareData? {
         val requestParams = RequestParams.create().apply {
-            putInt(SHOP_ID_KEY, shopId.toIntOrZero())
+            putLong(SHOP_ID_KEY, shopId.toLongOrZero())
         }
 
         setRequestParams(requestParams.parameters)

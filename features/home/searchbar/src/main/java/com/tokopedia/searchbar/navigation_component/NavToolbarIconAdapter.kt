@@ -8,13 +8,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconnotification.IconNotification
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -27,9 +28,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon_animated.view.*
-import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
 internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
                                      private val topNavComponentListener: TopNavComponentListener)
@@ -161,7 +159,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         private const val ICON_NONE_COUNTER_PERCENTAGE_Y_POSITION = -0.25f
 
         private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1f
-        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.85f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.45f
     }
 
     override fun bind(iconToolbar: IconToolbar, themeState: Int) {
@@ -211,7 +209,8 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
                 NavToolbarTracking.clickNavToolbarComponent(
                         pageName = topNavComponentListener.getPageName(),
                         componentName = iconToolbar.name,
-                        userId = topNavComponentListener.getUserId()
+                        userId = topNavComponentListener.getUserId(),
+                        counter = iconToolbar.badgeCounter
                 )
             }
             iconToolbar.onIconClicked.invoke()
@@ -262,8 +261,8 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
 }
 
 internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_lottieav
-    val iconBadge = view.nav_icon_badge_lottieav
+    val iconImage = view.findViewById<LottieAnimationView>(R.id.nav_icon_lottieav)
+    val iconBadge = view.findViewById<TextView>(R.id.nav_icon_badge_lottieav)
     val context = itemView.context
 
     companion object {
@@ -310,8 +309,8 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
 }
 
 internal class AnimatedIconHolder(view: View, val topNavComponentListener: TopNavComponentListener) : IconHolder(view) {
-    val iconImage = view.nav_icon_idle
-    val iconAnimatedImage = view.nav_icon_view
+    val iconImage = view.findViewById<IconNotification>(R.id.nav_icon_idle)
+    val iconAnimatedImage = view.findViewById<View>(R.id.nav_icon_view)
     val context = itemView.context
 
     companion object {

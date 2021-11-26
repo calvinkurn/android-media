@@ -4,6 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.util.LoggingUtils
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play_common.domain.model.UpdateChannelResponse
 import com.tokopedia.play_common.domain.query.FieldsToUpdate
@@ -26,10 +28,18 @@ class UpdateChannelUseCase(private val graphqlRepository: GraphqlRepository) : U
                 UpdateChannelResponse::class.java,
                 mQueryParams.params
         )
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        val response = gqlResponse.getData<UpdateChannelResponse>(UpdateChannelResponse::class.java)
-        return response.updateChannel
+        val error = gqlResponse.getError(UpdateChannelResponse::class.java)
+        if (error == null || error.isEmpty()) {
+            val response = gqlResponse.getData<UpdateChannelResponse>(UpdateChannelResponse::class.java)
+            return response.updateChannel
+        } else {
+            val errorMessage = error.mapNotNull { it.message }.joinToString(separator = ", ")
+            LoggingUtils.logGqlErrorBackend("executeOnBackground", listOf(gqlRequest).toString()
+                ,errorMessage, gqlResponse.httpStatusCode.toString())
+            throw MessageErrorException(errorMessage, gqlResponse.httpStatusCode.toString())
+        }
     }
 
     fun setQueryParams(queryParams: QueryParams) {

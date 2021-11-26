@@ -11,6 +11,7 @@ import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.FeaturedBrandListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.FeaturedBrandAdapter
 import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -56,7 +57,7 @@ class FeaturedBrandViewHolder (itemView: View,
 
     private fun initRV() {
         recyclerView = itemView.findViewById(R.id.recycleList)
-        layoutManager = GridLayoutManager(itemView.context, itemView.context.resources.getInteger(R.integer.featured_brand_span_count))
+        layoutManager = GridLayoutManager(itemView.context, DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context))
         parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
         recyclerView.layoutManager = layoutManager
     }
@@ -67,15 +68,13 @@ class FeaturedBrandViewHolder (itemView: View,
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(
-                    itemView.context.resources.getInteger(R.integer.featured_brand_span_count),
-                    FEATURED_BRAND_SPACING, false))
+                GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), DynamicChannelTabletConfiguration.getSpacingSpaceFor2x2(itemView.context), false))
     }
 
     private fun setHeaderComponent(element: FeaturedBrandDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition)
+                featuredBrandListener?.onSeeAllClicked(element.channelModel, adapterPosition, link)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {

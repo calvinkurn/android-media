@@ -6,11 +6,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
+import com.tokopedia.shop.score.databinding.SectionFaqShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemFaqAdapter
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemFaqListener
 import com.tokopedia.shop.score.performance.presentation.adapter.SectionFaqListener
 import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
-import kotlinx.android.synthetic.main.section_faq_shop_score.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFaqListener) :
     AbstractViewHolder<SectionFaqUiModel>(view), ItemFaqListener {
@@ -21,21 +22,23 @@ class SectionFaqViewHolder(view: View, private val sectionFaqListener: SectionFa
 
     private var itemFaqAdapter: ItemFaqAdapter? = null
 
+    private val binding: SectionFaqShopScoreBinding? by viewBinding()
+
     override fun bind(element: SectionFaqUiModel?) {
-        with(itemView) {
+        binding?.run {
             itemFaqAdapter = ItemFaqAdapter(this@SectionFaqViewHolder)
 
-            tv_label_help_center.text =
+            tvLabelHelpCenter.text =
                 MethodChecker.fromHtml(getString(R.string.title_help_center_tokopedia))
 
-            rv_faq_shop_score?.apply {
+            rvFaqShopScore.run {
                 layoutManager = LinearLayoutManager(context)
                 adapter = itemFaqAdapter
                 isNestedScrollingEnabled = false
                 element?.itemFaqUiModelList?.let { itemFaqAdapter?.setItemFaqList(it) }
             }
 
-            tv_label_help_center?.setTextMakeHyperlink(getString(R.string.title_help_center_tokopedia)) {
+            tvLabelHelpCenter.setTextMakeHyperlink(getString(R.string.title_help_center_tokopedia)) {
                 sectionFaqListener.onHelpCenterClicked()
             }
 

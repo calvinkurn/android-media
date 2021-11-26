@@ -517,9 +517,9 @@ class AddEditProductDescriptionFragment:
 
     private fun observeIsHampersProduct() {
         descriptionViewModel.isHampersProduct.observe(viewLifecycleOwner) { isHampers ->
-            if (isHampers && RollenceUtil.getHampersRollence() && GlobalConfig.isSellerApp()) {
-                layoutDescriptionTips?.tvTipsText?.text = getString(R.string.label_gifting_description_tips)
-                layoutDescriptionTips?.setOnClickListener {
+            if (isHampers && GlobalConfig.isSellerApp()) {
+                layoutDescriptionTips.tvTipsText?.text = getString(R.string.label_gifting_description_tips)
+                layoutDescriptionTips.setOnClickListener {
                     showGiftingDescription()
                 }
             }

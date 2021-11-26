@@ -6,6 +6,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.LevelThreeCategory
 import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 
@@ -365,35 +366,13 @@ open class FilterController {
         return getActiveFilterMap() + nonFilterParameter
     }
 
-    fun getActiveFilterMap() : Map<String, String> {
-        val filterParameter = mutableMapOf<String, String>()
+    fun getActiveFilterMap() : Map<String, String> =
+        OptionHelper.toMap(
+            filterViewState.map(OptionHelper::generateOptionFromUniqueId)
+        )
 
-        for(optionUniqueId in filterViewState) {
-            val optionKey = OptionHelper.parseKeyFromUniqueId(optionUniqueId)
-            val currentOptionValue = filterParameter[optionKey] ?: ""
-            val addedOptionValue = OptionHelper.parseValueFromUniqueId(optionUniqueId)
-
-            if (currentOptionValue == addedOptionValue) continue
-
-            val optionSeparator = if (currentOptionValue.isNotEmpty())
-                OptionHelper.OPTION_SEPARATOR
-            else ""
-
-            filterParameter[optionKey] = currentOptionValue + optionSeparator + addedOptionValue
-        }
-
-        return filterParameter
-    }
-
-    fun getActiveFilterOptionList() : List<Option> {
-        val activeFilterOptionList = mutableListOf<Option>()
-
-        filterViewState.forEach {
-            activeFilterOptionList.add(OptionHelper.generateOptionFromUniqueId(it))
-        }
-
-        return activeFilterOptionList
-    }
+    fun getActiveFilterOptionList() =
+        filterViewState.map { OptionHelper.generateOptionFromUniqueId(it) }
 
     @JvmOverloads
     fun setFilter(option: Option?, isFilterApplied: Boolean, isCleanUpExistingFilterWithSameKey: Boolean = false) {
@@ -434,4 +413,10 @@ open class FilterController {
             saveFilterViewState(option.uniqueId, isFilterApplied)
         }
     }
+
+    fun getActiveSavedOptionList(): List<SavedOption> =
+        filterViewState.map {
+            val option = OptionHelper.generateOptionFromUniqueId(it)
+            SavedOption.create(option, filterList)
+        }
 }

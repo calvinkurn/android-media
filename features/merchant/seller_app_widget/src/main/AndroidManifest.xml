@@ -36,7 +36,7 @@
         <receiver
             android:name=".view.service.AppWidgetBroadcastReceiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.sellerappwidget.GET_CHAT_APP_WIDGET_DATA" />
                 <action android:name="com.tokopedia.sellerappwidget.GET_ORDER_APP_WIDGET_DATA" />

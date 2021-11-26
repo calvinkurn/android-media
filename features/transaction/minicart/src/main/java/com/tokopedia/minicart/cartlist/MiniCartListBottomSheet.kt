@@ -32,6 +32,7 @@ import com.tokopedia.minicart.common.widget.MiniCartViewModel
 import com.tokopedia.minicart.databinding.LayoutBottomsheetMiniCartListBinding
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -381,13 +382,24 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
 
     private fun adjustRecyclerViewPadding(viewBinding: LayoutBottomsheetMiniCartListBinding) {
         with(viewBinding) {
-            if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1)) {
+            if (rvMiniCartList.canScrollVertically(-1) || rvMiniCartList.canScrollVertically(1) || isBottomSheetFullPage(viewBinding)) {
                 rvMiniCartList.setPadding(0, 0, 0, rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_64)
                         ?: 0)
             } else {
                 rvMiniCartList.setPadding(0, 0, 0, 0)
             }
         }
+    }
+
+    private fun isBottomSheetFullPage(viewBinding: LayoutBottomsheetMiniCartListBinding): Boolean {
+        val displayMetrics = Resources.getSystem().displayMetrics
+        bottomSheet?.activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+
+        val bottomSheetHeight = (bottomSheet?.bottomSheetWrapper?.parent as? View)?.height ?: 0
+        val recyclerViewPaddingBottom = viewBinding.rvMiniCartList.resources?.getDimensionPixelSize(R.dimen.dp_64)
+                ?: 0
+        val displayHeight = displayMetrics?.heightPixels ?: 0
+        return bottomSheetHeight != 0 && displayHeight != 0 && (bottomSheetHeight + (recyclerViewPaddingBottom / 2)) >= displayHeight
     }
 
     private fun cancelAllDebounceJob() {
@@ -433,7 +445,7 @@ class MiniCartListBottomSheet @Inject constructor(private var miniCartListDecora
                 amountCtaView.isEnabled = false
                 enableAmountChevron(false)
             } else {
-                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false))
+                setAmount(CurrencyFormatUtil.convertPriceValueToIdrFormat(miniCartWidgetData.totalProductPrice, false).removeDecimalSuffix())
                 val ctaText = viewModel?.miniCartABTestData?.value?.buttonBuyWording
                         ?: context.getString(R.string.mini_cart_widget_cta_text_default)
                 setCtaText("$ctaText (${miniCartWidgetData.totalProductCount})")

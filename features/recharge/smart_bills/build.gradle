@@ -40,6 +40,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.commonPayment)
     implementation projectOrAar(rootProject.ext.features.commonTopupBills)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
+    implementation projectOrAar(rootProject.ext.features.medialoader)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
@@ -50,12 +51,16 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.accordion
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.header
+    implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.dialog
 
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -65,6 +70,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     testImplementation rootProject.ext.testDependencies.mockk

@@ -8,10 +8,11 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
+import com.tokopedia.shop.score.databinding.CardShopScoreTotalPenaltyBinding
 import com.tokopedia.shop.score.penalty.presentation.adapter.ItemHeaderCardPenaltyListener
 import com.tokopedia.shop.score.penalty.presentation.model.ItemCardShopPenaltyUiModel
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.card_shop_score_total_penalty.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemHeaderCardPenaltyViewHolder(
     view: View,
@@ -23,33 +24,35 @@ class ItemHeaderCardPenaltyViewHolder(
         const val ROUNDED_RADIUS = 8F
     }
 
+    private val binding: CardShopScoreTotalPenaltyBinding? by viewBinding()
+
     override fun bind(element: ItemCardShopPenaltyUiModel?) {
-        with(itemView) {
+        binding?.run {
             itemHeaderCardPenaltyListener.impressLearnMorePenaltyPage()
 
-            separator_multiple_dots?.setBackgroundResource(R.drawable.ic_line_separator)
+            separatorMultipleDots.setBackgroundResource(R.drawable.ic_line_separator)
 
-            tvContentPenalty?.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
+            tvContentPenalty.setTextMakeHyperlink(getString(R.string.content_penalty_label)) {
                 itemHeaderCardPenaltyListener.onMoreInfoHelpPenaltyClicked()
             }
-            bgTotalPenalty?.loadImage(
+            bgTotalPenalty.loadImage(
                 if (element?.hasPenalty == true) ShopScoreConstant.IC_HAS_PENALTY_URL
                 else ShopScoreConstant.IC_NO_PENALTY_URL)
 
-            bgTotalPenalty?.shapeAppearanceModel = bgTotalPenalty.shapeAppearanceModel
+            bgTotalPenalty.shapeAppearanceModel = bgTotalPenalty.shapeAppearanceModel
                 .toBuilder()
                 .setAllCornerSizes(ROUNDED_RADIUS)
                 .build()
 
             if (element?.hasPenalty == true) {
                 tvCountTotalPenalty.text = element.totalPenalty.toString()
-                context?.resources?.getDimension(R.dimen.scorePenaltyTextSize)
+                root.context?.resources?.getDimension(R.dimen.scorePenaltyTextSize)
                     ?.let { tvCountTotalPenalty.setTextSize(TypedValue.COMPLEX_UNIT_PX, it) }
             } else {
-                tvCountTotalPenalty?.text = getString(R.string.desc_no_penalty)
+                tvCountTotalPenalty.text = getString(R.string.desc_no_penalty)
                 tvCountTotalPenalty.setType(Typography.HEADING_3)
             }
-            tvTotalPointDeductions?.text =
+            tvTotalPointDeductions.text =
                 if (element?.deductionPoints?.isLessThanZero() == true) element.deductionPoints.toString() else "-"
         }
     }

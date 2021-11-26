@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.shop.settings.R
@@ -27,20 +26,25 @@ import com.tokopedia.shop.settings.common.util.FORMAT_DATE_TIME
 import com.tokopedia.shop.settings.common.util.OnStartDragListener
 import com.tokopedia.shop.settings.common.util.SimpleItemTouchHelperCallback
 import com.tokopedia.shop.settings.common.util.toReadableString
+import com.tokopedia.shop.settings.databinding.FragmentNoteReorderListBinding
 import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory
-import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter
+import com.tokopedia.shop.settings.notes.view.viewmodel.ShopSettingsNoteListReorderViewModel
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
-
-class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopNoteReorderFactory>(), ShopSettingNoteListReorderPresenter.View, OnStartDragListener {
+class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopNoteReorderFactory>(), OnStartDragListener {
 
     @Inject
-    lateinit var shopSettingNoteListReorderPresenter: ShopSettingNoteListReorderPresenter
+    lateinit var viewModel: ShopSettingsNoteListReorderViewModel
+
+    private var binding by autoClearedNullable<FragmentNoteReorderListBinding>()
+
     private var shopNoteModels: ArrayList<ShopNoteUiModel>? = null
     private var shopNoteModelsWithoutTerms: List<ShopNoteUiModel>? = null
     private var progressDialog: ProgressDialog? = null
@@ -62,7 +66,6 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
                     .build()
                     .inject(this)
         }
-        shopSettingNoteListReorderPresenter.attachView(this)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ShopNoteUiModel, ShopNoteReorderFactory> {
@@ -79,8 +82,9 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         adapterTerms = ShopNoteReorderAdapter(ShopNoteReorderFactory(null))
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_note_reorder_list, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentNoteReorderListBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun getScreenName(): String? {
@@ -88,8 +92,8 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
-        recyclerView = view.findViewById<View>(R.id.recycler_view) as RecyclerView?
-        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
+        recyclerView = binding?.recyclerView
+        return recyclerView as RecyclerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,16 +103,17 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
             itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
             itemTouchHelper?.attachToRecyclerView(recyclerView)
         }
+        observeData()
     }
 
     override fun loadData(page: Int) {
         if (shopNoteModels != null && shopNoteModels?.size.toZeroIfNull() > 0) {
             shopNoteModels?.get(0)?.apply {
-                val itemNoteReorder = view?.findViewById<LinearLayout>(R.id.item_note_reorder)
-                val tpNoteName = view?.findViewById<Typography>(R.id.tvNoteName)
-                val tpNoteLastUpdated = view?.findViewById<Typography>(R.id.tvLastUpdate)
-                val ivReorder = view?.findViewById<ImageView>(R.id.ivReorder)
-                val divider = view?.findViewById<View>(R.id.divider)
+                val itemNoteReorder = binding?.itemNote?.itemNoteReorder
+                val tpNoteName = binding?.itemNote?.tvNoteName
+                val tpNoteLastUpdated = binding?.itemNote?.tvLastUpdate
+                val ivReorder = binding?.itemNote?.ivReorder
+                val divider = binding?.divider
                 itemNoteReorder?.background = context?.getDrawable(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
 
                 if (terms) {
@@ -144,10 +149,10 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
             shopNoteViewModel.id?.let { shopNoteList.add(it) }
 
         }
-        shopSettingNoteListReorderPresenter.reorderShopNotes(shopNoteList)
+        viewModel.reorderShopNote(shopNoteList)
     }
 
-    override fun onSuccessReorderShopNote(successMessage: String) {
+    private fun onSuccessReorderShopNote(successMessage: String) {
         hideSubmitLoading()
         view?.let {
             Toaster.make(it, getString(R.string.note_success_reorder), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
@@ -156,7 +161,7 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         listener!!.onSuccessReorderNotes()
     }
 
-    override fun onErrorReorderShopNote(throwable: Throwable) {
+    private fun onErrorReorderShopNote(throwable: Throwable) {
         hideSubmitLoading()
         val message = ErrorHandler.getErrorMessage(context, throwable)
         view?.let {
@@ -184,11 +189,6 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        shopSettingNoteListReorderPresenter.detachView()
-    }
-
     override fun onItemClicked(shopNoteUiModel: ShopNoteUiModel) {
         // no-op
     }
@@ -202,6 +202,15 @@ class ShopSettingsNotesReorderFragment : BaseListFragment<ShopNoteUiModel, ShopN
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         listener = context as OnShopSettingsNotesReorderFragmentListener
+    }
+
+    private fun observeData() {
+        observe(viewModel.reorderNote) {
+            when(it) {
+                is Success -> onSuccessReorderShopNote(it.data)
+                is Fail -> onErrorReorderShopNote(it.throwable)
+            }
+        }
     }
 
     companion object {

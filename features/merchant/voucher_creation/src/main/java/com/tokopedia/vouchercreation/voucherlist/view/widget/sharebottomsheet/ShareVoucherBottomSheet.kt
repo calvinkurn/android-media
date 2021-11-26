@@ -83,6 +83,7 @@ class ShareVoucherBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
+        if (isAdded) return
         showNow(fm, TAG)
     }
 

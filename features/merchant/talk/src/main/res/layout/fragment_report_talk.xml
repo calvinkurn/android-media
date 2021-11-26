@@ -24,9 +24,9 @@
                 android:id="@+id/titleQuestion"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="2dp"
                 android:text="@string/report_talk_question"
                 android:textColor="@color/Unify_N700_68"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -43,28 +43,19 @@
                 android:layout_marginTop="@dimen/dp_32"
                 app:layout_constraintTop_toBottomOf="@+id/titleQuestion"/>
 
-            <androidx.legacy.widget.Space
-                android:id="@+id/marginSpacer"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginBottom="@dimen/dp_10"
-                app:layout_constraintBottom_toBottomOf="@+id/optionRv"
-                app:layout_constraintLeft_toLeftOf="@id/optionRv"
-                app:layout_constraintRight_toRightOf="@id/optionRv"/>
-
             <EditText
                 android:id="@+id/reason"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_50"
-                android:layout_marginTop="-10dp"
+                android:layout_marginTop="10dp"
                 android:hint="@string/talk_hint_input_reason"
                 android:inputType="text"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:textColor="@color/Unify_N700_68"
                 android:textColorHighlight="@color/Unify_G400"
-                app:layout_constraintTop_toBottomOf="@id/marginSpacer"
+                app:layout_constraintTop_toBottomOf="@id/optionRv"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -74,9 +65,9 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/sendButton"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:background="@drawable/bg_button_disabled"
         android:enabled="false"
         android:fontFamily="sans-serif-medium"
@@ -85,7 +76,7 @@
         android:text="@string/button_send"
         android:textAllCaps="false"
         android:textColor="@color/Unify_N700_20"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:textStyle="normal"
         tools:visibility="visible"
         />

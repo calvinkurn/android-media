@@ -22,6 +22,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.clearImage
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
@@ -492,7 +493,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun getBundleArguments() {
-        groupId = intent?.extras?.getInt(GROUP_ID)
+        groupId = intent?.extras?.getString(GROUP_ID)?.toIntOrZero()
         priceSpent = intent?.extras?.getString(TopAdsDashboardConstant.PRICE_SPEND)
         isWhiteListedUser = intent?.extras?.getBoolean(ISWHITELISTEDUSER)?:false
     }

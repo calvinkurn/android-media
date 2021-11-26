@@ -3,12 +3,14 @@ package com.tokopedia.home.account.revamp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliatecommon.domain.CheckAffiliateUseCase
 import com.tokopedia.home.account.domain.GetBuyerWalletBalanceUseCase
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.data.model.AccountDataModel
+import com.tokopedia.home.account.revamp.domain.usecase.GetBuyerAccountDataUseCase
 import com.tokopedia.home.account.revamp.domain.usecase.GetShortcutDataUseCase
+import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.data.model.RecommendationWidgetWithTDN
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.navigation_common.model.WalletModel
 import com.tokopedia.navigation_common.model.WalletPref
@@ -18,7 +20,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -31,18 +35,19 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class BuyerAccountViewModel @Inject constructor (
-        private val getBuyerAccountDataUseCase: GetBuyerAccountDataUseCase,
-        private val checkAffiliateUseCase: CheckAffiliateUseCase,
-        private val getBuyerWalletBalanceUseCase: GetBuyerWalletBalanceUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val removeWishListUseCase: RemoveWishListUseCase,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
-        private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
-        private val shortcutDataUseCase: GetShortcutDataUseCase,
-        private val accountAdminInfoUseCase: AccountAdminInfoUseCase,
-        private val userSession: UserSessionInterface,
-        private val walletPref: WalletPref,
-        private val dispatcher: CoroutineDispatchers
+    private val getBuyerAccountDataUseCase: GetBuyerAccountDataUseCase,
+    private val checkAffiliateUseCase: CheckAffiliateUseCase,
+    private val getBuyerWalletBalanceUseCase: GetBuyerWalletBalanceUseCase,
+    private val addWishListUseCase: AddWishListUseCase,
+    private val removeWishListUseCase: RemoveWishListUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+    private val shortcutDataUseCase: GetShortcutDataUseCase,
+    private val accountAdminInfoUseCase: AccountAdminInfoUseCase,
+    private val userSession: UserSessionInterface,
+    private val walletPref: WalletPref,
+    private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.io) {
 
     private val _buyerAccountData = MutableLiveData<Result<AccountDataModel>>()
@@ -61,8 +66,8 @@ class BuyerAccountViewModel @Inject constructor (
     val recommendation : LiveData<Result<RecommendationWidget>>
         get() = _recommendation
 
-    private val _firstRecommendation = MutableLiveData<Result<RecommendationWidget>>()
-    val firstRecommendation : LiveData<Result<RecommendationWidget>>
+    private val _firstRecommendation = MutableLiveData<Result<RecommendationWidgetWithTDN>>()
+    val firstRecommendation : LiveData<Result<RecommendationWidgetWithTDN>>
         get() = _firstRecommendation
 
     private val _canGoToSellerAccount = MutableLiveData<Boolean>()
@@ -164,8 +169,13 @@ class BuyerAccountViewModel @Inject constructor (
             )
 
             val data = getRecommendationUseCase.createObservable(params).toBlocking().single()
+            var tdnData: TopAdsImageViewModel? = null
+            if (data.firstOrNull()?.recommendationItemList?.size ?: 0 >= AccountConstants.TDNBanner.TDN_INDEX && isFirstData) {
+                tdnData = getTdnBannerData()
+            }
+            val recommendationDataWithTdn = RecommendationWidgetWithTDN(data[0], tdnData)
             if (isFirstData) {
-                _firstRecommendation.postValue(Success(data[0]))
+                _firstRecommendation.postValue(Success(recommendationDataWithTdn))
             } else {
                 _recommendation.postValue(Success(data[0]))
             }
@@ -178,6 +188,22 @@ class BuyerAccountViewModel @Inject constructor (
         })
     }
 
+    private suspend fun getTdnBannerData(): TopAdsImageViewModel? {
+        return try {
+            val queryParams =
+                topAdsImageViewUseCase.getQueryMap(
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.SOURCE,
+                    AccountConstants.TDNBanner.EMPTY,
+                    AccountConstants.TDNBanner.ADS_COUNT,
+                    AccountConstants.TDNBanner.DIMEN_ID,
+                    AccountConstants.TDNBanner.EMPTY
+                )
+            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        }catch (t: Throwable){
+            null
+        }
+    }
 
     private fun checkIsAffiliate(): Boolean {
         return if (userSession.isAffiliate) {

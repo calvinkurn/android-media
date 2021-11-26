@@ -48,7 +48,7 @@ class UpdateQuotaUseCase @Inject constructor(private val gqlRepository: GraphqlR
         params.putString(TOKEN, token)
 
         val request = GraphqlRequest(QUERY, UpdateQuotaResponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
 
         val errors = response.getError(UpdateQuotaResponse::class.java)
         if (errors.isNullOrEmpty()) {

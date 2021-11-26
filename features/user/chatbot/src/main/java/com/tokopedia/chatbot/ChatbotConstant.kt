@@ -18,8 +18,25 @@ object ChatbotConstant {
 
     object ImageUpload {
         const val MAX_FILE_SIZE = 5120
+        const val MAX_FILE_SIZE_UPLOAD_SECURE = 9216
         const val MINIMUM_HEIGHT = 100
         const val MINIMUM_WIDTH = 300
         const val DEFAULT_ONE_MEGABYTE: Long = 1024
+    }
+
+    object SecureImageUpload {
+        const val POST = "POST"
+        const val CONTENT_TYPE = "contentTypeHeader"
+        const val DATE_FORMAT = "dd MMM yy HH:mm ZZZ"
+        const val AUTHORIZATION = "Authorization"
+        const val TKPD_USERID = "Tkpd-UserId"
+        const val X_USER_ID = "X-User-ID"
+        const val X_APP_VERSION = "X-App-Version"
+        const val X_DEVICE = "X-Device"
+
+    }
+
+    object AttachmentType {
+        const val TYPE_SECURE_IMAGE_UPLOAD = "26"
     }
 }

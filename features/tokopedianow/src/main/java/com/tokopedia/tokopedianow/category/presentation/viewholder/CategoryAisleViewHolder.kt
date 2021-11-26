@@ -4,8 +4,6 @@ import android.os.Build
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
@@ -13,7 +11,9 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleListener
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowCategoryAisleBinding
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CategoryAisleViewHolder(
         itemView: View,
@@ -25,28 +25,30 @@ class CategoryAisleViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_category_aisle
     }
 
+    private var binding: ItemTokopedianowCategoryAisleBinding? by viewBinding()
+
     private val aisleContainer by lazy {
-        itemView.findViewById<ConstraintLayout?>(R.id.tokoNowSearchCategoryAisleContainer)
+        binding?.tokoNowSearchCategoryAisleContainer
     }
 
     private val rightAisleCard by lazy {
-        itemView.findViewById<Group?>(R.id.tokoNowSearchCategoryAisleGroupRight)
+        binding?.tokoNowSearchCategoryAisleGroupRight
     }
 
     private val txtCategoryNameRight by lazy {
-        itemView.findViewById<TextView?>(R.id.tokoNowSearchCategoryAisleNameRight)
+        binding?.tokoNowSearchCategoryAisleNameRight
     }
 
     private val imgCategoryRight by lazy {
-        itemView.findViewById<ImageUnify?>(R.id.tokoNowSearchCategoryAisleImageRight)
+        binding?.tokoNowSearchCategoryAisleImageRight
     }
 
     private val txtCategoryNameLeft by lazy {
-        itemView.findViewById<TextView?>(R.id.tokoNowSearchCategoryAisleNameLeft)
+        binding?.tokoNowSearchCategoryAisleNameLeft
     }
 
     private val imgCategoryLeft by lazy {
-        itemView.findViewById<ImageUnify?>(R.id.tokoNowSearchCategoryAisleImageLeft)
+        binding?.tokoNowSearchCategoryAisleImageLeft
     }
 
     init {

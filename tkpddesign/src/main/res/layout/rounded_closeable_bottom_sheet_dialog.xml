@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/header_bottom_sheet_rounded_white"
         android:gravity="center"
-        android:padding="@dimen/dp_8"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,7 +19,7 @@
         <TextView
             android:id="@+id/tray_close"
             android:layout_width="@dimen/dp_28"
-            android:layout_height="@dimen/dp_4"
+            android:layout_height="4dp"
             android:background="@drawable/close_button_bottom_sheet" />
 
     </RelativeLayout>
@@ -34,5 +34,5 @@
         app:layout_constraintTop_toBottomOf="@id/header_rounded"
         android:background="@color/Unify_N0"
         tools:background="@color/Unify_G500"
-        tools:layout_height="@dimen/dp_40" />
+        tools:layout_height="40dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

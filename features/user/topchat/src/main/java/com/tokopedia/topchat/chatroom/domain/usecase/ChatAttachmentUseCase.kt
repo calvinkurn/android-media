@@ -29,15 +29,15 @@ open class ChatAttachmentUseCase @Inject constructor(
     }
 
     fun getAttachments(
-            msgId: Long,
-            attachmentId: String,
-            userLocation: LocalCacheModel,
-            onSuccess: (ArrayMap<String, Attachment>) -> Unit,
-            onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
+        msgId: Long,
+        replyIDs: String,
+        userLocation: LocalCacheModel,
+        onSuccess: (ArrayMap<String, Attachment>) -> Unit,
+        onError: (Throwable, ArrayMap<String, Attachment>) -> Unit
     ) {
         launchCatchError(dispatchers.io,
                 {
-                    val params = generateParams(msgId, attachmentId, userLocation)
+                    val params = generateParams(msgId, replyIDs, userLocation)
                     val response = gqlUseCase.apply {
                         setTypeClass(ChatAttachmentResponse::class.java)
                         setRequestParams(params)
@@ -49,7 +49,7 @@ open class ChatAttachmentUseCase @Inject constructor(
                     }
                 },
                 {
-                    val mapErrorAttachment = mapper.mapError(attachmentId)
+                    val mapErrorAttachment = mapper.mapError(replyIDs)
                     withContext(dispatchers.main) {
                         onError(it, mapErrorAttachment)
                     }
@@ -58,9 +58,9 @@ open class ChatAttachmentUseCase @Inject constructor(
     }
 
     private fun generateParams(
-            msgId: Long,
-            attachmentId: String,
-            userLocation: LocalCacheModel
+        msgId: Long,
+        replyIDs: String,
+        userLocation: LocalCacheModel
     ): Map<String, Any> {
         val addressId = userLocation.address_id.toLongOrZero()
         val districtId = userLocation.district_id.toLongOrZero()
@@ -72,7 +72,7 @@ open class ChatAttachmentUseCase @Inject constructor(
         }
         return mapOf(
                 paramMsgId to msgId,
-                paramLimit to attachmentId,
+                paramReplyIDs to replyIDs,
                 paramAddressId to addressId,
                 paramDistrictId to districtId,
                 paramPostalCode to postalCode,
@@ -82,11 +82,11 @@ open class ChatAttachmentUseCase @Inject constructor(
 
     val query = """
         query chatAttachments(
-            $$paramMsgId: Int!, $$paramLimit: String, $$paramAddressId: Int,
+            $$paramMsgId: Int!, $$paramReplyIDs: String, $$paramAddressId: Int,
             $$paramDistrictId: Int, $$paramPostalCode: String, $$paramLatLon: String
         ) {
           chatAttachments(
-            msgId: $$paramMsgId, AttachmentIDs: $$paramLimit, addressID: $$paramAddressId,
+            msgId: $$paramMsgId, ReplyIDs: $$paramReplyIDs, addressID: $$paramAddressId,
             districtID: $$paramDistrictId, postalCode: $$paramPostalCode, latlon: $$paramLatLon
           ) {
             list {
@@ -105,7 +105,7 @@ open class ChatAttachmentUseCase @Inject constructor(
 
     companion object {
         private val paramMsgId = "msgId"
-        private val paramLimit = "AttachmentIDs"
+        private val paramReplyIDs = "ReplyIDs"
         private val paramAddressId = "addressID"
         private val paramDistrictId = "districtID"
         private val paramPostalCode = "postalCode"

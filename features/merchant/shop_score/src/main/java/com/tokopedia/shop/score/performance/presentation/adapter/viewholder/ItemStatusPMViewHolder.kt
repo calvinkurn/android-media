@@ -5,10 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.setTextMakeHyperlink
+import com.tokopedia.shop.score.databinding.ItemStatusPowerMerchantBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemStatusPowerMerchantListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.item_status_power_merchant.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 
 class ItemStatusPMViewHolder(
     view: View,
@@ -19,6 +21,8 @@ class ItemStatusPMViewHolder(
         val LAYOUT = R.layout.item_status_power_merchant
     }
 
+    private val binding: ItemStatusPowerMerchantBinding? by viewBinding()
+
     override fun bind(element: ItemStatusPMUiModel?) {
         setupIconClickListener()
         setupItemPowerMerchant(element)
@@ -26,16 +30,16 @@ class ItemStatusPMViewHolder(
     }
 
     private fun setupBackgroundColor() {
-        with(itemView) {
-            bg_container_pm_status?.showWithCondition(!context.isDarkMode())
+        binding?.run {
+            bgContainerPmStatus.showWithCondition(!root.context.isDarkMode())
         }
     }
 
     private fun setupItemPowerMerchant(element: ItemStatusPMUiModel?) {
-        with(itemView) {
-            tv_pm_reputation_value?.text = getString(R.string.title_pm_value)
+        binding?.run {
+            tvPmReputationValue.text = getString(R.string.title_pm_value)
             element?.descPM?.let {
-                tv_desc_content_pm_section?.setTextMakeHyperlink(it) {
+                tvDescContentPmSection.setTextMakeHyperlink(it) {
                     itemStatusPowerMerchantListener.onItemClickedGotoPMPro()
                 }
             }
@@ -43,14 +47,14 @@ class ItemStatusPMViewHolder(
     }
 
     private fun setupIconClickListener() {
-        with(itemView) {
-            ic_pm_reputation_right?.setOnClickListener {
+        binding?.run {
+            icPmReputationRight.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
             }
-            potentialPowerMerchantWidget?.setOnClickListener {
+            potentialPowerMerchantWidget.setOnClickListener {
                 itemStatusPowerMerchantListener.onItemClickedGoToPMActivation()
             }
-            if (ic_pm_reputation_right?.isVisible == true) {
+            if (icPmReputationRight.isVisible) {
                 itemStatusPowerMerchantListener.onImpressHeaderPowerMerchantSection()
             }
         }

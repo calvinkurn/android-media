@@ -16,6 +16,8 @@ import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.*
+import com.tokopedia.navigation_common.usecase.GetWalletAppBalanceUseCase
+import com.tokopedia.navigation_common.usecase.GetWalletEligibilityUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -24,7 +26,7 @@ import dagger.Provides
 @Module
 class MainNavUseCaseModule {
 
-    private val walletBalanceQuery : String = "{\n" +
+    private val walletBalanceQuery : String = "query mainNavOvoWallet {\n" +
             "  wallet(isGetTopup:true) {\n" +
             "    linked\n" +
             "    balance\n" +
@@ -126,27 +128,37 @@ class MainNavUseCaseModule {
 
     @MainNavScope
     @Provides
+    fun provideGetWalletEligbilityUseCase(graphqlRepository: GraphqlRepository): GetWalletEligibilityUseCase{
+        return GetWalletEligibilityUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetWalletAppUseCase(graphqlRepository: GraphqlRepository): GetWalletAppBalanceUseCase{
+        return GetWalletAppBalanceUseCase(graphqlRepository)
+    }
+
+    @MainNavScope
+    @Provides
     fun provideGetProfileDataUseCase(
             accountHeaderMapper: AccountHeaderMapper,
             userInfoUseCase: GetUserInfoUseCase,
-            getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
             getSaldoUseCase: GetSaldoUseCase,
             getUserMembershipUseCase: GetUserMembershipUseCase,
             getTokopointStatusFiltered: GetTokopointStatusFiltered,
             getShopInfoUseCase: GetShopInfoUseCase,
-            userSession: UserSessionInterface,
-            @ApplicationContext context: Context
+            getWalletEligibilityUseCase: GetWalletEligibilityUseCase,
+            getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase
     ): GetProfileDataUseCase {
         return GetProfileDataUseCase(
                 accountHeaderMapper = accountHeaderMapper,
                 getUserInfoUseCase = userInfoUseCase,
-                getOvoUseCase = getWalletBalanceUseCase,
                 getSaldoUseCase = getSaldoUseCase,
                 getUserMembershipUseCase = getUserMembershipUseCase,
                 getTokopointStatusFiltered = getTokopointStatusFiltered,
                 getShopInfoUseCase = getShopInfoUseCase,
-                userSession = userSession,
-                context = context
+                getWalletEligibilityUseCase = getWalletEligibilityUseCase,
+                getWalletAppBalanceUseCase = getWalletAppBalanceUseCase
         )
     }
     @MainNavScope

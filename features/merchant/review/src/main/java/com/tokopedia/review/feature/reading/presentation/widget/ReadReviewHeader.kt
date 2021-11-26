@@ -240,8 +240,12 @@ class ReadReviewHeader : BaseCustomView {
     }
 
     fun updateSelectedSort(selectedSort: String) {
+        val defaultSelectedSort = if (isProductReview)
+            SortTypeConstants.MOST_HELPFUL_COPY
+        else
+            SortTypeConstants.LATEST_COPY
         sortFilter?.chipItems?.lastOrNull()?.apply {
-            if (selectedSort == SortTypeConstants.MOST_HELPFUL_COPY) {
+            if (selectedSort == defaultSelectedSort) {
                 title = context.getString(R.string.review_reading_sort_default)
                 type = ChipsUnify.TYPE_NORMAL
             } else {

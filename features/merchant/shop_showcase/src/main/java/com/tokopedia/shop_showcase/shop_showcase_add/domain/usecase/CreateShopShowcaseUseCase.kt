@@ -16,7 +16,7 @@ class CreateShopShowcaseUseCase(
 
     override suspend fun executeOnBackground(): AddShopShowcaseResponse {
         val request = GraphqlRequest(MUTATION, AddShopShowcaseBaseReponse::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request))
+        val response = gqlRepository.response(listOf(request))
         val responseData = response.getData<AddShopShowcaseBaseReponse>(AddShopShowcaseBaseReponse::class.java)
         return responseData.addShopShowcaseReponse
     }

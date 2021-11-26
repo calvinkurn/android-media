@@ -15,12 +15,14 @@ open class WebsocketAttachmentContract (
 @Keep
 open class WebsocketAttachmentData (
         val message_id: Long,
+        val local_id: String,
         val message: String,
         val source: String,
         val attachment_type: Int,
         val start_time: String,
         val payload: Any,
-        var extras: Any = Any()
+        var extras: Any = Any(),
+        val parent_reply: Any? = null
 ) {
 
     private fun createProductExtrasAttachments(attachments: List<SendablePreview>): JsonElement {

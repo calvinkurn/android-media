@@ -9,11 +9,11 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.*
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 
 class TalkReplyAdapterTypeFactory(
-        private val attachedProductCardListener: AttachedProductCardListener,
-        private val onKebabClickedListener: OnKebabClickedListener,
-        private val talkReplyProductHeaderListener: TalkReplyProductHeaderListener,
-        private val talkReplyHeaderListener: TalkReplyHeaderListener,
-        private val threadListener: ThreadListener
+    private val attachedProductCardListener: AttachedProductCardListener,
+    private val onKebabClickedListener: OnKebabClickedListener,
+    private val talkReplyProductHeaderListener: TalkReplyProductHeaderListener,
+    private val talkReplyHeaderListener: TalkReplyHeaderListener,
+    private val threadListener: ThreadListener
 ) : BaseAdapterTypeFactory(), TalkReplyTypeFactory {
 
     override fun type(talkReplyUiModel: TalkReplyUiModel): Int {
@@ -37,12 +37,25 @@ class TalkReplyAdapterTypeFactory(
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
-            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, attachedProductCardListener, onKebabClickedListener, threadListener)
+        return when (type) {
+            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(
+                parent,
+                attachedProductCardListener,
+                onKebabClickedListener,
+                threadListener
+            )
             TalkReplyEmptyViewHolder.LAYOUT -> TalkReplyEmptyViewHolder(parent)
             TalkReplyAnswerCountViewHolder.LAYOUT -> TalkReplyAnswerCountViewHolder(parent)
-            TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(parent, onKebabClickedListener, talkReplyHeaderListener, threadListener)
-            TalkReplyProductHeaderViewHolder.LAYOUT -> TalkReplyProductHeaderViewHolder(parent, talkReplyProductHeaderListener)
+            TalkReplyHeaderViewHolder.LAYOUT -> TalkReplyHeaderViewHolder(
+                parent,
+                onKebabClickedListener,
+                talkReplyHeaderListener,
+                threadListener
+            )
+            TalkReplyProductHeaderViewHolder.LAYOUT -> TalkReplyProductHeaderViewHolder(
+                parent,
+                talkReplyProductHeaderListener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }

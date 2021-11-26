@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.*
+import com.tokopedia.createpost.common.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.fragment.AffiliateCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment

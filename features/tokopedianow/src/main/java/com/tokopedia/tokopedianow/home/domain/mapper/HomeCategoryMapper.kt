@@ -13,7 +13,12 @@ object HomeCategoryMapper {
     private const val MAX_HOME_CATEGORY_ITEM_COUNT = 8
 
     fun mapToCategoryLayout(response: HomeLayoutResponse, state: HomeLayoutItemState): HomeLayoutItemUiModel {
-        val categoryGridUiModel = TokoNowCategoryGridUiModel(response.id, response.header.name, emptyList(), TokoNowLayoutState.LOADING)
+        val categoryGridUiModel = TokoNowCategoryGridUiModel(
+            id = response.id,
+            title = response.header.name,
+            categoryList = emptyList(),
+            state = TokoNowLayoutState.LOADING
+        )
         return HomeLayoutItemUiModel(categoryGridUiModel, state)
     }
 

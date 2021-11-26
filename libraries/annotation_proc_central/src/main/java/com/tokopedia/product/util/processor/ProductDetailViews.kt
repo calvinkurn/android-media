@@ -103,7 +103,10 @@ data class ProductDetailViews(
         val productStatus: String?,
         @DefaultValueString("")
         @Key("stockAmount")
-        val stockAmount: String?
+        val stockAmount: String?,
+        @DefaultValueString("")
+        @Key("attribution")
+        val attribution: String?
 
 )
 

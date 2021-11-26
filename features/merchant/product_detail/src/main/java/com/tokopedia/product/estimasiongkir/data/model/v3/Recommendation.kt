@@ -12,10 +12,6 @@ data class Recommendation(
         @Expose
         val shippingId: Int = 0,
 
-        @SerializedName("shipping_product_id")
-        @Expose
-        val shippingProductId: Int = 0,
-
         @SerializedName("price")
         @Expose
         val price: Price = Price(),

@@ -16,13 +16,13 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
 import com.tokopedia.editshipping.R;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by Kris on 5/12/2016.
@@ -112,8 +112,8 @@ public class EditShippingWebViewDialog extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_shipping_web_view, container, false);
         webView = (TkpdWebView) view.findViewById(R.id.additional_option_dialog);
-        TextView editButton = (TextView) view.findViewById(R.id.edit_option_button);
-        TextView closeButton = (TextView) view.findViewById(R.id.close_option_button);
+        Typography editButton = (Typography) view.findViewById(R.id.edit_option_button);
+        Typography closeButton = (Typography) view.findViewById(R.id.close_option_button);
         courierIndex = getArguments().getInt(COURIER_INDEX_KEY);
         webView.setWebViewClient(new AdditionalOptionsWebViewClient());
         webView.setWebChromeClient(new WebChromeClient());

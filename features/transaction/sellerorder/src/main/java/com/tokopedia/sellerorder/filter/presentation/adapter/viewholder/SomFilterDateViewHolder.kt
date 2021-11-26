@@ -3,10 +3,11 @@ package com.tokopedia.sellerorder.filter.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.ItemSomFilterDateBinding
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter.Companion.PAYLOAD_DATE_FILTER
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
-import kotlinx.android.synthetic.main.item_som_filter_date.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SomFilterDateViewHolder(view: View, private val somFilterListener: SomFilterListener) :
         AbstractViewHolder<SomFilterDateUiModel>(view) {
@@ -15,13 +16,15 @@ class SomFilterDateViewHolder(view: View, private val somFilterListener: SomFilt
         val LAYOUT = R.layout.item_som_filter_date
     }
 
+    private val binding by viewBinding<ItemSomFilterDateBinding>()
+
     override fun bind(element: SomFilterDateUiModel?) {
-        with(itemView) {
-            tvTitleFilterDate?.text = element?.nameFilter
+        binding?.run {
+            tvTitleFilterDate.text = element?.nameFilter
             if (element?.date?.isNotBlank() == true) {
                 selectDateFilter.setDateLabel(element.date)
             } else {
-                selectDateFilter.setDateLabelEmpty(context.resources.getString(R.string.select_date))
+                selectDateFilter.setDateLabelEmpty(root.context.resources.getString(R.string.select_date))
             }
             selectDateFilter.setOnClickListener {
                 somFilterListener.onDateClicked(adapterPosition)
@@ -38,11 +41,11 @@ class SomFilterDateViewHolder(view: View, private val somFilterListener: SomFilt
 
         when (payloads[0] as Int) {
             PAYLOAD_DATE_FILTER -> {
-                with(itemView) {
+                binding?.run {
                     if (element.date.isNotBlank()) {
                         selectDateFilter.setDateLabel(element.date)
                     } else {
-                        selectDateFilter.setDateLabelEmpty(context.resources.getString(R.string.select_date))
+                        selectDateFilter.setDateLabelEmpty(root.context.resources.getString(R.string.select_date))
                     }
                 }
             }

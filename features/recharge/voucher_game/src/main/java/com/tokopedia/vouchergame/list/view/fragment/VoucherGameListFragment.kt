@@ -87,9 +87,9 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME)
                     ?: VoucherGameExtraParam()
-            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA,"")
+            rechargeProductFromSlice = it.getString(RECHARGE_PRODUCT_EXTRA, "")
         }
-     }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -147,7 +147,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             return
         }
 
-        if(rechargeProductFromSlice.isNotEmpty()) {
+        if (rechargeProductFromSlice.isNotEmpty()) {
             rechargeAnalytics.onClickSliceRecharge(userSession.userId, rechargeProductFromSlice)
             rechargeAnalytics.onOpenPageFromSlice(TITLE_PAGE)
         }
@@ -175,7 +175,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
     }
 
     private fun checkAutoSelectOperator(operators: List<VoucherGameOperator>) {
-        voucherGameExtraParam.operatorId.toIntOrNull()?.let {
+        voucherGameExtraParam.operatorId.let {
             operators.firstOrNull { opr -> opr.id == it }?.let {
                 navigateToProductList(it.attributes)
             }
@@ -191,13 +191,15 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             onGetListErrorWithExistingData(throwable)
         } else {
             val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-                context, throwable, ErrorHandler.Builder().build())
+                    context, throwable, ErrorHandler.Builder().build())
             val errorNetworkModel = ErrorNetworkModel()
 
             errorNetworkModel.run {
                 errorMessage = errMsg
-                subErrorMessage = "${getString(
-                    com.tokopedia.kotlin.extensions.R.string.title_try_again)}. Kode Error: ($errCode)"
+                subErrorMessage = "${
+                    getString(
+                            com.tokopedia.kotlin.extensions.R.string.title_try_again)
+                }. Kode Error: ($errCode)"
                 onRetryListener = ErrorNetworkModel.OnRetryListener {
                     showLoading()
                     loadInitialData()
@@ -217,18 +219,19 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
             voucherGameAnalytics.eventClearSearchBox()
         }
 
-        search_input_view.searchBarTextField.setOnEditorActionListener(object: TextView.OnEditorActionListener{
+        search_input_view.searchBarTextField.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             override fun onEditorAction(text: TextView?, actionId: Int, p2: KeyEvent?): Boolean {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     text?.let {
-                        if (text.text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it.text.toString()) }
+                        if (text.text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it.text.toString())
+                    }
                     KeyboardHandler.hideSoftKeyboard(activity)
                     return true
                 }
                 return false
             }
 
-        } )
+        })
 
         search_input_view.searchBarTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -294,7 +297,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapte
                                 data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                     }
                 }
-            } catch (t: Throwable){
+            } catch (t: Throwable) {
                 t.printStackTrace()
             }
         }

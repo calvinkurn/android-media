@@ -41,7 +41,7 @@ class UpdateSellerResponseUseCase @Inject constructor(
     @GqlQuery(UPDATE_REVIEW_REPLY_MUTATION_CLASS_NAME, UPDATE_REVIEW_REPLY_MUTATION)
     override suspend fun executeOnBackground(): ReviewReplyUpdateResponse.ProductrevUpdateSellerResponse {
         val gqlRequest = GraphqlRequest(UpdateReviewReply.GQL_QUERY, ReviewReplyUpdateResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<ReviewReplyUpdateResponse>(ReviewReplyUpdateResponse::class.java).productrevUpdateSellerResponse

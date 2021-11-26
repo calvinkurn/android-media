@@ -131,8 +131,8 @@
     <string name="review_form_bad_helper">Kasih tahu apa yang tidak memuaskan dan perlu ditingkatkan.</string>
     <string name="review_form_worst_helper">Kasih tahu apa yang mengecewakan dan perlu ditingkatkan.</string>
     <string name="review_form_incentives_exit_dialog_title">Yakin mau keluar? 😢</string>
-    <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat TokoPoints. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
-    <string name="review_form_incentives_incomplete_dialog_body">Dengan ulasan lengkap, kamu bisa dapat hadiah TokoPoints, lho!</string>
+    <string name="review_form_incentives_exit_dialog_body">Tinggal sedikit lagi buat dapat hadiah dari ulasan, lho. Ulasanmu nggak akan tersimpan kalau kamu keluar dari halaman ini.</string>
+    <string name="review_form_incentives_incomplete_dialog_body">Ayo lengkapi dulu karena kamu bisa dapat hadiah dari ulasan, lho!</string>
 
     <string name="review_date">• %s</string>
     <string name="review_refresh">Refresh</string>
@@ -294,6 +294,9 @@
     <string name="review_create_later">Selesai</string>
     <string name="review_create_thank_you_title">Terima kasih untuk ulasanmu!</string>
     <string name="review_create_thank_you_default_button">Oke, Sip</string>
+    <string name="review_create_bottom_sheet_text_area_empty">Tulis min. 40 karakter buat dapetin hadiahnya ✍️</string>
+    <string name="review_create_bottom_sheet_text_area_partial">Lengkapi sedikit lagi biar dapet hadiahnya 🙌</string>
+    <string name="review_create_bottom_sheet_text_area_eligible">Tulisanmu sudah lengkap? Sertain foto juga, ya  📸</string>
 
     <!-- Review Reminder -->
     <string name="review_reminder_tab_title_1">Kirim Pesan</string>
@@ -391,11 +394,15 @@
     <string name="review_reading_product_satisfaction_rate">%s&#37; pembeli puas belanja barang ini</string>
     <string name="review_reading_rating_format">%.1f</string>
     <string name="review_reading_highlighted_topic_review_count">%d ulasan</string>
+    <string name="review_reading_reviewer_stats">• %s</string>
 
     <!-- Gallery    -->
     <string name="review_gallery_image_count">%d/%d</string>
     <string name="review_gallery_header_see_all">Lihat Semua</string>
     <string name="review_gallery_variant">Varian: %s</string>
     <string name="review_gallery_title">Foto Pembeli</string>
+
+    <!-- Credibility   -->
+    <string name="review_credibility_learn_more">Pelajari Selengkapnya</string>
 
 </resources>

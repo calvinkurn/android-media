@@ -3,19 +3,17 @@ package com.tokopedia.topchat.chatroom.view.presenter
 import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.attachcommon.data.ResultProduct
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.AttachmentType
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.ReplyChatViewModel
-import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.chat_common.data.SendableUiModel
+import com.tokopedia.attachcommon.preview.ProductPreview
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.FileUtil
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -42,7 +40,6 @@ import io.mockk.mockkObject
 import io.mockk.spyk
 import okhttp3.Interceptor
 import okhttp3.WebSocket
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import rx.subjects.PublishSubject
@@ -73,25 +70,7 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var replyChatUseCase: ReplyChatUseCase
 
     @RelaxedMockK
-    protected lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCase
-
-    @RelaxedMockK
-    protected lateinit var getShopFollowingUseCase: GetShopFollowingUseCase
-
-    @RelaxedMockK
-    protected lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
-
-    @RelaxedMockK
-    protected lateinit var addToCartUseCase: AddToCartUseCase
-
-    @RelaxedMockK
     protected lateinit var compressImageUseCase: CompressImageUseCase
-
-    @RelaxedMockK
-    protected lateinit var seamlessLoginUsecase: SeamlessLoginUsecase
-
-    @RelaxedMockK
-    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCase
 
     @RelaxedMockK
     protected lateinit var addWishListUseCase: AddWishListUseCase
@@ -101,9 +80,6 @@ abstract class BaseTopChatRoomPresenterTest {
 
     @RelaxedMockK
     protected lateinit var uploadImageUseCase: TopchatUploadImageUseCase
-
-    @RelaxedMockK
-    protected lateinit var orderProgressUseCase: OrderProgressUseCase
 
     @RelaxedMockK
     protected lateinit var groupStickerUseCase: ChatListGroupStickerUseCase
@@ -201,10 +177,6 @@ abstract class BaseTopChatRoomPresenterTest {
         val wsResponseProductAttachmentString = FileUtil.readFileContent(
             "/ws_response_product_attachment.json"
         )
-        val successGetOrderProgressResponse: OrderProgressResponse = FileUtil.parse(
-            "/success_get_order_progress.json",
-            OrderProgressResponse::class.java
-        )
         val successGetChatListGroupSticker: ChatListGroupStickerResponse = FileUtil.parse(
             "/success_chat_list_group_sticker.json",
             ChatListGroupStickerResponse::class.java
@@ -241,13 +213,16 @@ abstract class BaseTopChatRoomPresenterTest {
             )
         }
 
-        val imageUploadViewModel = ImageUploadViewModel(
-            exMessageId,
-            "123123",
-            "123987",
-            "https://ecs.tokopedia.com/image.jpg",
-            "123"
-        )
+        val imageUploadViewModel = ImageUploadUiModel.Builder()
+            .withMsgId(exMessageId)
+            .withFromUid("123123")
+            .withAttachmentId("123987")
+            .withAttachmentType(AttachmentType.Companion.TYPE_IMAGE_UPLOAD)
+            .withReplyTime(SendableUiModel.SENDING_TEXT)
+            .withStartTime("123")
+            .withIsDummy(true)
+            .withImageUrl("https://ecs.tokopedia.com/image.jpg")
+            .build()
 
         val readParam = TopChatWebSocketParam.generateParamRead(exMessageId)
         val replyChatViewModelApiSuccess = generateReplyChatViewModelApi()
@@ -272,17 +247,10 @@ abstract class BaseTopChatRoomPresenterTest {
                 topChatRoomWebSocketMessageMapper,
                 getTemplateChatRoomUseCase,
                 replyChatUseCase,
-                getExistingMessageIdUseCase,
-                getShopFollowingUseCase,
-                toggleFavouriteShopUseCase,
-                addToCartUseCase,
                 compressImageUseCase,
-                seamlessLoginUsecase,
-                getChatRoomSettingUseCase,
                 addWishListUseCase,
                 removeWishListUseCase,
                 uploadImageUseCase,
-                orderProgressUseCase,
                 groupStickerUseCase,
                 chatAttachmentUseCase,
                 chatToggleBlockChat,

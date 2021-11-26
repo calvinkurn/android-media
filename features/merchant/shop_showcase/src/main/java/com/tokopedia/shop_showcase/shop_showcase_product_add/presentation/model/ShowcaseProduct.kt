@@ -1,7 +1,7 @@
 package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * @author by Rafli Syam on 2020-03-09

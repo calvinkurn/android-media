@@ -15,7 +15,8 @@ data class ConfigurationUiModel(
         val productTagConfig: ProductTagConfigUiModel,
         val coverConfig: CoverConfigUiModel,
         val countDown: Long, // second
-        val scheduleConfig: BroadcastScheduleConfigUiModel
+        val scheduleConfig: BroadcastScheduleConfigUiModel,
+        val tnc: List<TermsAndConditionUiModel>,
 )
 
 data class DurationConfigUiModel(
@@ -40,4 +41,8 @@ data class BroadcastScheduleConfigUiModel(
         val minimum: Date,
         val maximum: Date,
         val default: Date
+)
+
+data class TermsAndConditionUiModel(
+        val desc: String,
 )

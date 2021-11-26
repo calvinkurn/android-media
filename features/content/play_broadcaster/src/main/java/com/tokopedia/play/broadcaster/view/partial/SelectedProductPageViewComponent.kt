@@ -32,7 +32,7 @@ class SelectedProductPageViewComponent(
     private val bottomSheetBehavior = BottomSheetBehavior.from(clSelectedProduct)
 
     private val selectableProductAdapter = ProductSelectableAdapter(object : ProductSelectableViewHolder.Listener {
-        override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+        override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
             listener.onProductSelectStateChanged(productId, isSelected)
         }
 
@@ -82,6 +82,6 @@ class SelectedProductPageViewComponent(
 
     interface Listener {
 
-        fun onProductSelectStateChanged(productId: Long, isSelected: Boolean)
+        fun onProductSelectStateChanged(productId: String, isSelected: Boolean)
     }
 }

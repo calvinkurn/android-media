@@ -14,6 +14,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewMode
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -66,9 +67,9 @@ class ProductPostTagViewHolderNew(
             label.text = item.discountFmt
             productPrice.text = item.priceDiscountFmt
 
-        } else {
-            productPrice.text = item.priceFmt
         }
+        productPrice.text = item.priceFmt
+
         freeShipping.showWithCondition(item.isFreeShipping)
         if (item.isFreeShipping) {
             freeShipping.loadImage(item.freeShippingURL)
@@ -76,12 +77,12 @@ class ProductPostTagViewHolderNew(
         productImage.setImageUrl(item.imgUrl)
         productName.text = item.text
 
-        card.setOnClickListener(
+        card.setOnClickListener (
             getItemClickNavigationListener(
-                listener,
-                item.positionInFeed,
-                item.product,
-                adapterPosition
+                    listener,
+                    item.positionInFeed,
+                    item.product,
+                    adapterPosition
             )
         )
         menuBtn.setOnClickListener {

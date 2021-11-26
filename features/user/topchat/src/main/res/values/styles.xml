@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="SwitchCompatStyle">
-        <item name="thumbTint">@color/topchat_dms_switch_template</item>
-        <item name="trackTint">@color/Unify_N75</item>
-    </style>
-
-</resources>

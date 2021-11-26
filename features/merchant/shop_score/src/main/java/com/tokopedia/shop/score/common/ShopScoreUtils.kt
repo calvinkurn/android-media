@@ -49,14 +49,6 @@ fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
     }
 }
 
-fun SortFilterItem.toggle() {
-    type = if (type == ChipsUnify.TYPE_NORMAL) {
-        ChipsUnify.TYPE_SELECTED
-    } else {
-        ChipsUnify.TYPE_NORMAL
-    }
-}
-
 fun getNowTimeStamp(): Long {
     val date = Calendar.getInstance(getLocale())
     return date.timeInMillis

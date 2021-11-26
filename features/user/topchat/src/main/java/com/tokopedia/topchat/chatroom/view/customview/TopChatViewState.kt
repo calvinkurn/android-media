@@ -2,15 +2,15 @@ package com.tokopedia.topchat.chatroom.view.customview
 
 import android.os.Parcelable
 import com.tokopedia.chat_common.data.BlockedStatus
-import com.tokopedia.chat_common.data.ImageUploadViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 
 interface TopChatViewState : BaseChatViewState {
 
-    fun showRetryUploadImages(it: ImageUploadViewModel, b: Boolean)
+    fun showRetryUploadImages(it: ImageUploadUiModel, b: Boolean)
 
     fun onSetCustomMessage(customMessage: String)
 
@@ -26,7 +26,7 @@ interface TopChatViewState : BaseChatViewState {
 
     fun focusOnReply()
 
-    fun getChatRoomHeaderModel(): ChatRoomHeaderViewModel
+    fun getChatRoomHeaderModel(): ChatRoomHeaderUiModel
 
     fun onStickerOpened()
 

@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhome.settings.view.adapter
 
 import android.content.Context
-import android.content.Intent
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -16,6 +15,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.*
 import com.tokopedia.seller.menu.common.view.uimodel.base.DividerType
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.SellerHomeConst
 import java.util.*
 
 class OtherMenuAdapter(
@@ -27,6 +27,7 @@ class OtherMenuAdapter(
 
     companion object {
         private const val APPLINK_FORMAT = "%s?url=%s"
+        private const val FEEDBACK_EXPIRED_DATE = 1638115199000 //28-11-2021
     }
 
     private val settingList = listOf(
@@ -117,11 +118,22 @@ class OtherMenuAdapter(
             title = context?.getString(R.string.setting_menu_setting).orEmpty(),
             clickApplink = null,
             eventActionSuffix = SettingTrackingConstant.SETTINGS,
-            iconUnify = IconUnify.SETTING
+            iconUnify = IconUnify.SETTING,
+            tag = getSettingsTag()
         ) {
             listener.goToSettings()
         }
     )
+
+    private fun getSettingsTag(): String {
+        val expiredDateMillis = FEEDBACK_EXPIRED_DATE
+        val todayMillis = Date().time
+        return if (todayMillis < expiredDateMillis) {
+            context?.getString(R.string.setting_new_tag).orEmpty()
+        } else {
+            SellerHomeConst.EMPTY_STRING
+        }
+    }
 
     fun populateAdapterData() {
         clearAllElements()

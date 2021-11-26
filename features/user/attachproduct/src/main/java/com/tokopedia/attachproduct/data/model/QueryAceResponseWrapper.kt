@@ -2,12 +2,7 @@ package com.tokopedia.attachproduct.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class QueryAceResponseWrapper(
-    @SerializedName("data")
-    val data: AceSearchProductResponse
-)
-
 data class AceSearchProductResponse(
     @SerializedName("ace_search_product")
-    val aceSearchProductResponse: NewAceResponseWrapper = NewAceResponseWrapper()
+    val aceSearchProductResponse: AceResponseWrapper = AceResponseWrapper()
 )

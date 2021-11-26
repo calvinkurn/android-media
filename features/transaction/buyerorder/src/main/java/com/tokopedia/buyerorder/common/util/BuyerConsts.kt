@@ -7,8 +7,6 @@ object BuyerConsts {
     const val TITLE_CANCEL_REASON_BOTTOMSHEET = "Ajukan Pembatalan"
     const val TITLE_LIST_OF_PRODUCT_BOTTOMSHEET = "Semua Produk"
     const val PARAM_SHOP_NAME = "param_shop_name"
-    const val PARAM_SERIALIZABLE_LIST_PRODUCT = "param_serializable_list_product"
-    const val PARAM_JSON_LIST_PRODUCT = "param_json_list_product"
     const val PARAM_INVOICE = "param_invoice"
     const val INVOICE = "invoice"
     const val PARAM_INPUT = "input"
@@ -24,6 +22,7 @@ object BuyerConsts {
     const val PARAM_INVOICE_URL = "invoice_url"
     const val PARAM_STATUS_ID = "status_id"
     const val PARAM_STATUS_INFO = "status_info"
+    const val PARAM_PRODUCT_BUNDLE_LIST = "product_bundle_list"
     const val PARAM_CACHE_ID = "cache_id"
     const val PARAM_CACHE_MANAGER_ID = "cache_manager_id"
     const val PARAM_HELP_LINK_URL = "help_link_url"
@@ -40,7 +39,6 @@ object BuyerConsts {
     const val BUTTON_REGULER_CANCELATION = "Ajukan Pembatalan"
     const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
     const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
-    const val INSTANT_CANCEL_BUYER_REQUEST = 100
     const val RESULT_CODE_SUCCESS = 1
     const val RESULT_CODE_BACK = 0
 
@@ -51,4 +49,7 @@ object BuyerConsts {
     const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
 
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
+
+    const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
+    const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
 }

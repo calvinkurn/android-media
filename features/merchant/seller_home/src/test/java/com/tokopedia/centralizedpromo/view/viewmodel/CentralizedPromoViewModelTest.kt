@@ -6,6 +6,7 @@ import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.VoucherCashbackEligibleUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
@@ -45,6 +46,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
+
+    @RelaxedMockK
+    lateinit var voucherCashbackEligibleUseCase: VoucherCashbackEligibleUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
@@ -95,6 +99,7 @@ class CentralizedPromoViewModelTest {
             userSession,
             getOnGoingPromotionUseCase,
             getChatBlastSellerMetadataUseCase,
+            voucherCashbackEligibleUseCase,
             remoteConfig,
             coroutineTestRule.dispatchers
         )
@@ -162,8 +167,12 @@ class CentralizedPromoViewModelTest {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         } returns ChatBlastSellerMetadataUiModel(200, 2)
 
-        every {
-            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns false
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
         } returns true
 
         every {
@@ -189,7 +198,40 @@ class CentralizedPromoViewModelTest {
     fun `Success get layout data for promo creation with no broadcast chat quota`() = runBlocking {
         coEvery {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
-        } returns ChatBlastSellerMetadataUiModel(0, 0)
+        } returns ChatBlastSellerMetadataUiModel(200, 0)
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result != null && result is Success &&
+                result.data is PromoCreationListUiModel &&
+                (result.data as PromoCreationListUiModel).items[1].extra.isEmpty())
+    }
+
+    @Test
+    fun `Success get layout data for promo creation with no broadcast chat quota and undefined promo type`() = runBlocking {
+        coEvery {
+            getChatBlastSellerMetadataUseCase.executeOnBackground()
+        } returns ChatBlastSellerMetadataUiModel(0, 1)
+
+        coEvery {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED, true)
+        } returns false
+
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } returns true
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
@@ -215,6 +257,19 @@ class CentralizedPromoViewModelTest {
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
         assert(result != null && result is Fail)
+    }
+
+    @Test
+    fun `When get voucher cashback eligiblity fail, get layout data should also fails`() = runBlocking {
+        coEvery {
+            voucherCashbackEligibleUseCase.execute(any())
+        } throws MessageErrorException()
+
+        viewModel.getLayoutData(LayoutType.PROMO_CREATION)
+
+        val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
+
+        assert(result is Fail)
     }
 
     @Test

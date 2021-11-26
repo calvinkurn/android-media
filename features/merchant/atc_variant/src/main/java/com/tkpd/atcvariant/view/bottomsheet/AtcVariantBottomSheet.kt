@@ -40,14 +40,17 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.observeOnce
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.*
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_ATC_VAR_CHANGE_ADDRESS
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.REQUEST_CODE_TRADEIN_PDP
+import com.tokopedia.product.detail.common.bottomsheet.TokoNowEducationalInformationBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
 import com.tokopedia.product.detail.common.data.model.re.RestrictionData
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -57,7 +60,9 @@ import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormReque
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -105,6 +110,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private var baseAtcBtn: PartialAtcButtonView? = null
     private var rvVariantBottomSheet: RecyclerView? = null
+    private var txtStock: Typography? = null
     private var buttonActionType = 0
     private var buttonText = ""
     private var alreadyHitQtyTrack = false
@@ -163,6 +169,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         viewContent = View.inflate(context, R.layout.bottomsheet_atc_variant, null)
         viewContent?.let {
             baseAtcBtn = PartialAtcButtonView.build(it.findViewById(R.id.base_atc_btn), this)
+            txtStock = it.findViewById(R.id.txt_variant_empty_stock)
         }
         setChild(viewContent)
         setupRv(viewContent)
@@ -206,6 +213,15 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         observeWishlist()
         observeRestrictionData()
         observeToggleFavorite()
+        observeStockCopy()
+    }
+
+    private fun observeStockCopy() {
+        viewModel.stockCopy.observe(viewLifecycleOwner, {
+            txtStock?.shouldShowWithAction(it.isNotEmpty()) {
+                if (context != null) txtStock?.text = HtmlLinkHelper(requireContext(), it).spannedString
+            }
+        })
     }
 
     private fun observeParamsData() {
@@ -236,8 +252,8 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun getDataFromPreviousPage(productVariantBottomSheetParams: ProductVariantBottomSheetParams):ProductVariantBottomSheetParams?{
-         context?.let { ctx ->
+    private fun getDataFromPreviousPage(productVariantBottomSheetParams: ProductVariantBottomSheetParams): ProductVariantBottomSheetParams? {
+        context?.let { ctx ->
             val cacheManager = SaveInstanceCacheManager(ctx, productVariantBottomSheetParams.cacheId)
             val data: ProductVariantBottomSheetParams? = cacheManager.get(AtcVariantHelper.PDP_PARCEL_KEY_RESPONSE, ProductVariantBottomSheetParams::class.java, null)
 
@@ -510,6 +526,11 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ?: ""
         val variantTitle = adapter.getHeaderDataModel()?.listOfVariantTitle?.joinToString(separator = ", ")
                 ?: ""
+
+        val ratesEstimateData = variantAggregatorData?.getP2RatesEstimateByProductId(productId)?.p2RatesData
+        val buyerDistrictId = context?.let { ChooseAddressUtils.getLocalizingAddressData(it)?.district_id ?: "" } ?: ""
+        val sellerDistrictId = viewModel.getSelectedWarehouse(productId)?.districtId ?: ""
+
         ProductTrackingCommon.eventEcommerceAddToCart(
                 userId = userSessionInterface.userId,
                 cartId = cartId,
@@ -530,7 +551,12 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                         ?: "",
                 bebasOngkirType = variantAggregatorData?.getBebasOngkirStringType(productId) ?: "",
                 pageSource = aggregatorParams?.pageSource ?: "",
-                cdListName = aggregatorParams?.trackerCdListName ?: "")
+                cdListName = aggregatorParams?.trackerCdListName ?: "",
+                isCod = variantAggregatorData?.isCod ?: false,
+                ratesEstimateData = ratesEstimateData,
+                buyerDistrictId = buyerDistrictId,
+                sellerDistrictId = sellerDistrictId
+        )
     }
 
     private fun onSuccessOcs(result: AddToCartDataModel) {
@@ -564,10 +590,17 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     private fun onSuccessAtc(successMessage: String?) {
         context?.let {
-            val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
+            val message = if (successMessage == null || successMessage.isEmpty())
+                it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
+            else
                 successMessage
-            viewModel.updateActivityResult(atcSuccessMessage = message)
-            showToasterSuccess(message)
+
+            showToasterSuccess(message, ctaText = getString(R.string.atc_variant_see)) {
+                ProductCartHelper.goToCartCheckout(getAtcActivity(), "")
+            }
+            viewModel.updateActivityResult(
+                    atcSuccessMessage = message,
+                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
         }
     }
 
@@ -896,7 +929,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                     ?: ""
 
             val bottomSheet = if (isTokoNow) {
-                ProductDetailCommonBottomSheetBuilder.getUspTokoNowBottomSheet(it)
+                TokoNowEducationalInformationBottomSheet()
             } else {
                 ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(it, boImageUrl, uspImageUrl)
             }

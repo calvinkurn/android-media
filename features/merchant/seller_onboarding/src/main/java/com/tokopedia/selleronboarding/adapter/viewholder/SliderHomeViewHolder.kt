@@ -8,10 +8,9 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.selleronboarding.R
+import com.tokopedia.selleronboarding.databinding.SobSliderHomeViewHolderBinding
 import com.tokopedia.selleronboarding.model.SobSliderHomeUiModel
 import com.tokopedia.selleronboarding.utils.OnboardingConst
-import kotlinx.android.synthetic.main.partial_view_holder_observer.view.*
-import kotlinx.android.synthetic.main.sob_slider_home_view_holder.view.*
 
 /**
  * Created By @ilhamsuaib on 20/07/21
@@ -31,11 +30,13 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
         itemView.findViewById<View>(R.id.viewObserver)
     }
 
+    private val binding by lazy { SobSliderHomeViewHolderBinding.bind(itemView) }
+
     override fun bind(element: SobSliderHomeUiModel) {
-        with(itemView) {
+        with(binding) {
             setupAnimation(element)
 
-            imgSobHome?.run {
+            imgSobHome.run {
                 loadImage(OnboardingConst.ImageUrl.IMG_SOB_HOME) {
                     setPlaceHolder(R.drawable.img_sob_home)
                 }
@@ -44,24 +45,24 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
     }
 
     private fun setupAnimation(element: SobSliderHomeUiModel) {
-        with(itemView) {
-            viewTreeObserver.addOnPreDrawListener {
-                tvSobSliderHome?.alpha = animationObserver.alpha
-                tvSobSliderHome?.translationY = animationObserver.translationY
+        with(binding) {
+            root.viewTreeObserver.addOnPreDrawListener {
+                tvSobSliderHome.alpha = animationObserver.alpha
+                tvSobSliderHome.translationY = animationObserver.translationY
 
                 return@addOnPreDrawListener true
             }
 
-            addOnImpressionListener(element.impressionHolder) {
-                itemView.imgSobHome.scaleX = animationObserver.scaleX
-                itemView.imgSobHome.scaleY = animationObserver.scaleY
+            root.addOnImpressionListener(element.impressionHolder) {
+                imgSobHome.scaleX = animationObserver.scaleX
+                imgSobHome.scaleY = animationObserver.scaleY
                 runOneTimePopInAnimation()
             }
         }
     }
 
     private fun setupImageViewObserver() {
-        with(itemView.imgSobHome) {
+        with(binding.imgSobHome) {
             viewTreeObserver.addOnDrawListener {
                 scaleX = animationObserver.scaleX
                 scaleY = animationObserver.scaleY
@@ -71,7 +72,7 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
     }
 
     private fun runOneTimePopInAnimation() {
-        with(itemView) {
+        with(binding) {
             val animation = ScaleAnimation(
                 START_SCALE, END_SCALE,
                 START_SCALE, END_SCALE,
@@ -93,7 +94,8 @@ class SliderHomeViewHolder(itemView: View) : AbstractViewHolder<SobSliderHomeUiM
 
                 }
             })
-            post {
+
+            root.post {
                 imgSobHome.visible()
                 imgSobHome.startAnimation(animation)
             }

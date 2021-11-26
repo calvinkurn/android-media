@@ -1111,4 +1111,18 @@ class ShopPageTrackingBuyer(
         )
         sendDataLayerEvent(eventMap)
     }
+
+    fun clickUniversalSharingPermission(action: String, label: String, shopId: String, userId: String) {
+        val eventMap: MutableMap<String, Any> = mutableMapOf(
+                ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_ACTION to action,
+                ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
+                ShopPageTrackingConstant.EVENT_LABEL to label,
+                ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
+                ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
+                ShopPageTrackingConstant.SHOP_ID to shopId,
+                ShopPageTrackingConstant.USER_ID to userId.ifEmpty { "0" }
+        )
+        sendDataLayerEvent(eventMap)
+    }
 }

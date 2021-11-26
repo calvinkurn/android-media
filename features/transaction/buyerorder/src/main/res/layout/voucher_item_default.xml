@@ -2,12 +2,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_card"
+    tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_16">
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="16dp">
 
     <com.tokopedia.buyerorder.detail.view.customview.CustomTicketView
         android:layout_width="match_parent"
@@ -46,9 +48,9 @@
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:layout_below="@+id/ll_total_ticket"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="8dp"
         android:background="@drawable/dash_line_grey" />
 
 
@@ -56,9 +58,9 @@
         android:id="@+id/ll_event"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         android:orientation="horizontal">
 
         <TextView
@@ -81,9 +83,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_event"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         android:orientation="horizontal"
         android:visibility="gone">
 
@@ -107,9 +109,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_tanggal_event"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         android:orientation="horizontal">
 
         <TextView
@@ -132,9 +134,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_address"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         android:orientation="horizontal">
 
         <TextView
@@ -157,9 +159,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_category_ticket"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
         android:orientation="horizontal">
 
         <TextView
@@ -183,7 +185,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/divider1"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
@@ -193,10 +195,10 @@
             android:background="@drawable/rect_grey"
             android:gravity="center_horizontal"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_8">
+            android:paddingLeft="12dp"
+            android:paddingTop="8dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="8dp">
 
 
             <TextView
@@ -207,7 +209,7 @@
                 android:gravity="center_horizontal"
                 android:text="@string/text_valid_till"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/dp_12" />
+                android:textSize="12dp" />
 
             <TextView
                 android:id="@+id/tv_valid_till_date"
@@ -216,7 +218,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/dp_12"
+                android:textSize="12dp"
                 android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
@@ -232,18 +234,18 @@
 
         <ProgressBar
             android:id="@+id/prog_bar"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="8dp"
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/tapAction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:background="@color/Unify_N0"
             android:orientation="vertical"
             android:visibility="visible" />
@@ -252,14 +254,14 @@
             android:id="@+id/actionButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:background="@color/Unify_N0"
             android:orientation="vertical" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_10" />
+            android:layout_height="10dp" />
     </LinearLayout>
 
 </RelativeLayout>

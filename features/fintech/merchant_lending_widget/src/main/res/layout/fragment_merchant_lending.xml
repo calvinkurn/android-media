@@ -5,12 +5,12 @@
     android:id="@+id/cardview_widgetmlp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="8dp"
     android:background="@color/white"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_4">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_mlp"
@@ -18,13 +18,13 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:background="@color/white"
-        android:padding="@dimen/dp_8">
+        android:padding="8dp">
 
         <ImageView
             android:id="@+id/header_logo"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginLeft="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,8 +32,8 @@
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_5"
-            android:drawablePadding="@dimen/dp_12"
+            android:layout_marginLeft="5dp"
+            android:drawablePadding="12dp"
             android:gravity="center_vertical"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
@@ -46,9 +46,9 @@
             android:id="@+id/text_badge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_9"
+            android:layout_marginLeft="9dp"
             android:background="@drawable/bg_textbadge"
-            android:padding="@dimen/dp_2"
+            android:padding="2dp"
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/text_title"
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:fontFamily="sans-serif-medium"
-            android:paddingRight="@dimen/dp_8"
+            android:paddingRight="8dp"
             android:textColor="@color/medium_green"
             android:textSize="@dimen/sp_12"
             android:visibility="gone"
@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_11"
-                android:layout_marginBottom="@dimen/dp_9"
+                android:layout_marginBottom="9dp"
                 android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">
@@ -112,9 +112,9 @@
                 android:id="@+id/box_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_12"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_12"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="12dp"
                 android:orientation="vertical"
                 android:visibility="gone"
                 tools:visibility="visible">

@@ -7,6 +7,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,12 +26,18 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.analytics.SmartBillsAnalytics
 import com.tokopedia.smartbills.data.*
@@ -40,8 +47,11 @@ import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivi
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsAccordionViewHolder
+import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsEmptyStateViewHolder
 import com.tokopedia.smartbills.presentation.adapter.viewholder.SmartBillsViewHolder
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
+import com.tokopedia.smartbills.presentation.widget.SmartBillsCatalogBottomSheet
+import com.tokopedia.smartbills.presentation.widget.SmartBillsDeleteBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.presentation.widget.SmartBillsToolTipBottomSheet
 import com.tokopedia.smartbills.util.DividerSBMItemDecoration
@@ -69,7 +79,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     TopupBillsCheckoutWidget.ActionListener,
     SmartBillsActivity.SbmActivityListener,
     SmartBillsToolTipBottomSheet.Listener,
-    SmartBillsAccordionViewHolder.SBMAccordionListener{
+    SmartBillsAccordionViewHolder.SBMAccordionListener,
+        SmartBillsEmptyStateViewHolder.EmptyStateSBMListener,
+        SmartBillsCatalogBottomSheet.CatalogCallback
+{
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -80,10 +93,16 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     private lateinit var localCacheHandler: LocalCacheHandler
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
+    private var containerCheckBox: RelativeLayout? = null
+
     lateinit var adapter: SmartBillsAdapter
+    lateinit var adapterAccordion: SmartBillsAdapter
 
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
+
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var source: String = ""
 
@@ -118,24 +137,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
+    private fun observeData(){
         viewModel.statementMonths.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
                     ongoingMonth?.let {
                         viewModel.getStatementBills(
-                            viewModel.createStatementBillsParams(
-                                it.month,
-                                it.year,
-                                SOURCE
-                            ),
-                            swipeToRefresh?.isRefreshing ?: false
+                                viewModel.createStatementBillsParams(
+                                        it.month,
+                                        it.year,
+                                        SOURCE
+                                ),
+                                swipeToRefresh?.isRefreshing ?: false
                         )
                     }
-                    if(ongoingMonth == null) {
+                    if (ongoingMonth == null) {
                         showGlobalError(getDataErrorException())
                     }
                 }
@@ -161,14 +178,14 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     val bills = getNotAccordionSection(it.data.sections)?.bills
                     if (!bills.isNullOrEmpty()) {
                         listBills = bills
-                        view_smart_bills_select_all_checkbox_container.show()
+                        containerCheckBox?.show()
 
-                        if(!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty())
+                        if (!getNotAccordionSection(it.data.sections)?.title.isNullOrEmpty())
                             tv_smart_bills_title.text = getNotAccordionSection(it.data.sections)?.title
 
                         renderList(bills)
                         listAccordion = getAccordionSection(it.data.sections)
-                        renderList(listAccordion)
+                        renderAccordionList(listAccordion)
                         smartBillsAnalytics.impressionAllProducts(bills)
 
                         // Auto select bills based on data
@@ -225,8 +242,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         view?.let { v ->
                             val throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
                             Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable),
-                                Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                                    Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
 
                         for (errorItem in it.data.attributes.errors) {
@@ -252,13 +269,61 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                         throwable = MessageErrorException(getString(R.string.smart_bills_checkout_error))
                     }
                     view?.let { v ->
-                        Toaster.build(v, ErrorHandler.getErrorMessage(context, throwable),
-                            Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                            getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        Toaster.build(v, ErrorHandler.getErrorMessage(context,throwable)
+                                , Toaster.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
             }
         })
+
+        viewModel.catalogList.observe(viewLifecycleOwner, Observer {
+            hideProgressBar()
+            when (it) {
+                is Success -> {
+                    if (it.data.isNotEmpty()) {
+                        showCatalogBottomSheet(it.data)
+                    } else {
+                        view?.let { view ->
+                            Toaster.build(view, getString(R.string.smart_bills_add_bills_bottom_sheet_catalog_empty), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
+                    }
+                }
+
+                is Fail -> {
+                    view?.let { view ->
+                        Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
+                }
+            }
+        })
+
+        observe(viewModel.deleteSBM){
+            when(it){
+                is Success -> {
+                    val message = it.data.rechargeSBMDeleteBill.message
+                    if (!message.isNullOrEmpty()) {
+                        view?.let { view ->
+                            smartBillsAnalytics.viewDeleteBillSuccess()
+                            Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                                    getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
+                        swipeToRefresh?.isRefreshing = true
+                        showLoading()
+                        loadInitialData()
+                    }
+                }
+
+                is Fail -> {
+                    view?.let { view ->
+                        Toaster.build(view, ErrorHandler.getErrorMessage(context, it.throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -267,12 +332,42 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         if(requestCode == REQUEST_CODE_SETTING) {
             showLoading()
             loadInitialData()
+        } else if (requestCode == REQUEST_CODE_ADD_BILLS) {
+            if(resultCode == Activity.RESULT_OK){
+                swipeToRefresh?.isRefreshing = true
+                showLoading()
+                loadInitialData()
+                val message = data?.getStringExtra(EXTRA_ADD_BILLS_MESSAGE)
+                val category = data?.getStringExtra(EXTRA_ADD_BILLS_CATEGORY)
+                if (message != null) {
+                    view?.let { parentView ->
+                        Toaster.build(
+                            parentView,
+                            message,
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            getString(com.tokopedia.resources.common.R.string.general_label_ok)
+                        ).show()
+                    }
+                }
+                category?.let {
+                    smartBillsAnalytics.clickViewShowToasterTelcoAddBills(category)
+                }
+            }
         } else if (resultCode == Activity.RESULT_CANCELED) activity?.finish()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupUI()
         initView()
+        observeData()
+    }
+
+    private fun setupUI(){
+        view?.apply {
+            containerCheckBox = findViewById(R.id.view_smart_bills_select_all_checkbox_container)
+        }
     }
 
     private fun initView() {
@@ -305,11 +400,21 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                     }
                 })
 
+                if(goToAddBills()) {
+                    tv_sbm_add_bills.apply {
+                        show()
+                        setOnClickListener {
+                            smartBillsAnalytics.clickTambahTagihan()
+                            getCatalogData()
+                        }
+                    }
+                } else tv_sbm_add_bills.hide()
+
                 // Setup toggle all items listener
                 cb_smart_bills_select_all.setOnClickListener {
                     toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
-                view_smart_bills_select_all_checkbox_container.setOnClickListener {
+                tg_smart_bills_select_all.setOnClickListener {
                     cb_smart_bills_select_all.toggle()
                     toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
@@ -317,6 +422,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 rv_smart_bills_items.adapter = adapter
                 rv_smart_bills_items.addItemDecoration(DividerSBMItemDecoration(context))
+                initAccordion()
                 smart_bills_checkout_view.listener = this
                 smart_bills_checkout_view.setBuyButtonLabel(getString(R.string.smart_bills_checkout_view_button_label))
                 updateCheckoutView()
@@ -326,9 +432,35 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
+    private fun initAccordion(){
+        rv_smart_bills_accordion?.apply {
+            resertAccordion()
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = adapterAccordion
+            addItemDecoration(DividerSBMItemDecoration(context))
+        }
+    }
+
+    private fun renderAccordionList(listSection: List<Section>){
+        rv_smart_bills_accordion?.apply {
+            show()
+            adapterAccordion.clearAllElements()
+            adapterAccordion.addElement(listSection)
+            adapterAccordion.notifyDataSetChanged()
+        }
+    }
+
+    private fun resertAccordion(){
+        rv_smart_bills_accordion?.apply {
+            hide()
+            adapterAccordion.clearAllElements()
+        }
+    }
+
     private fun resetInitialState(){
         tv_smart_bills_title.show()
-        view_smart_bills_select_all_checkbox_container.hide()
+        containerCheckBox?.hide()
+        resertAccordion()
         view_smart_bills_shimmering.show()
         smart_bills_checkout_view.setVisibilityLayout(true)
         toggleAllItems(false)
@@ -380,11 +512,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
 
     override fun createAdapterInstance(): BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory> {
         adapter = SmartBillsAdapter(adapterTypeFactory, this)
+        adapterAccordion = SmartBillsAdapter(adapterTypeFactory, this)
         return adapter as BaseListAdapter<RechargeBillsModel, SmartBillsAdapterFactory>
     }
 
     override fun getAdapterTypeFactory(): SmartBillsAdapterFactory {
-        return SmartBillsAdapterFactory(this, this, this)
+        return SmartBillsAdapterFactory(this, this,
+                this, this)
     }
 
     override fun showGetListError(throwable: Throwable?) {
@@ -403,7 +537,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
     }
 
     override fun updateListByCheck(isChecked: Boolean, position: Int) {
-        if(position>=0)
+        if (position >= 0)
             adapter.updateListByCheck(isChecked, position)
     }
 
@@ -418,6 +552,30 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
         updateCheckoutView()
         updateCheckAll()
+    }
+
+    override fun clickEmptyButton() {
+        getCatalogData()
+    }
+
+    override fun onCloseCatalogBottomSheet() {
+        smartBillsAnalytics.clickCloseBottomsheetCatalog()
+    }
+
+    private fun getCatalogData() {
+        if (getRemoteConfigAddBillsEnabler() && goToAddBills()) {
+            showProgressBar()
+            viewModel.getCatalogAddBills(viewModel.createCatalogIDParam(PLATFORM_ID_SBM))
+        } else {
+            RouteManager.route(context, ApplinkConst.RECHARGE_SUBHOMEPAGE_HOME_NEW)
+        }
+    }
+
+    private fun showCatalogBottomSheet(catalogList: List<SmartBillsCatalogMenu>) {
+        smartBillsAnalytics.viewBottomsheetCatalog()
+        val catalogBottomSheet = SmartBillsCatalogBottomSheet.newInstance(this)
+        catalogBottomSheet.showSBMCatalog(catalogList)
+        catalogBottomSheet.show(requireFragmentManager(), "")
     }
 
     private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
@@ -441,13 +599,15 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
                 rv_smart_bills_items?.post {
                     val billItemView = (rv_smart_bills_items?.findViewHolderForAdapterPosition(0) as? SmartBillsViewHolder)?.itemView
                     val coachMarks = ArrayList<CoachMark2Item>()
-                    coachMarks.add(
-                        CoachMark2Item(
-                            view_smart_bills_select_all_checkbox_container,
-                            getString(R.string.smart_bills_onboarding_title_1),
-                            getString(R.string.smart_bills_onboarding_description_1)
+                    containerCheckBox?.let {
+                        coachMarks.add(
+                                CoachMark2Item(
+                                        it,
+                                        getString(R.string.smart_bills_onboarding_title_1),
+                                        getString(R.string.smart_bills_onboarding_description_1)
+                                )
                         )
-                    )
+                    }
                     billItemView?.run {
                         coachMarks.add(
                             CoachMark2Item(
@@ -480,6 +640,49 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         fragmentManager?.run {
             bottomSheet.setTitle(getString(R.string.smart_bills_item_detail_bottomsheet_title))
             bottomSheet.show(this)
+        }
+    }
+
+    override fun onDeleteClicked(bill: RechargeBills) {
+        fragmentManager?.let {
+            smartBillsAnalytics.clickKebab(bill.categoryName)
+            val smartBillsDeleteBottomSheet = SmartBillsDeleteBottomSheet(object :
+                    SmartBillsDeleteBottomSheet.DeleteProductSBMListener{
+                override fun onDeleteProductClicked() {
+                    smartBillsAnalytics.clickHapusTagihan(bill.categoryName)
+                    showDeleteDialog(bill)
+                }
+
+                override fun onCloseBottomSheet() {
+                    smartBillsAnalytics.viewCloseBottomSheet()
+                }
+            })
+
+            smartBillsDeleteBottomSheet.show(it, "")
+        }
+    }
+
+    private fun showDeleteDialog(bill: RechargeBills){
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(resources.getString(R.string.smart_bills_delete_dialog_title))
+                setDescription(resources.getString(R.string.smart_bills_delete_dialog_desc))
+                setPrimaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_yes))
+                setSecondaryCTAText(resources.getString(R.string.smart_bills_delete_dialog_no))
+
+                setPrimaryCTAClickListener{
+                    smartBillsAnalytics.clickConfirmHapusTagihan()
+                    dismiss()
+                    viewModel.deleteProductSBM(viewModel.createParamDeleteSBM(RechargeSBMDeleteBillRequest(bill.uuid, SOURCE)))
+                }
+
+                setSecondaryCTAClickListener{
+                    smartBillsAnalytics.clickBatalHapusTagihan()
+                    dismiss()
+                }
+
+            }
+            dialog.show()
         }
     }
 
@@ -570,6 +773,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         smartBillsAnalytics.clickCollapseAccordion(titleAccordion)
     }
 
+    override fun onCatalogClickCallback(applink: String, category: String) {
+        smartBillsAnalytics.clickCategoryBottomsheetCatalog(category)
+        val intent = RouteManager.getIntent(context, applink)
+        startActivityForResult(intent, REQUEST_CODE_ADD_BILLS)
+    }
+
     private fun getDataErrorException(): Throwable {
         return MessageErrorException(getString(R.string.smart_bills_data_error))
     }
@@ -604,6 +813,28 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         }
     }
 
+    private fun getRemoteConfigAddBillsEnabler(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ADD_BILLS_SBM, true)
+    }
+
+    private fun showProgressBar(){
+        sbm_progress_bar.show()
+    }
+
+    private fun hideProgressBar(){
+        sbm_progress_bar.hide()
+    }
+
+    protected fun goToAddBills(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                    RollenceKey.SBM_ADD_BILLS_KEY, RollenceKey.SBM_ADD_BILLS_FALSE
+            ) == RollenceKey.SBM_ADD_BILLS_TRUE
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     companion object {
         const val EXTRA_SOURCE_TYPE = "source"
 
@@ -612,6 +843,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val PAID_TYPE = 1
 
         const val SOURCE = 1
+
+        const val PLATFORM_ID_SBM = 48
 
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 
@@ -625,6 +858,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBillsModel, SmartBillsAdapte
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
 
         const val REQUEST_CODE_SETTING = 1669
+
+        const val REQUEST_CODE_ADD_BILLS= 2030
+        const val EXTRA_ADD_BILLS_MESSAGE = "MESSAGE"
+        const val EXTRA_ADD_BILLS_CATEGORY = "CATEGORY"
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
         const val HELP_SBM_URL = "https://www.tokopedia.com/help/article/bayar-sekaligus"

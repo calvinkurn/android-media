@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.detail.data.getcancellationreason
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -33,7 +34,15 @@ data class BuyerGetCancellationReasonData(
 
 				@SerializedName("order_details")
 				@Expose
-				val orderDetails: List<OrderDetailsCancellation> = emptyList()) {
+				val orderDetails: List<OrderDetailsCancellation> = emptyList(),
+
+				@SerializedName("have_product_bundle")
+				@Expose
+				val haveProductBundle: Boolean = false,
+
+				@SerializedName("bundle_detail")
+				@Expose
+				val bundleDetail: BundleDetail? = BundleDetail()) {
 
 			data class TickerInfo (
 					@SerializedName("text")
@@ -70,6 +79,30 @@ data class BuyerGetCancellationReasonData(
 						@SerializedName("reason")
 						@Expose
 						val reason: String = ""
+				)
+			}
+
+			data class BundleDetail(
+					@SerializedName("bundle")
+					@Expose
+					val bundleList: List<Bundle> = listOf(),
+
+					@SerializedName("product_bundling_icon")
+					@Expose
+					val bundleIcon: String? = "",
+
+					@SerializedName("non_bundle")
+					@Expose
+					val nonBundleList: List<OrderDetailsCancellation> = listOf()
+			) {
+				data class Bundle(
+						@SerializedName("bundle_name")
+						@Expose
+						val bundleName: String = "",
+
+						@SerializedName("order_detail")
+						@Expose
+						val orderDetailList: List<OrderDetailsCancellation> = listOf()
 				)
 			}
 

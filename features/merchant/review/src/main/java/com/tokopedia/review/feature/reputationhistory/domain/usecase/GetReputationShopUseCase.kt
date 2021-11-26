@@ -22,7 +22,7 @@ class GetReputationShopUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ReputationShopResponse {
         val gqlRequest = GraphqlRequest(REPUTATION_SHOP_QUERY, ReputationShopResponse::class.java, params)
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(ReputationShopResponse::class.java)
         if (errors.isNullOrEmpty()) {

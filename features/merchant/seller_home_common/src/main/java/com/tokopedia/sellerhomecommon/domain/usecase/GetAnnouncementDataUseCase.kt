@@ -28,7 +28,7 @@ class GetAnnouncementDataUseCase(
 
     override suspend fun executeOnBackground(): List<AnnouncementDataUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetAnnouncementDataResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetAnnouncementDataResponse::class.java)
         if (errors.isNullOrEmpty()) {

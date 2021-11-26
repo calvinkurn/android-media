@@ -37,7 +37,7 @@ class GetLiveFollowersDataUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): GetLiveFollowersResponse {
         val gqlRequest = GraphqlRequest(query, GetLiveFollowersResponse::class.java, params)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<GetLiveFollowersResponse>(GetLiveFollowersResponse::class.java)
         if (response != null) {

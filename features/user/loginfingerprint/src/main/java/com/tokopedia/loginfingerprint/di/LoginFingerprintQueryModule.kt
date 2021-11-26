@@ -1,16 +1,7 @@
 package com.tokopedia.loginfingerprint.di
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
-import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
-import com.tokopedia.loginfingerprint.data.model.RemoveFingerprintPojo
-import com.tokopedia.loginfingerprint.data.model.VerifyFingerprintPojo
-import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
-import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
-import com.tokopedia.loginfingerprint.domain.usecase.RemoveFingerprintUsecase
-import com.tokopedia.loginfingerprint.domain.usecase.VerifyFingerprintUseCase
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import dagger.Module
 import dagger.Provides
@@ -20,35 +11,7 @@ class LoginFingerprintQueryModule {
 
     @LoginFingerprintSettingScope
     @Provides
-    fun provideRegisterFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): RegisterFingerprintUseCase {
-        val useCase = GraphqlUseCase<RegisterFingerprintPojo>(graphqlRepository)
-        return RegisterFingerprintUseCase(useCase, dispatchers)
-    }
-
-    @LoginFingerprintSettingScope
-    @Provides
-    fun provideVerifyFingerprintUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): VerifyFingerprintUseCase {
-        val useCase = GraphqlUseCase<VerifyFingerprintPojo>(graphqlRepository)
-        return VerifyFingerprintUseCase(useCase, dispatchers)
-    }
-
-    @LoginFingerprintSettingScope
-    @Provides
-    fun provideCheckFingerprintToggleUsecase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): CheckFingerprintToggleStatusUseCase {
-        val useCase = GraphqlUseCase<CheckFingerprintPojo>(graphqlRepository)
-        return CheckFingerprintToggleStatusUseCase(useCase, dispatchers)
-    }
-
-    @LoginFingerprintSettingScope
-    @Provides
     fun provideLoginTokenUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<LoginTokenPojo> = GraphqlUseCase(graphqlRepository)
-
-    @LoginFingerprintSettingScope
-    @Provides
-    fun provideRemoveFingerprintUseCase(graphqlRepository: GraphqlRepository, dispatchers: CoroutineDispatchers): RemoveFingerprintUsecase {
-        val useCase = GraphqlUseCase<RemoveFingerprintPojo>(graphqlRepository)
-        return RemoveFingerprintUsecase(useCase, dispatchers)
-    }
 
 }

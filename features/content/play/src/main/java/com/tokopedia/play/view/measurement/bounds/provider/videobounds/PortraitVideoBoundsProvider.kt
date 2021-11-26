@@ -58,7 +58,8 @@ class PortraitVideoBoundsProvider(
         }
 
         val chatListViewTotalHeight = run {
-            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_vertical_max_height)
+            val height =
+                container.resources.getDimensionPixelSize(R.dimen.play_chat_vertical_max_height)
             val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         }
@@ -66,7 +67,10 @@ class PortraitVideoBoundsProvider(
         val quickReplyViewTotalHeight = run {
             val height = if (hasQuickReply) {
                 if (quickReplyView.height <= 0) {
-                    quickReplyView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    quickReplyView.measure(
+                        View.MeasureSpec.UNSPECIFIED,
+                        View.MeasureSpec.UNSPECIFIED
+                    )
                     quickReplyView.measuredHeight
                 } else quickReplyView.height
             } else 0
@@ -77,9 +81,7 @@ class PortraitVideoBoundsProvider(
         val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(container.context)
         val requiredMargin = offset16
 
-        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
-
-        return@coroutineScope interactionTopmostY
+        return@coroutineScope getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
     }
 
     companion object {

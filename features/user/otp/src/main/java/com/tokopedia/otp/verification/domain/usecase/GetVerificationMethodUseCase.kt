@@ -42,7 +42,7 @@ open class GetVerificationMethodUseCase @Inject constructor(
                 OtpModeListPojo::class.java,
                 parameter
         )
-        return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
     }.getSuccessData()
 
     companion object {

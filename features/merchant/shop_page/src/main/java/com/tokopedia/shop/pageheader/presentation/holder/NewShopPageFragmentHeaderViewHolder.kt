@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,7 +21,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
-import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
@@ -33,9 +32,8 @@ import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoder
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 
-class NewShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
+class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding?, private val listener: ShopPageFragmentViewHolderListener,
                                           private val shopPageTracking: ShopPageTrackingBuyer?,
                                           private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
                                           private val context: Context,
@@ -52,13 +50,13 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
     private var isShopFavorite = false
     private var isUserNeverFollow = false
     private val chooseAddressWidget: ChooseAddressWidget?
-        get() = view.findViewById(R.id.choose_address_widget)
+        get() = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.chooseAddressWidget
     private var coachMark: CoachMark2? = null
 
     private var shopPageHeaderAdapter: ShopPageHeaderAdapter? = null
-    private val chooseAddressWidgetBottomShadow: View? = view.findViewById(R.id.choosee_address_widget_bottom_shadow)
-    private val rvShopPageHeaderWidget: RecyclerView? = view.findViewById(R.id.rv_shop_page_header_widget)
-    private val tickerShopStatus: Ticker? = view.findViewById(R.id.tickerShopStatus)
+    private val chooseAddressWidgetBottomShadow: View? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.chooseeAddressWidgetBottomShadow
+    private val rvShopPageHeaderWidget: RecyclerView? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.rvShopPageHeaderWidget
+    private val tickerShopStatus: Ticker? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.tickerShopStatus
 
     fun updateChooseAddressWidget(){
         chooseAddressWidget?.updateWidget()
@@ -70,7 +68,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
-            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRollOutUser = true
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
@@ -98,7 +96,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                 shopPlayWidgetListener,
                 shopPerformanceWidgetImageTextListener
         ))
-        rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
+        rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvShopPageHeaderWidget?.itemAnimator = null
         rvShopPageHeaderWidget?.adapter = shopPageHeaderAdapter
         shopPageHeaderAdapter?.setData(listWidget)
@@ -247,7 +245,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                 shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                             },
                             onCoachMarkChooseAddressWidgetImpressed = {
-                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
                             }
                     )
                 }
@@ -259,20 +257,20 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                         shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                     },
                     onCoachMarkChooseAddressWidgetImpressed = {
-                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
                     }
             )
         }
     }
 
     private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
-        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
+        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(context)
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let {
                 CoachMark2Item(
                         it,
-                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
-                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
+                        context.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
+                        context.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
                 )
             }
         } else {

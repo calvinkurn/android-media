@@ -132,10 +132,10 @@ class RechargeHomepageProductBannerViewHolder(
     ) {
         with(bind) {
             if (slashedPrice.isEmpty()) {
-                tvRechargeHomeProductBannerPrice.hide()
+                tvRechargeHomeProductBannerSlashedPrice.hide()
             } else {
-                tvRechargeHomeProductBannerPrice.text = MethodChecker.fromHtml(slashedPrice)
-                tvRechargeHomeProductBannerPrice.show()
+                tvRechargeHomeProductBannerSlashedPrice.text = MethodChecker.fromHtml(slashedPrice)
+                tvRechargeHomeProductBannerSlashedPrice.show()
             }
         }
     }

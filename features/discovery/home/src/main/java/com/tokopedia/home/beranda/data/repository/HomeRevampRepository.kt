@@ -13,7 +13,6 @@ interface HomeRevampRepository {
     fun getHomeCachedAtfData(): HomeAtfData?
     fun updateHomeData(): Flow<Result<Any>>
     suspend fun onDynamicChannelExpired(groupId: String): List<Visitable<*>>
-    fun sendGeolocationInfo(): Observable<Response<String>>
     fun deleteHomeData()
 }
 

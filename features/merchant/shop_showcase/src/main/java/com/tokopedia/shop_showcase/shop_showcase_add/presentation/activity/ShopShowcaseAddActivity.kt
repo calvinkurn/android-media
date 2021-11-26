@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -31,7 +33,10 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
 
         const val DEFAULT_SHOWCASE_ID = "0"
 
+        @LayoutRes
         val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_product_add
+
+        @IdRes
         val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 
@@ -44,7 +49,7 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
         setBackgroundColor()
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         intent?.extras?.let {
             isActionEdit = it.getBoolean(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT)
             showcaseId = it.getString(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID)

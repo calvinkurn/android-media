@@ -127,7 +127,7 @@ class VariantSheetViewComponent(
                 val stock = selectedProduct.stock
 
                 val product = PlayProductUiModel.Product(
-                        id = selectedProduct.productId.toString(),
+                        id = selectedProduct.productId,
                         shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
                         imageUrl = selectedProduct.picture?.original ?: "",
                         title = selectedProduct.name,
@@ -136,12 +136,12 @@ class VariantSheetViewComponent(
                         price = if (selectedProduct.campaign?.isActive == true) {
                             DiscountedPrice(
                                     originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
-                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice?.toDouble()?:0.0,
+                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice ?: 0.0,
                                     discountPercent = selectedProduct.campaign?.discountedPercentage?.toInt()?:0,
                                     discountedPrice = selectedProduct.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                             )
                         } else {
-                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toDouble())
+                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price)
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,

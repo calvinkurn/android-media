@@ -72,7 +72,7 @@ class GetVoucherListUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<VoucherUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetMerchantVoucherListResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest))
 
         val errors = gqlResponse.getError(GetMerchantVoucherListResponse::class.java)
         if (errors.isNullOrEmpty()) {

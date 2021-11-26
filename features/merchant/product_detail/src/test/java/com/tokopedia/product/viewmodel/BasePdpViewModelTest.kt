@@ -5,14 +5,13 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -22,12 +21,10 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkStatic
 import io.mockk.spyk
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -49,9 +46,6 @@ abstract class BasePdpViewModelTest {
     lateinit var getProductInfoP2OtherUseCase: GetProductInfoP2OtherUseCase
 
     @RelaxedMockK
-    lateinit var getProductInfoP3UseCase: GetProductInfoP3UseCase
-
-    @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
 
     @RelaxedMockK
@@ -65,9 +59,6 @@ abstract class BasePdpViewModelTest {
 
     @RelaxedMockK
     lateinit var trackAffiliateUseCase: TrackAffiliateUseCase
-
-    @RelaxedMockK
-    lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
 
     @RelaxedMockK
     lateinit var updateCartCounterUseCase: UpdateCartCounterUseCase
@@ -117,14 +108,7 @@ abstract class BasePdpViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         mockkStatic(RemoteConfigInstance::class)
-        spykViewModel = spyk(DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getP2DataAndMiniCartUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
-                Lazy { getRecommendationFilterChips }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
-                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase },Lazy { deleteCartUseCase } , Lazy { getTopadsIsAdsUseCase }, userSessionInterface))
-    }
-
-    @After
-    fun setupAfter() {
-        viewModel.productInfoP3.removeObserver { }
+        spykViewModel = spyk(viewModel)
     }
 
     val viewModel by lazy {
@@ -132,8 +116,28 @@ abstract class BasePdpViewModelTest {
     }
 
     private fun createViewModel(): DynamicProductDetailViewModel {
-        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider, Lazy { getPdpLayoutUseCase }, Lazy { getProductInfoP2LoginUseCase }, Lazy { getProductInfoP2OtherUseCase }, Lazy { getP2DataAndMiniCartUseCase }, Lazy { getProductInfoP3UseCase }, Lazy { toggleFavoriteUseCase }, Lazy { removeWishlistUseCase }, Lazy { addWishListUseCase }, Lazy { getRecommendationUseCase },
-                Lazy { getRecommendationFilterChips }, Lazy { trackAffiliateUseCase }, Lazy { submitHelpTicketUseCase }, Lazy { updateCartCounterUseCase }, Lazy { addToCartUseCase }, Lazy { addToCartOcsUseCase }, Lazy { addToCartOccUseCase }, Lazy { toggleNotifyMeUseCase }, Lazy { discussionMostHelpfulUseCase }, Lazy { topAdsImageViewUseCase },
-                Lazy { miniCartListSimplifiedUseCase }, Lazy { updateCartUseCase },Lazy { deleteCartUseCase } , Lazy { getTopadsIsAdsUseCase }, userSessionInterface)
+        return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
+                { getPdpLayoutUseCase },
+                { getProductInfoP2LoginUseCase },
+                { getProductInfoP2OtherUseCase },
+                { getP2DataAndMiniCartUseCase },
+                { toggleFavoriteUseCase },
+                { removeWishlistUseCase },
+                { addWishListUseCase },
+                { getRecommendationUseCase },
+                { getRecommendationFilterChips },
+                { trackAffiliateUseCase },
+                { updateCartCounterUseCase },
+                { addToCartUseCase },
+                { addToCartOcsUseCase },
+                { addToCartOccUseCase },
+                { toggleNotifyMeUseCase },
+                { discussionMostHelpfulUseCase },
+                { topAdsImageViewUseCase },
+                { miniCartListSimplifiedUseCase },
+                { updateCartUseCase },
+                { deleteCartUseCase },
+                { getTopadsIsAdsUseCase },
+                userSessionInterface)
     }
 }

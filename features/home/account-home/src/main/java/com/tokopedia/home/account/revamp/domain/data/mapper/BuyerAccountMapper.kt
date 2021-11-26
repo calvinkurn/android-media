@@ -35,8 +35,6 @@ class BuyerAccountMapper @Inject constructor(
     private val LABEL_BLOCKED = "Layanan Terblokir"
     private val LABEL_DEACTIVATED = "Dinonaktifkan"
     private val LABEL_KYC_PENDING = "Selesaikan Pengajuan Aplikasimu"
-    private val UOH_AB_TEST_KEY = "uoh_android_v2"
-    private val UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     override fun call(t: AccountDataModel): BuyerViewModel {
         return getBuyerModel(t)

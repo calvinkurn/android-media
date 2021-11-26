@@ -10,6 +10,7 @@ import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 
@@ -35,6 +36,10 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         merchantVoucher?.addOnImpressionListener(ImpressHolder()){
             merchantVoucher?.sendImpressionTrackerForPdp()
         }
+
+        view.addOnImpressionListener(element.impressHolder){
+            listener.onImpressComponent(getComponentTrackData(element))
+        }
     }
 
     private fun initMerchantVoucher() {
@@ -47,4 +52,8 @@ class ProductMerchantVoucherSummaryViewHolder(val view: View, val listener:Dynam
         })
         merchantVoucher?.show()
     }
+
+    private fun getComponentTrackData(
+        element: ProductMerchantVoucherSummaryDataModel
+    ) = ComponentTrackDataModel(element.type, element.name, adapterPosition + 1)
 }

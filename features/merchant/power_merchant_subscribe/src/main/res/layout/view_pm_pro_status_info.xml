@@ -6,8 +6,8 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icPmProStatusInfo"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_name="INFORMATION"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,7 +18,7 @@
         android:id="@+id/tvPmProStatusInfo"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginStart="6dp"
         android:text="@string/pm_check_pm_pro_status_info"
         android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@id/icPmProStatusInfo"

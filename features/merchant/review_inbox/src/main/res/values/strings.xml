@@ -149,6 +149,8 @@
     <string name="review_pending_deleted_product_error_toaster">Maaf, barang ini sudah dihapus. Simpan saja ulasanmu di hati.</string>
     <string name="review_pending_invalid_to_review">Oops, kamu sudah kasih ulasan untuk barang ini. Coba refresh, ya.</string>
     <string name="review_pending_shop_button">Mulai Belanja</string>
+    <string name="review_pending_credibility_coach_mark_title">Lihat kontribusi ulasanmu di sini</string>
+    <string name="review_pending_credibility_coach_mark_subtitle">Temukan berapa banyak rating dan ulasan lengkap yang sudah kamu kumpulkan tahun ini.</string>
 
     <string name="review_history_tab_title">Riwayat</string>
     <string name="review_history_search_bar_hint">Cari produk di sini</string>

@@ -8,23 +8,26 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.databinding.DetailShippingItemBinding
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailShipping
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.detail_shipping_item.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by fwidjaja on 2019-10-04.
  */
 class SomDetailShippingViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
 
+    private val binding by viewBinding<DetailShippingItemBinding>()
+
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailShipping) {
-            with(itemView) {
-                val layoutParamsReceiverName = tv_receiver_name.layoutParams as? ConstraintLayout.LayoutParams
+            binding?.run {
+                val layoutParamsReceiverName = tvReceiverName.layoutParams as? ConstraintLayout.LayoutParams
                 if (item.dataObject.isShippingPrinted) {
-                    shippingPrintedLabel?.apply {
+                    shippingPrintedLabel.apply {
                         show()
                         layoutParamsReceiverName?.topMargin = 6.toPx()
                         unlockFeature = true
@@ -36,7 +39,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
 
                 if (item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
-                    tv_shipping_name.apply {
+                    tvShippingName.apply {
                         setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                         setOnClickListener {
                             actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
@@ -44,8 +47,8 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         text = StringBuilder("${item.dataObject.shippingName} >")
                     }
                 } else {
-                    tv_shipping_name.text = item.dataObject.shippingName
-                    tv_shipping_name.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    tvShippingName.text = item.dataObject.shippingName
+                    tvShippingName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
                 val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                     item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
@@ -54,36 +57,36 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
 
                 with(item.dataObject) {
-                    tv_receiver_name.text = receiverName
+                    tvReceiverName.text = receiverName
                     if (numberPhone.isNotBlank()) {
-                        tv_receiver_number.show()
-                        tv_receiver_number.text = numberPhone
+                        tvReceiverNumber.show()
+                        tvReceiverNumber.text = numberPhone
                     } else {
-                        tv_receiver_number.hide()
+                        tvReceiverNumber.hide()
                     }
 
                     if (receiverStreet.isNotBlank()) {
-                        tv_receiver_street.show()
-                        tv_receiver_street.text = receiverStreet
+                        tvReceiverStreet.show()
+                        tvReceiverStreet.text = receiverStreet
                     } else {
-                        tv_receiver_street.hide()
+                        tvReceiverStreet.hide()
                     }
 
                     if (receiverDistrict.isNotBlank() && !receiverDistrict.startsWith(CONTAINS_COMMA)) {
-                        tv_receiver_district.show()
-                        tv_receiver_district.text = receiverDistrict
+                        tvReceiverDistrict.show()
+                        tvReceiverDistrict.text = receiverDistrict
                     } else {
-                        tv_receiver_district.hide()
+                        tvReceiverDistrict.hide()
                     }
 
                     if (receiverProvince.isNotBlank()) {
-                        tv_receiver_province.show()
-                        tv_receiver_province.text = receiverProvince
+                        tvReceiverProvince.show()
+                        tvReceiverProvince.text = receiverProvince
                     } else {
-                        tv_receiver_province.hide()
+                        tvReceiverProvince.hide()
                     }
 
-                    shipping_address_copy.apply {
+                    shippingAddressCopy.apply {
                         setOnClickListener {
 
                             val numberPhoneText = if (numberPhone.isNotBlank()) {
@@ -108,7 +111,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                                 ""
                             }
 
-                            actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (receiverName +
+                            actionListener?.onCopiedAddress(root.context.getString(R.string.alamat_pengiriman), (receiverName +
                                     numberPhoneText +
                                     receiverStreetText +
                                     receiverDistrictText +
@@ -118,74 +121,74 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 }
 
                 if (item.dataObject.awb.isNotEmpty()) {
-                    rl_no_resi?.visibility = View.VISIBLE
-                    no_resi_value?.show()
-                    no_resi_value?.text = item.dataObject.awb
+                    rlNoResi.visibility = View.VISIBLE
+                    noResiValue.show()
+                    noResiValue.text = item.dataObject.awb
                     if (item.dataObject.awbTextColor.isNotEmpty()) {
-                        itemView.no_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
+                        noResiValue.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
                     }
-                    no_resi_copy?.setOnClickListener {
-                        actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb, itemView.context.getString(R.string.readable_awb_label))
+                    noResiCopy.setOnClickListener {
+                        actionListener?.onTextCopied(root.context.getString(R.string.awb_label), item.dataObject.awb, root.context.getString(R.string.readable_awb_label))
                     }
                 } else {
-                    rl_no_resi?.visibility = View.GONE
-                    no_resi_value.hide()
+                    rlNoResi.visibility = View.GONE
+                    noResiValue.hide()
                 }
 
                 // booking online - driver
-                if (item.dataObject.driverName.isEmpty()) itemView.card_driver.visibility = View.GONE
+                if (item.dataObject.driverName.isEmpty()) cardDriver.visibility = View.GONE
                 else {
                     if (item.dataObject.driverName.isNotEmpty()) {
-                        tv_driver_name.text = item.dataObject.driverName
+                        tvDriverName.text = item.dataObject.driverName
                     }
 
                     if (item.dataObject.driverPhoto.isNotEmpty()) {
-                        iv_driver.loadImageCircle(item.dataObject.driverPhoto)
+                        ivDriver.loadImageCircle(item.dataObject.driverPhoto)
                     } else {
-                        iv_driver.setImageResource(R.drawable.ic_driver_default)
+                        ivDriver.setImageResource(R.drawable.ic_driver_default)
                     }
 
                     if (item.dataObject.driverPhone.isNotEmpty()) {
-                        tv_driver_phone.text = item.dataObject.driverPhone
-                        driver_call_btn.setOnClickListener {
+                        tvDriverPhone.text = item.dataObject.driverPhone
+                        driverCallBtn.setOnClickListener {
                             actionListener?.onDialPhone(item.dataObject.driverPhone)
                         }
                     } else {
-                        tv_driver_phone.visibility = View.GONE
-                        driver_call_btn.visibility = View.GONE
+                        tvDriverPhone.visibility = View.GONE
+                        driverCallBtn.visibility = View.GONE
                     }
 
                     if (item.dataObject.driverLicense.isNotEmpty()) {
-                        tv_driver_license.text = item.dataObject.driverLicense
+                        tvDriverLicense.text = item.dataObject.driverLicense
                     } else {
-                        tv_driver_license.visibility = View.GONE
+                        tvDriverLicense.visibility = View.GONE
                     }
                 }
 
                 // booking online - booking code
                 if (item.dataObject.onlineBookingState == 0) {
-                    booking_code_title?.hide()
-                    booking_code_copy?.hide()
-                    booking_code_value?.hide()
+                    bookingCodeTitle.hide()
+                    bookingCodeCopy.hide()
+                    bookingCodeValue.hide()
                 } else {
                     if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
-                        booking_code_title?.hide()
-                        booking_code_copy?.hide()
-                        booking_code_value?.hide()
+                        bookingCodeTitle.hide()
+                        bookingCodeCopy.hide()
+                        bookingCodeValue.hide()
                     } else {
-                        booking_code_title?.show()
-                        booking_code_copy?.show()
-                        booking_code_value?.show()
+                        bookingCodeTitle.show()
+                        bookingCodeCopy.show()
+                        bookingCodeValue.show()
 
                         if (item.dataObject.onlineBookingCode.isEmpty()) {
-                            booking_code_title?.hide()
-                            booking_code_copy?.hide()
-                            booking_code_value?.hide()
+                            bookingCodeTitle.hide()
+                            bookingCodeCopy.hide()
+                            bookingCodeValue.hide()
                         } else {
-                            booking_code_copy?.setOnClickListener {
-                                actionListener?.onTextCopied(itemView.context.getString(R.string.booking_code_label), item.dataObject.onlineBookingCode, itemView.context.getString(R.string.readable_booking_code_label))
+                            bookingCodeCopy.setOnClickListener {
+                                actionListener?.onTextCopied(root.context.getString(R.string.booking_code_label), item.dataObject.onlineBookingCode, root.context.getString(R.string.readable_booking_code_label))
                             }
-                            booking_code_value.apply {
+                            bookingCodeValue.apply {
                                 text = StringBuilder("${item.dataObject.onlineBookingCode} >")
                                 setOnClickListener {
                                     actionListener?.onShowBookingCode(
@@ -199,27 +202,26 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
                 // dropshipper
                 if (item.dataObject.dropshipperName.isNotEmpty() || item.dataObject.dropshipperPhone.isNotEmpty()) {
-                    tv_som_dropshipper_label.visibility = View.VISIBLE
-                    tv_som_dropshipper_name?.show()
+                    tvSomDropshipperLabel.visibility = View.VISIBLE
+                    tvSomDropshipperName.show()
                     val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                         item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                     } else {
                         item.dataObject.dropshipperPhone
                     }
                     if (numberPhoneDropShipper.isNotBlank()) {
-                        tv_som_dropshipper_name.text = item.dataObject.dropshipperName
-                        tv_dropshipper_number.text = numberPhoneDropShipper
+                        tvSomDropshipperName.text = item.dataObject.dropshipperName
+                        tvDropshipperNumber.text = numberPhoneDropShipper
                     } else {
-                        tv_dropshipper_number.hide()
-                        tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                        tvDropshipperNumber.hide()
+                        tvSomDropshipperName.text = item.dataObject.dropshipperName
                     }
                 } else {
-                    tv_som_dropshipper_label.visibility = View.GONE
-                    tv_som_dropshipper_name?.hide()
+                    tvSomDropshipperLabel.visibility = View.GONE
+                    tvSomDropshipperName.hide()
                 }
             }
         }
-
     }
 
     companion object {

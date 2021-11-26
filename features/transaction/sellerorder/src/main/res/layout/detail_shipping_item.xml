@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16">
+    android:layout_marginStart="16dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginRight="16dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shipping_title"
@@ -27,7 +27,7 @@
         android:id="@+id/kurir_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:text="@string/kurir_pengiriman"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
         android:id="@+id/tv_shipping_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/kurir_label"
         app:layout_constraintStart_toEndOf="@+id/shipping_title"
@@ -95,7 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/booking_code_title">
 
@@ -106,15 +106,15 @@
 
         <ImageView
             android:id="@+id/iv_driver"
-            android:layout_width="@dimen/dp_48"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_below="@id/dividerTopCardDriver"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="16dp"
             app:srcCompat="@drawable/ic_driver_default"
             tools:ignore="ContentDescription" />
 
@@ -163,10 +163,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
             android:text="@string/tv_driver_call_btn"
             app:unifyButtonSize="medium"
             app:unifyButtonType="alternate"
@@ -184,7 +184,7 @@
         android:id="@+id/rl_no_resi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@id/booking_code_title"
         app:layout_constraintTop_toBottomOf="@id/card_driver">
 
@@ -318,7 +318,7 @@
         android:id="@+id/tv_receiver_district"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginEnd="8dp"
         android:inputType="none"
         android:lineSpacingMultiplier="1"
         android:scrollHorizontally="false"

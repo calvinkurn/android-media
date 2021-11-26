@@ -273,7 +273,7 @@ class TapcashBalanceViewModelTest {
         result[BalanceTapcash::class.java] = balanceTapcash
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
@@ -301,7 +301,7 @@ class TapcashBalanceViewModelTest {
         result[BalanceTapcash::class.java] = balanceTapcash
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
@@ -329,7 +329,7 @@ class TapcashBalanceViewModelTest {
         result[BalanceTapcash::class.java] = balanceTapcash
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
@@ -357,7 +357,7 @@ class TapcashBalanceViewModelTest {
 
         val gqlResponseWriteBalanceFailed = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceFailed
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceFailed
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 
@@ -385,7 +385,7 @@ class TapcashBalanceViewModelTest {
         result[BalanceTapcash::class.java] = balanceTapcash
         val gqlResponseWriteBalanceSuccess = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponseWriteBalanceSuccess
         //when
         tapcashBalanceViewModel.processTapCashTagIntent(isoDep, "")
 

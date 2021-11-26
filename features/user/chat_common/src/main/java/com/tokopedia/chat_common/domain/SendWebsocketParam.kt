@@ -34,9 +34,9 @@ object SendWebsocketParam {
         messageId: String,
         invoice: InvoiceViewModel,
         startTime: String,
-        toUid: String
+        toUid: String,
+        localId: String
     ): JsonObject {
-
         val attributes = JsonObject()
         attributes.addProperty("id", invoice.id.toLongOrZero())
         attributes.addProperty("code", invoice.invoiceCode)
@@ -54,6 +54,7 @@ object SendWebsocketParam {
         payload.add("attributes", attributes)
 
         val data = JsonObject()
+        data.addProperty("local_id", localId)
         data.addProperty("message_id", messageId.toLongOrZero())
         data.addProperty("message", invoice.invoiceUrl)
         data.addProperty("start_time", startTime)

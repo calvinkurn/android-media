@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemParameterPerformanceShopScoreBinding
 import com.tokopedia.shop.score.performance.presentation.model.ItemParameterFaqUiModel
-import kotlinx.android.synthetic.main.item_parameter_performance_shop_score.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ItemParameterFaqAdapter :
     RecyclerView.Adapter<ItemParameterFaqAdapter.ItemParameterFaqViewHolder>() {
@@ -35,11 +36,12 @@ class ItemParameterFaqAdapter :
     override fun getItemCount(): Int = itemParameterFaqList.size
 
     inner class ItemParameterFaqViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val binding: ItemParameterPerformanceShopScoreBinding? by viewBinding()
         fun bind(data: ItemParameterFaqUiModel) {
-            with(itemView) {
-                tv_title_indicator_parameter_performance?.text = data.title
-                tv_desc_indicator_parameter_performance?.text = MethodChecker.fromHtml(data.desc)
-                tv_score_parameter_value?.text = data.score
+            binding?.run {
+                tvTitleIndicatorParameterPerformance.text = data.title
+                tvDescIndicatorParameterPerformance.text = MethodChecker.fromHtml(data.desc)
+                tvScoreParameterValue.text = data.score
             }
         }
     }

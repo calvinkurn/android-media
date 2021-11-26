@@ -42,7 +42,7 @@ class RechargeSubmitCCViewModel @Inject constructor(private val graphqlRepositor
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCSignatureReponse::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                graphqlRepository.response(listOf(graphqlRequest))
             }.getSuccessData<RechargeCCSignatureReponse>()
 
             if (data.rechargeSignature.messageError.isEmpty()) {

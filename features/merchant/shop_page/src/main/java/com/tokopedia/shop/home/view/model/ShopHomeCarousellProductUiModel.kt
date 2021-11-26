@@ -14,7 +14,7 @@ data class ShopHomeCarousellProductUiModel(
         override val type: String = "",
         override val header: Header = Header(),
         val productList: List<ShopHomeProductUiModel> = listOf()
-) : BaseShopHomeWidgetUiModel {
+) : BaseShopHomeWidgetUiModel() {
 
     companion object{
         const val IS_ATC = 1

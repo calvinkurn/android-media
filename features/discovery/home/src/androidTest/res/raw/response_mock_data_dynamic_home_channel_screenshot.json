@@ -242,6 +242,236 @@
                     }
                 },
                 {
+                    "id": 142785,
+                    "name": "[Testing] Campaign Widget Tuesday",
+                    "layout": "campaign_widget",
+                    "pageName": "",
+                    "type": "inspiration",
+                    "campaignID": 0,
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "campaignCode": "",
+                    "header": {
+                        "id": 161925,
+                        "name": "[Testing] Campaign Widget Tuesday",
+                        "url": "https://www.tokopedia.com/discovery/bazar",
+                        "applink": "tokopedia://discovery/bazar?source=homepage.campaign_widget.0.142785",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "subtitle": "",
+                        "textColor": "#31353b"
+                    },
+                    "hero": null,
+                    "grids": [
+                        {
+                            "id": 2794,
+                            "name": "Tokopedia Garage Special Exhibition November",
+                            "url": "https://www.tokopedia.com/discovery/tokopedia-garage",
+                            "applink": "tokopedia://discovery/tokopedia-garage",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/1/0051bc4b-4f2e-4904-96f2-e553b8e2a296.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2935,
+                            "name": "Kebutuhan Harian November 2021",
+                            "url": "https://www.tokopedia.com/discovery/kebutuhan-harian",
+                            "applink": "tokopedia://discovery/kebutuhan-harian",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/1/ddb403b1-5473-45a9-b710-6c3844f751fb.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2865,
+                            "name": "Tokopedia Beauty Awards",
+                            "url": "https://www.tokopedia.com/discovery/tokopedia-beauty-awards",
+                            "applink": "tokopedia://discovery/tokopedia-beauty-awards",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/2/08667375-e20a-4d36-8707-3413f2339bca.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2910,
+                            "name": "Happyfit x Salonpas Exclusive Collab",
+                            "url": "https://www.tokopedia.com/discovery/happyfit-salonpas",
+                            "applink": "tokopedia://discovery/happyfit-salonpas",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/2/890273b6-674b-445e-90a3-85d3d8e74844.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2822,
+                            "name": "Toyspedia x Wakakids Exclusive Promo",
+                            "url": "https://www.tokopedia.com/discovery/toyspedia",
+                            "applink": "tokopedia://discovery/toyspedia",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/2/89015642-2ff5-40b0-91c8-c392fe6987a2.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        }
+                    ],
+                    "banner": {
+                        "id": 23019,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "#ffffff",
+                        "image_url": "",
+                        "back_color": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ],
+                        "attribution": ""
+                    },
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "category_persona": "",
+                    "brand_id": ""
+                },
+                {
                     "id": 29555,
                     "group_id": 169,
                     "galaxy_attribution": "PG",
@@ -1563,6 +1793,1094 @@
                     }
                 },
                 {
+                    "id": 134984,
+                    "dividerType": 0,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "category widget v2",
+                    "layout": "category_widget_v2",
+                    "type": "inspiration",
+                    "pageName": "",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 1,
+                    "header": {
+                        "id": 154093,
+                        "name": "Android Test - Category Widget V2",
+                        "subtitle": "",
+                        "url": "",
+                        "applink": "tokopedia://category-explore?type=1&source=homepage.category_widget_v2.0.134984",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#31353b"
+                    },
+                    "grids": [
+                        {
+                            "campaignCode": "",
+                            "id": 65,
+                            "back_color": "",
+                            "name": "Handphone & Tablet",
+                            "url": "https://www.tokopedia.com/p/handphone-tablet",
+                            "applink": "tokopedia://category/65?categoryName=Handphone+%26+Tablet",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/9f30a831-9866-4463-8249-742ea61dbb29.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 1758,
+                            "back_color": "",
+                            "name": "Fashion Wanita",
+                            "url": "https://www.tokopedia.com/p/fashion-wanita",
+                            "applink": "tokopedia://category/1758?categoryName=Fashion+Wanita",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/8fc9bc4f-5193-45e5-868c-caefde8264ea.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 297,
+                            "back_color": "",
+                            "name": "Komputer & Laptop",
+                            "url": "https://www.tokopedia.com/p/komputer-laptop",
+                            "applink": "tokopedia://category/297?categoryName=Komputer+%26+Laptop",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/41da619a-d10e-48d5-9d83-f8df8bc8b2c5.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 63,
+                            "back_color": "",
+                            "name": "Otomotif",
+                            "url": "https://www.tokopedia.com/p/otomotif",
+                            "applink": "tokopedia://category/63?categoryName=Otomotif",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/febf9041-3af3-46f5-be32-c2f924c765b3.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 2133,
+                            "back_color": "",
+                            "name": "Perawatan Tubuh",
+                            "url": "https://www.tokopedia.com/p/perawatan-tubuh",
+                            "applink": "tokopedia://category/2133?categoryName=Perawatan+Tubuh",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/b2a2734d-2c98-4a5e-b623-895f97a81c1b.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 56,
+                            "back_color": "",
+                            "name": "Ibu & Bayi",
+                            "url": "https://www.tokopedia.com/p/ibu-bayi",
+                            "applink": "tokopedia://category/56?categoryName=Ibu+%26+Bayi",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/228fc74b-8e0b-4fab-9bb7-56ddd90d4499.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 60,
+                            "back_color": "",
+                            "name": "Elektronik",
+                            "url": "https://www.tokopedia.com/p/elektronik",
+                            "applink": "tokopedia://category/60?categoryName=Elektronik",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/f738b3ed-7c20-4c4a-9f3f-e64bc0ea2903.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 8,
+                            "back_color": "",
+                            "name": "Buku",
+                            "url": "https://www.tokopedia.com/p/buku",
+                            "applink": "tokopedia://category/8?categoryName=Buku",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/5fee21f7-ec9e-4f07-9d35-9faa1635c905.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 715,
+                            "back_color": "",
+                            "name": "Kesehatan",
+                            "url": "https://www.tokopedia.com/p/kesehatan",
+                            "applink": "tokopedia://category/715?categoryName=Kesehatan",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/6f9531cb-3971-4a0a-8ed0-4799e33a314f.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 35,
+                            "back_color": "",
+                            "name": "Makanan & Minuman",
+                            "url": "https://www.tokopedia.com/p/makanan-minuman",
+                            "applink": "tokopedia://category/35?categoryName=Makanan+%26+Minuman",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/434c5769-df3e-442d-b3fe-e453ee56681c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 78,
+                            "back_color": "",
+                            "name": "Fashion Anak & Bayi",
+                            "url": "https://www.tokopedia.com/p/fashion-anak-bayi",
+                            "applink": "tokopedia://category/78?categoryName=Fashion+Anak+%26+Bayi",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/89da40f8-9809-446d-a528-33f2a4f10928.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 983,
+                            "back_color": "",
+                            "name": "Dapur",
+                            "url": "https://www.tokopedia.com/p/dapur",
+                            "applink": "tokopedia://category/983?categoryName=Dapur",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/a0fa1bb9-b4a4-4042-933a-87d68bfb93ef.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 54,
+                            "back_color": "",
+                            "name": "Perlengkapan Pesta & Craft",
+                            "url": "https://www.tokopedia.com/p/perlengkapan-pesta-craft",
+                            "applink": "tokopedia://category/54?categoryName=Perlengkapan+Pesta+%26+Craft",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/54bec675-abea-4704-a049-96b3788f8c16.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 578,
+                            "back_color": "",
+                            "name": "Kamera",
+                            "url": "https://www.tokopedia.com/p/kamera",
+                            "applink": "tokopedia://category/578?categoryName=Kamera",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/8b265142-cd4b-407f-8a72-88590f8083d7.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 57,
+                            "back_color": "",
+                            "name": "Film & Musik",
+                            "url": "https://www.tokopedia.com/p/film-musik",
+                            "applink": "tokopedia://category/57?categoryName=Film+%26+Musik",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/cbc2d3fc-d38e-484f-9b4f-c78f0c5db87c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 984,
+                            "back_color": "",
+                            "name": "Rumah Tangga",
+                            "url": "https://www.tokopedia.com/p/rumah-tangga",
+                            "applink": "tokopedia://category/984?categoryName=Rumah+Tangga",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/0d0ca5b3-9878-45c6-8e1e-87291892ac5c.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 1760,
+                            "back_color": "",
+                            "name": "Fashion Muslim",
+                            "url": "https://www.tokopedia.com/p/fashion-muslim",
+                            "applink": "tokopedia://category/1760?categoryName=Fashion+Muslim",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/f6401a80-1b74-47b8-87d4-7b0122fce9e0.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 4029,
+                            "back_color": "",
+                            "name": "Pertukangan",
+                            "url": "https://www.tokopedia.com/p/pertukangan",
+                            "applink": "tokopedia://category/4029?categoryName=Pertukangan",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/af0efec8-e572-475b-b60c-28fb82dda06d.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 2099,
+                            "back_color": "",
+                            "name": "Gaming",
+                            "url": "https://www.tokopedia.com/p/gaming",
+                            "applink": "tokopedia://category/2099?categoryName=Gaming",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/0023b598-9cf9-41cf-a6ff-a998c9d80fea.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 62,
+                            "back_color": "",
+                            "name": "Olahraga",
+                            "url": "https://www.tokopedia.com/p/olahraga",
+                            "applink": "tokopedia://category/62?categoryName=Olahraga",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/bdf1919e-443c-4005-bda9-359135251371.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 61,
+                            "back_color": "",
+                            "name": "Kecantikan",
+                            "url": "https://www.tokopedia.com/p/kecantikan",
+                            "applink": "tokopedia://category/61?categoryName=Kecantikan",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/9dd16384-9f65-4bd2-8036-f0d254625e0b.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 1759,
+                            "back_color": "",
+                            "name": "Fashion Pria",
+                            "url": "https://www.tokopedia.com/p/fashion-pria",
+                            "applink": "tokopedia://category/1759?categoryName=Fashion+Pria",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/53d75f25-1195-4ade-86d2-03ff75b3a658.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 55,
+                            "back_color": "",
+                            "name": "Mainan & Hobi",
+                            "url": "https://www.tokopedia.com/p/mainan-hobi",
+                            "applink": "tokopedia://category/55?categoryName=Mainan+%26+Hobi",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/954244a7-5f91-4bf9-b856-5fead541ecdb.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 642,
+                            "back_color": "",
+                            "name": "Office & Stationery",
+                            "url": "https://www.tokopedia.com/p/office-stationery",
+                            "applink": "tokopedia://category/642?categoryName=Office+%26+Stationery",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200/zIWZzz/2021/9/27/97eddcd4-dc78-4e69-bab8-0346b6147879.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
+                    }
+                },
+                {
                     "id": 34022,
                     "group_id": 206,
                     "galaxy_attribution": "PG",
@@ -2019,6 +3337,105 @@
                         "text_color": "#ffffff",
                         "title": "Android Test - Featured shop / headline ads",
                         "url": ""
+                    }
+                },
+                {
+                    "id": 12175,
+                    "dividerType": 0,
+                    "group_id": 99,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "a",
+                    "category_persona": "",
+                    "name": "Play User Only - Play Carousel",
+                    "layout": "play_carousel",
+                    "type": "inspiration",
+                    "pageName": "",
+                    "showPromoBadge": false,
+                    "categoryID": "{}",
+                    "perso_type": 3,
+                    "campaignCode": "a",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 1,
+                    "header": {
+                        "id": 121995,
+                        "name": "Play Carousel - ABOVE",
+                        "subtitle": "a",
+                        "url": "a",
+                        "applink": "tokopedia://webview?url=a&source=homepage.play_carousel.0.32335",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#000000"
+                    },
+                    "grids": [
+                        {
+                            "campaignCode": "",
+                            "id": 308378,
+                            "back_color": "#003b6b",
+                            "name": "",
+                            "url": "b",
+                            "applink": "tokopedia://webview?url=b&source=homepage.play_carousel.0.32336",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/phZFtb/2020/7/1/548ff6d7-01b9-4b34-9928-7255ab62b6bf.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "b",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "recommendationType": "",
+                            "shop": {
+                                "shopID": 0,
+                                "city": ""
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": []
+                        }
+                    ],
+                    "banner": {
+                        "id": 0,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "",
+                        "image_url": "",
+                        "attribution": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ]
                     }
                 }
             ]

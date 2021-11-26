@@ -132,7 +132,7 @@ data class VariantChild(
         if (variantReference != null && variantReference.isNotEmpty()) {
             val optionStringList = mutableListOf<String>()
             optionIds.forEachIndexed { index, option ->
-                val value: String? = variantReference.get(index).options.find { it.id == option }?.value
+                val value: String? = variantReference.getOrNull(index)?.options?.find { it.id == option }?.value
                 value?.let {
                     optionStringList.add(it)
                 }

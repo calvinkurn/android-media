@@ -2,7 +2,7 @@
 <resources>
 
     <style name="LogisticTheme" parent="@style/Theme.White">
-        <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/green_600</item>
+        <item name="android:windowBackground">@color/Unify_N0</item>
+        <item name="android:statusBarColor">@color/Unify_G500</item>
     </style>
 </resources>

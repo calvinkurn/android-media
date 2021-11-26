@@ -13,11 +13,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE
@@ -38,17 +35,6 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     lateinit var userSession: UserSession
     private var isSeller: Boolean = false
     private val saldoComponent by lazy(LazyThreadSafetyMode.NONE) { SaldoDetailsComponentInstance.getComponent(this) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setSecureWindowFlag()
-    }
-
-    private fun setSecureWindowFlag() {
-        if(GlobalConfig.APPLICATION_TYPE==GlobalConfig.CONSUMER_APPLICATION||GlobalConfig.APPLICATION_TYPE==GlobalConfig.SELLER_APPLICATION) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
-        }
-    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

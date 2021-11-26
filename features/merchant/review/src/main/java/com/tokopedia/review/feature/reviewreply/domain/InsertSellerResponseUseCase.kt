@@ -38,7 +38,7 @@ class InsertSellerResponseUseCase @Inject constructor(
     @GqlQuery(INSERT_REVIEW_MUTATION_CLASS_NAME, INSERT_REVIEW_MUTATION)
     override suspend fun executeOnBackground(): ReviewReplyInsertResponse.InboxReviewInsertReviewResponse {
         val gqlRequest = GraphqlRequest(InsertReview.GQL_QUERY, ReviewReplyInsertResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<ReviewReplyInsertResponse>(ReviewReplyInsertResponse::class.java).inboxReviewInsertReviewResponse

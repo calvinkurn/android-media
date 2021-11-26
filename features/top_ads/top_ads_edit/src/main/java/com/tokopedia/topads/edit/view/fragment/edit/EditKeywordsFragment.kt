@@ -19,6 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_POSITIVE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.BROAD_TYPE
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.EXACT_POSITIVE
@@ -78,7 +79,7 @@ import javax.inject.Inject
 
 
 private const val CLICK_TAMBAH_KATA_KUNCI = "click - tambah kata kunci"
-private const val CLICK_DAILY_BUDGET_BOX = "click - box anggaran harian manual"
+private const val CLICK_DAILY_BUDGET_BOX = "click - box biaya iklan pencarian"
 private const val CLICK_DAILY_BUDGET_REKOMENDASI_BOX = "click - box biaya iklan manual di rekomendasi"
 private const val CLICK_EDIT_KEYWORD_TYPE = "click - button edit luas pencarian"
 private const val CLICK_EDIT_KEYWORD_BID = "click - edit kata kunci"
@@ -356,7 +357,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 setMessageErrorField(getString(R.string.min_bid_error_new), minBid, true, true)
                 actionEnable(false)
             }
-            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble()) -> {
+            (result >= minBid.toDouble() && result < suggestBidPerClick.toDouble() && budgetInputRekomendasi.visibility == View.VISIBLE) -> {
                 minSuggestedBidRekomendasi.visibility = View.VISIBLE
                 setMessageErrorField("", "", false, true)
                 actionEnable(true)
@@ -800,7 +801,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             it.bidSuggest,
             minSuggestKeyword,
             it.source,
-            BROAD_POSITIVE,
+            if(it.keywordType== TopAdsCommonConstant.SPECIFIC_TYPE) EXACT_POSITIVE else BROAD_POSITIVE,
             "0",
         )
     }

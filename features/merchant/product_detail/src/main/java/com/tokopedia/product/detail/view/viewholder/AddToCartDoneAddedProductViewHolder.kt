@@ -9,7 +9,7 @@ import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
-import kotlinx.android.synthetic.main.add_to_cart_done_added_product_layout.view.*
+import com.tokopedia.product.detail.databinding.AddToCartDoneAddedProductLayoutBinding
 
 class AddToCartDoneAddedProductViewHolder(
         itemView: View,
@@ -20,19 +20,21 @@ class AddToCartDoneAddedProductViewHolder(
         val LAYOUT_RES = R.layout.add_to_cart_done_added_product_layout
     }
 
+    private val binding = AddToCartDoneAddedProductLayoutBinding.bind(itemView)
+
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
-        with(itemView) {
-            free_ongkir_image.gone()
+        with(binding) {
+            freeOngkirImage.gone()
             element.productImageUr?.let {
-                image_view_added_product.loadImageRounded(it, resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8))
+                imageViewAddedProduct.loadImageRounded(it, itemView.resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8))
             }
-            button_go_to_cart.setOnClickListener {
+            buttonGoToCart.setOnClickListener {
                 addToCartDoneAddedProductListener.onButtonGoToCartClicked()
             }
             element.bebasOngkirUrl?.let {
                 if(it.isNotEmpty()) {
-                    free_ongkir_image.show()
-                    free_ongkir_image?.loadImage(it)
+                    freeOngkirImage.show()
+                    freeOngkirImage.loadImage(it)
                 }
             }
         }

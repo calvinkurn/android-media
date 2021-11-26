@@ -3,10 +3,10 @@ package com.tokopedia.sellerhome.view.fragment
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
@@ -56,6 +56,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
+import com.tokopedia.sellerhome.databinding.FragmentSahBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
@@ -63,13 +64,14 @@ import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
-import com.tokopedia.sellerhome.view.model.TickerUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
+import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -90,7 +92,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageProcessingUtil
-import kotlinx.android.synthetic.main.fragment_sah.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -111,18 +113,17 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
         val SEARCH_MENU_ID = R.id.menu_sah_search
-        const val REQ_CODE_MILESTONE_WIDGET = 8043
+
+        private const val REQ_CODE_MILESTONE_WIDGET = 8043
         private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
         private const val ERROR_WIDGET = "Error get widget data."
         private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
-
         private const val DEFAULT_HEIGHT_DP = 720f
-
         private const val RV_TOP_POSITION = 0
-        private const val ADDITIONAL_POSITION = 1
+        private const val TICKER_FIRST_INDEX = 0
     }
 
     @Inject
@@ -182,7 +183,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var recommendationWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
-    private var isEligibleShowRecommendationCoachMark: Boolean = false
     private val coachMark: CoachMark2? by lazy {
         context?.let {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -190,9 +190,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             } else null
         }
     }
-    private val tickerImpressHolder = ImpressHolder()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
+    private var shopImageFilePath: String = ""
+    private var binding by autoClearedNullable<FragmentSahBinding>()
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -226,7 +227,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_sah, container, false)
+        binding = FragmentSahBinding.inflate(layoutInflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -271,11 +273,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun onDestroy() {
         super.onDestroy()
         pmShopScoreInterruptHelper.destroy()
+        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        handleInterruptPageOnActivityResult(requestCode)
         handleMilestoneWidgetFinishedMission(requestCode)
     }
 
@@ -346,14 +348,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun sendCardImpressionEvent(model: CardWidgetUiModel) {
         val cardValue = model.data?.value ?: "0"
-        val state = model.data?.state.orEmpty()
+        val state = model.data?.state?.name.orEmpty()
         SellerHomeTracking.sendImpressionCardEvent(model.dataKey, state, cardValue)
     }
 
     override fun sendCardClickTracking(model: CardWidgetUiModel) {
         SellerHomeTracking.sendClickCardEvent(
             model.dataKey,
-            model.data?.state.orEmpty(), model.data?.value ?: "0"
+            model.data?.state?.name.orEmpty(), model.data?.value ?: "0"
         )
     }
 
@@ -423,10 +425,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
-        this.recommendationWidgetView = view
-        if (!isEligibleShowRecommendationCoachMark) return
-        isEligibleShowRecommendationCoachMark = false
-
+        recommendationWidgetView = view
         val coachMarkItems by getCoachMarkItems()
 
         if (coachMarkItems.isNotEmpty()) {
@@ -498,6 +497,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         }
                     }
                     BaseMilestoneMissionUiModel.UrlType.SHARE -> {
+                        shopShareHelper.removeTemporaryShopImage(shopImageFilePath)
                         setupShopSharing()
                     }
                 }
@@ -649,7 +649,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     fun showNotificationBadge() {
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             context?.let {
                 val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
                 if (notifCenterCount > 0) {
@@ -659,20 +659,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
-    }
-
-    fun onNewIntent(uri: Uri?) {
-        uri?.let {
-            view?.run {
-                pmShopScoreInterruptHelper.setShopScoreConsentStatus(it) {
-                    if (it) {
-                        pmShopScoreInterruptHelper.showsShopScoreConsentToaster(view?.rootView)
-                    }
-                }
-
-                pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, view?.rootView)
-            }
-        }
     }
 
     private fun initPltPerformanceMonitoring() {
@@ -686,7 +672,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             bottomSheet.dismiss()
     }
 
-    private fun setupView() = view?.run {
+    private fun setupView() = binding?.root?.run {
         emptyState = findViewById(R.id.empty_state_seller_home)
 
         val sellerHomeLayoutManager = SellerHomeLayoutManager(context, 2).apply {
@@ -711,13 +697,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
+        binding?.swipeRefreshLayout?.setOnRefreshListener {
             reloadPage()
             showNotificationBadge()
             sellerHomeListener?.getShopInfo()
         }
 
-        sahGlobalError.setActionClickListener {
+        binding?.sahGlobalError?.setActionClickListener {
             reloadPage()
         }
         emptyState?.run {
@@ -765,7 +751,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (visibleWidgets.isNotEmpty()) getWidgetsData(visibleWidgets)
     }
 
-    private fun reloadPage() = view?.run {
+    private fun reloadPage() = binding?.run {
         val isAdapterNotEmpty = adapter.data.isNotEmpty()
         setProgressBarVisibility(!isAdapterNotEmpty)
         swipeRefreshLayout.isRefreshing = isAdapterNotEmpty
@@ -832,8 +818,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgets.setLoading()
         val dataKeys: List<TableAndPostDataKey> =
             widgets.filterIsInstance<TableWidgetUiModel>().map {
-                val postFilter = it.tableFilters.find { filter -> filter.isSelected }
-                    ?.value.orEmpty()
+                val postFilter =
+                    it.tableFilters.find { filter -> filter.isSelected }
+                        ?.value.orEmpty()
                 return@map TableAndPostDataKey(it.dataKey, postFilter, it.maxData, it.maxDisplay)
             }
         startCustomMetric(SELLER_HOME_TABLE_TRACE)
@@ -882,34 +869,31 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getMilestoneWidgetData(dataKeys)
     }
 
-    private var shopImageFilePath: String = ""
-
     private fun setupShopSharing() {
-        if (shopShareData != null) {
-            ImageHandler.loadImageWithTarget(
-                context,
-                shopShareData?.shopSnippetURL.orEmpty(),
-                object : CustomTarget<Bitmap>() {
-                    override fun onResourceReady(
-                        resource: Bitmap,
-                        transition: Transition<in Bitmap>?
-                    ) {
-                        val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                            resource,
-                            Bitmap.CompressFormat.PNG
-                        )
-                        if (savedFile != null) {
-                            shopImageFilePath = savedFile.absolutePath
-                            initShopShareBottomSheet()
-                        }
-                    }
-
-                    override fun onLoadCleared(placeholder: Drawable?) {
-                        // no op
+        ImageHandler.loadImageWithTarget(
+            context,
+            shopShareData?.shopSnippetURL.orEmpty(),
+            object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: Transition<in Bitmap>?
+                ) {
+                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                        resource,
+                        Bitmap.CompressFormat.PNG
+                    )
+                    if (savedFile != null) {
+                        shopImageFilePath = savedFile.absolutePath
+                        initShopShareBottomSheet()
                     }
                 }
-            )
-        } else {
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    // no op
+                }
+            }
+        )
+        if (shopShareData == null) {
             val milestoneWidget = adapter.data.firstOrNull { it is MilestoneWidgetUiModel }
             milestoneWidget?.let {
                 handleShopShareMilestoneWidget(it)
@@ -919,39 +903,40 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun initShopShareBottomSheet() {
-        if (universalShareBottomSheet == null) {
-            val shareListener = object : ShareBottomsheetListener {
+        val shareListener = object : ShareBottomsheetListener {
 
-                override fun onShareOptionClicked(shareModel: ShareModel) {
-                    val shareDataModel = ShopShareHelper.DataModel(
-                        shareModel, shopShareData?.shopUrl.orEmpty(), shopImageFilePath
-                    )
-                    activity?.let {
-                        shopShareHelper.onShareOptionClicked(
-                            it,
-                            shareDataModel,
-                            callback = { shareModel, _ ->
-                                setOnShopShareOptionClicked(shareModel)
-                            }
-                        )
-                    }
-                }
-
-                override fun onCloseOptionClicked() {
-                    //no op
-                }
-            }
-
-            universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-                init(shareListener)
-                setMetaData(
-                    userSession.shopName,
-                    userSession.shopAvatar,
-                    ""
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                val shareDataModel = ShopShareHelper.DataModel(
+                    shareModel = shareModel,
+                    shopImageFilePath = shopImageFilePath,
+                    shopCoreUrl = shopShareData?.shopUrl.orEmpty()
                 )
-                setOgImageUrl(userSession.shopAvatar)
-                imageSaved(shopImageFilePath)
+                activity?.let {
+                    shopShareHelper.onShareOptionClicked(
+                        it,
+                        view,
+                        shareDataModel,
+                        callback = { shareModel, _ ->
+                            setOnShopShareOptionClicked(shareModel)
+                        }
+                    )
+                }
             }
+
+            override fun onCloseOptionClicked() {
+                //no op
+            }
+        }
+
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(shareListener)
+            setMetaData(
+                userSession.shopName,
+                userSession.shopAvatar,
+                ""
+            )
+            setOgImageUrl(shopShareData?.shopSnippetURL.orEmpty())
+            imageSaved(shopImageFilePath)
         }
         universalShareBottomSheet?.show(childFragmentManager, this)
     }
@@ -972,7 +957,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setProgressBarVisibility(isShown: Boolean) {
-        view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
+        binding?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
     private fun observeShopLocationLiveData() {
@@ -1061,7 +1046,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
-        view?.sahGlobalError?.gone()
+        binding?.sahGlobalError?.gone()
         emptyState?.gone()
         recyclerView?.visible()
 
@@ -1132,8 +1117,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
         if (!isAnyWidgetFromCache) {
-            view?.swipeRefreshLayout?.isEnabled = true
-            view?.swipeRefreshLayout?.isRefreshing = false
+            binding?.swipeRefreshLayout?.isEnabled = true
+            binding?.swipeRefreshLayout?.isRefreshing = false
         }
 
         recyclerView?.post {
@@ -1141,6 +1126,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(false)
+        showEmptyState()
 
         if (isWidgetHasError) {
             showErrorToaster()
@@ -1189,7 +1175,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
+    private fun setOnErrorGetLayout(throwable: Throwable) = binding?.run {
         if (adapter.data.isEmpty()) {
             showErrorViewByException(throwable)
         } else {
@@ -1197,7 +1183,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             sahGlobalError.gone()
             emptyState?.gone()
         }
-        view?.swipeRefreshLayout?.isRefreshing = false
+        swipeRefreshLayout.isRefreshing = false
         setProgressBarVisibility(false)
 
         SellerHomeErrorHandler.logException(
@@ -1208,40 +1194,61 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
     }
 
-    private fun showErrorViewByException(throwable: Throwable) = view?.run {
-        val errorType =
-            when (throwable) {
-                is MessageErrorException -> null
-                is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
-                else -> GlobalError.SERVER_ERROR
-            }
+    private fun showErrorViewByException(throwable: Throwable) = binding?.run {
+        val errorType: Int? = when (throwable) {
+            is MessageErrorException -> null
+            is UnknownHostException, is SocketTimeoutException -> GlobalError.NO_CONNECTION
+            is EmptyLayoutException -> GlobalError.PAGE_NOT_FOUND
+            else -> GlobalError.SERVER_ERROR
+        }
 
-        if (errorType == null) {
-            sahGlobalError?.gone()
-            emptyState?.showMessageExceptionError(throwable)
-        } else {
-            sahGlobalError?.run {
-                setType(errorType)
-                visible()
+        when (errorType) {
+            null -> {
+                sahGlobalError.gone()
+                emptyState?.showMessageExceptionError(throwable)
             }
-            emptyState?.gone()
+            GlobalError.PAGE_NOT_FOUND -> showEmptyState()
+            else -> {
+                sahGlobalError.run {
+                    setType(errorType)
+                    visible()
+                }
+                emptyState?.gone()
+            }
         }
     }
 
-    private fun showErrorToaster(errorMessage: String? = null) = view?.run {
+    private fun showEmptyState() {
+        recyclerView?.post {
+            val isLayoutEmpty = adapter.data.isEmpty()
+            if (isLayoutEmpty) {
+                emptyState?.run {
+                    if (isVisible) return@post
+                    emptyState?.setImageUrl(SellerHomeUrl.IMG_LAYOUT_NO_PERMISSION)
+                    setTitle(getString(R.string.sah_empty_layout_message))
+                    setDescription(SellerHomeConst.EMPTY_STRING)
+                    setPrimaryCTAText(SellerHomeConst.EMPTY_STRING)
+                    visible()
+                }
+                binding?.sahGlobalError?.gone()
+            }
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String? = null) = binding?.run {
         if (isErrorToastShown) return@run
         isErrorToastShown = true
 
-        val message = errorMessage ?: context.getString(R.string.sah_failed_to_get_information)
+        val message = errorMessage ?: getString(R.string.sah_failed_to_get_information)
 
         Toaster.build(
-            this, message,
-            TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, context.getString(R.string.sah_reload)
+            this.root, message,
+            TOAST_DURATION.toInt(), Toaster.TYPE_ERROR, getString(R.string.sah_reload)
         ) {
             reloadPageOrLoadDataOfErrorWidget()
         }.show()
 
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
     }
@@ -1302,7 +1309,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         errorType = SellerHomeErrorHandler.ErrorType.ERROR_TICKER,
                         deviceId = userSession.deviceId.orEmpty()
                     )
-                    view?.relTicker?.gone()
+                    binding?.relTicker?.gone()
                 }
             }
         })
@@ -1344,13 +1351,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() = view?.run {
+    private fun setViewBackground() = binding?.run {
         val isOfficialStore = userSession.isShopOfficialStore
         val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
         when {
             isOfficialStore -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
             isPowerMerchant -> viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            else -> viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            else -> viewBgShopStatus.setBackgroundColor(root.context.getResColor(android.R.color.transparent))
         }
     }
 
@@ -1453,7 +1460,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
         updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        view?.addOneTimeGlobalLayoutListener {
+        binding?.root?.addOneTimeGlobalLayoutListener {
             recyclerView?.post {
                 checkLoadingWidgets()
                 requestVisibleWidgetsData()
@@ -1552,16 +1559,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun onSuccessGetTickers(tickers: List<TickerItemUiModel>) {
-
-        fun getTickerType(hexColor: String?): Int = when (hexColor) {
-            context?.getString(R.string.sah_ticker_warning) -> Ticker.TYPE_WARNING
-            else -> Ticker.TYPE_ANNOUNCEMENT
-        }
-
-        view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
-        view?.tickerView?.run {
+        binding?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
+        binding?.tickerView?.run {
+            val tickerImpressHolders = mutableListOf<ImpressHolder>()
             val tickersData = tickers.map {
-                TickerData(it.title, it.message, getTickerType(it.color), true, it)
+                TickerData(it.title, it.message, it.type, true, it).also {
+                    tickerImpressHolders.add(ImpressHolder())
+                }
             }
 
             val adapter = TickerPagerAdapter(context, tickersData)
@@ -1569,26 +1573,50 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             adapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     if (!RouteManager.route(context, linkUrl.toString())) {
-                        if (itemData is TickerUiModel) {
+                        if (itemData is TickerItemUiModel) {
                             RouteManager.route(context, itemData.redirectUrl)
                         }
                     }
-                    SellerHomeTracking.sendHomeTickerCtaClickEvent(getShopStatusStr())
+                    (itemData as? TickerItemUiModel)?.let {
+                        SellerHomeTracking.sendHomeTickerCtaClickEvent(
+                            it.id,
+                            it.type
+                        )
+                    }
                 }
             })
-            addOnImpressionListener(tickerImpressHolder) {
-                SellerHomeTracking.sendHomeTickerImpressionEvent(getShopStatusStr())
+
+            // Add impression listener on first page of ticker
+            addSellerHomeImpressionListener(
+                tickerImpressHolders.firstOrNull(),
+                tickers.firstOrNull()
+            )
+
+            // Add impression listener if ticker view pager swiped to another page
+            onTickerPageChangeListener = { pageIndex ->
+                if (pageIndex > TICKER_FIRST_INDEX) {
+                    addSellerHomeImpressionListener(
+                        tickerImpressHolders.getOrNull(pageIndex),
+                        tickers.getOrNull(pageIndex)
+                    )
+                }
             }
         }
     }
 
-    private fun getShopStatusStr(): String {
-        val isOfficialStore = userSession.isShopOfficialStore
-        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
-        return when {
-            isOfficialStore -> "OS"
-            isPowerMerchant -> "PM"
-            else -> "RM"
+    private fun Ticker.addSellerHomeImpressionListener(
+        impressHolder: ImpressHolder?,
+        ticker: TickerItemUiModel?
+    ) {
+        impressHolder?.let { holder ->
+            ticker?.let { ticker ->
+                addOnImpressionListener(holder) {
+                    SellerHomeTracking.sendHomeTickerImpressionEvent(
+                        ticker.id,
+                        ticker.type
+                    )
+                }
+            }
         }
     }
 
@@ -1643,7 +1671,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val isAnyLoadingWidget =
             adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
-            view?.swipeRefreshLayout?.isRefreshing = false
+            binding?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
     }
@@ -1680,8 +1708,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setRecommendationCoachMarkEligibility() {
-        isEligibleShowRecommendationCoachMark =
-            pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        val isEligibleShowRecommendationCoachMark =
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
         if (isEligibleShowRecommendationCoachMark) {
             scrollToRecommendationWidget()
         }
@@ -1756,17 +1784,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 )
             }
             return@lazy coachMarkItems
-        }
-    }
-
-    private fun handleInterruptPageOnActivityResult(requestCode: Int) {
-        view?.let {
-            if (::pmShopScoreInterruptHelper.isInitialized) {
-                pmShopScoreInterruptHelper.onActivityResult(requestCode) {
-                    scrollToRecommendationWidget()
-                    isEligibleShowRecommendationCoachMark = true
-                }
-            }
         }
     }
 

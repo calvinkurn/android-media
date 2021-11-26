@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.databinding.ItemPenaltyStepperBinding
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_penalty_stepper.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 
 class PenaltyDetailStepperAdapter :
     RecyclerView.Adapter<PenaltyDetailStepperAdapter.DetailPenaltyStepperViewHolder>() {
@@ -42,45 +44,47 @@ class PenaltyDetailStepperAdapter :
 
     inner class DetailPenaltyStepperViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        private val binding: ItemPenaltyStepperBinding? by viewBinding()
+
         fun bind(data: ShopPenaltyDetailUiModel.StepperPenaltyDetail) {
-            with(itemView) {
-                setBackgroundColor(
+            binding?.run {
+                root.setBackgroundColor(
                     ContextCompat.getColor(
-                        context,
+                        root.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_N0
                     )
                 )
                 if (data.isDividerShow) {
-                    divider_stepper_penalty?.show()
+                    dividerStepperPenalty.show()
                     data.colorLineStepper?.let {
-                        divider_stepper_penalty?.setBackgroundColor(
-                            ContextCompat.getColor(context, it)
+                        dividerStepperPenalty.setBackgroundColor(
+                            ContextCompat.getColor(root.context, it)
                         )
                     }
                 } else {
-                    divider_stepper_penalty?.hide()
+                    dividerStepperPenalty.hide()
                 }
                 data.titleStepper?.let { titleStepper ->
-                    tv_title_status_stepper?.text =
-                        MethodChecker.fromHtml(context?.getString(titleStepper) ?: "")
+                    tvTitleStatusStepper.text =
+                        MethodChecker.fromHtml(root.context?.getString(titleStepper) ?: "")
                 }
                 data.colorStatusTitle?.let {
-                    tv_title_status_stepper?.setTextColor(
+                    tvTitleStatusStepper.setTextColor(
                         ContextCompat.getColor(
-                            context,
+                            root.context,
                             it
                         )
                     )
                 }
                 if (data.isBold) {
-                    tv_title_status_stepper?.setWeight(Typography.BOLD)
+                    tvTitleStatusStepper.setWeight(Typography.BOLD)
                 } else {
-                    tv_title_status_stepper?.setWeight(Typography.REGULAR)
+                    tvTitleStatusStepper.setWeight(Typography.REGULAR)
                 }
                 data.colorDotStepper?.let {
-                    ic_dot_stepper?.setColorFilter(
+                    icDotStepper.setColorFilter(
                         ContextCompat.getColor(
-                            context,
+                            root.context,
                             it
                         )
                     )

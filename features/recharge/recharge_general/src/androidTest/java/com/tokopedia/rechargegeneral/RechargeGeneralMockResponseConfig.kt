@@ -2,9 +2,9 @@ package com.tokopedia.rechargegeneral
 
 import android.content.Context
 import com.tokopedia.rechargegeneral.cases.RechargeGeneralProduct
+import com.tokopedia.rechargegeneral.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import com.tokopedia.rechargegeneral.test.R
 
 class RechargeGeneralMockResponseConfig(
         private val product: RechargeGeneralProduct
@@ -27,6 +27,7 @@ class RechargeGeneralMockResponseConfig(
             RechargeGeneralProduct.LISTRIK -> createMockProductListrik(context)
             RechargeGeneralProduct.AIR_PDAM -> createMockProductAirPdam(context)
             RechargeGeneralProduct.ANGSURAN_KREDIT -> createMockProductAngsuranKredit(context)
+            RechargeGeneralProduct.ADD_BILLS_ERROR -> createMockProductAddBillsError(context)
         }
     }
 
@@ -127,6 +128,10 @@ class RechargeGeneralMockResponseConfig(
                 KEY_QUERY_CATALOG_PLUGIN,
                 InstrumentationMockHelper.getRawString(context, R.raw.response_mock_data_general_template_catalog_plugin),
                 FIND_BY_CONTAINS)
+        return this
+    }
+
+    private fun createMockProductAddBillsError(context: Context): MockModelConfig {
         return this
     }
 }

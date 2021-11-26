@@ -20,6 +20,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartSuccessModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.cartId
@@ -29,7 +30,6 @@ import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.C
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.RecommendationATCTestObject.recommendationWidgetList
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.UpdateCartTestObject.successUpdateCartResponse
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.RecommendationCarouselDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.BaseSearchCategoryViewModel
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartItems
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.miniCartSimplifiedData
@@ -252,7 +252,7 @@ class AddToCartNonVariantTestHelper(
         `Then verify decrease cart quantity tracking is called`(productIdToATC)
     }
 
-    private fun `Given view setup to update quantity`(
+    fun `Given view setup to update quantity`(
             productId: String,
             updatedQuantity: Int,
     ) {
@@ -598,12 +598,12 @@ class AddToCartNonVariantTestHelper(
 
     @Suppress("UNCHECKED_CAST")
     private fun List<Visitable<*>>.findRecommendationDataViewIndexed() =
-            withIndex().find { it.value is RecommendationCarouselDataView }
-                as? IndexedValue<RecommendationCarouselDataView>
+            withIndex().find { it.value is TokoNowRecommendationCarouselUiModel }
+                as? IndexedValue<TokoNowRecommendationCarouselUiModel>
                 ?: throw Throwable("Cannot find recom widget")
 
     private fun `Given view already bind recommendation widget`(
-            recommendationDataView: RecommendationCarouselDataView,
+            recommendationDataView: TokoNowRecommendationCarouselUiModel,
             recommendationDataViewIndex: Int,
     ) {
         baseViewModel.onBindRecommendationCarousel(

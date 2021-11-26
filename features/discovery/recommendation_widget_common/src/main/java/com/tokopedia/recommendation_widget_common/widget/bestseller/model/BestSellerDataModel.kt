@@ -21,7 +21,8 @@ data class BestSellerDataModel(
         val recommendationItemList: List<RecommendationItem> = listOf(),
         val productCardModelList: List<ProductCardModel> = listOf(),
         val height: Int = 0,
-        var chipsPosition: Int = 1
+        var chipsPosition: Int = 1,
+        var dividerType: Int = 0
 ) : RecommendationVisitable{
     override fun visitableId(): String? {
         return id

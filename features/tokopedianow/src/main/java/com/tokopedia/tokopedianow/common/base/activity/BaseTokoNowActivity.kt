@@ -5,23 +5,22 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ActivityTokopedianowBaseBinding
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 abstract class BaseTokoNowActivity : BaseActivity() {
 
-    private val fragmentContainer by lazy {
-        findViewById<FrameLayout>(R.id.fragment_container)
-    }
+    private var binding : ActivityTokopedianowBaseBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tokopedianow_base)
+        binding = ActivityTokopedianowBaseBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
         setStatusBarColor()
         setBackgroundColor()
 
@@ -31,15 +30,17 @@ abstract class BaseTokoNowActivity : BaseActivity() {
     }
 
     private fun setStatusBarColor() {
-        //apply inset to allow recyclerview scrolling behind status bar
-        fragmentContainer.fitsSystemWindows = false
-        fragmentContainer.requestApplyInsets()
+        binding?.let {
+            //apply inset to allow recyclerview scrolling behind status bar
+            it.fragmentContainer.fitsSystemWindows = false
+            it.fragmentContainer.requestApplyInsets()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isDarkMode()) {
-            var flags: Int = fragmentContainer.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            fragmentContainer.systemUiVisibility = flags
-            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !isDarkMode()) {
+                var flags: Int = it.fragmentContainer.systemUiVisibility
+                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                it.fragmentContainer.systemUiVisibility = flags
+                window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            }
         }
 
         //make full transparent statusBar

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">logisticCommon</string>
     <string name="label_main_address">Utama</string>
+    <string name="tnc_description">Dengan klik \"%1$s\", kamu menyetujui Syarat &amp; Ketentuan.</string>
+    <string name="delayed_eta_bottomsheet_title">Perubahan estimasi tiba pesananmu</string>
+    <string name="delayed_eta_bottomsheet_description"><![CDATA[Hai Toppers, saat ini pesananmu sudah dalam perjalanan. Tetapi, ada keterlambatan sehingga pesananmu baru akan tiba %1$s. Kami meminta maaf & tetap berusaha agar barangmu bisa tiba secepatnya.]]></string>
+    <string name="delayed_eta_bottomsheet_button_title">Mengerti</string>
 </resources>

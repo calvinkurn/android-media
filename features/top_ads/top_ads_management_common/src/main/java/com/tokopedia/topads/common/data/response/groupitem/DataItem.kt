@@ -41,7 +41,7 @@ data class DataItem(
 	val statTotalImpression: String = "",
 
 	@field:SerializedName("group_id")
-	val groupId: Int = 0,
+	val groupId: String = "",
 
 	@field:SerializedName("group_status_toogle")
 	val groupStatusToogle: Int = 0,

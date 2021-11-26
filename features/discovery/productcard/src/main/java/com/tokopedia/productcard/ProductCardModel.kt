@@ -56,6 +56,7 @@ data class ProductCardModel (
         val isWideContent: Boolean = false,
         val variant: Variant? = null,
         val nonVariant: NonVariant? = null,
+        val hasSimilarProductButton: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

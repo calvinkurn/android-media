@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.campaignstock.ui.util
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailReserve
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationDetailSellable
@@ -9,10 +10,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.Re
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.ReservedStockProductModel
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper
 import com.tokopedia.product.manage.common.feature.variant.data.mapper.ProductManageVariantMapper.mapVariantCampaignTypeToProduct
-import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 object CampaignStockMapper {
@@ -22,7 +20,7 @@ object CampaignStockMapper {
         val sellableSequence = sellableList.asSequence()
         val productVariantSequence = productVariantList.asSequence().apply {
             sortedWith(compareBy {
-                it.id.toIntOrZero()
+                it.id.toLongOrZero()
             })
         }
         val isAllStockEmpty = sellableList.all { it.stock.toIntOrZero() == 0 }
@@ -31,7 +29,7 @@ object CampaignStockMapper {
                 productVariantSequence.any { product -> product.id == sellable.productId }
             }
             .sortedWith(compareBy {
-                it.productId.toIntOrZero()
+                it.productId.toLongOrZero()
             })
             .zip(productVariantSequence) { sellable, variant ->
                 SellableStockProductUIModel(
@@ -42,7 +40,7 @@ object CampaignStockMapper {
                     isAllStockEmpty = isAllStockEmpty,
                     access = variant.access,
                     isCampaign = variant.isCampaign,
-                    campaignTypeList = ProductManageVariantMapper.mapVariantCampaignTypeToProduct(
+                    campaignTypeList = mapVariantCampaignTypeToProduct(
                         variant.campaignTypeList
                     )
                 )

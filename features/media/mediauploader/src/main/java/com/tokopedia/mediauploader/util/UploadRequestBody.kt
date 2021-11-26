@@ -5,7 +5,7 @@ import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.BufferedSink
 import android.os.Looper
-import com.tokopedia.mediauploader.data.state.ProgressCallback
+import com.tokopedia.mediauploader.common.state.ProgressCallback
 import java.io.File
 import java.io.FileInputStream
 

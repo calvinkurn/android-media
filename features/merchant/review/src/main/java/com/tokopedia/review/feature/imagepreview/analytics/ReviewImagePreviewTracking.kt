@@ -150,6 +150,33 @@ object ReviewImagePreviewTracking {
         )
     }
 
+    fun trackClickReviewerName(
+        isFromGallery: Boolean,
+        feedbackId: String,
+        userId: String,
+        statistics: String,
+        productId: String,
+        currentUserId: String
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                ReviewTrackingConstant.EVENT to ReadReviewTrackingConstants.EVENT_CLICK_PDP,
+                ReviewTrackingConstant.EVENT_ACTION to ReviewImagePreviewTrackingConstants.EVENT_ACTION_CLICK_REVIEWER_NAME,
+                ReviewTrackingConstant.EVENT_CATEGORY to if (isFromGallery) ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_REVIEW_IMAGE_GALLERY else ReviewImagePreviewTrackingConstants.EVENT_CATEGORY_REVIEW_IMAGE_READING_PAGE,
+                ReviewTrackingConstant.EVENT_LABEL to String.format(
+                    ReviewImagePreviewTrackingConstants.EVENT_LABEL_CLICK_REVIEWER_NAME,
+                    feedbackId,
+                    userId,
+                    statistics
+                ),
+                ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
+                ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
+                ReadReviewTrackingConstants.KEY_PRODUCT_ID to productId,
+                ReadReviewTrackingConstants.KEY_USER_ID to currentUserId
+            )
+        )
+    }
+
     private fun getTrackEventMap(
         eventAction: String,
         eventLabel: String,

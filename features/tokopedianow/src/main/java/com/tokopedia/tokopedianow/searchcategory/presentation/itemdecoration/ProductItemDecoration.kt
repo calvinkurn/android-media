@@ -27,7 +27,7 @@ class ProductItemDecoration(
     private var verticalCardViewOffset = 0
     private var horizontalCardViewOffset = 0
     private val allowedViewTypes = listOf(
-            R.layout.item_tokopedianow_search_category_product
+            R.layout.item_tokopedianow_product_grid_card
     )
 
     override fun getItemOffsets(outRect: Rect,

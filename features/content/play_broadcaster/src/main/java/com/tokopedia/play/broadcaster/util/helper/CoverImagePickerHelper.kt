@@ -27,7 +27,7 @@ class CoverImagePickerHelper(
     private lateinit var coverImageChooserBottomSheet: PlayCoverImageChooserBottomSheet
     private lateinit var galleryImagePickerBottomSheet: PlayGalleryImagePickerBottomSheet
 
-    override fun onChooseProductCover(bottomSheet: PlayCoverImageChooserBottomSheet, productId: Long, imageUrl: String) {
+    override fun onChooseProductCover(bottomSheet: PlayCoverImageChooserBottomSheet, productId: String, imageUrl: String) {
         listener.onGetFromProduct(productId, imageUrl)
         bottomSheet.dismiss()
     }
@@ -121,7 +121,7 @@ class CoverImagePickerHelper(
 
     interface OnChosenListener {
 
-        fun onGetFromProduct(productId: Long, imageUrl: String)
+        fun onGetFromProduct(productId: String, imageUrl: String)
         fun onGetFromCamera(uri: Uri)
         fun onGetFromGallery(uri: Uri)
     }

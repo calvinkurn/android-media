@@ -3,10 +3,10 @@ package com.tokopedia.createpost.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliatecommon.analytics.CheckQuotaQuery
-import com.tokopedia.createpost.TYPE_AFFILIATE
-import com.tokopedia.createpost.data.pojo.getcontentform.FeedContentResponse
+import com.tokopedia.createpost.common.TYPE_AFFILIATE
+import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.createpost.data.raw.GQL_QUERY_CONTENT_FORM
-import com.tokopedia.createpost.di.ActivityContext
+import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.domain.entity.GetContentFormDomain
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase

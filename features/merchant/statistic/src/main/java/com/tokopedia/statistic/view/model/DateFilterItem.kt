@@ -8,7 +8,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.utils.DateFilterFormatUtil
 import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactory
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.*
 import java.util.concurrent.TimeUnit
 

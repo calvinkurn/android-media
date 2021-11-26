@@ -95,6 +95,22 @@ class GeolocationPresenterTest {
     }
 
     @Test
+    fun `reverse geocode error`() {
+        val exception = Exception("test error")
+        every {
+            revGeocode.execute(any())
+        } returns Observable.error(exception)
+
+        presenter.getReverseGeoCoding("99", "99")
+
+        verifyOrder {
+            mapFragment.setLoading(true)
+            mapFragment.setLoading(false)
+            mapFragment.setValuePointer("Error")
+        }
+    }
+
+    @Test
     fun `get interactor`() {
         var i: Any? = null
 

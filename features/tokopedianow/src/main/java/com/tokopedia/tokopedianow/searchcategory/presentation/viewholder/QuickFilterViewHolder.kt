@@ -4,10 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.filter.common.helper.getSortFilterCount
-import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSearchCategoryQuickFilterBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.QuickFilterDataView
+import com.tokopedia.utils.view.binding.viewBinding
 
 class QuickFilterViewHolder(
         itemView: View,
@@ -19,22 +20,20 @@ class QuickFilterViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_quick_filter
     }
 
-    private var unifySortFilter: SortFilter? = null
-
-    init {
-        unifySortFilter = itemView.findViewById<SortFilter?>(R.id.tokoNowSearchCategoryQuickFilter)
-    }
+    private var binding: ItemTokopedianowSearchCategoryQuickFilterBinding? by viewBinding()
 
     override fun bind(element: QuickFilterDataView?) {
         element ?: return
 
-        unifySortFilter?.sortFilterItems?.removeAllViews()
-        unifySortFilter?.sortFilterHorizontalScrollView?.scrollX = 0
-        unifySortFilter?.addItem(ArrayList(element.quickFilterItemList.map { it.sortFilterItem }))
-        unifySortFilter?.parentListener = {
-            quickFilterListener.openFilterPage()
+        binding?.tokoNowSearchCategoryQuickFilter?.apply {
+            sortFilterItems.removeAllViews()
+            sortFilterHorizontalScrollView.scrollX = 0
+            addItem(ArrayList(element.quickFilterItemList.map { it.sortFilterItem }))
+            parentListener = {
+                quickFilterListener.openFilterPage()
+            }
+            indicatorCounter = getSortFilterCount(element.mapParameter)
         }
-        unifySortFilter?.indicatorCounter = getSortFilterCount(element.mapParameter)
         setNewNotification(element)
     }
 

@@ -48,7 +48,6 @@ import timber.log.Timber;
 public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
-    private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     private static boolean isBranchInitialized = false;
     private RemoteConfig remoteConfig;
     private static Boolean APP_OPEN_FROM_BRANCH_LINK = false;
@@ -98,9 +97,16 @@ public class BranchWrapper implements WrapperInterface {
     @Override
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
-            generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
-                    context, linkerShareRequest.getShareCallbackInterface(),
-                    ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+
+            if (isFDLActivated(context)){
+                generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }else {
+                generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
+                        context, linkerShareRequest.getShareCallbackInterface(),
+                        ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
+            }
         }
     }
 
@@ -108,6 +114,7 @@ public class BranchWrapper implements WrapperInterface {
     public void handleDefferedDeeplink(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
         Branch branch = Branch.getInstance();
         checkBranchLinkUTMParams(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity());
+        handleDeferredDeeplinkFDL(linkerDeeplinkRequest);
         if (branch == null) {
             if (linkerDeeplinkRequest != null && linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
                 linkerDeeplinkRequest.getDefferedDeeplinkCallback().onError(
@@ -138,6 +145,10 @@ public class BranchWrapper implements WrapperInterface {
                 }
             }
         }
+    }
+
+    private void handleDeferredDeeplinkFDL(LinkerDeeplinkRequest linkerDeeplinkRequest) {
+        new FirebaseDLWrapper().getFirebaseDynamicLink(((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity(), ((LinkerDeeplinkData) linkerDeeplinkRequest.getDataObj()).getActivity().getIntent());
     }
 
     private Branch.BranchReferralInitListener getBranchCallback(LinkerDeeplinkRequest linkerDeeplinkRequest, Context context) {
@@ -338,6 +349,12 @@ public class BranchWrapper implements WrapperInterface {
         return branchUniversalObject;
     }
 
+    private void generateFirebaseLink(final LinkerData data, final Context context,
+                                      final ShareCallback shareCallback, final UserData userData) {
+        new FirebaseDLWrapper().createShortLink(shareCallback,data);
+
+    }
+
     private void generateBranchLink(final LinkerData data, final Context context,
                                     final ShareCallback shareCallback, final UserData userData) {
 
@@ -368,7 +385,7 @@ public class BranchWrapper implements WrapperInterface {
                                 if (data.isThrowOnError()) {
                                     shareCallback.onError(LinkerUtils.createLinkerError(LinkerConstants.ERROR_SOMETHING_WENT_WRONG, null));
                                 } else {
-                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                                    shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), getFallbackUrl(data), getFallbackUrl(data)));
                                 }
                             }
                         }
@@ -378,6 +395,15 @@ public class BranchWrapper implements WrapperInterface {
         } else {
             shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
         }
+    }
+
+    private String getFallbackUrl(LinkerData data){
+        String fallbackUrl = data.renderShareUri();
+        if(TextUtils.isEmpty(fallbackUrl)
+                && !TextUtils.isEmpty(data.getDesktopUrl())){
+            fallbackUrl = data.getDesktopUrl();
+        }
+        return fallbackUrl;
     }
 
     private LinkProperties createLinkProperties(LinkerData data, String channel, Context context, UserData userData) {
@@ -410,7 +436,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.GROUPCHAT, data.getId());
             if (context.getApplicationContext() instanceof LinkerRouter) {
-                desktopUrl = DESKTOP_GROUPCHAT_URL;
+                desktopUrl = LinkerConstants.DESKTOP_GROUPCHAT_URL;
                 linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
@@ -646,7 +672,7 @@ public class BranchWrapper implements WrapperInterface {
         handler.postDelayed(
                 new Runnable() {
                     public void run() {
-                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.getDesktopUrl(), data.getDesktopUrl()));
+                        shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
                         Timber.w("P2#BRANCH_LINK_TIMEOUT#error;linkdata='%s'", data.getId());
                     }
                 },
@@ -658,5 +684,10 @@ public class BranchWrapper implements WrapperInterface {
         if(handler != null){
             handler.removeCallbacksAndMessages(null);
         }
+    }
+
+    private Boolean isFDLActivated(Context context) {
+        return ((LinkerRouter) context.getApplicationContext()).
+                getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_FDL_ENABLE, false);
     }
 }

@@ -39,6 +39,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
 
     companion object {
         const val LOTTIE_ANIMATION = "https://ecs7.tokopedia.net/android/lottie/merchant/others/REV_Merchant_Onboarding_lottie.json"
+        private const val LOTTIE_ANIMATION_DURATION = 3000L
     }
 
     override fun onAttach(context: Context) {
@@ -92,7 +93,7 @@ class ShopOpenRevampFinishFragment : Fragment() {
                     intent.putExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, true)
                     startActivity(intent)
                     EspressoIdlingResource.decrement()
-                }, 3000)
+                }, LOTTIE_ANIMATION_DURATION)
             }
         }
     }

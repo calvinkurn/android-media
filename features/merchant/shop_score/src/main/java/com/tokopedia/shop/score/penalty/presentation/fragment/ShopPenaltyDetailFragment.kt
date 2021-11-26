@@ -17,14 +17,14 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
 import com.tokopedia.shop.score.common.analytics.ShopScorePenaltyTracking
+import com.tokopedia.shop.score.databinding.FragmentPenaltyDetailBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.detail.PenaltyDetailStepperAdapter
 import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBottomSheet
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
-import kotlinx.android.synthetic.main.fragment_penalty_detail.*
-import kotlinx.android.synthetic.main.fragment_penalty_page.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 class ShopPenaltyDetailFragment : BaseDaggerFragment() {
@@ -36,6 +36,8 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     lateinit var shopScorePenaltyTracking: ShopScorePenaltyTracking
 
     private val penaltyDetailStepperAdapter by lazy { PenaltyDetailStepperAdapter() }
+
+    private val binding: FragmentPenaltyDetailBinding? by viewBinding()
 
     private var itemPenalty: ItemPenaltyUiModel? = null
     private var keyCacheManagerId = ""
@@ -98,31 +100,31 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     }
 
     private fun initDataView(shopPenaltyDetailUiModel: ShopPenaltyDetailUiModel) {
-        tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
-        tvStartDateDetailPenalty?.text =
+        binding?.tvTitleDetailPenalty?.text = shopPenaltyDetailUiModel.titleDetail
+        binding?.tvStartDateDetailPenalty?.text =
             getString(R.string.date_penalty_detail, shopPenaltyDetailUiModel.startDateDetail)
-        tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
-        tv_total_deduction_point_penalty?.text = MethodChecker.fromHtml(
+        binding?.tvSummaryDetailPenalty?.text = shopPenaltyDetailUiModel.summaryDetail
+        binding?.tvTotalDeductionPointPenalty?.text = MethodChecker.fromHtml(
             getString(
                 R.string.total_deduction_point_performance,
                 shopPenaltyDetailUiModel.deductionPointPenalty
             )
         )
-        tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(
+        binding?.tvEndDateDetailPenalty?.text = MethodChecker.fromHtml(
             getString(
                 R.string.point_deduction_date_result_detail_penalty,
                 shopPenaltyDetailUiModel.prefixDateDetail,
                 shopPenaltyDetailUiModel.endDateDetail
             )
         )
-        tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
+        binding?.tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
-        ic_info_status_penalty?.setOnClickListener {
+        binding?.icInfoStatusPenalty?.setOnClickListener {
             showStatusPenaltyBottomSheet()
         }
 
-        btnCallHelpCenter?.setOnClickListener {
+        binding?.btnCallHelpCenter?.setOnClickListener {
             RouteManager.route(
                 context,
                 ApplinkConstInternalGlobal.WEBVIEW,
@@ -131,7 +133,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
             shopScorePenaltyTracking.clickLearMoreHelpCenterPenaltyDetail()
         }
 
-        if (btnCallHelpCenter?.isVisible == true) {
+        if (binding?.btnCallHelpCenter?.isVisible == true) {
             shopScorePenaltyTracking.impressHelpCenterPenaltyDetail()
         }
     }
@@ -145,7 +147,7 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
                 } else SPAN_WIDTH_DEFAULT
             }
         }
-        rv_timeline_status_penalty?.apply {
+        binding?.rvTimelineStatusPenalty?.apply {
             layoutManager = gridLayoutManager
             adapter = penaltyDetailStepperAdapter
         }
@@ -160,8 +162,8 @@ class ShopPenaltyDetailFragment : BaseDaggerFragment() {
     private fun setupActionBar() {
         (activity as? AppCompatActivity)?.run {
             supportActionBar?.hide()
-            setSupportActionBar(penalty_detail_toolbar)
-            supportActionBar?.apply {
+            setSupportActionBar(binding?.penaltyDetailToolbar)
+            supportActionBar?.run {
                 title = getString(R.string.title_penalty_detail_shop_score)
             }
         }

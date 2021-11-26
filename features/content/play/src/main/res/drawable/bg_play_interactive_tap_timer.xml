@@ -4,6 +4,6 @@
         android:radius="@dimen/play_interactive_tap_timer_radius"
         />
     <solid
-        android:color="@color/Unify_Static_White"
+        android:color="@color/Unify_N0"
         />
 </shape>

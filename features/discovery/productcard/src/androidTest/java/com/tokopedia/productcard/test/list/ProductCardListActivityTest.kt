@@ -75,6 +75,9 @@ internal class ProductCardListActivityTest: AppCompatActivity() {
                 }
             })
             productCardView?.setAddVariantClickListener { toast("Add Variant") }
+            productCardView?.setDeleteProductOnClickListener { toast("Delete product") }
+            productCardView?.setRemoveWishlistOnClickListener { toast("Delete product from wishlist") }
+            productCardView?.setNotifyMeOnClickListener { toast("Notify me") }
         }
 
         private fun toast(message: String) {

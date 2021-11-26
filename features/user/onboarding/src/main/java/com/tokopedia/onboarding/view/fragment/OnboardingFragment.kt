@@ -9,9 +9,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.TaskStackBuilder
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -27,14 +25,14 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SMART_REGISTER
 import com.tokopedia.onboarding.data.OnboardingConstant.PARAM_SOURCE_ONBOARDING
 import com.tokopedia.onboarding.data.OnboardingScreenItem
+import com.tokopedia.onboarding.databinding.FragmentOnboardingBinding
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import kotlinx.coroutines.Dispatchers
@@ -54,12 +52,6 @@ import kotlin.coroutines.CoroutineContext
 
 class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed {
 
-    private lateinit var screenViewpager: ViewPager
-    private lateinit var skipAction: Typography
-    private lateinit var nextAction: Typography
-    private lateinit var joinButton: UnifyButton
-    private lateinit var tabIndicator: TabLayout
-
     private val job = SupervisorJob()
 
     @Inject
@@ -74,8 +66,11 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
+
     override val coroutineContext: CoroutineContext
         get() = job + dispatcher.main
+
+    private val binding: FragmentOnboardingBinding? by viewBinding()
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
     private lateinit var sharedPrefs: SharedPreferences
@@ -86,11 +81,6 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_onboarding, container, false)
-        screenViewpager = view.findViewById(R.id.screen_viewpager)
-        skipAction = view.findViewById(R.id.skip_action)
-        nextAction = view.findViewById(R.id.next_action)
-        joinButton = view.findViewById(R.id.join_button)
-        tabIndicator = view.findViewById(R.id.tab_indicator)
         return view
     }
 
@@ -101,7 +91,7 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
                 return executeViewCreateFlow()
             }
         }
-        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
+        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context, true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -145,20 +135,24 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
         context?.let {
             val listItem = generateListAllButton()
 
-            onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
-            screenViewpager.apply {
-                adapter = onboardingViewPagerAdapter
-                if(onboardingViewPagerAdapter.count > 1) {
-                    screenViewpager.offscreenPageLimit = onboardingViewPagerAdapter.count - 1
+            binding?.let { binding ->
+                onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
+                binding.screenViewpager.apply {
+                    adapter = onboardingViewPagerAdapter
+                    if (onboardingViewPagerAdapter.count > 1) {
+                        binding.screenViewpager.offscreenPageLimit =
+                            onboardingViewPagerAdapter.count - 1
+                    }
+                    addOnPageChangeListener(OnPageChangeListener())
                 }
-                addOnPageChangeListener(OnPageChangeListener())
+
+                binding.tabIndicator.setupWithViewPager(binding.screenViewpager)
+
+                binding.skipAction.setOnClickListener(skipActionClickListener())
+                binding.nextAction.setOnClickListener(nextActionClickListener())
+                binding.joinButton.setOnClickListener(joinActionClickListener())
             }
 
-            tabIndicator.setupWithViewPager(screenViewpager)
-
-            skipAction.setOnClickListener(skipActionClickListener())
-            nextAction.setOnClickListener(nextActionClickListener())
-            joinButton.setOnClickListener(joinActionClickListener())
         }
     }
 
@@ -194,7 +188,9 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     private fun joinActionClickListener(): View.OnClickListener {
         return View.OnClickListener {
             context?.let {
-                onboardingAnalytics.eventOnboardingJoin(screenViewpager.currentItem)
+                binding?.let {
+                    onboardingAnalytics.eventOnboardingJoin(it.screenViewpager.currentItem)
+                }
                 if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
                     goToRegisterPage()
                 } else {
@@ -207,8 +203,9 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     private fun skipActionClickListener(): View.OnClickListener {
         return View.OnClickListener {
             context?.let {
-                onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
-
+                binding?.let {
+                    onboardingAnalytics.eventOnboardingSkip(it.screenViewpager.currentItem)
+                }
                 val applink = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
                     ApplinkConst.HOME
                 } else {
@@ -231,12 +228,14 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
 
     private fun nextActionClickListener(): View.OnClickListener {
         return View.OnClickListener {
-            var position = screenViewpager.currentItem
-            onboardingAnalytics.eventOnboardingNext(position)
-            val size = onboardingViewPagerAdapter.listScreen.size
-            if (position < size) {
-                position++
-                screenViewpager.currentItem = position
+            binding?.let { binding ->
+                var position = binding.screenViewpager.currentItem
+                onboardingAnalytics.eventOnboardingNext(position)
+                val size = onboardingViewPagerAdapter.listScreen.size
+                if (position < size) {
+                    position++
+                    binding.screenViewpager.currentItem = position
+                }
             }
         }
     }
@@ -256,11 +255,11 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     }
 
     private fun hideNextAction() {
-        nextAction.invisible()
+        binding?.nextAction?.invisible()
     }
 
     private fun showNextAction() {
-        nextAction.show()
+        binding?.nextAction?.show()
     }
 
     private fun loadLastScreen() {

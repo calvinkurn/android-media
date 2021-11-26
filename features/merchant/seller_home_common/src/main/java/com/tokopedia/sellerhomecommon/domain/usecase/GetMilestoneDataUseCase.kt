@@ -19,7 +19,7 @@ class GetMilestoneDataUseCase(
             QUERY, GetMilestoneDataResponse::class.java,
             params.parameters
         )
-        val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(GetMilestoneDataResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {

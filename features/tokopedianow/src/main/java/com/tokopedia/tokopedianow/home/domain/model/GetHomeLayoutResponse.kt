@@ -79,7 +79,9 @@ data class HomeLayoutResponse(
     val hasCloseButton: Boolean = false,
     @SerializedName("isAutoRefreshAfterExpired")
     val isAutoRefreshAfterExpired: Boolean = false,
+    @SerializedName("token")
     var token: String = "",
+    @SerializedName("timestamp")
     var timestamp: String = ""
 )
 

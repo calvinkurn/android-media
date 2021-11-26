@@ -56,6 +56,7 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
                     } else {
                         Constant.Image.IC_PM_PRO_UPGRADE_LEVEL
                     },
+                    isDowngrade = isDowngrade,
                     descBenefit = descBenefit,
                     backgroundUrl = bgBenefit,
                     benefitItemList = mapToBenefitItem(it.benefitList)

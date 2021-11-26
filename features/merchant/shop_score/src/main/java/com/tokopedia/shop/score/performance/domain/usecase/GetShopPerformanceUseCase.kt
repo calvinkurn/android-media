@@ -179,7 +179,7 @@ class GetShopPerformanceUseCase @Inject constructor(private val gqlRepository: G
         }
 
         try {
-            val gqlResponse = gqlRepository.getReseponse(requests)
+            val gqlResponse = gqlRepository.response(requests)
 
             if (gqlResponse.getError(ShopScoreWrapperResponse::class.java).isNullOrEmpty()) {
                 val shopScoreLevelData = gqlResponse

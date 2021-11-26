@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.shop_showcase.R
+import com.tokopedia.shop_showcase.databinding.ItemProductCardHorizontalBinding
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopShowcasePreviewListener
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.viewholder.ShowcaseProductPreviewViewHolder
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
@@ -19,7 +19,12 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
     private var appendedProductList: ArrayList<BaseShowcaseProduct> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowcaseProductPreviewViewHolder {
-        return ShowcaseProductPreviewViewHolder(LayoutInflater.from(context).inflate(R.layout.item_product_card_horizontal, parent, false), listener)
+        val binding = ItemProductCardHorizontalBinding.inflate(
+                LayoutInflater.from(context),
+                parent,
+                false
+        )
+        return ShowcaseProductPreviewViewHolder(binding, listener)
     }
 
     override fun getItemCount(): Int {

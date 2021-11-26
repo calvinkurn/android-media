@@ -72,6 +72,7 @@ object ParamObject {
     const val PARAM_DASH_SELECTION_ITEM = "selectionId"
     const val PARAM_TOGGLE_ON = "toggle_on"
     const val PARAM_TOGGLE_OFF = "toggle_off"
+    const val PARAM_GROUP_TYPE = "type"
 
 
     //for edit operation

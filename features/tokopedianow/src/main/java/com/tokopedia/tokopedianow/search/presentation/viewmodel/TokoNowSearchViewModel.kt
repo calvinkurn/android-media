@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
-import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
-import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -26,6 +23,8 @@ import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.TOKOPEDIA_NOW
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartProductItem
+import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.AllProductTitle
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.NonVariantATCDataView
@@ -53,23 +52,19 @@ class TokoNowSearchViewModel @Inject constructor (
         getFilterUseCase: UseCase<DynamicFilterModel>,
         getProductCountUseCase: UseCase<String>,
         getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
-        addToCartUseCase: AddToCartUseCase,
-        updateCartUseCase: UpdateCartUseCase,
-        deleteCartUseCase: DeleteCartUseCase,
+        cartService: CartService,
         getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         getRecommendationUseCase: GetRecommendationUseCase,
         chooseAddressWrapper: ChooseAddressWrapper,
         abTestPlatformWrapper: ABTestPlatformWrapper,
-        userSession: UserSessionInterface,
+        userSession: UserSessionInterface
 ): BaseSearchCategoryViewModel(
         baseDispatcher,
         queryParamMap,
         getFilterUseCase,
         getProductCountUseCase,
         getMiniCartListSimplifiedUseCase,
-        addToCartUseCase,
-        updateCartUseCase,
-        deleteCartUseCase,
+        cartService,
         getWarehouseUseCase,
         getRecommendationUseCase,
         chooseAddressWrapper,
@@ -230,7 +225,7 @@ class TokoNowSearchViewModel @Inject constructor (
                         nonVariantATC = NonVariantATCDataView(
                             minQuantity = otherRelatedProduct.minOrder,
                             maxQuantity = otherRelatedProduct.stock,
-                            quantity = getProductQuantityInMiniCart(otherRelatedProduct.id)
+                            quantity = cartService.getProductQuantity(otherRelatedProduct.id)
                         ),
                     )
                 },
@@ -318,7 +313,7 @@ class TokoNowSearchViewModel @Inject constructor (
         updatedProductIndices: MutableList<Int>,
     ) {
         val nonVariantATC = broadMatchItemDataView.nonVariantATC ?: return
-        val quantity = getProductQuantityInMiniCart(broadMatchItemDataView.id)
+        val quantity = cartService.getProductQuantity(broadMatchItemDataView.id)
 
         if (nonVariantATC.quantity != quantity) {
             nonVariantATC.quantity = quantity
@@ -328,45 +323,36 @@ class TokoNowSearchViewModel @Inject constructor (
         }
     }
 
-    private fun getProductQuantityInMiniCart(productId: String)
-        = allMiniCartItemList?.find { it.productId == productId }?.quantity ?: 0
-
     fun onViewATCBroadMatchItem(
         broadMatchItem: BroadMatchItemDataView,
         quantity: Int,
         broadMatchIndex: Int,
     ) {
-        if (userSession.isLoggedIn)
-            handleAddToCartBroadMatchItem(broadMatchItem, quantity)
-        else
-            handleAddToCartEventNonLogin(broadMatchIndex)
-    }
-
-    private fun handleAddToCartBroadMatchItem(
-        broadMatchItem: BroadMatchItemDataView,
-        quantity: Int,
-    ) {
         val nonVariantATC = broadMatchItem.nonVariantATC ?: return
-        if (nonVariantATC.quantity == quantity) return
 
-        when {
-            nonVariantATC.quantity == 0 -> addToCartBroadMatchItem(broadMatchItem, quantity)
-            quantity == 0 -> deleteCartBroadMatchItem(broadMatchItem)
-            else -> updateCartBroadMatchItem(broadMatchItem, quantity)
-        }
-    }
+        val productId = broadMatchItem.id
+        val shopId = broadMatchItem.shop.id
+        val currentQuantity = nonVariantATC.quantity
 
-    private fun addToCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView, quantity: Int) {
-        addToCart(
-            productId = broadMatchItem.id,
-            shopId = broadMatchItem.shop.id,
+        cartService.handleCart(
+            cartProductItem = CartProductItem(productId, shopId, currentQuantity),
             quantity = quantity,
-            onSuccess = {
+            onSuccessAddToCart = {
                 sendAddToCartBroadMatchItemTracking(quantity, it, broadMatchItem)
                 onAddToCartSuccessBroadMatchItem(broadMatchItem, it.data.quantity)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
             },
+            onSuccessUpdateCart = {
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
+            },
+            onSuccessDeleteCart = {
+                onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
+                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+            },
             onError = ::onAddToCartFailed,
+            handleCartEventNonLogin = {
+                handleAddToCartEventNonLogin(broadMatchIndex)
+            },
         )
     }
 
@@ -392,28 +378,6 @@ class TokoNowSearchViewModel @Inject constructor (
         updatedQuantity: Int,
     ) {
         broadMatchItem.nonVariantATC?.quantity = updatedQuantity
-    }
-
-    private fun deleteCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView) {
-        deleteCart(
-            productId = broadMatchItem.id,
-            onSuccess = {
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-            },
-            onError = ::onAddToCartFailed,
-        )
-    }
-
-    private fun updateCartBroadMatchItem(broadMatchItem: BroadMatchItemDataView, quantity: Int) {
-        updateCart(
-            productId = broadMatchItem.id,
-            quantity = quantity,
-            onSuccess = {
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
-            },
-            onError = ::onAddToCartFailed,
-        )
     }
 
     companion object {

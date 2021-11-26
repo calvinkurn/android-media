@@ -25,6 +25,10 @@ open class PageLoadTimePerformanceCallback(
         var renderDuration: Long = 0,
         var performanceMonitoring: PerformanceMonitoring? = null
 ): PageLoadTimePerformanceInterface {
+    companion object {
+        private const val ANDROID_TRACE_FULLY_DRAWN = "reportFullyDrawn() for %s"
+    }
+
     var isPrepareDone = false
     var isNetworkDone = false
     var isRenderDone = false
@@ -158,13 +162,13 @@ open class PageLoadTimePerformanceCallback(
     }
 
     fun beginAsyncSystraceSection(methodName: String, cookie: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             Trace.beginAsyncSection(methodName, cookie)
         }
     }
 
     fun endAsyncSystraceSection(methodName: String, cookie: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && GlobalConfig.DEBUG) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             Trace.endAsyncSection(methodName, cookie)
         }
     }
@@ -210,6 +214,20 @@ open class PageLoadTimePerformanceCallback(
                     break
                 }
             }
+        }
+        putFullyDrawnTrace(traceName)
+    }
+
+    private fun putFullyDrawnTrace(traceName: String) {
+        try {
+            Trace.beginSection(
+                String.format(
+                    ANDROID_TRACE_FULLY_DRAWN,
+                    traceName
+                )
+            )
+        } finally {
+            Trace.endSection()
         }
     }
 

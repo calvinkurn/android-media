@@ -12,7 +12,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
 import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
-import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import kotlinx.coroutines.async

@@ -48,6 +48,11 @@ class GetReviewImagesUseCase @Inject constructor(graphqlRepository: GraphqlRepos
                     isAnonymous
                     isLiked
                     totalLike
+                    userStats {
+                        key
+                        formatted
+                        count
+                    }
                   }
                   image {
                     attachmentID

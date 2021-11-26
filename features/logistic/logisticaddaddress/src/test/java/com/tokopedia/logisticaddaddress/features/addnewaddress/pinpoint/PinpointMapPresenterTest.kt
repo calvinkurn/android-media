@@ -13,16 +13,21 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.helper.MockTimber
+import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verifyOrder
+import org.assertj.core.api.SoftAssertions
+import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 import rx.Subscriber
+import timber.log.Timber
 
 class PinpointMapPresenterTest {
 
@@ -36,8 +41,12 @@ class PinpointMapPresenterTest {
     val view: PinpointMapView = mockk(relaxed = true)
     lateinit var presenter: PinpointMapPresenter
 
+    lateinit var timber : MockTimber
+
     @Before
     fun setup() {
+        timber = MockTimber()
+        Timber.plant(timber)
         presenter = PinpointMapPresenter(getDistrictUseCase, revGeoCodeUseCase, districtBoundUseCase, districtBoundMapper)
         presenter.attachView(view)
     }
@@ -56,6 +65,38 @@ class PinpointMapPresenterTest {
 
         verifyOrder {
             view.onSuccessPlaceGetDistrict(successModel)
+        }
+    }
+
+    @Test
+    fun `get success district negative`() {
+        val successModel = GetDistrictDataUiModel(
+            districtId = 1, errorCode = 101)
+
+        every { getDistrictUseCase.execute(any())
+        } answers {
+            Observable.just(successModel)
+        }
+
+        presenter.getDistrict("123")
+
+        verifyOrder {
+            view.goToAddNewAddressNegative()
+        }
+    }
+
+
+    @Test
+    fun `get district error`() {
+        val exception = MessageErrorException("hi")
+
+        every { getDistrictUseCase.execute(any())
+        } returns Observable.error(exception)
+
+        presenter.getDistrict("123")
+
+        assertSoftly {
+            timber.lastLogMessage() contentEquals exception.localizedMessage
         }
     }
 
@@ -163,6 +204,22 @@ class PinpointMapPresenterTest {
 
         verifyOrder {
             view.showBoundaries(listBoundaries)
+        }
+    }
+
+    @Test
+    fun `district boundary error`() {
+        val exception = MessageErrorException("hi")
+
+        every { districtBoundUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<GraphqlResponse>>().onError(exception)
+        }
+
+        presenter.getDistrictBoundary(0, "asdn", 0)
+
+        assertSoftly {
+            timber.lastLogMessage() contentEquals exception.localizedMessage
         }
     }
 

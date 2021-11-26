@@ -13,6 +13,9 @@ class InstrumentationOfficialStoreTestActivity : AppCompatActivity(),
         OfficialStorePerformanceMonitoringListener {
 
     private var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
+    private val PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "dataSource"
+    private val PERFORMANCE_MONITORING_CACHE_VALUE = "Cache"
+    private val PERFORMANCE_MONITORING_NETWORK_VALUE = "Network"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startOfficialStorePerformanceMonitoring()
@@ -32,9 +35,23 @@ class InstrumentationOfficialStoreTestActivity : AppCompatActivity(),
         return pageLoadTimePerformanceInterface?.getPltPerformanceData()
     }
 
-    override fun stopOfficialStorePerformanceMonitoring() {
-        pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
-        pageLoadTimePerformanceInterface?.stopMonitoring()
+    override fun stopOfficialStorePerformanceMonitoring(isCache: Boolean) {
+        if (pageLoadTimePerformanceInterface != null) {
+            if (isCache) {
+                pageLoadTimePerformanceInterface?.addAttribution(
+                    PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                    PERFORMANCE_MONITORING_CACHE_VALUE
+                )
+            } else {
+                pageLoadTimePerformanceInterface?.addAttribution(
+                    PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                    PERFORMANCE_MONITORING_NETWORK_VALUE
+                )
+            }
+            pageLoadTimePerformanceInterface?.stopRenderPerformanceMonitoring()
+            pageLoadTimePerformanceInterface?.stopMonitoring()
+            pageLoadTimePerformanceInterface = null
+        }
     }
 
     override fun getOfficialStorePageLoadTimePerformanceInterface(): PageLoadTimePerformanceInterface? {

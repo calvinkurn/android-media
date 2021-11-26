@@ -16,7 +16,7 @@ data class ShippersModel(
 )
 
 data class OnDemandModel(
-        var shipperId: Int = -1,
+        var shipperId: Long = -1,
         var shipperName: String = "",
         var isActive: Boolean = false,
         var textPromo: String = "",
@@ -30,7 +30,7 @@ data class OnDemandModel(
 ) : ShippingEditorVisitable()
 
 data class ConventionalModel(
-        var shipperId: Int = -1,
+        var shipperId: Long = -1,
         var shipperName: String = "",
         var isActive: Boolean = false,
         var textPromo: String = "",
