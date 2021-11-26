@@ -61,13 +61,20 @@ internal fun ConstraintLayout?.applyConstraintSet(configureConstraintSet: (Const
     }
 }
 
-internal fun TextView?.setTextWithBlankSpaceConfig(textValue: String, blankSpaceConfigValue: Boolean) {
+internal fun TextView?.setTextWithBlankSpaceConfig(
+    textValue: String,
+    blankSpaceConfigValue: Boolean
+) {
     this?.configureVisibilityWithBlankSpaceConfig(textValue.isNotEmpty(), blankSpaceConfigValue) {
         it.text = MethodChecker.fromHtml(textValue)
     }
 }
 
-internal fun <T : View> T?.configureVisibilityWithBlankSpaceConfig(isVisible: Boolean, blankSpaceConfigValue: Boolean, action: (T) -> Unit) {
+internal fun <T : View> T?.configureVisibilityWithBlankSpaceConfig(
+    isVisible: Boolean,
+    blankSpaceConfigValue: Boolean,
+    action: (T) -> Unit
+) {
     if (this == null) return
 
     visibility = if (isVisible) {
@@ -219,11 +226,26 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
 private fun String?.toUnifyTextColor(context: Context): Int {
     return try {
         when (this) {
-            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
-            TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
-            TEXT_DARK_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
-            TEXT_GREEN -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            TEXT_DARK_ORANGE -> ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Y400
+            )
+            TEXT_DARK_RED -> ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_R500
+            )
+            TEXT_DARK_GREY -> ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+            )
+            TEXT_LIGHT_GREY -> ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+            )
+            TEXT_GREEN -> ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_G500
+            )
             else -> Color.parseColor(this)
         }
     } catch (throwable: Throwable) {
@@ -258,10 +280,10 @@ internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) 
 }
 
 internal fun renderLabelCampaign(
-        isShow: Boolean,
-        labelCampaignBackground: ImageView?,
-        textViewLabelCampaign: Typography?,
-        productCardModel: ProductCardModel
+    isShow: Boolean,
+    labelCampaignBackground: ImageView?,
+    textViewLabelCampaign: Typography?,
+    productCardModel: ProductCardModel
 ) {
     if (isShow) {
         val labelCampaign = productCardModel.getLabelCampaign() ?: return
@@ -278,9 +300,9 @@ internal fun renderLabelCampaign(
 }
 
 internal fun renderLabelBestSeller(
-        isShow: Boolean,
-        labelBestSeller: Typography?,
-        productCardModel: ProductCardModel
+    isShow: Boolean,
+    labelBestSeller: Typography?,
+    productCardModel: ProductCardModel
 ) {
     labelBestSeller ?: return
 
@@ -305,9 +327,9 @@ private fun Typography.showLabelBestSeller(labelBestSellerModel: ProductCardMode
 }
 
 internal fun renderLabelBestSellerCategorySide(
-        isShow: Boolean,
-        textCategorySide: Typography?,
-        productCardModel: ProductCardModel
+    isShow: Boolean,
+    textCategorySide: Typography?,
+    productCardModel: ProductCardModel
 ) {
     textCategorySide ?: return
 
@@ -330,9 +352,9 @@ private fun Typography.showLabelCategorySide(categorySideModel: ProductCardModel
 }
 
 internal fun renderLabelBestSellerCategoryBottom(
-        isShow: Boolean,
-        textCategoryBottom: Typography?,
-        productCardModel: ProductCardModel
+    isShow: Boolean,
+    textCategoryBottom: Typography?,
+    productCardModel: ProductCardModel
 ) {
     textCategoryBottom ?: return
 
@@ -363,22 +385,29 @@ internal fun Drawable.overrideColor(hexColor: String, defaultColor: String) {
 }
 
 internal fun renderStockBar(
-        progressBarStock: ProgressBarUnify?,
-        textViewStock: Typography?,
-        productCardModel: ProductCardModel
+    progressBarStock: ProgressBarUnify?,
+    textViewStock: Typography?,
+    productCardModel: ProductCardModel
 ) {
     renderStockPercentage(progressBarStock, productCardModel)
     renderStockLabel(textViewStock, productCardModel)
 }
 
-private fun renderStockPercentage(progressBarStock: ProgressBarUnify?, productCardModel: ProductCardModel) {
+private fun renderStockPercentage(
+    progressBarStock: ProgressBarUnify?,
+    productCardModel: ProductCardModel
+) {
     progressBarStock?.shouldShowWithAction(productCardModel.isStockBarShown()) {
         it.setProgressIcon(icon = null)
         if (productCardModel.stockBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
             it.setProgressIcon(
-                    icon = ContextCompat.getDrawable(it.context, com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card),
-                    width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
-                    height = it.context.resources.getDimension(FIRE_HEIGHT).toInt())
+                icon = ContextCompat.getDrawable(
+                    it.context,
+                    com.tokopedia.resources.common.R.drawable.ic_fire_filled_product_card
+                ),
+                width = it.context.resources.getDimension(FIRE_WIDTH).toInt(),
+                height = it.context.resources.getDimension(FIRE_HEIGHT).toInt()
+            )
         }
         it.progressBarColorType = ProgressBarUnify.COLOR_RED
         it.setValue(productCardModel.stockBarPercentage, false)
@@ -395,12 +424,15 @@ private fun renderStockLabel(textViewStockLabel: Typography?, productCardModel: 
 }
 
 private fun getStockLabelColor(productCardModel: ProductCardModel, it: Typography) =
-        when {
-            productCardModel.stockBarLabelColor.isNotEmpty() ->
-                safeParseColor(
-                        productCardModel.stockBarLabelColor,
-                        ContextCompat.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+    when {
+        productCardModel.stockBarLabelColor.isNotEmpty() ->
+            safeParseColor(
+                productCardModel.stockBarLabelColor,
+                ContextCompat.getColor(
+                    it.context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
                 )
-            else ->
-                MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-        }
+            )
+        else ->
+            MethodChecker.getColor(it.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+    }
