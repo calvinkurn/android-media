@@ -5,13 +5,14 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.databinding.ActivityManageAddressBinding
 import com.tokopedia.manageaddress.di.DaggerManageAddressComponent
 import com.tokopedia.manageaddress.di.ManageAddressComponent
-import com.tokopedia.unifyprinciples.Typography
 
 class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponent>, ManageAddressFragment.ManageAddressListener {
+
+    private var binding: ActivityManageAddressBinding? = null
 
     override fun getComponent(): ManageAddressComponent {
         return DaggerManageAddressComponent.builder()
@@ -27,7 +28,8 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_manage_address)
+        binding = ActivityManageAddressBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
         initViews()
     }
 
@@ -37,13 +39,13 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
             bundle.putAll(intent.extras)
         }
         supportFragmentManager.beginTransaction().replace(R.id.container, ManageAddressFragment.newInstance(bundle)).commit()
-        findViewById<IconUnify>(R.id.btn_back).setOnClickListener {
+        binding?.btnBack?.setOnClickListener {
             onBackPressed()
         }
     }
 
     override fun setAddButtonOnClickListener(onClick: () -> Unit) {
-        findViewById<Typography>(R.id.btn_add).setOnClickListener {
+        binding?.btnAdd?.setOnClickListener {
             onClick()
         }
     }
