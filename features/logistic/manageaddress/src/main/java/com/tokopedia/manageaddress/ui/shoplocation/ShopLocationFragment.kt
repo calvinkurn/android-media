@@ -205,7 +205,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun openBottomSheetAddressType(shopLocation: Warehouse) {
         bottomSheetAddressType = BottomSheetUnify()
-        val viewBottomSheetAddressType = BottomsheetActionShopAddressBinding.bind(View.inflate(context, R.layout.bottomsheet_action_shop_address, null))
+        val viewBottomSheetAddressType = BottomsheetActionShopAddressBinding.inflate(LayoutInflater.from(context), null, false)
         setupChild(shopLocation, viewBottomSheetAddressType)
 
         bottomSheetAddressType?.apply {
@@ -240,7 +240,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun openBottomSheetAddressConfirmation(shopLocation: Warehouse) {
         bottomSheetAddressConfirmation = BottomSheetUnify()
-        val viewBottomSheetAddressConfirmation = BottomsheetDeactivateLocationBinding.bind(View.inflate(context, R.layout.bottomsheet_deactivate_location, null))
+        val viewBottomSheetAddressConfirmation = BottomsheetDeactivateLocationBinding.inflate(LayoutInflater.from(context), null, false)
         setupChildAddressConfirmation(shopLocation, viewBottomSheetAddressConfirmation)
 
         bottomSheetAddressConfirmation?.apply {
@@ -319,7 +319,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onImageMainInfoIconClicked() {
         bottomSheetMainLocationInfo = BottomSheetUnify()
-        val viewBottomSheetMainLocation = BottomsheetMainAddressInformationBinding.bind(View.inflate(context, R.layout.bottomsheet_main_address_information, null))
+        val viewBottomSheetMainLocation = BottomsheetMainAddressInformationBinding.inflate(LayoutInflater.from(context), null, false)
         setupChildMainInfo(viewBottomSheetMainLocation)
 
         bottomSheetMainLocationInfo?.apply {

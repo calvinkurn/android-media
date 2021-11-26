@@ -477,7 +477,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     private fun openBottomSheetView(data: RecipientAddressModel) {
         bottomSheetLainnya = BottomSheetUnify()
-        val viewBottomSheetLainnya = BottomsheetActionAddressBinding.bind(View.inflate(context, R.layout.bottomsheet_action_address, null)).apply {
+        val viewBottomSheetLainnya = BottomsheetActionAddressBinding.inflate(LayoutInflater.from(context), null, false).apply {
             if (data.addressStatus == 2) {
                 btnAlamatUtama.gone()
                 divider.gone()
