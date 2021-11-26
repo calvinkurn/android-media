@@ -410,7 +410,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             startActivity(DigitalHomePageSearchActivity.getCallingIntent(
                     requireContext(), platformId, enablePersonalize,
                     sectionIds, viewModel.getSearchBarPlaceholder(),
-                    viewModel.getSearchBarScreenName()))
+                    viewModel.getSearchBarScreenName(),
+                    viewModel.getSearchBarRedirection()
+            ))
         }
     }
 

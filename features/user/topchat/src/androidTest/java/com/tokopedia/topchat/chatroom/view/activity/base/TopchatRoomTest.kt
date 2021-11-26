@@ -15,7 +15,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -36,6 +38,7 @@ import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
+import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
@@ -65,6 +68,7 @@ import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Companion.START_TIME_FORMAT
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
@@ -97,6 +101,12 @@ abstract class TopchatRoomTest {
     protected lateinit var getChatUseCase: GetChatUseCaseStub
 
     @Inject
+    protected lateinit var reminderTickerUseCase: GetReminderTickerUseCaseStub
+
+    @Inject
+    protected lateinit var closeReminderTicker: CloseReminderTickerStub
+
+    @Inject
     protected lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
 
     @Inject
@@ -121,13 +131,7 @@ abstract class TopchatRoomTest {
     protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
 
     @Inject
-    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
-
-    @Inject
     protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
-
-    @Inject
-    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub
@@ -139,7 +143,19 @@ abstract class TopchatRoomTest {
     protected lateinit var toggleFavouriteShopUseCaseStub: ToggleFavouriteShopUseCaseStub
 
     @Inject
+    protected lateinit var getKeygenUseCase: GetKeygenUseCaseStub
+
+    @Inject
+    protected lateinit var getChatRoomSettingUseCase: GetChatRoomSettingUseCaseStub
+
+    @Inject
+    protected lateinit var orderProgressUseCase: OrderProgressUseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
+
+    @Inject
+    protected lateinit var userSession: UserSessionInterface
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -211,6 +227,10 @@ abstract class TopchatRoomTest {
         uploadImageReplyResponse = AndroidFileUtil.parse(
             "success_upload_image_reply.json",
             ChatReplyPojo::class.java
+        )
+        chatRoomSettingResponse = AndroidFileUtil.parse(
+            "success_get_chat_setting_fraud_alert.json",
+            RoomSettingResponse::class.java
         )
     }
 
@@ -805,8 +825,14 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun smoothScrollChatToPosition(position: Int) {
+        onView(withId(R.id.recycler_view_chatroom)).perform(
+            RecyclerViewAction.smoothScrollTo(position)
+        )
+    }
+
     protected fun intendingAttachProduct(totalProductAttached: Int) {
-        Intents.intending(
+        intending(
             IntentMatchers.hasExtra(
                 ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY,
                 TopChatInternalRouter.Companion.SOURCE_TOPCHAT
@@ -878,6 +904,33 @@ abstract class TopchatRoomTest {
 
     protected fun clickBroadcastHandlerFollowShop() {
         onView(withId(R.id.btn_follow_shop)).perform(click())
+    }
+
+    protected fun preventOpenOtherActivity() {
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+    }
+
+    protected fun getDefaultProductPreview(): ProductPreview {
+        return ProductPreview(
+            "1111",
+            ProductPreviewAttribute.productThumbnail,
+            ProductPreviewAttribute.productName,
+            "Rp 23.000.000",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "tokopedia://product/1111",
+            false,
+            "",
+            "Rp 50.000.000",
+            500000.0,
+            "50%",
+            false
+        )
     }
 }
 

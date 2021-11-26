@@ -83,5 +83,8 @@
     <string name="always_old_notif">Old Notifcenter</string>
     <string name="always_new_notif">New Notifcenter</string>
     <string name="search_remote_config_here">search remote config here</string>
+    <string name="show_applink_on_toast_and_copy_the_link_to_clipboard">Show Applink on Toast and Copy the Link to Clipboard</string>
+    <string name="play_websocket_and_sse_logging_title">Play - Web Socket and SSE Logging</string>
+    <string name="view_sse_logging">View SSE Logging</string>
 
 </resources>

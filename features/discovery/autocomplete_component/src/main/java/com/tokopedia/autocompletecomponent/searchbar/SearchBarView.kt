@@ -86,7 +86,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         when {
             v === autocompleteActionUpButton -> {
                 KeyboardHandler.DropKeyboard(activity, searchTextView)
-                activity?.finish()
+                activity?.onBackPressed()
             }
             v === autocompleteVoiceButton -> {
                 onVoiceClicked()
@@ -265,10 +265,8 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private fun onSubmitQuery() {
         searchTextView?.text?.let { modifyQueryInSearchParameter(it) }
 
-        if (TextUtils.getTrimmedLength(searchParameter.getSearchQuery()) > 0) {
-            if (!mOnQueryChangeListener.onQueryTextSubmit(searchParameter)) {
-                searchTextView?.text = null
-            }
+        if (!mOnQueryChangeListener.onQueryTextSubmit(searchParameter)) {
+            searchTextView?.text = null
         }
     }
 
@@ -359,17 +357,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun modifyQueryInSearchParameter(query: CharSequence) {
-        var finalQuery: String? = query.toString()
-
-        if (isQueryEmptyAndHintExists(query)) {
-            finalQuery = hint
-        }
-
-        finalQuery?.let { searchParameter.setSearchQuery(it) }
-    }
-
-    private fun isQueryEmptyAndHintExists(query: CharSequence): Boolean {
-        return TextUtils.isEmpty(query) && !TextUtils.isEmpty(hint)
+        searchParameter.setSearchQuery(query.toString().trim())
     }
 
     private fun hideKeyboard(view: View) {
