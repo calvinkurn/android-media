@@ -1236,6 +1236,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getHomeViewModel().isFirstLoad = false
         }
         manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
+        // refresh home-to-do-widget data
+        getHomeViewModel().getCMHomeWidgetData()
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
@@ -3218,6 +3220,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onCMHomeWidgetDismissClick() {
-        getHomeViewModel().deleteCMHomeWidgetData()
+        getHomeViewModel().dismissCMHomeWidget()
     }
 }

@@ -267,7 +267,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var getTabRecommendationJob: Job? = null
     private var getHeaderDataJob: Job? = null
     private var getCMHomeWidgetDataJob: Job? = null
-    private var getCMHomeWidgetDeleteDataJob: Job? = null
+    private var dismissCMHomeWidgetJob: Job? = null
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -1674,7 +1674,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    private fun getCMHomeWidgetData() {
+    fun getCMHomeWidgetData() {
         if (getCMHomeWidgetDataJob?.isActive == true) return
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             getCMHomeWidgetDataJob = launchCatchError(coroutineContext, {
@@ -1694,10 +1694,10 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun deleteCMHomeWidgetData() {
-        if (getCMHomeWidgetDeleteDataJob?.isActive == true) return
+    fun dismissCMHomeWidget() {
+        if (dismissCMHomeWidgetJob?.isActive == true) return
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
-            getCMHomeWidgetDeleteDataJob = launchCatchError(coroutineContext, {
+            dismissCMHomeWidgetJob = launchCatchError(coroutineContext, {
                 cmHomeWidgetDataModel.cmHomeWidgetData?.let { it ->
                     dismissCMHomeWidgetUseCase.deleteCMHomeWidgetData(
                         {
