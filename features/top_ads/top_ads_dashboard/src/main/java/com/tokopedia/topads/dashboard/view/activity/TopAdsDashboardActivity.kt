@@ -19,6 +19,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
@@ -45,6 +47,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_PRODUCT_AD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_SHOP_AD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PARAM_TAB
+import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -408,6 +411,24 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
     }
 
-    fun bottomLayout()  = bottom
-    fun multiActionButton(): UnifyButton = multiActionBtn
+    fun toggleMultiActionButton(show: Boolean) {
+        if(show) bottom.show()
+        else bottom.hide()
+    }
+
+    fun updateMultiActionButton(type: Int, count: Int) {
+        multiActionBtn.text = when (type) {
+            TopAdsInsightConstants.BID_KEYWORD -> {
+                String.format(resources.getString(R.string.apply_fee), count)
+            }
+            TopAdsInsightConstants.NEW_KEYWORD -> {
+                String.format(resources.getString(R.string.add_keyword), count)
+            }
+            TopAdsInsightConstants.NEGATIVE_KEYWORD -> {
+                String.format(resources.getString(R.string.add_neg_keywords), count)
+            }
+            else -> ""
+        }
+        multiActionBtn.isEnabled = count > 0
+    }
 }

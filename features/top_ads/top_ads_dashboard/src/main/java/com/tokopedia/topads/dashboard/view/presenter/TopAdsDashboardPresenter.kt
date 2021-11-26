@@ -33,6 +33,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
+import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
 import com.tokopedia.topads.dashboard.data.raw.BUDGET_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.PRODUCT_RECOMMENDATION
 import com.tokopedia.topads.dashboard.data.raw.SHOP_AD_INFO
@@ -491,6 +492,11 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
                     throwable.printStackTrace()
             }
         )
+    }
+
+    fun getShopKeywordRecommendation(onSuccess: (TopAdsShopHeadlineKeyword) -> Unit) {
+        val resp = TopAdsInsightViewModel.getShopAdsKeywordRecommendation()
+        onSuccess.invoke(resp)
     }
 
     override fun detachView() {

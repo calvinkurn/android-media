@@ -1,32 +1,31 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeyword
-import com.tokopedia.topads.dashboard.data.model.insightkey.TopadsHeadlineKeyword
+import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
+import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
 import kotlinx.coroutines.Dispatchers
 
 
-class TopAdsInsightKeywordViewModel : BaseViewModel(Dispatchers.Main) {
+class TopAdsInsightViewModel : BaseViewModel(Dispatchers.Main) {
 
-    val recommendedKeyword = MutableLiveData<RecommendedKeyword>()
+    val recommendedKeyword = MutableLiveData<RecommendedKeywordData>()
 
     fun getKeywords(shopID: String, groupIds: Array<String>) {
         val map = mutableMapOf<String, Any>(
             "shopID" to shopID
         )
         val gql = MultiRequestGraphqlUseCase()
-        val request = GraphqlRequest(query, TopadsHeadlineKeyword::class.java, map)
+        val request = GraphqlRequest(query, TopAdsShopHeadlineKeyword::class.java, map)
         gql.addRequest(request)
         launchCatchError(block = {
             val resp = gql.executeOnBackground()
-                .getData(TopadsHeadlineKeyword::class.java) as? TopadsHeadlineKeyword
-            recommendedKeyword.postValue(resp?.suggestion?.recommendedKeyword)
+                .getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
+            recommendedKeyword.postValue(resp?.suggestion?.recommendedKeywordData)
         }, onError = {
             it.printStackTrace()
         })
@@ -65,8 +64,8 @@ class TopAdsInsightKeywordViewModel : BaseViewModel(Dispatchers.Main) {
     """.trimIndent()
 
     companion object {
-        fun getInsightKeywordRecommendation(): TopadsHeadlineKeyword {
-            return Gson().fromJson(getResp(), TopadsHeadlineKeyword::class.java)
+        fun getShopAdsKeywordRecommendation(): TopAdsShopHeadlineKeyword {
+            return Gson().fromJson(getResp(), TopAdsShopHeadlineKeyword::class.java)
         }
 
         private fun getResp() = "{\n" +

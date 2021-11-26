@@ -217,11 +217,6 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="txtSubTitle2Value,edtBid" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/feeGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="txtSubTitle2Value,btnEditFee" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/newKeywordGroup"

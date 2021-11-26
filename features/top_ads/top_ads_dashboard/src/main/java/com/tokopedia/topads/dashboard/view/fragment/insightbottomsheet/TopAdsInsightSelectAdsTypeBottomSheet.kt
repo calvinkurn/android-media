@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.topads_insight_select_ads_type_bottomsheet
 
 class TopAdsInsightSelectAdsTypeBottomSheet(
     adsList: List<InsightAdsTypeItem>,
-    onAdSelected: (item: InsightAdsTypeItem) -> Unit
+    onAdSelected: (Int) -> Unit
 ) : BottomSheetUnify() {
 
     private val mAdapter by lazy { TopAdsInsightSelectAdsTypeAdapter(adsList, onAdSelected) }
@@ -65,7 +65,7 @@ class TopAdsInsightSelectAdsTypeBottomSheet(
         private const val ADS_TYPE_BOTTOM_SHEET_TAG = "insight_select_ads_type_bottom_sheet"
         fun getInstance(
             list: List<InsightAdsTypeItem>,
-            onAdSelected: (item: InsightAdsTypeItem) -> Unit
+            onAdSelected: (Int) -> Unit
         ) = TopAdsInsightSelectAdsTypeBottomSheet(list, onAdSelected)
     }
 }

@@ -12,14 +12,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
-import kotlinx.android.synthetic.main.topads_dash_recon_product_item.view.*
 import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
-class TopAdsInsightRecommKeywordsAdapter(
+class TopAdsInsightShopKeywordRecommAdapter(
     private val list: List<RecommendedKeywordDetail>,
     private val type: Int,
     private val lstnr: (Boolean) -> Unit
-) : RecyclerView.Adapter<TopAdsInsightRecommKeywordsAdapter.Companion.KeywordsViewHolder>() {
+) : RecyclerView.Adapter<TopAdsInsightShopKeywordRecommAdapter.Companion.KeywordsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -82,12 +81,14 @@ class TopAdsInsightRecommKeywordsAdapter(
     }
 
     private fun View.closeEditTextFee() {
-        feeGroup.show()
+        txtSubTitle2Value.show()
+        btnEditFee.show()
         edtBid.hide()
     }
 
     private fun View.openEditTextFee() {
-        feeGroup.invisible()
+        txtSubTitle2Value.invisible()
+        btnEditFee.invisible()
         edtBid.show()
     }
 
@@ -104,7 +105,7 @@ class TopAdsInsightRecommKeywordsAdapter(
             list: List<RecommendedKeywordDetail>,
             type: Int,
             lstnr: (Boolean) -> Unit
-        ) = TopAdsInsightRecommKeywordsAdapter(list, type, lstnr)
+        ) = TopAdsInsightShopKeywordRecommAdapter(list, type, lstnr)
     }
 
 }

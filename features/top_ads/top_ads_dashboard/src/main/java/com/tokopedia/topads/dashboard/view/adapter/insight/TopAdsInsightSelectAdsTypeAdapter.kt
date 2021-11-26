@@ -12,7 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TopAdsInsightSelectAdsTypeAdapter(
     private val list: List<InsightAdsTypeItem>,
-    private val adSelected: (item: InsightAdsTypeItem) -> Unit
+    private val adSelected: (Int) -> Unit
 ) : RecyclerView.Adapter<SelectAdsTypeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectAdsTypeViewHolder {
@@ -25,7 +25,7 @@ class TopAdsInsightSelectAdsTypeAdapter(
         holder.adName.text = item.adName
         holder.radioButton.isChecked = item.isSelected
         holder.itemView.setOnClickListener {
-            adSelected.invoke(item)
+            adSelected.invoke(holder.adapterPosition)
             item.isSelected = true
             uncheckAll(holder.adapterPosition)
         }
@@ -60,6 +60,5 @@ class TopAdsInsightSelectAdsTypeAdapter(
 
 data class InsightAdsTypeItem(
     val adName: String,
-    var isSelected: Boolean,
-    val position : Int
+    var isSelected: Boolean
 )

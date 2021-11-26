@@ -6,22 +6,21 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
-import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeyword
-import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
-import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightRecommKeywordsAdapter
+import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
+import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightShopKeywordRecommAdapter
 import kotlinx.android.synthetic.main.topads_insight_keywords_layout.view.*
 
-class TopAdsInsightRecommKeywordsView(
+class TopAdsInsightShopKeywordRecommView(
     context: Context,
     private val type: Int,
-    private val recommendedKeyword: RecommendedKeyword,
+    private val recommendedKeywordData: RecommendedKeywordData,
     private val lstnr: (Int, Int) -> Unit
 ) : ConstraintLayout(context) {
 
     private var selectedItemCount = 0
     private val mAdapter by lazy {
-        TopAdsInsightRecommKeywordsAdapter.createInstance(
-            recommendedKeyword.recommendedKeywordDetails, type, ::onKeywordSelected
+        TopAdsInsightShopKeywordRecommAdapter.createInstance(
+            recommendedKeywordData.recommendedKeywordDetails, type, ::onKeywordSelected
         )
     }
 
@@ -88,9 +87,9 @@ class TopAdsInsightRecommKeywordsView(
         private val layout = R.layout.topads_insight_keywords_layout
         fun createInstance(
             context: Context, type: Int,
-            recommendedKeyword: RecommendedKeyword,
+            recommendedKeywordData: RecommendedKeywordData,
             lstnr: (Int, Int) -> Unit
-        ) = TopAdsInsightRecommKeywordsView(context, type, recommendedKeyword, lstnr)
+        ) = TopAdsInsightShopKeywordRecommView(context, type, recommendedKeywordData, lstnr)
     }
 
 }

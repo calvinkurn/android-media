@@ -2,7 +2,7 @@ package com.tokopedia.topads.dashboard.data.model.insightkey
 
 import com.google.gson.annotations.SerializedName
 
-data class TopadsHeadlineKeyword(
+data class TopAdsShopHeadlineKeyword(
 
     @SerializedName("topadsHeadlineKeywordSuggestion")
     val suggestion: TopadsHeadlineKeywordSuggestion? = null
@@ -11,13 +11,13 @@ data class TopadsHeadlineKeyword(
 data class TopadsHeadlineKeywordSuggestion(
 
     @SerializedName("data")
-    val recommendedKeyword: RecommendedKeyword? = null,
+    val recommendedKeywordData: RecommendedKeywordData? = null,
 
     @SerializedName("errors")
     val errors: List<ErrorsItem?>? = null
 )
 
-data class RecommendedKeyword(
+data class RecommendedKeywordData(
     val shopID: String? = null,
     val recommendedKeywordCount: Int = 0,
     val groupCount: Int = 0,
