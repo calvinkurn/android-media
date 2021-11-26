@@ -281,13 +281,10 @@ class RechargeBUWidgetMixLeftViewHolder(
         val currentDate = Calendar.getInstance().time
         val currentTimeInSeconds = currentDate.time / SECOND_IN_MILIS
 
-        val dummy = Calendar.getInstance()
-        dummy.add(Calendar.SECOND, 20)
-
         val parser = SimpleDateFormat(EXPIRED_DATE_PATTERN)
         val expiredTime = if (element.data.endTime.isNotEmpty())
             parser.format(Date(element.data.endTime.toLong() * SECOND_IN_MILIS))
-        else parser.format(dummy.time)
+        else ""
 
         val channel = element.channel.copy(
             channelHeader = element.channel.channelHeader.copy(
