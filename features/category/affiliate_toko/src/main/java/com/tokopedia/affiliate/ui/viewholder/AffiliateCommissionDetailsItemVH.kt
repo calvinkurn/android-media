@@ -13,8 +13,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
-class AffiliateCommissionDetailsItemVH(itemView: View)
-    : AbstractViewHolder<AffiliateCommissionItemModel>(itemView) {
+class AffiliateCommissionDetailsItemVH(itemView: View) :
+    AbstractViewHolder<AffiliateCommissionItemModel>(itemView) {
 
     companion object {
         @JvmField
@@ -33,7 +33,7 @@ class AffiliateCommissionDetailsItemVH(itemView: View)
 
 
         element?.data?.textType?.let { type ->
-            when(type) {
+            when (type) {
                 TYPE_BOLD -> {
                     element.data?.textSize?.let { size ->
                         headerTypoMap[size]?.let { it ->
@@ -59,8 +59,8 @@ class AffiliateCommissionDetailsItemVH(itemView: View)
                 TYPE_REGULER -> {
                     element.data?.textSize?.let { size ->
                         bodyTypoMap[size]?.let {
-                                header.setType(it)
-                                valueTv.setType(it)
+                            header.setType(it)
+                            valueTv.setType(it)
                         }
                     }
                     header.setWeight(Typography.REGULAR)
@@ -72,15 +72,15 @@ class AffiliateCommissionDetailsItemVH(itemView: View)
             header.text = title
         }
         element?.data?.detailDescription?.let { desc ->
-            if(desc.isEmpty())
+            if (desc.isEmpty())
                 valueTv.hide()
-            else{
+            else {
                 valueTv.show()
                 valueTv.text = desc
             }
         }
         element?.data?.detailTooltip?.let {
-            if(it.isEmpty())
+            if (it.isEmpty())
                 infoIcon.hide()
             else {
                 infoIcon.show()
