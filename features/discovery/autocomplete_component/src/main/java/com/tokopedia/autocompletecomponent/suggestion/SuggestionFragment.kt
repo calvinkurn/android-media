@@ -179,7 +179,7 @@ class SuggestionFragment :
         dimension90: String,
         baseSuggestionDataView: BaseSuggestionDataView,
     ) {
-        suggestionTracking?.eventClickKeyword(eventLabel, dimension90)
+        suggestionTracking?.eventClickKeyword(eventLabel, dimension90, baseSuggestionDataView)
     }
 
     override fun trackEventClickCurated(
@@ -188,7 +188,12 @@ class SuggestionFragment :
         dimension90: String,
         baseSuggestionDataView: BaseSuggestionDataView,
     ) {
-        suggestionTracking?.eventClickCurated(eventLabel, campaignCode, dimension90)
+        suggestionTracking?.eventClickCurated(
+            eventLabel,
+            campaignCode,
+            dimension90,
+            baseSuggestionDataView
+        )
     }
 
     override fun trackEventClickShop(
@@ -196,14 +201,14 @@ class SuggestionFragment :
         dimension90: String,
         baseSuggestionDataView: BaseSuggestionDataView,
     ) {
-        suggestionTracking?.eventClickShop(eventLabel, dimension90)
+        suggestionTracking?.eventClickShop(eventLabel, dimension90, baseSuggestionDataView)
     }
 
     override fun trackEventClickProfile(
         eventLabel: String,
         baseSuggestionDataView: BaseSuggestionDataView
     ) {
-        suggestionTracking?.eventClickProfile(eventLabel)
+        suggestionTracking?.eventClickProfile(eventLabel, baseSuggestionDataView)
     }
 
     override fun trackEventClickRecentKeyword(
@@ -211,7 +216,7 @@ class SuggestionFragment :
         dimension90: String,
         baseSuggestionDataView: BaseSuggestionDataView
     ) {
-        suggestionTracking?.eventClickRecentKeyword(eventLabel, dimension90)
+        suggestionTracking?.eventClickRecentKeyword(eventLabel, dimension90, baseSuggestionDataView)
     }
 
     override fun onTopShopCardClicked(topShopData: SuggestionTopShopCardDataView) {
@@ -236,7 +241,12 @@ class SuggestionFragment :
         dimension90: String,
         baseSuggestionDataView: BaseSuggestionDataView
     ) {
-        suggestionTracking?.eventClickLocalKeyword(eventLabel, userId, dimension90)
+        suggestionTracking?.eventClickLocalKeyword(
+            eventLabel,
+            userId,
+            dimension90,
+            baseSuggestionDataView,
+        )
     }
 
     override fun trackEventClickGlobalKeyword(
@@ -245,7 +255,12 @@ class SuggestionFragment :
         dimension90: String,
         baseSuggestionDataView: BaseSuggestionDataView
     ) {
-        suggestionTracking?.eventClickGlobalKeyword(eventLabel, userId, dimension90)
+        suggestionTracking?.eventClickGlobalKeyword(
+            eventLabel,
+            userId,
+            dimension90,
+            baseSuggestionDataView,
+        )
     }
 
     override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
@@ -266,14 +281,14 @@ class SuggestionFragment :
         eventLabel: String,
         baseSuggestionDataView: BaseSuggestionDataView
     ) {
-        suggestionTracking?.eventClickTokoNowCurated(eventLabel)
+        suggestionTracking?.eventClickTokoNowCurated(eventLabel, baseSuggestionDataView)
     }
 
     override fun trackTokoNowEventClickKeyword(
         eventLabel: String,
         baseSuggestionDataView: BaseSuggestionDataView
     ) {
-        suggestionTracking?.eventClickTokoNowKeyword(eventLabel)
+        suggestionTracking?.eventClickTokoNowKeyword(eventLabel, baseSuggestionDataView)
     }
 
     override fun trackClickChip(eventLabel: String, dimension90: String) {
@@ -286,7 +301,16 @@ class SuggestionFragment :
         pageSource: String,
         baseSuggestionDataView: BaseSuggestionDataView
     ) {
-        suggestionTracking?.eventImpressCurated(label, campaignCode, pageSource)
+        suggestionTracking?.eventImpressCurated(
+            label,
+            campaignCode,
+            pageSource,
+            baseSuggestionDataView,
+        )
+    }
+
+    override fun trackEventImpression(item: BaseSuggestionDataView) {
+        suggestionTracking?.eventImpressionSuggestion(item)
     }
 
     interface SuggestionViewUpdateListener {

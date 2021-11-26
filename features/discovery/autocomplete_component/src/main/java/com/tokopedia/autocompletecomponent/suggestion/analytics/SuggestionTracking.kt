@@ -75,9 +75,9 @@ open class SuggestionTracking(
     open fun eventClickKeyword(
         label: String,
         pageSource: String,
-//        searchComponentTracking: SearchComponentTracking,
+        searchComponentTracking: SearchComponentTracking,
     ) {
-//        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
             TrackApp.getInstance().gtm.sendGeneralEvent(
                 DataLayer.mapOf(
                     EVENT, CLICK_TOP_NAV,
@@ -89,59 +89,80 @@ open class SuggestionTracking(
                     PAGE_SOURCE, pageSource
                 )
             )
-//        }
+        }
     }
 
-    open fun eventClickCurated(label: String, campaignCode: String, pageSource: String) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOP_NAV,
-                EVENT_CATEGORY, TOP_NAV,
-                EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
-                EVENT_LABEL, label,
-                CAMPAIGN_CODE, campaignCode,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                BUSINESS_UNIT, SEARCH,
-                PAGE_SOURCE, pageSource
+    open fun eventClickCurated(
+        label: String,
+        campaignCode: String,
+        pageSource: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOP_NAV,
+                    EVENT_CATEGORY, TOP_NAV,
+                    EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
+                    EVENT_LABEL, label,
+                    CAMPAIGN_CODE, campaignCode,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                    BUSINESS_UNIT, SEARCH,
+                    PAGE_SOURCE, pageSource
+                )
             )
-        )
+        }
     }
 
-    open fun eventClickShop(label: String, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOP_NAV,
-                EVENT_CATEGORY, TOP_NAV,
-                EVENT_ACTION, CLICK_SHOP_SUGGESTION,
-                EVENT_LABEL, label,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                BUSINESS_UNIT, SEARCH,
-                PAGE_SOURCE, pageSource
+    open fun eventClickShop(
+        label: String,
+        pageSource: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOP_NAV,
+                    EVENT_CATEGORY, TOP_NAV,
+                    EVENT_ACTION, CLICK_SHOP_SUGGESTION,
+                    EVENT_LABEL, label,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                    BUSINESS_UNIT, SEARCH,
+                    PAGE_SOURCE, pageSource
+                )
             )
-        )
+        }
     }
 
-    open fun eventClickProfile(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            CLICK_TOP_NAV,
-            TOP_NAV,
-            CLICK_PROFILE_SUGGESTION,
-            label
-        )
-    }
-
-    open fun eventClickRecentKeyword(keyword: String, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOP_NAV,
-                EVENT_CATEGORY, "$TOP_NAV - homepage",
-                EVENT_ACTION, CLICK_RECENT_SEARCH_AUTOCOMPLETE,
-                EVENT_LABEL, keyword,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                BUSINESS_UNIT, SEARCH,
-                PAGE_SOURCE, pageSource
+    open fun eventClickProfile(label: String, searchComponentTracking: SearchComponentTracking) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                CLICK_TOP_NAV,
+                TOP_NAV,
+                CLICK_PROFILE_SUGGESTION,
+                label
             )
-        )
+        }
+    }
+
+    open fun eventClickRecentKeyword(
+        keyword: String,
+        pageSource: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOP_NAV,
+                    EVENT_CATEGORY, "$TOP_NAV - homepage",
+                    EVENT_ACTION, CLICK_RECENT_SEARCH_AUTOCOMPLETE,
+                    EVENT_LABEL, keyword,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                    BUSINESS_UNIT, SEARCH,
+                    PAGE_SOURCE, pageSource
+                )
+            )
+        }
     }
 
     open fun eventClickTopShop(label: String) {
@@ -166,34 +187,48 @@ open class SuggestionTracking(
         )
     }
 
-    open fun eventClickLocalKeyword(label: String, userId: String, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOP_NAV,
-                EVENT_CATEGORY, "$TOP_NAV - /",
-                EVENT_ACTION, CLICK_LOCAL_KEYWORD,
-                EVENT_LABEL, label,
-                BUSINESS_UNIT, SEARCH,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId,
-                PAGE_SOURCE, pageSource
+    open fun eventClickLocalKeyword(
+        label: String,
+        userId: String,
+        pageSource: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOP_NAV,
+                    EVENT_CATEGORY, "$TOP_NAV - /",
+                    EVENT_ACTION, CLICK_LOCAL_KEYWORD,
+                    EVENT_LABEL, label,
+                    BUSINESS_UNIT, SEARCH,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                    USER_ID, userId,
+                    PAGE_SOURCE, pageSource
+                )
             )
-        )
+        }
     }
 
-    open fun eventClickGlobalKeyword(label: String, userId: String, pageSource: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOP_NAV,
-                EVENT_CATEGORY, "$TOP_NAV - /",
-                EVENT_ACTION, CLICK_GLOBAL_KEYWORD,
-                EVENT_LABEL, label,
-                BUSINESS_UNIT, SEARCH,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-                USER_ID, userId,
-                PAGE_SOURCE, pageSource
+    open fun eventClickGlobalKeyword(
+        label: String,
+        userId: String,
+        pageSource: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOP_NAV,
+                    EVENT_CATEGORY, "$TOP_NAV - /",
+                    EVENT_ACTION, CLICK_GLOBAL_KEYWORD,
+                    EVENT_LABEL, label,
+                    BUSINESS_UNIT, SEARCH,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                    USER_ID, userId,
+                    PAGE_SOURCE, pageSource
+                )
             )
-        )
+        }
     }
 
 
@@ -217,30 +252,40 @@ open class SuggestionTracking(
         )
     }
 
-    open fun eventClickTokoNowCurated(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOKO_NOW,
-                EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
-                EVENT_ACTION, CLICK_TOKONOW_CURATED_SUGGESTION,
-                EVENT_LABEL, label,
-                BUSINESS_UNIT, SEARCH,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE
+    open fun eventClickTokoNowCurated(
+        label: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOKO_NOW,
+                    EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
+                    EVENT_ACTION, CLICK_TOKONOW_CURATED_SUGGESTION,
+                    EVENT_LABEL, label,
+                    BUSINESS_UNIT, SEARCH,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE
+                )
             )
-        )
+        }
     }
 
-    open fun eventClickTokoNowKeyword(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            DataLayer.mapOf(
-                EVENT, CLICK_TOKO_NOW,
-                EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
-                EVENT_ACTION, CLICK_TOKONOW_KEYWORD_SUGGESTION,
-                EVENT_LABEL, label,
-                BUSINESS_UNIT, SEARCH,
-                CURRENT_SITE, TOKOPEDIA_MARKETPLACE
+    open fun eventClickTokoNowKeyword(
+        label: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                    EVENT, CLICK_TOKO_NOW,
+                    EVENT_CATEGORY, TOP_NAV_TOKO_NOW,
+                    EVENT_ACTION, CLICK_TOKONOW_KEYWORD_SUGGESTION,
+                    EVENT_LABEL, label,
+                    BUSINESS_UNIT, SEARCH,
+                    CURRENT_SITE, TOKOPEDIA_MARKETPLACE
+                )
             )
-        )
+        }
     }
 
     open fun eventClickChipSuggestion(label: String, pageSource: String) {
@@ -257,18 +302,29 @@ open class SuggestionTracking(
         )
     }
 
-    open fun eventImpressCurated(label: String, campaignCode: String, pageSource: String) {
-        val map = DataLayer.mapOf(
-            EVENT, VIEW_TOP_NAV_IRIS,
-            EVENT_CATEGORY, TOP_NAV,
-            EVENT_ACTION, IMPRESSION_DIGITAL_CURATED_SUGGESTION,
-            EVENT_LABEL, label,
-            BUSINESS_UNIT, SEARCH,
-            CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
-            CAMPAIGN_CODE, campaignCode,
-            PAGE_SOURCE, pageSource
-        )
+    open fun eventImpressCurated(
+        label: String,
+        campaignCode: String,
+        pageSource: String,
+        searchComponentTracking: SearchComponentTracking,
+    ) {
+        SearchComponentTrackingRollence.impress(iris, listOf(searchComponentTracking), ROLLENCE_KEY) {
+            val map = DataLayer.mapOf(
+                EVENT, VIEW_TOP_NAV_IRIS,
+                EVENT_CATEGORY, TOP_NAV,
+                EVENT_ACTION, IMPRESSION_DIGITAL_CURATED_SUGGESTION,
+                EVENT_LABEL, label,
+                BUSINESS_UNIT, SEARCH,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                CAMPAIGN_CODE, campaignCode,
+                PAGE_SOURCE, pageSource
+            )
 
-        iris.saveEvent(map)
+            iris.saveEvent(map)
+        }
+    }
+
+    open fun eventImpressionSuggestion(searchComponentTracking: SearchComponentTracking) {
+        SearchComponentTrackingRollence.impress(iris, listOf(searchComponentTracking), ROLLENCE_KEY)
     }
 }

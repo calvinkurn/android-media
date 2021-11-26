@@ -466,11 +466,16 @@ class SuggestionPresenter @Inject constructor(
         when (item.type) {
             TYPE_LIGHT -> impressCurated(item, getCuratedLightEventLabelForTracking(item))
             TYPE_CURATED -> impressCurated(item, getCuratedEventLabelForTracking(item))
+            else -> impressSuggestion(item)
         }
     }
 
     private fun impressCurated(item: BaseSuggestionDataView, label: String) {
         view?.trackEventImpressCurated(label, item.trackingCode, item.dimension90, item)
+    }
+
+    private fun impressSuggestion(item: BaseSuggestionDataView) {
+        view?.trackEventImpression(item)
     }
 
     override fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView) {

@@ -11,9 +11,9 @@ class SuggestionTrackingTest(
     override fun eventClickKeyword(
         label: String,
         pageSource: String,
-//        searchComponentTracking: SearchComponentTracking
+        searchComponentTracking: SearchComponentTracking
     ) {
-        super.eventClickKeyword(label, pageSource)//, searchComponentTracking)
+        super.eventClickKeyword(label, pageSource, searchComponentTracking)
         Log.d("TestTracking", "Click keyword suggestion")
     }
 }

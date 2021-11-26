@@ -3,6 +3,7 @@ package com.tokopedia.autocompletecomponent.suggestion
 import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
 import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 
@@ -70,6 +71,23 @@ internal class OnSuggestionItemImpressedTest: SuggestionPresenterTestFixtures() 
                 item.dimension90,
                 item,
             )
+        }
+    }
+
+    @Test
+    fun `test impress suggestion item not light and not curated`() {
+        `Given View already load data`(suggestionCommonResponse, searchParameter)
+
+        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_RECENT_KEYWORD)
+
+        `when suggestion item impressed` (item)
+
+        `Then verify impression tracking is called`(item)
+    }
+
+    private fun `Then verify impression tracking is called`(item: SuggestionSingleLineDataDataView) {
+        verify {
+            suggestionView.trackEventImpression(item)
         }
     }
 }

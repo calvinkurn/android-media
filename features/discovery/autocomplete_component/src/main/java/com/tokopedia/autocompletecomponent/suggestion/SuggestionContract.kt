@@ -79,6 +79,8 @@ interface SuggestionContract {
             baseSuggestionDataView: BaseSuggestionDataView,
         )
 
+        fun trackEventImpression(item: BaseSuggestionDataView)
+
         fun dropKeyBoard()
 
         fun route(applink: String, searchParameter: Map<String, String>)
