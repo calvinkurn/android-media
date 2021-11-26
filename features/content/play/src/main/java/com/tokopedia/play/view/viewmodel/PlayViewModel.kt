@@ -1021,6 +1021,7 @@ class PlayViewModel @Inject constructor(
 
     private suspend fun getSocketCredential(): SocketCredential = try {
         withContext(dispatchers.io) {
+            require(userSession.isLoggedIn)
             return@withContext getSocketCredentialUseCase.executeOnBackground()
         }
     } catch (e: Throwable) {
