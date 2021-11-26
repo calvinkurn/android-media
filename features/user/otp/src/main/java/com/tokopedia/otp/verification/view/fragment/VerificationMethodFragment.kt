@@ -65,7 +65,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
-    lateinit var otpData: OtpData
+    protected lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
 
     protected var isMoreThanOneMethod: Boolean = true
