@@ -1234,25 +1234,6 @@ class ShopPageHomeTracking(
         sendDataLayerEvent(eventMap)
     }
 
-    // enable when item view is ready
-//    fun onClickSeeAllButtonOnCarouselProductFlashSaleWidget(
-//            campaignId: String,
-//            statusCampaign: String,
-//            shopId: String,
-//            userId: String,
-//            isOwner: Boolean,
-//    ) {
-//        val eventMap = createFlashSaleTrackerMap(
-//                eventName = CLICK_SHOP_PAGE,
-//                eventAction = joinSpace(CLICK, FLASH_SALE),
-//                eventCategory = getShopPageCategory(isOwner),
-//                eventLabel = joinDash(CLICK_VIEW_ALL_BUTTON_FLASH_SALE_WIDGET, statusCampaign),
-//                shopId = shopId,
-//                userId = userId,
-//        )
-//        sendDataLayerEvent(eventMap)
-//    }
-
     private fun createFlashSaleTrackerMap(
             eventName: String,
             eventAction: String,
