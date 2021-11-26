@@ -41,11 +41,6 @@ class OfficialCategoriesTab(context: Context,
     private var tab_category_container: FrameLayout? = null
 
     init {
-        tabView = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
-        image_view_category_icon = tabView?.findViewById(R.id.image_view_category_icon)
-        text_view_category_title = tabView?.findViewById(R.id.text_view_category_title)
-        tab_category_container = tabView?.findViewById(R.id.tab_category_container)
-        tab_category_container
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -211,6 +206,10 @@ class OfficialCategoriesTab(context: Context,
     }
 
     private fun getTabView(context: Context, position: Int): View? {
+        tabView = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
+        image_view_category_icon = tabView?.findViewById(R.id.image_view_category_icon)
+        text_view_category_title = tabView?.findViewById(R.id.text_view_category_title)
+        tab_category_container = tabView?.findViewById(R.id.tab_category_container)
         with(tabView){
             ImageHandler.loadImage(
                     context,
