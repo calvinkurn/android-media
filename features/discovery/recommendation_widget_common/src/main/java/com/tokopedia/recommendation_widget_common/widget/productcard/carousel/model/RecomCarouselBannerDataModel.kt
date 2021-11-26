@@ -22,7 +22,7 @@ data class RecomCarouselBannerDataModel(
     }
 
     override fun areItemsTheSame(toCompare: RecomCarouselDiffUtilComparable): Boolean {
-        return toCompare !is RecomCarouselBannerDataModel
+        return toCompare is RecomCarouselBannerDataModel
     }
 
     override fun areContentsTheSame(toCompare: RecomCarouselDiffUtilComparable): Boolean {
