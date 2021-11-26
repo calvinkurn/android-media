@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -777,12 +778,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (newState == RecyclerView.SCROLL_STATE_IDLE && initialPromoButtonPosition > 0) {
             // Delay after recycler view idle, then show promo button
             delayShowPromoButtonJob?.cancel()
-            delayShowPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+            delayShowPromoButtonJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
-                binding?.llPromoCheckout?.animate()
-                        ?.y(initialPromoButtonPosition)
-                        ?.setDuration(PROMO_ANIMATION_DURATION)
-                        ?.start()
+                binding?.apply {
+                    val initialPosition = bottomLayout.y - llPromoCheckout.height + 10.dpToPx(resources.displayMetrics)
+                    llPromoCheckout.animate()
+                            .y(initialPosition)
+                            .setDuration(PROMO_ANIMATION_DURATION)
+                            .start()
+                }
             }
         }
     }
@@ -813,10 +817,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun animatePromoButtonToStartingPosition() {
-        binding?.llPromoCheckout?.animate()
-                ?.y(initialPromoButtonPosition)
-                ?.setDuration(0)
-                ?.start()
+        binding?.apply {
+            val initialPosition = bottomLayout.y - llPromoCheckout.height + 10.dpToPx(resources.displayMetrics)
+            llPromoCheckout.animate()
+                    .y(initialPosition)
+                    .setDuration(0)
+                    .start()
+        }
     }
 
     private fun animatePromoButtonToHiddenPosition(valueY: Float) {
