@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate
 
+import com.tokopedia.unifyprinciples.Typography
+
 const val AFFILIATE_LOGIN_REQUEST_CODE = 1023
 const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
 const val AFFILIATE_REQUEST_CODE_LOGOUT = 1025
@@ -13,3 +15,6 @@ const val ANNOUNCEMENT__TYPE_CCA = "cca"
 const val ANNOUNCEMENT__TYPE_SERVICE_STATUS = "serviceStatus"
 const val ANNOUNCEMENT__TYPE_USER_BLACKLIST = "userBlacklisted"
 const val ANNOUNCEMENT__TYPE_SUCCESS = 1
+
+val bodyTypoMap = mapOf(12 to Typography.BODY_1, 14 to Typography.BODY_2, 12 to Typography.BODY_3)
+val headerTypoMap = mapOf(12 to Typography.HEADING_6, 14 to Typography.HEADING_5, 16 to Typography.HEADING_4,18 to Typography.HEADING_3,20 to Typography.HEADING_2)

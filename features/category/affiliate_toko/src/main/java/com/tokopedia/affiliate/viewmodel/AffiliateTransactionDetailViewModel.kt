@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate.usecase.AffiliateCommissionDetailsUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -18,7 +19,7 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     private var commssionData = MutableLiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail>()
     private var detailList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var errorMessage = MutableLiveData<Throwable>()
-
+    private val TYPE_DIVIDER = "divider"
     fun affiliateCommission(transactionID:String) {
         launchCatchError(block = {
            affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let {
@@ -34,7 +35,10 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     private fun getDetailListOrganize(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
             var tempList = ArrayList<Visitable<AffiliateAdapterTypeFactory>>()
             detail?.forEach {
-                tempList.add(AffiliateCommissionItemModel(it))
+                if(it?.detailType != TYPE_DIVIDER)
+                    tempList.add(AffiliateCommissionItemModel(it))
+                else if(it.detailType == TYPE_DIVIDER)
+                    tempList.add(AffiliateCommisionDividerItemModel())
             }
         return tempList
     }

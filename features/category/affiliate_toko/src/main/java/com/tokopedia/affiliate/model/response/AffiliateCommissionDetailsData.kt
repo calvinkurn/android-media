@@ -75,8 +75,12 @@ data class AffiliateCommissionDetailsData(
             data class Detail(
                 @SerializedName("DetailDescription")
                 var detailDescription: String?,
-                @SerializedName("DetailStyle")
-                var detailStyle: String?,
+                @SerializedName("TextType")
+                var textType: String?,
+                @SerializedName("DetailType")
+                var detailType: String?,
+                @SerializedName("TextSize")
+                var textSize: Int?,
                 @SerializedName("DetailTitle")
                 var detailTitle: String?,
                 @SerializedName("DetailTooltip")

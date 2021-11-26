@@ -38,6 +38,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:gravity="end"
+        android:visibility="gone"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintLeft_toRightOf="@id/transaction_komisi_icon"
         app:layout_constraintRight_toRightOf="parent"
