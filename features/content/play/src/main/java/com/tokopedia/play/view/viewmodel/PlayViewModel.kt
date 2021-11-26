@@ -1109,7 +1109,9 @@ class PlayViewModel @Inject constructor(
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
         if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                val isFollowing = if (userSession.isLoggedIn) {
+                    repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                } else false
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
             }, onError = {
 
@@ -1138,7 +1140,9 @@ class PlayViewModel @Inject constructor(
             supervisorScope {
                 val deferredReportSummaries = async { getReportSummaries(channelId) }
                 val deferredIsLiked = async {
-                    repo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
+                    if (userSession.isLoggedIn) {
+                        repo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
+                    } else false
                 }
 
                 try {
