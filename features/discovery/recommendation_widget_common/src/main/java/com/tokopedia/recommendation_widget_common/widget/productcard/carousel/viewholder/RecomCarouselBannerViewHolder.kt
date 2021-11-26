@@ -29,11 +29,7 @@ class RecomCarouselBannerViewHolder(view: View,
     override fun bind(element: RecomCarouselBannerDataModel, payloads: MutableList<Any>) {
         val payload = payloads.firstOrNull().takeIf { it is Map<*, *> } as? Map<*, *>
         if (payload != null) {
-            if (
-                payload.containsKey(RecomCarouselBannerDataModel.PAYLOAD_APPLINK) ||
-                payload.containsKey(RecomCarouselBannerDataModel.PAYLOAD_IS_IMPRESS_HOLDER_CHANGED) ||
-                payload.containsKey(RecomCarouselBannerDataModel.PAYLOAD_IS_LISTENER_CHANGED)
-            ) {
+            if (payload.containsKey(RecomCarouselBannerDataModel.PAYLOAD_SHOULD_RECREATE_LISTENERS)) {
                 setupListeners(element)
             }
             if (payload.containsKey(RecomCarouselBannerDataModel.PAYLOAD_BANNER_IMAGE)) {

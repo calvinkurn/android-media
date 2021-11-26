@@ -30,7 +30,7 @@ data class RecomCarouselBannerDataModel(
 
         return bannerImage == toCompare.bannerImage && bannerBackgorundColor == toCompare.bannerBackgorundColor &&
                 impressHolder === toCompare.impressHolder && applink == toCompare.applink &&
-                componentName == toCompare.componentName && listener === toCompare.listener
+                listener === toCompare.listener
     }
 
     override fun getChangePayload(toCompare: RecomCarouselDiffUtilComparable): Map<String, Any> {
@@ -43,17 +43,12 @@ data class RecomCarouselBannerDataModel(
             if (bannerBackgorundColor != toCompare.bannerBackgorundColor) {
                 put(PAYLOAD_BACKGROUND_COLOR, Unit)
             }
-            if (applink != toCompare.applink) {
-                put(PAYLOAD_APPLINK, Unit)
-            }
-            if (componentName != toCompare.componentName) {
-                put(PAYLOAD_COMPONENT_NAME, Unit)
-            }
-            if (impressHolder !== toCompare.impressHolder) {
-                put(PAYLOAD_IS_IMPRESS_HOLDER_CHANGED, Unit)
-            }
-            if (listener !== toCompare.listener) {
-                put(PAYLOAD_IS_LISTENER_CHANGED, Unit)
+            if (
+                applink != toCompare.applink ||
+                impressHolder !== toCompare.impressHolder ||
+                listener !== toCompare.listener
+            ) {
+                put(PAYLOAD_SHOULD_RECREATE_LISTENERS, Unit)
             }
         }
     }
@@ -61,9 +56,6 @@ data class RecomCarouselBannerDataModel(
     companion object {
         const val PAYLOAD_BANNER_IMAGE = "bannerImage"
         const val PAYLOAD_BACKGROUND_COLOR = "backgroundColor"
-        const val PAYLOAD_APPLINK = "appLink"
-        const val PAYLOAD_COMPONENT_NAME = "componentName"
-        const val PAYLOAD_IS_LISTENER_CHANGED = "isListenerChanged"
-        const val PAYLOAD_IS_IMPRESS_HOLDER_CHANGED = "isImpressHolderChanged"
+        const val PAYLOAD_SHOULD_RECREATE_LISTENERS = "recreateListeners"
     }
 }
