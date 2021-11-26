@@ -369,7 +369,7 @@
     <string name="error_variant_exist">Nama sudah digunakan.</string>
     <string name="error_variant_unit_value_selection_exceed">Jumlah varianmu sudah melebihi batas maksimal.</string>
     <string name="error_illegal_variant_name">Nama berisi kata terlarang. Coba nama lain, ya.</string>
-    <string name="error_symbol_variant_name"><![CDATA[ Nama hanya terdiri dari abjad (A–Z), angka (0–9), atau simbol (/ - % _ * | # $ &). ]]></string>
+    <string name="error_symbol_variant_name"><![CDATA[Hanya bisa diisi dengan huruf a-z, angka 0-9, dan simbol / - % _ * ! # $ & @ ( )]]></string>
     <string name="error_used_variant_name">Nama sudah digunakan. Coba nama lain, ya.</string>
     <string name="error_min_char_variant_name">Minimum 3 karakter, ya.</string>
     <string name="error_cannot_change_variant_recommendation">Nama varian dari rekomendasi Tokopedia tidak bisa diubah, ya.</string>

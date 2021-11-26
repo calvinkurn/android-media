@@ -8,6 +8,6 @@ object StringValidationUtil {
     }
 
     fun Char.isAllowedSymbol(): Boolean {
-        return "/-%_*|#$& ".contains(this)
+        return "/-%_*|#$&@() ".contains(this)
     }
 }
