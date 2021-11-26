@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/unify_space_16"
-            android:background="@drawable/bg_rounded_rect_flash_sale_reminde_me"
+            android:background="@drawable/bg_rounded_rect_flash_sale_remind_me"
             android:paddingHorizontal="@dimen/unify_space_8"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="parent"
