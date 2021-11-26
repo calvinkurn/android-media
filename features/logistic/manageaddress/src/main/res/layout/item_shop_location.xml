@@ -51,7 +51,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_1"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginRight="@dimen/dp_56"
             android:layout_marginTop="4dp"
@@ -63,7 +63,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/address_line_2"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:textColor="@color/Unify_N700_44"
             android:layout_marginEnd="@dimen/dp_56"
             android:layout_marginRight="@dimen/dp_56"
