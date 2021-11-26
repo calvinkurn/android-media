@@ -307,9 +307,9 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindImageSize(product: ProductAttachmentUiModel) {
         val thumbnailSize = if (isCarousel) {
-            80f.toPx()
+            CAROUSEL_THUMBNAIL_DIMENSION
         } else {
-            104f.toPx()
+            SINGLE_THUMBNAIL_DIMENSION
         }
         val lp = thumbnail?.layoutParams
         lp?.apply {
@@ -662,6 +662,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     companion object {
         private const val DEFAULT_WIDTH_MULTIPLIER = 0.83f
+        private val SINGLE_THUMBNAIL_DIMENSION = 104f.toPx()
+        private val CAROUSEL_THUMBNAIL_DIMENSION = 80f.toPx()
         private val LAYOUT = R.layout.item_topchat_product_card
     }
 }
