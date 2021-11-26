@@ -120,14 +120,19 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 widgetType: WidgetType,
                 isWifi: Boolean,
         ): Map<String, Any> {
-            return mapOf(
+            val param = hashMapOf(
                 PlayWidgetQueryParamBuilder.PARAM_AUTHOR_ID to widgetType.authorId,
                 PlayWidgetQueryParamBuilder.PARAM_AUTHOR_TYPE to widgetType.authorType,
                 PlayWidgetQueryParamBuilder.PARAM_WIDGET_TYPE to widgetType.typeKey,
                 PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi,
-                PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID to widgetType.productIds,
-                PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID to widgetType.categoryIds
             )
+
+            if(widgetType is WidgetType.PDPWidget) {
+                param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIds
+                param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIds
+            }
+
+            return param
         }
     }
 
