@@ -347,10 +347,6 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         showVariantLayout()
         if (product.hasColorVariant()) {
             ll_variant_color?.show()
-            val backgroundDrawable = ColorDrawableGenerator.generate(
-                    context, product.colorHexVariant
-            )
-            iv_variant_color?.background = backgroundDrawable
             tv_variant_color?.text = product.colorVariant
         } else {
             ll_variant_color?.hide()
