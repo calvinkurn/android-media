@@ -14,4 +14,9 @@
     <string name="topads_debugger_detail_verificator_response_label">Full Verificator Response</string>
     <string name="cassava_network_label">Network</string>
     <string name="cassava_local_label">Local</string>
+
+    <string name="sse_log_no_data">No Data</string>
+    <string name="sse_log_channel_id_label">Channel ID</string>
+    <string name="sse_log_page_source_label">Page Source</string>
+    <string name="sse_log_gc_token_label">GC Token</string>
 </resources>

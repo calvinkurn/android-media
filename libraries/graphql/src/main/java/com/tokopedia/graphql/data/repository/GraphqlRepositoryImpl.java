@@ -158,7 +158,6 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 mRefreshRequests.add(copyRequests.get(i));
                 requests.remove(copyRequests.get(i));
 
-                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
                 LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
                 LoggingUtils.logGqlSuccessRate(operationName, "1");
             }

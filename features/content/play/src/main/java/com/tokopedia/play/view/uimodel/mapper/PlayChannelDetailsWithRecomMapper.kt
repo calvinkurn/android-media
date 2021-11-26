@@ -214,7 +214,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             statusType = mapStatusType(!configResponse.active || configResponse.freezed),
             bannedModel = mapBannedModel(configResponse.bannedData),
             freezeModel = mapFreezeModel(configResponse.freezeData, title),
-            shouldAutoSwipeOnFreeze = true
+            shouldAutoSwipeOnFreeze = true,
+            waitingDuration = 0,
     )
 
     private fun mapBannedModel(

@@ -17,7 +17,7 @@
             android:id="@+id/image"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="@dimen/dimen_dp_120"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

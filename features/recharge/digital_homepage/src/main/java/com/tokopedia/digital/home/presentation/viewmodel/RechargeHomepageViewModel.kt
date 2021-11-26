@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant
@@ -192,6 +193,10 @@ class RechargeHomepageViewModel @Inject constructor(
     fun getSearchBarScreenName(): String = rechargeHomepageSectionSkeleton.value.let {
         if (it is Success) it.data.searchBarScreenName
         else RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
+    }
+
+    fun getSearchBarRedirection(): String = rechargeHomepageSectionSkeleton.value.let {
+        if (it is Success) it.data.searchBarRedirection else ""
     }
 
     companion object {

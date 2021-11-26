@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.old.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
+import com.tokopedia.digital.home.old.domain.SearchAutoCompleteHomePageUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomeTrackingUtil
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -41,6 +42,11 @@ class DigitalHomePageModule {
     @Provides
     fun provideSearchCategoryUseCase(graphqlRepository: GraphqlRepository): SearchCategoryHomePageUseCase =
             SearchCategoryHomePageUseCase(graphqlRepository)
+
+    @DigitalHomePageScope
+    @Provides
+    fun provideSearchAutCompleteUseCase(graphqlRepository: GraphqlRepository): SearchAutoCompleteHomePageUseCase =
+            SearchAutoCompleteHomePageUseCase(graphqlRepository)
 
     @DigitalHomePageScope
     @Provides
