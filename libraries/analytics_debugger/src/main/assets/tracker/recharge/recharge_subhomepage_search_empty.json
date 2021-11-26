@@ -1,0 +1,17 @@
+{
+  "readme": "Search Autocomplete EMPTY SHP",
+  "mode": "subset",
+  "query": [
+    {
+      "businessUnit": "recharge",
+      "clientId": ".*",
+      "eventCategory": "digital - subhomepage tnb",
+      "currentSite": "tokopediadigitalRecharge",
+      "event": "viewDigitalIris",
+      "userId": ".*",
+      "eventAction": "impression no results",
+      "sessionIris": ".*",
+      "eventLabel": ".* - .*"
+    }
+  ]
+}
