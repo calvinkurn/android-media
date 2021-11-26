@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
@@ -16,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.officialstore.R
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.view_official_store_category.view.*
 import java.util.*
 
 
@@ -34,6 +35,18 @@ class OfficialCategoriesTab(context: Context,
     private var animationCollapse: ValueAnimator ?= null
 
     private var isExpand = true
+    private var tabView: View? = null
+    private var image_view_category_icon: ImageView? = null
+    private var text_view_category_title: Typography? = null
+    private var tab_category_container: FrameLayout? = null
+
+    init {
+        tabView = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
+        image_view_category_icon = tabView?.findViewById(R.id.image_view_category_icon)
+        text_view_category_title = tabView?.findViewById(R.id.text_view_category_title)
+        tab_category_container = tabView?.findViewById(R.id.tab_category_container)
+        tab_category_container
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
@@ -50,7 +63,7 @@ class OfficialCategoriesTab(context: Context,
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab) {
                 tab.customView?.apply {
-                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    image_view_category_icon?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -63,7 +76,7 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabUnselected(tab: Tab) {
                 tab.customView?.apply {
-                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].inactiveIconUrl)
+                    image_view_category_icon?.loadImageWithCache(categoriesItemTab[tab.position].inactiveIconUrl)
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -76,7 +89,7 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
-                    image_view_category_icon.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    image_view_category_icon?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
@@ -197,16 +210,15 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
-    private fun getTabView(context: Context, position: Int): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
-        with(view){
+    private fun getTabView(context: Context, position: Int): View? {
+        with(tabView){
             ImageHandler.loadImage(
                     context,
                     image_view_category_icon,
                     categoriesItemTab[position].inactiveIconUrl,
                     R.drawable.ic_loading_image
             )
-            text_view_category_title.text = categoriesItemTab[position].title
+            text_view_category_title?.text = categoriesItemTab[position].title
             tab_category_container?.afterMeasured {
                 categoriesItemTab[position].currentWidth = width
                 categoriesItemTab[position].minWidth = width
@@ -218,7 +230,7 @@ class OfficialCategoriesTab(context: Context,
 
             }
         }
-        return view
+        return tabView
     }
 
     fun adjustTabCollapseOnScrolled(dy: Int) {
