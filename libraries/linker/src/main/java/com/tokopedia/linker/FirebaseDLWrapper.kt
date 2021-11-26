@@ -226,8 +226,7 @@ class FirebaseDLWrapper {
             }
         }
         uri = Uri.encode(uri)
-        return "$firebaseBaseUrl/?$linkPath=$uri"
-
+        return uri.toString()
     }
 
     private fun needFallbakUrl(data: LinkerData): Boolean {
