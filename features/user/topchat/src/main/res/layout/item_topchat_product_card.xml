@@ -280,7 +280,7 @@
                     android:id="@+id/iv_seller_fullfilment"
                     android:layout_width="@dimen/dp_topchat_20"
                     android:layout_height="@dimen/dp_topchat_20"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="top"
                     android:contentDescription="@null"
                     android:scaleType="fitCenter"
                     tools:srcCompat="@tools:sample/avatars"
