@@ -27,12 +27,9 @@ object PlayWidgetQueryParamBuilder {
     }
 
     private fun generateField(widgetType: PlayWidgetUseCase.WidgetType): String {
-        var field = ""
-
-        field += "("
-        when(widgetType) {
+        return when(widgetType) {
             is PlayWidgetUseCase.WidgetType.PDPWidget -> {
-                field += """
+                """
                     ${'$'}$PARAM_WIDGET_TYPE: String!, 
                     ${'$'}$PARAM_AUTHOR_ID: String, 
                     ${'$'}$PARAM_AUTHOR_TYPE: String,
@@ -40,7 +37,7 @@ object PlayWidgetQueryParamBuilder {
                 """.trimIndent()
             }
             else -> {
-                field += """
+                """
                     ${'$'}$PARAM_WIDGET_TYPE: String!, 
                     ${'$'}$PARAM_AUTHOR_ID: String, 
                     ${'$'}$PARAM_AUTHOR_TYPE: String,
@@ -50,19 +47,12 @@ object PlayWidgetQueryParamBuilder {
                 """.trimIndent()
             }
         }
-        field += ")"
-
-        return field
     }
 
     private fun generateRequest(widgetType: PlayWidgetUseCase.WidgetType): String {
-        var request = ""
-
-        request += "{"
-
-        when(widgetType) {
+        return when(widgetType) {
             is PlayWidgetUseCase.WidgetType.PDPWidget -> {
-                request += """
+                """
                     playGetWidgetV2(
                         req: {
                           ${PARAM_WIDGET_TYPE}:${'$'}${PARAM_WIDGET_TYPE},
@@ -75,7 +65,7 @@ object PlayWidgetQueryParamBuilder {
                 """.trimIndent()
             }
             else -> {
-                request += """
+                """
                     playGetWidgetV2(
                         req: {
                           ${PARAM_WIDGET_TYPE}:${'$'}${PARAM_WIDGET_TYPE},
@@ -86,10 +76,6 @@ object PlayWidgetQueryParamBuilder {
                 """.trimIndent()
             }
         }
-
-        request += "}"
-
-        return request
     }
 
     fun build(): String {
