@@ -225,7 +225,6 @@ class FirebaseDLWrapper {
                 uri = "$uri?$androidUrlPath=$deeplink&$iosUrlPath=$deeplink"
             }
         }
-        uri = Uri.encode(uri)
         return uri.toString()
     }
 
