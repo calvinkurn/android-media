@@ -51,19 +51,22 @@ class TransactionDetails : BaseDaggerFragment(){
 
     fun setViewData(){
         if(::ovoP2pTransferThankyouBase.isInitialized) {
-            date.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.trnsfrDate
-            txtMsgTxn.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.msg
-            val rpFormattedString = CurrencyFormatUtil.getThousandSeparatorString(ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.amt.toDouble(), false, 0)
-            amt.text = "-Rp" + rpFormattedString.formattedString
-            txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.refNum
+            date.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.trnsfrDate
+            txtMsgTxn.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.msg
+            val rpFormattedString =
+                ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.amt?.toDouble()
+                    ?.let { CurrencyFormatUtil.getThousandSeparatorString(it, false, 0) }
+            amt.text = "-Rp" + rpFormattedString?.formattedString
+            txnNo.text = "Ref - " + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.refNum
             setSenderUserData()
             setRcvrUserData()
         }
     }
 
-    private fun setRcvrUserData(){
-        rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.destination.name
-        rcvrNum.text = Constants.Prefixes.OVO+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.destination.phone
+    private fun setRcvrUserData() {
+        rcvrName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.destination?.name
+        rcvrNum.text =
+            Constants.Prefixes.OVO + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.destination?.phone
     }
 
     companion object{
@@ -86,8 +89,9 @@ class TransactionDetails : BaseDaggerFragment(){
         ovoP2pTransferThankyouBase = arguments?.getParcelable(Constants.Keys.THANKYOU_ARGS) ?: OvoP2pTransferThankyouBase()
     }
 
-    private fun setSenderUserData(){
-        senderName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.name
-        senderNumber.text = Constants.Prefixes.OVO+ovoP2pTransferThankyouBase.ovoP2pTransferThankyou.source.phone
+    private fun setSenderUserData() {
+        senderName.text = ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.source?.name
+        senderNumber.text =
+            Constants.Prefixes.OVO + ovoP2pTransferThankyouBase.ovoP2pTransferThankyou?.source?.phone
     }
 }

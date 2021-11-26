@@ -15,8 +15,10 @@ class OvoP2pTransferRequestViewModel @Inject constructor(
 ) : ViewModel() {
 
     var transferReqBaseMutableLiveData = MutableLiveData<TransferRequestState>()
+    // private var transferRequestSubscriber: Subscriber<GraphqlResponse>? = null
 
     fun makeTransferRequestCall(transferReqMap: HashMap<String, Any>) {
+        //  OvoP2pUtil.executeOvoP2pTransferRequest(context, getTransferRequestSubscriber(context), transferReqMap)
         ovoP2pTransferUseCase.transferOvo(::onSuccessTransfer, ::onFailTransfer, transferReqMap)
     }
 
@@ -49,10 +51,50 @@ class OvoP2pTransferRequestViewModel @Inject constructor(
 
 
     override fun onCleared() {
+        super.onCleared()
         ovoP2pTransferUseCase.cancelJobs()
+//        if (transferRequestSubscriber != null) {
+//            transferRequestSubscriber!!.unsubscribe()
+//        }
     }
 
     companion object {
         const val NON_OVO_ERROR = "Nomor ponsel penerima tidak terdaftar sebagai pengguna OVO."
     }
+
+//    private fun getTransferRequestSubscriber(context: Context): Subscriber<GraphqlResponse> {
+//        transferRequestSubscriber = object : Subscriber<GraphqlResponse>() {
+//            override fun onCompleted() {
+//
+//            }
+//
+//            override fun onError(e: Throwable) {
+//                transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(context.resources.getString(
+//                    R.string.general_error))
+//            }
+//
+//            override fun onNext(graphqlResponse: GraphqlResponse) {
+//                val ovoP2pTransferRequestBase = graphqlResponse.getData<OvoP2pTransferRequestBase>(OvoP2pTransferRequestBase::class.java)
+//                ovoP2pTransferRequestBase?.ovoP2pTransferRequest?.let { reqObj ->
+//                    reqObj.errors?.let { errList ->
+//                        if (errList.isNotEmpty()) {
+//                            errList[0][Constants.Keys.MESSAGE]?.let { errMsg ->
+//                                if (errMsg.contentEquals(context.resources.getString(R.string.non_ovo_usr))) {
+//                                    transferReqBaseMutableLiveData.value = TransferReqNonOvo()
+//                                } else {
+//                                    transferReqBaseMutableLiveData.value = TransferReqErrorPage(errMsg)
+//                                }
+//                            }
+//                        } else {
+//                            transferReqBaseMutableLiveData.value = reqObj.dstAccName?.let { TransferReqData(it) }
+//                        }
+//                    }
+//                } ?: run {
+//                    transferReqBaseMutableLiveData.value = TransferReqErrorSnkBar(context.resources.getString(
+//                        R.string.general_error))
+//                }
+//            }
+//        }
+//        return transferRequestSubscriber as Subscriber<GraphqlResponse>
+//    }
 }

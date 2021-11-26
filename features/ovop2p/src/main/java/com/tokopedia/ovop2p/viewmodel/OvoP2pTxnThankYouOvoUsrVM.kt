@@ -17,13 +17,18 @@ class OvoP2pTxnThankYouOvoUsrVM @Inject constructor(
 ) : ViewModel() {
 
     var transferThankyouLiveData = MutableLiveData<ThankYouPageState>()
+    // private var transferThankyouSubscriber: Subscriber<GraphqlResponse>? = null
 
     override fun onCleared() {
         super.onCleared()
         ovoTrnxThankyouPageUseCase.cancelJobs()
+//        if (transferThankyouSubscriber != null) {
+//            transferThankyouSubscriber!!.unsubscribe()
+//        }
     }
 
     fun makeThankyouDataCall(dataMap: HashMap<String, Any>) {
+        //   OvoP2pUtil.executeOvoP2pTransferThankyou(context, getThankYouDataSubscriber(context), dataMap)
         ovoTrnxThankyouPageUseCase.getThankyouPageData(
             ::onSuccessThankYouData,
             ::onFailThankYou,
@@ -52,6 +57,39 @@ class OvoP2pTxnThankYouOvoUsrVM @Inject constructor(
     private fun onFailThankYou(throwable: Throwable) {
         transferThankyouLiveData.value = ThankYouErrSnkBar(GENERAL_ERROR)
     }
+
+//    fun getThankYouDataSubscriber(context: Context): Subscriber<GraphqlResponse> {
+//        transferThankyouSubscriber = object : Subscriber<GraphqlResponse>() {
+//            override fun onCompleted() {
+//            }
+//
+//            override fun onError(e: Throwable?) {
+//                transferThankyouLiveData.value = ThankYouErrSnkBar(context.resources.getString(R.string.general_error))
+//            }
+//
+//            override fun onNext(graphqlResponse: GraphqlResponse?) {
+//                val ovoP2pTransferConfirmBase = graphqlResponse?.getData<OvoP2pTransferThankyouBase>(OvoP2pTransferThankyouBase::class.java)
+//                ovoP2pTransferConfirmBase?.ovoP2pTransferThankyou?.let {
+//                    it.errors?.let { errList ->
+//                        if (errList.isNotEmpty()) {
+//                            errList[0].let { errMap ->
+//                                errMap[Constants.Keys.MESSAGE]?.let { errMsg ->
+//                                    transferThankyouLiveData.value = ThankYouErrPage(errMsg)
+//                                }
+//                            }
+//                        } else {
+//                            transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferConfirmBase)
+//                        }
+//                    } ?: run{
+//                        transferThankyouLiveData.value = ThankYouSucs(ovoP2pTransferConfirmBase)
+//                    }
+//                } ?: run {
+//                    transferThankyouLiveData.value = ThankYouErrSnkBar(context.resources.getString(R.string.general_error))
+//                }
+//            }
+//        }
+//        return transferThankyouSubscriber as Subscriber<GraphqlResponse>
+//    }
 
 
 }
