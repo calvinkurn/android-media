@@ -18,10 +18,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
-import com.tokopedia.affiliate.repository.AffiliateRepository
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
-import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
-import com.tokopedia.affiliate.usecase.AffiliateTransactionHistoryUseCase
 import com.tokopedia.affiliate.viewmodel.AffiliateIncomeViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.globalerror.GlobalError
@@ -57,7 +54,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.affiliate_withdrawal_fragment_layout, container, false)
+        return inflater.inflate(R.layout.affiliate_income_fragment_layout, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
