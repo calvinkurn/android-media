@@ -216,7 +216,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     tabs = sectionTabs
                 },
                 uiState = PromoTabUiModel.UiState().apply {
-                    selectedTabId = sectionTabs.firstOrNull()?.id ?: "0"
+                    isInitialization = true
+                    selectedTabPosition = 0
                 }
         )
     }

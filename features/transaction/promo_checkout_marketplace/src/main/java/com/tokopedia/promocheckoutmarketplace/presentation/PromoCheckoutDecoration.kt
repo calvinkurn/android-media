@@ -23,6 +23,10 @@ class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoratio
                 outRect.top = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_0)?.toInt() ?: 0
                 outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0
             }
+            is PromoTabViewHolder -> {
+                outRect.top = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_16)?.toInt() ?: 0
+                outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_0)?.toInt() ?: 0
+            }
             else -> {
                 outRect.top = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_0)?.toInt() ?: 0
                 outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.abstraction.R.dimen.dp_0)?.toInt() ?: 0

@@ -23,4 +23,6 @@ interface PromoCheckoutActionListener {
     fun onClickEmptyStateButton(element: PromoEmptyStateUiModel)
 
     fun onClickErrorStateButton(destination: String)
+
+    fun onTabSelected(element: PromoTabUiModel)
 }

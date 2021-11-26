@@ -226,6 +226,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         // Observe visitable data changes
         observeFragmentUiModel()
         observePromoRecommendationUiModel()
+        observePromoTabUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
         observeErrorStateUiModel()
@@ -392,6 +393,25 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 promoTabUiModel.uiData.tabs.forEach {
                     viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
                 }
+
+                viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        val currentTabUiModel = viewModel.promoTabUiModel.value
+                        currentTabUiModel?.let {
+                            it.uiState.selectedTabPosition = tab?.position ?: 0
+                            viewModel.changeSelectedTab(currentTabUiModel)
+                        }
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+                        /* No-op */
+                    }
+
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+                        /* No-op */
+                    }
+                })
+
             }
 
             if (isShow) {
@@ -439,6 +459,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observePromoRecommendationUiModel() {
         viewModel.promoRecommendationUiModel.observe(viewLifecycleOwner, {
+            if (!it.uiState.isInitialization) {
+                addOrModify(it)
+            }
+        })
+    }
+
+    private fun observePromoTabUiModel() {
+        viewModel.promoTabUiModel.observe(viewLifecycleOwner, {
             if (!it.uiState.isInitialization) {
                 addOrModify(it)
             }
@@ -1040,5 +1068,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         } else if (destination.equals(DESTINATION_REFRESH, true)) {
             reloadData()
         }
+    }
+
+    override fun onTabSelected(element: PromoTabUiModel) {
+        viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
     }
 }

@@ -18,7 +18,8 @@ class PromoTabUiModel(
     )
 
     data class UiState(
-            var selectedTabId: String = "0"
+            var isInitialization: Boolean = false,
+            var selectedTabPosition: Int = 0
     )
 
 }

@@ -19,15 +19,31 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
 
     override fun bind(element: PromoTabUiModel) {
         with(viewBinding) {
+            if (element.uiState.selectedTabPosition != tabsPromo.getUnifyTabLayout().selectedTabPosition) {
+                tabsPromo.getUnifyTabLayout().getTabAt(element.uiState.selectedTabPosition)?.select()
+            }
+            element.uiState.isInitialization = false
             tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
-            if (element.uiData.tabs.isNotEmpty()) {
+            if (element.uiData.tabs.isNotEmpty() && tabsPromo.getUnifyTabLayout().getTabAt(0) == null) {
                 element.uiData.tabs.forEach {
                     tabsPromo.addNewTab(it.title)
                 }
-                tabsPromo.show()
-            } else {
-                tabsPromo.gone()
             }
+
+            tabsPromo.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    element.uiState.selectedTabPosition = tab?.position ?: 0
+                    listener.onTabSelected(element)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    /* No-op */
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                    /* No-op */
+                }
+            })
         }
     }
 

@@ -1616,6 +1616,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         return clashResult
     }
 
+    fun changeSelectedTab(promoTabUiModel: PromoTabUiModel) {
+        _promoTabUiModel.value = promoTabUiModel
+    }
 
     //-------------------//
     /* Analytics Section */
