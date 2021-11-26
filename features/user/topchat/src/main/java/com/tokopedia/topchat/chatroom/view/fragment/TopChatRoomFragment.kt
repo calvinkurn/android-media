@@ -2496,7 +2496,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                         TopChatAnalyticsKt.eventClickOCCButton(
                             it.data, chatData, getUserSession().userId)
                     }
-                    goToOCC(it.data.productId)
+                    goToOCC()
                 }
                 is Fail -> onError(it.throwable)
             }
@@ -2618,11 +2618,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         adapter.removeViewHolder(element, position)
     }
 
-    private fun goToOCC(productId: String) {
+    private fun goToOCC() {
         val intent = RouteManager.getIntent(
             context,
-            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
-            productId
+            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
         )
         startActivity(intent)
     }

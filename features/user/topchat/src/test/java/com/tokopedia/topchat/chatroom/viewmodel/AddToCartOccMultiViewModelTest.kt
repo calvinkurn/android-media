@@ -13,7 +13,7 @@ import org.junit.Test
 class AddToCartOccMultiViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
-    fun should_get_product_id_when_successfully_occ() {
+    fun should_get_correct_product_id_when_successfully_occ() {
         //Given
         val expectedProductId = "123"
         val expectedResult = AddToCartOccMultiDataModel(
@@ -33,7 +33,7 @@ class AddToCartOccMultiViewModelTest: BaseTopChatViewModelTest() {
         //Then
         Assert.assertEquals(
             expectedProductId,
-            (viewModel.occProduct.value as Success).data)
+            (viewModel.occProduct.value as Success).data.productId)
     }
 
     @Test
