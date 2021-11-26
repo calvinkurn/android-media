@@ -235,6 +235,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     override fun onRecomProductCardAddToCartNonVariant(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
         carouselData?.let {
+            TokonowQuantityUpdater.resetFailedRecomTokonowCard(it, recomItem)
+            setData(it)
             if (widgetMetadata.isRecomBindWithPageName) {
                 viewModel?.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
             } else

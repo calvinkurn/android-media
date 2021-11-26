@@ -34,14 +34,10 @@ class RecomCarouselProductCardViewHolder (view: View,
         if (payload.isNullOrEmpty()) {
             bind(element)
         } else {
-            if (payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_PRODUCT_MODEL)) {
+            if (payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_FLAG_SHOULD_UPDATE_PRODUCT_CARD)) {
                 setLayout(element)
             }
-            if (
-                payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_RECOM_ITEM) ||
-                payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_COMPONENT_NAME) ||
-                payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_IS_LISTENER_CHANGED)
-            ) {
+            if (payload.containsKey(RecomCarouselProductCardDataModel.PAYLOAD_FLAG_SHOULD_UPDATE_LISTENERS)) {
                 setupListener(itemView.context, element)
             }
         }
@@ -82,6 +78,7 @@ class RecomCarouselProductCardViewHolder (view: View,
             }
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
+                    element.recomItem.onCardQuantityChanged(quantity)
                     element.listener?.onRecomProductCardAddToCartNonVariant(
                             data = data,
                             recomItem = element.recomItem,
