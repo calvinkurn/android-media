@@ -3,7 +3,9 @@ package com.tokopedia.recommendation_widget_common.widget.productcard.carousel.v
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselSeeMoreDataModel
@@ -38,7 +40,12 @@ class RecomCarouselSeeMoreViewHolder(view: View,
     }
 
     private fun setupBannerBackgroundImage(element: RecomCarouselSeeMoreDataModel) {
-        bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
+        if (element.backgroundImage.isNotEmpty()) {
+            bannerBackgroundImage.visible()
+            bannerBackgroundImage.loadImageWithoutPlaceholder(element.backgroundImage)
+        } else {
+            bannerBackgroundImage.gone()
+        }
     }
 
     private fun setupListeners(element: RecomCarouselSeeMoreDataModel) {
