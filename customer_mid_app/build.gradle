@@ -45,6 +45,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.flightOrderList)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
+    implementation projectOrAar(rootProject.ext.features.logout)
     
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.explore)
