@@ -151,7 +151,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isTokonow: Boolean = false
     ) {
         try {
-            widgetMetadata = widgetMetadata.copy(adapterPosition = adapterPosition,
+            widgetMetadata = widgetMetadata.copy(
+                adapterPosition = adapterPosition,
                 scrollToPosition = scrollToPosition,
                 pageName = pageName,
                 isForceRefresh = isForceRefresh,
