@@ -6,26 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
-import com.tokopedia.affiliate.di.AffiliateComponent
-import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
 import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
+import com.tokopedia.affiliate.repository.AffiliateRepository
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
+import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
+import com.tokopedia.affiliate.usecase.AffiliateTransactionHistoryUseCase
 import com.tokopedia.affiliate.viewmodel.AffiliateIncomeViewModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
-import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,17 +34,13 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
-import javax.inject.Inject
+import androidx.lifecycle.ViewModelProviders
 
-class AffiliateIncomeFragment : BaseViewModelFragment<AffiliateIncomeViewModel>(),
-        AffiliateDatePickerRangeChangeInterface {
-
-    @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
-
+class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeChangeInterface{
 
     private lateinit var affiliateIncomeViewModel : AffiliateIncomeViewModel
-
+    private var userName : String = ""
+    private var profilePicture : String = ""
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
     private var listSize = 0
@@ -54,8 +48,11 @@ class AffiliateIncomeFragment : BaseViewModelFragment<AffiliateIncomeViewModel>(
     private var selectedRange = AffiliateBottomDatePicker.TODAY
 
     companion object {
-        fun getFragmentInstance(): Fragment {
-            return AffiliateIncomeFragment()
+        fun getFragmentInstance(userNameParam : String, profilePictureParam : String): Fragment {
+            return AffiliateIncomeFragment().apply {
+                userName = userNameParam
+                profilePicture = profilePictureParam
+            }
         }
     }
 
@@ -65,12 +62,17 @@ class AffiliateIncomeFragment : BaseViewModelFragment<AffiliateIncomeViewModel>(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        affiliateIncomeViewModel = ViewModelProviders.of(this)[AffiliateIncomeViewModel::class.java]
         setObservers()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
+    }
+
+    override fun getScreenName(): String {
+        return  ""
     }
 
     private fun setObservers() {
@@ -145,8 +147,8 @@ class AffiliateIncomeFragment : BaseViewModelFragment<AffiliateIncomeViewModel>(
 
     private fun afterViewCreated() {
         affiliateIncomeViewModel.getAffiliateTransactionHistory(getStartFromDate(selectedRange), getEndFromDate(AffiliateBottomDatePicker.TODAY), 0)
-        view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = affiliateIncomeViewModel.getUserName()
-        ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), affiliateIncomeViewModel.getUserProfilePicture())
+        view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
+        ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
         view?.findViewById<Typography>(R.id.date_range_text)?.text = AffiliateBottomDatePicker.TODAY
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
             AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY,this).show(childFragmentManager, "")
@@ -190,27 +192,28 @@ class AffiliateIncomeFragment : BaseViewModelFragment<AffiliateIncomeViewModel>(
         return ""
     }
 
-    private fun getComponent(): AffiliateComponent =
-            DaggerAffiliateComponent
-                    .builder()
-                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                    .build()
+//    override fun getVMFactory(): ViewModelProvider.Factory {
+//        return viewModelProvider
+//    }
+//
+//    override fun initInject() {
+//        getComponent().injectIncomeFragment(this)
+//    }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
-        return viewModelProvider
-    }
+//    private fun getComponent(): AffiliateComponent =
+//            DaggerAffiliateComponent
+//                    .builder()
+//                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+//                    .build()
+//
+//    override fun getViewModelType(): Class<AffiliateIncomeViewModel> {
+//        return AffiliateIncomeViewModel::class.java
+//    }
+//
+//    override fun setViewModel(viewModel: BaseViewModel) {
+//        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
+//    }
 
-    override fun initInject() {
-        getComponent().injectIncomeFragment(this)
-    }
-
-    override fun getViewModelType(): Class<AffiliateIncomeViewModel> {
-        return AffiliateIncomeViewModel::class.java
-    }
-
-    override fun setViewModel(viewModel: BaseViewModel) {
-        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
-    }
 
     override fun rangeChanged(range: AffiliateDatePickerData) {
         selectedRange = range.text

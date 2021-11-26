@@ -5,10 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.affiliate.viewmodel.*
 import com.tokopedia.basemvvm.viewmodel.ViewModelKey
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
-import com.tokopedia.affiliate.viewmodel.AffiliateHomeViewModel
-import com.tokopedia.affiliate.viewmodel.AffiliatePromoViewModel
-import com.tokopedia.affiliate.viewmodel.AffiliatePromotionBSViewModel
-import com.tokopedia.affiliate.viewmodel.AffiliateRecommendedProductViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -73,10 +69,10 @@ abstract class AffiliateVMModule {
     @ViewModelKey(AffiliateTransactionDetailViewModel::class)
     internal abstract fun affiliateTransactionDetailVM(affiliateTransactionDetailViewModel: AffiliateTransactionDetailViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @AffiliateScope
-    @ViewModelKey(AffiliateIncomeViewModel::class)
-    internal abstract fun affiliateIncomeViewModel(affiliateIncomeViewModel: AffiliateIncomeViewModel): ViewModel
+//    @Binds
+//    @IntoMap
+//    @AffiliateScope
+//    @ViewModelKey(AffiliateIncomeViewModel::class)
+//    internal abstract fun affiliateIncomeViewModel(affiliateIncomeViewModel: AffiliateIncomeViewModel): ViewModel
 
 }
