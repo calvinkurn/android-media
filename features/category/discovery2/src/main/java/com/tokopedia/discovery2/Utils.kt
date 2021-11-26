@@ -66,7 +66,7 @@ class Utils {
         private const val COMPONENT_ID = "component_id"
         private const val DEVICE = "device"
         private const val DEVICE_VALUE = "Android"
-        private const val FILTERS = "filters"
+        const val FILTERS = "filters"
         private const val COUNT_ONLY = "count_only"
         private const val RPC_USER_ID = "rpc_UserID"
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
@@ -187,6 +187,16 @@ class Utils {
                 if (it.lat.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LAT] = it.lat
                 if (it.long.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_LONG] = it.long
                 if (it.postal_code.isNotEmpty()) addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_POST_CODE] = it.postal_code
+            }
+            return addressQueryParameterMap
+        }
+
+
+        fun addAddressQueryMapWithWareHouse(userAddressData: LocalCacheModel?): MutableMap<String, String> {
+            val addressQueryParameterMap = addAddressQueryMap(userAddressData)
+            userAddressData?.let {
+                if (it.warehouse_id.isNotEmpty())
+                    addressQueryParameterMap[Constant.ChooseAddressQueryParams.RPC_USER_WAREHOUSE_ID] = userAddressData.warehouse_id
             }
             return addressQueryParameterMap
         }

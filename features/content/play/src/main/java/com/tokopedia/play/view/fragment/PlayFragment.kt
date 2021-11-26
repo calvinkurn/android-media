@@ -86,9 +86,6 @@ class PlayFragment @Inject constructor(
     private val fragmentYouTubeView by viewComponent {
         FragmentYouTubeViewComponent(channelId, it, R.id.fl_youtube, childFragmentManager, this)
     }
-    private val fragmentUpcomingView by viewComponent {
-        FragmentUpcomingViewComponent(it, R.id.fl_upcoming, childFragmentManager)
-    }
 
     private lateinit var playParentViewModel: PlayParentViewModel
     private lateinit var playViewModel: PlayViewModel
@@ -231,16 +228,6 @@ class PlayFragment @Inject constructor(
         isFirstTopBoundsCalculated = true
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             when {
-                playViewModel.upcomingInfo?.isUpcoming == true -> {
-                    fragmentVideoView.safeRelease()
-                    fragmentVideoView.hide()
-                    fragmentYouTubeView.safeRelease()
-                    fragmentYouTubeView.hide()
-                    fragmentUserInteractionView.safeRelease()
-                    fragmentUserInteractionView.hide()
-
-                    fragmentUpcomingView.safeInit()
-                }
                 playViewModel.videoPlayer.isYouTube -> {
                     fragmentYouTubeView.safeInit()
                     fragmentYouTubeView.show()
@@ -268,9 +255,6 @@ class PlayFragment @Inject constructor(
             val totalView = playViewModel.totalView
             if (totalView.isNotEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
             if (channelId.isNotEmpty()) putExtra(EXTRA_CHANNEL_ID, channelId)
-            playViewModel.upcomingInfo?.let {
-                putExtra(EXTRA_IS_REMINDER, it.isReminderSet)
-            }
         })
     }
 
@@ -642,7 +626,6 @@ class PlayFragment @Inject constructor(
     companion object {
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
         private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
-        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
 
         private const val KEYBOARD_REGISTER_DELAY = 200L
         private const val FIRST_FRAGMENT_ACTIVE_DELAY = 500L

@@ -187,9 +187,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 if (!boxColor.isNullOrEmpty()) {
                     setColouredBackground(boxColor)
                 } else {
-                    calendarParent.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
-                    calendarTitle.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
-                    calendarDesc.setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
+                    calendarParent.setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    calendarTitle.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
+                    calendarDesc.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                     calendarDateAlpha.gone()
                     calendarDate.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_clr_2F89FC))
                 }
@@ -232,17 +232,17 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
                     .setBackgroundColor(Color.parseColor(boxColor))
                 itemView.findViewById<Typography>(R.id.calendar_title)
-                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 itemView.findViewById<Typography>(R.id.calendar_desc)
-                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
                 itemView.findViewById<View>(R.id.calendar_date_alpha).hide()
                 itemView.findViewById<ConstraintLayout>(R.id.calendar_parent)
-                    .setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.Unify_N0))
+                    .setBackgroundColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 itemView.findViewById<Typography>(R.id.calendar_title)
-                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
+                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 itemView.findViewById<Typography>(R.id.calendar_desc)
-                    .setTextColor(MethodChecker.getColor(itemView.context, R.color.Unify_N700))
+                    .setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 itemView.findViewById<Typography>(R.id.calendar_date)
                     .setBackgroundColor(Color.parseColor(boxColor))
             }
@@ -290,7 +290,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun updateButton(isSubscribed: Boolean) {
         val button = itemView.findViewById<UnifyButton>(R.id.calendar_button)
         val tickButton = itemView.findViewById<UnifyButton>(R.id.calendar_button_tick)
-        tickButton.setDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.unify_check_ic))
+        tickButton.setDrawable(MethodChecker.getDrawable(itemView.context, com.tokopedia.unifycomponents.R.drawable.unify_check_ic))
         if (isSubscribed) {
             button.gone()
             tickButton.show()

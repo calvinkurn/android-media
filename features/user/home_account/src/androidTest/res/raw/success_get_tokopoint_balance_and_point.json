@@ -1,0 +1,13 @@
+{
+  "tokopointsAccountPage":{
+    "id":"tokopoints",
+    "icon":"https://images.tokopedia.net/img/retention/gopaycoins/gopay.png",
+    "title":"GoPay \u0026 Coins",
+    "subtitle":"Aktifkan",
+    "subtitle_color":"#31353B",
+    "applink":"tokopedia://webview?url=https://accounts.tokopedia.com/account-link/v1/gojek-auth",
+    "weblink":"https://accounts.tokopedia.com/account-link/v1/gojek-auth",
+    "is_active":true,
+    "is_hidden":false
+  }
+}

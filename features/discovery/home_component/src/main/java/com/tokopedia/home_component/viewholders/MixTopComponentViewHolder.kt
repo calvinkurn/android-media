@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -36,9 +35,13 @@ import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -64,7 +67,6 @@ class MixTopComponentViewHolder(
     private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
     private val background = itemView.findViewById<View>(R.id.background)
-    private val container = itemView.findViewById<LinearLayout>(R.id.container_mix_top)
     private var adapter: MixTopComponentAdapter? = null
     private var isCacheData = false
     companion object{
@@ -154,7 +156,7 @@ class MixTopComponentViewHolder(
     private fun mappingHeader(channel: ChannelModel){
         val bannerItem = channel.channelBanner
         val ctaData = channel.channelBanner.cta
-        var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Unify_N50)
+        var textColor = ContextCompat.getColor(bannerTitle.context, com.tokopedia.unifyprinciples.R.color.Unify_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
@@ -168,19 +170,21 @@ class MixTopComponentViewHolder(
         if(bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(bannerItem.gradientColor, itemView.context)) {
             background.gone()
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, 0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_7))
+            layoutParams.setMargins(0, 0, 0, 0)
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
-            recyclerView.setPadding(0, 0, 0, 7f.toPx().toInt())
+            recyclerView.setPadding(0, 0, 0, 7f.toDpInt())
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0,
-                if (bannerTitle.isVisible || bannerDescription.isVisible) 6f.toPx()
-                    .toInt() else itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card),
+            layoutParams.setMargins(
                 0,
-                itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12)
+                if (bannerTitle.isVisible || bannerDescription.isVisible) 6f.toDpInt() else itemView.context.resources.getDimensionPixelSize(
+                    R.dimen.home_margin_12_dp_product_card
+                ),
+                0,
+                0
             )
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
