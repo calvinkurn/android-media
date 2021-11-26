@@ -1,7 +1,7 @@
 [
   {
     "data": {
-      "productrevGetReviewAggregateByProduct": {
+      "productrevGetReviewAggregateByProductV2": {
         "period": "15 Mar 2021 - Hari ini",
         "productName": "PrOduc7 73571n6 6un03n9",
         "ratingAverage": 4.4,
@@ -11,27 +11,27 @@
   },
   {
     "data": {
-      "productrevFeedbackDataPerProduct": {
+      "productrevFeedbackDataPerProductV2": {
         "aggregatedRating": [
           {
             "rating": 1,
-            "ratingCount": 0
+            "ratingCount": 5
           },
           {
             "rating": 2,
-            "ratingCount": 0
+            "ratingCount": 4
           },
           {
             "rating": 3,
-            "ratingCount": 0
+            "ratingCount": 3
           },
           {
             "rating": 4,
-            "ratingCount": 0
+            "ratingCount": 2
           },
           {
             "rating": 5,
-            "ratingCount": 0
+            "ratingCount": 1
           }
         ],
         "filterBy": "time=7d",
@@ -46,7 +46,7 @@
               }
             ],
             "autoReply": false,
-            "feedbackID": 347484360,
+            "feedbackIDStr": "347484360",
             "rating": 5,
             "replyText": "",
             "replyTime": "",
@@ -63,7 +63,7 @@
               }
             ],
             "autoReply": false,
-            "feedbackID": 345620941,
+            "feedbackIDStr": "345620941",
             "rating": 4,
             "replyText": "",
             "replyTime": "",
@@ -75,7 +75,7 @@
           {
             "attachments": [],
             "autoReply": false,
-            "feedbackID": 345588352,
+            "feedbackIDStr": "345588352",
             "rating": 4,
             "replyText": "",
             "replyTime": "",
@@ -92,7 +92,7 @@
               }
             ],
             "autoReply": false,
-            "feedbackID": 345579678,
+            "feedbackIDStr": "345579678",
             "rating": 4,
             "replyText": "",
             "replyTime": "",
@@ -121,7 +121,7 @@
               }
             ],
             "autoReply": false,
-            "feedbackID": 345004988,
+            "feedbackIDStr": "345004988",
             "rating": 5,
             "replyText": "",
             "replyTime": "",
@@ -140,19 +140,19 @@
   },
   {
     "data": {
-      "productrevFeedbackDataPerProduct": {
+      "productrevFeedbackDataPerProductV2": {
         "aggregatedRating": [
           {
             "rating": 1,
-            "ratingCount": 0
+            "ratingCount": 5
           },
           {
             "rating": 2,
-            "ratingCount": 0
+            "ratingCount": 3
           },
           {
             "rating": 3,
-            "ratingCount": 0
+            "ratingCount": 2
           },
           {
             "rating": 4,
