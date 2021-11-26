@@ -140,121 +140,14 @@
         android:background="@color/divider_color"
         app:layout_constraintTop_toBottomOf="@id/transaction_date_header" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/commission_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/spacing_lvl4"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/affiliate_rincian_komisi"
-        android:textColor="@color/Unify_NN950"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/details_rv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider"
-        app:typographyType="heading_4" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/transaction_total_price_header"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:text="@string/affiliate_total_harga_s_barang"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/transaction_total_price"
-        app:layout_constraintTop_toBottomOf="@+id/commission_details"
-        app:typographyType="body_2" />
+        android:layout_height="wrap_content"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/transaction_total_price"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:gravity="end"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintLeft_toRightOf="@id/transaction_total_price_header"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/transaction_total_price_header"
-        app:typographyType="body_2"
-        tools:text="Rp5.000.000" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/transaction_komisi_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:text="@string/affiliate_komisi"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/transaction_komisi_icon"
-        app:layout_constraintTop_toBottomOf="@+id/transaction_total_price_header"
-        app:typographyType="body_2" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/transaction_komisi_icon"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_gravity="center"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        app:icon_name="INFORMATION"
-        app:icon_color_light_enable="@color/Unify_N700_68"
-        app:icon_color_night_enable="@color/Unify_N700_68"
-        app:layout_constraintTop_toTopOf="@id/transaction_komisi_header"
-        app:layout_constraintLeft_toRightOf="@id/transaction_komisi_header"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/transaction_komisi"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:gravity="end"
-        android:textColor="@color/Unify_NN600"
-        app:layout_constraintLeft_toRightOf="@id/transaction_komisi_icon"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/transaction_komisi_header"
-        app:typographyType="body_2"
-        tools:text="5%" />
-
-    <View
-        android:id="@+id/divider_2"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/unify_space_2"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:background="@color/divider_color"
-        app:layout_constraintTop_toBottomOf="@id/transaction_komisi_header" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/transaction_total_received_header"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:text="@string/affiliate_total_diterima"
-        android:textColor="@color/Unify_NN950"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/transaction_total_received"
-        app:layout_constraintTop_toBottomOf="@+id/divider_2"
-        app:typographyType="heading_5" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/transaction_total_received"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:gravity="end"
-        android:textColor="@color/Unify_NN950"
-        app:layout_constraintLeft_toRightOf="@id/transaction_total_received_header"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/transaction_total_received_header"
-        app:typographyType="heading_5"
-        tools:text="Rp50.000" />
 </androidx.constraintlayout.widget.ConstraintLayout>

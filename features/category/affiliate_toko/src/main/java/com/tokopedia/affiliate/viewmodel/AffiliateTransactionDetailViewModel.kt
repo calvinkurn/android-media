@@ -2,26 +2,44 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate.usecase.AffiliateCommissionDetailsUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import java.util.ArrayList
 import javax.inject.Inject
 
 class AffiliateTransactionDetailViewModel  @Inject constructor(
     private val affiliateCommissionDetailUserCase: AffiliateCommissionDetailsUseCase
 ) : BaseViewModel() {
     private var commssionData = MutableLiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail>()
+    private var detailList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var errorMessage = MutableLiveData<Throwable>()
 
     fun affiliateCommission(transactionID:String) {
         launchCatchError(block = {
-           commssionData.value = affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail
+           affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let {
+               detailList.value = getDetailListOrganize(it?.data?.detail)
+               commssionData.value = it
+           }
         }, onError = {
             it.printStackTrace()
             errorMessage.value = it
         })
     }
+
+    private fun getDetailListOrganize(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?): ArrayList<Visitable<AffiliateAdapterTypeFactory>> {
+            var tempList = ArrayList<Visitable<AffiliateAdapterTypeFactory>>()
+            detail?.forEach {
+                tempList.add(AffiliateCommissionItemModel(it))
+            }
+        return tempList
+    }
+
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getCommissionData() : LiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail> = commssionData
+    fun getDetailList(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = detailList
 }
