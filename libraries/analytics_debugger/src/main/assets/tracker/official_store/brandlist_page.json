@@ -3,12 +3,16 @@
   "mode": "exact",
   "query": [
     {
-      "clientId": ".*",
-      "contactInfo": ".*",
-      "screenName": ".*",
       "event": "openScreen",
-      "adsId": ".*",
-      "androidId": ".*"
+      "screenName": ".*",
+      "isLoggedInStatus": "true|false",
+      "userId": ".*",
+      "clientId": ".*",
+      "sessionIris": ".*",
+      "shopId": ".*",
+      "appsflyerId": ".*",
+      "networkSpeed": ".*",
+      "theme": ".*"
     },
     {
       "event" : "clickOSAllBrands",
