@@ -75,6 +75,7 @@ class EventShare (private val activity: WeakReference<Activity>) {
                 imgUri = data.thumbnailApp
                 uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.ent_pdp_share_web_link, data.seoUrl)
                 deepLink = context.resources.getString(R.string.ent_pdp_share_app_link, data.seoUrl)
+                desktopUrl = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.ent_pdp_share_web_link, data.seoUrl)
             }
         }
     }
