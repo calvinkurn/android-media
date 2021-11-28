@@ -117,7 +117,7 @@ class AddEditProductCategoryViewHolder(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 WEIGHT_ITEM_VIEW
         )
-        params.marginStart = marginStart
+        params.marginStart = marginStart.toInt()
         itemView.tvCategoryNameParent.layoutParams = params
     }
 
