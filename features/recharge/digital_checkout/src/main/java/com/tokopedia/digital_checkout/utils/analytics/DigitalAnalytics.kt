@@ -152,30 +152,30 @@ class DigitalAnalytics {
         fintechProductList.add(constructFintechProduct(fintechProduct, categoryName, position))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.PRODUCT_CLICK,
-            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
-            TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.TICK_CROSSSELL,
-            TrackAppUtils.EVENT_LABEL, "${fintechProduct.transactionType} - ${fintechProduct.fintechPartnerAmount}",
-            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
-            BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
-                DigitalCheckoutTrackingConst.Label.CLICK,
-                DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
-                    DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} $position - $CROSSELL_CARD_TYPE"),
-                    DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray()))),
-            DigitalCheckoutTrackingConst.Label.USER_ID, userId
+                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.PRODUCT_CLICK,
+                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.TICK_CROSSSELL,
+                TrackAppUtils.EVENT_LABEL, "${fintechProduct.transactionType} - ${fintechProduct.fintechPartnerAmount}",
+                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
+                BaseTrackerConst.Ecommerce.KEY, DataLayer.mapOf(
+                        DigitalCheckoutTrackingConst.Label.CLICK,
+                        DataLayer.mapOf(DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
+                            DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} $position - $CROSSELL_CARD_TYPE"),
+                            DigitalCheckoutTrackingConst.Label.PRODUCTS, DataLayer.listOf(*fintechProductList.toTypedArray()))),
+                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
     }
 
     fun eventUnclickCrossSell(fintechProduct: FintechProduct, userId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
-            TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
-            TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
-            TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.UNTICK_CROSSSELL,
-            TrackAppUtils.EVENT_LABEL, String.format("%s - %s", fintechProduct.transactionType, fintechProduct.fintechPartnerAmount),
-            DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
-            DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
-            DigitalCheckoutTrackingConst.Label.USER_ID, userId
+                TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
+                TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
+                TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.UNTICK_CROSSSELL,
+                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", fintechProduct.transactionType, fintechProduct.fintechPartnerAmount),
+                DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
+                DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
+                DigitalCheckoutTrackingConst.Label.USER_ID, userId
         ))
     }
 

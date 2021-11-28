@@ -30,8 +30,8 @@ object DigitalCheckoutTrackingConst {
         const val CLICK_USE_COUPON = "click gunakan kode promo atau kupon"
 
         const val TICK_AUTODEBIT = "tick auto debit"
-        const val TICK_CROSSSELL = "tick cross sell"
-        const val UNTICK_CROSSSELL = "untick cross sell"
+        const val TICK_CROSSSELL = "click crossell ticker"
+        const val UNTICK_CROSSSELL = "uncheck crossell ticker"
         const val UNTICK_AUTODEBIT = "untick auto debit"
 
         const val IMPRESSION_TEBUS_MURAH_ICON = "impression tebus murah icon"
