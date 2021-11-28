@@ -110,7 +110,8 @@ class AddEditProductCategoryViewHolder(
     private fun setIndentation(level: Int) {
         val resources = itemView.context?.resources ?: return
         val marginStart = level *
-                resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.dp_16)
+                resources.getDimensionPixelSize(com.tokopedia.product.addedit.R.dimen.dp_16) +
+                LEADING_MARGIN_START
         val params = LinearLayout.LayoutParams(
                 Int.ZERO,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -127,5 +128,6 @@ class AddEditProductCategoryViewHolder(
 
     companion object {
         private const val WEIGHT_ITEM_VIEW = 1F
+        private const val LEADING_MARGIN_START = 0.5F
     }
 }
