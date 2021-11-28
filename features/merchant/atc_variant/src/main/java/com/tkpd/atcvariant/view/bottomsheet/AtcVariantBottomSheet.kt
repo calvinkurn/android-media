@@ -33,6 +33,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -57,6 +58,11 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -115,6 +121,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     private var buttonText = ""
     private var alreadyHitQtyTrack = false
     private var shouldSetActivityResult = true
+    private var remoteConfig: RemoteConfig? = null
+    private var remoteConfigInstance: RemoteConfigInstance? = null
+    private val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -846,9 +855,42 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     }
 
     private fun goToWishlist() {
-        // TODO : add rollence
-        // RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        } else {
+            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        }
+    }
+
+    private fun getRemoteConfig(): RemoteConfig? {
+        activity?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
+        return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance?.abTestPlatform
+    }
+
+    private fun isEligibleForWishlistRevamp(): Boolean {
+        return try {
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
+        // TODO : change default to false when merge
+        return try {
+            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     private fun checkLogin(): Boolean {

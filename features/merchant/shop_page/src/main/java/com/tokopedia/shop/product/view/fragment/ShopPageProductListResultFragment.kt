@@ -50,6 +50,9 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -75,6 +78,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -156,6 +160,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var isEmptyState = false
     private var isAlreadyCheckRestrictionInfo = false
     private var remoteConfig: RemoteConfig? = null
+    private var remoteConfigInstance: RemoteConfigInstance? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var partialShopNplFollowersViewLayout: View? = null
@@ -962,9 +967,42 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun goToWishlist() {
-        // TODO : add rollence
-        // RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        } else {
+            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        }
+    }
+
+    private fun getRemoteConfig(): RemoteConfig? {
+        activity?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
+        return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance?.abTestPlatform
+    }
+
+    private fun isEligibleForWishlistRevamp(): Boolean {
+        return try {
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
+        // TODO : change default to false when merge
+        return try {
+            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
@@ -1272,6 +1310,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
+        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         @JvmStatic
         fun createInstance(shopId: String,

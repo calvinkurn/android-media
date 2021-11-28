@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
@@ -117,6 +118,9 @@ import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
 import com.tokopedia.iris.Iris
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.result.presentation.model.LastFilterDataView
 import com.tokopedia.search.result.presentation.view.listener.LastFilterListener
 import com.tokopedia.search.utils.removeQuickFilterElevation
@@ -174,6 +178,7 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val SHOP = "shop"
         private const val DEFAULT_SPAN_COUNT = 2
         private const val ON_BOARDING_DELAY_MS: Long = 200
+        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -209,6 +214,8 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchSortFilter: SortFilter? = null
     private var shimmeringView: LinearLayout? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
+    private var remoteConfig: RemoteConfig? = null
+    private var remoteConfigInstance: RemoteConfigInstance? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
                 FilterEventTracking.Event.CLICK_SEARCH_RESULT,
@@ -2024,8 +2031,41 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun goToWishlistPage() {
-        // TODO : add rollence
-        // RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        } else {
+            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        }
+    }
+
+    private fun getRemoteConfig(): RemoteConfig? {
+        activity?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
+        return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance?.abTestPlatform
+    }
+
+    private fun isEligibleForWishlistRevamp(): Boolean {
+        return try {
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
+        // TODO : change default to false when merge
+        return try {
+            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 }

@@ -64,6 +64,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -167,6 +170,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val PLAY_WIDGET_NEWLY_BROADCAST_SCROLL_DELAY = 40L
         private const val LOAD_WIDGET_ITEM_PER_PAGE = 3
         private const val LIST_WIDGET_LAYOUT_START_INDEX = 0
+        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         fun createInstance(
                 shopId: String,
@@ -288,6 +292,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     var listWidgetLayout = mutableListOf<ShopPageHomeWidgetLayoutUiModel.WidgetLayout>()
     var isNeedScrollToTopAfterGetData = true
     private val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
+
+    private var remoteConfigInstance: RemoteConfigInstance? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (isShopHomeTabSelected())
@@ -1895,9 +1901,42 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun goToWishlist() {
-        // TODO : add rollence
-        // RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        } else {
+            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        }
+    }
+
+    private fun getRemoteConfig(): RemoteConfig? {
+        activity?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
+        return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance?.abTestPlatform
+    }
+
+    private fun isEligibleForWishlistRevamp(): Boolean {
+        return try {
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
+        // TODO : change default to false when merge
+        return try {
+            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {

@@ -42,6 +42,7 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -202,6 +203,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants
 import com.tokopedia.referral.ReferralAction
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RollenceKey
@@ -354,6 +357,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
 
     private var buttonActionType: Int = 0
     private var isTopadsDynamicsSlottingAlreadyCharged = false
+
+    // add to wishlist
+    private lateinit var remoteConfigInstance: RemoteConfigInstance
+    private val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
     private val tradeinDialog: ProductAccessRequestDialogFragment? by lazy {
         setupTradeinDialog()
@@ -3215,9 +3222,30 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToWishlist() {
-        // TODO : add rollence
-        // RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        } else {
+            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        }
+    }
+
+    private fun isEligibleForWishlistRevamp(): Boolean {
+        return try {
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
+        // TODO : change default to false when merge
+        return try {
+            remoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {

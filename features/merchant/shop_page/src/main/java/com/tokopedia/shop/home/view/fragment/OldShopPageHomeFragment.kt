@@ -63,6 +63,9 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -279,6 +282,9 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
     private val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
+
+    private var remoteConfigInstance: RemoteConfigInstance? = null
+    private val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (isShopHomeTabSelected())
@@ -1748,9 +1754,42 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     }
 
     private fun goToWishlist() {
-        // TODO : add rollence
-        // RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        } else {
+            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        }
+    }
+
+    private fun getRemoteConfig(): RemoteConfig? {
+        activity?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
+        return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance?.abTestPlatform
+    }
+
+    private fun isEligibleForWishlistRevamp(): Boolean {
+        return try {
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
+        // TODO : change default to false when merge
+        return try {
+            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {

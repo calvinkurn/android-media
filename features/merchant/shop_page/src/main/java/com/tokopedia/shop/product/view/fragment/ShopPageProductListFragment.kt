@@ -47,6 +47,9 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -81,6 +84,7 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -152,6 +156,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val KEY_SHOP_HOME_TYPE = "SHOP_HOME_TYPE"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         @JvmStatic
         fun createInstance(
@@ -235,6 +240,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var initialProductListData : ShopProduct.GetShopProduct? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var remoteConfig: RemoteConfig? = null
+    private var remoteConfigInstance: RemoteConfigInstance? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private val shopProductAdapter: ShopProductAdapter
         get() = adapter as ShopProductAdapter
@@ -302,9 +308,42 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun goToWishlist() {
-        // TODO : add rollence
-        // RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
+        } else {
+            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        }
+    }
+
+    private fun getRemoteConfig(): RemoteConfig? {
+        activity?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
+        return remoteConfig
+    }
+
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        remoteConfigInstance = RemoteConfigInstance(activity?.application)
+        return remoteConfigInstance?.abTestPlatform
+    }
+
+    private fun isEligibleForWishlistRevamp(): Boolean {
+        return try {
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
+        // TODO : change default to false when merge
+        return try {
+            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
 
     private fun loadNewProductData() {
