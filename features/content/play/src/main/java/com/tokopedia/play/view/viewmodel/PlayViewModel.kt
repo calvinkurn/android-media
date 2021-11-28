@@ -806,7 +806,7 @@ class PlayViewModel @Inject constructor(
 
             addCastStateListener()
 
-            setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext.castState))
+            setCastState(castPlayerHelper.mapCastState(castPlayerHelper.castContext?.castState))
 
             trackVisitChannel(channelData.id, channelData.channelReportInfo.shouldTrack, channelData.channelReportInfo.sourceType)
         }
@@ -851,9 +851,11 @@ class PlayViewModel @Inject constructor(
             }
 
             if(channelData.videoMetaInfo.videoPlayer.isGeneral())
-                _observableVideoMeta.value = channelData.videoMetaInfo.copy(
-                    videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(castPlayerHelper.player, channelData.channelDetail.channelInfo.coverUrl)
-                )
+                castPlayerHelper.player?.let {
+                    _observableVideoMeta.value = channelData.videoMetaInfo.copy(
+                        videoPlayer = channelData.videoMetaInfo.videoPlayer.setPlayer(it, channelData.channelDetail.channelInfo.coverUrl)
+                    )
+                }
         }
 
         fun loadPlayer() {
@@ -1021,6 +1023,7 @@ class PlayViewModel @Inject constructor(
 
     private suspend fun getSocketCredential(): SocketCredential = try {
         withContext(dispatchers.io) {
+            require(userSession.isLoggedIn)
             return@withContext getSocketCredentialUseCase.executeOnBackground()
         }
     } catch (e: Throwable) {
@@ -1109,7 +1112,9 @@ class PlayViewModel @Inject constructor(
     private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
         if (partnerInfo.type == PartnerType.Shop && partnerInfo.id.toString() != userSession.shopId) {
             viewModelScope.launchCatchError(block = {
-                val isFollowing = repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                val isFollowing = if (userSession.isLoggedIn) {
+                    repo.getIsFollowingPartner(partnerId = partnerInfo.id)
+                } else false
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(isFollowing)) }
             }, onError = {
 
@@ -1138,7 +1143,9 @@ class PlayViewModel @Inject constructor(
             supervisorScope {
                 val deferredReportSummaries = async { getReportSummaries(channelId) }
                 val deferredIsLiked = async {
-                    repo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
+                    if (userSession.isLoggedIn) {
+                        repo.getIsLiked(contentId = likeInfo.contentId.toLong(), contentType = likeInfo.contentType)
+                    } else false
                 }
 
                 try {

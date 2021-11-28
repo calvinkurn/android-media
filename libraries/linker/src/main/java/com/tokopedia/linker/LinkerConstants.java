@@ -146,5 +146,7 @@ public interface LinkerConstants {
     String BRANCH_LINK_DOMAIN_2="tokopedia-alternate.app.link";
     String BRANCH_LINK_DOMAIN_3="tokopedia.app.link";
     String FIREBASE_KEY_FDL_ENABLE = "app_firebase_dynamic_link_activated";
+    String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
+    String IOS_BUNDLE_ID="com.tokopedia.Tokopedia";
 
 }

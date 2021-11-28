@@ -101,4 +101,33 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {}
     open fun trackScreenshotAccess(eventAction : String = "", eventLabel : String = "", userID: String?, ) {}
     open fun trackEventProductATC(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackMerchantVoucherMultipleImpression(
+        components: ComponentsItem,
+        userID: String?,
+        position: Int
+    ) {
+    }
+
+    open fun trackMerchantVoucherMultipleShopClicks(
+        components: ComponentsItem,
+        userID: String?,
+        position: Int
+    ) {
+    }
+
+    open fun trackMerchantVoucherMultipleVoucherDetailClicks(
+        components: ComponentsItem,
+        userID: String?,
+        position: Int
+    ) {
+    }
+    open fun trackMerchantVoucherMultipleVoucherProductClicks(
+        components: ComponentsItem,
+        userID: String?,
+        position: Int,
+        productIndex:Int
+    ) {
+    }
+    open fun trackMerchantVoucherLihatSemuaClick(dataItem: DataItem?){}
+    open fun setOldTabPageIdentifier(pageIdentifier: String) {}
 }

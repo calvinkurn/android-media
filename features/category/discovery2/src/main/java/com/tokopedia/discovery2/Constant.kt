@@ -15,6 +15,11 @@ object Constant {
         const val RECTANGLE_DESIGN = "v2"
     }
 
+    object MultipleShopMVCCarousel{
+        const val SINGLE_ITEM_DESIGN = "s1"
+        const val CAROUSEL_ITEM_DESIGN = "s2"
+    }
+
     object TOP_NAV_BUTTON {
         const val BACK_BUTTON = "Back Button"
         const val SEARCH_BAR = "Search Bar"

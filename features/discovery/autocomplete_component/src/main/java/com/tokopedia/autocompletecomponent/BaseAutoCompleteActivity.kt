@@ -32,13 +32,18 @@ import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionViewListenerM
 import com.tokopedia.autocompletecomponent.util.UrlParamHelper
 import com.tokopedia.autocompletecomponent.util.getWithDefault
 import com.tokopedia.autocompletecomponent.util.removeKeys
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.AUTO_COMPLETE_CANCEL_SEARCH
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_CANCEL_SEARCH
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.BASE_SRP_APPLINK
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.HINT
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.UrlParamUtils.isTokoNow
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
@@ -68,7 +73,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
 
         init()
 
-        sendTrackingFromAppShortcuts()
+        sendTracking()
     }
 
     private fun init() {
@@ -178,6 +183,16 @@ open class BaseAutoCompleteActivity: BaseActivity(),
                 suggestionFragment,
                 SUGGESTION_FRAGMENT_TAG
             ).commit()
+    }
+
+    private fun sendTracking() {
+        sendTrackingInitiateSearchSession()
+        sendTrackingFromAppShortcuts()
+    }
+
+    private fun sendTrackingInitiateSearchSession() {
+        val dimension90 = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        autoCompleteTracking.eventInitiateSearchSession(dimension90)
     }
 
     private fun sendTrackingFromAppShortcuts() {
@@ -300,4 +315,23 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         if (keyword != null && keyword.isNotEmpty())
             autoCompleteTracking.eventDiscoveryVoiceSearch(keyword)
     }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        val query = searchParameter.getSearchQuery()
+        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
+        val componentId = getCancelSearchComponentId(query)
+        val analytics = TrackApp.getInstance().gtm
+
+        searchComponentTracking(
+            keyword = query,
+            componentId = componentId,
+            dimension90 = pageSource,
+        ).clickOtherAction(analytics)
+    }
+
+    private fun getCancelSearchComponentId(query: String) =
+        if (query.isEmpty()) INITIAL_STATE_CANCEL_SEARCH
+        else AUTO_COMPLETE_CANCEL_SEARCH
 }

@@ -15,5 +15,8 @@ data class ShopScoreLevelParam(
     val calculateScore: Boolean = true,
     @Expose
     @SerializedName("getNextMinValue")
-    val getNextMinValue: Boolean = true
+    val getNextMinValue: Boolean = true,
+    @Expose
+    @SerializedName("includeRawData")
+    val includeRawData: Boolean = true
 )

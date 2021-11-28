@@ -12,6 +12,7 @@ import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
+import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingFail
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingResponse
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialShopSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo
@@ -116,19 +117,31 @@ open class SellerMenuViewModelTestFixture {
             totalFollowers: Long = 35000,
             topAdsBalance: Float = 2000f,
             shopBadgeUrl: String = "https://www.tokopedia/shop_bage.png",
-            shopType: PowerMerchantStatus = PowerMerchantStatus.Active
+            shopType: PowerMerchantStatus = PowerMerchantStatus.Active,
+            successPair: Pair<Boolean, Boolean> = true to true
     ): Pair<PartialSettingResponse, PartialSettingResponse> {
+        val (isShopInfoSuccess, topAdsInfoSuccess) = successPair
         val userShopInfoWrapper = UserShopInfoWrapper(shopType = shopType)
-        val shopInfoResponse = PartialShopSettingSuccessInfo(
-                userShopInfoWrapper,
-                totalFollowers,
-                shopBadgeUrl
-        )
+        val shopInfoResponse =
+            if (isShopInfoSuccess) {
+                PartialShopSettingSuccessInfo(
+                    userShopInfoWrapper,
+                    totalFollowers,
+                    shopBadgeUrl
+                )
+            } else {
+                PartialSettingFail
+            }
 
-        val topAdsInfoResponse = PartialTopAdsSettingSuccessInfo(
-                OthersBalance(),
-                topAdsBalance
-        )
+        val topAdsInfoResponse =
+            if (topAdsInfoSuccess) {
+                PartialTopAdsSettingSuccessInfo(
+                    OthersBalance(),
+                    topAdsBalance
+                )
+            } else {
+                PartialSettingFail
+            }
 
         return Pair(shopInfoResponse, topAdsInfoResponse)
     }

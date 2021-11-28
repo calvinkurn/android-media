@@ -35,13 +35,15 @@
             android:layout_width="66dp"
             android:layout_height="66dp"/>
         
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/order_payment_status"
             android:textColor="@color/Unify_Y400"
             android:textSize="@dimen/sp_10"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/order_payment_image"
             tools:text="Menunggu Pembayaran"

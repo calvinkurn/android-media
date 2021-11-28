@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.centralizedpromo.di.CentralizedPromoViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.settings.view.viewmodel.MenuSettingViewModel
+import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import dagger.Binds
@@ -36,16 +37,11 @@ abstract class SellerHomeViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(com.tokopedia.sellerhome.settings.view.viewmodel.old.OtherMenuViewModel::class)
-    abstract fun otherSettingViewModel(otherMenuViewModel: com.tokopedia.sellerhome.settings.view.viewmodel.old.OtherMenuViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(MenuSettingViewModel::class)
     abstract fun provideMenuSettingViewModel(menuSettingViewModel: MenuSettingViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel::class)
-    abstract fun provideNewOtherMenuViewModel(otherMenuViewModel: com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel): ViewModel
+    @ViewModelKey(OtherMenuViewModel::class)
+    abstract fun provideNewOtherMenuViewModel(otherMenuViewModel: OtherMenuViewModel): ViewModel
 }

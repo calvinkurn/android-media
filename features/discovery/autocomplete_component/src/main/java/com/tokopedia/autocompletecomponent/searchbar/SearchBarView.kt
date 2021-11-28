@@ -86,7 +86,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         when {
             v === autocompleteActionUpButton -> {
                 KeyboardHandler.DropKeyboard(activity, searchTextView)
-                activity?.finish()
+                activity?.onBackPressed()
             }
             v === autocompleteVoiceButton -> {
                 onVoiceClicked()

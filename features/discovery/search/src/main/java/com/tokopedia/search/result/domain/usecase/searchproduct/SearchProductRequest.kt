@@ -209,6 +209,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                         show
                     }
                     wishlist
+                    applink
                 }
             }
         }

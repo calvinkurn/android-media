@@ -16,10 +16,12 @@ import com.tokopedia.navigation_common.model.DebitInstantModel
 import com.tokopedia.navigation_common.model.ProfileModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -56,14 +58,12 @@ class HomeAccountUserViewModelTest {
         mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
     private val saldoBalanceUseCase = mockk<GetSaldoBalanceUseCase>(relaxed = true)
     private val coBrandCCBalanceAndPointUseCase = mockk<GetCoBrandCCBalanceAndPointUseCase>(relaxed = true)
-    private val walletEligibleUseCase = mockk<GetWalletEligibleUseCase>(relaxed = true)
     private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
     private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
-    private val walletEligibleObserver = mockk<Observer<Result<WalletappWalletEligibility>>>(relaxed = true)
     private val balanceAndPointOvserver = mockk<Observer<ResultBalanceAndPoint<WalletappGetAccountBalance>>>(relaxed = true)
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
@@ -97,7 +97,6 @@ class HomeAccountUserViewModelTest {
             tokopointsBalanceAndPointUseCase,
             saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
-            walletEligibleUseCase,
             getLinkStatusUseCase,
             getPhoneUseCase,
             walletPref,
@@ -228,6 +227,55 @@ class HomeAccountUserViewModelTest {
 
         print(viewModel.getRecommendationData.value)
         Assert.assertEquals((viewModel.getRecommendationData.value as Success).data, expectedResult.recommendationItemList)
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data`() {
+        val recomList = listOf(
+                RecommendationItem(1),
+                RecommendationItem(2),
+                RecommendationItem(3),
+                RecommendationItem(4)
+        )
+        val testPage = 1
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+        val topAdsData = TopAdsImageViewModel(imageUrl = "abc123")
+        val mockTopAdsData = arrayListOf(topAdsData)
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } returns mockTopAdsData
+
+        viewModel.getRecommendation(testPage)
+
+        coVerify { topAdsImageViewUseCase.getImageData(any()) }
+    }
+
+    @Test
+    fun `Successfully get recommendation with tdn data throw error`() {
+        val recomList = listOf(
+                RecommendationItem(1),
+                RecommendationItem(2),
+                RecommendationItem(3),
+                RecommendationItem(4)
+        )
+        val testPage = 1
+        val expectedResult = RecommendationWidget(recommendationItemList = recomList)
+        val topAdsData = TopAdsImageViewModel(imageUrl = "abc123")
+
+        println(expectedResult.recommendationItemList)
+        coEvery {
+            homeAccountRecommendationUseCase.getData(any())
+        } returns listOf(expectedResult)
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwableMock
+
+        viewModel.getRecommendation(testPage)
+
+        Assert.assertEquals((viewModel.firstRecommendationData.value as Success).data.tdnBanner, null)
     }
 
     @Test
@@ -584,35 +632,6 @@ class HomeAccountUserViewModelTest {
         assert(result.throwable is IllegalArgumentException)
     }
 
-
-    @Test
-    fun `Success get wallet eligible`() {
-        viewModel.walletEligible.observeForever(walletEligibleObserver)
-        coEvery { walletEligibleUseCase(any()) } returns successGetWalletEligibleResponse
-
-        viewModel.getGopayWalletEligible()
-
-        verify { walletEligibleObserver.onChanged(any<Success<WalletappWalletEligibility>>()) }
-        assert(viewModel.walletEligible.value is Success)
-
-        val result = viewModel.walletEligible.value as Success<WalletappWalletEligibility>
-        assert(result.data == successGetWalletEligibleResponse.data)
-    }
-
-    @Test
-    fun `Failed get wallet eligible`() {
-        viewModel.walletEligible.observeForever(walletEligibleObserver)
-        coEvery { walletEligibleUseCase(any()) } coAnswers { throw throwableResponse }
-
-        viewModel.getGopayWalletEligible()
-
-        verify { walletEligibleObserver.onChanged(any()) }
-        assert(viewModel.walletEligible.value is Fail)
-
-        val result = viewModel.walletEligible.value as Fail
-        assertEquals(throwableResponse, result.throwable)
-    }
-
     companion object {
         private val successGetCentralizedUserAssetConfigResponse: CentralizedUserAssetDataModel = FileUtil.parse(
             "/success_get_centralized_user_asset_config.json",
@@ -633,10 +652,6 @@ class HomeAccountUserViewModelTest {
         private val successGetCoBrandCCBalanceAndPointResponse: CoBrandCCBalanceDataModel = FileUtil.parse(
             "/success_get_cobrandcc_balance_and_point.json",
             CoBrandCCBalanceDataModel::class.java
-        )
-        private val successGetWalletEligibleResponse: WalletEligibleDataModel = FileUtil.parse(
-            "/success_get_wallet_eligible.json",
-            WalletEligibleDataModel::class.java
         )
         private val throwableResponse = Throwable()
     }

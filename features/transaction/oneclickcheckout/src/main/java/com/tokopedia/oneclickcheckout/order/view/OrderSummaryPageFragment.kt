@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -50,7 +51,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.Shipping
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
@@ -1360,13 +1360,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     val codes = validateUsePromoRequest.codes
                     val promoCodes = ArrayList<String>()
                     for (code in codes) {
-                        if (code != null) {
-                            promoCodes.add(code)
-                        }
+                        promoCodes.add(code)
                     }
                     if (validateUsePromoRequest.orders.isNotEmpty()) {
-                        val orderCodes = validateUsePromoRequest.orders[0]?.codes
-                                ?: mutableListOf()
+                        val orderCodes = validateUsePromoRequest.orders[0].codes
                         for (code in orderCodes) {
                             promoCodes.add(code)
                         }

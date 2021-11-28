@@ -384,8 +384,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({
                 it.startsWithPattern(ApplinkConstInternalMarketplace.SHOP_REVIEW) ||
-                        it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW) ||
-                        it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW_OLD)
+                        it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_REVIEW)
             }, DF_MERCHANT_REVIEW, R.string.title_product_review))
 
             add(DFP({

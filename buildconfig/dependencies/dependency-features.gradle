@@ -151,8 +151,6 @@ ext {
             install_referral                : ":features:im:install_referral",
 
             tokopediaNow                    : ":features:tokopedianow",
-
-            reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
             reviewInbox                     : ":features:merchant:review_inbox",
@@ -172,7 +170,6 @@ ext {
             shopScore                       : ":features:merchant:shop_score",
             shopShowcase                    : ":features:merchant:shop_showcase",
             shopPage                        : ":features:merchant:shop_page",
-            reviewShop                      : ":features:merchant:review_shop",
             shopSettings                    : ":features:merchant:shop_settings",
             statistic                       : ":features:merchant:statistic",
             officialStore                  : ":features:merchant:official_store",

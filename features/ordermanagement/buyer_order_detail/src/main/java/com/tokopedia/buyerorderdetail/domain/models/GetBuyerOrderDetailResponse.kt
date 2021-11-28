@@ -50,7 +50,9 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("ticker_info")
                 val tickerInfo: TickerInfo = TickerInfo(),
                 @SerializedName("dropship")
-                val dropship: Dropship = Dropship()
+                val dropship: Dropship = Dropship(),
+                @SerializedName("ads_page_name")
+                val adsPageName: String = ""
         ) {
             data class Button(
                     @SerializedName("display_name")

@@ -31,7 +31,7 @@ class GetOccCartData(
         @SerializedName("profile")
         val profileResponse: ProfileResponse = ProfileResponse(),
         @SerializedName("promo")
-        val promo: PromoSAFResponse? = null,
+        val promo: PromoSAFResponse = PromoSAFResponse(),
         @SerializedName("customer_data")
         val customerData: CustomerData = CustomerData(),
         @SerializedName("payment_additional_data")

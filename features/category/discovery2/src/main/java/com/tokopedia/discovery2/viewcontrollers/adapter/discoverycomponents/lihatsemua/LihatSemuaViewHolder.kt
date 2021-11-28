@@ -20,6 +20,7 @@ import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
@@ -224,7 +225,10 @@ class LihatSemuaViewHolder(itemView: View, private val fragment: Fragment) : Abs
     private fun sendGtmEvent(componentsItem: ComponentsItem) {
         if (componentsItem.name == ComponentNames.ProductCardCarousel.componentName) {
             onLihatSemuaClickListener?.onProductCardHeaderClick(componentsItem)
-        } else {
+        }else if(componentsItem.name == ComponentNames.MerchantVoucherCarousel.componentName){
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackMerchantVoucherLihatSemuaClick(componentsItem.data?.firstOrNull())
+        }
+        else {
             componentsItem.data?.first()?.let {
                 onLihatSemuaClickListener?.onLihatSemuaClick(it)
             }

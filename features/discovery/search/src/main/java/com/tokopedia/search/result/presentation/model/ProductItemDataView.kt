@@ -62,6 +62,7 @@ class ProductItemDataView() : ImpressHolder(), Parcelable, Visitable<ProductList
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
     var dimension90: String = ""
     var topadsTag: Int = 0
+    var applink: String = ""
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0

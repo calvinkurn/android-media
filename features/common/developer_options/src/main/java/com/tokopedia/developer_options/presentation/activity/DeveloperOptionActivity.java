@@ -107,6 +107,10 @@ public class DeveloperOptionActivity extends BaseActivity {
     String PREFERENCE_NAME = "coahmark_choose_address";
     String EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK";
 
+    private final String SHOW_AND_COPY_APPLINK_TOGGLE_NAME = "show_and_copy_applink_toggle_name";
+    private final String SHOW_AND_COPY_APPLINK_TOGGLE_KEY = "show_and_copy_applink_toggle_key";
+    private final boolean SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE = false;
+
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
@@ -153,6 +157,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleFpmAutoLogFile;
     private CheckBox toggleSellerAppReview;
     private CheckBox toggleLeakCanary;
+    private CheckBox toggleShowAndCopyApplink;
 
     private UserSessionInterface userSession;
 
@@ -298,6 +303,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
         toggleSellerAppReview = findViewById(R.id.toggle_seller_app_review);
         toggleLeakCanary = findViewById(R.id.toggle_leak_canary);
+        toggleShowAndCopyApplink = findViewById(R.id.toggle_show_applink_and_copy_to_clipboard);
 
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
@@ -769,6 +775,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, isChecked).apply();
             Toast.makeText(DeveloperOptionActivity.this, "Please Restart the App", Toast.LENGTH_SHORT).show();
         });
+
+        toggleShowAndCopyApplink.setChecked(getShowAndCopyApplinkToggleValue());
+        toggleShowAndCopyApplink.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, MODE_PRIVATE).edit().putBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, isChecked).apply();
+        });
     }
 
     private void showApps(boolean isSystemApps) {
@@ -799,6 +810,10 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private boolean getLeakCanaryToggleValue() {
         return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
+    }
+
+    private boolean getShowAndCopyApplinkToggleValue() {
+        return getSharedPreferences(SHOW_AND_COPY_APPLINK_TOGGLE_NAME, MODE_PRIVATE).getBoolean(SHOW_AND_COPY_APPLINK_TOGGLE_KEY, SHOW_AND_COPY_APPLINK_TOGGLE_DEFAULT_VALUE);
     }
 
     public Object getOrNull(String[] list, int index) {

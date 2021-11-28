@@ -82,6 +82,10 @@ enum class ComponentsList(val id: Int, val componentName: String) {
 
     DiscoTDNBanner(R.layout.discovery_tdn_banner_view,ComponentNames.DiscoTDNBanner.componentName),
     MerchantVoucher(R.layout.discovery_mv_view,ComponentNames.MerchantVoucher.componentName),
+    MerchantVoucherCarousel(R.layout.disco_merchant_voucher_carousel, ComponentNames.MerchantVoucherCarousel.componentName),
+    MerchantVoucherList(R.layout.disco_merchant_voucher_list, ComponentNames.MerchantVoucherList.componentName),
+    MerchantVoucherListItem(R.layout.disco_merchant_voucher_carousel_item, ComponentNames.MerchantVoucherListItem.componentName),
+    MerchantVoucherCarouselItem(R.layout.disco_merchant_voucher_carousel_item, ComponentNames.MerchantVoucherCarouselItem.componentName),
 
     CarouselErrorLoad(R.layout.discovery_carousel_error_load, ComponentNames.CarouselErrorLoad.componentName),
     ProductListErrorLoad(R.layout.discovery_product_list_error_load, ComponentNames.ProductListErrorLoad.componentName),
