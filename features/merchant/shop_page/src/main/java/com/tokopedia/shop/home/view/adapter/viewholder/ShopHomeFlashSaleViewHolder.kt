@@ -9,10 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignFlashSaleProductCarouselAdapter
@@ -22,6 +19,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import java.math.RoundingMode
 import java.util.*
 
 class ShopHomeFlashSaleViewHolder(
@@ -199,24 +197,8 @@ class ShopHomeFlashSaleViewHolder(
         else reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
         // set reminder wording
         val totalNotify = flashSaleItem?.totalNotify?:0
-        val reminderWording = getTotalNotifyWording(totalNotify)
+        val reminderWording = totalNotify.thousandFormatted(1, RoundingMode.DOWN)
         reminderCountView?.text = reminderWording
-    }
-
-    private fun getTotalNotifyWording(reminder: Int): String {
-        return when {
-            reminder == ZERO -> getString(R.string.shop_page_label_remind_me)
-            // reminder < 100 => direct number
-            reminder <= ONE_HUNDRED -> EMPTY_STRING
-            reminder / ONE_MILLION >= ONE -> {
-                // reminder in million => e.g. 2 jt
-                (reminder / ONE_MILLION).toString() + " " + getString(R.string.shop_page_label_million)
-            }
-            else -> {
-                // reminder in thousand => e.g. 20 rb
-                (reminder / ONE_THOUSAND).toString() + " " + getString(R.string.shop_page_label_thousand)
-            }
-        }
     }
 
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
