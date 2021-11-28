@@ -31,10 +31,8 @@ object DigitalCheckoutTrackingConst {
 
         const val TICK_AUTODEBIT = "tick auto debit"
         const val TICK_CROSSSELL = "tick cross sell"
-        const val TICK_PROTECTION = "tick protection"
         const val UNTICK_CROSSSELL = "untick cross sell"
         const val UNTICK_AUTODEBIT = "untick auto debit"
-        const val UNTICK_PROTECTION = "untick protection"
 
         const val IMPRESSION_TEBUS_MURAH_ICON = "impression tebus murah icon"
         const val CLICK_TEBUS_MURAH_ICON = "click tebus murah icon"

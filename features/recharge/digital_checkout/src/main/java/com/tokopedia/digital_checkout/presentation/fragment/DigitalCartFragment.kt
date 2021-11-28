@@ -491,10 +491,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     override fun onFintechProductChecked(fintechProduct: FintechProduct, isChecked: Boolean, position: Int) {
-        if (fintechProduct.transactionType == DigitalCheckoutConst.FintechProduct.PROTECTION) {
-            digitalAnalytics.eventClickProtection(getCategoryName(), getOperatorName(), isChecked, userSession.userId)
+        if (isChecked) {
+            digitalAnalytics.eventClickCrossSell(fintechProduct, getCategoryName(), position, userSession.userId)
         } else {
-            digitalAnalytics.eventClickCrossSell(getCategoryName(), getOperatorName(), isChecked, userSession.userId)
+            digitalAnalytics.eventUnclickCrossSell(fintechProduct, userSession.userId)
         }
         viewModel.onFintechProductChecked(fintechProduct, isChecked, getPriceInput())
     }

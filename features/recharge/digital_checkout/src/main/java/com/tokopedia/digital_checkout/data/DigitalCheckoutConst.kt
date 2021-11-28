@@ -21,7 +21,6 @@ object DigitalCheckoutConst {
     }
 
     object FintechProduct {
-        const val PROTECTION = "purchase-protection"
         const val AUTO_DEBIT = "Aktivasi Langganan"
     }
 }
