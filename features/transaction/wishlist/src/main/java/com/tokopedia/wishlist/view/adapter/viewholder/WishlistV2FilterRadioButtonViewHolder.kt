@@ -10,10 +10,10 @@ class WishlistV2FilterRadioButtonViewHolder(private val binding: BottomsheetWish
         binding.labelOption.text = label
         binding.rbOption.isChecked = selected
         binding.root.setOnClickListener {
-            listener?.onRadioButtonSelected(name = parentFilterName, optionId = optionId)
+            listener?.onRadioButtonSelected(name = parentFilterName, optionId = optionId, label = label)
         }
         binding.rbOption.setOnClickListener {
-            listener?.onRadioButtonSelected(name = parentFilterName, optionId = optionId)
+            listener?.onRadioButtonSelected(name = parentFilterName, optionId = optionId, label = label)
         }
     }
 }

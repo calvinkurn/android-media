@@ -32,13 +32,14 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST_V2
+import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -57,7 +58,7 @@ import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import com.tokopedia.wishlist.databinding.FragmentWishlistV2Binding
 import com.tokopedia.wishlist.di.DaggerWishlistV2Component
 import com.tokopedia.wishlist.di.WishlistV2Module
-import com.tokopedia.wishlist.util.WishlistUtils
+import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -89,6 +90,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var checkpoint = false
     private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
+    private lateinit var trackingQueue: TrackingQueue
+    private var wishlistItemOnAtc = WishlistV2Response.Data.WishlistV2.Item()
+    private var indexOnAtc = 0
 
     private val wishlistViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
@@ -139,11 +143,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
         private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
+
+        private const val FILTER_SORT = "sort"
+        private const val FILTER_OFFERS = "offers"
+        private const val FILTER_STOCK = "stock"
+        private const val FILTER_CATEGORIES = "categories"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkLogin()
+        initTrackingQueue()
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -164,7 +174,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun isAutoRefreshEnabled(): Boolean {
         return try {
-            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_WISHLIST_V2)?:false
+            return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_WISHLIST)?:false
         } catch (e: Exception) {
             false
         }
@@ -183,15 +193,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
-        // TODO : follow up about remote config
-        // if (isVisibleToUser && isAutoRefreshEnabled()) {
+        // TODO : follow up about remote config - make sure old remote config can be used
+        if (isVisibleToUser && isAutoRefreshEnabled()) {
         if (isVisibleToUser) {
             binding?.run {
                 rvWishlist.scrollToPosition(0)
             }
             doRefresh()
         }
-        // }
+        }
     }
 
     private fun observingData() {
@@ -286,9 +296,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             viewLifecycleOwner.lifecycle.addObserver(wishlistNavtoolbar)
             wishlistNavtoolbar.setupSearchbar(searchbarType = NavToolbar.Companion.SearchBarType.TYPE_EDITABLE, hints = arrayListOf(
                     HintData(getString(R.string.hint_cari_wishlist) )),
-                    editorActionCallback = {query ->
+                    editorActionCallback = { query ->
                         searchQuery = query
-                        when {
+                        if (query.isNotEmpty()) {
+                            WishlistV2Analytics.submitSearchFromCariProduk(query)
+                        }
+                        wishlistNavtoolbar.hideKeyboard()
+                        triggerSearch()
+                        /*when {
                             searchQuery.isBlank() -> {
                                 context?.let { WishlistUtils.hideKeyBoard(it, root) }
                                 triggerSearch()
@@ -300,10 +315,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                                 wishlistNavtoolbar.hideKeyboard()
                                 triggerSearch()
                             }
-                        }
+                        }*/
                     }
             )
-            var pageSource: String
+            val pageSource: String
             val icons: IconBuilder
             if(activityWishlistV2 != PARAM_HOME) {
                 wishlistNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
@@ -375,6 +390,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             loadWishlistV2()
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+        }
+    }
+
+    private fun initTrackingQueue() {
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
         }
     }
 
@@ -465,6 +486,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     } else {
                         val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
                         showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
+                        WishlistV2Analytics.clickAtcOnWishlist(wishlistItemOnAtc, userSession.userId, indexOnAtc, it.data.data.cartId)
                     }
                 }
                 is Fail -> {
@@ -547,7 +569,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
 
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
-            override fun onRadioButtonSelected(name: String, optionId: String) {
+            override fun onRadioButtonSelected(name: String, optionId: String, label: String) {
                 filterBottomSheet.dismiss()
                 paramWishlistV2.sortFilters.forEach { itemFilter ->
                     if (itemFilter.name == name) {
@@ -558,6 +580,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         name = filterItem.name, selected = arrayListOf(optionId)))
                 // refreshHandler?.startRefresh()
                 doRefresh()
+                hitAnalyticsFilterOptionSelected(name, label)
             }
 
             override fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean) {
@@ -586,9 +609,43 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 filterBottomSheet.dismiss()
                 // refreshHandler?.startRefresh()
                 doRefresh()
+                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(nameSelected)
             }
         })
         filterBottomSheet.show(childFragmentManager)
+
+        hitAnalyticsWhenClickFilter(filterName = filterItem.name)
+    }
+
+    private fun hitAnalyticsWhenClickFilter(filterName: String) {
+        when (filterName) {
+            FILTER_SORT -> {
+                WishlistV2Analytics.clickUrutkanFilterChips()
+            }
+            FILTER_CATEGORIES -> {
+                WishlistV2Analytics.clickKategoriFilterChips()
+            }
+            FILTER_OFFERS -> {
+                WishlistV2Analytics.clickPenawaranFilterChips()
+            }
+            FILTER_STOCK -> {
+                WishlistV2Analytics.clickStokFilterChips()
+            }
+        }
+    }
+
+    private fun hitAnalyticsFilterOptionSelected(filterName: String, label: String) {
+        when (filterName) {
+            FILTER_SORT -> {
+                WishlistV2Analytics.clickOptionOnUrutkanFilterChips(label)
+            }
+            FILTER_CATEGORIES -> {
+                WishlistV2Analytics.clickOptionOnKategoriFilterChips(label)
+            }
+            FILTER_STOCK -> {
+                WishlistV2Analytics.clickOptionOnStokFilterChips(label)
+            }
+        }
     }
 
     private fun showBottomSheetThreeDotsMenu(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
@@ -612,6 +669,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         wishlistViewModel.deleteWishlistV2(itemWishlist.id, userSession.userId)
                     }
                 }
+                WishlistV2Analytics.clickOptionOnThreeDotsMenu(additionalItem.action)
             }
         })
         bottomSheetThreeDotsMenu.show(childFragmentManager)
@@ -685,27 +743,45 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         view?.let { v ->
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC) {
                 RouteManager.route(context, ApplinkConst.CART)
+                WishlistV2Analytics.clickLihatButtonOnAtcSuccessToaster()
             }.show()
         }
     }
 
     override fun onCariBarangClicked() {
         RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH)
+        WishlistV2Analytics.clickCariBarangOnEmptyStateNoItems()
     }
 
     override fun onNotFoundButtonClicked(keyword: String) {
         RouteManager.route(context, "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword")
+        WishlistV2Analytics.clickCariDiTokopediaOnEmptyStateNoSearchResult()
     }
 
-    override fun onProductItemClicked(productId: String) {
+    override fun onProductItemClicked(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
+        WishlistV2Analytics.clickProductCard(wishlistItem, userSession.userId, position)
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, wishlistItem.id)
+            startActivity(intent)
+        }
+    }
+
+    override fun onProductRecommItemClicked(productId: String) {
         activity?.let {
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
             startActivity(intent)
         }
     }
 
+    override fun onViewProductCard(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
+        userSession.userId?.let { userId ->
+            WishlistV2Analytics.viewProductCard(trackingQueue, wishlistItem, userId, position.toString())
+        }
+    }
+
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
+        WishlistV2Analytics.clickThreeDotsOnProductCard()
     }
 
     override fun onCheckBulkDeleteOption(productId: String, isChecked: Boolean, position: Int) {
@@ -744,7 +820,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    override fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item) {
+    override fun onAtc(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: Int) {
         val atcParam = AddToCartRequestParams(
                 productId = wishlistItem.id.toLong(),
                 productName = wishlistItem.name,
@@ -754,14 +830,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 // category = wishlistItem.category.,
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST)
         wishlistViewModel.doAtc(atcParam)
+        wishlistItemOnAtc = wishlistItem
+        indexOnAtc = position
     }
 
     override fun onCheckSimilarProduct(url: String) {
         RouteManager.route(context, url)
+        WishlistV2Analytics.clickLihatBarangSerupaOnProductCard()
     }
 
     override fun onResetFilter() {
         doResetFilter()
+        WishlistV2Analytics.clickResetFilterOnEmptyStateNoFilterResult()
     }
 
     private fun doResetFilter() {
@@ -771,6 +851,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 paramWishlistV2 = WishlistV2Params()
                 wishlistNavtoolbar.clearSearchbarText()
                 doRefresh()
+                WishlistV2Analytics.clickXChipsToClearFilter()
             }
         }
     }
@@ -804,6 +885,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 clWishlistHeader.visible()
             }
         }
+        WishlistV2Analytics.clickAturOnWishlist()
     }
 
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
@@ -813,9 +895,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
             wishlistViewModel.bulkDeleteWishlistV2(listBulkDelete, userSession.userId)
+            WishlistV2Analytics.clickHapusOnPopUpMultipleWishlistProduct()
         }
         dialog?.setSecondaryCTAText(getString(R.string.wishlist_cancel_manage_label))
-        dialog?.setSecondaryCTAClickListener { dialog.dismiss() }
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+            WishlistV2Analytics.clickBatalOnPopUpMultipleWishlistProduct()
+        }
         dialog?.show()
     }
 

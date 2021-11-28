@@ -69,7 +69,7 @@ class WishlistV2FilterBottomSheet : BottomSheetUnify() {
     }
 
     interface BottomSheetListener {
-        fun onRadioButtonSelected(name: String, optionId: String)
+        fun onRadioButtonSelected(name: String, optionId: String, label: String)
         fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean)
         fun onSaveCheckboxSelection()
     }

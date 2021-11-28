@@ -27,7 +27,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         }
 
         if (item.dataObject.tambahKeranjangButton) {
-            binding.wishlistItem.setTambahKeranjangButtonClickListener { actionListener?.onAtc(item.wishlistItem) }
+            binding.wishlistItem.setTambahKeranjangButtonClickListener { actionListener?.onAtc(item.wishlistItem, position) }
         } else {
             binding.wishlistItem.setLihatBarangSerupaButtonClickListener {
                 actionListener?.onCheckSimilarProduct(
@@ -37,14 +37,14 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         }
 
         binding.wishlistItem.setSecondaryButtonClickListener {
-            actionListener?.onThreeDotsMenuClicked(
-                item.wishlistItem
-            )
+            actionListener?.onThreeDotsMenuClicked(item.wishlistItem)
         }
 
         binding.wishlistItem.setOnClickListener {
-            actionListener?.onProductItemClicked(item.wishlistItem.id)
+            actionListener?.onProductItemClicked(item.wishlistItem, position)
         }
+
+        actionListener?.onViewProductCard(item.wishlistItem, position)
     }
 
     private fun checkboxListener(item: WishlistV2TypeLayoutData, position: Int): CompoundButton.OnCheckedChangeListener {
