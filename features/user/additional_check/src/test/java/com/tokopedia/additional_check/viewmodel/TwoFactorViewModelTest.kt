@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.additional_check.data.GetObjectPojo
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
-import com.tokopedia.additional_check.domain.usecase.AdditionalCheckUseCase
+import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
@@ -25,7 +25,7 @@ class TwoFactorViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    val useCase = mockk<AdditionalCheckUseCase>(relaxed = true)
+    val useCase = mockk<ShowInterruptUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val pref = mockk<AdditionalCheckPreference>(relaxed = true)
     val mockThrowable = mockk<Throwable>(relaxed = true)

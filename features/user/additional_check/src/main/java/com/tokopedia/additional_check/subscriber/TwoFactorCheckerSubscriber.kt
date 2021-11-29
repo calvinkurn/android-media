@@ -64,7 +64,8 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                     .build()
                     .inject(this)
 
-            doChecking(activity)
+            gotoLinkAccountReminder(activity)
+//            doChecking(activity)
         }
     }
 
