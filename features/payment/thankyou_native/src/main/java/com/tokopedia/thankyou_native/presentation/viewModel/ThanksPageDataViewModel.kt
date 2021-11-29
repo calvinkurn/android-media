@@ -3,7 +3,6 @@ package com.tokopedia.thankyou_native.presentation.viewModel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.localizationchooseaddress.domain.response.DefaultChosenAddressData
 import com.tokopedia.localizationchooseaddress.domain.response.GetDefaultChosenAddressResponse
 import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
 import com.tokopedia.thankyou_native.data.mapper.PaymentDeductionKey
@@ -60,10 +59,11 @@ class ThanksPageDataViewModel @Inject constructor(
             if (it.success) {
                 it.engineData?.let { featureEngineData ->
                     gyroResponseLiveData.value = featureEngineData
+
                     val topAdsRequestParams = getTopAdsRequestParams(it.engineData)
-                    if (topAdsRequestParams == null) {
-                        postGyroRecommendation(it.engineData)
-                    } else {
+                    postGyroRecommendation(it.engineData)
+
+                    if (topAdsRequestParams != null) {
                         loadTopAdsViewModelData(topAdsRequestParams, thanksPageData)
                     }
                 }

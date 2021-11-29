@@ -34,7 +34,7 @@ class GyroEngineRequestUseCase @Inject constructor(
     }
 
     private fun getRequestParams(thanksPageData: ThanksPageData): Map<String, Any> {
-        var mainGatewayCode : String = ""
+        var mainGatewayCode = ""
         thanksPageData.paymentDetails?.forEach {
             if(it.gatewayName.equals(thanksPageData.gatewayName, true)){
                 mainGatewayCode = it.gatewayCode

@@ -24,8 +24,6 @@ object FeatureRecommendationMapper {
                             featureEngineItem.detail,
                             TopAdsRequestParams::class.java
                         )
-                        requestParam.title = engineData.title
-                        requestParam.description = engineData.description
                         return requestParam
                     }
 
@@ -42,11 +40,15 @@ object FeatureRecommendationMapper {
         if (engineData.featureEngineItem.isNullOrEmpty())
             return null
 
-        return GyroRecommendation(
-            engineData.title,
-            engineData.description,
-            getGyroRecommendationItemList(engineData.featureEngineItem)
-        )
+        getGyroRecommendationItemList(engineData.featureEngineItem).also {
+            val firstGyroItem = (it.getOrNull(0) as GyroRecommendationListItem)
+            return GyroRecommendation(
+                firstGyroItem.sectionTitle ?: "",
+                firstGyroItem.sectionDescription ?: "",
+                it
+            )
+        }
+
     }
 
     private fun getGyroRecommendationItemList(featureEngineItems: ArrayList<FeatureEngineItem>): ArrayList<Visitable<*>> {
@@ -54,19 +56,18 @@ object FeatureRecommendationMapper {
             featureEngineItems.forEach { featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    when (jsonObject[KEY_TYPE].toString().toLowerCase()) {
+                    when (jsonObject[KEY_TYPE].toString().lowercase()) {
                         TYPE_LIST -> {
                             add(getFeatureRecommendationListItem(featureEngineItem))
                         }
                     }
-                } catch (e: Exception) {
-                }
+                } catch (e: Exception) { }
             }
         }
     }
 
     private fun getFeatureRecommendationListItem(featureEngineItem: FeatureEngineItem): Visitable<*> {
-        val featureListItem = gson.fromJson<GyroRecommendationListItem>(
+        val featureListItem = gson.fromJson(
             featureEngineItem.detail,
             GyroRecommendationListItem::class.java
         )
@@ -74,9 +75,9 @@ object FeatureRecommendationMapper {
         return featureListItem
     }
 
-    const val KEY_TYPE = "type"
-    const val TYPE_LIST = "list"
+    private const val KEY_TYPE = "type"
+    private const val TYPE_LIST = "list"
+    private const val TYPE_TDN_USER = "tdn_user"
     const val TYPE_TDN_PRODUCT = "tdn_product"
-    const val TYPE_TDN_USER = "tdn_user"
 
 }
