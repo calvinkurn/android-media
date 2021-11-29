@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
@@ -72,7 +73,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
-    private lateinit var otpData: OtpData
+    protected lateinit var otpData: OtpData
     private lateinit var adapter: VerificationMethodAdapter
 
     protected var isMoreThanOneMethod: Boolean = true
@@ -155,7 +156,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun setBackground() {
         context?.let {
-            viewBound.parentContainerView?.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
+            viewBound.parentContainerView?.setBackgroundColor(ContextCompat.getColor(it, RUnify.color.Unify_N0))
         }
     }
 

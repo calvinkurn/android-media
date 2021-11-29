@@ -28,4 +28,5 @@
     <string name="recom_empty_filter_button" tools:ignore="ExtraTranslation">Reset Filter</string>
 
     <string name="tag_home_nav_toolbar_recom_infinite">recom_infinite_navigation_toolbar</string>
+    <string name="tag_home_nav_toolbar_recom_fragment">recom_fragmentr</string>
 </resources>

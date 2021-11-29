@@ -15,7 +15,11 @@ import com.tokopedia.deals.location_picker.model.response.LocationData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.verify
 import io.mockk.mockk
+import io.mockk.just
+import io.mockk.runs
 import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -303,5 +307,22 @@ class DealsLocationViewModelTest {
         val result = viewModel.dealsLoadMoreDataLandmarkLocationResponse.value
         assert(result is Success)
         assertEquals(mockEventLocationSearch.eventLocationSearch, (result as Success).data)
+    }
+
+    @Test
+    fun onClearedViewModel(){
+        every { searchLocationUseCase.cancelJobs() } just runs
+        every { popularCitiesUseCase.cancelJobs() } just runs
+        every { popularLocationUseCase.cancelJobs() } just runs
+        every { landmarkLocationUseCase.cancelJobs() } just runs
+
+        val method = viewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        verify { searchLocationUseCase.cancelJobs() }
+        verify { popularCitiesUseCase.cancelJobs() }
+        verify { popularLocationUseCase.cancelJobs() }
+        verify { landmarkLocationUseCase.cancelJobs() }
     }
 }
