@@ -8,6 +8,7 @@ import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetProductCardBindi
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetProductCardShimmerBinding
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetViewAllCardBinding
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetViewAllCardShimmerBinding
+import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardShimmerData
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardData
@@ -20,6 +21,7 @@ import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetVi
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardViewHolder
 import javax.inject.Inject
 
+@CMHomeWidgetScope
 class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
     private val cmHomeWidgetProductCardListener: CMHomeWidgetProductCardListener,
     private val cmHomeWidgetViewAllCardListener: CMHomeWidgetViewAllCardListener

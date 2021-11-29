@@ -36,7 +36,8 @@ class DummyTestCMHomeWidgetViewModel @Inject constructor(
     fun getCMHomeWidgetData() {
         getCMHomeWidgetDataUseCase.getCMHomeWidgetData(
             ::onGetCMHomeWidgetSuccessData,
-            ::onGetCMHomeWidgetFailData
+            ::onGetCMHomeWidgetFailData,
+            true
         )
     }
 

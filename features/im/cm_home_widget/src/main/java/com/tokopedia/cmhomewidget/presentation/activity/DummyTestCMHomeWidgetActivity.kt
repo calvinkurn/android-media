@@ -10,6 +10,7 @@ import com.tokopedia.cmhomewidget.databinding.ActivityDummyTestCmHomeWidgetBindi
 import com.tokopedia.cmhomewidget.di.component.DaggerDummyTestCMHomeWidgetComponent
 import com.tokopedia.cmhomewidget.di.component.DummyTestCMHomeWidgetComponent
 import com.tokopedia.cmhomewidget.di.module.DummyTestCMHomeWidgetModule
+import com.tokopedia.cmhomewidget.di.scope.DummyTestCMHomeWidgetActivityScope
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.cmhomewidget.viewmodel.DummyTestCMHomeWidgetViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,6 +22,7 @@ import javax.inject.Inject
 // DeepLink-> tokopedia://dummy-cm-home-widget
 
 // todo delete cm home widget dummy things
+@DummyTestCMHomeWidgetActivityScope
 class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
     HasComponent<DummyTestCMHomeWidgetComponent>,
     CMHomeWidgetCloseClickListener {

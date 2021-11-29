@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardShimmerViewHolder
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardViewHolder
 import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardShimmerViewHolder
@@ -13,7 +14,7 @@ import com.tokopedia.unifycomponents.toPx
 
 import javax.inject.Inject
 
-
+@CMHomeWidgetScope
 class CMHomeWidgetItemDecorator @Inject constructor() :
     RecyclerView.ItemDecoration() {
 

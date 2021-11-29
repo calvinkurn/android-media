@@ -1674,7 +1674,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getCMHomeWidgetData() {
+    fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
         if (getCMHomeWidgetDataJob?.isActive == true) return
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             getCMHomeWidgetDataJob = launchCatchError(coroutineContext, {
@@ -1686,7 +1686,9 @@ open class HomeRevampViewModel @Inject constructor(
                     }, {
                         it.printStackTrace()
                         deleteWidget(cmHomeWidgetDataModel, index)
-                    })
+                    },
+                    isForceRefresh
+                )
             }) {
                 it.printStackTrace()
                 deleteWidget(cmHomeWidgetDataModel, index)
@@ -1704,15 +1706,13 @@ open class HomeRevampViewModel @Inject constructor(
                             deleteWidget(cmHomeWidgetDataModel, index)
                         }, {
                             it.printStackTrace()
-                            val newCMHomeWidgetDataModel = cmHomeWidgetDataModel.copy()
-                            updateWidget(newCMHomeWidgetDataModel, index)
+                            updateWidget(cmHomeWidgetDataModel.copy(), index)
                         }, it.parentId, it.campaignId
                     )
                 }
             }) {
                 it.printStackTrace()
-                val newCMHomeWidgetDataModel = cmHomeWidgetDataModel.copy()
-                updateWidget(newCMHomeWidgetDataModel, index)
+                updateWidget(cmHomeWidgetDataModel.copy(), index)
             }
         }
     }

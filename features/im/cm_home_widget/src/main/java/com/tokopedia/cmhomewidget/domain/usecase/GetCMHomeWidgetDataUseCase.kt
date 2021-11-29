@@ -17,10 +17,11 @@ class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlR
 
     fun getCMHomeWidgetData(
         onSuccess: (CMHomeWidgetDataResponse) -> Unit,
-        onError: (Throwable) -> Unit
+        onError: (Throwable) -> Unit,
+        isForceRefresh: Boolean
     ) {
         try {
-            if (isRefreshNeeded()) {
+            if (isForceRefresh || isRefreshNeeded()) {
                 this.setTypeClass(GetCMHomeWidgetDataGqlResponse::class.java)
                 this.setGraphqlQuery(GetCMHomeWidgetGQLQuery())
                 this.execute(

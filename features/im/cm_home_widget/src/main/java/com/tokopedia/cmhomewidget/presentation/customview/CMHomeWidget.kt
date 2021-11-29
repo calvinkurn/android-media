@@ -9,9 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cmhomewidget.R
+import com.tokopedia.cmhomewidget.analytics.CMHomeWidgetAnalytics
 import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetBinding
 import com.tokopedia.cmhomewidget.di.component.DaggerCMHomeWidgetComponent
 import com.tokopedia.cmhomewidget.di.module.CMHomeWidgetModule
+import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
 import com.tokopedia.cmhomewidget.domain.data.*
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetCloseClickListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
@@ -20,10 +22,9 @@ import com.tokopedia.cmhomewidget.presentation.adapter.CMHomeWidgetAdapter
 import com.tokopedia.cmhomewidget.presentation.adapter.decorator.CMHomeWidgetItemDecorator
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
 import com.tokopedia.unifycomponents.BaseCustomView
-import timber.log.Timber
-import java.sql.Time
 import javax.inject.Inject
 
+@CMHomeWidgetScope
 class CMHomeWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -40,7 +41,10 @@ class CMHomeWidget @JvmOverloads constructor(
     @Inject
     lateinit var itemDecorator: dagger.Lazy<CMHomeWidgetItemDecorator>
 
-    private lateinit var cmHomeWidgetData: CMHomeWidgetData
+    @Inject
+    lateinit var cmHomeWidgetAnalytics: dagger.Lazy<CMHomeWidgetAnalytics>
+
+    private var cmHomeWidgetData: CMHomeWidgetData? = null
 
     private var productCardHeight = 0
 
@@ -96,8 +100,11 @@ class CMHomeWidget @JvmOverloads constructor(
         listOf(CMHomeWidgetProductCardShimmerData(), CMHomeWidgetViewAllCardShimmerData())
 
     fun loadCMHomeWidgetData(cmHomeWidgetData: CMHomeWidgetData) {
-        this.cmHomeWidgetData = cmHomeWidgetData
-        setUpUi()
+        if (this.cmHomeWidgetData == null || this.cmHomeWidgetData !== cmHomeWidgetData) {
+            this.cmHomeWidgetData = cmHomeWidgetData
+            setUpUi()
+            sendCMWidgetReceivedEvent()
+        }
     }
 
     private fun setUpUi() {
@@ -106,16 +113,16 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     private fun setHeading() {
-        binding.tvCmHomeWidgetHeading.text = cmHomeWidgetData.widgetTitle
+        binding.tvCmHomeWidgetHeading.text = cmHomeWidgetData?.widgetTitle
         binding.tvCmHomeWidgetHeadingShimmer.visibility = View.GONE
     }
 
     private fun setItemsInRecyclerView() {
         val itemsList = ArrayList<CMHomeWidgetVisitable>()
-        cmHomeWidgetData.cmHomeWidgetProductCardData?.let {
+        cmHomeWidgetData?.cmHomeWidgetProductCardData?.let {
             itemsList.addAll(it)
         }
-        cmHomeWidgetData.cmHomeWidgetViewAllCardData?.let {
+        cmHomeWidgetData?.cmHomeWidgetViewAllCardData?.let {
             itemsList.add(it)
         }
         if (itemsList.isNotEmpty()) adapter.get().loadData(itemsList)
@@ -123,10 +130,10 @@ class CMHomeWidget @JvmOverloads constructor(
 
     fun setOnCMHomeWidgetCloseClickListener(cmHomeWidgetCloseClickListener: CMHomeWidgetCloseClickListener) {
         binding.ivCmHomeWidgetClose.setOnClickListener {
-            if (this::cmHomeWidgetData.isInitialized) {
+            cmHomeWidgetData?.let {
                 cmHomeWidgetCloseClickListener.onCMHomeWidgetDismissClick(
-                    cmHomeWidgetData.parentId,
-                    cmHomeWidgetData.campaignId
+                    it.parentId,
+                    it.campaignId
                 )
             }
         }
@@ -134,6 +141,12 @@ class CMHomeWidget @JvmOverloads constructor(
 
     fun removeCMHomeWidgetDismissListener() {
         binding.ivCmHomeWidgetClose.setOnClickListener(null)
+    }
+
+    private fun sendCMWidgetReceivedEvent() {
+        cmHomeWidgetData?.let {
+            cmHomeWidgetAnalytics.get().sendCMWidgetReceivedEvent(it.parentId, it.campaignId, "")
+        }
     }
 
     override fun onProductCardClick(dataItem: CMHomeWidgetProductCardData) {
@@ -157,7 +170,14 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     private fun startRequiredActivity(appLink: String?) {
+        sendCMWidgetClickEvent()
         val intent = RouteManager.getIntent(context, appLink)
         context.startActivity(intent)
+    }
+
+    private fun sendCMWidgetClickEvent() {
+        cmHomeWidgetData?.let {
+            cmHomeWidgetAnalytics.get().sendCMWidgetClickEvent(it.parentId, it.campaignId, "")
+        }
     }
 }

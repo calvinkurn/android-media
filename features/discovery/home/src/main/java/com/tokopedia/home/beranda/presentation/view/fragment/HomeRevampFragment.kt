@@ -1236,8 +1236,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getHomeViewModel().isFirstLoad = false
         }
         manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
-        // refresh home-to-do-widget data
-        getHomeViewModel().getCMHomeWidgetData()
+        // refresh home-to-do-widget data if needed
+        getHomeViewModel().getCMHomeWidgetData(false)
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
