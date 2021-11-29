@@ -27,54 +27,37 @@ object PlayWidgetQueryParamBuilder {
     }
 
     private fun generateField(widgetType: PlayWidgetUseCase.WidgetType): String {
-        return when(widgetType) {
-            is PlayWidgetUseCase.WidgetType.PDPWidget -> {
-                """
-                    ${'$'}$PARAM_WIDGET_TYPE: String!, 
-                    ${'$'}$PARAM_AUTHOR_ID: String, 
-                    ${'$'}$PARAM_AUTHOR_TYPE: String,
-                    ${'$'}$PARAM_IS_WIFI: Boolean,
-                    ${'$'}$PARAM_PRODUCT_ID: String,
-                    ${'$'}$PARAM_CATEGORY_ID: String
-                """.trimIndent()
-            }
-            else -> {
-                """
-                    ${'$'}$PARAM_WIDGET_TYPE: String!, 
-                    ${'$'}$PARAM_AUTHOR_ID: String, 
-                    ${'$'}$PARAM_AUTHOR_TYPE: String,
-                    ${'$'}$PARAM_IS_WIFI: Boolean
-                """.trimIndent()
+        return buildString {
+            appendLine("${'$'}$PARAM_WIDGET_TYPE: String!,")
+            appendLine("${'$'}$PARAM_AUTHOR_ID: String,")
+            appendLine("${'$'}$PARAM_AUTHOR_TYPE: String,")
+            append("${'$'}$PARAM_IS_WIFI: Boolean")
+
+            if(widgetType is PlayWidgetUseCase.WidgetType.PDPWidget) {
+                appendLine(",")
+                appendLine("${'$'}$PARAM_PRODUCT_ID: String,")
+                appendLine("${'$'}$PARAM_CATEGORY_ID: String")
             }
         }
     }
 
     private fun generateRequest(widgetType: PlayWidgetUseCase.WidgetType): String {
-        return when(widgetType) {
-            is PlayWidgetUseCase.WidgetType.PDPWidget -> {
-                """
-                    playGetWidgetV2(
-                        req: {
-                          ${PARAM_WIDGET_TYPE}:${'$'}${PARAM_WIDGET_TYPE},
-                          ${PARAM_AUTHOR_ID}: ${'$'}${PARAM_AUTHOR_ID},
-                          ${PARAM_AUTHOR_TYPE}: ${'$'}${PARAM_AUTHOR_TYPE},
-                          ${PARAM_IS_WIFI}: ${'$'}${PARAM_IS_WIFI},
-                          ${PARAM_PRODUCT_ID}: ${'$'}${PARAM_PRODUCT_ID},
-                          ${PARAM_CATEGORY_ID}: ${'$'}${PARAM_CATEGORY_ID}
-                        })
-                """.trimIndent()
+        return buildString {
+            appendLine("playGetWidgetV2(")
+            appendLine("req: {")
+
+            appendLine("${PARAM_WIDGET_TYPE}:${'$'}${PARAM_WIDGET_TYPE},")
+            appendLine("${PARAM_AUTHOR_ID}: ${'$'}${PARAM_AUTHOR_ID},")
+            appendLine("${PARAM_AUTHOR_TYPE}: ${'$'}${PARAM_AUTHOR_TYPE},")
+            append("${PARAM_IS_WIFI}: ${'$'}${PARAM_IS_WIFI}")
+
+            if(widgetType is PlayWidgetUseCase.WidgetType.PDPWidget) {
+                appendLine(",")
+                appendLine("${PARAM_PRODUCT_ID}: ${'$'}${PARAM_PRODUCT_ID},")
+                appendLine("${PARAM_CATEGORY_ID}: ${'$'}${PARAM_CATEGORY_ID}")
             }
-            else -> {
-                """
-                    playGetWidgetV2(
-                        req: {
-                          ${PARAM_WIDGET_TYPE}:${'$'}${PARAM_WIDGET_TYPE},
-                          ${PARAM_AUTHOR_ID}: ${'$'}${PARAM_AUTHOR_ID},
-                          ${PARAM_AUTHOR_TYPE}: ${'$'}${PARAM_AUTHOR_TYPE},
-                          ${PARAM_IS_WIFI}: ${'$'}${PARAM_IS_WIFI}
-                        })
-                """.trimIndent()
-            }
+
+            appendLine("})")
         }
     }
 
