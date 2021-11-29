@@ -389,10 +389,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
                     trackImpressedProduct()
                     trackImpressedVoucher()
-                } else {
-                    productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
+                    return@observe
                 }
             }
+
+            productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
         }
     }
 
@@ -480,7 +481,6 @@ class PlayBottomSheetFragment @Inject constructor(
                     val data = it.data.getContentIfNotHandled() ?: return@DistinctObserver
 
                     if (data.isSuccess) {
-                        playViewModel.updateBadgeCart()
                         when (data.action) {
                             ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                             ProductAction.AddToCart -> doShowToaster(
