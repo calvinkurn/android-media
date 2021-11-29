@@ -33,7 +33,9 @@ object PlayWidgetQueryParamBuilder {
                     ${'$'}$PARAM_WIDGET_TYPE: String!, 
                     ${'$'}$PARAM_AUTHOR_ID: String, 
                     ${'$'}$PARAM_AUTHOR_TYPE: String,
-                    ${'$'}$PARAM_IS_WIFI: Boolean
+                    ${'$'}$PARAM_IS_WIFI: Boolean,
+                    ${'$'}$PARAM_PRODUCT_ID: String,
+                    ${'$'}$PARAM_CATEGORY_ID: String
                 """.trimIndent()
             }
             else -> {
@@ -41,9 +43,7 @@ object PlayWidgetQueryParamBuilder {
                     ${'$'}$PARAM_WIDGET_TYPE: String!, 
                     ${'$'}$PARAM_AUTHOR_ID: String, 
                     ${'$'}$PARAM_AUTHOR_TYPE: String,
-                    ${'$'}$PARAM_IS_WIFI: Boolean,
-                    ${'$'}$PARAM_PRODUCT_ID: String,
-                    ${'$'}$PARAM_CATEGORY_ID: String
+                    ${'$'}$PARAM_IS_WIFI: Boolean
                 """.trimIndent()
             }
         }
