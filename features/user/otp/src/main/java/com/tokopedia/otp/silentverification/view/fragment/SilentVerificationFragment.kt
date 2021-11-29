@@ -98,11 +98,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         showFullLoading()
         playLottieAnim(LOTTIE_BG_ANIMATION)
         initObserver()
-
-        if(otpData != null && modeListData != null) {
-            analytics.trackClickMethodOtpButton(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
-        }
-
         requestOtp()
     }
 
