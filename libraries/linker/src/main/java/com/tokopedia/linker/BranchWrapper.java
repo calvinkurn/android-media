@@ -462,6 +462,12 @@ public class BranchWrapper implements WrapperInterface {
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
             deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.ENTERTAINMENT_TYPE.equalsIgnoreCase(data.getType())){
+            if (!desktopUrl.isEmpty()) {
+                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+            }
+            deeplinkPath = data.getDeepLink();
         }
 
         if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
