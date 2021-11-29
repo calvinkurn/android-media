@@ -52,6 +52,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     //unit test
     testImplementation rootProject.ext.testDependencies.mockk
