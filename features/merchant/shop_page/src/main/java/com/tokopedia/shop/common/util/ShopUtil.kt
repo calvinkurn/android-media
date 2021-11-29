@@ -21,6 +21,7 @@ import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENGIRIMAN
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_NON_TABLET
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_PER_PAGE_TABLET
+import com.tokopedia.shop.common.constant.ShopPageConstant.VALUE_INT_ONE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.DATA_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.FUNCTION_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.LIVE_DATA_NAME_KEY
@@ -155,6 +156,6 @@ object ShopUtil {
     }
 
     fun getActualPositionFromIndex(indexPosition: Int): Int{
-        return indexPosition + 1
+        return indexPosition + VALUE_INT_ONE
     }
 }
