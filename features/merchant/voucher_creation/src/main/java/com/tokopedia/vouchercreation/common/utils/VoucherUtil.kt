@@ -149,5 +149,5 @@ private fun shareVoucherByType(context: Context,
 }
 
 internal fun getTextSizeFromDimens(context: Context, @DimenRes dimensResId : Int): Float {
-    return context.resources.getDimensionPixelSize(dimensResId).toFloat()
+    return context.resources.getDimension(dimensResId) / context.resources.displayMetrics.density
 }
