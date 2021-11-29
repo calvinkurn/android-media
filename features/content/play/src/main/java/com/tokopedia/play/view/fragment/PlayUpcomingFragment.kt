@@ -22,6 +22,7 @@ import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.uimodel.event.*
 import com.tokopedia.play.view.uimodel.state.PlayPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingInfoUiState
+import com.tokopedia.play.view.uimodel.state.PlayUpcomingPartnerUiState
 import com.tokopedia.play.view.uimodel.state.PlayUpcomingState
 import com.tokopedia.play.view.viewcomponent.ToolbarViewComponent
 import com.tokopedia.play.view.viewcomponent.UpcomingActionButtonViewComponent
@@ -195,15 +196,13 @@ class PlayUpcomingFragment @Inject constructor(
     }
 
     private fun renderToolbarView(
-        partnerState: PlayPartnerUiState,
+        partnerState: PlayUpcomingPartnerUiState,
         isShareable: Boolean,
     ) {
         toolbarView.setFollowStatus(partnerState.followStatus)
         toolbarView.setPartnerName(partnerState.name)
 
         toolbarView.setIsShareable(isShareable)
-
-        toolbarView.showCart(false)
     }
 
     private fun renderUpcomingInfo(prevState: PlayUpcomingInfoUiState?, currState: PlayUpcomingInfoUiState) {
@@ -258,8 +257,6 @@ class PlayUpcomingFragment @Inject constructor(
     override fun onPartnerNameClicked(view: ToolbarViewComponent) {
         playUpcomingViewModel.submitAction(ClickPartnerNameUpcomingAction)
     }
-
-    override fun onCartButtonClicked(view: ToolbarViewComponent) { }
 
     override fun onCopyButtonClicked(view: ToolbarViewComponent) {
         playUpcomingViewModel.submitAction(ClickShareUpcomingAction)
