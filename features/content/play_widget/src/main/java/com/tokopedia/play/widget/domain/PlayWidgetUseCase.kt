@@ -128,8 +128,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
             )
 
             if(widgetType is WidgetType.PDPWidget) {
-                param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIds
-                param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIds
+                param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIdList.joinToString(",")
+                param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIdList.joinToString(",")
             }
 
             return param
@@ -141,8 +141,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         abstract val typeKey: String
         abstract val authorId: String
         abstract val authorType: String
-        abstract val productIds: String
-        abstract val categoryIds: String
 
         data class ShopPage(val shopId: String) : WidgetType() {
             override val typeKey: String
@@ -153,13 +151,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = "shop"
-
-            override val productIds: String
-                get() = ""
-
-            override val categoryIds: String
-                get() = ""
         }
+
         object Home : WidgetType() {
             override val typeKey: String
                 get() = "HOME"
@@ -169,13 +162,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = ""
-
-            override val productIds: String
-                get() = ""
-
-            override val categoryIds: String
-                get() = ""
         }
+
         object Feeds : WidgetType() {
             override val typeKey: String
                 get() = "FEEDS"
@@ -185,13 +173,8 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = ""
-
-            override val productIds: String
-                get() = ""
-
-            override val categoryIds: String
-                get() = ""
         }
+
         data class SellerApp(val shopId: String) : WidgetType() {
             override val typeKey: String
                 get() = "SELLER_APP"
@@ -201,12 +184,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = "shop"
-
-            override val productIds: String
-                get() = ""
-
-            override val categoryIds: String
-                get() = ""
         }
 
         data class DiscoveryPage(val widgetID: String): WidgetType(){
@@ -217,12 +194,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = widgetID
 
             override val authorType: String
-                get() = ""
-
-            override val productIds: String
-                get() = ""
-
-            override val categoryIds: String
                 get() = ""
         }
 
@@ -235,12 +206,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
             override val authorType: String
                 get() = ""
-
-            override val productIds: String
-                get() = productIdList.joinToString(",")
-
-            override val categoryIds: String
-                get() = categoryIdList.joinToString(",")
         }
     }
 }
