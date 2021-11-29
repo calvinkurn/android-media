@@ -49,7 +49,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             try {
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
-                        if (isTokenExpired) {
+                        if (lastToken == DEFAULT_VALUE_DATAVISOR || isTokenExpired) {
                             VisorFingerprintInstance.initToken(applicationContext,
                                 userSession.userId,
                                 listener = object : VisorFingerprintInstance.onVisorInitListener {
@@ -75,7 +75,8 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             val token = resultInit?.first ?: ""
             result = if (token.isNotEmpty()) {
                 try {
-                    val resultServer = sendDataVisorToServer(token, runAttemptCount, "", isTokenExpired)
+                    val resultServer =
+                        sendDataVisorToServer(token, runAttemptCount, "", isTokenExpired)
                     if (!resultServer.subDvcIntlEvent.isError) {
                         setToken(applicationContext, token)
                         if (resultServer.subDvcIntlEvent.dvData.isExpire) {
