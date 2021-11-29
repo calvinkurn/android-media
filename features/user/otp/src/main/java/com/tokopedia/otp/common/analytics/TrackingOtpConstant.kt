@@ -106,7 +106,7 @@ object TrackingOtpConstant{
         const val ACTION_AUTO_SUBMIT_OTP = "auto submit otp page"
 
         /*InactivePhone*/
-        const val ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER = "click ajukan perubahan nomor"
+        const val ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER = "click ajukan perubahan nomor hp"
     }
 
     object Label{
