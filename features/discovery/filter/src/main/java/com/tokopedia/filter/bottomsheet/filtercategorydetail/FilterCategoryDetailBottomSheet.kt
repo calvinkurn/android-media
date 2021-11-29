@@ -148,7 +148,13 @@ internal class FilterCategoryDetailBottomSheet :
     }
 
     private fun updateHeaderViewInPosition(position: Int) {
-        filterCategoryLevelOneAdapter?.notifyItemChanged(position)
+        val adapter = filterCategoryLevelOneAdapter ?: return
+
+        adapter.notifyItemChanged(position)
+        adapter.scrollToSelectedIfNotFullyVisible(
+                filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView,
+                position
+        )
     }
 
     private fun processContentViewModelList(filterCategoryLevelTwoViewModelList: List<FilterCategoryLevelTwoViewModel>) {

@@ -2,12 +2,13 @@ package com.tokopedia.filter.bottomsheet.filtercategorydetail
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.filter.R
 
 internal class FilterCategoryLevelOneAdapter(
         private val callback: Callback
-) : RecyclerView.Adapter<FilterCategoryLevelOneViewHolder>(), FilterCategoryLevelOneViewHolder.HeaderViewHolderCallback{
+) : RecyclerView.Adapter<FilterCategoryLevelOneViewHolder>(), FilterCategoryLevelOneViewHolder.HeaderViewHolderCallback {
 
     private val filterCategoryLevelOneViewModelList = mutableListOf<FilterCategoryLevelOneViewModel>()
 
@@ -31,7 +32,7 @@ internal class FilterCategoryLevelOneAdapter(
     }
 
     fun scrollToSelected(recyclerView: RecyclerView?) {
-        if(recyclerView == null) return
+        if (recyclerView == null) return
 
         val selectedIndex = filterCategoryLevelOneViewModelList.indexOfFirst { it.isSelected }
         if (isPositionInvalid(selectedIndex)) return
@@ -39,11 +40,24 @@ internal class FilterCategoryLevelOneAdapter(
         recyclerView.scrollToPosition(selectedIndex)
     }
 
+    fun scrollToSelectedIfNotFullyVisible(recyclerView: RecyclerView?, position: Int) {
+        if (isPositionInvalid(position)) return
+        if (!filterCategoryLevelOneViewModelList[position].isSelected) return
+
+        val layoutManager = recyclerView?.layoutManager ?: return
+        if (layoutManager is LinearLayoutManager) {
+            if (layoutManager.findLastCompletelyVisibleItemPosition() < position
+                    || layoutManager.findFirstCompletelyVisibleItemPosition() > position) {
+                recyclerView.scrollToPosition(position)
+            }
+        }
+    }
+
     private fun isPositionInvalid(position: Int) =
             position < 0 || position >= filterCategoryLevelOneViewModelList.size
 
     override fun onHeaderItemClick(position: Int) {
-        if(isPositionInvalid(position)) return
+        if (isPositionInvalid(position)) return
         callback.onHeaderItemClick(filterCategoryLevelOneViewModelList[position])
     }
 
