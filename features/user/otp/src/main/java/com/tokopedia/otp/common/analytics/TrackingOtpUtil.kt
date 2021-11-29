@@ -39,6 +39,14 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
                 String.format("click - %s - %s", otpType.toString(), modeName)))
     }
 
+    fun trackErrorLimitOtpSilentVerif(otpType: Int, modeName: String, reason: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_METHOD_OTP,
+            String.format("fail - %s - %s - %s", reason, otpType.toString(), modeName)))
+    }
+
     fun trackClickInactivePhoneNumber(otpType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,

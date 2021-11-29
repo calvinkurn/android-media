@@ -208,6 +208,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
         binding?.fragmentSilentVerifTryChangeMethodBtn?.setOnClickListener {
             analytics.trackChooseOtherMethod(otpData?.otpType ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
+            activity?.setResult(RESULT_DELETE_METHOD)
             activity?.finish()
         }
     }
@@ -332,9 +333,11 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             } else if(data.errorCode.isNotEmpty()) {
                 when(data.errorCode) {
                     ERROR_LIMIT_CODE -> {
+                        analytics.trackErrorLimitOtpSilentVerif(otpData?.otpType ?: 0, modeListData?.modeText ?: "", data.errorCode)
                         onErrorLimit()
                     }
                     ERROR_GENERAL -> {
+                        analytics.trackSilentVerificationRequestFailed(ERROR_GENERAL, otpData?.otpType ?: 0, modeListData?.modeText ?: "")
                         onVerificationError(Throwable(ERROR_GENERAL))
                     }
                 }
@@ -347,7 +350,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private fun onValidateFailed(throwable: Throwable) {
         analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false, "${throwable.message}")
-
 
         binding?.fragmentSilentVerifTitle?.show()
         binding?.fragmentSilentVerifSubtitle?.show()
@@ -372,6 +374,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         binding?.fragmentSilentVerifTryAgainBtn?.text = getString(R.string.fragment_silent_verif_label_button_change_method)
         binding?.fragmentSilentVerifTryAgainBtn?.setOnClickListener {
             analytics.trackChooseOtherMethod(otpData?.otpType ?: 0, modeListData?.modeText ?: "")
+            activity?.setResult(RESULT_DELETE_METHOD)
             activity?.finish()
         }
         binding?.fragmentSilentVerifTryChangeMethodBtn?.hide()
