@@ -791,11 +791,12 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private boolean isFDLHostEnabled(Uri uri){
-        if(remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
-                && FDL_HOST.equalsIgnoreCase(uri.getHost())){
-            return true;
+        if(remoteConfig != null){
+            return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
+                    && FDL_HOST.equalsIgnoreCase(uri.getHost());
+        }else{
+            return FDL_HOST.equalsIgnoreCase(uri.getHost());
         }
-        return false;
     }
 
     private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {
