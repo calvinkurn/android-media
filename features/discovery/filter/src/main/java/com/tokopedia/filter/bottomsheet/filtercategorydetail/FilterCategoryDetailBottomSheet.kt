@@ -9,14 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.helper.*
+import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
+import com.tokopedia.filter.common.helper.configureBottomSheetHeight
+import com.tokopedia.filter.common.helper.copyParcelable
+import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
+import com.tokopedia.filter.common.helper.setMargin
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.filter_category_detail_bottom_sheet.view.*
 
 internal class FilterCategoryDetailBottomSheet :
         BottomSheetUnify(),
-        FilterCategoryLevelOneScrollViewAdapter.Callback,
+        FilterCategoryLevelOneAdapter.Callback,
         FilterCategoryDetailCallback {
 
     companion object {
@@ -28,7 +32,7 @@ internal class FilterCategoryDetailBottomSheet :
     private var callback: Callback? = null
 
     private var filterCategoryDetailBottomSheetView: View? = null
-    private var filterCategoryLevelOneScrollViewAdapter: FilterCategoryLevelOneScrollViewAdapter? = null
+    private var filterCategoryLevelOneAdapter: FilterCategoryLevelOneAdapter? = null
     private val filterCategoryLevelTwoAdapter = FilterCategoryLevelTwoAdapter(this)
     private var filterCategoryDetailViewModel: FilterCategoryDetailViewModel? = null
 
@@ -73,19 +77,21 @@ internal class FilterCategoryDetailBottomSheet :
     }
 
     private fun initHeaderView() {
-        filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderItems?.let {
-            filterCategoryLevelOneScrollViewAdapter = FilterCategoryLevelOneScrollViewAdapter(it, this)
+        filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView?.let {
+            filterCategoryLevelOneAdapter = FilterCategoryLevelOneAdapter(this)
+            it.adapter = filterCategoryLevelOneAdapter
+            it.layoutManager = LinearLayoutManager(it.context)
         }
     }
 
     private fun initContentRecyclerView() {
-        filterCategoryDetailBottomSheetView?.let {
+        filterCategoryDetailBottomSheetView?.filterCategoryDetailContentRecyclerView?.let {
             val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
             val itemDecoration = createFilterDividerItemDecoration(it.context, layoutManager.orientation, 0)
 
-            it.filterCategoryDetailContentRecyclerView?.adapter = filterCategoryLevelTwoAdapter
-            it.filterCategoryDetailContentRecyclerView?.layoutManager = layoutManager
-            it.filterCategoryDetailContentRecyclerView?.addItemDecorationIfNotExists(itemDecoration)
+            it.adapter = filterCategoryLevelTwoAdapter
+            it.layoutManager = layoutManager
+            it.addItemDecorationIfNotExists(itemDecoration)
         }
     }
 
@@ -135,15 +141,14 @@ internal class FilterCategoryDetailBottomSheet :
     }
 
     private fun processHeaderViewModelList(filterCategoryLevelOneViewModelList: List<FilterCategoryLevelOneViewModel>) {
-        filterCategoryLevelOneScrollViewAdapter?.setList(filterCategoryLevelOneViewModelList)
-
-        filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderScrollView?.post {
-            filterCategoryLevelOneScrollViewAdapter?.scrollToSelected(filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderScrollView)
+        filterCategoryLevelOneAdapter?.setList(filterCategoryLevelOneViewModelList)
+        filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView?.post {
+            filterCategoryLevelOneAdapter?.scrollToSelected(filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView)
         }
     }
 
     private fun updateHeaderViewInPosition(position: Int) {
-        filterCategoryLevelOneScrollViewAdapter?.notifyItemChanged(position)
+        filterCategoryLevelOneAdapter?.notifyItemChanged(position)
     }
 
     private fun processContentViewModelList(filterCategoryLevelTwoViewModelList: List<FilterCategoryLevelTwoViewModel>) {
