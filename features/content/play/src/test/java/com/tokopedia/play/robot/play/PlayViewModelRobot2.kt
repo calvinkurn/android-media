@@ -1,11 +1,11 @@
 package com.tokopedia.play.robot.play
 
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.data.websocket.PlayChannelWebSocket
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.helper.ClassBuilder
-import com.tokopedia.play.robot.Robot
 import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.timer.TimerFactory
@@ -27,10 +27,10 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import java.io.Closeable
 
 /**
  * Created by jegul on 10/02/21
@@ -46,7 +46,6 @@ class PlayViewModelRobot2(
     getProductTagItemsUseCase: GetProductTagItemsUseCase,
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
-    playChannelReminderUseCase: PlayChannelReminderUseCase,
     playSocketToModelMapper: PlaySocketToModelMapper,
     playUiModelMapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
@@ -55,12 +54,11 @@ class PlayViewModelRobot2(
     playPreference: PlayPreference,
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring,
     playChannelWebSocket: PlayChannelWebSocket,
-    playChannelSSE: PlayChannelSSE,
     repo: PlayViewerRepository,
     playAnalytic: PlayNewAnalytic,
     timerFactory: TimerFactory,
     castPlayerHelper: CastPlayerHelper
-) : Robot {
+) : Closeable {
 
     val viewModel: PlayViewModel = PlayViewModel(
         playVideoBuilder,
@@ -73,7 +71,6 @@ class PlayViewModelRobot2(
         getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase,
-        playChannelReminderUseCase,
         playSocketToModelMapper,
         playUiModelMapper,
         userSession,
@@ -82,7 +79,6 @@ class PlayViewModelRobot2(
         playPreference,
         videoLatencyPerformanceMonitoring,
         playChannelWebSocket,
-        playChannelSSE,
         repo,
         playAnalytic,
         timerFactory,
@@ -97,7 +93,7 @@ class PlayViewModelRobot2(
         viewModel.focusPage(channelData)
     }
 
-    fun submitAction(action: PlayViewerNewAction) {
+    suspend fun submitAction(action: PlayViewerNewAction) = act {
         viewModel.submitAction(action)
     }
 
@@ -109,7 +105,7 @@ class PlayViewModelRobot2(
         every { userSession.userId } returns userId
     }
 
-    fun recordState(fn: PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {
+    fun recordState(fn: suspend PlayViewModelRobot2.() -> Unit): PlayViewerNewUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayViewerNewUiState
         scope.launch {
@@ -117,13 +113,13 @@ class PlayViewModelRobot2(
                 uiState = it
             }
         }
-        fn()
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState
     }
 
-    fun recordEvent(fn: PlayViewModelRobot2.() -> Unit): List<PlayViewerNewUiEvent> {
+    fun recordEvent(fn: suspend PlayViewModelRobot2.() -> Unit): List<PlayViewerNewUiEvent> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         val uiEvents = mutableListOf<PlayViewerNewUiEvent>()
         scope.launch {
@@ -131,13 +127,13 @@ class PlayViewModelRobot2(
                 uiEvents.add(it)
             }
         }
-        fn()
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiEvents
     }
 
-    fun recordStateAndEvent(fn: PlayViewModelRobot2.() -> Unit): Pair<PlayViewerNewUiState, List<PlayViewerNewUiEvent>> {
+    fun recordStateAndEvent(fn: suspend PlayViewModelRobot2.() -> Unit): Pair<PlayViewerNewUiState, List<PlayViewerNewUiEvent>> {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayViewerNewUiState
         val uiEvents = mutableListOf<PlayViewerNewUiEvent>()
@@ -151,10 +147,23 @@ class PlayViewModelRobot2(
                 uiEvents.add(it)
             }
         }
-        fn()
-        dispatchers.coroutineDispatcher.runCurrent()
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState to uiEvents
+    }
+
+    fun cancelRemainingTasks() {
+        viewModel.viewModelScope.coroutineContext.cancelChildren()
+    }
+
+    private suspend fun act(fn: () -> Unit) {
+        fn()
+        yield()
+    }
+
+    override fun close() {
+        cancelRemainingTasks()
     }
 }
 
@@ -170,7 +179,6 @@ fun createPlayViewModelRobot(
     getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
     trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
     trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
-    playChannelReminderUseCase: PlayChannelReminderUseCase = mockk(relaxed = true),
     playSocketToModelMapper: PlaySocketToModelMapper = mockk(relaxed = true),
     playUiModelMapper: PlayUiModelMapper = ClassBuilder().getPlayUiModelMapper(),
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -178,7 +186,6 @@ fun createPlayViewModelRobot(
     playPreference: PlayPreference = mockk(relaxed = true),
     videoLatencyPerformanceMonitoring: PlayVideoLatencyPerformanceMonitoring = mockk(relaxed = true),
     playChannelWebSocket: PlayChannelWebSocket = mockk(relaxed = true),
-    playChannelSSE: PlayChannelSSE = mockk(relaxed = true),
     repo: PlayViewerRepository = mockk(relaxed = true),
     playAnalytic: PlayNewAnalytic = mockk(relaxed = true),
     timerFactory: TimerFactory = mockk(relaxed = true),
@@ -196,7 +203,6 @@ fun createPlayViewModelRobot(
         getProductTagItemsUseCase = getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
-        playChannelReminderUseCase = playChannelReminderUseCase,
         playSocketToModelMapper = playSocketToModelMapper,
         playUiModelMapper = playUiModelMapper,
         userSession = userSession,
@@ -205,7 +211,6 @@ fun createPlayViewModelRobot(
         playPreference = playPreference,
         videoLatencyPerformanceMonitoring = videoLatencyPerformanceMonitoring,
         playChannelWebSocket = playChannelWebSocket,
-        playChannelSSE = playChannelSSE,
         repo = repo,
         playAnalytic = playAnalytic,
         timerFactory = timerFactory,

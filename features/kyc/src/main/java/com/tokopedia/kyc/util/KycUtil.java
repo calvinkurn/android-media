@@ -1,5 +1,9 @@
 package com.tokopedia.kyc.util;
 
+import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
+import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,31 +12,35 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-
-import com.bumptech.glide.Glide;
-import com.google.android.material.snackbar.Snackbar;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
+import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kyc.Constants;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
 import com.tokopedia.kyc.model.ConfirmSubmitResponse;
 import com.tokopedia.kyc.model.EligibilityBase;
+import com.tokopedia.kyc.view.fragment.FragmentCardIdCamera;
+import com.tokopedia.kyc.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import rx.Subscriber;
@@ -45,14 +53,36 @@ public class KycUtil {
                                                  ActivityListener activityListener,
                                                  ActionCreator actionCreator,
                                                  int cameraType, boolean replace) {
-        if(activityListener != null) {
+        if (activityListener != null) {
             activityListener.showHideActionbar(false);
             activityListener.addReplaceFragment((
-                            (KYCRouter) context.getApplicationContext()).getKYCCameraFragment(actionCreator,
-                    new CardIdDataKeyProvider(), cameraType),
+                            getKYCCameraFragment(actionCreator,
+                                    new CardIdDataKeyProvider(), cameraType)),
                     replace, Constants.Values.TAG_CAMERA_PAGE);
         }
     }
+
+    @SuppressLint("MissingPermission")
+    private static BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator, ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType) {
+        Bundle bundle = new Bundle();
+        BaseDaggerFragment baseDaggerFragment = null;
+        switch (cameraType) {
+            case KYC_CARDID_CAMERA:
+                baseDaggerFragment = FragmentCardIdCamera.newInstance();
+                bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
+                bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
+                baseDaggerFragment.setArguments(bundle);
+                break;
+            case KYC_SELFIEID_CAMERA:
+                baseDaggerFragment = new FragmentSelfieIdCamera();
+                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);
+                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
+                baseDaggerFragment.setArguments(bundle);
+                break;
+        }
+        return baseDaggerFragment;
+    }
+
 
     public static void executeEligibilityCheck(Context context, Subscriber<GraphqlResponse> subscriber) {
         GraphqlUseCase eligibilityCheckUseCase = new GraphqlUseCase();
@@ -114,7 +144,7 @@ public class KycUtil {
         return stream.toByteArray();
     }
 
-    public static void sendEmail(Context context){
+    public static void sendEmail(Context context) {
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 
         emailIntent.setType(Constants.Values.TYPE);

@@ -61,6 +61,22 @@ object TimeConverter {
             postTime
         }
     }
+    fun generateTimeNewForComment(
+            context: Context,
+            postTime: String
+    ): String {
+        return try {
+            val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
+            val sdf = SimpleDateFormat(DEFAULT_FEED_FORMAT, localeID)
+            sdf.timeZone = TimeZone.getDefault()
+            val postDate = sdf.parse(postTime) ?: Date()
+            getFormattedTimeNewForComment(context, postDate)
+
+        } catch (e: ParseException) {
+            Timber.d(e)
+            postTime
+        }
+    }
 
     private fun getFormattedTimeNew(context: Context, postDate: Date): String {
         val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
@@ -100,6 +116,56 @@ object TimeConverter {
                     postDate
                 ) / (MINUTES_IN_HOUR * HOURS_IN_A_DAY)).toString().plus(" ")
                     .plus(context.getString(R.string.post_time_days_ago))
+
+                /*less than 1 year*/
+            }
+            getDifference(currentTime, postDate) / HOUR_IN_A_DAY < DAYS_IN_A_YEAR -> {
+                sdfDay.format(postDate)
+            }
+            else -> {
+                monthYear.format(postDate)
+            }
+        }
+    }
+
+    private fun getFormattedTimeNewForComment(context: Context, postDate: Date): String {
+        val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
+        val currentTime = Date()
+
+        val calPostDate = Calendar.getInstance()
+        calPostDate.time = postDate
+
+        val calCurrentTime = Calendar.getInstance()
+        calCurrentTime.time = currentTime
+
+        val sdfDay = SimpleDateFormat(DAY_MONTH_FORMAT, localeID)
+        val monthYear = SimpleDateFormat(MONTH_YEAR_FORMAT, localeID)
+
+        /*less than a minute*/
+        return when {
+            getDifference(currentTime, postDate) < SECONDS_IN_MINUTE -> {
+                context.getString(R.string.post_time_few_moments_ago)
+
+                /*less than 1 hour*/
+            }
+            getDifference(currentTime, postDate) / SECONDS_IN_MINUTE < SECONDS_IN_MINUTE -> {
+                (getDifference(currentTime, postDate) / SECONDS_IN_MINUTE).toString().plus(" ")
+                        .plus(context.getString(R.string.post_comment_time_minute_ago_new))
+
+                /*less than 1 day*/
+            }
+            getDifference(currentTime, postDate) / MINUTES_IN_HOUR < HOURS_IN_A_DAY -> {
+                (getDifference(currentTime, postDate) / MINUTES_IN_HOUR).toString().plus(" ")
+                        .plus(context.getString(R.string.post_comment_time_hours_ago_new))
+
+                /*less than 7 day*/
+            }
+            getDifference(currentTime, postDate) / MINUTES_IN_HOUR < (HOURS_IN_A_WEEK) -> {
+                (getDifference(
+                        currentTime,
+                        postDate
+                ) / (MINUTES_IN_HOUR * HOURS_IN_A_DAY)).toString().plus(" ")
+                        .plus(context.getString(R.string.post_comment_time_days_ago))
 
                 /*less than 1 year*/
             }

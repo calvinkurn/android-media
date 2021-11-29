@@ -22,6 +22,8 @@ class ReviewCredibilityViewModel @Inject constructor(
     private val _reviewerCredibility = MutableLiveData<Result<ReviewerCredibilityStatsWrapper>>()
     val reviewerCredibility: LiveData<Result<ReviewerCredibilityStatsWrapper>>
         get() = _reviewerCredibility
+    
+    val userId: String = userSession.userId
 
     fun getReviewCredibility(source: String, userId: String) {
         launchCatchError(block = {

@@ -22,13 +22,13 @@ import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWa
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_OOC_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAddToCartTracker
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_FILTER
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_NO_HISTORY_SEARCH
@@ -62,6 +62,7 @@ import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProduct
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.repurchase.presentation.model.RepurchaseProductListMeta
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.usecase.coroutines.Fail
@@ -103,6 +104,10 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         get() = _atcQuantity
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
+    val repurchaseAddToCartTracker: LiveData<RepurchaseAddToCartTracker>
+        get() = _repurchaseAddToCartTracker
+    val openScreenTracker: LiveData<String>
+        get() = _openScreenTracker
 
     private val _getLayout = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _loadMore = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
@@ -112,6 +117,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
     private val _atcQuantity = MutableLiveData<Result<RepurchaseLayoutUiModel>>()
     private val _chooseAddress = MutableLiveData<Result<GetStateChosenAddressResponse>>()
+    private val _repurchaseAddToCartTracker = MutableLiveData<RepurchaseAddToCartTracker>()
+    private val _openScreenTracker = MutableLiveData<String>()
 
     private var localCacheModel: LocalCacheModel? = null
     private var productListMeta: RepurchaseProductListMeta? = null
@@ -120,6 +127,10 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private var selectedDateFilter: SelectedDateFilter = SelectedDateFilter()
     private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
+
+    fun trackOpeningScreen(screenName: String) {
+        _openScreenTracker.value = screenName
+    }
 
     fun showLoading() {
         layoutList.clear()
@@ -163,19 +174,16 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId)
-                getMiniCartUseCase.execute({
-                    val isInitialLoad = _getLayout.value == null
+                val data = getMiniCartUseCase.executeOnBackground()
+                val isInitialLoad = _getLayout.value == null
 
-                    if(isInitialLoad) {
-                        setMiniCartAndProductQuantity(it)
-                    } else {
-                        setProductAddToCartQuantity(it)
-                    }
+                if(isInitialLoad) {
+                    setMiniCartAndProductQuantity(data)
+                } else {
+                    setProductAddToCartQuantity(data)
+                }
 
-                    _miniCart.postValue(Success(it))
-                }, {
-                    _miniCart.postValue(Fail(it))
-                })
+                _miniCart.postValue(Success(data))
             }) {
                 _miniCart.postValue(Fail(it))
             }
@@ -228,11 +236,11 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }) {}
     }
 
-    fun onClickAddToCart(productId: String, quantity: Int, shopId: String) {
+    fun onClickAddToCart(productId: String, quantity: Int, type: String, shopId: String) {
         val miniCartItem = getMiniCartItem(productId)
 
         when {
-            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+            miniCartItem == null -> addItemToCart(productId, shopId, type, quantity)
             quantity.isZero() -> removeItemFromCart(miniCartItem)
             else -> updateItemCart(miniCartItem, quantity)
         }
@@ -294,11 +302,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         if(shopId.isNotEmpty() && warehouseId.toLongOrZero() != 0L && isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(listOf(shopId))
-                getMiniCartUseCase.execute({
-                    setProductAddToCartQuantity(it)
-                }, {
-                    _atcQuantity.postValue(Fail(it))
-                })
+                val data = getMiniCartUseCase.executeOnBackground()
+                setProductAddToCartQuantity(data)
             }) {
                 _atcQuantity.postValue(Fail(it))
             }
@@ -463,7 +468,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         }
     }
 
-    private fun addItemToCart(productId: String, shopId: String, quantity: Int) {
+    private fun addItemToCart(productId: String, shopId: String, type: String, quantity: Int) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = productId,
             shopId = shopId,
@@ -471,10 +476,32 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            trackProductAddToCart(productId, quantity, type, it.data.cartId)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
         })
+    }
+
+    private fun trackProductAddToCart(
+        productId: String,
+        quantity: Int,
+        type: String,
+        cartId: String
+    ) {
+        if(type == PRODUCT_REPURCHASE) {
+            trackRepurchaseAddToCart(productId, quantity, cartId)
+        }
+    }
+
+    private fun trackRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
+        val items = layoutList.filterIsInstance(RepurchaseProductUiModel::class.java)
+        val item = items.firstOrNull { it.id == productId }
+
+        item?.let {
+            val data = RepurchaseAddToCartTracker(quantity, cartId, it)
+            _repurchaseAddToCartTracker.postValue(data)
+        }
     }
 
     private fun removeItemFromCart(miniCartItem: MiniCartItem) {

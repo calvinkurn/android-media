@@ -30,7 +30,6 @@ import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.util.extension.cleanBackstack
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -59,9 +58,6 @@ class TitleAndTagsEditBottomSheet : BottomSheetDialogFragment(),
     private lateinit var dataStoreViewModel: DataStoreViewModel
 
     private var mListener: SetupResultListener? = null
-
-    private val currentFragment: Fragment?
-        get() = childFragmentManager.findFragmentById(R.id.fl_fragment)
 
     private val pageNavigator: FragmentPageNavigator by lifecycleBound(
             creator = {

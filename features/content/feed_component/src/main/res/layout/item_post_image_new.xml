@@ -31,7 +31,6 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:paddingTop="@dimen/unify_space_2"
-        android:paddingEnd="@dimen/unify_space_4"
         android:paddingStart="@dimen/feed_component_dp_6"
         android:paddingBottom="@dimen/unify_space_2"
         app:layout_constraintBottom_toBottomOf="@id/post_image"

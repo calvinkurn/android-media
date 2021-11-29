@@ -609,11 +609,6 @@ class HotelSearchMapFragment : BaseListFragment<Property, PropertyAdapterTypeFac
         }
     }
 
-    override fun onDestroyView() {
-        googleMap.clear()
-        super.onDestroyView()
-    }
-
     override fun onSubmitFilter(selectedFilter: MutableList<ParamFilterV2>) {
         trackingHotelUtil.clickSubmitFilterOnBottomSheet(
             context,

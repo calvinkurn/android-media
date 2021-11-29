@@ -6,6 +6,7 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.model.SearchProductCountDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.shouldBeInstanceOf
@@ -26,7 +27,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
     private val visitableList = mutableListOf<Visitable<*>>()
 
     @Test
-    fun `Single headline ads at top`() {
+    fun `Single headline ads at second top`() {
         val searchProductModel = headlineAdsSingleFirstPage.jsonToObject<SearchProductModel>()
         `Given search product API will return search product model`(searchProductModel)
         `Given visitable list will be captured`()
@@ -34,7 +35,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         `When load data`()
 
         val expectedCpmModel = searchProductModel.cpmModel
-        `Then verify CPM at the top of list`(expectedCpmModel, expectedCpmModel.data.first())
+        `Then verify CPM at the second top of list`(expectedCpmModel, expectedCpmModel.data.first())
     }
 
     private fun `Given search product API will return search product model`(searchProductModel: SearchProductModel) {
@@ -57,11 +58,11 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
         productListPresenter.loadData(mapOf())
     }
 
-    private fun `Then verify CPM at the top of list`(
+    private fun `Then verify CPM at the second top of list`(
         expectedCpmModel: CpmModel,
         expectedCpmData: CpmData,
     ) {
-        visitableList.first().assertCpmModel(expectedCpmModel, expectedCpmData)
+        visitableList[1].assertCpmModel(expectedCpmModel, expectedCpmData)
     }
 
     private fun Visitable<*>.assertCpmModel(expectedCpmModel: CpmModel, expectedCpmData: CpmData) {
@@ -87,7 +88,7 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
         val expectedCpmModel = searchProductModel.cpmModel
         val expectedCpmData = expectedCpmModel.data[1]
-        `Then verify CPM at the top of list`(expectedCpmModel, expectedCpmModel.data.first())
+        `Then verify CPM at the second top of list`(expectedCpmModel, expectedCpmModel.data.first())
         `Then verify CPM after last product cards`(expectedCpmModel, expectedCpmData)
     }
 
@@ -133,5 +134,31 @@ internal class SearchProductHeadlineAdsTest: ProductListPresenterTestFixtures() 
 
     private fun `When load more data`() {
         productListPresenter.loadMoreData(mapOf())
+    }
+
+    @Test
+    fun `Single headline ads at top`() {
+        val searchProductModel = headlineAdsSingleFirstPage.jsonToObject<SearchProductModel>()
+        `Given search product API will return search product model`(searchProductModel)
+        `Given visitable list will be captured`()
+
+        `When load data`()
+
+        val expectedSearchProduct = searchProductModel.searchProduct.header
+        `Then verify CPM at the top of list`(expectedSearchProduct)
+    }
+
+    private fun `Then verify CPM at the top of list`(
+        expectedSearchProduct: SearchProductModel.SearchProductHeader
+    ) {
+        visitableList.first().assertSearchProductCount(expectedSearchProduct)
+    }
+
+    private fun Visitable<*>.assertSearchProductCount(expectedSearchProductCount: SearchProductModel.SearchProductHeader) {
+        this.shouldBeInstanceOf<SearchProductCountDataView>()
+
+        val actualSearchProductCountDataView = this as SearchProductCountDataView
+
+        actualSearchProductCountDataView.productCountString.shouldBe(expectedSearchProductCount.totalDataText)
     }
 }

@@ -19,7 +19,14 @@ class TeleporterTest {
                         "{id}",
                         "",
                         "",
-                        "tokopedia-android-internal://test/abc/{id}/")
+                        "tokopedia-android-internal://test/abc/{id}/",
+                "all",
+                "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all")
         )
         Assert.assertEquals("tokopedia-android-internal://test/abc/123/",
                 Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://home/123")))
@@ -33,7 +40,14 @@ class TeleporterTest {
                         "{id}",
                         "",
                         "",
-                        "tokopedia-android-internal://test/abc/{id}/")
+                        "tokopedia-android-internal://test/abc/{id}/",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all")
         )
         Assert.assertEquals("", Teleporter.switchIfNeeded(patternList,
                 Uri.parse("tokopedia://home/xyz/123")))
@@ -47,13 +61,27 @@ class TeleporterTest {
                         "{id}",
                         "",
                         "",
-                        "tokopedia-android-internal://product/abc/{id}/"),
+                        "tokopedia-android-internal://product/abc/{id}/",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all"),
                 TeleporterPattern("tokopedia",
                         "home",
                         "{id}",
                         "",
                         "",
-                        "tokopedia-android-internal://test/abc/{id}/")
+                        "tokopedia-android-internal://test/abc/{id}/",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all")
         )
         Assert.assertEquals("tokopedia-android-internal://product/abc/123/",
                 Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123")))
@@ -75,19 +103,40 @@ class TeleporterTest {
                         "add",
                         "",
                         "",
-                        "tokopedia-android-internal://product-add"),
+                        "tokopedia-android-internal://product-add",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all"),
                 TeleporterPattern("tokopedia",
                         "product",
                         "{id}",
                         "a=1",
                         "",
-                        "tokopedia-android-internal://product/abc/{id}/"),
+                        "tokopedia-android-internal://product/abc/{id}/",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all"),
                 TeleporterPattern("tokopedia",
                         "product",
                         "{id}",
                         "",
                         "",
-                        "tokopedia-android-internal://test/abc/{id}/")
+                        "tokopedia-android-internal://test/abc/{id}/",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all")
         )
         Assert.assertEquals("tokopedia-android-internal://product/abc/123/?a=1",
                 Teleporter.switchIfNeeded(patternList, Uri.parse("tokopedia://product/123?a=1")))
@@ -105,7 +154,14 @@ class TeleporterTest {
                         "abc/def/{id1}/{id2}/123",
                         "",
                         "",
-                        "tokopedia-android-internal://test/abc/{id1}/{id2}/test")
+                        "tokopedia-android-internal://test/abc/{id1}/{id2}/test",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all")
         )
         val inputUrl = Uri.parse("tokopedia://home/abc/def/j/k/123")
         Assert.assertEquals("tokopedia-android-internal://test/abc/j/k/test",
@@ -120,7 +176,14 @@ class TeleporterTest {
                         "{id1}/test",
                         "",
                         "p1={param1}&p2={param2}",
-                        "tokopedia-android-internal://test/abc/{id1}/test?q={param1}&r={param2}")
+                        "tokopedia-android-internal://test/abc/{id1}/test?q={param1}&r={param2}",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all")
         )
         var inputUrl = Uri.parse("tokopedia://home/my-house/test?p1=123&p2=ice-cream")
         Assert.assertEquals("tokopedia-android-internal://test/abc/my-house/test?q=123&r=ice-cream&p1=123&p2=ice-cream",
@@ -151,7 +214,14 @@ class TeleporterTest {
                         "{id1}/test",
                         "p1={param1}&p2={param2}",
                         "p3={param3}&p4={param4}",
-                        "tokopedia-android-internal://test/abc/{id1}/{param1}/test?r={param2}&s={param3}&t={param4}")
+                        "tokopedia-android-internal://test/abc/{id1}/{param1}/test?r={param2}&s={param3}&t={param4}",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all",
+                    "all")
         )
         var inputUrl = Uri.parse("tokopedia://home/star/test?p1=fruit&p2=ice-cream")
         Assert.assertEquals("tokopedia-android-internal://test/abc/star/fruit/test?r=ice-cream&s=&t=&p1=fruit&p2=ice-cream",

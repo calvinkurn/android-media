@@ -34,7 +34,7 @@ class RepurchaseProductViewHolder(
 
             setOnClickListener {
                 goToProductDetail(item)
-                listener?.onClickProduct(item)
+                listener?.onClickProduct(item, adapterPosition)
             }
 
             setAddVariantClickListener {
@@ -43,6 +43,7 @@ class RepurchaseProductViewHolder(
 
             setSimilarProductClickListener {
                 goToCategoryPage(item)
+                listener?.onClickSimilarProduct()
             }
 
             setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
@@ -76,9 +77,10 @@ class RepurchaseProductViewHolder(
     }
 
     interface RepurchaseProductCardListener {
-        fun onClickProduct(item: RepurchaseProductUiModel)
+        fun onClickProduct(item: RepurchaseProductUiModel, position: Int)
         fun onAddToCartVariant(item: RepurchaseProductUiModel)
         fun onAddToCartNonVariant(item: RepurchaseProductUiModel, quantity: Int)
         fun onProductImpressed(item: RepurchaseProductUiModel)
+        fun onClickSimilarProduct()
     }
 }

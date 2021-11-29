@@ -5,8 +5,7 @@ package com.tokopedia.play.view.uimodel.recom
  */
 data class PinnedMessageUiModel(
         val id: String,
-        val applink: String,
-        val partnerName: String,
+        val appLink: String,
         val title: String,
 )
 

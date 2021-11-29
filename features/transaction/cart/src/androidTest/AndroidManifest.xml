@@ -6,11 +6,5 @@
 
     <application
         android:label="Cart Test"
-        tools:replace="android:label">
-        <activity
-            android:name="com.tokopedia.cart.old.OldCartActivity"
-            android:label="@string/checkout_module_title_activity_cart"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"/>
-    </application>
+        tools:replace="android:label" />
 </manifest>

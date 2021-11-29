@@ -29,7 +29,7 @@ class LocationType(
 
         @SerializedName("type_id")
         @Expose
-        var typeId: String = "",
+        var typeId: String = "0",
 
         @SerializedName("status")
         @Expose

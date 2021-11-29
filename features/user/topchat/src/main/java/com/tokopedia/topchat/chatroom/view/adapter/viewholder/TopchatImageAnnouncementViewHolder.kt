@@ -3,10 +3,10 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.binder.ImageAnnouncementViewHolderBinder
 
@@ -27,7 +27,7 @@ class TopchatImageAnnouncementViewHolder(
     override fun onViewRecycled() {
         super.onViewRecycled()
         attachment?.let {
-            ImageHandler.clearImage(it)
+            it.clearImage()
         }
     }
 

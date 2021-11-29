@@ -75,7 +75,7 @@ class FundsAndInvestmentViewHolder(
                 binding?.imageAction?.context?.let {
                     val colorNeutral = ContextCompat.getColor(
                         it,
-                        com.tokopedia.unifyprinciples.R.color.Neutral_N700
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700
                     )
                     binding?.imageAction?.setImage(
                         IconUnify.CHEVRON_RIGHT,

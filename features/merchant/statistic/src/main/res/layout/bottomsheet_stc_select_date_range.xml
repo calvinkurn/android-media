@@ -1,16 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvStcExclusiveFeature"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:background="@drawable/bg_stc_exclusive_feature"
+        android:gravity="center_vertical"
+        android:paddingStart="36dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="0dp"
+        android:paddingBottom="14dp"
+        android:text="@string/stc_exlusive_feature_title"
+        android:textColor="@color/Unify_Y400"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="small"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icStcExclusiveFeature"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvStcExclusiveFeature"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvStcExclusiveFeature"
+        app:layout_constraintVertical_bias="0.425"
+        app:srcCompat="@drawable/ic_stc_star_filled" />
+
+    <LinearLayout
+        android:id="@+id/viewStcFilterHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/bg_stc_filter_header"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icStcCloseDateFilter"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            app:icon_name="CLOSE" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvStcFilterTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/stc_change_date_range"
+            app:typographyType="heading_3" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvStcDateRage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/viewStcFilterHeader"
+        app:layout_constraintVertical_bias="0" />
+
+    <com.tokopedia.statistic.view.customview.ExclusiveIdentifierView
+        android:id="@+id/stcFilterExclusiveIdentifier"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_stc_date_filter_height"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewStcFilterHeader"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

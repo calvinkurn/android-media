@@ -29,9 +29,9 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
                 val variables = HashMap<String, Any>()
                 variables[NAME] = requestParams.getString(NAME, "")
                 variables[ADDRESS] = requestParams.getString(ADDRESS, "")
-                variables[DISTRICT_ID] = requestParams.getInt(DISTRICT_ID, 0)
-                variables[CITY_ID] = requestParams.getInt(CITY_ID, 0)
-                variables[STATE_ID] = requestParams.getInt(STATE_ID, 0)
+                variables[DISTRICT_ID] = requestParams.getLong(DISTRICT_ID, 0)
+                variables[CITY_ID] = requestParams.getLong(CITY_ID, 0)
+                variables[STATE_ID] = requestParams.getLong(STATE_ID, 0)
                 variables[POSTAL_CODE] = requestParams.getInt(POSTAL_CODE, 0)
                 val email = requestParams.getString(EMAIL, "")
                 if (!TextUtils.isEmpty(email)) {
@@ -74,15 +74,15 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
 
         @JvmStatic
         fun createRequestParams(name: String, address: String,
-                                districtId: Int, cityId: Int,
-                                stateId: Int, postalCode: Int,
+                                districtId: Long, cityId: Long,
+                                stateId: Long, postalCode: Int,
                                 email: String?, phone: String?, fax: String?): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(NAME, name)
             requestParams.putString(ADDRESS, address)
-            requestParams.putInt(DISTRICT_ID, districtId)
-            requestParams.putInt(CITY_ID, cityId)
-            requestParams.putInt(STATE_ID, stateId)
+            requestParams.putLong(DISTRICT_ID, districtId)
+            requestParams.putLong(CITY_ID, cityId)
+            requestParams.putLong(STATE_ID, stateId)
             requestParams.putInt(POSTAL_CODE, postalCode)
             requestParams.putString(EMAIL, email)
             requestParams.putString(PHONE, phone)

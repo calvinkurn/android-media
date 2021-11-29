@@ -65,15 +65,27 @@ object DeeplinkMapperHome {
 
         // tokopedia://official-store
         if (uri.host == Uri.parse(ApplinkConst.OFFICIAL_STORE).host && uri.pathSegments.isEmpty())
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
+            return if(isOsExperiment()) {
+                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
+            } else {
+                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
+            }
         else if (deeplink.startsWith(ApplinkConst.OFFICIAL_STORES) && uri.pathSegments.isEmpty())
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
+            return if(isOsExperiment()) {
+                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
+            } else {
+                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_OS))
+            }
         else if (deeplink.startsWith(ApplinkConst.BRAND_LIST)) {
             return getBrandlistInternal(deeplink)
         } else if (deeplink.startsWithPattern(ApplinkConst.OFFICIAL_STORE_CATEGORY) && uri.pathSegments.size == 1) {
-            val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
-            params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
-            return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
+            return if(isOsExperiment()) {
+                ApplinkConstInternalMechant.MERCHANT_OFFICIAL_STORE
+            } else {
+                val params = UriUtil.destructureUriToMap(ApplinkConst.OFFICIAL_STORE_CATEGORY, Uri.parse(deeplink), true)
+                params[EXTRA_TAB_POSITION] = TAB_POSITION_OS
+                UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, params.toMap())
+            }
         }
         return deeplink
     }
@@ -113,17 +125,12 @@ object DeeplinkMapperHome {
         }
     }
 
-    fun useNewInbox(): Boolean {
-        val useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX
-        val useNewNav = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP ||
+    fun useNewInbox(): Boolean =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-        ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2
-        return useNewInbox && useNewNav
-    }
+            RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
+        ) == RollenceKey.VARIANT_NEW_INBOX
 
+    fun isOsExperiment(): Boolean = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT, ""
+        ) == RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 }

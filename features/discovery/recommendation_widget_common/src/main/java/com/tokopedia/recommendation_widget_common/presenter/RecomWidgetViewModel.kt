@@ -13,6 +13,7 @@ import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -147,6 +148,13 @@ open class RecomWidgetViewModel @Inject constructor(
             recomItemList.add(item)
         }
         recomWidget.recommendationItemList = recomItemList
+    }
+
+    fun updateMiniCartWithPageData(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        val data = miniCartSimplifiedData.miniCartItems.associateBy({ it.productId }) {
+            it
+        }
+        _miniCartData.postValue(data.toMutableMap())
     }
 
     fun getMiniCart(shopId: String, pageName: String) {

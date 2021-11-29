@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
@@ -119,21 +119,15 @@ class CreateReviewViewModel @Inject constructor(private val coroutineDispatcherP
     fun getAfterEditImageList(imagePickerResult: MutableList<String>, imagesFedIntoPicker: MutableList<String>): MutableList<BaseImageReviewUiModel> {
         // Remove old image
         originalImages = imagesFedIntoPicker.filter { !it.contains(LOCAL_IMAGE_SOURCE) }.toMutableList()
-        val imagesToDisplay = originalImages.toMutableList()
-        imagePickerResult.forEachIndexed { index, s ->
-            if (s.contains(LOCAL_IMAGE_SOURCE) && index > originalImages.lastIndex) {
-                imagesToDisplay.add(s)
-            }
-        }
 
-        when (imagesToDisplay.size) {
+        when (imagePickerResult.size) {
             5 -> {
-                imageData = (imagesToDisplay.map {
+                imageData = (imagePickerResult.map {
                     ImageReviewUiModel(it)
                 }).toMutableList()
             }
             else -> {
-                imageData.addAll(imagesToDisplay.map {
+                imageData.addAll(imagePickerResult.map {
                     ImageReviewUiModel(it)
                 })
                 imageData.add(DefaultImageReviewUiModel())

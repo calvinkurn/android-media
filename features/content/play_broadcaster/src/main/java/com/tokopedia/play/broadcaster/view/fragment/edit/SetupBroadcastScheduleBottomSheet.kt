@@ -5,7 +5,6 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.datetimepicker.DateTimePicker
@@ -14,7 +13,6 @@ import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.di.provider.PlayBroadcastComponentProvider
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.extension.toCalendar
 import com.tokopedia.play.broadcaster.view.contract.SetupResultListener
 import com.tokopedia.play.broadcaster.view.viewmodel.BroadcastScheduleViewModel
@@ -24,7 +22,6 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -189,7 +186,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
      * Observe
      */
     private fun observeSetBroadcastSchedule() {
-        viewModel.observableSetBroadcastSchedule.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSetBroadcastSchedule.observe(viewLifecycleOwner) {
             when (it) {
                 is NetworkResult.Success -> onUpdateSuccess()
                 is NetworkResult.Fail -> onUpdateFail(it.error)
@@ -197,7 +194,7 @@ class SetupBroadcastScheduleBottomSheet : BottomSheetUnify() {
                     btnSet?.isLoading = true
                 }
             }
-        })
+        }
     }
     //endregion
 

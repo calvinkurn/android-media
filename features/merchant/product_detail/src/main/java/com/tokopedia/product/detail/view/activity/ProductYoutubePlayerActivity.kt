@@ -69,7 +69,7 @@ class ProductYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnIniti
             try {
                 youtubePlayerScreen.loadVideo(videoUrls[selectedIndex])
                 this.selectedIndex = selectedIndex
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
             }
         }
     }

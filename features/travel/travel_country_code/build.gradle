@@ -17,10 +17,6 @@ buildscript {
     }
 }
 
-androidExtensions {
-    experimental = true
-}
-
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     api project(rootProject.ext.libraries.baseList)

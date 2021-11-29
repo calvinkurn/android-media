@@ -8,27 +8,17 @@ import com.tokopedia.remoteconfig.RollenceKey
  */
 object HomeComponentRollenceController {
 
-    private var rollenceLego4BannerValue: String = ""
-    private var rollenceLego2BannerValue: String = ""
+    private var rollenceLego24BannerValue: String = ""
 
     fun fetchHomeComponentRollenceValue() {
-        rollenceLego4BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO4BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO4BANNER_OLD)
-        rollenceLego2BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO2BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO2BANNER_OLD)
+        rollenceLego24BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO24BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO24BANNER_OLD)
     }
 
-    private fun getRollenceValueLego4Banner(): String {
-        return if (rollenceLego4BannerValue.isNotEmpty()) rollenceLego4BannerValue else RollenceKey.HOME_COMPONENT_LEGO4BANNER_OLD
+    private fun getRollenceValueLego24Banner(): String {
+        return if (rollenceLego24BannerValue.isNotEmpty()) rollenceLego24BannerValue else RollenceKey.HOME_COMPONENT_LEGO24BANNER_OLD
     }
 
-    private fun getRollenceValueLego2Banner(): String {
-        return if (rollenceLego2BannerValue.isNotEmpty()) rollenceLego2BannerValue else RollenceKey.HOME_COMPONENT_LEGO2BANNER_OLD
-    }
-
-    fun isHomeComponentLego4BannerUsingRollenceVariant(): Boolean {
-        return getRollenceValueLego4Banner() == RollenceKey.HOME_COMPONENT_LEGO4BANNER_VARIANT
-    }
-
-    fun isHomeComponentLego2BannerUsingRollenceVariant(): Boolean {
-        return getRollenceValueLego2Banner() == RollenceKey.HOME_COMPONENT_LEGO2BANNER_VARIANT
+    fun isHomeComponentLego24BannerUsingRollenceVariant(): Boolean {
+        return getRollenceValueLego24Banner() == RollenceKey.HOME_COMPONENT_LEGO24BANNER_VARIANT
     }
 }

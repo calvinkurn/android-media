@@ -20,16 +20,12 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.navigation_common.listener.AllNotificationListener
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.ApplinkConstant
-import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.*
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CACHE
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_OS_CONTAINER_CATEGORY_CLOUD
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_CONTAINER
-import com.tokopedia.officialstore.OfficialStoreInstance
-import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.category.data.model.OfficialStoreCategories
@@ -49,7 +45,6 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -72,8 +67,11 @@ class OfficialHomeContainerFragment
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeContainerFragment().apply { arguments = bundle }
         const val KEY_CATEGORY = "key_category"
-
+        const val PARAM_ACTIVITY_OFFICIAL_STORE = "param_activity_official_store"
+        const val PARAM_HOME = "home"
     }
+
+    private var currentOfficialStoreCategories: OfficialStoreCategories? = null
     private val queryHashingKey = "android_do_query_hashing"
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
@@ -81,7 +79,6 @@ class OfficialHomeContainerFragment
 
     private var statusBar: View? = null
     private var mainToolbar: NavToolbar? = null
-    private var toolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
@@ -94,6 +91,7 @@ class OfficialHomeContainerFragment
     private var chooseAddressData = OSChooseAddressData()
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private var selectedCategory: Category? = null
+    private var activityOfficialStore = ""
 
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private lateinit var tracking: OfficialStoreTracking
@@ -190,10 +188,6 @@ class OfficialHomeContainerFragment
             setBadgeCounter(getInboxIcon(), inboxCount)
             setBadgeCounter(IconList.ID_CART, cartCount)
         }
-        toolbar?.run {
-            setNotificationNumber(notificationCount)
-            setInboxNumber(inboxCount)
-        }
         badgeNumberNotification = notificationCount
         badgeNumberInbox = inboxCount
         badgeNumberCart = cartCount
@@ -267,8 +261,11 @@ class OfficialHomeContainerFragment
         viewModel.officialStoreCategoriesResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    removeLoading()
-                    populateCategoriesData(it.data)
+                    if (it.data.categories.isNotEmpty() && (currentOfficialStoreCategories?.categories != it.data.categories || currentOfficialStoreCategories == null)) {
+                        this.currentOfficialStoreCategories = it.data
+                        removeLoading()
+                        populateCategoriesData(it.data)
+                    }
                 }
                 is Fail -> {
                     val throwable = it.throwable
@@ -354,7 +351,7 @@ class OfficialHomeContainerFragment
     private fun initInboxAbTest() {
         useNewInbox = RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.KEY_AB_INBOX_REVAMP, RollenceKey.VARIANT_OLD_INBOX
-        ) == RollenceKey.VARIANT_NEW_INBOX && isNavRevamp()
+        ) == RollenceKey.VARIANT_NEW_INBOX
     }
 
     private fun getInboxIcon(): Int {
@@ -366,6 +363,7 @@ class OfficialHomeContainerFragment
     }
 
     private fun init(view: View) {
+        activityOfficialStore = arguments?.getString(PARAM_ACTIVITY_OFFICIAL_STORE, "")?: ""
         configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
@@ -413,58 +411,38 @@ class OfficialHomeContainerFragment
     }
 
     private fun configMainToolbar(view: View) {
-        if(isNavRevamp()){
-            mainToolbar = view.findViewById(R.id.maintoolbar)
-            maintoolbar?.run {
-                viewLifecycleOwner.lifecycle.addObserver(this)
-                setIcon(getToolbarIcons())
-                setupSearchbar(
-                        hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                        applink = ApplinkConstant.OFFICIAL_SEARCHBAR
-                )
-                show()
-            }
-            toolbar?.hide()
-            onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
-        } else {
-            toolbar = view.findViewById(R.id.toolbar)
-            toolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
-            toolbar?.setQuerySearch(getString(R.string.os_query_search))
-            toolbar?.show()
-            mainToolbar?.hide()
+        mainToolbar = view.findViewById(R.id.maintoolbar)
+        maintoolbar?.run {
+            viewLifecycleOwner.lifecycle.addObserver(this)
+            setIcon(getToolbarIcons())
+            setupSearchbar(
+                    hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
+                    applink = ApplinkConstant.OFFICIAL_SEARCHBAR
+            )
+            show()
         }
+        onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
     }
 
     private fun getToolbarIcons(): IconBuilder {
-        val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                        .addIcon(getInboxIcon()) {}
-
+        val pageSource = if (activityOfficialStore == PARAM_HOME) ApplinkConsInternalNavigation.SOURCE_HOME else ""
+        val icons =
+            IconBuilder(IconBuilderFlag(pageSource = pageSource))
+                .addIcon(getInboxIcon()) {}
+        if(activityOfficialStore != PARAM_HOME)
+        {
+            maintoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+            statusbar.visibility = View.GONE
+        }
         if (!useNewInbox) {
             icons.addIcon(IconList.ID_NOTIFICATION) {}
         }
-
         icons.apply {
             addIcon(IconList.ID_CART) {}
             addIcon(IconList.ID_NAV_GLOBAL) {}
         }
 
         return icons
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?:false
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {

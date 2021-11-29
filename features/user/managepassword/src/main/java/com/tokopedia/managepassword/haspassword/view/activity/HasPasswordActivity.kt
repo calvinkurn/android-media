@@ -17,7 +17,7 @@ import com.tokopedia.managepassword.R
 import com.tokopedia.managepassword.di.DaggerManagePasswordComponent
 import com.tokopedia.managepassword.di.ManagePasswordComponent
 import com.tokopedia.managepassword.di.module.ManagePasswordModule
-import com.tokopedia.managepassword.haspassword.view.viewmode.HasPasswordViewModel
+import com.tokopedia.managepassword.haspassword.view.viewmodel.HasPasswordViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,14 +40,15 @@ class HasPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordCom
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(HasPasswordViewModel::class.java) }
+
 
     override fun getComponent(): ManagePasswordComponent {
         return DaggerManagePasswordComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .managePasswordModule(ManagePasswordModule(this))
-                .build()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .managePasswordModule(ManagePasswordModule(this))
+            .build()
     }
 
     override fun getNewFragment(): Fragment? = null
@@ -66,7 +67,7 @@ class HasPasswordActivity : BaseSimpleActivity(), HasComponent<ManagePasswordCom
     }
 
     private fun initObserver() {
-        viewModel.profileDataModel.observe(this, Observer {
+        viewModel.profileDataModel.observe(this, {
             when (it) {
                 is Success -> {
                     isPasswordAvailable(it.data.profileData.isCreatedPassword)

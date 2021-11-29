@@ -44,14 +44,14 @@ class SuggestionFragment :
         }
     }
 
-    @Inject
-    lateinit var presenter: SuggestionContract.Presenter
+    var presenter: SuggestionContract.Presenter? = null
+        @Inject set
 
-    @Inject
-    lateinit var suggestionViewUpdateListener: SuggestionViewUpdateListener
+    var suggestionViewUpdateListener: SuggestionViewUpdateListener? = null
+        @Inject set
 
-    @Inject
-    lateinit var suggestionTracking: SuggestionTracking
+    var suggestionTracking: SuggestionTracking? = null
+        @Inject set
 
     private var performanceMonitoring: PerformanceMonitoring? = null
     private val suggestionTypeFactory = SuggestionAdapterTypeFactory(
@@ -64,12 +64,6 @@ class SuggestionFragment :
         view?.findViewById<RecyclerView?>(R.id.recyclerViewSuggestion)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        retainInstance = true
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -80,7 +74,7 @@ class SuggestionFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         prepareView()
-        presenter.attachView(this)
+        presenter?.attachView(this)
     }
 
     private fun prepareView() {
@@ -95,7 +89,7 @@ class SuggestionFragment :
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.detachView()
+        presenter?.detachView()
     }
 
     override fun getScreenName(): String {
@@ -107,7 +101,7 @@ class SuggestionFragment :
         suggestionAdapter.clearData()
         suggestionAdapter.addAll(list)
 
-        suggestionViewUpdateListener.showSuggestionView()
+        suggestionViewUpdateListener?.showSuggestionView()
     }
 
     private fun stopTracePerformanceMonitoring() {
@@ -123,34 +117,40 @@ class SuggestionFragment :
         val searchParameter = savedInstanceState.getSerializable(SEARCH_PARAMETER)
             as HashMap<String, String>
 
-        presenter.getSuggestion(searchParameter)
+        presenter?.getSuggestion(searchParameter)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putSerializable(SEARCH_PARAMETER, HashMap<String, Any>(presenter.getSearchParameter()))
+
+        val presenter = presenter ?: return
+
+        outState.putSerializable(
+            SEARCH_PARAMETER,
+            HashMap<String, Any>(presenter.getSearchParameter())
+        )
     }
 
     fun getSuggestion(searchParameter: Map<String, String>) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
 
-        presenter.getSuggestion(searchParameter)
+        presenter?.getSuggestion(searchParameter)
     }
 
     fun setIsTyping(isTyping: Boolean) {
-        presenter.setIsTyping(isTyping)
+        presenter?.setIsTyping(isTyping)
     }
 
     override fun onItemClicked(item: BaseSuggestionDataView) {
-        presenter.onSuggestionItemClicked(item)
+        presenter?.onSuggestionItemClicked(item)
     }
 
     override fun onChipClicked(item: BaseSuggestionDataView.ChildItem) {
-        presenter.onSuggestionChipClicked(item)
+        presenter?.onSuggestionChipClicked(item)
     }
 
     override fun onItemImpressed(item: BaseSuggestionDataView) {
-        presenter.onSuggestionItemImpressed(item)
+        presenter?.onSuggestionItemImpressed(item)
     }
 
     override fun dropKeyBoard() {
@@ -171,56 +171,56 @@ class SuggestionFragment :
     }
 
     override fun copyTextToSearchView(text: String) {
-        suggestionViewUpdateListener.setSearchQuery("$text ")
+        suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
     override fun trackEventClickKeyword(eventLabel: String, dimension90: String) {
-        suggestionTracking.eventClickKeyword(eventLabel, dimension90)
+        suggestionTracking?.eventClickKeyword(eventLabel, dimension90)
     }
 
     override fun trackEventClickCurated(eventLabel: String, campaignCode: String, dimension90: String) {
-        suggestionTracking.eventClickCurated(eventLabel, campaignCode, dimension90)
+        suggestionTracking?.eventClickCurated(eventLabel, campaignCode, dimension90)
     }
 
     override fun trackEventClickShop(eventLabel: String, dimension90: String) {
-        suggestionTracking.eventClickShop(eventLabel, dimension90)
+        suggestionTracking?.eventClickShop(eventLabel, dimension90)
     }
 
     override fun trackEventClickProfile(eventLabel: String) {
-        suggestionTracking.eventClickProfile(eventLabel)
+        suggestionTracking?.eventClickProfile(eventLabel)
     }
 
     override fun trackEventClickRecentKeyword(eventLabel: String, dimension90: String) {
-        suggestionTracking.eventClickRecentKeyword(eventLabel, dimension90)
+        suggestionTracking?.eventClickRecentKeyword(eventLabel, dimension90)
     }
 
     override fun onTopShopCardClicked(topShopData: SuggestionTopShopCardDataView) {
-        presenter.onTopShopCardClicked(topShopData)
+        presenter?.onTopShopCardClicked(topShopData)
     }
 
     override fun onTopShopSeeMoreClicked(topShopData: SuggestionTopShopCardDataView) {
-        presenter.onTopShopCardClicked(topShopData)
+        presenter?.onTopShopCardClicked(topShopData)
     }
 
     override fun trackEventClickTopShopCard(eventLabel: String) {
-        suggestionTracking.eventClickTopShop(eventLabel)
+        suggestionTracking?.eventClickTopShop(eventLabel)
     }
 
     override fun trackEventClickTopShopSeeMore(eventLabel: String) {
-        suggestionTracking.eventClickTopShopSeeMore(eventLabel)
+        suggestionTracking?.eventClickTopShopSeeMore(eventLabel)
     }
 
     override fun trackEventClickLocalKeyword(eventLabel: String, userId: String, dimension90: String) {
-        suggestionTracking.eventClickLocalKeyword(eventLabel, userId, dimension90)
+        suggestionTracking?.eventClickLocalKeyword(eventLabel, userId, dimension90)
     }
 
     override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String) {
-        suggestionTracking.eventClickGlobalKeyword(eventLabel, userId, dimension90)
+        suggestionTracking?.eventClickGlobalKeyword(eventLabel, userId, dimension90)
     }
 
     override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
         val productDataLayer = item.getProductLineAsObjectDataLayer()
-        suggestionTracking.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
+        suggestionTracking?.eventClickSuggestionProductLine(productDataLayer, eventLabel, userId)
     }
 
     override val chooseAddressData: LocalCacheModel
@@ -233,19 +233,19 @@ class SuggestionFragment :
         } ?: ChooseAddressConstant.emptyAddress
 
     override fun trackTokoNowEventClickCurated(eventLabel: String) {
-        suggestionTracking.eventClickTokoNowCurated(eventLabel)
+        suggestionTracking?.eventClickTokoNowCurated(eventLabel)
     }
 
     override fun trackTokoNowEventClickKeyword(eventLabel: String) {
-        suggestionTracking.eventClickTokoNowKeyword(eventLabel)
+        suggestionTracking?.eventClickTokoNowKeyword(eventLabel)
     }
 
     override fun trackClickChip(eventLabel: String, dimension90: String) {
-        suggestionTracking.eventClickChipSuggestion(eventLabel, dimension90)
+        suggestionTracking?.eventClickChipSuggestion(eventLabel, dimension90)
     }
 
     override fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String) {
-        suggestionTracking.eventImpressCurated(label, campaignCode, pageSource)
+        suggestionTracking?.eventImpressCurated(label, campaignCode, pageSource)
     }
 
     interface SuggestionViewUpdateListener {

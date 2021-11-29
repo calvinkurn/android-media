@@ -3,11 +3,13 @@ package com.tokopedia.topchat.chatroom.view.activity
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.FlakyTest
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
+@UiTest
 class TopchatRoomBroadcastCampaignLabel : TopchatRoomTest() {
 
     // TODO: verify label background color

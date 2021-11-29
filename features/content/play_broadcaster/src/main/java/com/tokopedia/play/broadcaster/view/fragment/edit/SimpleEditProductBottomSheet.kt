@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -25,7 +24,6 @@ import com.tokopedia.play.broadcaster.ui.itemdecoration.PlayGridTwoItemDecoratio
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -44,7 +42,7 @@ import javax.inject.Inject
  */
 class SimpleEditProductBottomSheet @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
         private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetDialogFragment() {
 
@@ -214,14 +212,14 @@ class SimpleEditProductBottomSheet @Inject constructor(
      * Observe
      */
     private fun observeSelectedProducts() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
             updateTitle(it.size)
             btnAction.isEnabled = (it.size != selectableProductAdapter.itemCount) && it.isNotEmpty()
-        })
+        }
     }
 
     private fun observeUploadProduct() {
-        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner) {
             when (it) {
                 NetworkResult.Loading -> btnAction.isLoading = true
                 is NetworkResult.Fail -> onUploadFailed(it.error)
@@ -230,7 +228,7 @@ class SimpleEditProductBottomSheet @Inject constructor(
                     if (data != null) onUploadSuccess()
                 }
             }
-        })
+        }
     }
 
     companion object {

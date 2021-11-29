@@ -22,11 +22,21 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitle"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         tools:text="@tools:sample/full_names" />
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/nu_new_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/dp_topchat_12"
+        app:notificationColor="color_text_type"
+        app:notificationTitle="@string/title_topchat_new"
+        app:notificationType="text_type" />
+
 </LinearLayout>

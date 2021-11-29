@@ -6,8 +6,8 @@ import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.model.DynamicChannelLayout
 import com.tokopedia.iris.IrisAnalytics
-import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -722,8 +722,8 @@ class OfficialStoreTracking(context: Context) {
             isLogin: Boolean
     ) {
         val valueDynamicMix = when (channel.layout) {
-            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
-            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
         val eventAction = "$IMPRESSION on product $valueDynamicMix"
@@ -756,8 +756,8 @@ class OfficialStoreTracking(context: Context) {
             userId: String
     ) {
         val valueDynamicMix = when (channel.layout) {
-            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
-            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
         val eventAction = "$IMPRESSION on product $valueDynamicMix"
@@ -843,8 +843,8 @@ class OfficialStoreTracking(context: Context) {
             isLogin: Boolean
     ) {
         val valueDynamicMix = when (channel.layout) {
-            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
-            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
         val list = mutableListOf(SLASH_OFFICIAL_STORE)
@@ -886,8 +886,8 @@ class OfficialStoreTracking(context: Context) {
             userId: String
     ) {
         val valueDynamicMix = when (channel.layout) {
-            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
-            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
         val list = mutableListOf(SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY)
@@ -927,8 +927,8 @@ class OfficialStoreTracking(context: Context) {
 
     fun seeAllMixFlashSaleClicked(categoryName: String, channel: Channel) {
         val valueDynamicMix = when (channel.layout) {
-            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
-            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
         val eventActionValue = "click view all on $valueDynamicMix"
@@ -942,8 +942,8 @@ class OfficialStoreTracking(context: Context) {
 
     fun seeAllMixFlashSaleClickedComponent(categoryName: String, channel: ChannelModel) {
         val valueDynamicMix = when (channel.layout) {
-            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
-            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
         val eventActionValue = "click view all card on $valueDynamicMix"
@@ -960,8 +960,8 @@ class OfficialStoreTracking(context: Context) {
 
     fun seeAllBannerFlashSaleClickedComponent(categoryName: String, channel: ChannelModel) {
         val valueDynamicMix = when (channel.layout) {
-            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
-            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelLayout.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
         val eventActionValue = "click view all on $valueDynamicMix"

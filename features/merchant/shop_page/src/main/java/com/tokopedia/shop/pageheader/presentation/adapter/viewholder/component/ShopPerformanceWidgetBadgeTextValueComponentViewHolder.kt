@@ -9,9 +9,11 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetBadgeTextValueComponentBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
         itemView: View,
@@ -35,9 +37,10 @@ class ShopPerformanceWidgetBadgeTextValueComponentViewHolder(
         )
     }
 
-    private val textViewFirstLine: Typography? = itemView.findViewById(R.id.text_first_line)
-    private val imageViewFirstLine: ImageView? = itemView.findViewById(R.id.image_first_line)
-    private val textViewSecondLine: Typography? = itemView.findViewById(R.id.text_second_line)
+    private val viewBinding: LayoutShopPerformanceWidgetBadgeTextValueComponentBinding? by viewBinding()
+    private val textViewFirstLine: Typography? = viewBinding?.textFirstLine
+    private val imageViewFirstLine: ImageView? = viewBinding?.imageFirstLine
+    private val textViewSecondLine: Typography? = viewBinding?.textSecondLine
 
     override fun bind(model: ShopHeaderBadgeTextValueComponentUiModel) {
         val textFirstLine = model.text.getOrNull(0)?.textHtml.orEmpty()

@@ -26,6 +26,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMes
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.LeftChatMessageViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.RightChatMessageViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.*
+import com.tokopedia.user.session.UserSessionInterface
 
 /**
  * @author by nisie on 27/11/18.
@@ -41,7 +42,8 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
                                   private val chatActionListBubbleListener: ChatActionListBubbleListener,
                                   private val chatOptionListListener: ChatOptionListListener,
                                   private val csatOptionListListener: CsatOptionListListener,
-                                  private val actionButtonClickListener: StickyActionButtonClickListener) :
+                                  private val actionButtonClickListener: StickyActionButtonClickListener,
+                                  private val userSession: UserSessionInterface) :
         BaseChatTypeFactoryImpl(imageAnnouncementListener, chatLinkHandlerListener,
                 imageUploadListener, productAttachmentListener),
         ChatbotTypeFactory {
@@ -150,7 +152,7 @@ open class ChatbotTypeFactoryImpl(imageAnnouncementListener: ImageAnnouncementLi
             AttachedInvoiceSentViewHolder.LAYOUT -> AttachedInvoiceSentViewHolder(parent)
             AttachedInvoiceSelectionViewHolder.LAYOUT -> AttachedInvoiceSelectionViewHolder(parent, attachedInvoiceSelectionListener)
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener, chatLinkHandlerListener)
-            ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener)
+            ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, userSession)
             else -> super.createViewHolder(parent, type)
         }
     }

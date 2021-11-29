@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
@@ -102,9 +103,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_GIFTCARD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_HOTEL
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_INSURANCE
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MODALTOKO
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_MP
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
-import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.unifyorderhistory.util.UohUtils
@@ -119,14 +118,12 @@ import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.navigation_common.listener.MainParentStateListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -176,6 +173,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INDEX
 /**
  * Created by fwidjaja on 29/06/20.
  */
+@Keep
 class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -246,10 +244,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     companion object {
         const val PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history"
         const val PARAM_HOME = "home"
-        private var CATEGORIES_DIGITAL = "streaming,kartu_prakerja,paket_data,invoicing,tagihan_cc,ovo,air_pdam,bridestory_pay,premi_asuransi,m_tix,iuran_properti,penerimaan_negara,properti,pulsa,biaya_pendidikan,angsuran_kredit,listrik_pln,telkom,upgrade_internet_tv,uang_elektronik,belajar,pajak,pasca_bayar,voucher_game,gas_pgn,roaming,internet_tv_kabel,special_promo,retribusi,samsat,bpjs"
-        private var CATEGORIES_MP = "mp_pym,marketplace"
-        private var CATEGORIES_TRAVELENT = "train,flight,hotel,deals,event"
-        private var CATEGORIES_KEUANGAN = "mutual_fund,insr_tec,modal_toko,gold,insurance,gift_card"
+        private var CATEGORIES_DIGITAL = ""
+        private var CATEGORIES_MP = ""
+        private var CATEGORIES_TRAVELENT = ""
+        private var CATEGORIES_KEUANGAN = ""
 
         private val LABEL_MP = "Belanja"
         private val LABEL_DIGITAL = "Top-up & Tagihan"
@@ -261,7 +259,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             return UohListFragment().apply {
                 arguments = bundle.apply {
                     putString(PARAM_ACTIVITY_ORDER_HISTORY, this.getString(
-                        PARAM_ACTIVITY_ORDER_HISTORY))
+                            PARAM_ACTIVITY_ORDER_HISTORY))
                 }
             }
         }
@@ -313,20 +311,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         return try {
             return getFirebaseRemoteConfig()?.getBoolean(HOME_ENABLE_AUTO_REFRESH_UOH)?:false
         } catch (e: Exception) {
-            false
-        }
-    }
-
-    private fun isNavRevamp(): Boolean {
-        return try {
-            return (context as? MainParentStateListener)?.isNavigationRevamp?: (getAbTestPlatform().getString(
-                RollenceKey.NAVIGATION_EXP_TOP_NAV, RollenceKey.NAVIGATION_VARIANT_OLD
-            ) == RollenceKey.NAVIGATION_VARIANT_REVAMP) ||
-                    (getAbTestPlatform().getString(
-                        RollenceKey.NAVIGATION_EXP_TOP_NAV2, RollenceKey.NAVIGATION_VARIANT_OLD
-                    ) == RollenceKey.NAVIGATION_VARIANT_REVAMP2)
-        } catch (e: Exception) {
-            e.printStackTrace()
             false
         }
     }
@@ -422,6 +406,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun initialLoad() {
+        uohListViewModel.loadFilterCategory()
+    }
+
+    private fun initialLoadOrderHistoryList() {
         isFirstLoad = true
         if (arguments?.getString(SOURCE_FILTER) != null) {
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
@@ -452,27 +440,27 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     PARAM_MARKETPLACE_DALAM_PROSES -> {
                         status = DALAM_PROSES
                         statusLabel = TRANSAKSI_BERLANGSUNG
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_WAITING_CONFIRMATION -> {
                         status = STATUS_MENUNGGU_KONFIRMASI
                         statusLabel = MENUNGGU_KONFIRMASI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_PROCESSED -> {
                         status = STATUS_DIPROSES
                         statusLabel = DIPROSES
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_SENT -> {
                         status = STATUS_DIKIRIM
                         statusLabel = DIKIRIM
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_UOH_DELIVERED -> {
                         status = STATUS_TIBA_DI_TUJUAN
                         statusLabel = TIBA_DI_TUJUAN
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MP
+                        paramUohOrder.verticalCategory = CATEGORIES_MP
                     }
                     PARAM_DIGITAL -> {
                         status = ""
@@ -522,7 +510,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     PARAM_TRAVEL_ENTERTAINMENT -> {
                         status = ""
                         statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
+                        paramUohOrder.verticalCategory = CATEGORIES_TRAVELENT
                     }
                     PARAM_UOH_ONGOING -> {
                         status = DALAM_PROSES
@@ -549,6 +537,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingFinishOrder()
         observingLsFinishOrder()
         observingRechargeSetFail()
+        observingFilterCategory()
         observingOrderHistory()
         observingRecommendationList()
         observingAtc()
@@ -613,9 +602,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 addIcon(IconList.ID_MESSAGE) {}
                 addIcon(IconList.ID_NOTIFICATION) {}
                 addIcon(IconList.ID_CART) {}
-                if (isNavRevamp()) {
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
+                addIcon(IconList.ID_NAV_GLOBAL) {}
             }
             uohNavtoolbar.setIcon(icons)
         }
@@ -702,18 +689,30 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         uohListViewModel.loadRecommendationList(currRecommendationListPage)
     }
 
+    private fun observingFilterCategory() {
+        uohListViewModel.filterCategoryResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    renderChipsFilter(it.data.uohFilterCategoryData.v2Filters, it.data.uohFilterCategoryData.categories)
+                    setDefaultDatesForDatePicker()
+                    initialLoadOrderHistoryList()
+                }
+                is Fail -> {
+                    showToaster(ErrorHandler.getErrorMessage(context, it.throwable), Toaster.TYPE_ERROR)
+                }
+            }
+        })
+    }
+
     private fun observingOrderHistory() {
         if (orderIdNeedUpdated.isEmpty() && !onLoadMore) uohItemAdapter.showLoader()
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner, {
             when (it) {
                 is Success -> {
                     orderList = it.data
-
                     if (!isFilterClicked && currPage == 1) {
-                        renderChipsFilter()
-                        setDefaultDatesForDatePicker()
+                        renderChipsFilter(it.data.v2Filters, it.data.categories)
                     }
-
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
                             currPage += 1
@@ -907,11 +906,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         })
     }
 
-    private fun renderChipsFilter() {
+    private fun renderChipsFilter(filterDataList: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2>,
+                                  categoryDataList: List<UohFilterCategory.Data.UohFilterCategoryData.Category>) {
         val chips = arrayListOf<SortFilterItem>()
 
-        renderChipsFilterStatus(chips)
-        renderChipsFilterCategoryProducts(chips)
+        renderChipsFilterStatus(chips, filterDataList)
+        renderChipsFilterCategoryProducts(chips, categoryDataList)
         renderChipsFilterDate(chips)
 
         chipDate?.refChipUnify?.setChevronClickListener { onClickFilterDate() }
@@ -919,9 +919,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         chipCategoryProduct?.refChipUnify?.setChevronClickListener { onClickFilterCategoryProduct() }
     }
 
-    private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>) {
+    private fun renderChipsFilterStatus(chips: ArrayList<SortFilterItem>, filterDataList: List<UohFilterCategory.Data.UohFilterCategoryData.FilterV2>) {
         _arrayListStatusFilterBundle.clear()
-        orderList.v2Filters.forEach { v2Filter ->
+        filterDataList.forEach { v2Filter ->
             val type = if (v2Filter.isPrimary) 0 else 1
             _arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
@@ -953,10 +953,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>) {
+    private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>, categoryDataList: List<UohFilterCategory.Data.UohFilterCategoryData.Category>) {
         _arrayListCategoryProductFilterBundle.clear()
         _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
-        orderList.categories.forEach { category ->
+        categoryDataList.forEach { category ->
             _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
 
             // update selected categories when one of uoh applink is opened

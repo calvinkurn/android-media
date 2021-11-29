@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.analytics
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Intent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -20,8 +21,9 @@ import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
@@ -29,7 +31,6 @@ import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
 import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -58,17 +59,21 @@ class ProductDetailActivityTest {
             false,
             false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(isFromNetwork = true,
+            sendValidationResult = true)
+
     private val idlingResource by lazy {
         ProductDetailNetworkIdlingResource(object : ProductIdlingInterface {
             override fun getName(): String = "networkFinish"
 
             override fun idleState(): Boolean {
                 val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
-                if (fragment.view?.findViewById<ConstraintLayout>(R.id.base_btn_action) == null) {
+                if (fragment.view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action) == null) {
                     throw RuntimeException("button not found")
                 }
 
-                return fragment.view?.findViewById<ConstraintLayout>(R.id.base_btn_action)?.visibility == View.VISIBLE
+                return fragment.view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action)?.visibility == View.VISIBLE
             }
         })
     }
@@ -77,17 +82,36 @@ class ProductDetailActivityTest {
     fun setup() {
         setupGraphqlMockResponse(ProductDetailMockResponse())
         clearLogin()
+        gtmLogDBSource.deleteAll().toBlocking().first()
+
         val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         activityRule.launchActivity(intent)
 
         setUpTimeoutIdlingResource()
         intendingIntent()
-        gtmLogDBSource.deleteAll().toBlocking().first()
     }
 
     @After
     fun finish() {
         IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource)
+    }
+
+    /**
+     * view product page
+     * impression - modular component
+     */
+    @Test
+    fun tracker_journey_id_56() {
+        actionTest {
+            fakeLogin()
+
+        } assertTest {
+            waitForTrackerSent()
+            performClose(activityRule)
+
+            assertThanos("56")
+            finishTest()
+        }
     }
 
     @Test
@@ -189,7 +213,7 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickThreadDetail() {
         actionTest {
-            fakeLogin()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             clickThreadDetailDiscussion()
         } assertTest {
             performClose(activityRule)
@@ -200,10 +224,10 @@ class ProductDetailActivityTest {
     }
 
     private fun clickSeeAllDiscussion() {
-        val discussionPosition = getPositionViewHolderByName("discussion_faq")
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
-        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(discussionPosition, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
+        onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
+                .check(matches(isDisplayed()))
+                .perform(click())
     }
 
     private fun clickThreadDetailDiscussion() {
@@ -269,6 +293,10 @@ class ProductDetailActivityTest {
 
     private fun intendingIntent() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun assertThanos(trackerId:String) {
+        assertThat(cassavaTestRule.validate(trackerId), hasAllSuccess())
     }
 
     companion object {

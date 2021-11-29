@@ -6,6 +6,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
+import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder.RepurchaseProductCardListener
 import com.tokopedia.tokopedianow.repurchase.presentation.viewmodel.TokoNowRepurchaseViewModel
@@ -15,9 +17,11 @@ class RepurchaseProductCardListener(
     private val context: Context,
     private val viewModel: TokoNowRepurchaseViewModel,
     private val userSession: UserSessionInterface,
+    private val analytics: RepurchaseAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
 ) : RepurchaseProductCardListener {
-    override fun onClickProduct(item: RepurchaseProductUiModel) {
+    override fun onClickProduct(item: RepurchaseProductUiModel, position: Int) {
+        analytics.onClickProduct(userSession.userId, item, position)
     }
 
     override fun onAddToCartVariant(item: RepurchaseProductUiModel) {
@@ -33,12 +37,15 @@ class RepurchaseProductCardListener(
 
     override fun onAddToCartNonVariant(item: RepurchaseProductUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
-            viewModel.onClickAddToCart(item.id, quantity, item.shopId)
+            viewModel.onClickAddToCart(item.id, quantity, PRODUCT_REPURCHASE, item.shopId)
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 
-    override fun onProductImpressed(item: RepurchaseProductUiModel) {
+    override fun onProductImpressed(item: RepurchaseProductUiModel) {}
+
+    override fun onClickSimilarProduct() {
+        analytics.onClickSimilarProduct(userSession.userId)
     }
 }

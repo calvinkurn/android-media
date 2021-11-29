@@ -116,6 +116,18 @@ object FileUtil {
         }
     }
 
+    @JvmStatic
+    fun deleteFolder(dir: String?) {
+        if (dir?.isNotEmpty() == true) {
+            val directory = File(dir)
+            if (directory.exists() && directory.isDirectory) {
+                try {
+                    directory.deleteRecursively()
+                } catch (ignored: Exception) {}
+            }
+        }
+    }
+
     @Throws(IOException::class)
     fun copyFile(pathFrom: String, pathTo: String) {
         if (pathFrom.equals(pathTo, ignoreCase = true)) {

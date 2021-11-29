@@ -36,14 +36,15 @@
             android:layout_marginTop="8dp"
             android:layout_centerHorizontal="true"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:layout_below="@+id/img_scan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/home_header_fintech_scan"
             android:textColor="@color/Unify_N700_32"
-            android:textSize="@dimen/sp_10"
+            android:textSize="10sp"
             android:gravity="center"
+            app:typographyType="small"
             android:layout_marginBottom="6dp"/>
 
     </RelativeLayout>
@@ -93,23 +94,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_title_tokopoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_12"
+                android:textSize="12sp"
                 android:text="@string/home_header_tokopoint_no_tokopoints"
+                app:typographyType="heading_6"
                 android:textColor="@color/Unify_N700_68"
                 android:textStyle="bold"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_below="@+id/tv_title_tokopoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_G500"
                 android:textStyle="bold"
                 android:text="@string/home_header_fintech_cek_sekarang"
-                android:textSize="@dimen/sp_12" />
+                app:typographyType="heading_6"
+                android:textSize="12sp" />
 
         </RelativeLayout>
 

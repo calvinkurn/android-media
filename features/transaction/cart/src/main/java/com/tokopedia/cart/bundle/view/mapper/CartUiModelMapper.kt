@@ -359,6 +359,7 @@ object CartUiModelMapper {
                 }
                 bundleQuantity = tmpBundleQuantity
                 originalBundleQuantity = tmpBundleQuantity
+                bundleLabelQuantity = product.productMinOrder
                 bundleTitle = cartDetail.bundleDetail.bundleName
                 bundlePrice = cartDetail.bundleDetail.bundlePrice
                 bundleSlashPriceLabel = cartDetail.bundleDetail.slashPriceLabel

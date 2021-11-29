@@ -8,7 +8,7 @@
         android:visibility="invisible"
         android:id="@+id/viewpager_event_pdp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_dp_320"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
 

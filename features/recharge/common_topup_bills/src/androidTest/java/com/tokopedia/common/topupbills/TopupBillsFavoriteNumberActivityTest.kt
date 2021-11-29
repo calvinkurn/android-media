@@ -110,11 +110,11 @@ class TopupBillsFavoriteNumberActivityTest {
         Thread.sleep(3000)
         validate_show_contents_favorite_number_page()
         validate_coachmark_favorite_number()
-//        validate_pick_number_from_contact_book()
         validate_menu_bottom_sheet_favorite_number()
         validate_modify_bottom_sheet_favorite_number()
         validate_delete_favorite_number()
         validate_undo_delete_favorite_number()
+        validate_click_favorite_number()
 
         MatcherAssert.assertThat(
             cassavaTestRule.validate(ANALYTICS_FAVORITE_NUMBER_HAPPY),
@@ -163,14 +163,7 @@ class TopupBillsFavoriteNumberActivityTest {
     }
 
     fun validate_show_contents_favorite_number_page() {
-        onView(withId(R.id.common_topupbills_search_number_input_view)).check(matches(isDisplayed()))
-        onView(withId(R.id.common_topupbills_search_number_contact_picker)).check(
-            matches(
-                isDisplayed()
-            )
-        )
         Thread.sleep(2000)
-        onView(withId(R.id.common_topupbills_favorite_number_clue)).check(matches(isDisplayed()))
         onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
     }
 
@@ -216,6 +209,10 @@ class TopupBillsFavoriteNumberActivityTest {
         Thread.sleep(1000)
     }
 
+    fun validate_click_favorite_number() {
+        favoriteNumberItem_clickNumber(0)
+    }
+
     fun validate_delete_favorite_number() {
         favoriteNumberItem_clickMenu(0)
 
@@ -237,9 +234,6 @@ class TopupBillsFavoriteNumberActivityTest {
 
     fun validate_empty_state() {
         onView(withId(R.id.common_topupbills_not_found_state_title)).check(matches(isDisplayed()))
-        onView(withId(R.id.searchbar_textfield))
-            .perform(clearText())
-            .perform(typeText(CLIENT_NUMBER))
         onView(withId(R.id.common_topupbills_not_found_state_button)).perform(click())
     }
 
@@ -250,12 +244,6 @@ class TopupBillsFavoriteNumberActivityTest {
         deleteConfirmationDialog_clickConfirm()
 
         Thread.sleep(3000)
-    }
-
-    /* Local test only, cannot be validated using FTL */
-    fun validate_pick_number_from_contact_book() {
-        onView(withId(R.id.common_topupbills_search_number_contact_picker)).perform(click())
-        intended(toPackage("com.android.contacts"))
     }
 
     private fun modifyBottomSheet_typeNewClientName(name: String) {
@@ -296,6 +284,17 @@ class TopupBillsFavoriteNumberActivityTest {
 
     private fun menuBottomSheet_clickDelete() {
         onView(withId(R.id.common_topup_bills_favorite_number_delete)).perform(click())
+    }
+
+    private fun favoriteNumberItem_clickNumber(position: Int) {
+        val viewInteraction =
+            onView(withId(R.id.common_topupbills_favorite_number_rv)).check(matches(isDisplayed()))
+        viewInteraction.perform(
+            RecyclerViewActions.actionOnItemAtPosition<FavoriteNumberViewHolder>(
+                position,
+                click()
+            )
+        )
     }
 
     private fun favoriteNumberItem_clickMenu(position: Int) {

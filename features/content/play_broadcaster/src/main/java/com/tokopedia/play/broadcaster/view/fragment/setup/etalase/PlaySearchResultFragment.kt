@@ -128,7 +128,7 @@ class PlaySearchResultFragment @Inject constructor(
      * Observe
      */
     private fun observeSearchProducts() {
-        viewModel.observableSearchedProducts.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSearchedProducts.observe(viewLifecycleOwner) {
             when (it.state) {
                 is PageResultState.Success -> {
                     searchProductsAdapter.setItemsAndAnimateChanges(it.currentValue)
@@ -160,7 +160,7 @@ class PlaySearchResultFragment @Inject constructor(
                     scrollListener.updateState(false)
                 }
             }
-        })
+        }
     }
     //endregion
 

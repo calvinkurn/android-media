@@ -6,25 +6,31 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatsetting.view.adapter.ChatSettingTypeFactory
 
 abstract class ItemChatSettingUiModel(
-        @SerializedName("alias")
-        @Expose
-        val alias: String = "",
-        @SerializedName("description")
-        @Expose
-        val description: String = "",
-        @SerializedName("label")
-        @Expose
-        val label: String = "",
-        @SerializedName("link")
-        @Expose
-        val link: String = "",
-        @SerializedName("typeLabel")
-        @Expose
-        val typeLabel: Int = 0
+    @SerializedName("alias")
+    @Expose
+    val alias: String = "",
+    @SerializedName("description")
+    @Expose
+    val description: String = "",
+    @SerializedName("label")
+    @Expose
+    val label: String = "",
+    @SerializedName("link")
+    @Expose
+    val link: String = "",
+    @SerializedName("typeLabel")
+    @Expose
+    val typeLabel: Int = 0
 ) : Visitable<ChatSettingTypeFactory> {
 
     override fun type(typeFactory: ChatSettingTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    companion object {
+        const val TYPE_NO_LABEL = 0
+        const val TYPE_RED = 2
+        const val TYPE_GREEN = 3
     }
 
 }

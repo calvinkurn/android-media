@@ -28,9 +28,9 @@
             android:id="@+id/image_bundle"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            app:unify_image_corner_radius="0"
             app:layout_constraintStart_toEndOf="@+id/checkbox_bundle"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_image_corner_radius="0" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_bundle_title"
@@ -46,6 +46,7 @@
             tools:text="Paket Murah Banget" />
 
         <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/flexboxLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -151,6 +152,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/label_bundle_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:paddingBottom="2dp"
+            app:layout_constraintStart_toEndOf="@+id/iu_image_product"
+            app:layout_constraintTop_toTopOf="@+id/iu_image_product"
+            tools:text="Paket Isi 9"
+            app:labelType="general_light_green"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/text_product_name"
             android:layout_width="0dp"
@@ -161,7 +174,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iu_image_product"
-            app:layout_constraintTop_toTopOf="@+id/iu_image_product"
+            app:layout_constraintTop_toBottomOf="@+id/label_bundle_quantity"
             app:typographyType="body_2"
             tools:text="Tas organizerdfnlgjdhdfhn sepeda double container" />
 
@@ -275,7 +288,7 @@
             tools:text="Incident"
             tools:visibility="gone" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/text_field_notes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -286,7 +299,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/v_bundling_product_separator"
             app:layout_constraintTop_toBottomOf="@+id/iu_image_product"
-            app:text_field_label="Catatan untuk barang ini"
+            app:unify_text_field_label="@string/cart_label_text_field_notes"
             tools:layout_height="32dp"
             tools:visibility="visible" />
 
@@ -299,7 +312,7 @@
             android:layout_marginTop="16dp"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:text="Tulis Catatan"
+            android:text="@string/cart_label_notes"
             android:textColor="@color/Unify_GN500"
             android:visibility="gone"
             app:layout_constraintStart_toEndOf="@id/v_bundling_product_separator"
@@ -349,7 +362,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp">
 

@@ -96,12 +96,12 @@ internal fun View.showToaster(
 ) {
     if (actionLabel.isNotEmpty()) Toaster.toasterCustomCtaWidth = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl8)
     if (bottomMargin != null) Toaster.toasterCustomBottomHeight = bottomMargin
-    Toaster.make(this,
+    Toaster.build(this,
             text = message,
             duration = duration,
             type = type,
             actionText = actionLabel,
-            clickListener = actionListener)
+            clickListener = actionListener).show()
 }
 
 internal fun ImageView.loadImageFromUrl(url: String, requestListener: RequestListener<Drawable>) {

@@ -6,8 +6,9 @@ import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
 fun <T> LiveData<T>.observeAwaitValue(
-        time: Long = 2,
-        timeUnit: TimeUnit = TimeUnit.SECONDS): T? {
+    time: Long = 2,
+    timeUnit: TimeUnit = TimeUnit.SECONDS
+): T? {
     var value: T? = null
     val latch = CountDownLatch(1)
     val observer = Observer<T> { t ->

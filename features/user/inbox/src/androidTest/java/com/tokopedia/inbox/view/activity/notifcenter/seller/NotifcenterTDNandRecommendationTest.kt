@@ -4,10 +4,12 @@ import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterAssertion
 import com.tokopedia.inbox.view.activity.base.notifcenter.NotifcenterForceSellerRole
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.NotificationTopAdsBannerViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.matcher.hasViewHolderOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class NotifcenterTDNandRecommendationTest : NotifcenterForceSellerRole() {
 
     @Test

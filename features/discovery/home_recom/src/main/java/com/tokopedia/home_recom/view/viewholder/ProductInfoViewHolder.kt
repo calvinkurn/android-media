@@ -136,13 +136,14 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
 
     private fun onProductImpression(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let {
-            if (it.isTopads) {
-                itemView.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
-                    override fun onViewHint() {
+            itemView.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
+                override fun onViewHint() {
+                    if (it.isTopads) {
                         listener?.onProductAnchorImpression(productInfoDataModel)
                     }
-                })
-            }
+                    listener?.onProductAnchorImpressionHitGTM(productInfoDataModel)
+                }
+            })
         }
     }
 
@@ -179,6 +180,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : Ab
 
     interface ProductInfoListener{
         fun onProductAnchorImpression(productInfoDataModel: ProductInfoDataModel)
+        fun onProductAnchorImpressionHitGTM(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorBuyNow(productInfoDataModel: ProductInfoDataModel)

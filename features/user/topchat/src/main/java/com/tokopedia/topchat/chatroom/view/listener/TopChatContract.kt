@@ -2,25 +2,21 @@ package com.tokopedia.topchat.chatroom.view.listener
 
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
-import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 
 /**
@@ -126,19 +122,6 @@ interface TopChatContract {
             onSuccessDeleteConversation: () -> Unit
         )
 
-        fun getShopFollowingStatus(
-            shopId: Long,
-            onError: (Throwable) -> Unit,
-            onSuccessGetShopFollowingStatus: (Boolean) -> Unit
-        )
-
-        fun followUnfollowShop(
-            shopId: String,
-            onError: (Throwable) -> Unit,
-            onSuccess: (Boolean) -> Unit,
-            action: ToggleFavouriteShopUseCase.Action? = null
-        )
-
         fun sendAttachmentsAndMessage(
             sendMessage: String, referredMsg: ParentReply? = null
         )
@@ -157,13 +140,6 @@ interface TopChatContract {
 
         fun initProductPreviewFromAttachProduct(resultProducts: ArrayList<ResultProduct>)
 
-        fun onClickBannedProduct(liteUrl: String)
-
-        fun loadChatRoomSettings(
-            messageId: String,
-            onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit
-        )
-
         fun addToWishList(
             productId: String,
             userId: String,
@@ -175,8 +151,6 @@ interface TopChatContract {
             userId: String,
             wishListActionListener: WishListActionListener
         )
-
-        fun getOrderProgress(messageId: String)
 
         fun getStickerGroupList(chatRoom: ChatroomViewModel)
 
@@ -219,12 +193,6 @@ interface TopChatContract {
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 
         fun hasEmptyAttachmentPreview(): Boolean
-
-        fun addProductToCart(
-            requestParams: RequestParams,
-            onSuccessAddToCart: (data: DataModel) -> Unit,
-            onError: (msg: String) -> Unit
-        )
 
         fun addOngoingUpdateProductStock(
             productId: String,

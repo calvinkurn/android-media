@@ -3,12 +3,15 @@ package com.tokopedia.notifications.inApp.ruleEngine.repository;
 import android.app.Application;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationCacheHandler;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.database.RoomNotificationDB;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.StorageProvider;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.InAppDataDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 
 import static com.tokopedia.notifications.common.PayloadConverterKt.HOURS_24_IN_MILLIS;
@@ -22,11 +25,29 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
     private CMRemoteConfigUtils cmRemoteConfigUtils;
 
     RepositoryManager(Application application) {
-        RoomNotificationDB db = RoomNotificationDB.getDatabase(application);
-        this.storageProvider = new StorageProvider(db.inAppDataDao(), db.elapsedTimeDao(), this);
         this.application = application;
+        RoomNotificationDB db = getRoomNotificationDB();
+        this.storageProvider = new StorageProvider(db.inAppDataDao(), db.elapsedTimeDao(), this);
         cacheHandler = new CMNotificationCacheHandler(application.getApplicationContext());
         cmRemoteConfigUtils = new CMRemoteConfigUtils(application.getApplicationContext());
+    }
+
+
+    private RoomNotificationDB getRoomNotificationDB(){
+        return RoomNotificationDB.getDatabase(application);
+    }
+
+    public CMNotificationCacheHandler getCacheHandler(){
+        return cacheHandler;
+    }
+
+    public CMRemoteConfigUtils getCmRemoteConfigUtils(){
+        return cmRemoteConfigUtils;
+    }
+
+    @Nullable
+    public InAppDataDao getInAppDataDao(){
+        return getRoomNotificationDB().inAppDataDao();
     }
 
     public static void initRepository(Application application) {
@@ -73,7 +94,6 @@ public class RepositoryManager implements StorageProvider.StorageProviderListene
 
     public void onInappExpired(CMInApp cmInApp) {
         IrisAnalyticsEvents.INSTANCE.sendInAppEvent(application.getApplicationContext(), IrisAnalyticsEvents.INAPP_EXPIRED, cmInApp);
-
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
-import com.tokopedia.topchat.stub.chatroom.view.viewmodel.TopChatRoomViewModelStub
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -23,7 +22,7 @@ abstract class ChatRoomFakeViewModelModule {
     @ChatScope
     @IntoMap
     @ViewModelKey(TopChatViewModel::class)
-    internal abstract fun bindTopChatViewModel(viewModel: TopChatRoomViewModelStub): ViewModel
+    internal abstract fun bindTopChatViewModel(viewModel: TopChatViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -39,8 +39,8 @@ import javax.inject.Inject
 /**
  * Created by jegul on 26/05/20
  */
-class PlayBroadcastSetupBottomSheet(
-) : BottomSheetDialogFragment(),
+class PlayBroadcastSetupBottomSheet :
+        BottomSheetDialogFragment(),
         PlayBottomSheetCoordinator,
         PlayEtalasePickerFragment.Listener,
         ProductSetupListener,

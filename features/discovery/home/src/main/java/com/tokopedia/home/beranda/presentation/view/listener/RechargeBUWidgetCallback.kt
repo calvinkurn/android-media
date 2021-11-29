@@ -64,6 +64,14 @@ class RechargeBUWidgetCallback (val context: Context?,
         homeCategoryListener.getRechargeBUWidget(source)
     }
 
+    override fun onRechargeBUWidgetProductCardImpression(data: RechargeBUWidgetDataModel, position: Int) {
+        if (position < data.data.items.size) {
+            homeCategoryListener.getTrackingQueueObj()?.let { trackingQueue ->
+                RechargeBUWidgetTracking.homeRechargeBUWidgetCardImpressionTracker(trackingQueue, data, position, homeCategoryListener.userId)
+            }
+        }
+    }
+
     companion object {
         const val ACTION_IMPRESSION = "impression"
         const val ACTION_CLICK = "click"
