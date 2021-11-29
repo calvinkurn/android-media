@@ -232,9 +232,9 @@ public class Utils {
         return spannableString;
     }
 
-    public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {
+    public void shareDeal(int id, String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {
         String uri = DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
-        shareDeal(context, deeplinkSlug, uri, name, imageUrl, desktopUrl);
+        shareDeal(context, Integer.toString(id), uri, name, imageUrl, desktopUrl);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -258,9 +258,9 @@ public class Utils {
         }
     }
 
-    private void shareDeal(Context context, String slug, String uri, String name, String imageUrl, String desktopUrl) {
+    private void shareDeal(Context context, String id, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setId(slug)
+                .setId(id)
                 .setDescription("")
                 .setOgUrl(null)
                 .setType(LinkerData.ENTERTAINMENT_TYPE)
