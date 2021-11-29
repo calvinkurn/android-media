@@ -154,7 +154,9 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun hideDigitalRecommendation() {
-        adapter.removeDigitalRecommendation()
+        binding.rvRechargeOrderDetail?.post {
+            adapter.removeDigitalRecommendation()
+        }
     }
 
     override fun onClickStaticButton(staticButtonModel: RechargeOrderDetailStaticButtonModel) {

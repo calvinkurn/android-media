@@ -65,7 +65,7 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
                     val result = convertToRedeemedResponse(data)
                     eventRedeemedMutable.value = result
                 } else {
-                    val errorMessage = convertToErrorResponse(data)
+                    val errorMessage = convertToErrorResponseRedeemed(data)
                     isErrorMutable.value = MessageErrorException(errorMessage)
                 }
             }
@@ -82,6 +82,12 @@ class EventRedeemViewModel @Inject constructor(private val dispatcher: Coroutine
 
         private fun convertToErrorResponse(typeRestResponseMap: Map<Type, RestResponse?>): String? {
             val errorBody = typeRestResponseMap[EventRedeem::class.java]?.errorBody ?: ""
+            val errorRedeem = Gson().fromJson(errorBody, ErrorRedeem::class.java)
+            return errorRedeem.messageError.firstOrNull()
+        }
+
+        private fun convertToErrorResponseRedeemed(typeRestResponseMap: Map<Type, RestResponse?>): String? {
+            val errorBody = typeRestResponseMap[EventRedeemedData::class.java]?.errorBody ?: ""
             val errorRedeem = Gson().fromJson(errorBody, ErrorRedeem::class.java)
             return errorRedeem.messageError.firstOrNull()
         }

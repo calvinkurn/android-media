@@ -2,9 +2,6 @@
     <string name="home">Home</string>
     <string name="feed">Feed</string>
     <string name="inbox">Inbox</string>
-    <string name="keranjang">Keranjang</string>
-    <string name="akun">Akun</string>
-    <string name="akun_non_login">Masuk</string>
     <string name="official">Official Store</string>
     <string name="wishlist">Wishlist</string>
     <string name="uoh">Transaksi</string>
@@ -25,9 +22,6 @@
 
     <string name="notifications">Notifikasi</string>
 
-    <string name="info_penjual">Info Penjual</string>
-    <string name="user_info">Info Pengguna</string>
-
     <string name="penjualan">Penjualan</string>
     <string name="pembelian">Pembelian</string>
     <string name="komplain_saya">Pesanan Dikomplain</string>
@@ -37,7 +31,6 @@
 
     <string name="menunggu_pembayaran">Menunggu Pembayaran</string>
     <string name="menunggu_konfirmasi">Menunggu Konfirmasi</string>
-    <string name="pesanan_diproses">Pesanan Diproses</string>
     <string name="pesanan_diproses_uoh">Diproses</string>
 
     <string name="pesanan_baru">Pesanan Baru</string>
@@ -63,49 +56,17 @@
     <string name="navigation_home_label_longpress_share">Wishlist</string>
     <string name="navigation_home_label_longpress_bayar">Tagihan</string>
     <string name="navigation_home_label_longpress_jual">Jual</string>
-    <string name="text_title_filter">Filter</string>
-    <string name="text_title_reset">Reset</string>
-    <string name="text_button_show_filter">Tampilkan Hasil</string>
-    <string name="mark_all_as_read">Tandai semua dibaca</string>
-
-    <string name="seller_label">Untuk Penjual</string>
-    <string name="buyer_label">Untuk Pembeli</string>
-
-    <string name="title_counter_update_notification">" (%1$s)"</string>
-    <string name="title_notification_update">Update</string>
-    <string name="title_notification_activity">Transaksi</string>
-    <string name="title_setting">Setting</string>
-    <string name="exceed_ninety_nine">99+</string>
 
     <string name="filter">Filter</string>
     <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="wishlist_check_cart">LIHAT</string>
 
-    <string name="in_full">Selengkapnya</string>
-
-    <string name="notification_empty_message">Belum ada notifikasi</string>
-
-    <string name="coachicon_title_filter">Cari notifikasi lebih cepat dengan filter</string>
-    <string name="coachicon_description_filter">Klik salah satu filter buat menampilkan notifikasi sesuai kebutuhanmu</string>
-    <string name="coachicon_title_tabs">Cek notifikasi terbaru di sini</string>
-    <string name="coachicon_description_tabs">Dapatkan informasi transaksi dan promo terbaru untuk pembeli dan penjual di sini</string>
-    <string name="coachicon_title_notification_setting">Tampilan baru pengaturan notifikasi</string>
-    <string name="coachicon_description_notification_setting">Kini, kamu bisa atur notifikasi dari Tokopedia sesuai kebutuhan</string>
-    <string name="notif_transaction_for_you">Untuk Kamu</string>
-    <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
-    <string name="title_read_more">Lihat Semua</string>
-    <string name="no_notification_update_yet">Belum ada Notification</string>
-
     <string name="tag_lottie_animation_view">lottieAnimationView</string>
     <string name="tag_title_textview">titleTextView</string>
     <string name="tag_badge_textview">badgeTextView</string>
 
-    <string name="id_menu_home">menu_home</string>
-    <string name="id_menu_feed">menu_feed</string>
-    <string name="id_menu_os">menu_os</string>
-    <string name="id_menu_cart">menu_cart</string>
-    <string name="id_menu_account">menu_account</string>
-    
     <string name="content_desc_label_image">Label</string>
     <string name="content_desc_label_arrow">Next</string>
+
+    <string name="pref_receive_shake_nav" translatable="false">notification_shake_shake</string>
 </resources>

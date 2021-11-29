@@ -585,16 +585,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         })
 
-        viewModel.walletEligible.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessGetWalletEligible(it.data)
-                }
-                is Fail -> {
-                    onFailedGetWalletEligible()
-                }
-            }
-        })
 
         viewModel.phoneNo.observe(viewLifecycleOwner, Observer {
             if(it.isNotEmpty()) {
@@ -620,11 +610,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun getBalanceAndPoints(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
         centralizedUserAssetConfig.assetConfig.forEach {
-            if (it.id != AccountConstants.WALLET.GOPAY
-            ) {
-                viewModel.getBalanceAndPoint(it.id)
-            } else {
-                viewModel.getGopayWalletEligible()
+            viewModel.getBalanceAndPoint(it.id)
+
+            if(it.id == AccountConstants.WALLET.GOPAY) {
+                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
             }
         }
     }
@@ -644,24 +633,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun onFailedGetBalanceAndPoint(walletId: String) {
         balanceAndPointAdapter?.changeItemToFailedById(walletId)
-        adapter?.notifyItemChanged(0)
-    }
-
-    private fun onSuccessGetWalletEligible(walletappWalletEligibility: WalletappWalletEligibility) {
-        val eligibility = walletappWalletEligibility.data
-        if (eligibility.isNotEmpty()) {
-            if (eligibility[0].isEligible) {
-                viewModel.getBalanceAndPoint(AccountConstants.WALLET.GOPAY)
-                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.TOKOPOINT)
-            } else {
-                balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
-            }
-            adapter?.notifyItemChanged(0)
-        }
-    }
-
-    private fun onFailedGetWalletEligible() {
-        balanceAndPointAdapter?.removeById(AccountConstants.WALLET.GOPAY)
         adapter?.notifyItemChanged(0)
     }
 
@@ -1084,9 +1055,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
             AccountConstants.SettingCode.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
-            }
-            AccountConstants.SettingCode.SETTING_OLD_ACCOUNT -> if (GlobalConfig.isAllowDebuggingTools()) {
-                RouteManager.route(activity, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
             }
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)

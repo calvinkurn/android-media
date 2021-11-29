@@ -21,7 +21,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.window.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -35,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toZeroStringIfNull
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topchat.R
@@ -258,9 +258,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
 
     private fun setupDummyToolbar() {
         intent.getParcelableExtra<ChatRoomHeaderUiModel>(ApplinkConst.Chat.PARAM_HEADER)?.let { header ->
-            chatRoomToolbarAvatar?.let { imageView ->
-                ImageHandler.loadImageCircle2(this, imageView, header.image)
-            }
+            chatRoomToolbarAvatar?.loadImageCircle(header.image)
             chatRoomToolbarTitle?.text = header.name
             chatRoomToolbarLabel?.hide()
             chatRoomToolbarSubtitle?.hide()

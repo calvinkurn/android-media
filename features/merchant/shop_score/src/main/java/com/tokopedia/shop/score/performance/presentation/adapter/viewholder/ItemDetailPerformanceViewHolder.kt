@@ -9,6 +9,7 @@ import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_SYMBOL
 import com.tokopedia.shop.score.common.ShopScoreConstant.AND_TEXT
 import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_NULL
+import com.tokopedia.shop.score.common.ShopScoreConstant.SHOP_SCORE_ZERO
 import com.tokopedia.shop.score.databinding.ItemDetailShopPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ItemShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
@@ -48,7 +49,7 @@ class ItemDetailPerformanceViewHolder(
                     }
                 }
             root.setOnClickListener {
-                if (shopScore < SHOP_SCORE_NULL) {
+                if (shopScore < SHOP_SCORE_ZERO) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
@@ -58,7 +59,7 @@ class ItemDetailPerformanceViewHolder(
                 }
             }
             icItemPerformanceRight.setOnClickListener {
-                if (shopScore == SHOP_SCORE_NULL) {
+                if (shopScore < SHOP_SCORE_ZERO) {
                     itemShopPerformanceListener.onItemClickedToFaqClicked()
                 } else {
                     itemShopPerformanceListener.onItemClickedToDetailBottomSheet(
@@ -106,10 +107,13 @@ class ItemDetailPerformanceViewHolder(
             ) {
                 tvPerformanceValue.setTextColorUnifyParameterDetail(element.colorValueDetailPerformance)
             }
-            tvPerformanceTarget.text = getString(
-                R.string.item_detail_performance_target,
-                element?.targetDetailPerformance.orEmpty()
-            )
+            tvPerformanceTarget.text =
+                if (element?.targetDetailPerformance.isNullOrBlank()) "" else {
+                    getString(
+                        R.string.item_detail_performance_target,
+                        element?.targetDetailPerformance.orEmpty()
+                    )
+                }
         }
     }
 
