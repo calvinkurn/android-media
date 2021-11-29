@@ -275,6 +275,7 @@ open class BaseAutoCompleteActivity: BaseActivity(),
                 autoCompleteTracking.eventClickSubmitAutoComplete(
                     queryOrHint,
                     pageSource,
+                    searchResultApplink
                 )
         }
     }
