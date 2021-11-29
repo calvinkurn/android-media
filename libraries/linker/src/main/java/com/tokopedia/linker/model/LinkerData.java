@@ -76,6 +76,7 @@ public class LinkerData implements Parcelable {
     private String feature;
     private String channel;
     private String campaign;
+    private boolean isAffiliate;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -131,6 +132,7 @@ public class LinkerData implements Parcelable {
         feature = in.readString();
         channel = in.readString();
         campaign = in.readString();
+        isAffiliate = in.readByte() != 0;
     }
 
     @Override
@@ -177,6 +179,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(feature);
         dest.writeString(channel);
         dest.writeString(campaign);
+        dest.writeByte((byte) (isAffiliate ? 1 : 0));
     }
 
     @Override
@@ -623,6 +626,14 @@ public class LinkerData implements Parcelable {
         this.campaign = campaign;
     }
 
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -667,6 +678,7 @@ public class LinkerData implements Parcelable {
         private String feature;
         private String channel;
         private String campaign;
+        private boolean isAffiliate;
 
         private Builder() {
         }
@@ -889,6 +901,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setAffiliate(Boolean isAffiliate){
+            this.isAffiliate = isAffiliate;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -937,6 +954,7 @@ public class LinkerData implements Parcelable {
             linkerData.setFeature(feature);
             linkerData.setChannel(channel);
             linkerData.setCampaign(campaign);
+            linkerData.setAffiliate(isAffiliate);
             return linkerData;
         }
 
