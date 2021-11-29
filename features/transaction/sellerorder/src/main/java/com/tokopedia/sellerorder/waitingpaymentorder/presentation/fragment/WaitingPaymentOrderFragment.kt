@@ -83,8 +83,12 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
 
     override fun onPause() {
         super.onPause()
-        buttonEnterAnimation?.end()
-        buttonLeaveAnimation?.end()
+        if (buttonEnterAnimation?.isRunning == true) {
+            buttonEnterAnimation?.end()
+        }
+        if (buttonLeaveAnimation?.isRunning == true) {
+            buttonLeaveAnimation?.end()
+        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory> {
@@ -239,8 +243,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                                     oldItem is WaitingPaymentOrderUiModel && newItem.orderId == oldItem.orderId
                                 }
 
-                                newItem.isExpanded = (oldItem as? WaitingPaymentOrderUiModel)?.isExpanded
-                                        ?: false
+                                newItem.isExpanded = (oldItem as? WaitingPaymentOrderUiModel)?.isExpanded ?: false
+                                newItem.collapsedHeight = (oldItem as? WaitingPaymentOrderUiModel)?.collapsedHeight.orZero()
+                                newItem.expandedHeight = (oldItem as? WaitingPaymentOrderUiModel)?.expandedHeight.orZero()
                                 newItem
                             }
                     )

@@ -19,8 +19,8 @@ import io.mockk.mockk
  */
 class PlayEtalasePickerViewModelRobot(
         private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineTestDispatchers,
-        private val setupDataStore: PlayBroadcastSetupDataStore,
+        dispatcher: CoroutineTestDispatchers,
+        setupDataStore: PlayBroadcastSetupDataStore,
         getSelfEtalaseListUseCase: GetSelfEtalaseListUseCase,
         getProductsInEtalaseUseCase: GetProductsInEtalaseUseCase,
         userSession: UserSessionInterface,

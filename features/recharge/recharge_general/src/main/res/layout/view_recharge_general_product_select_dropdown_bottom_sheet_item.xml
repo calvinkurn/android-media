@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/dp_12"
-    android:paddingBottom="@dimen/dp_12"
+    android:padding="12dp"
+    android:paddingBottom="12dp"
     app:layout_constraintVertical_chainStyle="packed">
 
     <com.tokopedia.unifycomponents.Label
@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/product_select_item_desc"
         android:layout_alignParentLeft="true"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:textColor="@color/Unify_Y500"
         app:typographyType="small"
         app:typographyWeight="bold"
@@ -60,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/product_select_item_price"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
         android:layout_toRightOf="@+id/product_select_item_price"
         app:typographyType="small"
         tools:text="Rp190.000" />

@@ -7,7 +7,7 @@ data class ShortcutResponse(
 	@SerializedName("tokopointsShortcutList")
 	@Expose
 	val tokopointsShortcutList: TokopointsShortcutList = TokopointsShortcutList(),
-	@SerializedName("tokopointsStatusFiltered")
+	@SerializedName("tokopoints")
 	@Expose
 	val tokopointsStatusFiltered: TokopointsStatusFiltered = TokopointsStatusFiltered()
 )

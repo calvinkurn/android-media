@@ -12,10 +12,9 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
+import com.tokopedia.product.manage.databinding.ItemProductManageVariantBinding
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
-import kotlinx.android.synthetic.main.item_product_manage_variant.view.*
-import java.math.RoundingMode
-import java.text.NumberFormat
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductVariantPriceViewHolder(
     itemView: View,
@@ -28,10 +27,12 @@ class ProductVariantPriceViewHolder(
         val LAYOUT = R.layout.item_product_manage_variant
     }
 
+    private val binding by viewBinding<ItemProductManageVariantBinding>()
+
     private var priceTextWatcher: TextWatcher? = null
 
     override fun bind(variant: ProductVariant) {
-        itemView.textProductName.text = variant.name
+        binding?.textProductName?.text = variant.name
         setupEditTextFieldPrice(variant)
     }
 
@@ -51,7 +52,7 @@ class ProductVariantPriceViewHolder(
     }
 
     private fun setupClearIcon() {
-        itemView.textFieldPrice.apply {
+        binding?.textFieldPrice?.run {
             setFirstIcon(com.tokopedia.unifyprinciples.R.drawable.ic_system_action_close_normal_24)
             getFirstIcon().setOnClickListener {
                 textFieldInput.text.clear()
@@ -60,14 +61,14 @@ class ProductVariantPriceViewHolder(
     }
 
     private fun setTextFieldPriceMaxLength() {
-        itemView.textFieldPrice.apply {
+        binding?.textFieldPrice?.run {
             val maxLength = LengthFilter(MAXIMUM_PRICE_LENGTH)
             textFieldInput.filters = arrayOf(maxLength)
         }
     }
 
     private fun setTextFieldPriceValue(variant: ProductVariant) {
-       itemView.textFieldPrice.apply {
+       binding?.textFieldPrice?.run {
            val price = priceMap.getOrElse(variant.id, { variant.price })
            // For now, set the price to int first as we do not support decimal price edit
            val priceString = price.toInt().orZero().toString()
@@ -84,7 +85,7 @@ class ProductVariantPriceViewHolder(
     }
 
     private fun setTextFieldPriceListeners() {
-        itemView.textFieldPrice.apply {
+        binding?.textFieldPrice?.run {
             textFieldInput.addTextChangedListener(priceTextWatcher)
 
             setOnFocusChangeListener { _, hasFocus ->
@@ -97,11 +98,11 @@ class ProductVariantPriceViewHolder(
     }
 
     private fun setInputType() {
-        itemView.textFieldPrice.setInputType(InputType.TYPE_CLASS_NUMBER)
+        binding?.textFieldPrice?.setInputType(InputType.TYPE_CLASS_NUMBER)
     }
 
     private fun showMinPriceError() {
-        itemView.textFieldPrice.apply {
+        binding?.textFieldPrice?.run {
            context?.let {
                val message = it.getString(R.string.product_manage_quick_edit_min_price_error)
                setMessage(message)
@@ -111,14 +112,14 @@ class ProductVariantPriceViewHolder(
     }
 
     private fun hidePriceError() {
-        itemView.textFieldPrice.apply {
+        binding?.textFieldPrice?.run {
             setMessage("")
             setError(false)
         }
     }
 
     private fun setPriceTextWatcher(variant: ProductVariant) {
-        itemView.textFieldPrice.run {
+        binding?.textFieldPrice?.run {
             priceTextWatcher = object: TextWatcher {
                 override fun afterTextChanged(input: Editable) {
                     val price = CurrencyFormatHelper.convertRupiahToLong(input.toString()).toDouble()
@@ -142,7 +143,7 @@ class ProductVariantPriceViewHolder(
     }
 
     private fun removeTextFieldPriceListeners() {
-        itemView.textFieldPrice.apply {
+        binding?.textFieldPrice?.run {
             textFieldInput.removeTextChangedListener(priceTextWatcher)
         }
     }

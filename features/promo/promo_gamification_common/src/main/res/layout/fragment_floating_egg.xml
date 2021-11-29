@@ -19,8 +19,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:adjustViewBounds="true" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -28,14 +28,14 @@
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 android:layout_width="wrap_content"
-                android:padding="@dimen/dp_2"
+                android:padding="2dp"
                 android:minWidth="@dimen/dp_22"
                 android:layout_height="@dimen/dp_22"
                 android:layout_gravity="center_vertical|end"
                 android:background="@drawable/gami_core_circle_red_shadow"
                 android:gravity="center"
-                android:layout_marginRight="@dimen/dp_6"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="16dp"
                 android:textColor="@color/white"
                 tools:text="99+"/>
 
@@ -44,8 +44,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
                 android:background="@drawable/gami_core_bg_countdown_timer_thin"
                 android:gravity="center"
                 android:paddingTop="@dimen/dp_3"
@@ -60,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_vertical|start"
             android:background="@drawable/gami_core_minimize_button"/>
     </FrameLayout>

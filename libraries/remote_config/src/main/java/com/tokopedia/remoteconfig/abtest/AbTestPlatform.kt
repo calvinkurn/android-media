@@ -10,10 +10,8 @@ import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_TOP_NAV2
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP
-import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_REVAMP2
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT
+import com.tokopedia.remoteconfig.RollenceKey.NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
 import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
@@ -84,8 +82,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         //override customer app ab config features
         if (GlobalConfig.PACKAGE_APPLICATION == CONSUMER_PRO_APPLICATION_PACKAGE) {
             when (key) {
-                NAVIGATION_EXP_TOP_NAV -> return NAVIGATION_VARIANT_REVAMP
-                NAVIGATION_EXP_TOP_NAV2 -> return NAVIGATION_VARIANT_REVAMP2
+                NAVIGATION_EXP_OS_BOTTOM_NAV_EXPERIMENT -> return NAVIGATION_VARIANT_OS_BOTTOM_NAV_EXPERIMENT
             }
         }
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
@@ -120,7 +117,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return mutableSetOf<String>().apply {
             for ((key, value) in sharedPreferences.all){
                 val valueClassType = value?.let { it::class.java }
-                if ((key.equals(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
+                if ((key.contains(keyName, true) || keyName.isEmpty()) && valueClassType == String::class.java)
                     add(key)
             }
         }
@@ -137,6 +134,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         if (userSession.isLoggedIn) {
             payloads[ID] = userSession.userId
         } else {
+            if(handleDeviceIdless()) {return}
             payloads[ID] = userSession.deviceId
         }
         payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
@@ -168,6 +166,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     override fun onError(e: Throwable?) { }
 
                 }}
+    }
+
+    private fun handleDeviceIdless() :Boolean {
+        if(userSession.deviceId == null){
+            return true
+        }
+        return false
     }
 
     private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): RolloutFeatureVariants {

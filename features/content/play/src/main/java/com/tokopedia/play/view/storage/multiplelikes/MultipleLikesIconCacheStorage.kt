@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.storage.multiplelikes
 
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 import com.tokopedia.play.di.PlayScope
 import javax.inject.Inject
 
@@ -10,13 +10,13 @@ import javax.inject.Inject
 @PlayScope
 class MultipleLikesIconCacheStorage @Inject constructor() {
 
-    private val cacheMap: MutableMap<String, Drawable> = mutableMapOf()
+    private val cacheMap: MutableMap<String, Bitmap> = mutableMapOf()
 
-    fun addCache(url: String, drawable: Drawable) {
-        cacheMap[url] = drawable
+    fun addCache(url: String, bitmap: Bitmap) {
+        cacheMap[url] = bitmap
     }
 
-    fun getDrawable(url: String): Drawable? {
+    fun getBitmap(url: String): Bitmap? {
         return cacheMap[url]
     }
 }

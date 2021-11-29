@@ -96,24 +96,13 @@ class SomContainerFragment : TkpdBaseV4Fragment(), SomListFragment.SomListClickL
         binding?.ivSomDetailWelcomeIllustration?.loadImage(URL_WELCOME_ILLUSTRATION)
     }
 
-    private fun setupSomListWidth() {
-        binding?.fragmentList?.let {
-            val layoutParamCopy = it.layoutParams
-            layoutParamCopy.width = it.width
-            it.layoutParams = layoutParamCopy
-        }
-    }
-
     private fun attachFragments() {
-        binding?.fragmentList?.post {
-            setupSomListWidth()
-            initiateListFragment()
-            attachListFragment()
-            arguments?.let {
-                it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
-                    if (!orderId.isNullOrEmpty()) {
-                        attachDetailFragment(orderId, true)
-                    }
+        initiateListFragment()
+        attachListFragment()
+        arguments?.let {
+            it.getString(DeeplinkMapperOrder.QUERY_PARAM_ORDER_ID).let { orderId ->
+                if (!orderId.isNullOrEmpty()) {
+                    attachDetailFragment(orderId, true)
                 }
             }
         }

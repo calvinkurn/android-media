@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-//apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.crashlytics'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
 apply from: "$rootDir/buildconfig/aar/local-aar.gradle"
 apply plugin: 'io.hansel.preprocessor'
 
@@ -108,10 +108,14 @@ dependencies {
     })
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 
-    //you can delete below line if you use old login, then Build -> Switch to TestApp again
-    //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
-    //logintestapp should not appear in compile-testapp-plugin.gradle if it is successfully excluded
-    implementation projectOrAar(rootProject.ext.features.logintestapp)
+    /*
+        Do not remove this dependencies, because we use real login usecase
+    */
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
+    implementation projectOrAar(rootProject.ext.features.otp)
+    implementation projectOrAar(rootProject.ext.features.loginregister)
+    implementation projectOrAar(rootProject.ext.features.logout)
+    implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
 
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented

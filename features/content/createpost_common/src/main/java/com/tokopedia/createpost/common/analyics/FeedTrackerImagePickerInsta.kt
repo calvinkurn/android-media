@@ -43,7 +43,6 @@ class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
         map[PARAM_EVENT_LABEL] = shopId
         map[KEY_BUSINESS_UNIT_EVENT] = CONTENT
         map[KEY_CURRENT_SITE_EVENT] = MARKETPLACE
-        map[KEY_SESSION_IRIS] = SESSION_IRIS_VALUE
         getTracker().sendGeneralEvent(map)
     }
 
@@ -56,7 +55,6 @@ class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
         map[KEY_BUSINESS_UNIT_EVENT] = CONTENT
         map[KEY_CURRENT_SITE_EVENT] = MARKETPLACE
         map[KEY_CURRENT_SITE_EVENT] = MARKETPLACE
-        map[KEY_SESSION_IRIS] = SESSION_IRIS_VALUE
         getTracker().sendGeneralEvent(map)
     }
 
@@ -68,7 +66,6 @@ class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
         map[PARAM_EVENT_LABEL] = shopId
         map[KEY_BUSINESS_UNIT_EVENT] = CONTENT
         map[KEY_CURRENT_SITE_EVENT] = MARKETPLACE
-        map[KEY_SESSION_IRIS] = SESSION_IRIS_VALUE
         getTracker().sendGeneralEvent(map)
     }
 
@@ -80,7 +77,6 @@ class FeedTrackerImagePickerInsta(val shopId: String) : TrackerContract {
         map[PARAM_EVENT_LABEL] = "$shopId - $mediaType"
         map[KEY_BUSINESS_UNIT_EVENT] = CONTENT
         map[KEY_CURRENT_SITE_EVENT] = MARKETPLACE
-        map[KEY_SESSION_IRIS] = SESSION_IRIS_VALUE
         getTracker().sendGeneralEvent(map)
     }
 }

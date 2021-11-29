@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:paddingTop="@dimen/dp_18"
-    android:paddingBottom="@dimen/dp_8"
+    android:paddingBottom="8dp"
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -15,8 +15,8 @@
         style="@style/TextView.Title.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:textColor="@color/Unify_N700_32"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -30,8 +30,8 @@
         style="@style/TextView.Title.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -47,12 +47,12 @@
         android:layout_width="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginRight="4dp"
+        android:layout_marginLeft="4dp"
         app:icon_color_light_enable="@color/Unify_N700"
         app:icon_color_night_enable="@color/Unify_N700"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat ="@drawable/ic_shop_page_product_grid_list_old"
+        app:srcCompat ="@drawable/ic_shop_page_product_grid_list"
         app:layout_constraintHorizontal_bias="1"
         android:layout_height="wrap_content" />
 

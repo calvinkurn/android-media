@@ -5,13 +5,13 @@
     android:id="@+id/groupCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_12">
+    android:layout_margin="12dp">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="14dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,24 +19,24 @@
         android:id="@+id/group_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         app:layout_constraintEnd_toStartOf="@id/radio_button"
         app:layout_constraintStart_toEndOf="@id/img"
         app:layout_constraintTop_toTopOf="@id/img"
         app:typographyType="heading_6"
         tools:text="sepatu"
-        android:layout_marginStart="@dimen/dp_8" />
+        android:layout_marginStart="8dp" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/radio_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_14"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +44,7 @@
         android:id="@+id/label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         android:text="@string/topads_common_ads_active"
         android:textColor="@color/tkpd_main_green"
         app:layout_constraintStart_toStartOf="@id/img"
@@ -53,20 +53,20 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_total"
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
         android:layout_marginLeft="@dimen/dp_11"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@id/label"
         app:layout_constraintTop_toBottomOf="@id/group_title"
-        tools:layout_height="@dimen/dp_16"
-        tools:layout_width="@dimen/dp_16" />
+        tools:layout_height="16dp"
+        tools:layout_width="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/productCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginLeft="4dp"
         android:includeFontPadding="false"
         app:layout_constraintStart_toEndOf="@id/img_total"
         app:layout_constraintTop_toTopOf="@id/label"
@@ -75,22 +75,22 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/img_key"
-        android:layout_width="@dimen/dp_10"
-        android:layout_height="@dimen/dp_10"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
         android:layout_marginStart="@dimen/dp_11"
         android:layout_marginLeft="@dimen/dp_11"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@id/productCount"
         app:layout_constraintTop_toBottomOf="@id/group_title"
-        tools:layout_height="@dimen/dp_16"
-        tools:layout_width="@dimen/dp_16" />
+        tools:layout_height="16dp"
+        tools:layout_width="16dp" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/key_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="4dp"
+        android:layout_marginLeft="4dp"
         android:includeFontPadding="false"
         app:layout_constraintStart_toEndOf="@id/img_key"
         app:layout_constraintTop_toTopOf="@id/img_key"

@@ -9,6 +9,7 @@ data class CartItemModel(
         var shopId: String = "",
         var shopName: String = "",
         var productId: Long = 0,
+        var productCatId: Long = 0,
         var name: String = "",
         var price: Double = 0.0,
         var originalPrice: Double = 0.0,
@@ -54,5 +55,16 @@ data class CartItemModel(
         var deviceModel: String = "",
         var diagnosticId: String = "",
         var productInformation: List<String> = emptyList(),
-        var productAlertMessage: String = ""
+        var productAlertMessage: String = "",
+        var isBundlingItem: Boolean = false,
+        var bundlingItemPosition: Int = 0,
+        var bundleId: String = "",
+        var bundleGroupId: String = "",
+        var bundleType: String = "",
+        var bundleTitle: String = "",
+        var bundlePrice: Long = 0L,
+        var bundleSlashPriceLabel: String = "",
+        var bundleOriginalPrice: Long = 0L,
+        var bundleQuantity: Int = 0,
+        var bundleIconUrl: String = ""
 ) : Parcelable

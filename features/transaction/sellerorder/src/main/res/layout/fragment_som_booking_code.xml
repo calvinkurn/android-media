@@ -12,9 +12,9 @@
         android:id="@+id/barcode_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/barcode_label_one"
         android:textColor="@color/Unify_N700_44"
         android:textSize="@dimen/sp_12" />
@@ -23,9 +23,9 @@
         android:id="@+id/text_tap_barcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="24dp"
         android:layout_toRightOf="@+id/barcode_label"
         android:text="@string/barcode_label_two"
         android:textColor="@color/Unify_G400"
@@ -53,9 +53,9 @@
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_copy_green"
             android:scaleType="centerInside"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
-            android:layout_marginStart="@dimen/dp_8" />
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="8dp" />
 
     </LinearLayout>
 
@@ -66,9 +66,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ll_code"
         android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:background="@drawable/rect_yellow"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:text="@string/barcode_helper"
         android:textColor="@color/Unify_N700_68" />
 
@@ -76,18 +76,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/barcode_helper"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:background="@color/Unify_N0">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:layout_toEndOf="@+id/ic_message"
             android:background="@color/transparent"
             android:text="@string/message_label"
@@ -98,8 +98,8 @@
             android:id="@+id/ic_message"
             android:layout_width="@dimen/dp_18"
             android:layout_height="@dimen/dp_18"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             app:srcCompat="@drawable/info_icon" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -107,7 +107,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ic_message"
-            android:layout_margin="@dimen/dp_16" />
+            android:layout_margin="16dp" />
     </RelativeLayout>
 
     <View
@@ -122,10 +122,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/barcode_label"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         app:cardCornerRadius="3dp"
-        app:cardElevation="@dimen/dp_2"
-        app:contentPadding="@dimen/dp_16">
+        app:cardElevation="2dp"
+        app:contentPadding="16dp">
 
         <ImageView
             android:id="@+id/barcode_img"

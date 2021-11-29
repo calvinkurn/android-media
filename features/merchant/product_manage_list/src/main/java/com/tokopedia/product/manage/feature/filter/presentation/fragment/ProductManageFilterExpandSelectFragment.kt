@@ -14,6 +14,8 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
+import com.tokopedia.product.manage.databinding.FragmentProductManageFilterSearchBinding
+import com.tokopedia.product.manage.databinding.FragmentProductManageFilterSelectBinding
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
@@ -29,7 +31,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandSelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import kotlinx.android.synthetic.main.fragment_product_manage_filter_select.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ProductManageFilterExpandSelectFragment :
@@ -54,6 +56,8 @@ class ProductManageFilterExpandSelectFragment :
     private var flag: String = ""
     private var isChipsShown = false
 
+    private var binding by autoClearedNullable<FragmentProductManageFilterSelectBinding>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -73,16 +77,16 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_product_manage_filter_select, container, false)
+        binding = FragmentProductManageFilterSelectBinding.inflate(inflater, container, false)
         val adapterTypeFactory = SelectAdapterTypeFactory(this, this)
         adapter = SelectAdapter(adapterTypeFactory)
-        return view
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        filterSelectRecyclerView.adapter = adapter
-        filterSelectRecyclerView.layoutManager = LinearLayoutManager(this.context)
+        binding?.filterSelectRecyclerView?.adapter = adapter
+        binding?.filterSelectRecyclerView?.layoutManager = LinearLayoutManager(this.context)
         initView()
     }
 
@@ -139,16 +143,19 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        filterSelectHeader.isShowBackButton = true
-        filterSelectHeader.isShowShadow = false
-        filterSelectHeader.setNavigationOnClickListener {
-            activity?.onBackPressed()
-        }
-        context?.let {
-            if(flag == SORT_CACHE_MANAGER_KEY) {
-                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_sort_select_title)
-            } else {
-                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_etalase_select_title)
+        binding?.filterSelectHeader?.run {
+            isShowBackButton = true
+            isShowShadow = false
+            setNavigationOnClickListener {
+                activity?.onBackPressed()
+            }
+            context?.let {
+                title =
+                    if (flag == SORT_CACHE_MANAGER_KEY) {
+                        it.resources.getString(R.string.product_manage_filter_sort_select_title)
+                    } else {
+                        it.resources.getString(R.string.product_manage_filter_etalase_select_title)
+                    }
             }
         }
     }

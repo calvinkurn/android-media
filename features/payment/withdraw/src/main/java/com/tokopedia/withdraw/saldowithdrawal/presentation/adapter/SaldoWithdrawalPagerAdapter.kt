@@ -1,6 +1,7 @@
 package com.tokopedia.withdraw.saldowithdrawal.presentation.adapter
 
 import android.content.Context
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -10,11 +11,11 @@ import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.SellerSaldoW
 import com.tokopedia.withdraw.saldowithdrawal.presentation.fragment.BaseWithdrawalFragment
 
 class SaldoWithdrawalPagerAdapter(val context: Context,
-                                  fragmentManager: FragmentManager)
+                                  fragmentManager: FragmentManager,
+                                  var arguments: Bundle)
     : FragmentStatePagerAdapter(fragmentManager,
         BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    val fragmentList: ArrayList<BaseWithdrawalFragment> = arrayListOf()
 
     override fun getPageTitle(position: Int): CharSequence? {
         return when (getItem(position)) {
@@ -25,9 +26,13 @@ class SaldoWithdrawalPagerAdapter(val context: Context,
     }
 
     override fun getItem(position: Int): Fragment {
-        return fragmentList[position]
+        return if(position == 0){
+            BuyerSaldoWithdrawalFragment.getInstance(arguments)
+        } else {
+            SellerSaldoWithdrawalFragment.getInstance(arguments)
+        }
     }
 
-    override fun getCount(): Int = fragmentList.size
+    override fun getCount(): Int = 2
 
 }

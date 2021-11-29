@@ -1,10 +1,8 @@
 package com.tokopedia.play.view.wrapper
 
-import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.PlayProductUiModel.Product
 
 /**
  * Created by jegul on 18/12/19

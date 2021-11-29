@@ -6,7 +6,7 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenalt
 data class PenaltyFilterUiModel(
     val title: String = "",
     val isDividerVisible: Boolean = false,
-    var chipsFilerList: List<ChipsFilterPenaltyUiModel> = listOf()
+    var chipsFilterList: List<ChipsFilterPenaltyUiModel> = listOf()
 ) : BaseFilterPenaltyPage {
 
     data class ChipsFilterPenaltyUiModel(

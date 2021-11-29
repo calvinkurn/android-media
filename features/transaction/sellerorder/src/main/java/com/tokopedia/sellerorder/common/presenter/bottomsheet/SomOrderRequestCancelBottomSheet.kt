@@ -11,7 +11,6 @@ import com.tokopedia.sellerorder.common.presenter.SomBottomSheet
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.databinding.BottomsheetBuyerRequestCancelOrderBinding
-import com.tokopedia.sellerorder.databinding.BottomsheetCancelOrderBinding
 
 class SomOrderRequestCancelBottomSheet(
         context: Context

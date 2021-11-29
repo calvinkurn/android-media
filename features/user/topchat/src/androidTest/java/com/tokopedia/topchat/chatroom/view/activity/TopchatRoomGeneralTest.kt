@@ -6,14 +6,31 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.test.application.annotations.UiTest
+import com.tokopedia.test.application.matcher.hasViewHolderItemAtPosition
+import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.RoomSettingFraudAlertViewHolder
+import org.hamcrest.CoreMatchers.not
+import org.junit.Before
 import org.junit.Test
 
+@UiTest
 class TopchatRoomGeneralTest : TopchatRoomTest() {
 
     private val exShopId = "1231"
     private val exUserId = "1232"
+    private var orderProgressResponseNotEmpty = OrderProgressResponse()
+
+    @Before
+    fun additionalSetup() {
+        orderProgressResponseNotEmpty = AndroidFileUtil.parse<OrderProgressResponse>(
+            "success_get_order_progress.json",
+            OrderProgressResponse::class.java
+        )
+    }
 
     @Test
     fun test_intent_ask_seller_with_custom_msg() {
@@ -69,6 +86,51 @@ class TopchatRoomGeneralTest : TopchatRoomTest() {
 
         // Then
         assertToolbarTitle(shopName)
+    }
+
+    @Test
+    fun should_show_fraud_alert() {
+        getChatUseCase.response = firstPageChatAsBuyer
+        getChatUseCase.response.chatReplies.list = arrayListOf()
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        getChatRoomSettingUseCase.response = chatRoomSettingResponse
+        launchChatRoomActivity()
+
+        onView(withId(R.id.recycler_view_chatroom)).check(
+            matches(
+                hasViewHolderItemAtPosition(1, RoomSettingFraudAlertViewHolder::class.java)
+            )
+        )
+
+        onView(withId(R.id.tvText)).check(
+            matches(withSubstring("Hati-hati penipuan!"))
+        )
+    }
+
+    @Test
+    fun should_show_order_progress() {
+        getChatUseCase.response = firstPageChatAsBuyer
+        getChatUseCase.response.chatReplies.list = arrayListOf()
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        orderProgressUseCase.response = orderProgressResponseNotEmpty
+        launchChatRoomActivity()
+
+        onView(withId(R.id.tp_order_name)).check(
+            matches(withText(orderProgressResponseNotEmpty.chatOrderProgress.name))
+        )
+    }
+
+    @Test
+    fun should_not_show_order_progress() {
+        getChatUseCase.response = firstPageChatAsBuyer
+        getChatUseCase.response.chatReplies.list = arrayListOf()
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        orderProgressUseCase.response = orderProgressResponse
+        launchChatRoomActivity()
+
+        onView(withId(R.id.tp_order_name)).check(
+            matches(not(isDisplayed()))
+        )
     }
 
 }

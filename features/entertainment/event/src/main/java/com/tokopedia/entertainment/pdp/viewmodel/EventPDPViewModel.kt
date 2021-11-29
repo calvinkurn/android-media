@@ -87,8 +87,8 @@ class EventPDPViewModel @Inject constructor(private val dispatcher: CoroutineDis
 
     fun getWhiteListUser(userId: Int, email: String, pdpData: ProductDetailData){
         launchCatchError(block={
-            val userValidated = EventValidateUser(pdpData.id.toInt(),
-                    userId, email)
+            val userValidated = EventValidateUser(pdpData.id.toLong(),
+                    userId.toLong(), email)
             useCaseWhiteListValidation.setValidateUser(userValidated)
             val result = withContext(dispatcher) {
                 convertToValidateResponse(useCaseWhiteListValidation.executeOnBackground())

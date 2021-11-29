@@ -118,9 +118,29 @@ class PowerMerchantSubscriptionViewModelTest {
     }
 
     @Test
-    fun `when get PM active state data should set result success`() = coroutineTestRule.runBlockingTest {
+    fun `when get PM active state with PM Pro data should set result success`() = coroutineTestRule.runBlockingTest {
         val data = PMGradeBenefitInfoUiModel()
         val pmProTire = 1
+
+        coEvery {
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
+        } returns data
+
+        viewModel.getPmActiveStateData(pmProTire)
+
+        coVerify {
+            getPMGradeBenefitInfoUseCase.executeOnBackground()
+        }
+
+        val expected = Success(data)
+
+        viewModel.pmPmActiveData.verifySuccessEquals(expected)
+    }
+
+    @Test
+    fun `when get PM active state with PM data should set result success`() = coroutineTestRule.runBlockingTest {
+        val data = PMGradeBenefitInfoUiModel()
+        val pmProTire = 0
 
         coEvery {
             getPMGradeBenefitInfoUseCase.executeOnBackground()

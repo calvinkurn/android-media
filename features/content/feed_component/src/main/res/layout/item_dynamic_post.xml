@@ -5,23 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_16">
+    android:paddingBottom="16dp">
 
     <com.tokopedia.feedcomponent.view.widget.CardTitleView
         android:id="@+id/cardTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8" />
+        android:layout_marginBottom="8dp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_2"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         app:cardBackgroundColor="@color/cardview_dms_background_color"
-        app:cardCornerRadius="@dimen/dp_8">
+        app:cardCornerRadius="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,10 +33,10 @@
                 android:id="@+id/header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
                 android:visibility="visible"
                 tools:visibility="visible">
 
@@ -56,10 +56,10 @@
 
                 <ImageView
                     android:id="@+id/authorBadge"
-                    android:layout_width="@dimen/dp_14"
-                    android:layout_height="@dimen/dp_14"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
                     android:contentDescription="@string/content_desc_authorBadge"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="@+id/authorTitle"
@@ -72,10 +72,10 @@
                     android:id="@+id/authorTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -95,10 +95,10 @@
                     android:id="@+id/authorSubtitile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginRight="8dp"
                     android:ellipsize="end"
                     android:fontFamily="sans-serif"
                     android:lines="1"
@@ -117,10 +117,10 @@
                 <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/headerAction"
                     style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="@dimen/dp_72"
+                    android:layout_width="72dp"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/content_desc_headerAction"
-                    android:elevation="@dimen/dp_0"
+                    android:elevation="0dp"
                     android:text="@string/kol_action_follow"
                     android:textAllCaps="false"
                     android:visibility="visible"
@@ -137,8 +137,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/content_desc_menu"
-                    android:paddingStart="@dimen/dp_16"
-                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingStart="16dp"
+                    android:paddingLeft="16dp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -154,8 +154,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:lineSpacingExtra="@dimen/sp_5"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:textColor="@color/Unify_N700_44"
                 app:typographyType="body_3"
                 tools:text="Welcoming October, road to hari batik nasional, you can wear batik and be stylish as well hey?" />
@@ -164,9 +164,9 @@
                 android:id="@+id/contentLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
+                android:layout_marginTop="8dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:visibility="visible"
                 tools:visibility="visible">
 
@@ -180,7 +180,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/contentViewPager"
-                    android:layout_marginBottom="@dimen/dp_4"
+                    android:layout_marginBottom="4dp"
                     app:tabBackground="@drawable/kol_tab_selector"
                     app:tabGravity="center"
                     app:tabIndicatorHeight="0dp" />
@@ -201,7 +201,7 @@
                 <FrameLayout
                     android:id="@+id/layoutFooterAction"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="40dp"
                     android:visibility="gone">
 
                     <View
@@ -216,10 +216,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|left"
-                        android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:layout_marginRight="16dp"
                         android:fontFamily="sans-serif-medium"
                         android:textColor="@color/Unify_G400"
                         app:typographyType="body_3"
@@ -230,10 +230,10 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_8"
-                    android:paddingBottom="@dimen/dp_16">
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="16dp">
 
                     <androidx.constraintlayout.widget.Group
                         android:id="@+id/likeGroup"
@@ -258,8 +258,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
                         android:fontFamily="sans-serif"
                         android:text="@string/kol_action_like"
                         android:textColor="@color/Unify_N700_68"
@@ -280,8 +280,8 @@
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
                         android:contentDescription="@string/kol_action_comment"
                         android:scaleType="fitCenter"
                         app:layout_constraintBottom_toBottomOf="@id/likeText"
@@ -295,8 +295,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginLeft="4dp"
                         android:fontFamily="sans-serif"
                         android:text="@string/kol_action_comment"
                         android:textColor="@color/Unify_N700_68"
@@ -316,8 +316,8 @@
                         android:id="@+id/shareIcon"
                         android:layout_width="@dimen/dp_18"
                         android:layout_height="@dimen/dp_18"
-                        android:layout_marginStart="@dimen/dp_16"
-                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
                         android:contentDescription="@string/kol_action_share"
                         android:scaleType="fitCenter"
                         app:layout_constraintBottom_toBottomOf="@id/commentText"
@@ -330,8 +330,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif"
-                        android:paddingStart="@dimen/dp_4"
-                        android:paddingLeft="@dimen/dp_4"
+                        android:paddingStart="4dp"
+                        android:paddingLeft="4dp"
                         android:text="@string/kol_action_share"
                         android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@id/shareIcon"

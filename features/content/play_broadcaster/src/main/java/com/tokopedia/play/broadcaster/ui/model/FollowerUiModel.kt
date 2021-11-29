@@ -1,7 +1,6 @@
 package com.tokopedia.play.broadcaster.ui.model
 
 import androidx.annotation.ColorRes
-import com.tokopedia.play.broadcaster.R
 
 /**
  * Created by jegul on 20/05/20

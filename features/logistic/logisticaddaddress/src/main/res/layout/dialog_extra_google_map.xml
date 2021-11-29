@@ -4,10 +4,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingTop="@dimen/dp_8"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="8dp"
+    android:paddingTop="8dp"
     android:background="@color/Unify_N0"
     android:gravity="center">
 
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_48"
+        android:minHeight="48dp"
         android:id="@+id/text_address_destination"
         app:typographyType="body_2" />
 
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:minHeight="@dimen/dp_48"
+        android:minHeight="48dp"
         android:text="@string/text_information_google_map"
         app:typographyType="body_3"/>
 

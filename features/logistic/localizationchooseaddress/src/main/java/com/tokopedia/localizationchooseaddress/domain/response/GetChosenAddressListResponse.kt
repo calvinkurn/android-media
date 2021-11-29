@@ -1,5 +1,6 @@
 package com.tokopedia.localizationchooseaddress.domain.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetChosenAddressListQglResponse (
@@ -19,8 +20,9 @@ data class GetChosenAddressListResponse(
 )
 
 data class ChosenAddressListResponse(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("addr_id")
-        var addressId: Int = 0,
+        var addressId: Long = 0,
         @SerializedName("receiver_name")
         var receiverName: String = "",
         @SerializedName("addr_name")
@@ -60,6 +62,7 @@ data class ChosenAddressListResponse(
 )
 
 data class TokonowAddressList(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("warehouse_id")
         var warehouseId: Long = 0,
         @SerializedName("coverage_label")

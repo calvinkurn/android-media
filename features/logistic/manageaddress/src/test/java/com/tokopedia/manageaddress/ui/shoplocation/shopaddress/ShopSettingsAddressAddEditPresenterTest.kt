@@ -1,4 +1,4 @@
-package com.tokopedia.shop_settings.presenter.shopsettingsaddress
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import io.mockk.every

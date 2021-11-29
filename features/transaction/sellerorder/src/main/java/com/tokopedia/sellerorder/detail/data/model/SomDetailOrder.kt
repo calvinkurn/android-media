@@ -65,6 +65,14 @@ data class SomDetailOrder(
                 @Expose
                 val listProduct: List<Products> = listOf(),
 
+                @Expose
+                @SerializedName("have_product_bundle")
+                val haveProductBundle: Boolean = false,
+
+                @Expose
+                @SerializedName("bundle_detail")
+                val bundleDetail: BundleDetailModel? = BundleDetailModel(),
+
                 @SerializedName("customer")
                 @Expose
                 val customer: Customer = Customer(),
@@ -127,7 +135,60 @@ data class SomDetailOrder(
 
                 @SerializedName("ticker_info")
                 @Expose
-                val tickerInfo: TickerInfo = TickerInfo()) {
+                val tickerInfo: TickerInfo = TickerInfo()
+        ) {
+
+            data class BundleDetailModel(
+                    @Expose
+                    @SerializedName("bundle")
+                    val bundle: List<BundleProduct> = emptyList(),
+                    @Expose
+                    @SerializedName("non_bundle")
+                    val nonBundle: List<BundleDetailProduct> = emptyList(),
+            ) {
+
+                data class BundleProduct(
+                        @Expose
+                        @SerializedName("bundle_id")
+                        val bundleId: String = "0",
+                        @Expose
+                        @SerializedName("bundle_name")
+                        val bundleName: String = "",
+                        @Expose
+                        @SerializedName("bundle_price")
+                        val bundlePrice: String = "",
+                        @Expose
+                        @SerializedName("bundle_subtotal_price")
+                        val bundleSubTotal: String = "",
+                        @Expose
+                        @SerializedName("order_detail")
+                        val orderDetail: List<BundleDetailProduct> = emptyList()
+                )
+
+                data class BundleDetailProduct(
+                        @Expose
+                        @SerializedName("order_detail_id")
+                        val orderDetailId: String = "0",
+                        @Expose
+                        @SerializedName("id")
+                        val id: String = "0",
+                        @Expose
+                        @SerializedName("name")
+                        val name: String = "",
+                        @Expose
+                        @SerializedName("quantity")
+                        val quantity: Int = 0,
+                        @Expose
+                        @SerializedName("price_text")
+                        val priceText: String,
+                        @Expose
+                        @SerializedName("note")
+                        val note: String = "",
+                        @Expose
+                        @SerializedName("thumbnail")
+                        val thumbnail: String = ""
+                )
+            }
 
             data class Products(
                     @SerializedName("id")
@@ -142,10 +203,6 @@ data class SomDetailOrder(
                     @Expose
                     val name: String = "",
 
-                    @SerializedName("product_url")
-                    @Expose
-                    val productUrl: String = "",
-
                     @SerializedName("thumbnail")
                     @Expose
                     val thumbnail: String = "",
@@ -154,29 +211,14 @@ data class SomDetailOrder(
                     @Expose
                     val priceText: String = "",
 
-                    @SerializedName("weight_text")
-                    @Expose
-                    val weightText: String = "",
-
                     @SerializedName("quantity")
                     @Expose
                     val quantity: Int = 0,
 
                     @SerializedName("note")
                     @Expose
-                    val note: String = "",
-
-                    @SerializedName("free_return_message")
-                    @Expose
-                    val freeReturnMessage: String = "",
-
-                    @SerializedName("purchase_protection_fee_text")
-                    @Expose
-                    val purchaseProtectionFeeText: String = "",
-
-                    @SerializedName("purchase_protection_quantity")
-                    @Expose
-                    val purchaseProtectionQuantity: Int = 0)
+                    val note: String = ""
+            )
 
             data class Customer(
                     @SerializedName("id")
@@ -418,60 +460,60 @@ data class SomDetailOrder(
                     @Expose
                     val othersLogisticInfoList: List<Others> = listOf()
             ) {
-                    @Parcelize
-                    data class All(
-                            @SerializedName("id")
-                            @Expose
-                            val id: String? = "",
-                            @SerializedName("priority")
-                            @Expose
-                            val priority: String? = "",
-                            @SerializedName("description")
-                            @Expose
-                            val description: String? = "",
-                            @SerializedName("info_text_short")
-                            @Expose
-                            val infoTextShort: String? = "",
-                            @SerializedName("info_text_long")
-                            @Expose
-                            val infoTextLong: String? = ""
-                    ): Parcelable
+                @Parcelize
+                data class All(
+                        @SerializedName("id")
+                        @Expose
+                        val id: String? = "",
+                        @SerializedName("priority")
+                        @Expose
+                        val priority: String? = "",
+                        @SerializedName("description")
+                        @Expose
+                        val description: String? = "",
+                        @SerializedName("info_text_short")
+                        @Expose
+                        val infoTextShort: String? = "",
+                        @SerializedName("info_text_long")
+                        @Expose
+                        val infoTextLong: String? = ""
+                ) : Parcelable
 
-                    data class Priority(
-                            @SerializedName("id")
-                            @Expose
-                            val id: String? = "",
-                            @SerializedName("priority")
-                            @Expose
-                            val priority: String? = "",
-                            @SerializedName("description")
-                            @Expose
-                            val description: String? = "",
-                            @SerializedName("info_text_short")
-                            @Expose
-                            val infoTextShort: String? = "",
-                            @SerializedName("info_text_long")
-                            @Expose
-                            val infoTextLong: String? = ""
-                    )
+                data class Priority(
+                        @SerializedName("id")
+                        @Expose
+                        val id: String? = "",
+                        @SerializedName("priority")
+                        @Expose
+                        val priority: String? = "",
+                        @SerializedName("description")
+                        @Expose
+                        val description: String? = "",
+                        @SerializedName("info_text_short")
+                        @Expose
+                        val infoTextShort: String? = "",
+                        @SerializedName("info_text_long")
+                        @Expose
+                        val infoTextLong: String? = ""
+                )
 
-                    data class Others(
-                            @SerializedName("id")
-                            @Expose
-                            val id: String? = "",
-                            @SerializedName("priority")
-                            @Expose
-                            val priority: String? = "",
-                            @SerializedName("description")
-                            @Expose
-                            val description: String? = "",
-                            @SerializedName("info_text_short")
-                            @Expose
-                            val infoTextShort: String? = "",
-                            @SerializedName("info_text_long")
-                            @Expose
-                            val infoTextLong: String? = ""
-                    )
+                data class Others(
+                        @SerializedName("id")
+                        @Expose
+                        val id: String? = "",
+                        @SerializedName("priority")
+                        @Expose
+                        val priority: String? = "",
+                        @SerializedName("description")
+                        @Expose
+                        val description: String? = "",
+                        @SerializedName("info_text_short")
+                        @Expose
+                        val infoTextShort: String? = "",
+                        @SerializedName("info_text_long")
+                        @Expose
+                        val infoTextLong: String? = ""
+                )
             }
 
             data class Button(

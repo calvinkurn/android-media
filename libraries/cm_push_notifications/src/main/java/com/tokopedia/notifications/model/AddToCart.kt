@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.common.CMConstant
 
 data class AddToCart(
-        @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_ID) var productId: Int? = 0,
+        @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_ID) var productId: Long? = 0,
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_NAME) var productName: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_BRAND) var productBrand: String? = "",
         @Expose @SerializedName(CMConstant.PayloadKeys.PRODUCT_PRICE) var productPrice: Float? = 0f,
@@ -19,7 +19,7 @@ data class AddToCart(
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
+            parcel.readLong(),
             parcel.readString(),
             parcel.readString(),
             parcel.readFloat(),
@@ -31,7 +31,7 @@ data class AddToCart(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(productId?: 0)
+        parcel.writeLong(productId?: 0)
         parcel.writeString(productName)
         parcel.writeString(productBrand)
         parcel.writeFloat(productPrice?: 0f)

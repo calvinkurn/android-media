@@ -22,6 +22,7 @@ import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCo
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccess
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
+import com.tokopedia.product.manage.databinding.FragmentCampaignStockBinding
 import com.tokopedia.product.manage.feature.campaignstock.di.DaggerCampaignStockComponent
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationSummary
@@ -39,8 +40,7 @@ import com.tokopedia.product.manage.feature.campaignstock.ui.viewmodel.CampaignS
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_campaign_stock.*
-import kotlinx.android.synthetic.main.layout_campaign_stock_product_info.view.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
@@ -76,6 +76,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
         activity?.intent?.getStringExtra(EXTRA_SOURCE)?: DEFAULT_SOURCE
     }
 
+    private var binding by autoClearedNullable<FragmentCampaignStockBinding>()
+
     private var isVariant: Boolean? = null
 
     private val onTabSelectedListener by lazy {
@@ -102,7 +104,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_campaign_stock, container, false)
+        binding = FragmentCampaignStockBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -169,6 +172,12 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                 putExtra(ProductManageCommonConstant.EXTRA_PRODUCT_NAME, productName)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STOCK, stock)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATED_STATUS, status.name)
+                                putExtra(
+                                    ProductManageCommonConstant.EXTRA_UPDATE_IS_STOCK_CHANGED,
+                                    isStockChanged)
+                                putExtra(
+                                    ProductManageCommonConstant.EXTRA_UPDATE_IS_STATUS_CHANGED,
+                                    isStatusChanged)
                                 putExtra(ProductManageCommonConstant.EXTRA_UPDATE_VARIANTS_MAP, variantsMap)
                             }
                             activity?.run {
@@ -186,8 +195,8 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             }
         })
         observe(mViewModel.showSaveBtn) {
-            divider_campaign_stock?.showWithCondition(it)
-            btn_campaign_stock_save?.showWithCondition(it)
+            binding?.dividerCampaignStock?.showWithCondition(it)
+            binding?.btnCampaignStockSave?.showWithCondition(it)
         }
     }
 
@@ -203,10 +212,10 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private fun setupButtonOnClick() {
-        btn_campaign_stock_save?.setOnClickListener {
+        binding?.btnCampaignStockSave?.setOnClickListener {
             showButtonLoading()
             mViewModel.updateStockData()
-            this@CampaignStockFragment.tabs_campaign_stock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
+            binding?.tabsCampaignStock?.getUnifyTabLayout()?.selectedTabPosition?.let { tabPosition ->
                 val isMainStock = tabPosition == MAIN_TAB_POSITION
                 isVariant?.run {
                     ProductManageTracking.eventClickAllocationSaveStock(
@@ -218,7 +227,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private fun setupHeader() {
-        header_campaign_stock?.run {
+        binding?.headerCampaignStock?.run {
             setBackgroundColor(Color.TRANSPARENT)
             setNavigationOnClickListener {
                 isVariant?.run {
@@ -251,19 +260,19 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     private fun setupProductSummary(summary: GetStockAllocationSummary?,
                                     productImageUrl: String) {
         summary?.run {
-            layout_campaign_stock_product_info?.run {
+            binding?.layoutCampaignStockProductInfo?.run {
                 productImageUrl.let { url ->
-                    ImageHandler.loadImageFitCenter(context, img_campaign_stock_product, url)
+                    ImageHandler.loadImageFitCenter(context, imgCampaignStockProduct, url)
                 }
-                tv_campaign_stock_product_name?.text = productName
-                tv_campaign_stock_product_total_stock_count?.text = totalStock.convertCheckMaximumStockLimit(context)
+                tvCampaignStockProductName.text = productName
+                tvCampaignStockProductTotalStockCount.text = totalStock.convertCheckMaximumStockLimit(context)
             }
         }
     }
 
     private fun setupFragmentTabs(getStockAllocation: GetStockAllocationData) {
         with(getStockAllocation.summary) {
-            tabs_campaign_stock?.run {
+            binding?.tabsCampaignStock?.run {
                 addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_main_stock).orEmpty(), sellableStock.convertCheckMaximumStockLimit(context)))
                 addNewTab(String.format(context?.getString(R.string.product_manage_campaign_stock_campaign_stock).orEmpty(), reserveStock.convertCheckMaximumStockLimit(context)))
 
@@ -276,7 +285,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
                                               getStockAllocation: GetStockAllocationData,
                                               otherCampaignStockData: OtherCampaignStockData,
                                               access: ProductManageAccess) {
-        vp2_campaign_stock?.run {
+        binding?.vp2CampaignStock?.run {
             adapter = activity?.let {
                 val sellableProduct = CampaignStockMapper.mapToParcellableSellableProduct(
                     getStockAllocation.detail.sellable,
@@ -310,7 +319,7 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
             mViewModel.updateNonVariantStockCount(nonVariantStock)
             mViewModel.updateNonVariantReservedStockCount(nonVariantReservedStock)
 
-            vp2_campaign_stock?.run {
+            binding?.vp2CampaignStock?.run {
                 adapter = activity?.let {
                     val reservedProduct = detail.reserve.map { reserved ->
                         CampaignStockMapper.mapToParcellableReserved(reserved)
@@ -340,14 +349,14 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private fun showResult() {
-        layout_campaign_stock_product_info?.visible()
-        vp2_campaign_stock?.visible()
-        loader_campaign_stock?.gone()
+        binding?.layoutCampaignStockProductInfo?.root?.visible()
+        binding?.vp2CampaignStock?.visible()
+        binding?.loaderCampaignStock?.gone()
         toggleSaveButton()
     }
 
     private fun toggleSaveButton() {
-        tabs_campaign_stock?.run {
+        binding?.tabsCampaignStock?.run {
             val selectedTabPosition = getUnifyTabLayout().selectedTabPosition
             val isMainStockTab = selectedTabPosition == MAIN_TAB_POSITION
             mViewModel.toggleSaveButton(isMainStockTab)
@@ -359,11 +368,11 @@ class CampaignStockFragment: BaseDaggerFragment(), CampaignStockListener {
     }
 
     private fun showButtonLoading() {
-        btn_campaign_stock_save?.isLoading = true
+        binding?.btnCampaignStockSave?.isLoading = true
     }
 
     private fun changeViewPagerPage(position: Int) {
-        vp2_campaign_stock?.currentItem = position
+        binding?.vp2CampaignStock?.currentItem = position
     }
 
     private fun cancelActivity(errorMessage: String? = null) {

@@ -4,7 +4,7 @@
     <dimen name="margin_16">16dp</dimen>
     <dimen name="user_shop_notif_margin_start">6dp</dimen>
 
-    <dimen name="nav_user_profile_image_size">50dp</dimen>
+    <dimen name="nav_user_profile_image_size">56dp</dimen>
     <dimen name="nav_user_profile_icon_setting_size">20dp</dimen>
     <dimen name="nav_user_profile_icon_retry_size">25dp</dimen>
 

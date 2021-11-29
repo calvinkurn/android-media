@@ -16,7 +16,32 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
+import com.tokopedia.product.detail.data.model.datamodel.UpcomingNplDataModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.purchaseprotection.PPItemDetailPage
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpful
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
@@ -96,9 +121,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val miniShopWidgetMap: ProductMiniShopWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.MINI_SHOP_WIDGET] as? ProductMiniShopWidgetDataModel
 
-    val productByMeMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailCommonConstant.KEY_BYME] as? ProductGeneralInfoDataModel
-
     val topAdsImageData: TopAdsImageDataModel?
         get() = mapOfData[ProductDetailConstant.KEY_TOP_ADS] as? TopAdsImageDataModel
 
@@ -117,9 +139,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val productDetailInfoData: ProductDetailInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_DETAIL] as? ProductDetailInfoDataModel
 
+    val productBundlingData: ProductBundlingDataModel?
+        get() = mapOfData[ProductDetailConstant.PRODUCT_BUNDLING] as? ProductBundlingDataModel
+
+    val topAdsProductBundlingData: TopadsHeadlineUiModel?
+        get() = mapOfData[ProductDetailConstant.SHOPADS_CAROUSEL] as? TopadsHeadlineUiModel
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, enableVideo: Boolean, loadInitialData: Boolean = false) {
         dataP1?.let {
-
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
                 basicContentMap?.run {
                     data = ProductContentMainData(
@@ -221,12 +248,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     stockAssuranceData?.oneLinersContent = content
                 }
             }
+
+            updateData(ProductDetailConstant.SHOPADS_CAROUSEL, loadInitialData) {
+                topAdsProductBundlingData?.run {
+                    this.productId = dataP1?.basic?.productID
+                }
+            }
         }
     }
 
     private fun updateBestSellerData(
-        dataP1: DynamicProductInfoP1? = null,
-        productId: String? = null
+            dataP1: DynamicProductInfoP1? = null,
+            productId: String? = null
     ) {
         updateData(ProductDetailConstant.BEST_SELLER) {
             bestSellerData?.run {
@@ -281,15 +314,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateData(ProductDetailConstant.PRODUCT_FULLFILMENT) {
             productFullfilmentMap?.run {
                 subtitle = fullFillmentText
-            }
-        }
-    }
-
-    fun updateByMeData(context: Context?) {
-        updateData(ProductDetailCommonConstant.KEY_BYME) {
-            productByMeMap?.run {
-                subtitle = context?.getString(R.string.product_detail_by_me_subtitle)
-                        ?: ""
             }
         }
     }
@@ -400,6 +424,10 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     totalReviewCount = it.rating.totalReviewTextAndImage
                 }
             }
+            
+            updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+                productBundlingData?.bundleInfo = it.bundleInfoMap[productId]
+            }
 
             if (it.ticker.tickerInfo.isEmpty()) {
                 removeComponent(ProductDetailConstant.TICKER_INFO)
@@ -462,6 +490,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
 
+        updateUpcoming(productId, upcomingData)
+    }
+
+    private fun updateUpcoming(productId: String,
+                               upcomingData: Map<String, ProductUpcomingData>?) {
         updateData(ProductDetailConstant.UPCOMING_DEALS) {
             notifyMeMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
@@ -470,9 +503,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
-                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
-                        selectedUpcoming?.startDate ?: "")
+                bgColorUpcoming = selectedUpcoming?.bgColorUpcoming ?: ""
+                upcomingNplData = UpcomingNplDataModel(
+                        upcomingType = selectedUpcoming?.upcomingType ?: "",
+                        ribbonCopy = selectedUpcoming?.campaignTypeName ?: "",
+                        startDate = selectedUpcoming?.startDate ?: "",
+                )
             }
         }
     }
@@ -491,19 +527,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
 
-        updateData(ProductDetailConstant.UPCOMING_DEALS) {
-            notifyMeMap?.run {
-                val selectedUpcoming = upcomingData?.get(productId)
-                campaignID = selectedUpcoming?.campaignId ?: ""
-                campaignType = selectedUpcoming?.campaignType ?: ""
-                campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
-                startDate = selectedUpcoming?.startDate ?: ""
-                notifyMe = selectedUpcoming?.notifyMe ?: false
-                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
-                        selectedUpcoming?.startDate ?: "")
-            }
-        }
+        updateUpcoming(productId, upcomingData)
     }
 
     fun updateDataP2General(data: ProductInfoP2Other?) {
@@ -700,7 +724,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         var variantTotalItems = 0
         miniCart.values.forEach { miniCartItem ->
             if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-                variantTotalItems+=miniCartItem.quantity
+                variantTotalItems += miniCartItem.quantity
             }
         }
         return variantTotalItems
@@ -761,6 +785,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
             shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
+        }
+    }
+
+    fun updateProductBundlingData(p2Data: ProductInfoP2UiData?, productId: String?) {
+        if (p2Data == null || productId == null) return
+        updateData(ProductDetailConstant.PRODUCT_BUNDLING) {
+            productBundlingData?.bundleInfo = p2Data.bundleInfoMap[productId]
         }
     }
 

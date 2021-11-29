@@ -1,8 +1,6 @@
 package com.tokopedia.play.data
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.play.data.multiplelikes.MultipleLikeConfig
-
 
 /**
  * Created by mzennis on 2019-12-05.

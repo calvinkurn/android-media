@@ -9,13 +9,11 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -229,8 +227,18 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     }
 
                     view?.let { v ->
-                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
-                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        var throwable = it.throwable
+                        if (throwable.message.isNullOrEmpty()) {
+                            throwable = MessageErrorException(getString(R.string.selection_null_product_error))
+                        }
+                        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                            requireContext(),
+                            throwable,
+                            ErrorHandler.Builder()
+                                .className(this::class.java.simpleName)
+                                .build()
+                        )
+                        Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
                 }
@@ -274,7 +282,14 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 is Fail -> {
                     view?.let { v ->
                         commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
-                        Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), it.throwable),
+                        val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                            requireContext(),
+                            it.throwable,
+                            ErrorHandler.Builder()
+                                .className(this::class.java.simpleName)
+                                .build()
+                        )
+                        Toaster.build(v, errorMessage.orEmpty(),
                                 Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                     }
@@ -553,7 +568,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         productId = 0
         inputData = hashMapOf()
         // Reset product info ticker
-        ticker_recharge_general_product_info.hide()
+        ticker_recharge_general_product_info?.hide()
         toggleEnquiryButton()
     }
 
@@ -804,15 +819,15 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                         view.post {
                             if (view != null) {
                                 val wMeasureSpec =
-                                    View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+                                        View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
                                 val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                                 view.measure(wMeasureSpec, hMeasureSpec)
 
                                 if (pager.layoutParams.height != view.measuredHeight) {
                                     pager.layoutParams = (pager.layoutParams)
-                                        .also { lp ->
-                                            lp.height = view.measuredHeight
-                                        }
+                                            .also { lp ->
+                                                lp.height = view.measuredHeight
+                                            }
                                 }
                             }
                         }
@@ -1019,6 +1034,20 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         updateFavoriteNumberInputField()
     }
 
+    override fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty()
+                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun updateFavoriteNumberInputField() {
         if (favoriteNumbers.isNotEmpty()) {
             if (adapter.data.isNotEmpty()) {
@@ -1033,7 +1062,14 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     override fun onEnquiryError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -1052,14 +1088,28 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
     override fun onCheckVoucherError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
         view?.let { v ->
-            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+            val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
+                requireContext(),
+                error,
+                ErrorHandler.Builder()
+                    .className(this::class.java.simpleName)
+                    .build()
+            )
+            Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
         }
     }
@@ -1216,10 +1266,24 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     // Show product info ticker
                     val description = attributes.detailCompact
                     if (description.isNotEmpty()) {
-                        ticker_recharge_general_product_info.show()
-                        ticker_recharge_general_product_info.setHtmlDescription(description)
+                        ticker_recharge_general_product_info?.let {
+                            it.show()
+                            it.setHtmlDescription(description)
+                            it.setDescriptionClickEvent(object : TickerCallback {
+                                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                                    context?.let {
+                                        RouteManager.route(it, attributes.detailUrl)
+                                    }
+                                }
+
+                                override fun onDismiss() {
+                                    // no op
+                                }
+
+                            })
+                        }
                     } else {
-                        ticker_recharge_general_product_info.hide()
+                        ticker_recharge_general_product_info?.hide()
                     }
                 }
             }
@@ -1242,7 +1306,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         adapter.hideLoading()
     }
 
-    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         // do nothing
     }
 

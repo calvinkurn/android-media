@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
+import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.re.RestrictionInfoResponse
@@ -125,6 +126,10 @@ data class ProductInfoP2Data(
         @SerializedName("reviewImage")
         @Expose
         var reviewImage: ImageReviewGqlResponse.ProductReviewImageListQuery = ImageReviewGqlResponse.ProductReviewImageListQuery(),
+
+        @SerializedName("bundleInfo")
+        @Expose
+        var bundleInfoList: List<BundleInfo> = emptyList(),
 
         @SerializedName("rating")
         @Expose

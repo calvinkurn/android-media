@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.updateinactivephone">
-  
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera"/>
-  
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-  
+    package="com.tokopedia.updateinactivephone">
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
@@ -20,7 +20,7 @@
           android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
           <intent-filter>
             <action android:name="com.tokopedia.internal.VIEW" />
-    
+
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
             <data
@@ -48,5 +48,4 @@
           android:screenOrientation="portrait"
           android:theme="@style/Theme.White"/>
     </application>
-
 </manifest>

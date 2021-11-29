@@ -2,7 +2,9 @@ package com.tokopedia.product.manage.common.view.ongoingpromotion.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +13,10 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.view.model.OngoingPromotionListWrapper
 import com.tokopedia.product.manage.common.view.ongoingpromotion.adapter.OngoingPromotionAdapter
 import com.tokopedia.product.manage.common.view.ongoingpromotion.adapter.divider.OngoingPromotionDividerDecoration
+import com.tokopedia.product.manage.databinding.BottomSheetProductManageOngoingPromotionBinding
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.ArrayList
 
 class OngoingPromotionBottomSheet : BottomSheetUnify() {
@@ -28,13 +32,6 @@ class OngoingPromotionBottomSheet : BottomSheetUnify() {
             campaignTypeList: ArrayList<ProductCampaignType>
         ): OngoingPromotionBottomSheet {
             return OngoingPromotionBottomSheet().apply {
-                val view = View.inflate(
-                    context,
-                    R.layout.bottom_sheet_product_manage_ongoing_promotion,
-                    null
-                )
-                setTitle(context.getString(R.string.product_manage_campaign_bottom_sheet_title))
-                setChild(view)
                 val cacheManager = SaveInstanceCacheManager(context, true).apply {
                     put(ONGOING_CAMPAIGN_LIST_KEY, OngoingPromotionListWrapper(campaignTypeList))
                 }
@@ -45,9 +42,9 @@ class OngoingPromotionBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private var campaignListRecyclerView: RecyclerView? = null
-
     private var campaignTypeList: List<ProductCampaignType>? = null
+
+    private var binding by autoClearedNullable<BottomSheetProductManageOngoingPromotionBinding>()
 
     private val itemDecoration by lazy {
         context?.let {
@@ -61,6 +58,9 @@ class OngoingPromotionBottomSheet : BottomSheetUnify() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTitle(context?.getString(R.string.product_manage_campaign_bottom_sheet_title).orEmpty())
+        setChild(binding?.root)
+
         val cacheManager =
             if (savedInstanceState == null) {
                 val cacheId = arguments?.getString(ONGOING_CAMPAIGN_LIST_CACHE_ID)
@@ -78,14 +78,27 @@ class OngoingPromotionBottomSheet : BottomSheetUnify() {
         )?.ongoingPromotionList
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = BottomSheetProductManageOngoingPromotionBinding.inflate(
+            inflater,
+            container,
+            false
+        )
+        setChild(binding?.root)
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        setupView(view)
+        setupView()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun setupView(view: View) {
-        campaignListRecyclerView = view.findViewById(R.id.rv_product_manage_ongoing_promotion)
-        campaignListRecyclerView?.run {
+    private fun setupView() {
+        binding?.rvProductManageOngoingPromotion?.run {
             layoutManager = LinearLayoutManager(this@OngoingPromotionBottomSheet.context)
             adapter = OngoingPromotionAdapter(campaignTypeList.orEmpty())
             itemDecoration?.let {

@@ -9,7 +9,6 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.result.map
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 import javax.inject.Inject
@@ -20,8 +19,11 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
         private val titleDataStore: TitleDataStore,
         private val tagsDataStore: TagsDataStore,
         private val scheduleDataStore: BroadcastScheduleDataStore,
-        private val interactiveDataStore: InteractiveDataStore
-) : PlayBroadcastSetupDataStore, TitleDataStore by titleDataStore, TagsDataStore by tagsDataStore {
+        private val interactiveDataStore: InteractiveDataStore,
+) : PlayBroadcastSetupDataStore,
+    TitleDataStore by titleDataStore,
+    TagsDataStore by tagsDataStore,
+    InteractiveDataStore by interactiveDataStore {
 
     override fun overwrite(dataStore: PlayBroadcastSetupDataStore, modeExclusion: List<OverwriteMode>) {
         if (!modeExclusion.contains(OverwriteMode.Product)) {
@@ -181,44 +183,5 @@ class PlayBroadcastSetupDataStoreImpl @Inject constructor(
 
     override suspend fun deleteBroadcastSchedule(channelId: String): NetworkResult<Unit> {
         return scheduleDataStore.deleteBroadcastSchedule(channelId)
-    }
-
-    /**
-     * Interactive
-     */
-    override fun getInteractiveId(): String {
-        return interactiveDataStore.getInteractiveId()
-    }
-
-    override fun getInteractiveTitle(): String {
-        return interactiveDataStore.getInteractiveTitle()
-    }
-
-    override fun getSelectedInteractiveDuration(): Long {
-        return interactiveDataStore.getSelectedInteractiveDuration()
-    }
-
-    override fun getInteractiveDurations(): List<Long> {
-        return interactiveDataStore.getInteractiveDurations()
-    }
-
-    override fun setInteractiveId(id: String) {
-        interactiveDataStore.setInteractiveId(id)
-    }
-
-    override fun setInteractiveTitle(title: String) {
-        interactiveDataStore.setInteractiveTitle(title)
-    }
-
-    override fun setSelectedInteractiveDuration(durationInMs: Long) {
-        interactiveDataStore.setSelectedInteractiveDuration(durationInMs)
-    }
-
-    override fun setRemainingLiveDuration(durationInMs: Long) {
-        interactiveDataStore.setRemainingLiveDuration(durationInMs)
-    }
-
-    override fun setInteractiveDurations(durations: List<Long>) {
-        interactiveDataStore.setInteractiveDurations(durations)
     }
 }

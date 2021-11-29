@@ -9,7 +9,7 @@ import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
 import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R
@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.Label
  * Created by Hendri on 27/03/18.
  */
 
-class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachInvoiceSentViewModel>(itemView) {
+class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachInvoiceSentUiModel>(itemView) {
 
     private val container: RelativeLayout? = itemView.findViewById(R.id.rl_container)
     private val clContainer: ConstraintLayout? = itemView.findViewById(R.id.cl_chat_bubble)
@@ -53,13 +53,13 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
     )
 
 
-    override fun bind(element: AttachInvoiceSentViewModel) {
+    override fun bind(element: AttachInvoiceSentUiModel) {
         alignLayout(element)
         bindViewWithModel(element)
         bindBackground()
     }
 
-    private fun bindViewWithModel(invoice: AttachInvoiceSentViewModel) {
+    private fun bindViewWithModel(invoice: AttachInvoiceSentUiModel) {
         ImageHandler.loadImageRounded2(itemView.context, thumbnail, invoice.imageUrl, radiusInvoice)
         setStatus(invoice)
         invoiceName?.text = invoice.message
@@ -69,7 +69,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
 
     }
 
-    private fun setStatus(invoice: AttachInvoiceSentViewModel) {
+    private fun setStatus(invoice: AttachInvoiceSentUiModel) {
         if (invoice.status?.isNotEmpty() == true) {
             val labelType = getLabelType(invoice.statusId)
             status?.text = invoice.status
@@ -103,7 +103,7 @@ class AttachedInvoiceSentViewHolder(itemView: View) : BaseChatViewHolder<AttachI
             clContainer?.background = bgSender
     }
 
-    private fun alignLayout(viewModel: AttachInvoiceSentViewModel) {
+    private fun alignLayout(uiModel: AttachInvoiceSentUiModel) {
             alignBubble(Gravity.END)
     }
 

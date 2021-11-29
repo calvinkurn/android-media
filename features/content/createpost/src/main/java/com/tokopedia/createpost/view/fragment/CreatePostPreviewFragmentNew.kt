@@ -55,7 +55,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
     private val scope = CoroutineScope(Dispatchers.Main)
     var isMute = true
 
-    private lateinit var contentProductTagBS: ContentCreationProductTagBottomSheet
 
     private val productAdapter: RelatedProductAdapter by lazy {
         RelatedProductAdapter(null, RelatedProductAdapter.TYPE_PREVIEW)
@@ -124,7 +123,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         productAdapter.removeEmpty()
         createPostModel.maxProduct = 5
         val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
-        image_position_text.text = String.format(
+        image_position_text?.text = String.format(
             requireContext().getString(R.string.feed_content_position_text),
             pos
         )
@@ -399,7 +398,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
 
     private fun openBottomSheet(productList: List<RelatedProductItem>, mediaType: String) {
         createPostAnalytics.eventOpenProductTagBottomSheet(mediaType)
-        contentProductTagBS = ContentCreationProductTagBottomSheet()
+        val contentProductTagBS = ContentCreationProductTagBottomSheet()
         contentProductTagBS.show(Bundle.EMPTY,
             childFragmentManager,
             productList,
@@ -441,11 +440,6 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             feedXMediaTagging.tagIndex = index
         }
 
-        if (createPostModel.completeImageList[currentImagePos].products.size == 0) {
-            if (::contentProductTagBS.isInitialized)
-                contentProductTagBS.dismiss()
-
-        }
         val mediaModel = createPostModel.completeImageList[currentImagePos]
         if (getLatestTotalProductCount() < 5)
             enableProductIcon()
@@ -542,10 +536,15 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
         removeExtraTagListElement(mediaModel)
 
         val pos = "(${getLatestTotalProductCount()}/${createPostModel.maxProduct})"
-        image_position_text.text = String.format(
-            requireContext().getString(R.string.feed_content_position_text),
-            pos
-        )
+
+        try {
+            image_position_text?.text = String.format(
+                    requireContext().getString(R.string.feed_content_position_text),
+                    pos
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
 
         if (getLatestTotalProductCount() == 5)
             disableProductIcon()

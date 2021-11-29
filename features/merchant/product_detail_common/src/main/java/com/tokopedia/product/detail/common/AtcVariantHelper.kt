@@ -45,10 +45,11 @@ object AtcVariantHelper {
     const val BUNDLING_PAGESOURCE = "bundling page"
 
     /**
-     * For PDP only
+     * For PDP and ProductBundle only
      */
     fun pdpToAtcVariant(context: Context,
                         pageSource: String,
+                        productId: String,
                         productInfoP1: DynamicProductInfoP1,
                         warehouseId: String,
                         pdpSession: String,
@@ -70,7 +71,7 @@ object AtcVariantHelper {
         val updatedReData = manipulateRestrictionFollowers(restrictionData, isFavorite)
 
         val parcelData = ProductVariantBottomSheetParams(
-                productId = productInfoP1.basic.productID,
+                productId = productId,
                 pageSource = pageSource,
                 whId = warehouseId,
                 pdpSession = pdpSession,
@@ -89,6 +90,7 @@ object AtcVariantHelper {
                         ),
                         shopType = productInfoP1.shopTypeString,
                         boData = boData ?: BebasOngkir(),
+                        isCod = productInfoP1.data.isCod,
                         reData = updatedReData,
                         uspImageUrl = uspImageUrl,
                         cashBackPercentage = productInfoP1.data.isCashback.percentage

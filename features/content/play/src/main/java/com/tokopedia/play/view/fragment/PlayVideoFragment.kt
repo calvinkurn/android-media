@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
@@ -51,10 +51,8 @@ import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.blur.ImageBlurUtil
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.view.uimodel.PlayCastState
-import com.tokopedia.play.view.uimodel.PlayCastUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayerType
 import com.tokopedia.play.view.uimodel.recom.isCasting
-import com.tokopedia.play_common.util.extension.exhaustive
 import com.tokopedia.play_common.view.RoundedConstraintLayout
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
@@ -348,12 +346,12 @@ class PlayVideoFragment @Inject constructor(
 
     //region observe
     private fun observeVideoMeta() {
-        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
             videoView.setOrientation(orientation, meta.videoStream.orientation)
 
             videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
             videoLoadingViewOnStateChanged(videoPlayer = meta.videoPlayer)
-        })
+        }
     }
 
     private fun observeVideoProperty() {
@@ -385,9 +383,9 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun observePiPEvent() {
-        playViewModel.observableEventPiPState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableEventPiPState.observe(viewLifecycleOwner) {
             if (it.peekContent() == PiPState.Stop) removePiP()
-        })
+        }
     }
 
     private fun observeOnboarding() {
@@ -403,12 +401,10 @@ class PlayVideoFragment @Inject constructor(
                 PlayCastState.CONNECTED -> videoLoadingView.showCasting()
                 PlayCastState.NO_DEVICE_AVAILABLE,
                 PlayCastState.NOT_CONNECTED-> {
-                    videoLoadingView.hide()
-                    it.previousState.let { previousState ->
-                        if(previousState == PlayCastState.CONNECTING || previousState == PlayCastState.CONNECTED) {
-                            Toaster.toasterCustomBottomHeight = 100
-                            Toaster.build(view = requireView(), text = getString(R.string.play_disconnect_chromecast)).show()
-                        }
+                    if(it.previousState == PlayCastState.CONNECTING || it.previousState == PlayCastState.CONNECTED) {
+                        videoLoadingView.hide()
+                        Toaster.toasterCustomBottomHeight = 100
+                        Toaster.build(view = requireView(), text = getString(R.string.play_disconnect_chromecast)).show()
                     }
                 }
             }

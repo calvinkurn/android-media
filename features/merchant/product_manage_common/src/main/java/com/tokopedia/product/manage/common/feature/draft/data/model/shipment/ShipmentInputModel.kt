@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.common.feature.draft.data.model.shipment
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by faisalramd on 2020-03-22.
@@ -17,5 +17,5 @@ data class ShipmentInputModel (
 
 @Parcelize
 data class CPLModel (
-        var shipmentServicesIds: ArrayList<Int>? = arrayListOf()
+        var shipmentServicesIds: ArrayList<Long>? = arrayListOf()
 ): Parcelable

@@ -14,7 +14,7 @@
         android:checked="false"
         android:visibility="visible"
         tools:visibility="visible"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         />
 
     <com.tokopedia.productcard.ProductCardListView

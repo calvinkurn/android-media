@@ -7,8 +7,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class LocationType(
-        @SerializedName("id") @Expose
-        var id: Int = 0,
+        @SerializedName("id")
+        @Expose
+        var id: String = "0",
 
         @SerializedName("name")
         @Expose
@@ -28,7 +29,7 @@ class LocationType(
 
         @SerializedName("type_id")
         @Expose
-        var typeId: Int = 0,
+        var typeId: String = "0",
 
         @SerializedName("status")
         @Expose

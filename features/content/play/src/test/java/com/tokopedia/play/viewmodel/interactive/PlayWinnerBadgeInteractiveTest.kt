@@ -10,27 +10,21 @@ import com.tokopedia.play.robot.andWhen
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.play.withState
 import com.tokopedia.play.robot.thenVerify
-import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.isFalse
-import com.tokopedia.play.util.isTrue
+import com.tokopedia.play.util.*
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.InteractiveWinnerBadgeClickedAction
+import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.state.PlayInteractiveUiState
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
+import kotlinx.coroutines.flow.*
 import org.junit.Rule
 import org.junit.Test
 
@@ -101,7 +95,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isTrue()
+                winnerBadge.shouldShow.assertTrue()
             }
         }
     }
@@ -127,7 +121,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }
@@ -163,7 +157,7 @@ class PlayWinnerBadgeInteractiveTest {
                 interactiveView.interactive.isEqualTo(
                         PlayInteractiveUiState.NoInteractive
                 )
-                winnerBadge.shouldShow.isFalse()
+                winnerBadge.shouldShow.assertFalse()
             }
         }
     }
@@ -190,13 +184,35 @@ class PlayWinnerBadgeInteractiveTest {
             viewModel.submitAction(InteractiveWinnerBadgeClickedAction(10))
         }.thenVerify {
             withState {
-                bottomInsets.isLeaderboardSheetShown.isTrue()
+                bottomInsets.isLeaderboardSheetShown.assertTrue()
             }
         }.andWhen {
             viewModel.submitAction(ClickCloseLeaderboardSheetAction)
         }.thenVerify {
             withState {
-                bottomInsets.isLeaderboardSheetShown.isFalse()
+                bottomInsets.isLeaderboardSheetShown.assertFalse()
+            }
+        }
+    }
+
+    @Test
+    fun `given refresh leaderboard, if should query true, then viewmodel will first emit loading state`() {
+        coEvery { interactiveRepo.getInteractiveLeaderboard(any()) } returns interactiveModelBuilder.buildLeaderboardInfo(
+            leaderboardWinners = listOf(interactiveModelBuilder.buildLeaderboard())
+        )
+
+        givenPlayViewModelRobot(
+            playChannelWebSocket = socket,
+            repo = interactiveRepo,
+            dispatchers = testDispatcher
+        ) {
+            createPage(mockChannelData)
+            focusPage(mockChannelData)
+        }.andWhen {
+            viewModel.submitAction(RefreshLeaderboard)
+        }.thenVerify {
+            withState {
+                winnerBadge.leaderboards.isEqualTo(PlayLeaderboardWrapperUiModel.Loading)
             }
         }
     }

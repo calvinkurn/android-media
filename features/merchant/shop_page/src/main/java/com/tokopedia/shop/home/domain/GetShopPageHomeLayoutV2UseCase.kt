@@ -132,6 +132,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       timeCounter
                       totalNotify
                       totalNotifyWording
+                      totalProduct
+                      totalProductWording
                       dynamicRule {
                         dynamicRoleData {
                           ruleName
@@ -164,6 +166,17 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                           title
                         }
                         hideGimmick
+                        stockSoldPercentage
+                        labelGroups {
+                          position
+                          type
+                          title
+                          url
+                        }
+                      }
+                      backgroundGradientColor {
+                        firstColor
+                        secondColor
                       }
                     }
                   }

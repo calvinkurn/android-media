@@ -9,7 +9,7 @@
         android:id="@+id/tp_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginStart="24dp"
         android:textColor="@color/Unify_R600"
         app:typographyType="heading_6"
         tools:text="Stok Kosong" />

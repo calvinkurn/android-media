@@ -28,14 +28,16 @@ class ItemProtectedParameterSectionViewHolder(
     override fun bind(element: ProtectedParameterSectionUiModel?) {
         binding?.run {
             setCardItemProtectedBackground()
+            tvTitleParameterRelief.text = element?.titleParameterRelief.orEmpty()
+            tvDescParameterRelief.text = element?.descParameterRelief.orEmpty()
             cardDescParameterRelief.setOnClickListener {
                 protectedParameterListener.onProtectedParameterChevronClicked(
-                    element?.protectedParameterDate.orEmpty()
+                    element?.descParameterReliefBottomSheet.orEmpty()
                 )
             }
             icDescParameterRelief.setOnClickListener {
                 protectedParameterListener.onProtectedParameterChevronClicked(
-                    element?.protectedParameterDate.orEmpty()
+                    element?.descParameterReliefBottomSheet.orEmpty()
                 )
             }
         }

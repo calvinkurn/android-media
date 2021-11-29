@@ -6,23 +6,20 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.databinding.ActivityStockReminderBinding
 import com.tokopedia.product.manage.feature.stockreminder.constant.AppScreen
 import com.tokopedia.product.manage.feature.stockreminder.view.fragment.StockReminderFragment
-import kotlinx.android.synthetic.main.activity_stock_reminder.*
 
 class StockReminderActivity : BaseSimpleActivity() {
 
     private var productName: String = ""
 
+    private var binding: ActivityStockReminderBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupLayout(savedInstanceState)
 
-        header.setNavigationOnClickListener {
-            onBackPressed()
-        }
-        header.headerTitle = getString(R.string.product_stock_reminder_header_title)
-        header.headerSubTitle = productName
+        setupLayout(savedInstanceState)
     }
 
     override fun getNewFragment(): Fragment? {
@@ -38,9 +35,23 @@ class StockReminderActivity : BaseSimpleActivity() {
         return StockReminderFragment.createInstance(productId, productName, stock)
     }
 
-    override fun getLayoutRes(): Int = R.layout.activity_stock_reminder
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        binding = ActivityStockReminderBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+        setupView()
+    }
 
     override fun getScreenName(): String = AppScreen.SCREEN_STOCK_REMINDER
 
     override fun getParentViewResourceID(): Int = R.id.parent_view
+
+    private fun setupView() {
+        binding?.header?.run {
+            setNavigationOnClickListener {
+                onBackPressed()
+            }
+            headerTitle = getString(R.string.product_stock_reminder_header_title)
+            headerSubTitle = productName
+        }
+    }
 }

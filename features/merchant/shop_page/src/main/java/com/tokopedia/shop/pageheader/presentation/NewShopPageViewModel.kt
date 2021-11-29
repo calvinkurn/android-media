@@ -2,18 +2,16 @@ package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.media.loader.loadImageWithEmptyTarget
+import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -246,6 +244,7 @@ class NewShopPageViewModel @Inject constructor(
                     rating = shopProductFilterParameter.getRating()
                     pmax = shopProductFilterParameter.getPmax()
                     pmin = shopProductFilterParameter.getPmin()
+                    fcategory = shopProductFilterParameter.getCategory()
                     userDistrictId = widgetUserAddressLocalData.district_id
                     userCityId = widgetUserAddressLocalData.city_id
                     userLat = widgetUserAddressLocalData.lat
@@ -291,20 +290,22 @@ class NewShopPageViewModel @Inject constructor(
 
     fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
         launchCatchError(dispatcherProvider.io, {
-            ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
-                            resource,
+            context?.let {
+                loadImageWithEmptyTarget(it, shopSnippetUrl, {
+                    fitCenter()
+                }, MediaBitmapEmptyTarget(
+                    onReady = { bitmap ->
+                        val savedFile = ImageProcessingUtil.writeImageToTkpdPath(
+                            bitmap,
                             Bitmap.CompressFormat.PNG
-                    )
-                    if (savedFile!= null) {
-                        shopImagePath.postValue(savedFile.absolutePath)
+                        )
+
+                        if (savedFile != null) {
+                            shopImagePath.postValue(savedFile.absolutePath)
+                        }
                     }
-                }
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // no op
-                }
-            })
+                ))
+            }
         }, onError = {
             it.printStackTrace()
         })
@@ -328,13 +329,8 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopBroadcasterConfig(shopId: String): Broadcaster.Config {
-        var broadcasterConfig = Broadcaster.Config()
-        try {
-            getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
-            broadcasterConfig = getBroadcasterShopConfigUseCase.get().executeOnBackground()
-        } catch (t: Throwable) {
-        }
-        return broadcasterConfig
+        getBroadcasterShopConfigUseCase.get().params = GetBroadcasterShopConfigUseCase.createParams(shopId)
+        return getBroadcasterShopConfigUseCase.get().executeOnBackground()
     }
 
     fun getFollowStatusData(shopId: String, followButtonVariantType: String) {
@@ -387,7 +383,8 @@ class NewShopPageViewModel @Inject constructor(
             }
             _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }) {
-            _shopSellerPLayWidgetData.postValue(Fail(it))
+            val broadcasterConfig = Broadcaster.Config()
+            _shopSellerPLayWidgetData.postValue(Success(broadcasterConfig))
         }
     }
 

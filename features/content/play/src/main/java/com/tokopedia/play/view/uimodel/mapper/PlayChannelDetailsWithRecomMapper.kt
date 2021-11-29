@@ -14,7 +14,7 @@ import com.tokopedia.play.view.uimodel.recom.*
 import com.tokopedia.play.view.uimodel.recom.realtimenotif.PlayRealTimeNotificationConfig
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play_common.model.PlayBufferControl
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import javax.inject.Inject
 
@@ -43,8 +43,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     ),
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
-                    channelReportInfo = mapChannelReportInfo(),
-                    cartInfo = mapCartInfo(it.config),
+                    channelReportInfo = mapChannelReportInfo(it.id, extraParams),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -70,10 +69,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
-            id = partnerResponse.id.toLongOrZero(),
-            name = htmlTextTransformer.transform(partnerResponse.name),
-            type = PartnerType.getTypeByValue(partnerResponse.type),
-            status = PlayPartnerFollowStatus.Unknown,
+        id = partnerResponse.id.toLongOrZero(),
+        name = htmlTextTransformer.transform(partnerResponse.name),
+        type = PartnerType.getTypeByValue(partnerResponse.type),
+        status = PlayPartnerFollowStatus.Unknown,
+        iconUrl = partnerResponse.thumbnailUrl,
+        badgeUrl = partnerResponse.badgeUrl,
     )
 
     private fun mapLikeInfo(
@@ -88,7 +89,13 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         likeBubbleConfig = mapMultipleLikeConfig(configs),
     )
 
-    private fun mapChannelReportInfo() = PlayChannelReportUiModel()
+    private fun mapChannelReportInfo(
+        channelId: String,
+        extraParams: ExtraParams
+    ) = PlayChannelReportUiModel(
+        shouldTrack = if(channelId == extraParams.channelId) extraParams.shouldTrack else true,
+        sourceType = extraParams.sourceType
+    )
 
     private fun mapShareInfo(shareResponse: ChannelDetailsWithRecomResponse.Share): PlayShareInfoUiModel {
         val fullShareContent = try {
@@ -127,10 +134,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return multipleLikesMapper.mapMultipleLikeConfig(configs)
     }
 
-    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
-            shouldShow = configResponse.showCart
-    )
-
     private fun mapPinnedInfo(
             pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage,
             partnerResponse: ChannelDetailsWithRecomResponse.Partner,
@@ -153,8 +156,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
-            applink = pinnedMessageResponse.redirectUrl,
-            partnerName = htmlTextTransformer.transform(partnerResponse.name),
+            appLink = pinnedMessageResponse.redirectUrl,
             title = pinnedMessageResponse.title,
     )
 
@@ -208,7 +210,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
             statusType = mapStatusType(!configResponse.active || configResponse.freezed),
             bannedModel = mapBannedModel(configResponse.bannedData),
             freezeModel = mapFreezeModel(configResponse.freezeData, title),
-            shouldAutoSwipeOnFreeze = true
+            shouldAutoSwipeOnFreeze = true,
+            waitingDuration = 0,
     )
 
     private fun mapBannedModel(
@@ -245,7 +248,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         else PlayStatusType.Active
     }
 
-    private fun mapLeaderboardInfo() = PlayLeaderboardInfoUiModel()
+    private fun mapLeaderboardInfo() = PlayLeaderboardWrapperUiModel.Unknown
 
     private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) =
         PlayUpcomingUiModel(
@@ -275,6 +278,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     data class ExtraParams(
             val channelId: String?,
-            val videoStartMillis: Long?
+            val videoStartMillis: Long?,
+            val shouldTrack: Boolean,
+            val sourceType: String,
     )
 }

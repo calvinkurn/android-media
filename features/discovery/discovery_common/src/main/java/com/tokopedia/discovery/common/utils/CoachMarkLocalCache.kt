@@ -47,13 +47,4 @@ class CoachMarkLocalCache(context: Context?) {
     private fun setShown(key: String) {
         pmProSharedPref?.edit()?.putBoolean(key, false)?.apply()
     }
-
-    fun shouldShowSearchPMProPopUp(): Boolean {
-        val shouldShow = pmProSharedPref?.getBoolean(KEY_SHOW_POP_UP_SEARCH_POWER_MERCHANT_PRO, true) ?: false
-        if (shouldShow) {
-            setShown(KEY_SHOW_POP_UP_SEARCH_POWER_MERCHANT_PRO)
-            setShown(KEY_SHOW_COACH_MARK_HOME_POWER_MERCHANT_PRO)
-        }
-        return shouldShow
-    }
 }

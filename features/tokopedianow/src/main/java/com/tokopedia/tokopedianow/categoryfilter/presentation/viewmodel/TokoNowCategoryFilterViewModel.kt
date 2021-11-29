@@ -8,7 +8,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.categoryfilter.domain.mapper.CategoryFilterMapper
 import com.tokopedia.tokopedianow.categoryfilter.presentation.uimodel.CategoryFilterChip
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -23,13 +24,13 @@ class TokoNowCategoryFilterViewModel @Inject constructor(
 
     val applyFilter: LiveData<SelectedSortFilter?>
         get() = _applyFilter
-    val categoryList: LiveData<Success<List<CategoryFilterChip>>>
+    val categoryList: LiveData<Result<List<CategoryFilterChip>>>
         get() = _categoryList
     val selectedFilter: LiveData<SelectedSortFilter?>
         get() = _selectedFilter
 
     private val _applyFilter = MutableLiveData<SelectedSortFilter?>()
-    private val _categoryList = MutableLiveData<Success<List<CategoryFilterChip>>>()
+    private val _categoryList = MutableLiveData<Result<List<CategoryFilterChip>>>()
     private var _selectedFilter = MutableLiveData<SelectedSortFilter?>()
 
     fun getCategoryList(warehouseId: String, selectedFilter: SelectedSortFilter?) {

@@ -97,7 +97,7 @@ class PlaySearchSuggestionsFragment @Inject constructor(
      * Observe
      */
     private fun observeSearchSuggestions() {
-        viewModel.observableSuggestionList.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.observableSuggestionList.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is NetworkResult.Success -> {
                     dismissToaster()
@@ -108,13 +108,11 @@ class PlaySearchSuggestionsFragment @Inject constructor(
                             err = result.error,
                             duration = Toaster.LENGTH_LONG,
                             actionLabel = getString(R.string.play_broadcast_try_again),
-                            actionListener = View.OnClickListener {
-                                result.onRetry()
-                            }
+                            actionListener = { result.onRetry() }
                     )
                 }
             }
-        })
+        }
     }
 
     /**

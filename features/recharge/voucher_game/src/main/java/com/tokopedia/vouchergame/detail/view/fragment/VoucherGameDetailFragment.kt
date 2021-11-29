@@ -318,6 +318,13 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         }
     }
 
+    override fun showErrorMessage(error: Throwable) {
+        view?.let { v ->
+            Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
+                ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
+    }
+
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
         // Hide input fields if there is no fields
         if (!data.needEnquiry || data.enquiryFields.isEmpty()) {
@@ -673,7 +680,10 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
         processCheckoutData()
     }
 
-    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         // do nothing
     }
     

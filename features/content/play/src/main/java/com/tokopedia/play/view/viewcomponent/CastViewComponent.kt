@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.mediarouter.app.MediaRouteButton
 import com.google.android.gms.cast.framework.CastButtonFactory

@@ -1,8 +1,5 @@
 package com.tokopedia.play.robot
 
-import org.assertj.core.api.Assertions
-import kotlin.reflect.KProperty1
-
 /**
  * Created by jegul on 10/02/21
  */

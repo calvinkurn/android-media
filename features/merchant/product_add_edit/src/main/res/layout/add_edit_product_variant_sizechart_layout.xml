@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_6"
+            android:layout_margin="6dp"
             app:cardBackgroundColor="@color/Unify_N50"
             app:cardCornerRadius="@dimen/spacing_lvl2"
             app:cardElevation="@dimen/layout_lvl0">

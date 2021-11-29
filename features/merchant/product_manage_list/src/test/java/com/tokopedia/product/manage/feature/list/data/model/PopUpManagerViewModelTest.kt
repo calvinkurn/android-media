@@ -7,10 +7,9 @@ class PopUpManagerViewModelTest {
 
     @Test
     fun `when getShopManagerPopups should return shopManagerPopups value`() {
-        val shopManagerPopups = ShopManagerPopups()
-        val popupManager = PopUpManagerViewModel()
-        popupManager.setShopManagerPopups(shopManagerPopups)
+        val shopManagerPopups = GetShopManagerPopups()
+        val popupManager = PopupManagerResponse(shopManagerPopups)
 
-        assertEquals(shopManagerPopups, popupManager.getShopManagerPopups())
+        assertEquals(shopManagerPopups, popupManager.getShopManagerPopups)
     }
 }

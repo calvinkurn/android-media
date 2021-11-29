@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -72,6 +73,11 @@ fun TextAreaUnify?.replaceTextAndRestoreCursorPosition(text: String) = this?.tex
 fun Typography?.setTextOrGone(text: String) {
     this?.text = text
     this?.visibility = if (text.isNotEmpty()) View.VISIBLE else View.GONE
+}
+
+fun TextFieldUnify?.setHtmlMessage(text: String) {
+    val htmlText = MethodChecker.fromHtml(text)
+    this?.setMessage(htmlText)
 }
 
 // Action listener for edittext inside the recyclerView

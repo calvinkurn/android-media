@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.common.feature.draft.data.model.description
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by faisalramd on 2020-03-22.

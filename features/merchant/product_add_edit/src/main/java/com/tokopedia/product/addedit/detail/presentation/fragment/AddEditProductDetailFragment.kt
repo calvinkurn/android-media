@@ -34,6 +34,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product.addedit.R
@@ -321,10 +322,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             imeOptions = EditorInfo.IME_ACTION_DONE
             setRawInputType(InputType.TYPE_CLASS_TEXT)
         }
-        if (RollenceUtil.getProductTitleRollence()) {
-            viewModel.usingNewProductTitleRequest = true
-            setupProductNameValidationBottomsheet()
-        }
+        setupProductNameValidationBottomsheet()
 
         // add edit product category views
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
@@ -691,10 +689,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.hide()
         }
 
-        // Setup default message for stock if shop admin or owner
-        viewModel.setupMultiLocationShopValues()
-        productStockField?.setMessage(viewModel.productStockMessage)
-
+        setupDefaultFieldMessage()
         setupSpecificationField()
         setupProductPriceRecommendationField()
         enableProductNameField()
@@ -1296,6 +1291,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productNameField?.isInputError = it
             productNameField?.setMessage(viewModel.productNameMessage)
             typoCorrection?.hide()
+            productNameRecAdapter?.setProductNameRecommendations(emptyList())
+            productNameRecView?.isVisible = !it
 
             // if product name input has no issue
             if (!it) {
@@ -1322,16 +1319,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                 }
             } else {
-                // show empty recommendations for input with error
-                productNameRecAdapter?.setProductNameRecommendations(emptyList())
-                hideProductNameLoadingIndicator()
-
                 // keep the category
                 if (viewModel.isAdding && !viewModel.hasVariants) {
                     productCategoryRecListView?.setData(ArrayList(emptyList()))
                 }
 
                 // update icon product name field error
+                hideProductNameLoadingIndicator()
                 showProductNameIconError()
             }
 
@@ -1348,7 +1342,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun subscribeToProductPriceInputStatus() {
         viewModel.isProductPriceInputError.observe(viewLifecycleOwner, Observer {
             productPriceField?.setError(it)
-            productPriceField?.setMessage(viewModel.productPriceMessage)
+            productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
         })
     }
 
@@ -1590,6 +1584,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         val intent = ImagePickerAddEditNavigation.getIntent(ctx, ArrayList(imageUrlOrPathList), maxProductPhotoCount, isAdding)
         startActivityForResult(intent, REQUEST_CODE_IMAGE)
+    }
+
+    private fun setupDefaultFieldMessage() {
+        // Setup default message for stock if shop admin or owner
+        viewModel.setupMultiLocationShopValues()
+        productPriceField?.setHtmlMessage(viewModel.productPriceMessage)
+        productStockField?.setMessage(viewModel.productStockMessage)
     }
 
     private fun setupSpecificationField() {
@@ -1846,7 +1847,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         observe(viewModel.productNameRecommendations) {
             when (it) {
                 is Success -> {
-                    productNameRecView?.visible()
+                    val inputError = viewModel.isProductNameInputError.value.orFalse()
+                    productNameRecView?.isVisible = !inputError
                     productNameRecAdapter?.setProductNameRecommendations(it.data)
                 }
                 is Fail -> {

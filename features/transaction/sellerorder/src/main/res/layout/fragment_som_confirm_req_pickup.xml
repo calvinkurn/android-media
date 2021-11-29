@@ -54,18 +54,18 @@
                         app:layout_constraintTop_toBottomOf="@id/label_location"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginTop="@dimen/unify_space_16"
-                        app:cardCornerRadius="@dimen/dp_8"
-                        app:cardElevation="@dimen/dp_0">
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/dp_20"
-                            android:layout_marginEnd="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="16dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginBottom="@dimen/dp_18">
 
                             <com.tokopedia.iconunify.IconUnify
@@ -84,8 +84,8 @@
                                 app:typographyWeight="reguler"
                                 app:typographyType="body_3"
                                 android:text="Jalan jalan jalan halan"
-                                android:layout_marginLeft="@dimen/dp_10"
-                                android:layout_marginStart="@dimen/dp_10"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
                                 android:layout_toRightOf="@id/ic_location"
                                 android:layout_toEndOf="@id/ic_location"
                                 app:layout_constrainedWidth="true"
@@ -97,7 +97,7 @@
                                 android:id="@+id/ic_phone"
                                 android:layout_width="@dimen/dp_18"
                                 android:layout_height="@dimen/dp_18"
-                                android:layout_marginTop="@dimen/dp_16"
+                                android:layout_marginTop="16dp"
                                 app:layout_constraintStart_toStartOf="@id/ic_location"
                                 app:layout_constraintTop_toBottomOf="@id/shop_address"
                                 app:icon_name="CALL"/>
@@ -109,7 +109,7 @@
                                 app:typographyWeight="reguler"
                                 app:typographyType="body_3"
                                 android:text="08xxxxxx"
-                                android:layout_marginTop="@dimen/dp_16"
+                                android:layout_marginTop="16dp"
                                 app:layout_constraintStart_toStartOf="@id/shop_address"
                                 app:layout_constraintTop_toBottomOf="@id/shop_address"/>
 
@@ -121,7 +121,7 @@
                         android:id="@+id/divider_1"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginTop="24dp"
                         app:layout_constraintTop_toBottomOf="@id/card_address"
                         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -144,11 +144,11 @@
                         app:layout_constraintTop_toBottomOf="@id/label_courier"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginTop="@dimen/unify_space_16"
-                        app:cardCornerRadius="@dimen/dp_8"
-                        app:cardElevation="@dimen/dp_0">
+                        app:cardCornerRadius="8dp"
+                        app:cardElevation="0dp">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -156,13 +156,13 @@
 
                             <ImageView
                                 android:id="@+id/iv_courier"
-                                android:layout_width="@dimen/dp_72"
-                                android:layout_height="@dimen/dp_72"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="@id/tv_courier_name_service"
                                 tools:ignore="ContentDescription"
-                                android:layout_marginStart="@dimen/dp_16"
-                                android:layout_marginEnd="@dimen/dp_8" />
+                                android:layout_marginStart="16dp"
+                                android:layout_marginEnd="8dp" />
 
                             <com.tokopedia.unifyprinciples.Typography
                                 android:id="@+id/tv_courier_name_service"
@@ -171,11 +171,11 @@
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintStart_toEndOf="@id/iv_courier"
                                 app:typographyType="body_2"
-                                android:layout_marginStart="@dimen/dp_8"
-                                android:layout_marginLeft="@dimen/dp_8"
-                                android:layout_marginRight="@dimen/dp_8"
-                                android:layout_marginEnd="@dimen/dp_8"
-                                android:layout_marginTop="@dimen/dp_16"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="16dp"
                                 tools:text="aa"/>
 
                             <com.tokopedia.unifyprinciples.Typography
@@ -186,13 +186,13 @@
                                 app:typographyWeight="reguler"
                                 app:layout_constraintStart_toStartOf="@id/tv_courier_name_service"
                                 app:layout_constraintTop_toBottomOf="@id/tv_courier_name_service"
-                                android:layout_marginTop="@dimen/dp_8"
+                                android:layout_marginTop="8dp"
                                 android:singleLine="false"
                                 tools:text="Oleh kurir: Anteraja"
                                 app:layout_constrainedWidth="true"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                android:layout_marginRight="@dimen/dp_8"
-                                android:layout_marginEnd="@dimen/dp_8"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginEnd="8dp"
                                 android:lineSpacingMultiplier="1"/>
 
                             <com.tokopedia.unifyprinciples.Typography
@@ -202,14 +202,14 @@
                                 app:typographyType="body_3"
                                 app:layout_constraintStart_toStartOf="@id/tv_courier_notes"
                                 app:layout_constraintTop_toBottomOf="@id/tv_courier_notes"
-                                android:layout_marginTop="@dimen/dp_8"
+                                android:layout_marginTop="8dp"
                                 tools:text="Jumlah: 1 Pesanaan"/>
 
                             <com.tokopedia.unifycomponents.DividerUnify
                                 android:id="@+id/divider_2"
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"
-                                android:layout_marginTop="@dimen/dp_24"
+                                android:layout_marginTop="24dp"
                                 app:layout_constraintTop_toBottomOf="@id/tv_courier_count"
                                 app:layout_constraintStart_toStartOf="parent"/>
 
@@ -219,7 +219,7 @@
                                 android:layout_height="wrap_content"
                                 app:layout_constraintTop_toBottomOf="@id/divider_2"
                                 app:layout_constraintStart_toStartOf="parent"
-                                android:padding="@dimen/dp_16">
+                                android:padding="16dp">
 
                                 <com.tokopedia.unifyprinciples.Typography
                                     android:id="@+id/tv_pickup_choice"
@@ -279,8 +279,8 @@
 
                                 <com.tokopedia.iconunify.IconUnify
                                     android:id="@+id/btn_arrow"
-                                    android:layout_width="@dimen/dp_16"
-                                    android:layout_height="@dimen/dp_16"
+                                    android:layout_width="16dp"
+                                    android:layout_height="16dp"
                                     android:layout_alignEnd="@id/divider_schedule"
                                     android:layout_below="@id/tv_pickup_time"
                                     app:icon_name="CHEVRON_DOWN"
@@ -291,7 +291,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="@dimen/dp_1"
                                     android:background="@color/Unify_N75"
-                                    android:layout_marginTop="@dimen/dp_3"
+                                    android:layout_marginTop="3dp"
                                     android:layout_below="@id/tv_schedule"
                                     android:visibility="visible"/>
 
@@ -305,7 +305,7 @@
                         android:id="@+id/divider_3"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:layout_marginTop="@dimen/dp_24"
+                        android:layout_marginTop="24dp"
                         app:layout_constraintTop_toBottomOf="@id/card_courier"
                         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -347,17 +347,17 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_4"
+                android:layout_height="4dp"
                 android:background="@drawable/sompickup_shadow_top" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_req_pickup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 app:unifyButtonVariant="filled"
                 app:unifyButtonType="main"
                 android:text="Kirim Request Pick-up"

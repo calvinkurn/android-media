@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.prepaid.adapter.viewholder
 
 import android.graphics.Paint
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -14,9 +15,12 @@ import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.item_telco_product.view.*
 
-class TelcoProductViewHolder(itemView: View, private val productType: Int,
-                             val listener: ActionListener)
-    : AbstractViewHolder<TelcoProduct>(itemView) {
+class TelcoProductViewHolder(
+    itemView: View,
+    private val productType: Int,
+    private val isSingleMCCM: Boolean,
+    val listener: ActionListener
+) : AbstractViewHolder<TelcoProduct>(itemView) {
 
     lateinit var adapter: TelcoProductAdapter
 
@@ -41,7 +45,11 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
     private fun renderCardSize() {
         with(itemView) {
             if (productType == TelcoProductType.PRODUCT_MCCM) {
-                telco_layout_product_card.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.telco_mccm_card_item_width)
+                if (isSingleMCCM){
+                    telco_layout_product_card.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                } else {
+                    telco_layout_product_card.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.telco_mccm_card_item_width)
+                }
             }
         }
     }

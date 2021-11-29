@@ -52,7 +52,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.mp4Composer
-    implementation rootProject.ext.miscDependencies.zoomLayout
     implementation projectOrAar(rootProject.ext.features.medialoader)
 
     implementation rootProject.ext.miscDependencies.coroutineCore

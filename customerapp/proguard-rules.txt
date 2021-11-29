@@ -244,16 +244,13 @@
 
 
 # To show pop-up via CM engine
--keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 -keepnames class com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
 -keepnames class com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.RecommendationFragment
 -keepnames class com.tokopedia.home_recom.view.fragment.SimilarProductRecommendationFragment
 -keepnames class com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
 -keepnames class com.tokopedia.cart.view.CartFragment
--keepnames class com.tokopedia.home.account.presentation.fragment.AccountHomeFragment
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
--keepnames class com.tokopedia.review_shop.shop.view.ReviewShopFragment
 
 # Hansel proguard rules
 -dontwarn io.hansel.**
@@ -287,7 +284,3 @@
 
 # Window
 -keep class androidx.window.** { *; }
-
-# otaliastudios.zoom library
--dontwarn com.otaliastudios.zoom.**
--keep class com.otaliastudios.zoom.*{ *; }

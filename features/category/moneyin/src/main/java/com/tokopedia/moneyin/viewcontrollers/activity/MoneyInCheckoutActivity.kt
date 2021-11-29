@@ -89,10 +89,10 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         if (intent.hasExtra(MONEY_IN_NEW_ADDRESS)) {
             val saveAddressViewModel: SaveAddressDataModel = intent.getParcelableExtra(MONEY_IN_NEW_ADDRESS) ?: SaveAddressDataModel()
             saveAddressViewModel.apply {
-                val keroGetAddress = KeroGetAddress.Data(id, title, address1, address2, cityId,
-                        "", "", districtId, selectedDistrict, true,
+                val keroGetAddress = KeroGetAddress.Data(id.toInt(), title, address1, address2, cityId.toInt(),
+                        "", "", districtId.toInt(), selectedDistrict, true,
                         true, true, latitude, longitude, phone, postalCode,
-                        provinceId, "", receiverName, 1)
+                        provinceId.toInt(), "", receiverName, 1)
                 setAddressView(keroGetAddress)
             }
 

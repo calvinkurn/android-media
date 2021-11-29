@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.settings.view.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -19,8 +20,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.internal_review.common.InternalReviewUtils
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
@@ -60,8 +64,16 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val LOGOUT_BUTTON_NAME = "Logout"
         private const val TERM_CONDITION_BUTTON_NAME = "Syarat dan Ketentuan"
         private const val PRIVACY_POLICY_BUTTON_NAME = "Kebijakan Privasi"
+        private const val EXTRA_SCREEN_SHOOT_TRIGGER = "extra_screen_shoot_trigger"
+        private const val EXTRA_TOASTER_MESSAGE = "extra_toaster_message"
+        private const val EXTRA_SHOW_SETTING_BOTTOM_SHEET = "extra_show_settings"
 
         private const val LOGOUT_ALIAS = "logout"
+        private const val REQ_CODE_GLOBAL_FEEDBACK = 8043
+        private const val TOASTER_HEIGHT = 104
+        private const val TOASTER_CTA_WIDTH = 120
+        private const val TOASTER_DURATION = 5000
+        private const val TOASTER_DELAY = 1000L
 
         @JvmStatic
         fun createInstance(): MenuSettingFragment = MenuSettingFragment()
@@ -159,6 +171,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         reviewApplication()
     }
 
+    override fun onGiveFeedback() {
+        openGlobalFeedback()
+    }
+
     override fun onNoAccess() {
         showToasterError(
             context?.getString(R.string.seller_menu_admin_no_permission_oops).orEmpty()
@@ -168,6 +184,52 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     override fun onDestroyView() {
         super.onDestroyView()
         menuSettingViewModel.shopSettingAccessLiveData.removeObservers(viewLifecycleOwner)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        handleGlobalFeedbackResult(requestCode, resultCode, data)
+    }
+
+    private fun handleGlobalFeedbackResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && requestCode == REQ_CODE_GLOBAL_FEEDBACK) {
+            showFeedbackToaster(data)
+        }
+    }
+
+    private fun showFeedbackToaster(data: Intent?) {
+        val rootView = view?.rootView
+        rootView?.postDelayed({
+            val isScreenShootTriggerEnabled =
+                data?.getBooleanExtra(EXTRA_SCREEN_SHOOT_TRIGGER, false).orFalse()
+            val toasterMessage = data?.getStringExtra(EXTRA_TOASTER_MESSAGE).orEmpty()
+            Toaster.toasterCustomBottomHeight = rootView.context.dpToPx(TOASTER_HEIGHT).toInt()
+            if (isScreenShootTriggerEnabled) {
+                Toaster.build(
+                    rootView,
+                    text = toasterMessage,
+                    duration = Toaster.LENGTH_LONG
+                ).show()
+            } else {
+                Toaster.toasterCustomCtaWidth = rootView.context.dpToPx(TOASTER_CTA_WIDTH).toInt()
+                Toaster.build(rootView,
+                    text = toasterMessage,
+                    actionText = rootView.context.getString(R.string.menu_setting_title),
+                    duration = TOASTER_DURATION,
+                    clickListener = {
+                        openFeedbackForm()
+                    }
+                ).show()
+            }
+        }, TOASTER_DELAY)
+    }
+
+    private fun openFeedbackForm() {
+        context?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
+            intent.putExtra(EXTRA_SHOW_SETTING_BOTTOM_SHEET, true)
+            startActivityForResult(intent, REQ_CODE_GLOBAL_FEEDBACK)
+        }
     }
 
     private fun observeShopSettingAccess() {
@@ -266,6 +328,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 )
             )
         }
+    }
+
+    private fun openGlobalFeedback() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
+        startActivityForResult(intent, REQ_CODE_GLOBAL_FEEDBACK)
     }
 
     private fun showLogoutDialog() {

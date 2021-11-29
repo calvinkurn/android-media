@@ -11,8 +11,8 @@
         android:id="@+id/shop_followers_image"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_56"
-        android:layout_marginStart="@dimen/dp_5"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="16dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         android:contentDescription="@string/follow_button_npl_etalase"
@@ -23,10 +23,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shop_followers_title"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         app:layout_constraintEnd_toStartOf="@+id/shop_followers_btn"
         app:layout_constraintStart_toEndOf="@+id/shop_followers_image"
         app:layout_constraintTop_toTopOf="@+id/shop_followers_image"
@@ -35,10 +35,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shop_followers_desc"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="@+id/shop_followers_title"
         app:layout_constraintStart_toStartOf="@+id/shop_followers_title"
         app:layout_constraintTop_toBottomOf="@+id/shop_followers_title"
@@ -47,12 +48,14 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/shop_followers_btn"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:drawablePadding="@dimen/dp_5"
+        android:layout_width="95dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="16dp"
+        android:drawablePadding="5dp"
+        android:layout_marginTop="2dp"
+        android:maxWidth="95dp"
+        android:maxHeight="40dp"
         android:text="@string/merchant_shop_common_follow_label"
-        app:layout_constraintBottom_toBottomOf="@+id/shop_followers_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/shop_followers_title" />
 

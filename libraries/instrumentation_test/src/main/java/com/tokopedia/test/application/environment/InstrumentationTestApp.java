@@ -73,7 +73,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void onCreate() {
         SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.115";
+        GlobalConfig.VERSION_NAME = "3.150";
         SplitCompat.install(this);
         FpmLogger.init(this);
         PersistentCacheManager.init(this);

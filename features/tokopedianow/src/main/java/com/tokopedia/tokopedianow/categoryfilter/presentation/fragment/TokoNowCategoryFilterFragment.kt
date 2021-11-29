@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.PARAM_WAREHOUSE_ID
 import com.tokopedia.tokopedianow.categoryfilter.presentation.bottomsheet.TokoNowCategoryFilterBottomSheet
-import com.tokopedia.tokopedianow.recentpurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.*
 
 class TokoNowCategoryFilterFragment : Fragment() {
 

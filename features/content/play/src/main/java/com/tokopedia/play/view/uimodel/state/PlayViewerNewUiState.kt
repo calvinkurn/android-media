@@ -4,8 +4,7 @@ import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerFollowStatus
-import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
+import com.tokopedia.play_common.model.ui.PlayLeaderboardWrapperUiModel
 
 /**
  * Created by jegul on 28/06/21
@@ -18,8 +17,9 @@ data class PlayViewerNewUiState(
     val like: PlayLikeUiState,
     val totalView: PlayTotalViewUiState,
     val share: PlayShareUiState,
-    val cart: PlayCartUiState,
     val rtn: PlayRtnUiState,
+    val title: PlayTitleUiState,
+    val viewAllProduct: PlayViewAllProductUiState,
 )
 
 data class PlayInteractiveViewUiState(
@@ -52,11 +52,14 @@ sealed class PlayInteractiveUiState {
 data class PlayPartnerUiState(
     val name: String,
     val followStatus: PlayPartnerFollowStatus,
+    val iconUrl: String,
+    val badgeUrl: String,
+    val isLoadingFollow: Boolean,
 )
 
 data class PlayWinnerBadgeUiState(
-    val leaderboards: List<PlayLeaderboardUiModel>,
-    val shouldShow: Boolean,
+    val leaderboards: PlayLeaderboardWrapperUiModel,
+    val shouldShow: Boolean
 )
 
 enum class PlayLikeMode {
@@ -74,17 +77,6 @@ data class PlayLikeUiState(
         val canShowBubble: Boolean,
 )
 
-data class PlayCartUiState(
-        val shouldShow: Boolean,
-        val count: PlayCartCount,
-)
-
-sealed class PlayCartCount {
-
-    data class Show(val countText: String) : PlayCartCount()
-    object Hide : PlayCartCount()
-}
-
 data class PlayRtnUiState(
     val shouldShow: Boolean,
     val lifespanInMs: Long,
@@ -96,6 +88,14 @@ data class PlayShareUiState(
 
 data class PlayTotalViewUiState(
     val viewCountStr: String
+)
+
+data class PlayTitleUiState(
+    val title: String
+)
+
+data class PlayViewAllProductUiState(
+    val shouldShow: Boolean
 )
 
 enum class ViewVisibility {

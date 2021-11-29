@@ -7,11 +7,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.attachvoucher.R
-import kotlinx.android.synthetic.main.item_attachvoucher_empty.view.*
+import com.tokopedia.attachvoucher.databinding.ItemAttachvoucherEmptyBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyModel>(itemView) {
 
     private val emptyIconUrl = "https://ecs7.tokopedia.net/android/others/Voucher_Ilustration@3x.png"
+
+    private val binding: ItemAttachvoucherEmptyBinding? by viewBinding()
 
     override fun bind(element: EmptyModel?) {
         bindEmptyImage()
@@ -19,11 +22,11 @@ class EmptyAttachVoucherViewHolder(itemView: View?) : AbstractViewHolder<EmptyMo
     }
 
     private fun bindEmptyImage() {
-        ImageHandler.loadImageAndCache(itemView.ivEmpty, emptyIconUrl)
+        ImageHandler.loadImageAndCache(binding?.ivEmpty, emptyIconUrl)
     }
 
     private fun bindButtonClick() {
-        itemView.btnCreateVoucher?.setOnClickListener {
+        binding?.btnCreateVoucher?.setOnClickListener {
             RouteManager.route(it.context, ApplinkConst.SellerApp.CREATE_VOUCHER)
         }
     }

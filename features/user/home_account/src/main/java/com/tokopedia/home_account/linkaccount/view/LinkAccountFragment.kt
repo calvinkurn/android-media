@@ -103,7 +103,7 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         if(data.response.linkStatus.isNotEmpty()) {
             val linkStatus = data.response.linkStatus.map { it.toUserAccountDataView() }
             adapter.setItems(linkStatus)
-            val isShowFooter = data.response.linkStatus.any { it.status == "linked" }
+            val isShowFooter = data.response.linkStatus.any { it.status == STATUS_LINKED }
             if(isShowFooter){
                 showFooter()
             } else {
@@ -114,7 +114,9 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     private fun onFailedGetLinkStatus(error: Throwable) {
         if(view != null) {
-            Toaster.build(requireView(), error.message ?: "Terjadi kesalahan", Toaster.LENGTH_LONG)
+            context?.run {
+                Toaster.build(requireView(), getString(com.tokopedia.abstraction.R.string.default_request_error_unknown), Toaster.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -133,10 +135,10 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
                 }
 
                 override fun updateDrawState(ds: TextPaint) {
-                    ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                    ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                 }
             },
-            message.indexOf("Hubungi"),
+            message.indexOf(CONTACT_INDEX),
             message.length,
             0
         )
@@ -158,7 +160,12 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     override fun onLinkAccountClicked() {
         homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            putExtra(
+                ApplinkConstInternalGlobal.PARAM_LD,
+                LinkAccountWebviewFragment.BACK_BTN_APPLINK
+            )
+        }
         startActivityForResult(intent, LINK_ACCOUNT_WEBVIEW_REQUEST)
     }
 
@@ -175,22 +182,32 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
         }
 
         return UserAccountDataView(
-            isLinked = status == "linked",
-            status = if(status == "linked") {
-                "+$phone - "
+            isLinked = status == STATUS_LINKED,
+            status = if(status == STATUS_LINKED) {
+                String.format(context?.getString(com.tokopedia.home_account.R.string.label_link_acc_phone) ?: "", phone)
             } else {
-                "Belum tersambung"
+                context?.getString(com.tokopedia.home_account.R.string.label_link_acc_not_linked) ?: ""
             },
-            partnerName = "Gojek",
-            linkDate = "Tersambung ${formatDate(linkedDate)}"
+            partnerName = context?.getString(com.tokopedia.home_account.R.string.label_link_acc_gojek) ?: "",
+            linkDate = String.format(context?.getString(com.tokopedia.home_account.R.string.label_link_acc_linked_date) ?: "", formatDateLocalTimezone(linkedDate))
         )
     }
 
-    private fun formatDate(mDate: String): String {
+    private fun getIndonesiaLocale() : Locale {
         return try {
-            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault()).parse(mDate) ?: ""
-            SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date)
+            Locale("id", "ID")
+        }catch (e: Exception) {
+            Locale.getDefault()
+        }
+    }
+
+    fun formatDateLocalTimezone(mDate: String): String {
+        return try {
+            val date = SimpleDateFormat(SERVER_DATE_FORMAT, getIndonesiaLocale())
+            date.timeZone = TimeZone.getTimeZone(TIMEZONE_UTC)
+            return SimpleDateFormat(LOCAL_DATE_FORMAT, getIndonesiaLocale()).format(date.parse(mDate) ?: "")
         } catch (e: Exception) {
+            e.printStackTrace()
             mDate
         }
     }
@@ -208,6 +225,13 @@ class LinkAccountFragment: BaseDaggerFragment(), AccountItemListener {
 
     companion object {
         private const val TOKOPEDIA_CARE_PATH = "help"
+
+        private const val STATUS_LINKED = "linked"
+        private const val CONTACT_INDEX = "Hubungi"
+
+        private const val SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        private const val LOCAL_DATE_FORMAT = "dd MMM yyyy"
+        private const val TIMEZONE_UTC = "UTC"
 
         const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
 

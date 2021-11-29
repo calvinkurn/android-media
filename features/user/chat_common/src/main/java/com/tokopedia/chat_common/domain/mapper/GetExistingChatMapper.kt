@@ -14,7 +14,7 @@ import com.tokopedia.chat_common.domain.pojo.imageannouncement.ImageAnnouncement
 import com.tokopedia.chat_common.domain.pojo.imageupload.ImageUploadAttributes
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceSentPojo
 import com.tokopedia.chat_common.domain.pojo.productattachment.ProductAttachmentAttributes
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import javax.inject.Inject
 
 /**
@@ -48,7 +48,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 pojo.chatReplies.block.blockedUntil)
     }
 
-    open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderViewModel {
+    open fun mappingHeaderModel(pojo: GetExistingChatPojo): ChatRoomHeaderUiModel {
         var interlocutor = Contact()
 
         for (contact in pojo.chatReplies.contacts) {
@@ -58,12 +58,12 @@ open class GetExistingChatMapper @Inject constructor() {
             }
         }
 
-        return ChatRoomHeaderViewModel(
+        return ChatRoomHeaderUiModel(
                 interlocutor.name,
                 interlocutor.tag,
                 interlocutor.userId.toString(),
                 interlocutor.role,
-                ChatRoomHeaderViewModel.Companion.MODE_DEFAULT_GET_CHAT,
+                ChatRoomHeaderUiModel.Companion.MODE_DEFAULT_GET_CHAT,
                 "",
                 interlocutor.thumbnail,
                 interlocutor.status.timestampStr,
@@ -96,7 +96,7 @@ open class GetExistingChatMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .build()
     }
@@ -114,7 +114,7 @@ open class GetExistingChatMapper @Inject constructor() {
     protected open fun convertToImageAnnouncement(item: Reply): Visitable<*> {
         val pojoAttribute = gson.fromJson<ImageAnnouncementPojo>(item.attachment?.attributes,
                 ImageAnnouncementPojo::class.java)
-        val imageAnnouncement = ImageAnnouncementViewModel(
+        val imageAnnouncement = ImageAnnouncementUiModel(
                 messageId = item.msgId.toString(),
                 fromUid = item.senderId.toString(),
                 from = item.senderName,
@@ -137,7 +137,7 @@ open class GetExistingChatMapper @Inject constructor() {
         chatItemPojoByDateByTime.attachment?.fallback?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel.Builder()
+        return FallbackAttachmentUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withMsg(fallbackMessage)
             .build()
@@ -148,7 +148,7 @@ open class GetExistingChatMapper @Inject constructor() {
             chatItemPojoByDateByTime.attachment?.attributes,
             ImageUploadAttributes::class.java
         )
-        return ImageUploadViewModel.Builder()
+        return ImageUploadUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
@@ -164,23 +164,23 @@ open class GetExistingChatMapper @Inject constructor() {
             chatItemPojoByDateByTime.isOpposite, chatItemPojoByDateByTime.role
         )
         if (pojoAttribute.isBannedProduct()) {
-            return BannedProductAttachmentViewModel.Builder()
+            return BannedProductAttachmentUiModel.Builder()
                 .withResponseFromGQL(chatItemPojoByDateByTime)
                 .withProductAttributesResponse(pojoAttribute)
                 .withCanShowFooter(canShowFooter)
                 .build()
         }
-        return ProductAttachmentViewModel.Builder()
+        return ProductAttachmentUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
             .withProductAttributesResponse(pojoAttribute)
             .withCanShowFooter(canShowFooter)
             .build()
     }
 
-    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentViewModel {
+    private fun convertToInvoiceSent(pojo: Reply): AttachInvoiceSentUiModel {
         val invoiceAttributes = pojo.attachment?.attributes
         val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel.Builder()
+        return AttachInvoiceSentUiModel.Builder()
             .withResponseFromGQL(pojo)
             .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
             .build()

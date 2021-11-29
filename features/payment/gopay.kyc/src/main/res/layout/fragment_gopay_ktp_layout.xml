@@ -41,7 +41,8 @@
             app:cameraAudio="off"
             app:cameraHdr="off"
             app:cameraMode="picture"
-            />
+            app:cameraAutoFocusResetDelay="3000"
+            app:cameraAutoFocusMarker="@string/cameraview_default_autofocus_marker" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/kycCutoutImage"

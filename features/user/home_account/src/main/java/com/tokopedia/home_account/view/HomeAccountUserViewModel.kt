@@ -22,7 +22,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -45,7 +44,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getTokopointsBalanceAndPointUseCase: GetTokopointsBalanceAndPointUseCase,
     private val getSaldoBalanceUseCase: GetSaldoBalanceUseCase,
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
-    private val getWalletEligibleUseCase: GetWalletEligibleUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
     private val walletPref: WalletPref,
@@ -91,10 +89,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _phoneNo = MutableLiveData<String>()
     val phoneNo: LiveData<String> get() = _phoneNo
 
-    private val _walletEligible = MutableLiveData<Result<WalletappWalletEligibility>>()
-    val walletEligible: LiveData<Result<WalletappWalletEligibility>>
-        get() = _walletEligible
-
     var internalBuyerData: UserAccountDataModel? = null
 
     fun refreshPhoneNo() {
@@ -125,10 +119,10 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getShortcutData() {
         launchCatchError(block = {
-            val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
+            val shortcutResponse = getUserShortcutUseCase(Unit)
             _shortcutData.value = Success(shortcutResponse)
         }, onError = {
-            _shortcutData.postValue(Fail(it))
+            _shortcutData.value = Fail(it)
         })
     }
 
@@ -138,17 +132,14 @@ class HomeAccountUserViewModel @Inject constructor(
 
     fun getBuyerData() {
         launchCatchError(block = {
-            val accountModel = getHomeAccountUserUseCase.executeOnBackground()
+            val accountModel = getHomeAccountUserUseCase(Unit)
             val linkStatus = getLinkStatus()
             accountModel.linkStatus = linkStatus.response
-
-            withContext(dispatcher.main) {
-                internalBuyerData = accountModel
-                saveLocallyAttributes(accountModel)
-                _buyerAccountData.value = Success(accountModel)
-            }
+            internalBuyerData = accountModel
+            saveLocallyAttributes(accountModel)
+            _buyerAccountData.value = Success(accountModel)
         }, onError = {
-            _buyerAccountData.postValue(Fail(it))
+            _buyerAccountData.value = Fail(it)
         })
     }
 
@@ -264,17 +255,6 @@ class HomeAccountUserViewModel @Inject constructor(
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
         }
-    }
-
-    fun getGopayWalletEligible() {
-        launchCatchError(block = {
-            val params = getWalletEligibleUseCase.getParams(GOPAY_PARTNER_CODE, GOPAY_WALLET_CODE)
-            val result = getWalletEligibleUseCase(params)
-
-            _walletEligible.value = Success(result.data)
-        }, onError = {
-            _walletEligible.value = Fail(it)
-        })
     }
 
     private fun checkFirstPage(page: Int): Boolean = page == 1

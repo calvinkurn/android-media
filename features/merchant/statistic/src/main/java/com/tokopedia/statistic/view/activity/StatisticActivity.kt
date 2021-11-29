@@ -90,6 +90,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
         checkWhiteListStatus()
         binding = ActivityStcStatisticBinding.inflate(layoutInflater).apply {
+            root.setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
             setContentView(root)
         }
 
@@ -100,6 +101,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
         observeWhiteListStatus()
         observeUserRole()
+        fetchPMStatus()
     }
 
     override fun getComponent(): StatisticComponent {
@@ -149,19 +151,19 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     private fun getWhiteListedPages(): List<StatisticPageUiModel> {
         val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getOperationalStatistic(this, userSession),
-            StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, remoteConfig),
+            StatisticPageHelper.getOperationalStatistic(this),
+            StatisticPageHelper.getBuyerStatistic(this)
         )
     }
 
     private fun getNonWhiteListedPages(): List<StatisticPageUiModel> {
         val remoteConfig = StatisticRemoteConfig(FirebaseRemoteConfigImpl(applicationContext))
         return listOf(
-            StatisticPageHelper.getShopStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getProductStatistic(this, userSession, remoteConfig),
-            StatisticPageHelper.getBuyerStatistic(this, userSession)
+            StatisticPageHelper.getShopStatistic(this, remoteConfig),
+            StatisticPageHelper.getProductStatistic(this, remoteConfig),
+            StatisticPageHelper.getBuyerStatistic(this)
         )
     }
 
@@ -180,6 +182,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
     }
 
     private fun setupViewPager(isWhiteListed: Boolean) {
+        viewPagerAdapter?.clear()
         pages = getStatisticPages(isWhiteListed)
         pages.forEachIndexed { index, page ->
             val shouldLoadDataOnCreate = if (selectedPageSource.isNotBlank()) {
@@ -196,6 +199,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
         }
 
         viewPagerAdapter?.let {
+            it.notifyDataSetChanged()
             setupTabs()
             binding?.run {
                 viewPagerStatistic.adapter = it
@@ -229,6 +233,10 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
             }
         })
         viewModel.getUserRole()
+    }
+
+    private fun fetchPMStatus() {
+        viewModel.fetchPMStatus()
     }
 
     private fun setupTabs() = binding?.run {
@@ -308,7 +316,7 @@ class StatisticActivity : BaseActivity(), HasComponent<StatisticComponent>,
 
     private fun setWhiteStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
+            setStatusBarColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
             setLightStatusBar(true)
         }
     }

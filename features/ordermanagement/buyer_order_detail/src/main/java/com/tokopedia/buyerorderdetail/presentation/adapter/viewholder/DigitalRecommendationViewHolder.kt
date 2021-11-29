@@ -11,7 +11,8 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
  * @author by furqan on 22/09/2021
  */
 class DigitalRecommendationViewHolder(itemView: View,
-                                      val digitalRecommendationData: DigitalRecommendationData) :
+                                      val digitalRecommendationData: DigitalRecommendationData,
+                                      val listener: ActionListener) :
         AbstractViewHolder<DigitalRecommendationUiModel>(itemView) {
 
     private val dgRecommendation = itemView.findViewById<DigitalRecommendationWidget>(R.id.dgRecommendationBuyerOrderDetail)
@@ -23,10 +24,18 @@ class DigitalRecommendationViewHolder(itemView: View,
         dgRecommendation.setPage(digitalRecommendationData.page)
         dgRecommendation.listener = object : DigitalRecommendationWidget.Listener {
             override fun onFetchFailed(throwable: Throwable) {
-                // no op
+                listener.hideDigitalRecommendation()
+            }
+
+            override fun onEmptyResult() {
+                listener.hideDigitalRecommendation()
             }
         }
         dgRecommendation.build()
+    }
+
+    interface ActionListener {
+        fun hideDigitalRecommendation()
     }
 
     companion object {

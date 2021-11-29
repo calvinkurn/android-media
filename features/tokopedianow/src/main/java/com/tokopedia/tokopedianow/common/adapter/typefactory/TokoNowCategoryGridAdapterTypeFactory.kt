@@ -9,7 +9,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryItemViewHolde
 
 class TokoNowCategoryGridAdapterTypeFactory(
     private val tokoNowCategoryItemListener: TokoNowCategoryItemViewHolder.TokoNowCategoryItemListener? = null,
-):BaseAdapterTypeFactory(), TokoNowItemTypeFactory {
+):BaseAdapterTypeFactory(), TokoNowCategoryItemTypeFactory {
     override fun type(uiModel: TokoNowCategoryItemUiModel): Int = TokoNowCategoryItemViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {

@@ -5,5 +5,5 @@
         android:endColor="@color/gf_box_white_80"
         android:startColor="@android:color/white" />
 
-    <corners android:radius="@dimen/dp_40" />
+    <corners android:radius="40dp" />
 </shape>

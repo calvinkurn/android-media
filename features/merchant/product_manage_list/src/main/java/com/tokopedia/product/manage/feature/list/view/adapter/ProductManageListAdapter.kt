@@ -24,7 +24,15 @@ class ProductManageListAdapter(
     }
 
     fun updateEmptyState(emptyModel: EmptyModel) {
-        submitList(arrayListOf(emptyModel))
+        if (visitables.getOrNull(lastIndex) !is EmptyModel) {
+            val dataCount = visitables.filter { it !is EmptyModel }.count().orZero()
+            if (dataCount > 0) {
+                visitables.removeAll { it !is EmptyModel }
+                notifyItemRangeRemoved(visitables.size, dataCount)
+            }
+            visitables.add(emptyModel)
+            notifyItemInserted(lastIndex)
+        }
     }
 
     fun updatePrice(productId: String, price: String) {

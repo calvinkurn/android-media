@@ -23,8 +23,8 @@
         android:id="@+id/tvTitleParameterRelief"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:text="@string/title_parameter_relief_new_seller"
+        android:layout_marginStart="12dp"
+        tools:text="@string/title_parameter_relief_new_seller"
         app:layout_constraintBottom_toBottomOf="@id/icProtectionCheck"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/icProtectionCheck"
@@ -66,10 +66,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:card_type="clear"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
                 android:layout_marginStart="@dimen/spacing_lvl2"
-                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_marginBottom="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -91,7 +91,7 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/icDescParameterRelief"
                         app:typographyType="body_3"
-                        android:text="@string/desc_new_seller_parameter_relief" />
+                        tools:text="@string/desc_new_seller_parameter_relief" />
 
                     <com.tokopedia.iconunify.IconUnify
                         android:id="@+id/icDescParameterRelief"

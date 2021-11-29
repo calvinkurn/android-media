@@ -22,7 +22,7 @@
             android:id="@+id/shop_image"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            android:elevation="@dimen/dp_2"
+            android:elevation="2dp"
             android:layout_gravity="center"
             tools:src="@tools:sample/avatars" />
 
@@ -31,14 +31,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
             android:elevation="2dp"
-            android:padding="@dimen/dp_4"
+            android:padding="4dp"
             app:srcCompat="@drawable/ic_topads_small" />
     </FrameLayout>
 
     <ImageView
         android:id="@+id/shop_badge"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/shop_image_container"
         app:layout_constraintStart_toEndOf="@+id/shop_image_container"
@@ -73,7 +73,7 @@
         android:ellipsize="end"
         android:maxLines="3"
         android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_image_container"

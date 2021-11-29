@@ -8,6 +8,7 @@ class UserSessionStub(context: Context?) : UserSession(context) {
     var hasShopStub = true
     var shopNameStub = "Toko Rifqi"
     var nameStub = "Rifqi MF"
+    var loggedIn = true
 
     override fun hasShop(): Boolean {
         return hasShopStub
@@ -19,6 +20,10 @@ class UserSessionStub(context: Context?) : UserSession(context) {
 
     override fun getName(): String {
         return nameStub
+    }
+
+    override fun isLoggedIn(): Boolean {
+        return loggedIn
     }
 
 }

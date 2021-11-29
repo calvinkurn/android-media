@@ -10,8 +10,8 @@
         android:contentDescription="@string/content_desc_lego_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,8 +20,8 @@
         android:id="@+id/label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_8"
+        android:layout_marginTop="4dp"
+        android:paddingBottom="8dp"
         app:layout_constraintStart_toStartOf="@id/image"
         app:layout_constraintTop_toBottomOf="@id/image"
         app:layout_constraintEnd_toEndOf="@id/image"
@@ -32,8 +32,8 @@
         android:maxLines="1"
         android:ellipsize="end"
         app:typographyWeight="bold"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

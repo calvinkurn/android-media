@@ -56,7 +56,6 @@ class GoPayKtpFragment : GoPayKycBaseCameraFragment() {
         reverseCamera = cameraSwitchImage
         retakeButton = resetPhotoButton
         shutterImageView = cameraShutterImage
-        cameraControlLayout = cameraControlGroup
         reviewPhotoLayout = reviewPhotoGroup
         ktpInstructionText = photoInstructionTV
         cameraLayout = gopayCameraLayout

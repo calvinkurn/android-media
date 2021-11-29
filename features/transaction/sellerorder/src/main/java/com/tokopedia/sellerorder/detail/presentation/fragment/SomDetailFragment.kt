@@ -101,7 +101,10 @@ import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActiv
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
+import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
+import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -114,6 +117,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
@@ -564,10 +568,62 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun renderProducts() {
-        // products
         detailResponse?.run {
-            val dataProducts = SomDetailProducts(listProduct, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
+            val bundleDetailList = mutableListOf<BaseProductUiModel>()
+            bundleDetailList.addAll(getProductBundleList(bundleDetail?.bundle.orEmpty()))
+            bundleDetailList.addAll(getProductNonBundleList(haveProductBundle, bundleDetail?.nonBundle.orEmpty(), listProduct))
+            val dataProducts = SomDetailProducts(bundleDetailList, flagOrderMeta.isTopAds, flagOrderMeta.isBroadcastChat)
             listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
+        }
+    }
+
+    private fun getProductNonBundleList(
+            haveProductBundle: Boolean,
+            nonBundle: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleDetailProduct>,
+            listProduct: List<SomDetailOrder.Data.GetSomDetail.Products>
+    ): List<BaseProductUiModel> {
+        return if (haveProductBundle) {
+            nonBundle.map {
+                NonProductBundleUiModel(
+                        product = SomDetailOrder.Data.GetSomDetail.Products(
+                                id = it.id,
+                                orderDetailId = it.orderDetailId,
+                                name = it.name,
+                                thumbnail = it.thumbnail,
+                                priceText = it.priceText,
+                                quantity = it.quantity,
+                                note = it.note
+                        )
+                )
+            }
+        } else {
+            listProduct.map {
+                NonProductBundleUiModel(it)
+            }
+        }
+    }
+
+    private fun getProductBundleList(
+            bundleList: List<SomDetailOrder.Data.GetSomDetail.BundleDetailModel.BundleProduct>
+    ): List<ProductBundleUiModel> {
+        return bundleList.map { bundle ->
+            return@map ProductBundleUiModel(
+                    bundleId = bundle.bundleId,
+                    bundleName = bundle.bundleName,
+                    bundlePrice = Utils.parseRupiah(bundle.bundlePrice),
+                    bundleSubTotal = Utils.parseRupiah(bundle.bundleSubTotal),
+                    orderDetail = bundle.orderDetail.map {
+                        SomDetailOrder.Data.GetSomDetail.Products(
+                                id = it.id,
+                                orderDetailId = it.orderDetailId,
+                                name = it.name,
+                                thumbnail = it.thumbnail,
+                                priceText = it.priceText,
+                                quantity = it.quantity,
+                                note = it.note
+                        )
+                    }
+            )
         }
     }
 

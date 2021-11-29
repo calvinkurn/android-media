@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgCartPromoCashbackTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:text="Dapat Cashback Senilai" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgCartPromoCashbackValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tgCartPromoCashbackTitle"
+        app:typographyType="heading_6"
+        tools:text="Rp10.000.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgCartPromoCashbackDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:maxWidth="@dimen/max_cashback_desc_width"
+        android:textColor="@color/Unify_N700_68"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tgCartPromoCashbackValue"
+        app:typographyType="small"
+        tools:text="(2.000 TokoPoints + 1.000 OVO Points)" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

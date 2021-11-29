@@ -184,6 +184,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         binding?.flightHomepageSearchForm?.listener = this
+        binding?.flightHomepageSearchForm?.setDate(false)
 
         if (applinkErrorTextResource != -1) {
             showMessageErrorInSnackbar(applinkErrorTextResource)
@@ -406,7 +407,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        binding?.flightHomepageTicker?.setHtmlDescription(travelTickerModel.message)
+        binding?.flightHomepageTicker?.setTextDescription(travelTickerModel.message)
         binding?.flightHomepageTicker?.tickerType = Ticker.TYPE_WARNING
         binding?.flightHomepageTicker?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {

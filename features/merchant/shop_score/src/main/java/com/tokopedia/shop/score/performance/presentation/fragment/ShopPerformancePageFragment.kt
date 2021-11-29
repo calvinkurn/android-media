@@ -47,7 +47,7 @@ import com.tokopedia.shop.score.performance.presentation.viewmodel.ShopPerforman
 import com.tokopedia.shop.score.performance.presentation.widget.PenaltyDotBadge
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -79,14 +79,14 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         )
     }
 
-    private val binding: FragmentShopPerformanceBinding? by viewBinding()
+    private var binding by autoClearedNullable<FragmentShopPerformanceBinding>()
 
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false
 
     private var shopScorePerformanceMonitoringListener: ShopScorePerformanceMonitoringListener? = null
 
-    private val shopScoreCoachMarkPrefs by lazy { context?.let { ShopScorePrefManager(it) } }
+    private val shopScorePrefManager by lazy { context?.let { ShopScorePrefManager(it) } }
 
     private val coachMark by getInstanceCoachMark()
 
@@ -112,7 +112,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_shop_performance, container, false)
+        binding = FragmentShopPerformanceBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -300,13 +301,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
      * ItemTimerNewSellerListener
      */
     override fun onBtnLearnNowToSellerEduClicked(sellerEduUrl: String) {
-        context?.let {
-            RouteManager.route(
-                it,
-                ApplinkConstInternalGlobal.WEBVIEW,
-                sellerEduUrl
-            )
-        }
+        goToSellerEdu(sellerEduUrl)
     }
 
     override fun onBtnLearnNowToFaqClicked() {
@@ -321,9 +316,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onWatchVideoClicked(videoId: String) {
-        context?.let {
-            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
-        }
+        goToYoutubePage(videoId)
         shopScorePenaltyTracking.clickWatchVideoNewSeller()
     }
 
@@ -333,6 +326,19 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     override fun onImpressWatchVideo() {
         shopScorePenaltyTracking.impressWatchVideoNewSeller(isNewSeller)
+    }
+
+    override fun onWatchVideoReactivatedClicked(videoId: String) {
+        goToYoutubePage(videoId)
+    }
+
+    override fun onBtnLearnNowReactivatedClicked(sellerEduUrl: String) {
+        goToSellerEdu(sellerEduUrl)
+    }
+
+    override fun onCloseTickerClicked() {
+        shopPerformanceAdapter.removeTickerReactivated()
+        shopScorePrefManager?.setIsNeedShowTickerReactivated(false)
     }
 
     /**
@@ -373,9 +379,9 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         goToPowerMerchantSubscribe(PARAM_PM_PRO)
     }
 
-    override fun onProtectedParameterChevronClicked(protectedParameterDate: String) {
+    override fun onProtectedParameterChevronClicked(descParameterRelief: String) {
         val bottomSheetProtectedParameter = BottomSheetProtectedParameter.createInstance(
-            protectedParameterDate
+            descParameterRelief
         )
         bottomSheetProtectedParameter.show(childFragmentManager)
     }
@@ -408,6 +414,22 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
             context
         } else {
             null
+        }
+    }
+
+    private fun goToSellerEdu(sellerEduUrl: String) {
+        context?.let {
+            RouteManager.route(
+                it,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                sellerEduUrl
+            )
+        }
+    }
+
+    private fun goToYoutubePage(videoId: String) {
+        context?.let {
+            it.startActivity(ShopPerformanceYoutubeActivity.createIntent(it, videoId))
         }
     }
 
@@ -556,20 +578,21 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             })
             coachMark?.onFinishListener = {
-                shopScoreCoachMarkPrefs?.setFinishCoachMark(true)
+                shopScorePrefManager?.setFinishCoachMark(true)
             }
             coachMark
         }
     }
 
     private fun showCoachMark() {
-        coachMark?.isDismissed = false
-
-        binding?.rvShopPerformance?.post {
-            if (getCoachMarkItems().value.isNotEmpty()) {
-                coachMark?.showCoachMark(getCoachMarkItems().value)
+        try {
+            binding?.rvShopPerformance?.post {
+                coachMark?.isDismissed = false
+                if (getCoachMarkItems().value.isNotEmpty()) {
+                    coachMark?.showCoachMark(getCoachMarkItems().value)
+                }
             }
-        }
+        } catch (ignored: Exception) {}
     }
 
     private fun getPositionLastItemCoachMark(): Int? {
@@ -806,7 +829,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     private fun processShowCoachMark() {
-        if (shopScoreCoachMarkPrefs?.getFinishCoachMark() == false && !isNewSeller) {
+        if (shopScorePrefManager?.getFinishCoachMark() == false && !isNewSeller) {
             Handler(Looper.getMainLooper()).postDelayed({
                 scrollToItemParameterDetailCoachMark()
                 showCoachMark()
@@ -867,7 +890,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
         bottomSheetPopupEndTenure.setOnDismissListener {
             if (isShowPopupEndTenure) {
-                shopScoreCoachMarkPrefs?.setIsShowPopupEndTenure(false)
+                shopScorePrefManager?.setIsShowPopupEndTenure(false)
             }
         }
         if (isShowPopupEndTenure) {

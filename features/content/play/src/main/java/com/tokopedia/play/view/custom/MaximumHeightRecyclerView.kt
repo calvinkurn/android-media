@@ -1,7 +1,9 @@
 package com.tokopedia.play.view.custom
 
 import android.content.Context
+import android.graphics.Canvas
 import android.util.AttributeSet
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.play.R
 
@@ -36,10 +38,12 @@ class MaximumHeightRecyclerView : RecyclerView {
     override fun onMeasure(widthSpec: Int, heightSpec: Int) {
         val height = if (mMaxHeight >= 0f) MeasureSpec.makeMeasureSpec(mMaxHeight.toInt(), MeasureSpec.AT_MOST) else heightSpec
         super.onMeasure(widthSpec, height)
+        setHasFixedSize(mMaxHeight.toInt() == measuredHeight)
     }
 
     fun setMaxHeight(maxHeight: Float) {
         if (mMaxHeight == maxHeight) return
+        setHasFixedSize(false)
         mMaxHeight = maxHeight
         requestLayout()
         invalidate()

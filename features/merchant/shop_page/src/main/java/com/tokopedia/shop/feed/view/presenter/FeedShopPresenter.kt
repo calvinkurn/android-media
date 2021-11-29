@@ -84,13 +84,10 @@ class FeedShopPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        if (isViewAttached) {
-
-                            if (GlobalConfig.isAllowDebuggingTools()) {
-                                e?.printStackTrace()
-                            }
-                            view.showGetListError(e)
+                        if (GlobalConfig.isAllowDebuggingTools()) {
+                            e?.printStackTrace()
                         }
+                        view.showGetListError(e)
                     }
                 }
             )
@@ -342,10 +339,14 @@ class FeedShopPresenter @Inject constructor(
                 ),
                 object : Subscriber<AddToCartDataModel>() {
                     override fun onNext(model: AddToCartDataModel?) {
-                        if (model?.data?.success != 1) {
-                            view.onAddToCartFailed(postTagItem.applink)
+                        if (model != null) {
+                            val isNotSuccess = model.data.success != 1
+                            if(isNotSuccess)
+                                view.onAddToCartFailed(postTagItem.applink)
+                            else
+                                view.onAddToCartSuccess()
                         } else {
-                            view.onAddToCartSuccess()
+                            view.onAddToCartFailed(postTagItem.applink)
                         }
                     }
 
@@ -385,8 +386,10 @@ class FeedShopPresenter @Inject constructor(
 
     private fun getUserId(): String {
         var userId = "0"
-        if (view.userSession.userId.isNotEmpty()) {
-            userId = view.userSession.userId
+        if(isViewAttached) {
+            if (view.userSession.userId.isNotEmpty()) {
+                userId = view.userSession.userId
+            }
         }
         return userId
     }
