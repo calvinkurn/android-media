@@ -55,10 +55,8 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
-import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
-import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.AddressUtil
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -75,7 +73,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
@@ -106,7 +103,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private val chatBackgroundUseCase: ChatBackgroundUseCase,
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
-    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val sharedPref: SharedPreferences,
     private val dispatchers: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
@@ -713,28 +709,6 @@ open class TopChatRoomPresenter @Inject constructor(
         when (wsMsgPayload) {
             is String -> sendMessageWebSocket(wsMsgPayload)
             is JsonObject -> sendMessageJsonObjWebSocket(wsMsgPayload)
-        }
-    }
-
-    override fun deleteChat(
-        messageId: String,
-        onError: (Throwable) -> Unit,
-        onSuccessDeleteConversation: () -> Unit
-    ) {
-        launch {
-            try {
-                val result = moveChatToTrashUseCase.execute(messageId)
-                if (result.chatMoveToTrash.list.isNotEmpty()) {
-                    val deletedChat = result.chatMoveToTrash.list.first()
-                    if (deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
-                        onSuccessDeleteConversation()
-                    } else {
-                        onError(Throwable(deletedChat.detailResponse))
-                    }
-                }
-            } catch (throwable: Throwable) {
-                onError(throwable)
-            }
         }
     }
 

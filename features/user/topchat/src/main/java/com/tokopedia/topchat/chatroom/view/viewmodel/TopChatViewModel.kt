@@ -29,7 +29,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.topchat.common.Constant
-import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCaseNew
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -46,7 +46,7 @@ class TopChatViewModel @Inject constructor(
     private var orderProgressUseCase: OrderProgressUseCase,
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
-    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseNew,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.main) {

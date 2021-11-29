@@ -32,7 +32,7 @@ import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureRespons
 import com.tokopedia.topchat.chatlist.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.Constant
-import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCaseNew
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -70,7 +70,7 @@ class ChatItemListViewModel @Inject constructor(
     private val unpinChatUseCase: MutationUnpinChatUseCase,
     private val getChatListUseCase: GetChatListMessageUseCase,
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
-    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseNew,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {

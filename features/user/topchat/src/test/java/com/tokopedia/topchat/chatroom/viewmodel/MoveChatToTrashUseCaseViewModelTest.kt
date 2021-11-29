@@ -25,7 +25,7 @@ class MoveChatToTrashUseCaseViewModelTest: BaseTopChatViewModelTest() {
             )
         }
         coEvery {
-            mutationMoveChatToTrashUseCaseNew(any())
+            mutationMoveChatToTrashUseCase(any())
         } returns expectedResult
 
         //When
@@ -51,7 +51,7 @@ class MoveChatToTrashUseCaseViewModelTest: BaseTopChatViewModelTest() {
             )
         }
         coEvery {
-            mutationMoveChatToTrashUseCaseNew(any())
+            mutationMoveChatToTrashUseCase(any())
         } returns expectedResult
 
         //When
@@ -68,7 +68,7 @@ class MoveChatToTrashUseCaseViewModelTest: BaseTopChatViewModelTest() {
     fun should_get_exception_when_error_delete_chat() {
         //Given
         coEvery {
-            mutationMoveChatToTrashUseCaseNew(any())
+            mutationMoveChatToTrashUseCase(any())
         } throws expectedThrowable
 
         //When

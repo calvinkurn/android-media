@@ -21,11 +21,13 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
+import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import dagger.Module
 import dagger.Provides
 
@@ -340,5 +342,22 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): CloseReminderTickerStub {
         return CloseReminderTickerStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideMoveChatToTrashUseCase(
+        stub: MutationMoveChatToTrashUseCaseStub
+    ): MutationMoveChatToTrashUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideMoveChatToTrashUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): MutationMoveChatToTrashUseCaseStub {
+        return MutationMoveChatToTrashUseCaseStub(repository, dispatchers)
     }
 }

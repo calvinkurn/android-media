@@ -23,7 +23,6 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
@@ -118,9 +117,6 @@ abstract class BaseTopChatRoomPresenterTest {
 
     @RelaxedMockK
     protected lateinit var tokoNowWHUsecase: ChatTokoNowWarehouseUseCase
-
-    @RelaxedMockK
-    protected lateinit var moveChatToTrashUseCase: MutationMoveChatToTrashUseCase
 
     @RelaxedMockK
     protected lateinit var remoteConfig: RemoteConfig
@@ -257,7 +253,6 @@ abstract class BaseTopChatRoomPresenterTest {
                 chatBackgroundUseCase,
                 chatSrwUseCase,
                 tokoNowWHUsecase,
-                moveChatToTrashUseCase,
                 sharedPref,
                 dispatchers,
                 remoteConfig

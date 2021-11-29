@@ -14,7 +14,7 @@ import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.usecase.*
-import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCaseNew
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -43,7 +43,7 @@ class ChatItemListViewModelTest {
     private val getChatListUseCase: GetChatListMessageUseCase = mockk(relaxed = true)
     private val authorizeAccessUseCase: AuthorizeAccessUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
-    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseNew = mockk(relaxed = true)
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase = mockk(relaxed = true)
 
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
