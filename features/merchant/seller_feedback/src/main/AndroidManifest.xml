@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".presentation.activity.SellerFeedbackActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_seller_feedback"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

@@ -30,7 +30,7 @@
             android:id="@+id/recycleList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:translationY="@dimen/dp_minus4"
+            android:translationY="-4dp"
             android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

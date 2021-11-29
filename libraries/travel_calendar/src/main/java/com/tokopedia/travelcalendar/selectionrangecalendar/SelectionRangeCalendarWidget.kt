@@ -12,6 +12,7 @@ import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.travelcalendar.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
 import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
@@ -146,7 +147,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     }
 
     fun setLayoutMargin() {
-        var padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
+        var padding = resources.getDimension(RUnify.dimen.layout_lvl2).toInt()
         bottomSheetWrapper.setPadding(0, padding, 0, 0)
         bottomSheetHeader.setPadding(padding, 0, padding, 0)
     }

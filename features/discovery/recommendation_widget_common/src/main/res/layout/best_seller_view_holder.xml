@@ -63,7 +63,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="6sp"
         android:text="@string/best_seller_see_more"
         android:textColor="@color/Unify_G500"
         android:textSize="14sp"

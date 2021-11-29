@@ -321,6 +321,19 @@ class NewShopPageViewModelTest {
     }
 
     @Test
+    fun `check whether shopImagePath value is null when callback is not called`(){
+        unmockkAll()
+        shopPageViewModel.saveShopImageToPhoneStorage(context, "")
+        assert(shopPageViewModel.shopImagePath.value == null)
+    }
+
+    @Test
+    fun `check whether shopImagePath value is null when if context is null and callback is not called`() {
+        shopPageViewModel.saveShopImageToPhoneStorage(null, "")
+        assert(shopPageViewModel.shopImagePath.value == null)
+    }
+
+    @Test
     fun `check whether shopImagePath value is null when savedFile is null`() {
         val mockBitmap = mockk<Bitmap>()
         val mockTransition = mockk<Transition<in Bitmap>>()

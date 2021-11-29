@@ -9,6 +9,7 @@ import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.otp.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.pin.PinUnify
@@ -53,7 +54,7 @@ open class PinVerificationFragment : VerificationFragment() {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },

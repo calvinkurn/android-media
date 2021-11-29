@@ -21,8 +21,7 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselDataVie
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -35,7 +34,6 @@ interface ProductListSectionContract {
         fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
-        fun trackEventImpressionTicker(typeId: Int)
         fun backToTop()
         fun addLoading()
         fun removeLoading()
@@ -96,11 +94,6 @@ interface ProductListSectionContract {
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
-        fun trackSuccessAddToCartEvent(isAds: Boolean, addToCartDataLayer: Any)
-        fun showAddToCartSuccessMessage()
-        fun showAddToCartFailedMessage(errorMessage: String)
-        fun routeToShopPage(shopId: String?)
-        fun trackEventGoToShopPage(dataLayer: Any)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun trackEventSearchResultChangeView(viewType: String)
         fun switchSearchNavigationLayoutTypeToListView(position: Int)
@@ -121,6 +114,7 @@ interface ProductListSectionContract {
     interface Presenter : CustomerPresenter<View> {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
+        val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
         val deviceId: String

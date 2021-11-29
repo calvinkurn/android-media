@@ -51,7 +51,7 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
     private fun updateCounterError(): Boolean {
         if (isResumed) {
             counterError++
-            updateDesc(getString(R.string.fingerprint_label_desc_default))
+            updateDesc(getString(com.tokopedia.fingerprint.R.string.fingerprint_label_desc_default))
             updateTitle(getString(R.string.fingerprint_label_try_again))
             if (counterError > MAX_ERROR) {
                 stopListening()

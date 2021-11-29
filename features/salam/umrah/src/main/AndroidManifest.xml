@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.salam.umrah">
 
     <application>
         <activity
             android:name=".search.presentation.activity.UmrahSearchActivity"
             android:label="@string/umrah_search_title"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -34,7 +34,8 @@
         <activity
             android:name=".pdp.presentation.activity.UmrahPdpActivity"
             android:label=""
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -57,7 +58,8 @@
             android:theme="@style/Theme.White" />
         <activity
             android:name=".homepage.presentation.activity.UmrahHomepageActivity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -72,7 +74,8 @@
         </activity>
         <activity
             android:name=".orderdetail.presentation.activity.UmrahOrderDetailActivity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -88,7 +91,8 @@
         <activity
             android:name=".checkout.presentation.activity.UmrahCheckoutActivity"
             android:label="@string/umrah_checkout_title_activity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -113,11 +117,11 @@
             android:name=".checkout.presentation.activity.UmrahCheckoutContactDataActivity"
             android:label="@string/umrah_checkout_contact_title_activity"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".travel.presentation.activity.UmrahTravelActivity"
             android:label="@string/umrah_travel_agent_title"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -130,11 +134,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".travel.presentation.activity.UmrahTravelListActivity"
             android:label="@string/umrah_travel_agent_title"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -147,11 +151,8 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
-
         <activity
             android:name=".travel.presentation.activity.UmrahYoutubePlayerActivity"
             android:theme="@style/Theme.White" />
     </application>
-
 </manifest>

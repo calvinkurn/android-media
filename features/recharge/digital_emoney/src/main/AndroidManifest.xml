@@ -7,8 +7,8 @@
             android:label="@string/emoney_nfc_toolbar_title_etoll_check_balance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="stateAlwaysHidden">
-
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -20,8 +20,6 @@
                     android:path="@string/path_emoney"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
         </activity>
     </application>
-
 </manifest>
