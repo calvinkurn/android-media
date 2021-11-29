@@ -44,7 +44,8 @@
         android:id="@+id/view_balance_widget_coachmark_new"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="4dp">
+        android:padding="4dp"
+        tools:ignore="DisableBaselineAlignment">
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
