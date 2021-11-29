@@ -84,10 +84,6 @@ class NewShopPageViewModelTest {
     lateinit var getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>
 
     @RelaxedMockK
-    lateinit var getShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>
-
-
-    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -116,7 +112,6 @@ class NewShopPageViewModelTest {
                 getShopPageHeaderLayoutUseCase,
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
-                getShopOperationalHoursListUseCase,
                 testCoroutineDispatcherProvider
         )
     }
@@ -530,23 +525,4 @@ class NewShopPageViewModelTest {
         assert(shopPageViewModel.shopPageShopShareData.value == null)
     }
 
-    @Test
-    fun `check whether shopOperationalHoursListData value is success`() {
-        val mockShopId = "123"
-        coEvery {
-            getShopOperationalHoursListUseCase.get().executeOnBackground()
-        } returns ShopOperationalHoursListResponse()
-        shopPageViewModel.getShopOperationalHoursList(mockShopId)
-        assert(shopPageViewModel.shopOperationalHoursListData.value is Success)
-    }
-
-    @Test
-    fun `check whether shopOperationalHoursListData value is fail if exception happened`() {
-        val mockShopId = "123"
-        coEvery {
-            getShopOperationalHoursListUseCase.get().executeOnBackground()
-        } throws Throwable()
-        shopPageViewModel.getShopOperationalHoursList(mockShopId)
-        assert(shopPageViewModel.shopOperationalHoursListData.value is Fail)
-    }
 }

@@ -39,7 +39,6 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Compani
 import com.tokopedia.shop.common.domain.interactor.GetFollowStatusUseCase.Companion.SOURCE_SHOP_PAGE
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageGetHomeType
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderLayoutResponse
@@ -79,7 +78,6 @@ class NewShopPageViewModel @Inject constructor(
         private val getShopPageHeaderLayoutUseCase: Lazy<GetShopPageHeaderLayoutUseCase>,
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
-        private val gqlGetShopOperationalHoursListUseCase: Lazy<GqlGetShopOperationalHoursListUseCase>,
         private val dispatcherProvider: CoroutineDispatchers)
     : BaseViewModel(dispatcherProvider.main) {
 
@@ -134,10 +132,6 @@ class NewShopPageViewModel @Inject constructor(
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
-
-    private val _shopOperationalHoursListData = MutableLiveData<Result<ShopOperationalHoursListResponse>>()
-    val shopOperationalHoursListData: LiveData<Result<ShopOperationalHoursListResponse>>
-        get() = _shopOperationalHoursListData
 
     fun getShopPageTabData(
             shopId: Int,
@@ -436,17 +430,4 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    fun getShopOperationalHoursList(shopId: String) {
-        launchCatchError(dispatcherProvider.io, block =  {
-
-            val useCase = gqlGetShopOperationalHoursListUseCase.get().apply {
-                params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
-            }
-            val response = useCase.executeOnBackground()
-            _shopOperationalHoursListData.postValue(Success(response))
-
-        }) {
-            _shopOperationalHoursListData.postValue(Fail(it))
-        }
-    }
 }
