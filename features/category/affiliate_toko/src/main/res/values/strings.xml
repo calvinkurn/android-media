@@ -93,6 +93,12 @@
     <string name="affiliate_logout_description">Dengan kamu keluar akun disini, akun kamu di Tokopedia juga akan keluar</string>
     <string name="affiliate_batal">Batal</string>
     <string name="affiliate_terapkan">Terapkan</string>
+    <string name="affiliate_date_picker_header">Pilih tanggal</string>
+    <string name="affiliate_registeration_error">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya. </string>
+    <string name="affiliate_link_not_valid">Link tidak valid.</string>
+    <string name="affiliate_link">Link</string>
+    <string name="affiliate_internet_error">Wah, internet putus. Cek paket data atau WiFi-mu.</string>
+    <string name="terms_and_condition_upper">Syarat &amp; Ketentuan</string>
     <string name="affiliate_saldo">Saldo Affiliate</string>
     <string name="affiliate_tarik_saldo">Tarik Saldo</string>
     <string name="affiliate_transaction_history">Riwayat Transaksi</string>

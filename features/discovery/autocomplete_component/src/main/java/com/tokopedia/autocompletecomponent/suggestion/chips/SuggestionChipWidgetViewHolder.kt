@@ -22,13 +22,13 @@ class SuggestionChipWidgetViewHolder(
 
     override fun bind(element: SuggestionChipWidgetDataView) {
         itemView.autocompleteChipWidgetView?.bindChipWidgetView(
-                data = element.toListAutocompleteChipDataView(),
-                listener = object : AutocompleteChipWidgetViewListener {
-                    override fun onChipClicked(item: AutocompleteChipDataView) {
-                        clickListener.onChipClicked(item.toBaseSuggestionDataViewChildItem())
-                    }
-
+            data = element.toListAutocompleteChipDataView(),
+            listener = object : AutocompleteChipWidgetViewListener {
+                override fun onChipClicked(item: AutocompleteChipDataView, position: Int) {
+                    val baseSuggestionDataView = element.childItems.getOrNull(position) ?: return
+                    clickListener.onChipClicked(baseSuggestionDataView)
                 }
+            }
         )
     }
 
@@ -45,18 +45,5 @@ class SuggestionChipWidgetViewHolder(
                     position = position
             )
         }
-    }
-
-    private fun AutocompleteChipDataView.toBaseSuggestionDataViewChildItem(): BaseSuggestionDataView.ChildItem {
-        return BaseSuggestionDataView.ChildItem(
-                template = template,
-                type = type,
-                applink = applink,
-                url = url,
-                title = title,
-                searchTerm = searchTerm,
-                dimension90 = dimension90,
-                position = position
-        )
     }
 }

@@ -4,7 +4,6 @@ import com.tokopedia.affiliate.model.response.AffiliateOnBoardingData
 import com.tokopedia.affiliate.model.raw.GQL_Affiliate_On_Boarding
 import com.tokopedia.affiliate.model.request.OnBoardingRequest
 import com.tokopedia.affiliate.repository.AffiliateRepository
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class AffiliateOnBoardingUseCase @Inject constructor(
@@ -14,16 +13,12 @@ class AffiliateOnBoardingUseCase @Inject constructor(
         return  mapOf<String,Any>(PARAM_CHANNEL to OnBoardingRequest(channels))
     }
 
-    suspend fun affiliateOnBoarding(channels : ArrayList<OnBoardingRequest.Channel>): AffiliateOnBoardingData.OnBoardAffiliate? {
-        val a =  repository.getGQLData(
+    suspend fun affiliateOnBoarding(channels: ArrayList<OnBoardingRequest.Channel>): AffiliateOnBoardingData.OnBoardAffiliate? {
+        return repository.getGQLData(
                 GQL_Affiliate_On_Boarding,
                 AffiliateOnBoardingData::class.java,
                 createRequestParams(channels)
         ).onBoardAffiliate
-
-        delay(5000)
-
-        return a
     }
 
     companion object {
