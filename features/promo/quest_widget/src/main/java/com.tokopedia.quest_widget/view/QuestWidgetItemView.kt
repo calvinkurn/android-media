@@ -36,7 +36,7 @@ const val LAGITEXT = "x lagi "
 
 class QuestWidgetItemView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
-): CardUnify(context, attrs), ProgressCompletionListener {
+) : CardUnify(context, attrs), ProgressCompletionListener {
 
     private lateinit var questTracker: QuestTracker
     private var questId = ""
@@ -49,8 +49,8 @@ class QuestWidgetItemView @JvmOverloads constructor(
     private var ivBannerIcon: ImageUnify
     private var ivBannerIconSecond: ImageUnify
     private var progressBar: QuestProgressBar
-    private var progressBarContainer : FrameLayout
-    private var iconContainer : ImageUnify
+    private var progressBarContainer: FrameLayout
+    private var iconContainer: ImageUnify
 
     init {
 
@@ -72,7 +72,12 @@ class QuestWidgetItemView @JvmOverloads constructor(
     }
 
     @SuppressLint("SetTextI18n")
-    fun setData(item: QuestWidgetListItem, config: Config, questTracker: QuestTracker, source: Int) {
+    fun setData(
+        item: QuestWidgetListItem,
+        config: Config,
+        questTracker: QuestTracker,
+        source: Int
+    ) {
 
         this.questTracker = questTracker
         this.source = source
@@ -85,7 +90,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         ivBannerIconSecond.loadImage(item.widgetPrizeIconURL)
         val progress = calculateProgress((item.task?.get(0)?.progress))
 
-        when(item.questUser?.status){
+        when (item.questUser?.status) {
 
             QuestUserStatus.IDLE -> {
                 appLink = QuestUrls.QUEST_URL_STAGING + questId
@@ -94,7 +99,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
                 item.questUser.status = QuestUserStatus.ANIMATED
             }
 
-            QuestUserStatus.ON_PROGRESS ->{
+            QuestUserStatus.ON_PROGRESS -> {
                 appLink = QuestUrls.QUEST_URL_STAGING + questId
 
                 scaleUpIconProgress(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
@@ -102,20 +107,23 @@ class QuestWidgetItemView @JvmOverloads constructor(
             }
             QuestUserStatus.COMPLETED -> {
 
-                item.actionButton?.cta?.applink?.let{
+                item.actionButton?.cta?.applink?.let {
                     appLink = it
                 }
 
             }
             QuestUserStatus.CLAIMED -> {
 
-                item.actionButton?.cta?.applink?.let{
+                item.actionButton?.cta?.applink?.let {
                     appLink = it
                 }
-                scaleDownIconCompleted(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
+                scaleDownIconCompleted(
+                    ivBannerIcon,
+                    iconContainer
+                ) { setProgressBarvalue(progress) }
                 item.questUser.status = QuestUserStatus.ANIMATED
             }
-            else->{
+            else -> {
             }
         }
 
@@ -123,7 +131,12 @@ class QuestWidgetItemView @JvmOverloads constructor(
             //tracker event
             this.questTracker.clickQuestCard(source, item.id.toString())
 
-            RouteManager.route(context, appLink)
+            try {
+                RouteManager.route(context, appLink)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }
 
         val desc = item.actionButton?.shortText + " " + (item.task?.get(0)?.progress?.current?.let {
@@ -132,20 +145,19 @@ class QuestWidgetItemView @JvmOverloads constructor(
             )
         })
 
-        if(item.questUser?.status == QuestUserStatus.CLAIMED){
+        if (item.questUser?.status == QuestUserStatus.CLAIMED) {
             tvBannerDesc.text = "Cek hadiah kamu, yuk!"
-        }
-        else {
+        } else {
             tvBannerDesc.text =
                 desc + LAGITEXT + context.resources.getString(R.string.str_dot) + " " + item.label?.title
         }
     }
 
-    private fun calculateProgress(progress:Progress?):Float{
-        val start:Float = progress?.current?.toFloat()?:0F
-        val target:Float = progress?.target?.toFloat()?:1F
+    private fun calculateProgress(progress: Progress?): Float {
+        val start: Float = progress?.current?.toFloat() ?: 0F
+        val target: Float = progress?.target?.toFloat() ?: 1F
 
-       return 100 - (((target-start) / target) * 100)
+        return 100 - (((target - start) / target) * 100)
     }
 
     private fun setProgressBarvalue(progress: Float) {
@@ -180,28 +192,33 @@ class QuestWidgetItemView @JvmOverloads constructor(
         iconContainer.show()
         val animator = AnimatorSet()
 
-        val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1F)
-        val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, 1F)
+        val animatorContainerY =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1F)
+        val animatorContainerX =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_X, this.scaleX, 1F)
         animatorContainerY.duration = durationScale
         animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, 1F)
-        val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, 1F)
+        val animatorIconX = ObjectAnimator.ofFloat(icon, View.SCALE_X, this.scaleX, 1F)
         animatorIconY.duration = durationScale
         animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
-        animator.playTogether(animatorContainerY,animatorContainerX,animatorIconY,animatorIconX)
-        animator.addListener(object : Animator.AnimatorListener{
+        animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
+        animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
             }
+
             override fun onAnimationEnd(p0: Animator?) {
                 completion?.let {
                     it()
                 }
             }
+
             override fun onAnimationCancel(p0: Animator?) {
             }
+
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
@@ -217,29 +234,34 @@ class QuestWidgetItemView @JvmOverloads constructor(
         iconContainer.show()
         val animator = AnimatorSet()
 
-        val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, .85F)
-        val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, .85F)
+        val animatorContainerY =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, .85F)
+        val animatorContainerX =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_X, this.scaleX, .85F)
         animatorContainerY.duration = durationScale
         animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, .85F)
-        val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, .85F)
+        val animatorIconX = ObjectAnimator.ofFloat(icon, View.SCALE_X, this.scaleX, .85F)
         animatorIconY.duration = durationScale
         animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
-        animator.playTogether(animatorContainerY,animatorContainerX,animatorIconY,animatorIconX)
-        animator.addListener(object : Animator.AnimatorListener{
+        animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
+        animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
             }
+
             override fun onAnimationEnd(p0: Animator?) {
                 iconContainer.hide()
                 completion?.let {
                     it()
                 }
             }
+
             override fun onAnimationCancel(p0: Animator?) {
             }
+
             override fun onAnimationRepeat(p0: Animator?) {
             }
         })
@@ -255,26 +277,31 @@ class QuestWidgetItemView @JvmOverloads constructor(
         iconContainer.show()
         val animator = AnimatorSet()
 
-        val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1.05F)
-        val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, 1.05F)
+        val animatorContainerY =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, 1.05F)
+        val animatorContainerX =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_X, this.scaleX, 1.05F)
         animatorContainerY.duration = durationScale
         animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, 1.05F)
-        val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, 1.05F)
+        val animatorIconX = ObjectAnimator.ofFloat(icon, View.SCALE_X, this.scaleX, 1.05F)
         animatorIconY.duration = durationScale
         animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
-        animator.playTogether(animatorContainerY,animatorContainerX,animatorIconY,animatorIconX)
-        animator.addListener(object : Animator.AnimatorListener{
+        animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
+        animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
             }
+
             override fun onAnimationEnd(p0: Animator?) {
-                scaleDownIconProgress(icon,iconContainer,completion)
+                scaleDownIconProgress(icon, iconContainer, completion)
             }
+
             override fun onAnimationCancel(p0: Animator?) {
             }
+
             override fun onAnimationRepeat(p0: Animator?) {
             }
 
@@ -290,52 +317,66 @@ class QuestWidgetItemView @JvmOverloads constructor(
         iconContainer.show()
         val animator = AnimatorSet()
 
-        val animatorContainerY = ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, .85F)
-        val animatorContainerX = ObjectAnimator.ofFloat(iconContainer ,View.SCALE_X, this.scaleX, .85F)
+        val animatorContainerY =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_Y, this.scaleY, .85F)
+        val animatorContainerX =
+            ObjectAnimator.ofFloat(iconContainer, View.SCALE_X, this.scaleX, .85F)
         animatorContainerY.duration = durationScale
         animatorContainerX.duration = durationScale
         val animatorIconY = ObjectAnimator.ofFloat(icon, View.SCALE_Y, this.scaleY, .85F)
-        val animatorIconX = ObjectAnimator.ofFloat(icon ,View.SCALE_X, this.scaleX, .85F)
+        val animatorIconX = ObjectAnimator.ofFloat(icon, View.SCALE_X, this.scaleX, .85F)
         animatorIconY.duration = durationScale
         animatorIconX.duration = durationScale
 
         animator.interpolator = AccelerateDecelerateInterpolator()
         animator.startDelay = 1000
-        animator.playTogether(animatorContainerY,animatorContainerX,animatorIconY,animatorIconX)
-        animator.addListener(object : Animator.AnimatorListener{
+        animator.playTogether(animatorContainerY, animatorContainerX, animatorIconY, animatorIconX)
+        animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
             }
+
             override fun onAnimationEnd(p0: Animator?) {
                 iconContainer.hide()
                 completion?.let {
                     it()
                 }
             }
+
             override fun onAnimationCancel(p0: Animator?) {
             }
+
             override fun onAnimationRepeat(p0: Animator?) {
             }
         })
         animator.start()
     }
 
-    private fun translationAnimation(viewOne: ImageUnify, viewTwo: ImageUnify){
+    private fun translationAnimation(viewOne: ImageUnify, viewTwo: ImageUnify) {
 
         val durationTranslation = 600L
         val animator = AnimatorSet()
         val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
-        val alphaAnimObjOne: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewOne, alphaAnimPropOne)
+        val alphaAnimObjOne: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(viewOne, alphaAnimPropOne)
 
-        val animationCenterToBottom = ObjectAnimator.ofFloat(viewOne, View.TRANSLATION_Y, 0f, dpToPx(56))
+        val animationCenterToBottom =
+            ObjectAnimator.ofFloat(viewOne, View.TRANSLATION_Y, 0f, dpToPx(56))
 
         val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-        val alphaAnimObjTwo: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(viewTwo, alphaAnimPropTwo)
+        val alphaAnimObjTwo: ObjectAnimator =
+            ObjectAnimator.ofPropertyValuesHolder(viewTwo, alphaAnimPropTwo)
 
-        val animationTopToCenter = ObjectAnimator.ofFloat(viewTwo, View.TRANSLATION_Y, -dpToPx(56), 0f)
+        val animationTopToCenter =
+            ObjectAnimator.ofFloat(viewTwo, View.TRANSLATION_Y, -dpToPx(56), 0f)
         animationCenterToBottom.duration = durationTranslation
         animationTopToCenter.duration = durationTranslation
-        animator.playTogether(alphaAnimObjOne, animationCenterToBottom, alphaAnimObjTwo, animationTopToCenter)
-        animator.addListener(object : Animator.AnimatorListener{
+        animator.playTogether(
+            alphaAnimObjOne,
+            animationCenterToBottom,
+            alphaAnimObjTwo,
+            animationTopToCenter
+        )
+        animator.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
             }
 
@@ -351,7 +392,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         animator.start()
     }
 
-    private fun startTranslationAnimation(){
+    private fun startTranslationAnimation() {
         val START_DELAY = 3000L
         val timer = Timer()
         timer.scheduleAtFixedRate(object : TimerTask() {
@@ -361,8 +402,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
                         showBox = false
                         translationAnimation(ivBannerIconSecond, ivBannerIcon)
                         timer.cancel()
-                    }
-                    else{
+                    } else {
                         showBox = true
                         translationAnimation(ivBannerIcon, ivBannerIconSecond)
                     }
@@ -378,7 +418,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
     override fun showCompletionAnimation() {
         iconContainer.show()
-        scaleUpIconCompleted(ivBannerIcon,iconContainer) {
+        scaleUpIconCompleted(ivBannerIcon, iconContainer) {
             translationAnimation(ivBannerIcon, ivBannerIconSecond)
         }
     }

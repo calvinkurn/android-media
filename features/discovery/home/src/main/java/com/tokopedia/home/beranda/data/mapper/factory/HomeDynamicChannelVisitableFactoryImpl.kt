@@ -591,7 +591,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
     ) {
         visitableList.add(mappingQuestWidgetComponent(
             channel,
-            isCache,
             position,
             questData
             ))

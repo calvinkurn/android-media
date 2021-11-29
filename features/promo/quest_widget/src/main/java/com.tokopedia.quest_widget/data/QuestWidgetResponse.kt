@@ -1,6 +1,7 @@
 package com.tokopedia.quest_widget.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.quest_widget.util.LiveDataResult
 
 data class QuestWidgetResponse(
 
@@ -97,7 +98,7 @@ data class ActionButton(
     val isDisable: Boolean? = null,
 
     @SerializedName("cta")
-    val cta: Cta? = null,
+    val cta: CtaActionButton? = null,
 
     @SerializedName("backgroundColor")
     val backgroundColor: String? = null,
@@ -128,6 +129,16 @@ data class Label(
 
     @SerializedName("textColor")
     val textColor: String? = null
+)
+
+data class CtaActionButton(
+
+    @SerializedName("url")
+    val url: String? = null,
+
+    @SerializedName("appLink")
+    val applink: String? = null
+
 )
 
 data class Cta(
@@ -230,5 +241,5 @@ data class Config(
 
 data class QuestData(
     val config: ArrayList<Config>? = null,
-    val widgetData: WidgetData? = null
+    val widgetData: WidgetData? = null,
 )

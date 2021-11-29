@@ -59,7 +59,7 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
                     page
                 )
             )
-            if (response != null) {
+            if (response != null && !(response.questWidgetList?.questWidgetList.isNullOrEmpty())){
                 questWidgetListLiveData.postValue(LiveDataResult.success(RetrieveQuestData.getQuestData(response)))
             }
             else {

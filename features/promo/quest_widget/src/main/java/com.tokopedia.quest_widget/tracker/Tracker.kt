@@ -17,9 +17,9 @@ object Tracker {
         const val EVENT_ACTION = "eventAction"
         const val EVENT_LABEL = "eventLabel"
         const val BUSINESS_UNIT = "businessUnit"
-        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace "
-        const val PHYSICALGOODS_BUSINESSUNIT = "bgp - engagement"
         const val CURRENT_SITE = "currentSite"
+        const val PHYSICALGOODS_BUSINESSUNIT = "bgp - engagement"
+        const val TOKOPEDIA_MARKETPLACE = "tokopediamarketplace "
     }
 
     object Event {

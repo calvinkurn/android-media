@@ -21,6 +21,7 @@ class QuestWidgetViewHolder(
 ): AbstractViewHolder<QuestWidgetModel>(itemView){
 
     private var questWidget: QuestWidgetView?=null
+    private lateinit var result: QuestData
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_quest_widget
@@ -30,10 +31,20 @@ class QuestWidgetViewHolder(
         questWidget = itemView.findViewById(R.id.questWidget)
     }
 
-    override fun bind(element: QuestWidgetModel) {
+    override fun bind(element: QuestWidgetModel?) {
         questWidget?.setupListeners(questWidgetLoginClickListener)
-        questWidget?.getQuestList(page = QuestWidgetLocations.MY_REWARD, source = QuestSource.HOME)
-//        questWidget?.setQuestData(element.questData, QuestSource.HOME)
+        if(element?.questData == null){
+            questWidget?.getQuestList(page = QuestWidgetLocations.HOME_PAGE, source = QuestSource.HOME)
+        }
+//        else{
+//            // what to do in case element.questdata is null, it will be null in first run
+//            questWidget?.setQuestData(result, QuestSource.HOME)
+//        }
     }
+
+    // if element.questdata null
+    // get result from api
+    // else
+    //
 
 }

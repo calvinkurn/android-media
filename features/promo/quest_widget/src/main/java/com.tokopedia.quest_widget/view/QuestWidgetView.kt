@@ -39,6 +39,8 @@ class QuestWidgetView @JvmOverloads constructor(
         const val LOGIN = 3
     }
 
+    private val DIRECTION_RIGHT = "right"
+    private val DIRECTION_LEFT = "left"
     val questTracker = QuestTracker()
 
     @QuestSource
@@ -91,30 +93,39 @@ class QuestWidgetView @JvmOverloads constructor(
                     }
                 }
                 LiveDataResult.STATUS.SUCCESS -> {
-                    shimmerQuestWidget.hide()
-                    rvError.hide()
-                    rvQuestWidget.show()
-                    constraintLayoutQuestWidget.show()
-                    setData(it.data)
+                    showSuccessUi(it.data)
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     showErrorUi()
                 }
                 LiveDataResult.STATUS.NON_LOGIN -> {
                     if (isConnectedToInternet()) {
-                        shimmerQuestWidget.hide()
-                        constraintLayoutQuestWidget.show()
-                        rvQuestWidget.hide()
-                        questWidgetLogin.show()
-                        tvLihat.text = context.getString(R.string.lihat_semua)
-                        tvLabel.text = context.getString(R.string.quest_label)
-                        setupNonLoginClickListeners()
+                        showNonLoginUi()
                     } else {
                         showErrorUi()
                     }
                 }
             }
         })
+    }
+
+    private fun showNonLoginUi() {
+
+        shimmerQuestWidget.hide()
+        constraintLayoutQuestWidget.show()
+        rvQuestWidget.hide()
+        questWidgetLogin.show()
+        tvLihat.text = context.getString(R.string.lihat_semua)
+        tvLabel.text = context.getString(R.string.quest_label)
+        setupNonLoginClickListeners()
+    }
+
+    private fun showSuccessUi(data: QuestData?) {
+        shimmerQuestWidget.hide()
+        rvError.hide()
+        rvQuestWidget.show()
+        constraintLayoutQuestWidget.show()
+        setData(data)
     }
 
     private fun showErrorUi() {
@@ -164,8 +175,7 @@ class QuestWidgetView @JvmOverloads constructor(
             //tracker event
             questTracker.clickLihatButton(source)
 
-            RouteManager.route(context, ApplinkConst.LOGIN)
-            data?.widgetData?.questWidgetList?.pageDetail?.cta?.url?.let {
+            data?.widgetData?.questWidgetList?.pageDetail?.cta?.applink?.let {
                 try {
                     RouteManager.route(context, it)
                 } catch (e: Exception) {
@@ -198,17 +208,17 @@ class QuestWidgetView @JvmOverloads constructor(
                 }
 
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        when {
-                            dx > 0 -> {
-                                direction = "right"
-                            }
-                            dx < 0 -> {
-                                direction = "left"
-                            }
-                            else -> {
-
-                            }
+                    when {
+                        dx > 0 -> {
+                            direction = DIRECTION_RIGHT
                         }
+                        dx < 0 -> {
+                            direction = DIRECTION_LEFT
+                        }
+                        else -> {
+
+                        }
+                    }
                 }
             })
             rvQuestWidget.adapter = adapter
@@ -223,7 +233,6 @@ class QuestWidgetView @JvmOverloads constructor(
         page: String,
         @QuestSource source: Int = QuestSource.DEFAULT
     ) {
-
         this.source = source
         this.page = page
         val userSession = UserSession(context)
