@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
+import com.tokopedia.updateinactivephone.domain.usecase.GetAccountListParam
 import com.tokopedia.updateinactivephone.domain.usecase.GetAccountListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +24,11 @@ class InactivePhoneAccountListViewModel @Inject constructor(
 
     fun getAccountList(phoneNumber: String) {
         launchCatchError(coroutineContext, {
-            val response = getAccountListUseCase(phoneNumber)
+            val response = getAccountListUseCase(GetAccountListParam(
+                phone = phoneNumber,
+                isInactivePhone = true,
+                validateToken = ""
+            ))
 
             _accountList.value = Success(response)
         }, {

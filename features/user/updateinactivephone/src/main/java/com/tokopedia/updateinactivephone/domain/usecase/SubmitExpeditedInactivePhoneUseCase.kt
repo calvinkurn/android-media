@@ -19,7 +19,14 @@ open class SubmitExpeditedInactivePhoneUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String {
-        return query
+        return """
+            query SubmitExpeditedInactivePhone(${'$'}userIDEnc: String!, ${'$'}validateToken: String!, ${'$'}msisdn: String!) {
+              SubmitExpeditedInactivePhone(userIDEnc: ${'$'}userIDEnc, validateToken: ${'$'}validateToken, msisdn: ${'$'}msisdn) {
+                message_error
+                is_success
+              }
+            }
+        """.trimIndent()
     }
 
     private fun createParams(params: InactivePhoneUserDataModel): Map<String, Any> = mapOf(
@@ -32,14 +39,5 @@ open class SubmitExpeditedInactivePhoneUseCase @Inject constructor(
         private const val PARAM_MSISDN = "msisdn"
         private const val PARAM_VALIDATE_TOKEN = "validateToken"
         private const val PARAM_USER_ID_ENC = "userIDEnc"
-
-        private val query = """
-            query SubmitExpeditedInactivePhone(${'$'}userIDEnc: String!, ${'$'}validateToken: String!, ${'$'}msisdn: String!) {
-              SubmitExpeditedInactivePhone(userIDEnc: ${'$'}userIDEnc, validateToken: ${'$'}validateToken, msisdn: ${'$'}msisdn) {
-                message_error
-                is_success
-              }
-            }
-        """.trimIndent()
     }
 }

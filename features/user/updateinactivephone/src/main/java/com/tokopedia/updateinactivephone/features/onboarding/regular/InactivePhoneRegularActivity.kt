@@ -7,14 +7,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.common.FragmentTransactionInterface
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.replaceFragment
 import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.features.InactivePhoneTracker
 import com.tokopedia.updateinactivephone.features.submitnewphone.InactivePhoneSubmitDataActivity
 
-class InactivePhoneRegularActivity: BaseSimpleActivity(), FragmentTransactionInterface {
+class InactivePhoneRegularActivity: BaseSimpleActivity() {
 
     private var tracker: InactivePhoneTracker? = InactivePhoneTracker()
     private var currentFragment: Fragment? = null
@@ -41,11 +40,6 @@ class InactivePhoneRegularActivity: BaseSimpleActivity(), FragmentTransactionInt
         supportActionBar?.apply {
             elevation = 0f
         }
-    }
-
-    override fun replace(fragment: Fragment) {
-        replaceFragment(parentViewResourceID, fragment)
-        currentFragment = fragment
     }
 
     override fun onBackPressed() {

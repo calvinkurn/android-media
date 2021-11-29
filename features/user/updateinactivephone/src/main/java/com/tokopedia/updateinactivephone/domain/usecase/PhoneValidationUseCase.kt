@@ -19,7 +19,15 @@ open class PhoneValidationUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String {
-        return query
+        return """
+            query validateInactivePhoneUser(${'$'}msisdn: String, ${'$'}email: String, ${'$'}index: Int) {
+                ValidateInactivePhoneUser(msisdn: ${'$'}msisdn, email: ${'$'}email, index: ${'$'}index) {
+                    isSuccess
+                    errorMessage
+                    status
+                }
+            }
+        """.trimIndent()
     }
 
     private fun createParams(params: InactivePhoneUserDataModel): Map<String, Any> = mapOf(
@@ -29,18 +37,8 @@ open class PhoneValidationUseCase @Inject constructor(
     )
 
     companion object {
-        private const val PARAM_PHONE = "phone"
+        private const val PARAM_PHONE = "msisdn"
         private const val PARAM_EMAIL = "email"
         private const val PARAM_INDEX = "index"
-
-        private val query = """
-            query validateInactivePhoneUser(${'$'}phone: String, ${'$'}email: String, ${'$'}index: Int) {
-                ValidateInactivePhoneUser(msisdn: ${'$'}phone, email: ${'$'}email, index: ${'$'}index) {
-                    isSuccess
-                    errorMessage
-                    status
-                }
-            }
-        """.trimIndent()
     }
 }

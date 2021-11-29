@@ -14,9 +14,6 @@ class FakeInactivePhoneDependency {
     @Inject
     lateinit var getStatusInactivePhoneNumberUseCaseStub: GetStatusInactivePhoneNumberUseCaseStub
 
-//    @Inject
-//    lateinit var imageUploadUseCaseStub: ImageUploadUseCaseStub
-
     @Inject
     lateinit var phoneValidationUseCaseStub: PhoneValidationUseCaseStub
 

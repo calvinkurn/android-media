@@ -49,7 +49,7 @@ class InactivePhoneDataUploadViewModelTest {
         email = inactivePhoneUserDataModel.email,
         oldPhone = inactivePhoneUserDataModel.oldPhoneNumber,
         newPhone = inactivePhoneUserDataModel.newPhoneNumber,
-        userIndex = inactivePhoneUserDataModel.userIndex.toString(),
+        userIndex = inactivePhoneUserDataModel.userIndex,
         idCardImage = "#IdCardImageFileObject",
         selfieImage = "#SelfieImageFileObject"
     )

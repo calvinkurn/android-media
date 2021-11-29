@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
@@ -49,8 +50,13 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
             }
         }
 
-        viewBinding?.textPhoneNumber?.setOnClickListener {
-            trackerRegular.clickOnTextViewInputNewPhoneNumber()
+        viewBinding?.textPhoneNumber?.apply {
+            setOnClickListener {
+                trackerRegular.clickOnTextViewInputNewPhoneNumber()
+            }
+            setAfterTextChangeListener {
+                viewBinding?.buttonNext?.isEnabled = isPhoneValid()
+            }
         }
     }
 
@@ -62,7 +68,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                         doUploadImage(FileType.ID_CARD, ID_CARD)
                     } else {
                         hideLoading()
-                        onError(Throwable(it.data.validation.error))
+                        onError(MessageErrorException(it.data.validation.error))
                     }
                 }
 
@@ -88,7 +94,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                                 email = userData.email,
                                 oldPhone = userData.oldPhoneNumber,
                                 newPhone = userData.newPhoneNumber,
-                                userIndex = userData.userIndex.toString(),
+                                userIndex = userData.userIndex,
                                 idCardImage = idCardObj,
                                 selfieImage = selfieObj
                             ))
@@ -108,7 +114,7 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
             when (it) {
                 is Success -> {
                     if (it.data.status.isSuccess) {
-                        gotoSuccessPage()
+                        gotoSuccessPage(InactivePhoneConstant.REGULAR)
                     } else {
                         view?.let { v ->
                             Toaster.build(v, it.data.status.errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
@@ -137,6 +143,8 @@ open class InactivePhoneDataUploadFragment : BaseInactivePhoneSubmitDataFragment
                 it.newPhoneNumber = viewBinding?.textPhoneNumber?.text.orEmpty()
                 viewModel.userValidation(it)
             }
+        } else {
+            viewBinding?.buttonNext?.isEnabled = false
         }
     }
 

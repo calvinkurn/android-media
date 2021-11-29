@@ -39,7 +39,6 @@ class InactivePhoneViewModel @Inject constructor(
             }
 
             val response = phoneValidationUseCase(inactivePhoneUserDataModel)
-
             _phoneValidation.value = Success(response)
         }, {
             _phoneValidation.value = Fail(it)
@@ -67,7 +66,6 @@ class InactivePhoneViewModel @Inject constructor(
     fun getStatusPhoneNumber(inactivePhoneUserDataModel: InactivePhoneUserDataModel) {
         launchCatchError(coroutineContext, {
             val result = getStatusInactivePhoneNumberUseCase(inactivePhoneUserDataModel)
-
             _getStatusPhoneNumber.value = Success(result)
         }, {
             _getStatusPhoneNumber.value = Fail(Throwable(it))

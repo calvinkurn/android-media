@@ -71,7 +71,9 @@ class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment()
     }
 
     private fun gotoChallengePin() {
-        val intent = goToVerification(InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_PIN)
+        val intent = goToVerification(
+            otpType = InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_PIN,
+            otpMode = OTP_MODE_PIN)
         startActivityForResult(intent, REQUEST_CODE_VALIDATE_PIN)
     }
 
@@ -92,20 +94,22 @@ class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment()
         }
     }
 
-    private fun goToVerification(otpType: Int): Intent {
+    private fun goToVerification(otpType: Int, otpMode: String = "", isShowOtherMethod: Boolean = false): Intent {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, inactivePhoneUserDataModel?.userIdEnc.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, inactivePhoneUserDataModel?.validateToken.orEmpty())
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, SOURCE_INACTIVE_PHONE)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, isShowOtherMethod)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, otpMode)
         return intent
     }
 
     companion object {
         private const val REQUEST_CODE_OTP_EMAIL = 101
         private const val REQUEST_CODE_VALIDATE_PIN = 102
+        private const val OTP_MODE_PIN = "PIN"
 
         fun instance(bundle: Bundle): Fragment {
             return InactivePhoneOnboardingPinFragment().apply {

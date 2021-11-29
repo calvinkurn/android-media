@@ -45,7 +45,6 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
     fun userValidation(inactivePhoneUserDataModel: InactivePhoneUserDataModel) {
         launchCatchError(coroutineContext, {
             val response = phoneValidationUseCase(inactivePhoneUserDataModel)
-
             _phoneValidation.value = Success(response)
         }, {
             _phoneValidation.value = Fail(it)
@@ -77,7 +76,6 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
     fun submitForm(submitDataModel: SubmitDataModel) {
         launchCatchError(coroutineContext, {
             val response = submitDataUseCase(submitDataModel)
-
             _submitData.value = Success(response)
         }, {
             _submitData.value = Fail(it)
@@ -87,7 +85,6 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
     fun submitNewPhoneNumber(inactivePhoneUserDataModel: InactivePhoneUserDataModel) {
         launchCatchError(coroutineContext, {
             val response = submitExpeditedInactivePhoneUseCase(inactivePhoneUserDataModel)
-
             _submitDataExpedited.value = Success(response)
         }, {
             _submitDataExpedited.value = Fail(Throwable(it))

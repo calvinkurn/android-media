@@ -19,7 +19,16 @@ open class GetStatusInactivePhoneNumberUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String {
-        return query
+        return """
+            query GetStatusInactivePhoneNumber(${'$'}email: String, ${'$'}msisdn: String, ${'$'}index: Int) {
+              GetStatusInactivePhoneNumber(email: ${'$'}email, msisdn: ${'$'}msisdn, index: ${'$'}index) {
+                error_message
+                is_success
+                is_allowed
+                userid_enc
+              }
+            }
+        """.trimIndent()
     }
 
     private fun createParams(params: InactivePhoneUserDataModel): Map<String, Any> = mapOf(
@@ -32,16 +41,5 @@ open class GetStatusInactivePhoneNumberUseCase @Inject constructor(
         const val PARAM_EMAIL = "email"
         const val PARAM_PHONE = "msisdn"
         const val PARAM_USER_INDEX = "index"
-
-        private val query = """
-            query GetStatusInactivePhoneNumber(${'$'}email: String, ${'$'}msisdn: String, ${'$'}index: Int) {
-              GetStatusInactivePhoneNumber(email: ${'$'}email, msisdn: ${'$'}msisdn, index: ${'$'}index) {
-                error_message
-                is_success
-                is_allowed
-                userid_enc
-              }
-            }
-        """.trimIndent()
     }
 }

@@ -120,15 +120,22 @@ open class VerificationViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             TkpdIdlingResource.increment()
-            val params = getVerificationMethodInactivePhoneUseCase.getParams(otpType, userId, msisdn, email, validateToken, userIdEnc)
-            val data = getVerificationMethodInactivePhoneUseCase.getData(params).data
+            val response = getVerificationMethodInactivePhoneUseCase(InactivePhoneVerificationMethodeParams(
+                otpType = otpType,
+                userId = userId,
+                msisdn = msisdn,
+                email = email,
+                validateToken = validateToken,
+                userIDEnc = userIdEnc
+            ))
+
             when {
-                data.success -> {
-                    _getVerificationMethodResult.value = Success(data)
+                response.data.success -> {
+                    _getVerificationMethodResult.value = Success(response.data)
                     TkpdIdlingResource.decrement()
                 }
-                data.errorMessage.isNotEmpty() -> {
-                    _getVerificationMethodResult.value = Fail(MessageErrorException(data.errorMessage))
+                response.data.errorMessage.isNotEmpty() -> {
+                    _getVerificationMethodResult.value = Fail(MessageErrorException(response.data.errorMessage))
                     TkpdIdlingResource.decrement()
                 }
                 else -> {
@@ -187,11 +194,20 @@ open class VerificationViewModel @Inject constructor(
             validateToken: String,
             userIdEnc: String,
             mode: String,
-            code: String
+            code: String,
+            msisdn: String = ""
     ) {
         launchCatchError(coroutineContext, {
             TkpdIdlingResource.increment()
-            val params = otpValidateUseCase2FA.getParams(otpType = otpType, validateToken = validateToken, userIdEnc = userIdEnc, mode = mode, code = code)
+            val params = otpValidateUseCase2FA.getParams(
+                otpType = otpType,
+                validateToken = validateToken,
+                userIdEnc = userIdEnc,
+                mode = mode,
+                code = code,
+                msisdn = msisdn
+            )
+
             val data = otpValidateUseCase2FA.getData(params).data
             when {
                 data.success -> {
