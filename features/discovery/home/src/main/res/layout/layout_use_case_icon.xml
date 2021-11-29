@@ -12,18 +12,19 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/icon"
-        android:layout_width="@dimen/dp_56"
-        android:layout_height="@dimen/dp_56"/>
+        android:layout_width="56dp"
+        android:layout_height="56dp"/>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        android:layout_width="@dimen/dp_56"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
         android:gravity="center_horizontal|top"
         android:lineSpacingExtra="4sp"
         android:textColor="@color/Unify_N700_68"
         android:textSize="10sp"
+        app:typographyType="small"
         android:textStyle="normal"
         tools:text="Ajukan" />
 </LinearLayout>

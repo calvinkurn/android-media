@@ -7,6 +7,7 @@
       "clientId": ".*",
       "productId": ".*",
       "isLoggedInStatus": "true|false",
+      "theme": ".*",
       "appsflyerId": ".*",
       "shopId": ".*",
       "screenName": "review detail page",
@@ -20,7 +21,7 @@
       "eventAction" : "click - three dots on product review",
       "eventLabel" : "feedbackId:\\d{1,}",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
+      "productId": ".*",
       "sessionIris": ".{1,}",
       "screenName" : "review detail page"
     },
@@ -30,7 +31,7 @@
       "eventAction" : "click - select three dots menu on product review",
       "eventLabel" : "options:.*;feedbackId:.*",
       "shopId": "\\d{1,}",
-      "productId" : "\\d{1,}",
+      "productId": ".*",
       "sessionIris": ".{1,}",
       "screenName" : "review detail page"
     }

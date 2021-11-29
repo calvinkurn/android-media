@@ -245,7 +245,6 @@
 -keepnames class com.tokopedia.cart.view.CartFragment
 -keepnames class com.tokopedia.home.account.presentation.fragment.AccountHomeFragment
 -keepnames class com.tokopedia.dynamicfeatures.DFInstallerFragment
--keepnames class com.tokopedia.review_shop.shop.view.ReviewShopFragment
 
 # Hansel proguard rules
 -dontwarn io.hansel.**

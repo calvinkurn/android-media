@@ -65,7 +65,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         intent.data?.let { uri ->
             url = WebViewHelper.getEncodedUrlCheckSecondUrl(
                 uri,
-                uri.getQueryParameter(KEY_URL)?.decode() ?: url
+                url
             )
 
             showTitleBar = uri.getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: showTitleBar
@@ -89,7 +89,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         if (showTitleBar) {
             inflater.inflate(R.menu.menu_web_view, menu)
         }
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

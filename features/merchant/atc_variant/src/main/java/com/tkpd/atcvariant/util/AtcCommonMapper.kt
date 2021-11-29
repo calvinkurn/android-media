@@ -366,12 +366,16 @@ object AtcCommonMapper {
      */
     private fun generateHeaderDataModel(selectedChild: VariantChild?): Pair<String, ProductHeaderData> {
         val productImage = selectedChild?.picture?.original ?: ""
+        val isCampaignActive = if (selectedChild?.campaign?.hideGimmick == true) false
+        else
+            selectedChild?.campaign?.isActive ?: false
+
         val headerData = ProductHeaderData(
                 productMainPrice = selectedChild?.finalMainPrice?.getCurrencyFormatted()
                         ?: "",
                 productDiscountedPercentage = selectedChild?.campaign?.discountedPercentage?.toInt()
                         ?: 0,
-                isCampaignActive = selectedChild?.campaign?.isActive ?: false,
+                isCampaignActive = isCampaignActive,
                 productSlashPrice = selectedChild?.campaign?.discountedPrice?.getCurrencyFormatted()
                         ?: "",
                 productStockFmt = selectedChild?.stock?.stockFmt ?: ""

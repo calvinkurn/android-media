@@ -1,11 +1,9 @@
 package com.tokopedia.linker
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
 import com.google.firebase.dynamiclinks.ktx.*
 import com.google.firebase.ktx.Firebase
 import com.tokopedia.applink.RouteManager
@@ -19,7 +17,7 @@ class FirebaseDLWrapper {
     private val urlPath = "link"
     private val androidUrlPath = "android_url"
     private val iosUrlPath = "ios_url"
-    private val firebaseBaseUrl= "https://tkpd.page.link"
+    private val firebaseBaseUrl = "https://tkpd.page.link"
     fun getFirebaseDynamicLink(activity: Activity, intent: Intent) {
         Firebase.dynamicLinks
             .getDynamicLink(intent)
@@ -50,8 +48,9 @@ class FirebaseDLWrapper {
                         }
                         if (link != null && activity != null) {
                             RouteManager.route(activity, link)
-                            processUtmParams( link, firebaseUrl)
+                            processUtmParams(link, firebaseUrl)
                         }
+                        //scalyr logs
                     }
                 }
 
@@ -61,7 +60,7 @@ class FirebaseDLWrapper {
 
     }
 
-    private fun processUtmParams( link: String, firebaseUrl: Uri) {
+    private fun processUtmParams(link: String, firebaseUrl: Uri) {
         var linkUri: Uri? = null
         linkUri = Uri.parse(link)
         var utmSource: String? = null
@@ -97,55 +96,89 @@ class FirebaseDLWrapper {
 
     fun createShortLink(shareCallback: ShareCallback, data: LinkerData) {
         Firebase.dynamicLinks.shortLinkAsync {
-            var uri: String? = null
-            uri = data.uri
-            if (uri == null) {
-                uri = data.desktopUrl
-            }
-            if (uri != null) {
-                var deeplink = createLinkProperties(data)
-                if (uri.contains("?")) {
-                    uri = "$uri&$androidUrlPath=$deeplink"
-                    uri = "$uri&$iosUrlPath=$deeplink"
 
-                } else {
-                    uri = "$uri?$androidUrlPath=$deeplink"
-                    uri = "$uri&$iosUrlPath=$deeplink"
-                }
-                uri = Uri.encode(uri)
-                var deeplinkdata = "$firebaseBaseUrl/?$urlPath=$uri"
+            var deeplinkdata = getDeeplinkData(data)
+            if (deeplinkdata != null) {
                 link = Uri.parse(deeplinkdata)
                 domainUriPrefix = firebaseBaseUrl
-                androidParameters { }
-                iosParameters("com.tokopedia.Tokopedia") { }
+                val fallbackUri = getFallbackUrl(data)
+                androidParameters { if (needFallbakUrl(data)) fallbackUrl = fallbackUri }
+                iosParameters(LinkerConstants.IOS_BUNDLE_ID) {
+                    if (needFallbakUrl(data)) setFallbackUrl(
+                        fallbackUri
+                    )
+                }
                 socialMetaTagParameters {
                     title = data.ogTitle
                     description = data.description
                 }
-
-                if (!uri.contains(LinkerConstants.UTM_SOURCE)) {
+                if (!deeplinkdata.contains(LinkerConstants.UTM_SOURCE)) {
                     googleAnalyticsParameters {
                         source = LinkerData.ARG_UTM_SOURCE
                         medium = LinkerData.ARG_UTM_MEDIUM
                         campaign = data.campaignName
                     }
                 }
-
             }
+
         }.addOnSuccessListener { (shortLink, flowchartLink) ->
-            if(shortLink!= null) {
+            if (shortLink != null) {
                 var link = shortLink.toString()
                 shareCallback.urlCreated(LinkerUtils.createShareResult(link, link, link))
+                //scalyr logs
             }
 
         }.addOnFailureListener {
             // Error
             // ...
+            //scalyr logs
         }
 
     }
 
-    fun createLinkProperties(data: LinkerData): String? {
+    private fun getDeeplinkData(data: LinkerData): String? {
+        var uri = data.uri // FDL require URL starting with https
+        if (uri == null && data.desktopUrl != null) {
+            uri = data.desktopUrl
+        } else if (uri == null) {
+            uri = LinkerConstants.WEB_DOMAIN
+        }
+
+        var deeplink = createLinkProperties(data)
+        if (uri != null) {
+            if (uri.contains("?")) {
+                uri = "$uri&$androidUrlPath=$deeplink"
+                uri = "$uri&$iosUrlPath=$deeplink"
+
+            } else {
+                uri = "$uri?$androidUrlPath=$deeplink"
+                uri = "$uri&$iosUrlPath=$deeplink"
+            }
+        }
+        uri = Uri.encode(uri)
+        return "$firebaseBaseUrl/?$urlPath=$uri"
+
+    }
+
+    private fun needFallbakUrl(data: LinkerData): Boolean {
+        if (LinkerData.REFERRAL_TYPE.equals(data.type, ignoreCase = true)) {
+            return false
+        }
+        return true
+    }
+
+    private fun getFallbackUrl(data: LinkerData): Uri {
+        var fallbackUrl = data.desktopUrl
+        if (LinkerData.GROUPCHAT_TYPE.equals(data.type, ignoreCase = true)) {
+            fallbackUrl = LinkerConstants.DESKTOP_GROUPCHAT_URL
+        } else if (LinkerData.REFERRAL_TYPE.equals(data.type, ignoreCase = true)) {
+            fallbackUrl = LinkerConstants.REFERRAL_DESKTOP_URL
+        }
+        if (fallbackUrl == null) fallbackUrl = LinkerConstants.WEB_DOMAIN
+        return Uri.parse(fallbackUrl)
+    }
+
+    private fun createLinkProperties(data: LinkerData): String? {
         var deeplinkPath = getApplinkPath(data.renderShareUri(), "")
         when {
             LinkerData.PRODUCT_TYPE.equals(data.type, ignoreCase = true) -> {
@@ -225,7 +258,7 @@ class FirebaseDLWrapper {
         }
     }
 
-    private fun sendCampaignToTrackApp( param: Map<String, Any>) {
+    private fun sendCampaignToTrackApp(param: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendCampaign(param)
     }
 }

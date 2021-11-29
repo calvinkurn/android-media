@@ -46,16 +46,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <FrameLayout
-        android:id="@+id/fl_upcoming"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="@dimen/layout_lvl0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-
     <com.tokopedia.play.view.custom.ScaleFriendlyFrameLayout
         android:id="@+id/fl_youtube"
         android:layout_width="@dimen/layout_lvl0"

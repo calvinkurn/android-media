@@ -8,9 +8,11 @@
             android:label="@string/title_bundling_selection_page"
             android:screenOrientation="portrait"
             android:configChanges="orientation"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -21,5 +23,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
