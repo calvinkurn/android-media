@@ -58,7 +58,7 @@ object ReadReviewTracking {
                 ReadReviewTrackingConstants.KEY_USER_ID to userId,
                 ReadReviewTrackingConstants.KEY_BUSINESS_UNIT to ReadReviewTrackingConstants.BUSINESS_UNIT,
                 ReadReviewTrackingConstants.KEY_CURRENT_SITE to ReadReviewTrackingConstants.CURRENT_SITE,
-                ReadReviewTrackingConstants.KEY_ECOMMERCE to mapOf(
+                ReadReviewTrackingConstants.KEY_ECOMMERCE to listOf(
                     ReadReviewTrackingConstants.EVENT_PROMO_VIEW to mapOf(
                         ReadReviewTrackingConstants.KEY_PROMOTIONS to listOf(
                             mapOf(
