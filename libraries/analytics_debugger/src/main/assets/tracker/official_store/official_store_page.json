@@ -240,6 +240,40 @@
         "item_name": ".*"
       }],
       "eventLabel": ".*"
+    },
+    {
+      "eventCategory": "os microsite",
+      "event": "view_item",
+      "eventAction": "impression banner - dynamic channel shop",
+      "sessionIris" : ".*",
+      "promotions": [{
+        "item_id": ".*_.*",
+        "creative_slot": ".*",
+        "creative_name": ".*",
+        "creative_url": ".*",
+        "item_name": "official-store/.* - dynamic channel shop - .* - Android Featured Shop"
+      }],
+      "eventLabel": "dynamic channel shop - .* - Android Featured Shop - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace"
+    },
+    {
+      "eventCategory": "os microsite",
+      "event": "select_content",
+      "eventAction": "click banner - dynamic channel shop",
+      "sessionIris" : ".*",
+      "promotions": [{
+        "item_id": ".*_.*",
+        "creative_slot": ".*",
+        "creative_name": ".*",
+        "creative_url": ".*",
+        "item_name": "official-store/.* - dynamic channel shop - .* - Android Featured Shop"
+      }],
+      "eventLabel": "dynamic channel shop - .* - Android Featured Shop - .*",
+      "businessUnit" : "home & browse",
+      "userId" : ".*",
+      "currentSite" : "tokopediamarketplace"
     }
   ]
 }
