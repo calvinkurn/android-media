@@ -59,6 +59,7 @@ import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShare
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -78,7 +79,7 @@ import javax.inject.Inject
 
 class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuViewHolder.Listener,
-    StatusBarCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
+    StatusBarCallback, FragmentChangeCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
         private const val TAB_PM_PARAM = "tab"
@@ -170,7 +171,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as? SellerHomeActivity)?.attachCallback(this)
+        (activity as? SellerHomeActivity)?.run {
+            attachCallback(this@OtherMenuFragment)
+            attachOtherMenuFragmentChangeCallback(this@OtherMenuFragment)
+        }
         viewModel.run {
             setErrorStateMapDefaultValue()
             setSuccessStateMapDefaultValue()
