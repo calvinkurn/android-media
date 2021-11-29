@@ -204,6 +204,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 viewmodel.done = true
+                analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
                 try {
                     when (modeList.modeText) {
                         OtpConstant.OtpMode.MISCALL -> {
