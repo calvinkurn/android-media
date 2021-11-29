@@ -459,13 +459,13 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         this.visitables = list;
         adapter.addElement(list);
 
-        if (headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED) {
-            if (headlineExperimentPosition <= adapter.getList().size() && !isAdded) {
-                adapter.addElement(headlineExperimentPosition,
-                        new TopadsHeadlineUiModel(headlineData, 0));
-                isAdded = true;
-            }
+        if (headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED
+                && headlineExperimentPosition <= adapter.getList().size() && !isAdded) {
+            adapter.addElement(headlineExperimentPosition,
+                    new TopadsHeadlineUiModel(headlineData, 0));
+            isAdded = true;
         }
+
 
     }
 
