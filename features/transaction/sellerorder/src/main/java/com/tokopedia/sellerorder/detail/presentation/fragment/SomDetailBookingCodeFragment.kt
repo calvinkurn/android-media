@@ -21,6 +21,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.databinding.FragmentSomBookingCodeBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
@@ -72,6 +73,9 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun initLayout() {
+        binding?.barcodeLabel?.run {
+            text = HtmlLinkHelper(context, getString(R.string.barcode_label_one)).spannedString
+        }
         binding?.bookingCode?.text = bookingCode
         somBookingCodeMsgAdapter = SomDetailBookingCodeMessageAdapter()
         binding?.rvMessage?.apply {
@@ -86,8 +90,8 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
 
     private fun initListeners() {
         binding?.run {
-            llCode.setOnClickListener { copyCode() }
-            textTapBarcode.setOnClickListener { zoomBarcode() }
+            icCopyBookingCode.setOnClickListener { copyCode() }
+            barcodeLabel.setOnClickListener { zoomBarcode() }
             cardBarcode.setOnClickListener { zoomBarcode() }
         }
     }
