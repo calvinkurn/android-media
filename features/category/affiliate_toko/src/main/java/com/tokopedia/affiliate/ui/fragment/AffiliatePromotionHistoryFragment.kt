@@ -36,6 +36,12 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
+import android.app.Activity
+
+import android.content.Intent
+
+
+
 
 class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromotionHistoryViewModel>(), ProductClickInterface{
 
@@ -112,6 +118,10 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
             setButtonFull(true)
             errorAction.text = getString(R.string.affiliate_promote_affiliatw)
             errorSecondaryAction.gone()
+            setActionClickListener {
+                activity?.setResult(Activity.RESULT_OK, Intent())
+                activity?.finish()
+            }
         }
     }
 

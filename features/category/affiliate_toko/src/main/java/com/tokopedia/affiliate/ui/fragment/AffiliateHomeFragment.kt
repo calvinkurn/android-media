@@ -136,11 +136,10 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         sendScreenEvent()
         setUserDetails()
     }
-
     private fun openHistoryActivity() {
         val intent = Intent(context,AffiliateComponentActivity::class.java)
         intent.putExtra("isUserBlackListed",isUserBlackListed)
-        startActivity(intent)
+        startActivityForResult(intent,LINK_HISTORY_BUTTON_CLICKED)
     }
 
     private fun setUserDetails(){
@@ -388,6 +387,11 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                     affiliateHomeViewModel.getAnnouncementInformation()
                 } else {
                     activity?.finish()
+                }
+            }
+            LINK_HISTORY_BUTTON_CLICKED -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
                 }
             }
             else -> super.onActivityResult(requestCode, resultCode, data)
