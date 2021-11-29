@@ -29,10 +29,6 @@ class AffiliateTermsAndConditionViewModel@Inject constructor(
             progressBar.value = false
             it.printStackTrace()
             errorMessage.value = it
-
-            //TODO Remove Dummy
-            onBoardingData.value = AffiliateOnBoardingData.OnBoardAffiliate(
-                    AffiliateOnBoardingData.OnBoardAffiliate.Data(null,1))
         })
     }
 

@@ -176,15 +176,15 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
         for (item in checkedSocialList){
             val portfolioDataItemText = finEditTextModelWithId(item.id)?.text
             if(portfolioDataItemText?.isNotBlank() == true){
-                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,"Link ${item.name}",
-                        portfolioDataItemText,item.urlSample,"Link tidak valid.",false)))
+                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
+                        portfolioDataItemText,item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
             }else {
-                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,"Link ${item.name}",
-                        "",item.urlSample,"Link tidak valid.",false)))
+                updateList.add(AffiliatePortfolioUrlModel(AffiliatePortfolioUrlInputData(item.id,"${getString(com.tokopedia.affiliate_toko.R.string.affiliate_link)} ${item.name}",
+                        "",item.urlSample,getString(com.tokopedia.affiliate_toko.R.string.affiliate_link_not_valid),false)))
             }
         }
-        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Tambah Sosial Media", UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
-        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData("Selanjutnya", UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
+        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_tambah_sosial_media), UnifyButton.Type.ALTERNATE, UnifyButton.Variant.GHOST)))
+        updateList.add(AffiliatePortfolioButtonModel(AffiliatePortfolioButtonData(getString(com.tokopedia.affiliate_toko.R.string.affiliate_portfolio_confirm_btn), UnifyButton.Type.MAIN,UnifyButton.Variant.FILLED,true)))
         affiliatePortfolioViewModel.affiliatePortfolioData.value = updateList
     }
 

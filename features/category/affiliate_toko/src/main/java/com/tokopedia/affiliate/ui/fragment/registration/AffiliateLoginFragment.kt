@@ -6,16 +6,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.affiliate.AFFILIATE_LOGIN_REQUEST_CODE
-import com.tokopedia.affiliate.AFFILIATE_REGISTER_REQUEST_CODE
-import com.tokopedia.affiliate.AFFILIATE_REQUEST_CODE_LOGOUT
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateTutorialPagerAdapter
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -78,15 +76,15 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
                         getString(R.string.affiliate_tutorial_title_1),
                         getString(R.string.affiliate_tutorial_subtitle_1),
-                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_first_image.png"))
+                        ON_BOARDING_TUTORIAL_IMAGE_1))
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
                         getString(R.string.affiliate_tutorial_title_2),
                         getString(R.string.affiliate_tutorial_subtitle_2),
-                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_second_image.png"))
+                        ON_BOARDING_TUTORIAL_IMAGE_2))
                 add(AffiliateTutorialPagerAdapter.LoginTutorialData(
                         getString(R.string.affiliate_tutorial_title_3),
                         getString(R.string.affiliate_tutorial_subtitle_3),
-                        "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_third_image.png"))
+                        ON_BOARDING_TUTORIAL_IMAGE_3))
             }
         }
         val tutorialAdapter = AffiliateTutorialPagerAdapter(tutorialArray)
@@ -103,7 +101,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         })
 
         affiliate_login_page_control.apply {
-            inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+            inactiveColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
             setIndicator(tutorialArray.size)
         }
     }
@@ -248,7 +246,7 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
             tickerType = Ticker.TYPE_ERROR
             setDescriptionClickEvent(object: TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    //RouteManager.routeNoFallbackCheck(context, AFFILIATE_LIHAT_KATEGORI, AFFILIATE_LIHAT_KATEGORI)
+
                 }
                 override fun onDismiss() {}
             })
