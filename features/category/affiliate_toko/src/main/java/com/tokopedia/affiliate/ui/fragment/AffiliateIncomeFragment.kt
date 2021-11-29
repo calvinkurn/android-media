@@ -77,7 +77,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             if(it.status == 1)
                 setAffiliateBalance(it)
             else
-                setErrorState(it.error.message)
+                it.error?.message?.let { it1 -> setErrorState(it1) }
         })
 
         affiliateIncomeViewModel.getAffiliateDataItems().observe(this, {

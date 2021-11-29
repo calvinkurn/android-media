@@ -31,7 +31,6 @@ class AffiliateIncomeViewModel : BaseViewModel(){
                     affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance.data
         }, onError = {
             it.printStackTrace()
-            errorMessage.value = it.toString()
         })
     }
 
