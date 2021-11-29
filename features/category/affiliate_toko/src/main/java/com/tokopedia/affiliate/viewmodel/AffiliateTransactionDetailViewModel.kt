@@ -19,14 +19,18 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     private var commssionData = MutableLiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail>()
     private var detailList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var errorMessage = MutableLiveData<Throwable>()
+    private var progressBar = MutableLiveData<Boolean>()
     private val TYPE_DIVIDER = "divider"
     fun affiliateCommission(transactionID:String) {
         launchCatchError(block = {
+            progressBar.value = true
            affiliateCommissionDetailUserCase.affiliateCommissionDetails(transactionID).getAffiliateCommissionDetail?.let {
                detailList.value = getDetailListOrganize(it?.data?.detail)
                commssionData.value = it
            }
+            progressBar.value = false
         }, onError = {
+            progressBar.value = false
             it.printStackTrace()
             errorMessage.value = it
         })
@@ -46,4 +50,5 @@ class AffiliateTransactionDetailViewModel  @Inject constructor(
     fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getCommissionData() : LiveData<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail> = commssionData
     fun getDetailList(): LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = detailList
+    fun progressBar(): LiveData<Boolean> = progressBar
 }
