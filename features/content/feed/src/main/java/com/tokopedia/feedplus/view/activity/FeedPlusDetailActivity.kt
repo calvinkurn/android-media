@@ -6,6 +6,7 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
 
@@ -14,12 +15,14 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     private lateinit var detailId: String
     private lateinit var shopId: String
     private lateinit var activityId: String
+    private lateinit var productList: List<FeedXProduct>
 
     companion object {
         const val EXTRA_DETAIL_ID = "extra_detail_id"
         const val EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER"
         const val PARAM_SHOP_ID = "shop_id"
         const val PARAM_ACTIVITY_ID = "activity_id"
+        const val PARAM_PRODUCT_LIST = "product_list"
 
     }
 
@@ -43,6 +46,11 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
             intent.getStringExtra(PARAM_SHOP_ID) ?: ""
         else ""
 
+        productList = if (intent.hasExtra(PARAM_PRODUCT_LIST))
+            intent.extras?.getParcelableArrayList<FeedXProduct>("product_list")?:mutableListOf<FeedXProduct>()
+        else
+            mutableListOf<FeedXProduct>()
+
         activityId = if(intent.hasExtra(PARAM_ACTIVITY_ID))
             intent.getStringExtra(PARAM_ACTIVITY_ID) ?: ""
         else ""
@@ -56,6 +64,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         bundle.putString(EXTRA_DETAIL_ID, detailId)
         bundle.putString(PARAM_SHOP_ID, shopId)
         bundle.putString(PARAM_ACTIVITY_ID, activityId)
+        bundle.putParcelableArrayList(PARAM_PRODUCT_LIST, ArrayList(productList))
         return FeedPlusDetailFragment.createInstance(bundle)
     }
 

@@ -98,6 +98,7 @@ data class FeedXCard(
         return FeedXCard(
             typename = typename,
             id = id,
+            type= type,
             playChannelID = playChannelID,
             mediaRatio = mediaRatio,
             author = author,

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,10 +9,14 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_NN0">
 
         <include
             android:id="@+id/shop_info_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
             layout="@layout/feed_detail_header" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -19,7 +24,7 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +40,7 @@
         android:elevation="4dp"
         android:focusable="true"
         android:padding="4dp"
+        android:visibility="gone"
         app:layout_anchor="@id/fragment_container"
         app:layout_anchorGravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"

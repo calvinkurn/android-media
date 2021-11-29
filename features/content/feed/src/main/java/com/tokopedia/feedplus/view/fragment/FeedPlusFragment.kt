@@ -66,10 +66,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
@@ -115,7 +112,6 @@ import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.imagepicker_insta.common.BundleData
 import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
@@ -3193,9 +3189,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         sendTopadsUrlClick(getAdClickUrl(positionInFeed))
     }
 
-    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int) {
-        sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
-        feedAnalytics?.clickSekSekarang(postId,shopId,type,isFollowed)
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int, feedXCard: FeedXCard) {
+        if (type == TYPE_TOPADS_HEADLINE_NEW) {
+            sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
+            feedAnalytics?.clickSekSekarang(postId, shopId, type, isFollowed)
+        } else {
+            val intent = RouteManager.getIntent(context, feedXCard.appLink)
+            intent.putParcelableArrayListExtra("product_list", ArrayList(feedXCard.products))
+            requireActivity().startActivity(intent)
+        }
     }
 
     override fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel, isNewVariant:Boolean) {

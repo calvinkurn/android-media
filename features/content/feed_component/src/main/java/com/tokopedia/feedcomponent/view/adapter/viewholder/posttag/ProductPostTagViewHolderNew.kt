@@ -14,7 +14,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewMode
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label

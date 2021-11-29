@@ -28,12 +28,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.DataMapper
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
+import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.ProductFeedDetailViewModelNew
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -61,6 +64,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * A simple [Fragment] subclass.
@@ -84,6 +88,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var pagingHandler: PagingHandler
     private var detailId: String = ""
     private var shopId: String = ""
+    private var productList = emptyList<FeedXProduct>()
     private var activityId: String = ""
     private lateinit var shareData: LinkerData
 
@@ -146,6 +151,13 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
+        if (productList.isEmpty()) {
+            arguments?.run {
+                getParcelableArrayList<FeedXProduct>(FeedPlusDetailActivity.PARAM_PRODUCT_LIST)?.let {
+                    productList = it
+                }
+            }
+        }
         layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerviewScrollListener = onRecyclerViewListener()
         val typeFactory: FeedPlusDetailTypeFactory = FeedPlusDetailTypeFactoryImpl(this)
@@ -157,10 +169,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (!adapter.isLoading && pagingHandler.CheckNextPage()) {
-                    pagingHandler.nextPage()
-                    presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
-                }
+//                if (!adapter.isLoading && pagingHandler.CheckNextPage()) {
+//                    pagingHandler.nextPage()
+//                    presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+//                }
             }
         }
     }
@@ -206,8 +218,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpObservers()
-        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
+        val ret = mapPostTag(productList)
+        adapter.addList(ret)
+        adapter.notifyDataSetChanged()
+        footer.hide()
+        setUpShopDataHeader()
+//        presenter.getFeedDetail(detailId, pagingHandler.page, shopId, activityId)
     }
 
     private fun setUpObservers() {
@@ -309,9 +325,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             header: FeedDetailHeaderModel,
             listDetail: ArrayList<Visitable<*>>,
             hasNextPage: Boolean) {
-        footer.show()
-        setUpShopDataHeader(header)
-        adapter.addList(listDetail)
+        footer.hide()
+        setUpShopDataHeader()
+        val ret = mapPostTag(productList)
+        adapter.addList(ret)
         shareButton.setOnClickListener(onShareClicked(
                 header.shareLinkURL,
                 header.shopName,
@@ -323,23 +340,23 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         trackImpression(listDetail)
     }
 
-    private fun setUpShopDataHeader(header: FeedDetailHeaderModel) {
+    private fun setUpShopDataHeader() {
         (activity as FeedPlusDetailActivity).getShopInfoLayout()?.run {
-            val shopNameString = MethodChecker.fromHtml(header.shopName).toString()
-            ImageHandler.LoadImage(shopAvatar, header.shopAvatar)
-            officialStore.setImageUrl(header.badgeUrl)
-            shopName.text = shopNameString
-            shopName.movementMethod = LinkMovementMethod.getInstance()
-            if (header.actionText.isNotEmpty()) {
-                shopSlogan.text = String.format(
-                        getString(com.tokopedia.feedcomponent.R.string.feed_header_time_format),
-                        TimeConverter.generateTime(shopSlogan.context, header.time),
-                        header.actionText)
-            } else {
-                shopSlogan.text = TimeConverter.generateTime(shopSlogan.context, header.time)
-            }
-            shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId.toIntOrZero()) }
-            this.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId.toIntOrZero()) }
+//            val shopNameString = MethodChecker.fromHtml(header.shopName).toString()
+//            ImageHandler.LoadImage(shopAvatar, header.shopAvatar)
+//            officialStore.setImageUrl(header.badgeUrl)
+//            shopName.text = shopNameString
+//            shopName.movementMethod = LinkMovementMethod.getInstance()
+//            if (header.actionText.isNotEmpty()) {
+//                shopSlogan.text = String.format(
+//                        getString(com.tokopedia.feedcomponent.R.string.feed_header_time_format),
+//                        TimeConverter.generateTime(shopSlogan.context, header.time),
+//                        header.actionText)
+//            } else {
+//                shopSlogan.text = TimeConverter.generateTime(shopSlogan.context, header.time)
+//            }
+//            shopAvatar.setOnClickListener { onGoToShopDetail(header.activityId, header.shopId.toIntOrZero()) }
+            product_detail_back_icon?.setOnClickListener { activity?.finish() }
             show()
         }
     }
@@ -371,7 +388,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     }
 
     private fun dismissLoading() {
-        footer.show()
+        footer.hide()
         adapter.dismissLoading()
     }
 
@@ -383,20 +400,20 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         adapter.dismissLoadingMore()
     }
 
-    override fun onGoToProductDetail(feedDetailViewModel: FeedDetailItemModel, adapterPosition: Int) {
+    override fun onGoToProductDetail(feedDetailViewModel: ProductFeedDetailViewModelNew, adapterPosition: Int) {
         if (activity != null && activity?.applicationContext != null && arguments != null) {
             activity?.startActivityForResult(
-                    getProductIntent(feedDetailViewModel.productId),
+                    getProductIntent(feedDetailViewModel.id),
                     REQUEST_OPEN_PDP
             )
             analytics.eventDetailProductClick(
-                    ProductEcommerce(feedDetailViewModel.productId,
-                            feedDetailViewModel.name,
+                    ProductEcommerce(feedDetailViewModel.id,
+                            feedDetailViewModel.text,
                             feedDetailViewModel.price,
                             adapterPosition),
                     userSession.userId?.toIntOrNull() ?: 0,
                 feedDetailViewModel.shopId,
-                feedDetailViewModel.activityId
+                feedDetailViewModel.postId.toString()
             )
         }
     }
@@ -469,5 +486,48 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             feedDetailAnalytics.eventShareCategory(shareParam[0], shareParam[1].toString() + "-" + KEY_OTHER)
         }
     }
+    private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<ProductFeedDetailViewModelNew> {
+        var postDescription = ""
+        var adClickUrl = ""
+        val desc = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
+        val itemList: MutableList<ProductFeedDetailViewModelNew> = ArrayList()
+        for (postTagItem in postTagItemList) {
+            if (postTagItem.isTopads){
+                postDescription = desc?.replace("%s", postTagItem.authorName).toString()
+                adClickUrl = postTagItem.adClickUrl
+            }
+            val item = ProductFeedDetailViewModelNew(
+                    postTagItem.id,
+                    postTagItem.name,
+                    postTagItem.coverURL,
+                    postTagItem.price.toString(),
+                    postTagItem.priceFmt,
+                    postTagItem.isDiscount,
+                    postTagItem.discountFmt,
+                    "product",
+                    postTagItem.appLink,
+                    postTagItem.webLink,
+                    postTagItem,
+                    postTagItem.isBebasOngkir,
+                    postTagItem.bebasOngkirStatus,
+                    postTagItem.bebasOngkirURL,
+                    postTagItem.priceOriginal,
+                    postTagItem.priceOriginalFmt,
+                    postTagItem.priceDiscountFmt,
+                    postTagItem.totalSold,
+                    postTagItem.star,
+                    postTagItem.mods,
+                    shopId,
+                    description = postDescription,
+                    isTopads = postTagItem.isTopads,
+                    adClickUrl = adClickUrl
+            )
+            item.feedType = "product"
+            item.postId = activityId.toIntOrZero()
+            itemList.add(item)
+        }
+        return itemList
+    }
+
 
 }

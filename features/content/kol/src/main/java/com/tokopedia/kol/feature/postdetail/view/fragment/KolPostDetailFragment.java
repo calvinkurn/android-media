@@ -1072,7 +1072,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onClickSekSekarang(@NotNull String postId, @NotNull String shopId, @NotNull String type, boolean isFollowed, int positionInFeed) {
+    public void onClickSekSekarang(@NotNull String postId, @NotNull String shopId, @NotNull String type, boolean isFollowed, int positionInFeed, FeedXCard feedXCard) {
 
     }
 

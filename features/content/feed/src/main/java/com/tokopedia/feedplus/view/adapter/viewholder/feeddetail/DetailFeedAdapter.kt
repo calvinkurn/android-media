@@ -1,112 +1,98 @@
-package com.tokopedia.feedplus.view.adapter.viewholder.feeddetail;
+package com.tokopedia.feedplus.view.adapter.viewholder.feeddetail
 
-import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory;
-
-import java.util.ArrayList;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
+import java.util.*
 
 /**
  * @author by nisie on 5/18/17.
  */
-
-public class DetailFeedAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
-
-    private List<Visitable> list;
-    private EmptyModel emptyModel;
-    private LoadingModel loadingModel;
-    private LoadingMoreModel loadingMoreModel;
-    private final FeedPlusDetailTypeFactory typeFactory;
-
-    public DetailFeedAdapter(FeedPlusDetailTypeFactory typeFactory) {
-        this.list = new ArrayList<>();
-        this.typeFactory = typeFactory;
-        this.emptyModel = new EmptyModel();
-        this.loadingModel = new LoadingModel();
-        this.loadingMoreModel = new LoadingMoreModel();
+class DetailFeedAdapter(typeFactory: FeedPlusDetailTypeFactory) : RecyclerView.Adapter<AbstractViewHolder<*>>() {
+    private val list: MutableList<Visitable<*>>
+    private val emptyModel: EmptyModel
+    private val loadingModel: LoadingModel
+    private val loadingMoreModel: LoadingMoreModel
+    private val typeFactory: FeedPlusDetailTypeFactory
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
+        val context = parent.context
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+        return typeFactory.createViewHolder(view, viewType)
     }
 
-    @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-
-        return typeFactory.createViewHolder(view, viewType);
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        (holder as AbstractViewHolder<Visitable<*>>).bind(list[position])
     }
 
-    @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(list.get(position));
+    override fun getItemCount(): Int {
+        return list.size
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    override fun getItemViewType(position: Int): Int {
+        return (list[position] as Visitable<FeedPlusDetailTypeFactory>).type(typeFactory)
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
+    fun addList(list: MutableList<ProductFeedDetailViewModelNew>) {
+        this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
-    public void addList(ArrayList<Visitable> list) {
-        this.list.addAll(list);
-        notifyDataSetChanged();
-    }
-
-    public void add(Visitable item) {
-        int position = getItemCount();
-        if (this.list.add(item)) {
-            notifyItemInserted(position);
+    fun add(item: Visitable<*>) {
+        val position = itemCount
+        if (list.add(item)) {
+            notifyItemInserted(position)
         }
     }
 
-    public void remove(Visitable item) {
-        int position = this.list.indexOf(item);
-        if (this.list.remove(item)) {
-            notifyItemRemoved(position);
+    fun remove(item: Visitable<*>?) {
+        val position = list.indexOf(item)
+        if (list.remove(item)) {
+            notifyItemRemoved(position)
         }
     }
 
-    public void showEmpty() {
-        add(emptyModel);
+    fun showEmpty() {
+        add(emptyModel)
     }
 
-    public void dismissEmpty() {
-        remove(emptyModel);
+    fun dismissEmpty() {
+        remove(emptyModel)
     }
 
-    public void showLoading() {
-        add(loadingModel);
+    fun showLoading() {
+        add(loadingModel)
     }
 
-    public void dismissLoading() {
-        remove(loadingModel);
+    fun dismissLoading() {
+        remove(loadingModel)
     }
 
-    public void showLoadingMore() {
-        add(loadingMoreModel);
+    fun showLoadingMore() {
+        add(loadingMoreModel)
     }
 
-    public void dismissLoadingMore() {
-        remove(loadingMoreModel);
+    fun dismissLoadingMore() {
+        remove(loadingMoreModel)
     }
 
-    public boolean isLoading() {
-        return this.list.contains(loadingModel);
+    val isLoading: Boolean
+        get() = list.contains(loadingModel)
+
+    fun getList(): List<Visitable<*>> {
+        return list
     }
 
-    public List<Visitable> getList() {
-        return list;
+    init {
+        list = ArrayList()
+        this.typeFactory = typeFactory
+        emptyModel = EmptyModel()
+        loadingModel = LoadingModel()
+        loadingMoreModel = LoadingMoreModel()
     }
 }
