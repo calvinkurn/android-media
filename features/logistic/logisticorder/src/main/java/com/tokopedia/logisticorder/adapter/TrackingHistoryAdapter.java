@@ -49,14 +49,15 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
     private DateUtil dateUtil;
     private Long orderId;
     private OnImageClicked listener;
+    private boolean isKurirRekomendasi;
 
-    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil, Long orderId, OnImageClicked listener) {
+    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil, Long orderId, OnImageClicked listener, boolean isKurirRekomendasi) {
         this.trackingHistoryData = trackingHistoryData;
         this.dateUtil = dateUtil;
         this.orderId = orderId;
         this.listener = listener;
+        this.isKurirRekomendasi = isKurirRekomendasi;
     }
-
 
 
     @NonNull
@@ -76,6 +77,10 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
+
+        if (isKurirRekomendasi) {
+            holder.courierName.setText(holder.context.getString(R.string.label_kurir_rekomendasi, trackingHistoryData.get(position).getPartnerName()));
+        }
 
         if (position == 0) {
             holder.dot.setColorFilter(holder.context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
@@ -147,6 +152,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
 
         private ImageUnify imageProof;
 
+        private Typography courierName;
+
         TrackingHistoryViewHolder(Context context, View itemView) {
             super(itemView);
 
@@ -163,6 +170,8 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
             dotTrail = itemView.findViewById(R.id.dot_trail);
 
             imageProof = itemView.findViewById(R.id.img_proof);
+
+            courierName = itemView.findViewById(R.id.courier_name_history);
 
         }
     }

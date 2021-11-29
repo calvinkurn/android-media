@@ -55,6 +55,7 @@ class TrackingPageMapperNew @Inject constructor() {
                     it.status,
                     it.city,
                     it.time,
+                    it.partnerName,
                     mapProofOrder(it.proof)
             )
         }

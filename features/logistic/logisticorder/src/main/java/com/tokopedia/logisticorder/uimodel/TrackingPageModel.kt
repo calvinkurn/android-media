@@ -47,6 +47,7 @@ data class TrackHistoryModel(
         var status: String = "",
         var city: String = "",
         var time: String = "",
+        var partnerName: String = "",
         var proof: ProofModel = ProofModel()
 )
 
