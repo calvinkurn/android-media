@@ -56,7 +56,11 @@ class ProductTagViewHolder(
                 tvDiscount.hide()
                 tvProductTagPrice.text = item.price.price
             }
-            else -> getString(R.string.play_bro_product_tag_no_price)
+            else -> {
+                tvProductTagPriceOriginal.invisible()
+                tvDiscount.hide()
+                tvProductTagPrice.text = getString(R.string.play_bro_product_tag_no_price)
+            }
         }
     }
 
