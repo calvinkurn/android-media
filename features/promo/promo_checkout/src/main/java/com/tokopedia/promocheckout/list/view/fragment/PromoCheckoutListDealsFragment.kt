@@ -17,6 +17,7 @@ import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDealsPresenter
+import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -31,7 +32,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
     @Inject
     lateinit var promoCheckoutListDealsPresenter: PromoCheckoutListDealsPresenter
 
-    override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
+    override var serviceId: String = PromoCheckoutListPresenter.SERVICE_ID_NEW_DEALS
     var categoryID: Int = 1
     var categoryName: String = ""
     var grandTotal: Int = 0
@@ -115,7 +116,7 @@ class PromoCheckoutListDealsFragment() : BasePromoCheckoutListFragment(), PromoC
 
     override fun loadData(page: Int) {
         if (isCouponActive) {
-            promoCheckoutListPresenter.getListPromo(serviceId, categoryID, page, resources)
+            promoCheckoutListPresenter.getListPromo(serviceId, 0, page, resources)
         }
         promoCheckoutListDealsPresenter.getListTravelCollectiveBanner(resources)
     }
