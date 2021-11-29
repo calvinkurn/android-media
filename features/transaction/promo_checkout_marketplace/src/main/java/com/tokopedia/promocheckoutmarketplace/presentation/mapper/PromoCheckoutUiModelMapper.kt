@@ -74,7 +74,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
-                    isCollapsed = couponSectionItem.isCollapsed
+                    isCollapsed = false
                 }
         )
     }
@@ -99,7 +99,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    isCollapsed = couponSubSection.isCollapsed
+                    isCollapsed = false
                 }
         )
     }

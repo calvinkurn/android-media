@@ -2,8 +2,6 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewholder
 
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleItemPromoTabBinding
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
@@ -17,11 +15,18 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
         val LAYOUT = R.layout.promo_checkout_marketplace_module_item_promo_tab
     }
 
+    var tabSelectedListener: TabLayout.OnTabSelectedListener? = null
+
     override fun bind(element: PromoTabUiModel) {
         with(viewBinding) {
+            tabSelectedListener?.let {
+                tabsPromo.getUnifyTabLayout().removeOnTabSelectedListener(it)
+            }
+
             if (element.uiState.selectedTabPosition != tabsPromo.getUnifyTabLayout().selectedTabPosition) {
                 tabsPromo.getUnifyTabLayout().getTabAt(element.uiState.selectedTabPosition)?.select()
             }
+
             element.uiState.isInitialization = false
             tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
             if (element.uiData.tabs.isNotEmpty() && tabsPromo.getUnifyTabLayout().getTabAt(0) == null) {
@@ -30,7 +35,7 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
                 }
             }
 
-            tabsPromo.getUnifyTabLayout().addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            tabSelectedListener = object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     element.uiState.selectedTabPosition = tab?.position ?: 0
                     listener.onTabSelected(element)
@@ -43,7 +48,8 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                     /* No-op */
                 }
-            })
+            }
+            tabsPromo.getUnifyTabLayout().addOnTabSelectedListener(tabSelectedListener!!)
         }
     }
 

@@ -386,34 +386,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (topItemPosition == RecyclerView.NO_POSITION) return
             val topVisibleUiModel = adapter.data[topItemPosition]
 
-            val isShow: Boolean = topVisibleUiModel !is PromoInputUiModel && topVisibleUiModel !is PromoRecommendationUiModel && topVisibleUiModel !is PromoEligibilityHeaderUiModel
+            val isShow: Boolean = (topVisibleUiModel !is PromoInputUiModel &&
+                    topVisibleUiModel !is PromoRecommendationUiModel &&
+                    topVisibleUiModel !is PromoEligibilityHeaderUiModel) ||
+                    (topVisibleUiModel is PromoEligibilityHeaderUiModel && !topVisibleUiModel.uiState.isEnabled)
 
             // View logic here should be same as view logic on #PromoTabViewHolder
-            if (promoTabUiModel != null && isShow && viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(0) == null) {
-                promoTabUiModel.uiData.tabs.forEach {
-                    viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
-                }
-
-                viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab?) {
-                        val currentTabUiModel = viewModel.promoTabUiModel.value
-                        currentTabUiModel?.let {
-                            it.uiState.selectedTabPosition = tab?.position ?: 0
-                            viewModel.changeSelectedTab(currentTabUiModel)
-                            scrollToTabIndex(currentTabUiModel)
-                        }
-                    }
-
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {
-                        /* No-op */
-                    }
-
-                    override fun onTabReselected(tab: TabLayout.Tab?) {
-                        /* No-op */
-                    }
-                })
-
-            }
+//            if (promoTabUiModel != null && isShow && viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(0) == null) {
+//
+//            }
 
             if (isShow) {
                 viewBinding?.tabsPromoHeader?.tabsPromo?.show()
@@ -468,7 +449,30 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observePromoTabUiModel() {
         viewModel.promoTabUiModel.observe(viewLifecycleOwner, {
-            if (!it.uiState.isInitialization) {
+            if (it.uiState.isInitialization) {
+                viewBinding?.tabsPromoHeader?.tabsPromo?.customTabMode = TabLayout.MODE_SCROLLABLE
+                viewModel.promoTabUiModel.value?.uiData?.tabs?.forEach {
+                    viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
+                }
+                viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        val currentTabUiModel = viewModel.promoTabUiModel.value
+                        currentTabUiModel?.let {
+                            it.uiState.selectedTabPosition = tab?.position ?: 0
+                            viewModel.changeSelectedTab(currentTabUiModel)
+                            scrollToTabIndex(currentTabUiModel)
+                        }
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+                        /* No-op */
+                    }
+
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+                        /* No-op */
+                    }
+                })
+            } else {
                 addOrModify(it)
             }
         })
@@ -699,7 +703,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun renderLoadPromoSuccess(fragmentUiModel: FragmentUiModel) {
         viewBinding?.let {
-            it.tabsPromoHeader.tabsPromo.customTabMode = TabLayout.MODE_SCROLLABLE
             if (fragmentUiModel.uiState.hasAnyPromoSelected) {
                 renderHasAnyPromoSelected(fragmentUiModel)
             } else {
@@ -1018,7 +1021,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {
-        viewModel.updatePromoListAfterClickPromoHeader(element)
+//        viewModel.updatePromoListAfterClickPromoHeader(element)
     }
 
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
@@ -1047,7 +1050,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel) {
-        viewModel.updateIneligiblePromoList(element)
+//        viewModel.updateIneligiblePromoList(element)
     }
 
     override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
@@ -1073,7 +1076,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onTabSelected(element: PromoTabUiModel) {
         viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
-        scrollToTabIndex(element)
     }
 
     private fun scrollToTabIndex(element: PromoTabUiModel) {
@@ -1091,14 +1093,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
 
         if (tmpIndex != RecyclerView.NO_POSITION) {
-            recyclerView?.layoutManager?.let {
-                val linearSmoothScroller = object : LinearSmoothScroller(recyclerView?.context) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_START
-                    }
-                }
-                linearSmoothScroller.targetPosition = tmpIndex
-                it.startSmoothScroll(linearSmoothScroller)
+            val tabHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48) ?: 0
+
+            val layoutManager: RecyclerView.LayoutManager? = recyclerView?.layoutManager
+            if (layoutManager != null) {
+                (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(tmpIndex, tabHeight)
             }
         }
     }
