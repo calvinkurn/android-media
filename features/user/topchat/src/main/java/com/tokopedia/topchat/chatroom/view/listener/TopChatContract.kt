@@ -200,7 +200,7 @@ interface TopChatContract {
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
 
-        fun getSmartReplyWidget(msgId: String)
+        fun getSmartReplyWidget(msgId: String, productIds: String)
         fun initUserLocation(userLocation: LocalCacheModel?)
         fun getProductIdPreview(): List<String>
         fun getAttachmentsPreview(): List<SendablePreview>

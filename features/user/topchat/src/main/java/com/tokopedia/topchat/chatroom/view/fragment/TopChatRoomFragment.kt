@@ -270,7 +270,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initSrw() {
         rvSrw?.initialize(this, object : SrwFrameLayout.Listener {
             override fun onRetrySrw() {
-                presenter.getSmartReplyWidget(messageId)
+                reloadSrw()
             }
 
             override fun trackViewSrw() {
@@ -727,8 +727,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         replyCompose?.setReplyListener(this)
         if (isSeller()) {
             setupFirstTimeForSeller()
-        } else {
-            setupFirstTimeForBuyer()
         }
     }
 
@@ -739,8 +737,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun setupFirstTimeForBuyer() {
-        presenter.getSmartReplyWidget(messageId)
+    private fun reloadSrw() {
+        if (!isSeller() && topchatViewState?.hasProductPreviewShown() == true) {
+            val productIds = presenter.getProductIdPreview()
+            val productIdCommaSeparated = productIds.joinToString(separator = ", ")
+            presenter.getSmartReplyWidget(messageId, productIdCommaSeparated)
+        }
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -1771,6 +1773,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         topchatViewState?.showAttachmentPreview(attachmentPreview)
         adapter.collapseSrwBubble()
+        reloadSrw()
     }
 
     override fun onEmptyProductPreview() {

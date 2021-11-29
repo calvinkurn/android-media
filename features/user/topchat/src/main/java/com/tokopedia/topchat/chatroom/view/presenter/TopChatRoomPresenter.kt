@@ -895,10 +895,17 @@ open class TopChatRoomPresenter @Inject constructor(
         onGoingStockUpdate[productId] = result
     }
 
-    override fun getSmartReplyWidget(msgId: String) {
+    override fun getSmartReplyWidget(msgId: String, productIds: String) {
         launchCatchError(dispatchers.io,
             {
-                chatSrwUseCase.getSrwList(msgId).collect {
+                chatSrwUseCase.getSrwList(
+                    msgId = msgId,
+                    productIds = productIds,
+                    addressId = userLocationInfo.address_id,
+                    districtId = userLocationInfo.district_id,
+                    postalCode = userLocationInfo.postal_code,
+                    latLon = userLocationInfo.latLong
+                ).collect {
                     _srw.postValue(it)
                 }
             },
