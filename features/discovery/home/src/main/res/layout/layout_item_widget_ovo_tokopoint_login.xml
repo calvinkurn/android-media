@@ -45,7 +45,6 @@
             android:layout_height="wrap_content"
             android:text="@string/home_header_fintech_scan"
             android:textColor="@color/Unify_N700_32"
-            android:textSize="@dimen/sp_10"
             app:typographyType="small"
             android:gravity="center"/>
 
@@ -90,7 +89,7 @@
                 android:id="@+id/tv_title_tokocash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_12"
+                android:textSize="12sp"
                 android:textColor="@color/Unify_N700"
                 app:typographyType="heading_6"
                 android:textStyle="bold"/>
@@ -101,9 +100,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/Unify_G500"
-                android:textSize="@dimen/sp_12"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:textSize="12sp"
                 app:typographyType="heading_6"
                 android:visibility="gone" />
 
@@ -115,8 +114,8 @@
                 android:textColor="@color/Unify_N700_32"
                 android:ellipsize="end"
                 android:maxLines="1"
-                app:typographyType="small"
-                android:textSize="@dimen/sp_10"/>
+                android:textSize="10sp"
+                app:typographyType="small"/>
 
         </RelativeLayout>
 
@@ -184,7 +183,7 @@
                 android:ellipsize="end"
                 android:lines="1"
                 android:gravity="center"
-                android:textSize="@dimen/sp_12"
+                android:textSize="12sp"
                 android:textColor="@color/Unify_N700_68"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -200,10 +199,10 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_G500"
-                android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 tools:text="Kupon Baru"
                 app:typographyType="small"
+                android:textSize="10sp"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -212,13 +211,13 @@
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:ellipsize="end"
-                android:lineSpacingExtra="@dimen/sp_4"
+                android:lineSpacingExtra="4sp"
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_10"
                 android:visibility="gone"
                 app:typographyType="small"
+                android:textSize="10sp"
                 tools:text="900000000000000000 Poin"
                 tools:visibility="visible" />
         </LinearLayout>
@@ -271,7 +270,7 @@
                 android:ellipsize="end"
                 android:lines="1"
                 android:gravity="center"
-                android:textSize="@dimen/sp_12"
+                android:textSize="12sp"
                 android:textColor="@color/Unify_N700_68"
                 android:textStyle="bold"
                 android:visibility="gone"
@@ -287,7 +286,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_G500"
-                android:textSize="@dimen/sp_10"
+                android:textSize="10sp"
                 android:visibility="gone"
                 app:typographyType="small"
                 tools:text="Kupon Baru"
@@ -299,11 +298,11 @@
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:ellipsize="end"
-                android:lineSpacingExtra="@dimen/sp_4"
+                android:lineSpacingExtra="4sp"
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_10"
+                android:textSize="10sp"
                 android:visibility="gone"
                 app:typographyType="small"
                 tools:text="900000000000000000 Poin"

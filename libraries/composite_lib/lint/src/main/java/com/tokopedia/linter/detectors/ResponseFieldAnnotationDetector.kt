@@ -12,6 +12,7 @@ import com.android.tools.lint.detector.api.SourceCodeScanner
 import org.jetbrains.kotlin.psi.KtParameter
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UParameter
+import org.jetbrains.uast.getContainingUClass
 import org.jetbrains.uast.kotlin.KotlinConstructorUMethod
 
 class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
@@ -32,6 +33,7 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
         )
 
         private const val RESPONSE_KEYWORD = "Response"
+        private const val PARAM_KEYWORD = "Param"
         private const val DOMAIN_MODEL_PATH= "domain/model"
         private const val SERIALIZED_NAME_ANNOTATION = "com.google.gson.annotations.SerializedName"
         private const val EXPOSE_ANNOTATION = "com.google.gson.annotations.Expose"
@@ -60,8 +62,11 @@ class ResponseFieldAnnotationDetector : Detector(), SourceCodeScanner {
     private fun shouldCheckAnnotation(context: JavaContext, node: UParameter): Boolean {
         val fileName = context.file.name
         val filePath = context.file.path
-        return (fileName.contains(RESPONSE_KEYWORD) || filePath.contains(DOMAIN_MODEL_PATH)) &&
-            node.uastParent is KotlinConstructorUMethod
+        val isDataClass = node.getContainingUClass()?.methods?.map { it.name }
+            ?.containsAll(listOf("equals", "hashCode")) == true
+        return (fileName.contains(RESPONSE_KEYWORD) || fileName.contains(PARAM_KEYWORD) ||
+                filePath.contains(DOMAIN_MODEL_PATH)) && node.uastParent is KotlinConstructorUMethod &&
+                isDataClass
     }
 
     private fun reportError(context: JavaContext, node: UElement) {

@@ -106,6 +106,7 @@ class ProductHighlightComponentViewHolder(
             }
         } else {
             itemView.deals_count_down.visibility = View.GONE
+            itemView.deals_channel_subtitle.visibility = View.GONE
         }
     }
 

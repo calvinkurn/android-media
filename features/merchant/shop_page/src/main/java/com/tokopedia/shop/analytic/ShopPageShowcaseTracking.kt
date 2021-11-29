@@ -1,6 +1,6 @@
 package com.tokopedia.shop.analytic
 
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ALL_SHOWCASE_LIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_IMPRESSION_SHOP_ALL_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.BUSINESS_UNIT
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEARCH_ETALASE
@@ -14,7 +14,6 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FEATURED_ETALASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ID
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
@@ -23,6 +22,8 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMOTIONS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PROMO_VIEW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SHOWCASE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_SHOWCASE_LIST
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
@@ -40,7 +41,6 @@ class ShopPageShowcaseTracking(
 
     fun clickFeaturedShowcaseItem(
             featuredShowcase: FeaturedShowcaseUiModel,
-            isOwner: Boolean,
             position: Int,
             customDimensionShopPage: CustomDimensionShopPage,
             userId: String
@@ -48,18 +48,18 @@ class ShopPageShowcaseTracking(
         // send tracker for featured showcase item clicked
         sendDataLayerEvent(createEventMap(
                 eventName = PROMO_CLICK,
-                eventCategory = getShopPageCategory(isOwner),
-                eventAction = CLICK,
-                eventLabel = joinDash(FEATURED_ETALASE, customDimensionShopPage.shopId),
+                eventCategory = ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+                eventAction = ShopPageTrackingConstant.CLICK_FEATURED_SHOWCASE,
+                eventLabel = ShopPageTrackingConstant.CLICK_FEATURED_SHOWCASE,
                 userId = userId,
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_CLICK to mapOf(
                                 PROMOTIONS to listOf(
                                         mapOf(
-                                                CREATIVE to featuredShowcase.imageUrl,
-                                                ID to joinDash(featuredShowcase.id, customDimensionShopPage.shopId),
-                                                NAME to joinDash(FEATURED_ETALASE, featuredShowcase.name),
+                                                CREATIVE to featuredShowcase.name,
+                                                ID to featuredShowcase.id,
+                                                NAME to ShopPageTrackingConstant.FEATURED_ETALASE,
                                                 POSITION to position
                                         )
                                 )
@@ -70,7 +70,6 @@ class ShopPageShowcaseTracking(
 
     fun featuredShowcaseItemImpressed(
             featuredShowcase: FeaturedShowcaseUiModel,
-            isOwner: Boolean,
             position: Int,
             customDimensionShopPage: CustomDimensionShopPage,
             userId: String
@@ -78,18 +77,18 @@ class ShopPageShowcaseTracking(
         // send tracker for featured showcase item impressed
         sendDataLayerEvent(createEventMap(
                 eventName = PROMO_VIEW,
-                eventCategory = getShopPageCategory(isOwner),
-                eventAction = IMPRESSION,
-                eventLabel = joinDash(FEATURED_ETALASE, customDimensionShopPage.shopId),
+                eventCategory = ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+                eventAction = ShopPageTrackingConstant.IMPRESSION_FEATURED_SHOWCASE,
+                eventLabel = ShopPageTrackingConstant.IMPRESSION_FEATURED_SHOWCASE,
                 userId = userId,
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_VIEW to mapOf(
                                 PROMOTIONS to mutableListOf(
                                         mapOf(
-                                                CREATIVE to featuredShowcase.imageUrl,
-                                                ID to joinDash(featuredShowcase.id, customDimensionShopPage.shopId),
-                                                NAME to joinDash(FEATURED_ETALASE, featuredShowcase.name),
+                                                CREATIVE to featuredShowcase.name,
+                                                ID to featuredShowcase.id,
+                                                NAME to FEATURED_ETALASE,
                                                 POSITION to position
                                         )
                                 )
@@ -98,44 +97,29 @@ class ShopPageShowcaseTracking(
         ))
     }
 
-    fun clickSearchIcon(
-            isOwner: Boolean,
-            customDimensionShopPage: CustomDimensionShopPage,
-            userId: String
-    ) {
-        // send tracker for search icon clicked
-        sendDataLayerEvent(createEventMap(
-                eventName = CLICK_SHOP_PAGE,
-                eventCategory = getShopPageCategory(isOwner),
-                eventAction = CLICK_SEARCH_ETALASE,
-                eventLabel = customDimensionShopPage.shopId.orEmpty(),
-                userId = userId,
-                customDimensionShopPage = customDimensionShopPage
-        ))
-    }
-
     fun clickAllShowcaseItem(
             allShowcaseItem: ShopEtalaseUiModel,
+            maxShowcaseList: Int,
             isOwner: Boolean,
             position: Int,
             customDimensionShopPage: CustomDimensionShopPage,
             userId: String
     ) {
         // send tracker for all showcase item clicked
-        sendDataLayerEvent(createEventMap(
+        sendDataLayerEvent(createNewEventMap(
                 eventName = PROMO_CLICK,
                 eventCategory = getShopPageCategory(isOwner),
-                eventAction = CLICK,
-                eventLabel = joinDash(ALL_SHOWCASE_LIST, customDimensionShopPage.shopId),
+                eventAction = "$CLICK $SHOP_SHOWCASE_LIST",
+                eventLabel = joinDash(CLICK, SHOP_SHOWCASE, allShowcaseItem.id, maxShowcaseList.toString()),
                 userId = userId,
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_CLICK to mapOf(
                                 PROMOTIONS to listOf(
                                         mapOf(
-                                                CREATIVE to allShowcaseItem.imageUrl.orEmpty(),
-                                                ID to joinDash(allShowcaseItem.id, customDimensionShopPage.shopId),
-                                                NAME to joinDash(ALL_SHOWCASE_LIST, allShowcaseItem.name),
+                                                CREATIVE to allShowcaseItem.name,
+                                                ID to allShowcaseItem.id,
+                                                NAME to SHOP_SHOWCASE.replace(" ", "_"),
                                                 POSITION to position
                                         )
                                 )
@@ -146,7 +130,6 @@ class ShopPageShowcaseTracking(
 
     fun showcaseItemImpressed(
             showcaseItem: ShopEtalaseUiModel,
-            isOwner: Boolean,
             position: Int,
             customDimensionShopPage: CustomDimensionShopPage,
             userId: String
@@ -154,18 +137,18 @@ class ShopPageShowcaseTracking(
         // send tracker for featured showcase item impressed
         sendDataLayerEvent(createEventMap(
                 eventName = PROMO_VIEW,
-                eventCategory = getShopPageCategory(isOwner),
-                eventAction = IMPRESSION,
-                eventLabel = joinDash(ALL_SHOWCASE_LIST, customDimensionShopPage.shopId),
+                eventCategory = ShopPageTrackingConstant.SHOP_PAGE_BUYER,
+                eventAction = ShopPageTrackingConstant.IMPRESSION_ALL_SHOWCASE,
+                eventLabel = String.format(LABEL_IMPRESSION_SHOP_ALL_SHOWCASE_LIST, showcaseItem.id, showcaseItem.count.toString()),
                 userId = userId,
                 customDimensionShopPage = customDimensionShopPage,
                 ecommerceMap = mapOf(
                         PROMO_VIEW to mapOf(
                                 PROMOTIONS to listOf(
                                         mapOf(
-                                                CREATIVE to showcaseItem.imageUrl.orEmpty(),
-                                                ID to joinDash(showcaseItem.id, customDimensionShopPage.shopId),
-                                                NAME to joinDash(ALL_SHOWCASE_LIST, showcaseItem.name),
+                                                CREATIVE to showcaseItem.name,
+                                                ID to showcaseItem.id,
+                                                NAME to ShopPageTrackingConstant.ALL_SHOP_ETALASE,
                                                 POSITION to position
                                         )
                                 )
@@ -190,9 +173,32 @@ class ShopPageShowcaseTracking(
                 EVENT_LABEL to eventLabel,
                 BUSINESS_UNIT to PHYSICAL_GOODS,
                 CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
-                PAGE_TYPE to SHOPPAGE,
                 SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
-                SHOP_TYPE to customDimensionShopPage.shopType.orEmpty(),
+                USER_ID to userId
+        )
+        ecommerceMap?.let {
+            eventMap[ECOMMERCE] = ecommerceMap
+        }
+        return eventMap
+    }
+
+    private fun createNewEventMap(
+            eventName: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            userId: String,
+            customDimensionShopPage: CustomDimensionShopPage,
+            ecommerceMap: Map<String, Any>? = null
+    ): Map<String, Any> {
+        val eventMap = mutableMapOf<String, Any>(
+                EVENT to eventName,
+                EVENT_CATEGORY to eventCategory,
+                EVENT_ACTION to eventAction,
+                EVENT_LABEL to eventLabel,
+                BUSINESS_UNIT to PHYSICAL_GOODS,
+                CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+                SHOP_ID to customDimensionShopPage.shopId.orEmpty(),
                 USER_ID to userId
         )
         ecommerceMap?.let {
