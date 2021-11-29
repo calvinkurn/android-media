@@ -29,5 +29,9 @@
             android:label="@string/title_schema"
             android:theme="@style/Theme.WhiteUnify"/>
 
+        <activity android:name=".presentation.content.ContentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"/>
+
     </application>
 </manifest>

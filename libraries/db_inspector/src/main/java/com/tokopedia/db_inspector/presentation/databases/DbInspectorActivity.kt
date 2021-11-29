@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.activity_database_list.*
 
 class DbInspectorActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> {
 
-    private val dbInspectorComponent: DbInspectorComponent by lazy { initInjector() }
+    private val dbInspectorComponent: DbInspectorComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
 
     private fun initInjector() =
         DaggerDbInspectorComponent.builder()

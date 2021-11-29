@@ -14,6 +14,7 @@ internal class SchemaViewHolder(itemView: View, val onClick: (String) -> Unit) :
         fun bindTable(cell: Cell) {
             with(itemView) {
                 tableName.text = cell.text ?: "EMPTY"
+                setOnClickListener { cell.text?.let { onClick(it) } }
             }
         }
 

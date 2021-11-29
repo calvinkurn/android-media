@@ -1,4 +1,4 @@
-package com.tokopedia.db_inspector.presentation.schema
+package com.tokopedia.db_inspector.presentation.content
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -10,8 +10,7 @@ import com.tokopedia.db_inspector.di.DbInspectorComponent
 import com.tokopedia.db_inspector.presentation.Constants
 import kotlinx.android.synthetic.main.activity_database_list.*
 
-class SchemaActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> {
-
+class ContentActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> {
     private val dbInspectorComponent: DbInspectorComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
     private val databaseName: String by lazy(LazyThreadSafetyMode.NONE) {
         intent.getStringExtra(Constants.Keys.DATABASE_NAME).orEmpty()
@@ -19,6 +18,10 @@ class SchemaActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> 
 
     private val databasePath: String by lazy(LazyThreadSafetyMode.NONE) {
         intent.getStringExtra(Constants.Keys.DATABASE_PATH).orEmpty()
+    }
+
+    private val schemaName: String by lazy(LazyThreadSafetyMode.NONE) {
+        intent.getStringExtra(Constants.Keys.SCHEMA_NAME).orEmpty()
     }
 
     private fun initInjector() =
@@ -41,14 +44,15 @@ class SchemaActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> 
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(true)
         }
-        dbInspectorHeader.title = "Schema"
-        dbInspectorHeader.headerSubTitle = databaseName
+        dbInspectorHeader.title = "Table"
+        dbInspectorHeader.headerSubTitle = schemaName
     }
 
-    override fun getNewFragment() = SchemaFragment.newInstance(databaseName, databasePath)
+    override fun getNewFragment() = ContentFragment.newInstance(schemaName, databaseName, databasePath)
     override fun getScreenName() = null
     override fun getComponent() = dbInspectorComponent
     override fun getLayoutRes() = R.layout.activity_database_list
     override fun getParentViewResourceID(): Int = R.id.dbInspectorFrame
+
 
 }

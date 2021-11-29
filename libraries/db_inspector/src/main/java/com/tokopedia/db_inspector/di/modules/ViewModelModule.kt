@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.db_inspector.presentation.content.ContentViewModel
 import com.tokopedia.db_inspector.presentation.databases.DatabaseViewModel
 import com.tokopedia.db_inspector.presentation.schema.SchemaViewModel
 import dagger.Binds
@@ -25,5 +26,10 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SchemaViewModel::class)
     internal abstract fun bindsSchemaViewModel(viewModel: SchemaViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ContentViewModel::class)
+    internal abstract fun bindsContentViewModel(viewModel: ContentViewModel): ViewModel
 
 }

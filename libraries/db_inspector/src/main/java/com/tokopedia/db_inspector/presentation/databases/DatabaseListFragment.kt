@@ -14,7 +14,6 @@ import com.tokopedia.db_inspector.di.DbInspectorComponent
 import com.tokopedia.db_inspector.domain.databases.models.DatabaseDescriptor
 import com.tokopedia.db_inspector.presentation.Constants
 import com.tokopedia.db_inspector.presentation.schema.SchemaActivity
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
@@ -28,15 +27,13 @@ class DatabaseListFragment: BaseDaggerFragment() {
         viewModelProvider.get(DatabaseViewModel::class.java)
     }
 
-    private val databaseAdapter: DatabaseAdapter by lazy {
+    private val databaseAdapter: DatabaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         DatabaseAdapter(
             onClick = { navigateToTableActivity(it) }
         )
     }
 
     private fun navigateToTableActivity(databaseDescriptor: DatabaseDescriptor) {
-        Toaster.build(rvDatabaseList, databaseDescriptor.absolutePath, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-
         context?.startActivity(
             Intent(requireContext(), SchemaActivity::class.java).apply {
                 putExtra(Constants.Keys.DATABASE_NAME, databaseDescriptor.name)

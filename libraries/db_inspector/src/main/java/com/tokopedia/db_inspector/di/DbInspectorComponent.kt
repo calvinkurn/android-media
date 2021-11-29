@@ -2,6 +2,7 @@ package com.tokopedia.db_inspector.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.db_inspector.di.modules.*
+import com.tokopedia.db_inspector.presentation.content.ContentFragment
 import com.tokopedia.db_inspector.presentation.databases.DatabaseListFragment
 import com.tokopedia.db_inspector.presentation.schema.SchemaFragment
 import dagger.Component
@@ -17,7 +18,8 @@ import dagger.Component
     dependencies = [BaseAppComponent::class]
 )
 interface DbInspectorComponent {
-    //fun inject(dbInspectorActivity: DbInspectorActivity)
     fun inject(databaseListFragment: DatabaseListFragment)
     fun inject(schemaFragment: SchemaFragment)
+    fun inject(contentFragment: ContentFragment)
+
 }

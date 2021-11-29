@@ -1,54 +1,38 @@
-package com.tokopedia.db_inspector.presentation.schema
+package com.tokopedia.db_inspector.presentation.content
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.db_inspector.R
 import com.tokopedia.db_inspector.di.DbInspectorComponent
 import com.tokopedia.db_inspector.presentation.Constants
-import com.tokopedia.db_inspector.presentation.content.ContentActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
-class SchemaFragment: BaseDaggerFragment() {
+class ContentFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val viewModel: SchemaViewModel by lazy(LazyThreadSafetyMode.NONE) {
+    private val viewModel: ContentViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
-        viewModelProvider.get(SchemaViewModel::class.java)
+        viewModelProvider.get(ContentViewModel::class.java)
     }
 
-    private val schemaAdapter: SchemaAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        SchemaAdapter(
-            onClick = { schema ->
-                navigateToContents(schema)
-            }
-        )
-    }
-
-    private fun navigateToContents(schema: String) {
-        context?.startActivity(
-            Intent(requireContext(), ContentActivity::class.java).apply {
-                putExtra(Constants.Keys.DATABASE_NAME, databaseName)
-                putExtra(Constants.Keys.DATABASE_PATH, databasePath)
-                putExtra(Constants.Keys.SCHEMA_NAME, schema)
-            }
-        )
-    }
-
-    private val databaseName: String by lazy(LazyThreadSafetyMode.NONE) {
+    private val databaseName: String by lazy(LazyThreadSafetyMode.NONE){
         arguments?.getString(Constants.Keys.DATABASE_NAME).orEmpty()
     }
 
     private val databasePath: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(Constants.Keys.DATABASE_PATH).orEmpty()
+    }
+
+    private val schemaName: String by lazy(LazyThreadSafetyMode.NONE) {
+        arguments?.getString(Constants.Keys.SCHEMA_NAME).orEmpty()
     }
 
     override fun onCreateView(
@@ -61,19 +45,15 @@ class SchemaFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getTables(databasePath)
+        search_input_view.gone()
+        //viewModel.getTables(databasePath)
         observeViewModels()
-        rvDatabaseList.adapter = schemaAdapter
-        rvDatabaseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        //rvDatabaseList.adapter = schemaAdapter
+        //rvDatabaseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun observeViewModels() {
-        viewModel.tableListLiveData.observe(viewLifecycleOwner, {
-            schemaAdapter.submitList(it)
-        })
-        viewModel.errorLiveData.observe(viewLifecycleOwner, {
-            schemaAdapter.submitList(emptyList())
-        })
+
     }
 
 
@@ -81,11 +61,12 @@ class SchemaFragment: BaseDaggerFragment() {
     override fun initInjector() = getComponent(DbInspectorComponent::class.java).inject(this)
 
     companion object {
-        fun newInstance(databaseName: String, databasePath: String) : SchemaFragment {
-            val fragment = SchemaFragment()
+        fun newInstance(schemaName: String, databaseName: String, databasePath: String) : ContentFragment {
+            val fragment = ContentFragment()
             val bundle = Bundle().apply {
                 putString(Constants.Keys.DATABASE_NAME, databaseName)
                 putString(Constants.Keys.DATABASE_PATH, databasePath)
+                putString(Constants.Keys.SCHEMA_NAME, schemaName)
             }
             fragment.arguments = bundle
             return fragment
