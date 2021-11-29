@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceListModel
 import com.tokopedia.affiliate_toko.R
@@ -55,17 +56,17 @@ class AffiliateHomeUserListDataVH(
                     itemView.findViewById<Typography>(R.id.value_change_value).setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                     itemView.findViewById<IconUnify>(R.id.increase_value_icon).apply {
                         setImage(
-                            newLightEnable = ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+                            newLightEnable = MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                         )
                         rotation = 90f
                     }
                 }
                 metricIntValue < 0 ->{
                     showTrend()
-                    itemView.findViewById<Typography>(R.id.value_change_value).setTextColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+                    itemView.findViewById<Typography>(R.id.value_change_value).setTextColor(MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_RN500))
                     itemView.findViewById<IconUnify>(R.id.increase_value_icon).apply {
                         setImage(
-                            newLightEnable = ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                            newLightEnable = MethodChecker.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                         )
                         rotation = 270f
                     }

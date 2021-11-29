@@ -76,7 +76,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 it > 0 -> {
                     view?.apply {
                         setImage(
-                            newLightEnable = ContextCompat.getColor(
+                            newLightEnable = MethodChecker.getColor(
                                 itemView.context,
                                 com.tokopedia.unifyprinciples.R.color.Unify_GN500
                             )
@@ -87,7 +87,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 it < 0 -> {
                     view?.apply {
                         setImage(
-                            newLightEnable = ContextCompat.getColor(
+                            newLightEnable = MethodChecker.getColor(
                                 itemView.context,
                                 com.tokopedia.unifyprinciples.R.color.Unify_RN500
                             )
