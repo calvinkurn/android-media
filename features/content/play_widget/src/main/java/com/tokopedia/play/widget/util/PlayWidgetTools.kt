@@ -38,8 +38,7 @@ class PlayWidgetTools @Inject constructor(
             widgetType: PlayWidgetUseCase.WidgetType,
             coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidget {
         return withContext(coroutineContext) {
-            useCase.params = PlayWidgetUseCase.createParams(widgetType, connectionUtil.isEligibleForHeavyDataUsage())
-            useCase.widgetType = widgetType
+            useCase.setQuery(widgetType, connectionUtil.isEligibleForHeavyDataUsage())
             useCase.executeOnBackground()
         }
     }

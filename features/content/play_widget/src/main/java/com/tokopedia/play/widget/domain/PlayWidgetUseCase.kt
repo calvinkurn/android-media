@@ -16,15 +16,10 @@ import javax.inject.Inject
  */
 class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepository) : UseCase<PlayWidget>() {
 
-    var params: Map<String, Any> = emptyMap()
-    var widgetType: WidgetType? = null
+    private var params: Map<String, Any> = emptyMap()
+    private var query = ""
 
     override suspend fun executeOnBackground(): PlayWidget {
-        val query = PlayWidgetQueryParamBuilder
-            .setWidgetType(widgetType)
-            .setBody(BODY)
-            .build()
-
         val gqlRequest = GraphqlRequest(query, PlayWidgetResponse::class.java, params)
         val gqlResponse = repository.response(
             listOf(gqlRequest),
@@ -36,6 +31,26 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         }
         val response = gqlResponse.getData<PlayWidgetResponse>(PlayWidgetResponse::class.java)
         return response.playWidget
+    }
+
+    fun setQuery(widgetType: WidgetType, isWifi: Boolean) {
+        val param = hashMapOf(
+            PlayWidgetQueryParamBuilder.PARAM_AUTHOR_ID to widgetType.authorId,
+            PlayWidgetQueryParamBuilder.PARAM_AUTHOR_TYPE to widgetType.authorType,
+            PlayWidgetQueryParamBuilder.PARAM_WIDGET_TYPE to widgetType.typeKey,
+            PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi,
+        )
+
+        if(widgetType is WidgetType.PDPWidget) {
+            param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIdList.joinToString(",")
+            param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIdList.joinToString(",")
+        }
+
+        this.params = param
+        this.query = PlayWidgetQueryParamBuilder()
+            .setWidgetType(widgetType)
+            .setBody(BODY)
+            .build()
     }
 
     companion object {
@@ -114,26 +129,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 }
               }
         """
-
-        @JvmStatic
-        fun createParams(
-                widgetType: WidgetType,
-                isWifi: Boolean,
-        ): Map<String, Any> {
-            val param = hashMapOf(
-                PlayWidgetQueryParamBuilder.PARAM_AUTHOR_ID to widgetType.authorId,
-                PlayWidgetQueryParamBuilder.PARAM_AUTHOR_TYPE to widgetType.authorType,
-                PlayWidgetQueryParamBuilder.PARAM_WIDGET_TYPE to widgetType.typeKey,
-                PlayWidgetQueryParamBuilder.PARAM_IS_WIFI to isWifi,
-            )
-
-            if(widgetType is WidgetType.PDPWidget) {
-                param[PlayWidgetQueryParamBuilder.PARAM_PRODUCT_ID] = widgetType.productIdList.joinToString(",")
-                param[PlayWidgetQueryParamBuilder.PARAM_CATEGORY_ID] = widgetType.categoryIdList.joinToString(",")
-            }
-
-            return param
-        }
     }
 
     sealed class WidgetType {

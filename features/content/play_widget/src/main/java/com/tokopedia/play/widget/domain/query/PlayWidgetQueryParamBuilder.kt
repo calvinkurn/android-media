@@ -6,7 +6,7 @@ import java.lang.Exception
 /**
  * Created By : Jonathan Darwin on November 26, 2021
  */
-object PlayWidgetQueryParamBuilder {
+class PlayWidgetQueryParamBuilder {
 
     private var queryName = "query playGetWidgetV2"
     private var paramField = ""
@@ -74,10 +74,12 @@ object PlayWidgetQueryParamBuilder {
         }
     }
 
-    const val PARAM_WIDGET_TYPE = "widgetType"
-    const val PARAM_AUTHOR_ID = "authorID"
-    const val PARAM_AUTHOR_TYPE = "authorType"
-    const val PARAM_IS_WIFI = "isWifi"
-    const val PARAM_PRODUCT_ID = "productIDs"
-    const val PARAM_CATEGORY_ID = "categoryIDs"
+    companion object {
+        const val PARAM_WIDGET_TYPE = "widgetType"
+        const val PARAM_AUTHOR_ID = "authorID"
+        const val PARAM_AUTHOR_TYPE = "authorType"
+        const val PARAM_IS_WIFI = "isWifi"
+        const val PARAM_PRODUCT_ID = "productIDs"
+        const val PARAM_CATEGORY_ID = "categoryIDs"
+    }
 }
