@@ -35,9 +35,7 @@ class DealsBrandDetailShare (private val activity: WeakReference<Activity>) {
             action = Intent.ACTION_SEND
             type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_TITLE, titleShare)
             putExtra(Intent.EXTRA_TEXT, url)
-            putExtra(Intent.EXTRA_SUBJECT, title)
         }
         activity.get()?.startActivity(Intent.createChooser(shareIntent, context.resources.getString(R.string.deals_brand_detail_share_title)))
     }
@@ -73,8 +71,9 @@ class DealsBrandDetailShare (private val activity: WeakReference<Activity>) {
                 type = "entertainment"
                 ogUrl = null
                 imgUri = data.featuredImage
-                uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.deals_brand_detail_share_web_link, data.seoUrl)
+                custmMsg = ""
                 deepLink = context.resources.getString(R.string.deals_brand_detail_share_app_link, data.seoUrl)
+                uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.deals_brand_detail_share_web_link, data.seoUrl)
                 desktopUrl = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.deals_brand_detail_share_web_link, data.seoUrl)
             }
         }
