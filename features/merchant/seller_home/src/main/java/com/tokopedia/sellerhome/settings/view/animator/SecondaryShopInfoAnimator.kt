@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.animator
 
 import android.view.MotionEvent
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
@@ -70,7 +71,8 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
     }
 
     fun swipeRecyclerViewGently() {
-        if (!isRecyclerViewHasScrolled) {
+        val shouldScroll = !(isRecyclerViewHasScrolled || checkIfAllContentsHaveShown())
+        if (shouldScroll) {
             removeOnScrollListener(onScrollListener)
             recyclerView?.run {
                 addOnScrollListener(onAutomaticScrollListener)
@@ -86,6 +88,22 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
 
     private fun removeOnTouchListener() {
         recyclerView?.removeOnItemTouchListener(onRecyclerViewTouchedListener)
+    }
+
+    /**
+     * Returns whether all contents in secondary are visible in the screen.
+     * If true, then we should not need to scroll the rv
+     *
+     * @return  is all contents have shown
+     */
+    private fun checkIfAllContentsHaveShown(): Boolean {
+        return (recyclerView?.layoutManager as? LinearLayoutManager)?.findLastVisibleItemPosition()
+            ?.let { lastVisiblePosition ->
+                recyclerView.adapter?.itemCount?.minus(1)?.let { lastIndexPosition ->
+                    val isNoPosition = lastVisiblePosition == RecyclerView.NO_POSITION
+                    !isNoPosition && lastVisiblePosition >= lastIndexPosition
+                }
+            } ?: false
     }
 
 }
