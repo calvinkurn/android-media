@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -121,6 +120,12 @@ class VariantSheetViewComponent(
                 variantOptions.level,
                 isPartialSelected
         )
+        labelVariant1.shouldShowWithAction(listOfVariants?.getOrNull(0)?.variantOptions?.isNotEmpty() == true){
+            if(variantOptions.variantOptionIdentifier == listOfVariants?.getOrNull(0)?.identifier) labelVariant1.text = variantOptions.variantName
+        }
+        labelVariant2.shouldShowWithAction(listOfVariants?.getOrNull(1)?.variantOptions?.isNotEmpty() == true){
+            if(variantOptions.variantOptionIdentifier == listOfVariants?.getOrNull(1)?.identifier) labelVariant2.text = variantOptions.variantName
+        }
 
         if (!listOfVariants.isNullOrEmpty()) {
             val pairSelectedProduct = VariantCommonMapper.selectedProductData(
@@ -157,17 +162,9 @@ class VariantSheetViewComponent(
                     val stockInString = stock?.stock.toString()
                     tvProductStock.text = getString(R.string.play_product_item_stock, stockInString)
                 }
-
                 setProduct(product)
 
                 btnAction.isEnabled = variantSheetUiModel?.isPartialySelected() == false
-
-                labelVariant1.shouldShowWithAction(listOfVariants.isNotEmpty()){
-                    labelVariant1.text = variantOptions.variantName
-                }
-                labelVariant2.shouldShowWithAction(listOfVariants.size > 1){
-                    labelVariant2.text = variantOptions.variantName
-                }
             }
             variantAdapter.setItemsAndAnimateChanges(listOfVariants)
         }
