@@ -426,11 +426,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun showRecommendationWidgetCoachMark(view: View) {
         recommendationWidgetView = view
-        val coachMarkItems by getCoachMarkItems()
+        showCoachMarkShopScore()
+    }
 
-        if (coachMarkItems.isNotEmpty()) {
-            pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
-            coachMark?.showCoachMark(coachMarkItems)
+    private fun showCoachMarkShopScore() {
+        val coachMarkItems by getCoachMarkItems()
+        val isEligibleShowRecommendationCoachMark =
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleShowRecommendationCoachMark) {
+            if (coachMarkItems.isNotEmpty()) {
+                pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                coachMark?.showCoachMark(coachMarkItems)
+            }
         }
     }
 
@@ -1738,11 +1745,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if ((lastVisibleIndex != RecyclerView.NO_POSITION && lastVisibleIndex == firstRecommendationWidget)
                     || firstVisibleIndex >= firstRecommendationWidget
                 ) {
-                    val coachMarkItems by getCoachMarkItems()
-                    if (coachMarkItems.isNotEmpty()) {
-                        coachMark?.isDismissed = false
-                        coachMark?.showCoachMark(coachMarkItems)
-                    }
+                    showCoachMarkShopScore()
                 }
             } else {
                 val firstRecommendationWidget =
