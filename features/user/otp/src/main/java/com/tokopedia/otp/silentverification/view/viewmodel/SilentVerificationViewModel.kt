@@ -45,14 +45,16 @@ class SilentVerificationViewModel @Inject constructor(
         otpType: String,
         mode: String,
         msisdn: String,
-        signature: String
+        signature: String,
+        timeUnix: String
     ) {
         launchCatchError(block = {
             val params = mapOf(
                 RequestSilentVerificationOtpUseCase.PARAM_OTP_TYPE to otpType,
                 RequestSilentVerificationOtpUseCase.PARAM_MODE to mode,
                 RequestSilentVerificationOtpUseCase.PARAM_MSISDN to msisdn,
-//                RequestSilentVerificationOtpUseCase.PARAM_AUTHENTICITY_SIGNATURE to signature
+                RequestSilentVerificationOtpUseCase.PARAM_AUTHENTICITY_SIGNATURE to signature,
+                RequestSilentVerificationOtpUseCase.PARAM_TIME_UNIX to timeUnix
             )
             val result = requestSilentVerificationOtpUseCase(params)
             _requestSilentVerificationResponse.value = Success(result.data)
@@ -67,6 +69,7 @@ class SilentVerificationViewModel @Inject constructor(
         mode: String,
         userId: Int,
         tokenId: String,
+        timeUnix: String,
         signature: String
     ) {
         launchCatchError(block = {
@@ -76,7 +79,8 @@ class SilentVerificationViewModel @Inject constructor(
                 ValidateSilentVerificationUseCase.PARAM_USERID to userId,
                 ValidateSilentVerificationUseCase.PARAM_MSISDN to msisdn,
                 ValidateSilentVerificationUseCase.PARAM_TOKEN_ID to tokenId,
-                // RequestSilentVerificationOtpUseCase.PARAM_AUTHENTICITY_SIGNATURE to signature
+                PARAM_TIME_UNIX_VALIDATE to timeUnix,
+                RequestSilentVerificationOtpUseCase.PARAM_AUTHENTICITY_SIGNATURE to signature
             )
             val result = validateSilentVerificationUseCase(params)
             _validationResponse.value = Success(result.data)
@@ -99,5 +103,9 @@ class SilentVerificationViewModel @Inject constructor(
             it.printStackTrace()
             _bokuVerificationResponse.postValue(Fail(Throwable("Network Unavailable")))
         })
+    }
+
+    companion object {
+        const val PARAM_TIME_UNIX_VALIDATE = "time_unix"
     }
 }

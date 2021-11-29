@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Intent
-import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -18,7 +17,6 @@ import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieTask
-import com.tkpd.util.Base64
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.*
@@ -28,12 +26,12 @@ import com.tokopedia.otp.databinding.FragmentSilentVerificationBinding
 import com.tokopedia.otp.silentverification.di.SilentVerificationComponent
 import com.tokopedia.otp.silentverification.domain.model.RequestSilentVerificationResult
 import com.tokopedia.otp.silentverification.helper.NetworkClientHelper
-import com.tokopedia.otp.silentverification.view.NetworkRequestListener
 import com.tokopedia.otp.silentverification.view.viewmodel.SilentVerificationViewModel
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
+import com.tokopedia.sessioncommon.util.AuthenticityUtils
 import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -126,11 +124,13 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             showLoadingState()
             if(context != null) {
                 otpData?.run {
+                    val timeUnix = System.currentTimeMillis().toString()
                     viewModel.requestSilentVerification(
                             otpType = otpType.toString(),
                             mode = modeListData?.modeText ?: "",
                             msisdn = msisdn,
-                            signature = generateAuthenticitySignature()
+                            signature = AuthenticityUtils.generateAuthenticity(msisdn = msisdn, timeUnix = timeUnix, requireContext()),
+                            timeUnix = timeUnix
                     )
                 }
             }
@@ -408,20 +408,19 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun generateAuthenticitySignature(): String =
-        Base64.GetDecoder(context).trim()
 
     private fun onSuccessBokuVerification() {
         otpData?.run {
             if(otpData?.msisdn?.isNotEmpty() == true && tokenId.isNotEmpty()) {
-
+                val timeUnix = System.currentTimeMillis().toString()
                 viewModel.validate(
                     otpType = otpType.toString(),
                     msisdn = msisdn,
                     mode = modeListData?.modeText.toString(),
                     userId = otpData?.userId.toIntOrZero(),
                     tokenId = tokenId,
-                    signature = generateAuthenticitySignature()
+                    timeUnix = timeUnix,
+                    signature = AuthenticityUtils.generateAuthenticity(msisdn = msisdn, timeUnix = timeUnix, context = requireContext())
                 )
             }
         }
@@ -435,20 +434,20 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun verify(url: String) {
         // for testing purpose only, please use later merhod
-//        verifyWithoutSwitching(url)
+        verifyWithoutSwitching(url)
 
         // Main method to switch between wifi & cellular data
-        context?.run {
-            networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
-                override fun onSuccess(network: Network) {
-                    viewModel.verifyBoku(network, url)
-                }
-                override fun onError(throwable: Throwable) {
-                    println("verify:onResponse:${throwable.message}")
-                    onValidateFailed(throwable)
-                }
-            })
-        }
+//        context?.run {
+//            networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
+//                override fun onSuccess(network: Network) {
+//                    viewModel.verifyBoku(network, url)
+//                }
+//                override fun onError(throwable: Throwable) {
+//                    println("verify:onResponse:${throwable.message}")
+//                    onValidateFailed(throwable)
+//                }
+//            })
+//        }
     }
 
     // to be deleted, for testing purpose only

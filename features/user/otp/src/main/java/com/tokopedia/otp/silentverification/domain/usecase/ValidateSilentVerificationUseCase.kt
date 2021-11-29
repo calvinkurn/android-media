@@ -28,9 +28,10 @@ class ValidateSilentVerificationUseCase @Inject constructor(@ApplicationContext 
             ${'$'}email: String,
             ${'$'}mode: String,
             ${'$'}signature: String,
-            ${'$'}timeUnix: String,
+            ${'$'}time_unix: String,
             ${'$'}userId: Int,
             ${'$'}TokenID: String,
+            ${'$'}AuthenticitySignature: String
         ){
             OTPValidate(
                 code: ${'$'}code, 
@@ -40,9 +41,10 @@ class ValidateSilentVerificationUseCase @Inject constructor(@ApplicationContext 
                 email: ${'$'}email, 
                 mode: ${'$'}mode, 
                 signature: ${'$'}signature, 
-                time_unix: ${'$'}timeUnix, 
+                time_unix: ${'$'}time_unix, 
                 UserID: ${'$'}userId,
-                TokenID: ${'$'}TokenID
+                TokenID: ${'$'}TokenID,
+                AuthenticitySignature: ${'$'}AuthenticitySignature
             ) {
                 success
                 message

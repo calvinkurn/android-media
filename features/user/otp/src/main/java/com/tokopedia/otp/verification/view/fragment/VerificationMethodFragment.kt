@@ -28,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
@@ -48,12 +47,14 @@ import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBin
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.constants.SessionConstants
+import com.tokopedia.sessioncommon.util.AuthenticityUtils
 import com.tokopedia.sessioncommon.util.ConnectivityUtils
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.unifyprinciples.R as RUnify
 
 /**
  * Created by Ade Fulki on 02/06/20.
@@ -236,11 +237,14 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     validateToken = otpData.accessToken,
                     userIdEnc = otpData.userIdEnc)
         } else {
+            val timeUnix = System.currentTimeMillis().toString()
             viewmodel.getVerificationMethod(
                     otpType = otpType,
                     userId = otpData.userId,
                     msisdn = otpData.msisdn,
-                    email = otpData.email
+                    email = otpData.email,
+                    authenticity = AuthenticityUtils.generateAuthenticity(otpData.msisdn, timeUnix, requireContext()),
+                    timeUnix = timeUnix
             )
         }
     }

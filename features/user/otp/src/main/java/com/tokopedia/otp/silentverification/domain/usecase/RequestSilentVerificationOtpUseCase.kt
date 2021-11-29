@@ -20,8 +20,8 @@ class RequestSilentVerificationOtpUseCase @Inject constructor(@ApplicationContex
     }
 
     override fun graphqlQuery(): String = """
-        query otp_request(${'$'}otpType: String!, ${'$'}mode: String, ${'$'}msisdn: String, ${'$'}email: String, ${'$'}otpDigit: Int){
-            OTPRequest(otpType: ${'$'}otpType, mode: ${'$'}mode, msisdn: ${'$'}msisdn, email: ${'$'}email, otpDigit: ${'$'}otpDigit) {
+        query otp_request(${'$'}otpType: String!, ${'$'}mode: String, ${'$'}msisdn: String, ${'$'}email: String, ${'$'}otpDigit: Int, ${'$'}Timeunix: String, ${'$'}AuthenticitySignature: String){
+            OTPRequest(otpType: ${'$'}otpType, mode: ${'$'}mode, msisdn: ${'$'}msisdn, email: ${'$'}email, otpDigit: ${'$'}otpDigit, Timeunix: ${'$'}Timeunix, AuthenticitySignature: ${'$'}AuthenticitySignature) {
                 success
                 message
                 errorMessage
@@ -42,6 +42,7 @@ class RequestSilentVerificationOtpUseCase @Inject constructor(@ApplicationContex
         const val PARAM_MSISDN = "msisdn"
         const val PARAM_EMAIL = "email"
         const val PARAM_OTP_DIGIT = "otpDigit"
-        const val PARAM_AUTHENTICITY_SIGNATURE = "authenticity_signature"
+        const val PARAM_TIME_UNIX = "Timeunix"
+        const val PARAM_AUTHENTICITY_SIGNATURE = "AuthenticitySignature"
     }
 }
