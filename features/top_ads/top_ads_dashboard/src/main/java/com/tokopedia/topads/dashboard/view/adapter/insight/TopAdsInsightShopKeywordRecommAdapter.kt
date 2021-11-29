@@ -1,37 +1,35 @@
 package com.tokopedia.topads.dashboard.view.adapter.insight
 
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
+import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsInsightShopKeywordViewHolder
 import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
 class TopAdsInsightShopKeywordRecommAdapter(
     private val list: List<RecommendedKeywordDetail>,
     private val type: Int,
     private val lstnr: (Boolean) -> Unit
-) : RecyclerView.Adapter<TopAdsInsightShopKeywordRecommAdapter.Companion.KeywordsViewHolder>() {
+) : RecyclerView.Adapter<TopAdsInsightShopKeywordViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsInsightShopKeywordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
-        return KeywordsViewHolder(view)
+        return TopAdsInsightShopKeywordViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: KeywordsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TopAdsInsightShopKeywordViewHolder, position: Int) {
+        holder.initView(type)
         val item = list[holder.adapterPosition]
+
+        holder.bindData(item)
+
         with(holder.view) {
-            initView()
-
-            bindData(item)
-
             btnEditFee.setOnClickListener {
                 openEditTextFee()
             }
@@ -39,45 +37,20 @@ class TopAdsInsightShopKeywordRecommAdapter(
                 closeEditTextFee()
             }
             checkBox.setOnCheckedChangeListener { _, isChecked ->
+                item.isChecked = isChecked
                 lstnr.invoke(isChecked)
             }
         }
     }
 
-    private fun View.bindData(item: RecommendedKeywordDetail) {
-        txtTitle.text = item.keywordTag
-        textGroupName.text = item.groupName
-        txtSubTitle1Value.text =
-            String.format(resources.getString(R.string.per_click_value), 110)
-        txtSubTitle2Value.text =
-            Html.fromHtml(
-                String.format(resources.getString(R.string.per_click_bold_value), 100)
-            )
-        txtFooter.text =
-            Html.fromHtml(String.format(resources.getString(R.string.max_times_month), 500))
+    fun checkAllItems() {
+        list.forEach { it.isChecked = true }
+        notifyDataSetChanged()
     }
 
-    private fun View.initView() {
-        txtRecommendedBudget.hide()
-        when (type) {
-            TopAdsInsightConstants.BID_KEYWORD -> {
-                searchGroup.hide()
-            }
-            TopAdsInsightConstants.NEW_KEYWORD -> {
-                (txtSubTitle2.layoutParams as ConstraintLayout.LayoutParams)
-                    .startToEnd = R.id.guideline
-
-                newKeywordGroup.hide()
-                searchGroup.show()
-
-                txtNoOfSearches.text =
-                    Html.fromHtml(String.format(resources.getString(R.string.no_of_searches), 10))
-            }
-            TopAdsInsightConstants.NEGATIVE_KEYWORD -> {
-                searchGroup.hide()
-                btnEditFee.hide()
-            }
-        }
+    fun unCheckAllItems() {
+        list.forEach { it.isChecked = false }
+        notifyDataSetChanged()
     }
 
     private fun View.closeEditTextFee() {
@@ -97,8 +70,6 @@ class TopAdsInsightShopKeywordRecommAdapter(
     }
 
     companion object {
-        class KeywordsViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-
         private val layout = R.layout.topads_insight_keyword_recomm_item
 
         fun createInstance(

@@ -20,7 +20,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.PROD
 import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.data.model.insightkey.KeywordInsightDataMain
-import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
+import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
@@ -28,6 +28,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.InsightAdsTypeItem
 import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapter
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightSelectAdsTypeBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
@@ -45,14 +46,14 @@ const val CLICK_IKLANKAN = "click - iklankan"
 
 class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
-    private var isAdTypeProdukSelected = true
+    private var isAdTypeProdukSelected = false
     private val adTypeList by lazy { getAdsTypeList() }
     private val adsTypeBottomSheet
             by lazy { TopAdsInsightSelectAdsTypeBottomSheet.getInstance(adTypeList,this::onAdTypeSelected) }
     private var productRecommendData: ProductRecommendationData? = null
     private var keywordRecommendData: InsightKeyData? = null
     private var dailyBudgetRecommendData: TopadsGetDailyBudgetRecommendation? = null
-    private var topAdsShopHeadlineKeyword: TopAdsShopHeadlineKeyword? = null
+    private var recommendedKeywordData: RecommendedKeywordData? = null
     private var countKey = 0
     private var countProduct = 0
     private var countBid = 0
@@ -76,18 +77,28 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     @Inject
+    lateinit var viewModel: TopAdsInsightViewModel
+
+    @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
 
     @Inject
     lateinit var userSession: UserSessionInterface
 
-
     private val topAdsInsightTabAdapter: TopAdsInsightTabAdapter? by lazy {
         context?.run { TopAdsInsightTabAdapter() }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_dash_fragment_recommendation_layout, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(
+            R.layout.topads_dash_fragment_recommendation_layout,
+            container,
+            false
+        )
     }
 
     override fun getScreenName(): String {
@@ -102,63 +113,35 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initListener()
         setupSelectAdsTypeView()
+        observeLiveData()
     }
 
-    private fun loadShopData() {
-        topAdsDashboardPresenter.getShopKeywordRecommendation {
-            if(false) {
-                setEmptyView()
-            } else {
-                topAdsShopHeadlineKeyword = it
-                countKey = 10
-                checkAllData()
-            }
-        }
-    }
+    private fun observeLiveData() {
+        viewModel.recommendedKeyword.observe(viewLifecycleOwner, {
+            recommendedKeywordData = it
+            countKey = it.recommendedKeywordCount
+            checkAllData()
+        })
 
-    private fun loadProductData() {
-        topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
-        topAdsDashboardPresenter.getProductRecommendation(::onSuccessProductRecommendation)
-        topAdsDashboardPresenter.getDailyBudgetRecommendation(::onSuccessBudgetRecommendation)
-    }
+        viewModel.error.observe(viewLifecycleOwner, {
 
-    private fun setupSelectAdsTypeView() {
-        if(isAdTypeProdukSelected) {
-            txtSelectedAdType.text = adTypeList[ADTYPE_PRODUK].adName
-            loadProductData()
-        } else {
-            txtSelectedAdType.text = adTypeList[ADTYPE_TOKO].adName
-            loadShopData()
-        }
-    }
-
-    private fun onAdTypeSelected(position: Int) {
-        adsTypeBottomSheet.dismiss()
-        val produkSelected = position == ADTYPE_PRODUK
-        if(produkSelected == isAdTypeProdukSelected) return
-
-        (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(false)
-        isAdTypeProdukSelected = produkSelected
-        setupSelectAdsTypeView()
-    }
-
-    private fun getAdsTypeList(): List<InsightAdsTypeItem> {
-        return listOf(
-            InsightAdsTypeItem(
-                resources.getString(R.string.topads_dashboard_ad_product_type_selection_title),
-                isAdTypeProdukSelected
-            ),
-            InsightAdsTypeItem(
-                resources.getString(R.string.topads_dashboard_ad_headline_type_selection_title),
-                !isAdTypeProdukSelected
-            )
-        )
+        })
     }
 
     private fun initListener() {
         changeAdType.setOnClickListener {
             adsTypeBottomSheet.show(childFragmentManager)
         }
+    }
+
+    private fun loadShopData() {
+        viewModel.getShopKeywords("480396", arrayOf())
+    }
+
+    private fun loadProductData() {
+        topAdsDashboardPresenter.getInsight(resources, ::onSuccessGetInsightData)
+        topAdsDashboardPresenter.getProductRecommendation(::onSuccessProductRecommendation)
+        topAdsDashboardPresenter.getDailyBudgetRecommendation(::onSuccessBudgetRecommendation)
     }
 
     private fun onSuccessBudgetRecommendation(dailyBudgetRecommendationModel: DailyBudgetRecommendationModel) {
@@ -183,11 +166,12 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private fun checkAllData() {
         if (isAdTypeProdukSelected && (productRecommendData == null || keywordRecommendData == null || dailyBudgetRecommendData == null))
             return
-        if(!isAdTypeProdukSelected && topAdsShopHeadlineKeyword == null) return
+        if(!isAdTypeProdukSelected && recommendedKeywordData == null) return
         (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
         if (countProduct == 0 && countBid == 0 && countKey == 0) {
             setEmptyView()
         } else {
+            showViews()
             initInsightTabAdapter()
             renderViewPager()
             topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, countKey)
@@ -200,6 +184,12 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         empty_view?.visibility = View.VISIBLE
         empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
         view_pager?.visibility = View.GONE
+    }
+
+    private fun showViews() {
+        rvTabInsight?.visibility = View.VISIBLE
+        empty_view?.visibility = View.GONE
+        view_pager?.visibility = View.VISIBLE
     }
 
     private fun initInsightTabAdapter() {
@@ -318,8 +308,10 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         if (countKey != 0) {
             if(isAdTypeProdukSelected)
                 list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
-            else
-               list.add(FragmentTabItem("", TopAdsInsightShopKeywordFragment.createInstance()))
+            else {
+                val instance = TopAdsInsightShopKeywordFragment.createInstance(recommendedKeywordData)
+                list.add(FragmentTabItem("", instance))
+            }
         }
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
 
@@ -348,5 +340,39 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     fun checkBtnVisibilityAndSetTracker() {
         if (productRecommendData != null)
             (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
+    }
+
+    //methods for choosing ad type
+    private fun setupSelectAdsTypeView() {
+        if(isAdTypeProdukSelected) {
+            txtSelectedAdType.text = adTypeList[ADTYPE_PRODUK].adName
+            loadProductData()
+        } else {
+            txtSelectedAdType.text = adTypeList[ADTYPE_TOKO].adName
+            loadShopData()
+        }
+    }
+
+    private fun onAdTypeSelected(position: Int) {
+        adsTypeBottomSheet.dismiss()
+        val produkSelected = position == ADTYPE_PRODUK
+        if(produkSelected == isAdTypeProdukSelected) return
+
+        (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(false)
+        isAdTypeProdukSelected = produkSelected
+        setupSelectAdsTypeView()
+    }
+
+    private fun getAdsTypeList(): List<InsightAdsTypeItem> {
+        return listOf(
+            InsightAdsTypeItem(
+                resources.getString(R.string.topads_dashboard_ad_product_type_selection_title),
+                isAdTypeProdukSelected
+            ),
+            InsightAdsTypeItem(
+                resources.getString(R.string.topads_dashboard_ad_headline_type_selection_title),
+                !isAdTypeProdukSelected
+            )
+        )
     }
 }

@@ -176,6 +176,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="•Rekomendasi Rp350"
         android:textSize="@dimen/fontSize_lvl3"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/txtSubTitle2Value"
         app:layout_constraintTop_toBottomOf="@id/txtSubTitle2Value"
         app:typographyType="body_3" />

@@ -1,67 +1,42 @@
 package com.tokopedia.topads.dashboard.view.presenter
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.dashboard.data.model.insightkey.ErrorsItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsHeadlineShopInsightUseCase
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
+class TopAdsInsightViewModel @Inject constructor() : BaseViewModel(Dispatchers.Main) {
 
-class TopAdsInsightViewModel : BaseViewModel(Dispatchers.Main) {
+    private val _recommendedKeyword = MutableLiveData<RecommendedKeywordData>()
+    val recommendedKeyword : LiveData<RecommendedKeywordData> = _recommendedKeyword
+    val error = MutableLiveData<ErrorsItem>()
 
-    val recommendedKeyword = MutableLiveData<RecommendedKeywordData>()
+    fun getShopKeywords(shopID: String, groupIds: Array<String>) {
 
-    fun getKeywords(shopID: String, groupIds: Array<String>) {
-        val map = mutableMapOf<String, Any>(
-            "shopID" to shopID
-        )
-        val gql = MultiRequestGraphqlUseCase()
-        val request = GraphqlRequest(query, TopAdsShopHeadlineKeyword::class.java, map)
-        gql.addRequest(request)
+        val useCase = TopAdsHeadlineShopInsightUseCase()
+
         launchCatchError(block = {
-            val resp = gql.executeOnBackground()
+            val gqlResponse = useCase.getKeywordRecommendation(useCase.getParams(shopID, groupIds))
+            val keyword = gqlResponse
                 .getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
-            recommendedKeyword.postValue(resp?.suggestion?.recommendedKeywordData)
+
+            keyword?.suggestion?.recommendedKeywordData?.let {
+                _recommendedKeyword.postValue(it)
+            }
+            keyword?.suggestion?.errors?.let {
+                //todo add error callback
+            }
         }, onError = {
             it.printStackTrace()
         })
     }
-
-    val query = """
-        query topadsHeadlineKeywordSuggestion(${'$'}shopID: String!) {
-          topadsHeadlineKeywordSuggestion(shopID: ${'$'}shopID) {
-            data {
-              shopID
-              recommendedKeywordCount
-              groupCount
-              totalImpressionCount
-              recommendedKeywordDetails {
-                keywordTag
-                groupID
-                groupName
-                totalHits
-                recommendedBid
-                minBid
-                maxBid
-                impressionCount
-              }
-            }
-            errors {
-              code
-              title
-              detail
-              object {
-                type
-                text
-              }
-            }
-          }
-        }
-    """.trimIndent()
 
     companion object {
         fun getShopAdsKeywordRecommendation(): TopAdsShopHeadlineKeyword {

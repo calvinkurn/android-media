@@ -4,49 +4,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.accordion.AccordionDataUnify
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants
+import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_KEYWORD
+import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD
+import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEW_KEYWORD
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.TopAdsInsightShopKeywordRecommView
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity
-import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
 import kotlinx.android.synthetic.main.fragment_topads_insight_shop_keyword.*
+import kotlin.IllegalStateException
 
 class TopAdsInsightShopKeywordFragment : BaseDaggerFragment() {
 
-    private lateinit var viewModel: TopAdsInsightViewModel
-    private val itemsCount = arrayOf(0, 0, 0)
+    private val itemsCountMap = mutableMapOf<Int, Int>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeLiveData()
+        getDataFromArgument()
         accordionUnify.onItemClick = ::accordionUnifyItemClick
-
-        viewModel.getKeywords("480396", arrayOf())
-
-        val it =
-            TopAdsInsightViewModel.getShopAdsKeywordRecommendation().suggestion?.recommendedKeywordData!!
-        addAccordion(TopAdsInsightConstants.BID_KEYWORD, it)
-        addAccordion(TopAdsInsightConstants.NEW_KEYWORD, it)
-        addAccordion(TopAdsInsightConstants.NEGATIVE_KEYWORD, it)
     }
 
-    private fun observeLiveData() {
-        viewModel.recommendedKeyword.observe(viewLifecycleOwner, {
-            Toast.makeText(requireContext(), it.shopID, Toast.LENGTH_SHORT).show()
-        })
+    private fun getDataFromArgument() {
+        val data = arguments?.getParcelable<RecommendedKeywordData>(BUNDLE_NEW_KEYWORD)
+        if (data?.recommendedKeywordDetails != null)
+            addAccordion(NEW_KEYWORD, data)
     }
 
     private fun accordionUnifyItemClick(position: Int, isExpanded: Boolean) {
         (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(isExpanded)
-        //todo on expand correct selected keyword count
-        if (isExpanded) onKeywordSelected(position, itemsCount[position])
+        val type = getTypeOfPosi(position)
+        if (isExpanded) onKeywordSelected(type, itemsCountMap[type] ?: 0)
     }
 
     private fun addAccordion(type: Int, recommendedKeywordData: RecommendedKeywordData) {
@@ -64,20 +55,30 @@ class TopAdsInsightShopKeywordFragment : BaseDaggerFragment() {
                 isExpanded = false
             )
         )
+        itemsCountMap[type] = instance.selectedItemCount
     }
 
     private fun onKeywordSelected(type: Int, count: Int) {
-        itemsCount[type] = count
+        itemsCountMap[type] = count
         (activity as? TopAdsDashboardActivity)?.updateMultiActionButton(type, count)
+    }
+
+    private fun getTypeOfPosi(position: Int): Int {
+        return when(position) {
+            0 -> NEW_KEYWORD
+            1 -> NEGATIVE_KEYWORD
+            2 -> BID_KEYWORD
+            else -> throw IllegalStateException("not a posi")
+        }
     }
 
     private fun getAccordionTitle(type: Int, count: Int): String {
         return String.format(
             resources.getString(
                 when (type) {
-                    TopAdsInsightConstants.BID_KEYWORD -> R.string.topads_insight_title_bid_keyword
-                    TopAdsInsightConstants.NEW_KEYWORD -> R.string.topads_insight_title_new_keyword
-                    TopAdsInsightConstants.NEGATIVE_KEYWORD -> R.string.topads_insight_title_negative_keyword
+                    BID_KEYWORD -> R.string.topads_insight_title_bid_keyword
+                    NEW_KEYWORD -> R.string.topads_insight_title_new_keyword
+                    NEGATIVE_KEYWORD -> R.string.topads_insight_title_negative_keyword
                     else -> throw Exception("Wrong type")
                 }
             ), count
@@ -90,12 +91,7 @@ class TopAdsInsightShopKeywordFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View {
         initInjector()
-        val view = inflater.inflate(layout, container, false)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
-        ).get(TopAdsInsightViewModel::class.java)
-        return view
+        return inflater.inflate(layout, container, false)
     }
 
     override fun getScreenName(): String {
@@ -108,8 +104,15 @@ class TopAdsInsightShopKeywordFragment : BaseDaggerFragment() {
 
     companion object {
         private val layout = R.layout.fragment_topads_insight_shop_keyword
-        fun createInstance(): TopAdsInsightShopKeywordFragment {
-            return TopAdsInsightShopKeywordFragment()
+        private const val BUNDLE_NEW_KEYWORD = "new_keyword"
+
+        fun createInstance(data: RecommendedKeywordData?): TopAdsInsightShopKeywordFragment {
+            val instance = TopAdsInsightShopKeywordFragment()
+            val bundle = Bundle().also {
+                it.putParcelable(BUNDLE_NEW_KEYWORD, data)
+            }
+            instance.arguments = bundle
+            return instance
         }
     }
 }

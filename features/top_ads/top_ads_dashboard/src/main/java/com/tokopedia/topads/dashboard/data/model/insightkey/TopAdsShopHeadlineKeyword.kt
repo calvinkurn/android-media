@@ -1,5 +1,7 @@
 package com.tokopedia.topads.dashboard.data.model.insightkey
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class TopAdsShopHeadlineKeyword(
@@ -22,15 +24,42 @@ data class RecommendedKeywordData(
     val recommendedKeywordCount: Int = 0,
     val groupCount: Int = 0,
     val totalImpressionCount: String? = null,
-    val recommendedKeywordDetails: List<RecommendedKeywordDetail> = listOf(),
+    val recommendedKeywordDetails: List<RecommendedKeywordDetail>? = listOf(),
     val topadsHeadlineKeywordSuggestion: TopadsHeadlineKeywordSuggestion? = null
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString(),
+        parcel.createTypedArrayList(RecommendedKeywordDetail),
+        parcel.readParcelable(TopadsHeadlineKeywordSuggestion::class.java.classLoader)
+    ) {
+    }
 
-data class ErrorsItem(
-    val code: String? = null,
-    val detail: String? = null,
-    val title: String? = null,
-)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(shopID)
+        parcel.writeInt(recommendedKeywordCount)
+        parcel.writeInt(groupCount)
+        parcel.writeString(totalImpressionCount)
+        parcel.writeTypedList(recommendedKeywordDetails)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<RecommendedKeywordData> {
+        override fun createFromParcel(parcel: Parcel): RecommendedKeywordData {
+            return RecommendedKeywordData(parcel)
+        }
+
+        override fun newArray(size: Int): Array<RecommendedKeywordData?> {
+            return arrayOfNulls(size)
+        }
+    }
+
+}
 
 data class RecommendedKeywordDetail(
     val keywordTag: String = "",
@@ -41,4 +70,51 @@ data class RecommendedKeywordDetail(
     val minBid: Int = 0,
     val maxBid: Int = 0,
     val impressionCount: Int = 0
+) : Parcelable {
+    var isChecked: Boolean = true
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readInt(),
+        parcel.readString() ?: "",
+        parcel.readInt(),
+        parcel.readDouble(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt()
+    ) {
+        isChecked = parcel.readByte() != 0.toByte()
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(keywordTag)
+        parcel.writeInt(groupId)
+        parcel.writeString(groupName)
+        parcel.writeInt(totalHits)
+        parcel.writeDouble(recommendedBid)
+        parcel.writeInt(minBid)
+        parcel.writeInt(maxBid)
+        parcel.writeInt(impressionCount)
+        parcel.writeByte(if (isChecked) 1 else 0)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<RecommendedKeywordDetail> {
+        override fun createFromParcel(parcel: Parcel): RecommendedKeywordDetail {
+            return RecommendedKeywordDetail(parcel)
+        }
+
+        override fun newArray(size: Int): Array<RecommendedKeywordDetail?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class ErrorsItem(
+    val code: String? = null,
+    val detail: String? = null,
+    val title: String? = null,
 )

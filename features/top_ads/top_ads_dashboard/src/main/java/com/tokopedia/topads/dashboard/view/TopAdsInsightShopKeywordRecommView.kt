@@ -17,10 +17,10 @@ class TopAdsInsightShopKeywordRecommView(
     private val lstnr: (Int, Int) -> Unit
 ) : ConstraintLayout(context) {
 
-    private var selectedItemCount = 0
+    var selectedItemCount = recommendedKeywordData.recommendedKeywordDetails!!.size
     private val mAdapter by lazy {
         TopAdsInsightShopKeywordRecommAdapter.createInstance(
-            recommendedKeywordData.recommendedKeywordDetails, type, ::onKeywordSelected
+            recommendedKeywordData.recommendedKeywordDetails!!, type, ::onKeywordSelected
         )
     }
 
@@ -28,6 +28,7 @@ class TopAdsInsightShopKeywordRecommView(
         inflate(context, layout, this)
         initView()
         initRecyclerView()
+        initListeners()
     }
 
     private fun initRecyclerView() {
@@ -76,6 +77,21 @@ class TopAdsInsightShopKeywordRecommView(
                 )
             }
         }
+    }
+
+    private fun initListeners() {
+        checkBox?.setOnClickListener {
+            onCheckBoxSelected(checkBox.isChecked)
+        }
+    }
+
+    private fun onCheckBoxSelected(checked: Boolean) {
+        if(checked) {
+            mAdapter.checkAllItems()
+        } else {
+            mAdapter.unCheckAllItems()
+        }
+        lstnr.invoke(type,selectedItemCount)
     }
 
     private fun onKeywordSelected(isChecked: Boolean) {

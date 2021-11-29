@@ -494,11 +494,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
         )
     }
 
-    fun getShopKeywordRecommendation(onSuccess: (TopAdsShopHeadlineKeyword) -> Unit) {
-        val resp = TopAdsInsightViewModel.getShopAdsKeywordRecommendation()
-        onSuccess.invoke(resp)
-    }
-
     override fun detachView() {
         super.detachView()
         topAdsGetShopDepositUseCase.cancelJobs()
