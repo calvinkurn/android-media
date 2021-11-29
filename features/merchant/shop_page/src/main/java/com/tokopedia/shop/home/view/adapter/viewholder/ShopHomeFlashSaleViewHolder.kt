@@ -53,6 +53,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val FORMAT_STRING_COLOR = "#%06x"
         private const val FORMAT_HEX_COLOR = 0xffffff
         private const val FORMAT_PREFIX_HEX_COLOR = "#"
+        private const val VALUE_INT_HUNDREDS = 100
     }
 
     init {
@@ -186,32 +187,30 @@ class ShopHomeFlashSaleViewHolder(
         val statusCampaign = flashSaleItem?.statusCampaign ?: ""
         val isOngoing = isStatusCampaignOngoing(statusCampaign)
         showHideReminderButton(isOngoing)
-//        if (isOngoing) {
-//            flashSaleReminderView?.hide()
-//        } else {
-//            flashSaleReminderView?.show()
-//        }
+
+        // set reminder wording
+        val totalNotify = flashSaleItem?.totalNotify ?: 0
+        val reminderWording = getTotalNotifyWording(totalNotify)
+        reminderCountView?.text = reminderWording
 
         // set reminder bell icon
         val isRemindMe = flashSaleItem?.isRemindMe ?: false
         setupReminderIconAndWording(isRemindMe)
-//        if (isRemindMe) {
-//            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
-//        } else {
-//            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
-//        }
+    }
 
-        // set reminder wording
-        val totalNotify = flashSaleItem?.totalNotify ?: 0
-        val reminderWording = totalNotify.thousandFormatted(1, RoundingMode.DOWN)
-        reminderCountView?.text = reminderWording
+    private fun getTotalNotifyWording(totalNotify: Int): String {
+        return if (totalNotify > VALUE_INT_HUNDREDS) {
+            totalNotify.thousandFormatted(1, RoundingMode.DOWN)
+        } else {
+            ""
+        }
     }
 
     private fun setupReminderIconAndWording(isRemindMe: Boolean) {
         if (isRemindMe) {
             reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
         } else {
-            reminderCountView?.text = itemView.context.getString(R.string.shop_home_npl_remind_me)
+            reminderCountView?.text = itemView.context.getString(R.string.shop_page_label_remind_me)
             reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
         }
     }
