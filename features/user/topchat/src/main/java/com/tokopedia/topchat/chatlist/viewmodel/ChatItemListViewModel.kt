@@ -9,7 +9,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -20,15 +19,12 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_TOPBOT
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_BLAST_SELLER_METADATA
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.BlastSellerMetaDataResponse
 import com.tokopedia.topchat.chatlist.pojo.chatblastseller.ChatBlastSellerMetadata
@@ -36,7 +32,7 @@ import com.tokopedia.topchat.chatlist.pojo.whitelist.ChatWhitelistFeatureRespons
 import com.tokopedia.topchat.chatlist.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.common.Constant
-import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCaseNew
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -74,7 +70,7 @@ class ChatItemListViewModel @Inject constructor(
     private val unpinChatUseCase: MutationUnpinChatUseCase,
     private val getChatListUseCase: GetChatListMessageUseCase,
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
-    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseNew,
     private val userSession: UserSessionInterface,
     private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
@@ -204,7 +200,7 @@ class ChatItemListViewModel @Inject constructor(
     override fun chatMoveToTrash(messageId: String) {
         launch {
             try {
-                val result = moveChatToTrashUseCase.execute(messageId)
+                val result = moveChatToTrashUseCase(messageId)
                 if(result.chatMoveToTrash.list.isNotEmpty()) {
                     val deletedChat = result.chatMoveToTrash.list.first()
                     if(deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {

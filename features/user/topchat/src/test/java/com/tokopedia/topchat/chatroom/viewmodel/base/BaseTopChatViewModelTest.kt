@@ -13,6 +13,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCaseNew
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -51,6 +52,9 @@ abstract class BaseTopChatViewModelTest {
     lateinit var closeReminderTicker: CloseReminderTicker
 
     @RelaxedMockK
+    lateinit var mutationMoveChatToTrashUseCaseNew: MutationMoveChatToTrashUseCaseNew
+
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -75,6 +79,7 @@ abstract class BaseTopChatViewModelTest {
             orderProgressUseCase,
             reminderTickerUseCase,
             closeReminderTicker,
+            mutationMoveChatToTrashUseCaseNew,
             dispatchers,
             remoteConfig
         )
