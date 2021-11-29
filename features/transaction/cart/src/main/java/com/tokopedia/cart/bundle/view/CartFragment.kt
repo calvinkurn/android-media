@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.*
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -226,6 +227,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val NAVIGATION_SHIPMENT = 567
         const val NAVIGATION_TOKONOW_HOME_PAGE = 678
         const val NAVIGATION_EDIT_BUNDLE = 789
+        const val NAVIGATION_VERIFICATION = 890
         const val ADVERTISINGID = "ADVERTISINGID"
         const val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
@@ -234,6 +236,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val HEIGHT_DIFF_CONSTRAINT = 100
         const val DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL = 750L
         const val PROMO_ANIMATION_DURATION = 500L
+        const val PROMO_POSITION_BUFFER = 10
         const val DELAY_CHECK_BOX_GLOBAL = 500L
         const val ANIMATED_IMAGE_ALPHA = 0.5f
         const val ANIMATED_IMAGE_FILLED = 1.0f
@@ -407,6 +410,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_WISHLIST -> refreshCartWithSwipeToRefresh()
             NAVIGATION_TOKONOW_HOME_PAGE -> refreshCartWithSwipeToRefresh()
             NAVIGATION_EDIT_BUNDLE -> onResultFromEditBundle(resultCode, data)
+            NAVIGATION_VERIFICATION -> refreshCartWithSwipeToRefresh()
         }
     }
 
@@ -777,12 +781,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (newState == RecyclerView.SCROLL_STATE_IDLE && initialPromoButtonPosition > 0) {
             // Delay after recycler view idle, then show promo button
             delayShowPromoButtonJob?.cancel()
-            delayShowPromoButtonJob = GlobalScope.launch(Dispatchers.Main) {
+            delayShowPromoButtonJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 delay(DELAY_SHOW_PROMO_BUTTON_AFTER_SCROLL)
-                binding?.llPromoCheckout?.animate()
-                        ?.y(initialPromoButtonPosition)
-                        ?.setDuration(PROMO_ANIMATION_DURATION)
-                        ?.start()
+                binding?.apply {
+                    val initialPosition = bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(resources.displayMetrics)
+                    llPromoCheckout.animate()
+                            .y(initialPosition)
+                            .setDuration(PROMO_ANIMATION_DURATION)
+                            .start()
+                }
             }
         }
     }
@@ -813,10 +820,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun animatePromoButtonToStartingPosition() {
-        binding?.llPromoCheckout?.animate()
-                ?.y(initialPromoButtonPosition)
-                ?.setDuration(0)
-                ?.start()
+        binding?.apply {
+            val initialPosition = bottomLayout.y - llPromoCheckout.height + PROMO_POSITION_BUFFER.dpToPx(resources.displayMetrics)
+            llPromoCheckout.animate()
+                    .y(initialPosition)
+                    .setDuration(0)
+                    .start()
+        }
     }
 
     private fun animatePromoButtonToHiddenPosition(valueY: Float) {
@@ -1572,6 +1582,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onFollowShopClicked(shopId: String, errorType: String) {
         cartPageAnalytics.eventClickFollowShop(userSession.userId, errorType, shopId)
         dPresenter.followShop(shopId)
+    }
+
+    override fun onVerificationClicked(applink: String) {
+        activity?.also {
+            val intent = RouteManager.getIntentNoFallback(it, applink) ?: return
+            startActivityForResult(intent, NAVIGATION_VERIFICATION)
+        }
     }
 
     override fun onSeeErrorProductsClicked() {

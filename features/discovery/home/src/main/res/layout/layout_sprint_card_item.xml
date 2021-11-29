@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:maxEms="12"
-            android:textSize="@dimen/sp_18"
+            android:textSize="18sp"
             app:layout_constraintEnd_toStartOf="@+id/count_down"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintHorizontal_chainStyle="packed"
