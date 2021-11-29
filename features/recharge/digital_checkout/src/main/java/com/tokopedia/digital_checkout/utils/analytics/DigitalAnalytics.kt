@@ -67,7 +67,7 @@ class DigitalAnalytics {
     }
 
     fun eventImpressionSubscription(userId: String, isChecked: Boolean) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
             TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.VIEW_CHECKOUT_IRIS,
             TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
             TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.IMPRESSION_AUTODEBIT,
