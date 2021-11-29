@@ -120,11 +120,16 @@ class VariantSheetViewComponent(
                 variantOptions.level,
                 isPartialSelected
         )
-        labelVariant1.shouldShowWithAction(listOfVariants?.getOrNull(0)?.variantOptions?.isNotEmpty() == true){
-            if(variantOptions.variantOptionIdentifier == listOfVariants?.getOrNull(0)?.identifier) labelVariant1.text = variantOptions.variantName
+
+        val findVariant = variantSheetUiModel?.mapOfSelectedVariants?.keys?.indexOf(variantOptions.variantCategoryKey)
+        val indexOf = variantSheetUiModel?.mapOfSelectedVariants?.keys
+        labelVariant1.shouldShowWithAction(listOfVariants?.getOrNull(0)?.variantOptions?.isNotEmpty() == true &&
+                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.first().orEmpty()) != "0"){
+            if(findVariant == 0) labelVariant1.text = variantOptions.variantName
         }
-        labelVariant2.shouldShowWithAction(listOfVariants?.getOrNull(1)?.variantOptions?.isNotEmpty() == true){
-            if(variantOptions.variantOptionIdentifier == listOfVariants?.getOrNull(1)?.identifier) labelVariant2.text = variantOptions.variantName
+        labelVariant2.shouldShowWithAction(listOfVariants?.getOrNull(1)?.variantOptions?.isNotEmpty() == true &&
+                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.last().orEmpty()) != "0"){
+            if(findVariant == 1) labelVariant2.text = variantOptions.variantName
         }
 
         if (!listOfVariants.isNullOrEmpty()) {
@@ -216,6 +221,9 @@ class VariantSheetViewComponent(
                 else listener.onAddToCartClicked(this, product)
             }
         }
+
+        labelVariant1.gone()
+        labelVariant2.gone()
     }
 
     fun showPlaceholder() {
