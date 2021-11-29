@@ -48,13 +48,7 @@ class ShopHomeFlashSaleViewHolder(
         val LAYOUT = R.layout.item_shop_home_flash_sale_widget
         private const val SINGLE = 1
         private const val DOUBLE = 2
-        private const val ZERO = 0
-        private const val ONE = 1
-        private const val ONE_HUNDRED = 100
-        private const val ONE_THOUSAND = 1000
-        private const val ONE_MILLION = 1000000
         private const val MAX_PRODUCT_CARD_SIZE = 5
-        private const val EMPTY_STRING = ""
         private const val FORMAT_STRING_COLOR = "#%06x"
         private const val FORMAT_HEX_COLOR = 0xffffff
         private const val FORMAT_PREFIX_HEX_COLOR = "#"
