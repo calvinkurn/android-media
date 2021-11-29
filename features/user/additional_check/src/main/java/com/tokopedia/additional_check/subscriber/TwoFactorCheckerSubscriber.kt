@@ -2,17 +2,20 @@ package com.tokopedia.additional_check.subscriber
 
 import android.app.Activity
 import android.app.Application
+import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.TwoFactorResult
 import com.tokopedia.additional_check.di.AdditionalCheckModules
-import com.tokopedia.additional_check.di.AdditionalCheckUseCaseModules
 import com.tokopedia.additional_check.di.DaggerAdditionalCheckComponents
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
+import com.tokopedia.additional_check.internal.AdditionalCheckConstants.POPUP_TYPE_NONE
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants.REMOTE_CONFIG_2FA_SELLER_APP
-import com.tokopedia.additional_check.view.TwoFactorViewModel
 import com.tokopedia.additional_check.view.TwoFactorFragment
+import com.tokopedia.additional_check.view.TwoFactorViewModel
+import com.tokopedia.additional_check.view.activity.LinkAccountReminderActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
@@ -29,14 +32,14 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
     @Inject
     lateinit var viewModel: TwoFactorViewModel
 
-    var remoteConfig: FirebaseRemoteConfigImpl? = null
+    private var remoteConfig: FirebaseRemoteConfigImpl? = null
 
     private val exceptionPage = listOf(
             "ConsumerSplashScreen", "AddPinActivity", "AddPinFrom2FAActivity", "AddPhoneActivity", "TwoFactorActivity",
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "AddNameRegisterPhoneActivity", "SmartLockActivity", "OvoRegisterInitialActivity", "OvoFinalPageActivity",
-            "SettingProfileActivity"
+            "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity"
     )
 
     private val exceptionPageSeller = listOf(
@@ -44,7 +47,12 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
             "RegisterFingerprintOnboardingActivity", "VerificationActivity", "PinOnboardingActivity",
             "LogoutActivity", "LoginActivity","GiftBoxTapTapActivity", "GiftBoxDailyActivity", "RegisterInitialActivity",
             "RegisterEmailActivity", "ChooseAccountActivity", "SmartLockActivity" , "ShopOpenRevampActivity" , "PinpointMapActivity",
-            "SettingProfileActivity"
+            "SettingProfileActivity", "LinkAccountReminderActivity", "SilentVerificationActivity", "LinkAccountWebViewActivity"
+    )
+
+    // Account linking reminder bottom sheet only showing in this page
+    private val whiteListedPageAccountLinkReminder = listOf(
+        "MainParentActivity", "DeveloperOptionActivity"
     )
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -53,9 +61,9 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                     .builder()
                     .baseAppComponent((activity.application as BaseMainApplication).baseAppComponent)
                     .additionalCheckModules(AdditionalCheckModules())
-                    .additionalCheckUseCaseModules(AdditionalCheckUseCaseModules())
                     .build()
                     .inject(this)
+
             doChecking(activity)
         }
     }
@@ -93,7 +101,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
     private fun checking(activity: Activity) {
         viewModel.check(onSuccess = {
-            handleResponse(activity, twoFactorResult = it)
+            handleResponse(activity, showInterruptData = it)
         }, onError = {
             it.printStackTrace()
         })
@@ -103,15 +111,39 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity) {}
 
-    private fun handleResponse(activity: Activity?, twoFactorResult: TwoFactorResult){
-        if(twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN || twoFactorResult.popupType == AdditionalCheckConstants.POPUP_TYPE_BOTH){
-            val i = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER).apply {
+    private fun handleResponse(activity: Activity?, showInterruptData: ShowInterruptData){
+        if(showInterruptData.error.isEmpty()) {
+            val result = TwoFactorResult(
+                showSkipButton = showInterruptData.showSkipButton,
+                popupType = showInterruptData.popupType
+            )
+
+            if (result.popupType == POPUP_TYPE_NONE && showInterruptData.accountLinkReminderData.showReminder) {
+                gotoLinkAccountReminder(activity)
+            } else if (result.popupType == AdditionalCheckConstants.POPUP_TYPE_PHONE ||
+                result.popupType == AdditionalCheckConstants.POPUP_TYPE_PIN ||
+                result.popupType == AdditionalCheckConstants.POPUP_TYPE_BOTH
+            ) {
+                goTo2FAPage(activity, result)
+            }
+        }
+    }
+
+    private fun gotoLinkAccountReminder(mActivity: Activity?) {
+        if(whiteListedPageAccountLinkReminder.contains(mActivity?.javaClass?.simpleName)) {
+            val intent = Intent(mActivity, LinkAccountReminderActivity::class.java)
+            mActivity?.startActivity(intent)
+        }
+    }
+
+    private fun goTo2FAPage(activity: Activity?, twoFactorResult: TwoFactorResult) {
+        val i = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.TWO_FACTOR_REGISTER)
+            .apply {
                 putExtras(Bundle().apply {
                     putParcelable(TwoFactorFragment.RESULT_POJO_KEY, twoFactorResult)
                 })
             }
-            activity?.startActivity(i)
-        }
+        activity?.startActivity(i)
     }
 
     override fun onActivityResumed(activity: Activity) {}

@@ -10,8 +10,11 @@ import javax.inject.Inject
  */
 class AdditionalCheckPreference @Inject constructor(val context: Context) {
 
-    private val USER_ADDITIONAL_CHECK = "user_additional_check"
-    private val USER_ADDITIONAL_CHECK_INTERVAL_KEY = "user_additional_check"
+    companion object {
+        private const val USER_ADDITIONAL_CHECK = "user_additional_check"
+        private const val USER_ADDITIONAL_CHECK_INTERVAL_KEY = "user_additional_check"
+        private const val USER_LINK_ACCOUNT_REMINDER_INTERVAL_KEY = "user_account_link_reminder"
+    }
 
     private var sharedPrefs: SharedPreferences? = null
 
@@ -31,5 +34,4 @@ class AdditionalCheckPreference @Inject constructor(val context: Context) {
         val interval = sharedPrefs?.getLong(USER_ADDITIONAL_CHECK_INTERVAL_KEY, 0)
         return System.currentTimeMillis() > interval ?: 0
     }
-
 }

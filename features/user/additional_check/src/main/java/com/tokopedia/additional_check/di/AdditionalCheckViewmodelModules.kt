@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.additional_check.view.TwoFactorViewModel
 import dagger.Binds
 import dagger.Module
@@ -18,7 +19,7 @@ import dagger.multibindings.IntoMap
 abstract class AdditionalCheckViewmodelModules{
 
     @Binds
-    @AdditionalCheckScope
+    @ActivityScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds

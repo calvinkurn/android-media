@@ -2,6 +2,7 @@ package com.tokopedia.additional_check.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import dagger.Module
 import dagger.Provides
@@ -14,13 +15,13 @@ import kotlinx.coroutines.Dispatchers.Main
 @Module
 class AdditionalCheckModules {
 
-    @AdditionalCheckScope
+    @ActivityScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher {
         return Main
     }
 
-    @AdditionalCheckScope
+    @ActivityScope
     @Provides
     fun providePreference(@ApplicationContext context: Context): AdditionalCheckPreference = AdditionalCheckPreference(context)
 
