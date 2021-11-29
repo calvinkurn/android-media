@@ -226,7 +226,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = ""
         }
 
-        data class PDPWidget(val productIdList: String, val categoryIdList: String): WidgetType(){
+        data class PDPWidget(val productIdList: List<String>, val categoryIdList: List<String>): WidgetType(){
             override val typeKey: String
                 get() = "PDP_WIDGET"
 
@@ -237,10 +237,10 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = ""
 
             override val productIds: String
-                get() = productIdList
+                get() = productIdList.joinToString(",")
 
             override val categoryIds: String
-                get() = categoryIdList
+                get() = categoryIdList.joinToString(",")
         }
     }
 }
