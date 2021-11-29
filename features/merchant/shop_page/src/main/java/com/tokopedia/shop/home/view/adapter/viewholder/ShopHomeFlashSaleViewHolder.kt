@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.DateHelper
@@ -72,7 +73,8 @@ class ShopHomeFlashSaleViewHolder(
             endBackGroundColor = flashSaleItem?.secondBackgroundColor,
         )
         setupFlashSaleCountDownTimer(element)
-        setupFlashSaleReminder(flashSaleItem)
+        if (!GlobalConfig.isSellerApp())
+            setupFlashSaleReminder(flashSaleItem)
         setupProductCardCarousel(element)
     }
 
@@ -183,16 +185,43 @@ class ShopHomeFlashSaleViewHolder(
         // hide reminder when campaign status is ongoing
         val statusCampaign = flashSaleItem?.statusCampaign ?: ""
         val isOngoing = isStatusCampaignOngoing(statusCampaign)
-        if(isOngoing) flashSaleReminderView?.hide()
-        else flashSaleReminderView?.show()
+        showHideReminderButton(isOngoing)
+//        if (isOngoing) {
+//            flashSaleReminderView?.hide()
+//        } else {
+//            flashSaleReminderView?.show()
+//        }
+
         // set reminder bell icon
-        val isRemindMe = flashSaleItem?.isRemindMe?:false
-        if (isRemindMe) reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
-        else reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
+        val isRemindMe = flashSaleItem?.isRemindMe ?: false
+        setupReminderIconAndWording(isRemindMe)
+//        if (isRemindMe) {
+//            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
+//        } else {
+//            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
+//        }
+
         // set reminder wording
-        val totalNotify = flashSaleItem?.totalNotify?:0
+        val totalNotify = flashSaleItem?.totalNotify ?: 0
         val reminderWording = totalNotify.thousandFormatted(1, RoundingMode.DOWN)
         reminderCountView?.text = reminderWording
+    }
+
+    private fun setupReminderIconAndWording(isRemindMe: Boolean) {
+        if (isRemindMe) {
+            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_true)
+        } else {
+            reminderCountView?.text = itemView.context.getString(R.string.shop_home_npl_remind_me)
+            reminderBellView?.setImageResource(R.drawable.ic_fs_remind_me_false)
+        }
+    }
+
+    private fun showHideReminderButton(isOngoing: Boolean) {
+        if (isOngoing) {
+            flashSaleReminderView?.hide()
+        } else {
+            flashSaleReminderView?.show()
+        }
     }
 
     private fun setupProductCardCarousel(model: ShopHomeFlashSaleUiModel) {
