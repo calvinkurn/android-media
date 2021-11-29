@@ -24,6 +24,9 @@ class AffiliatePerformaSharedProductCardsItemVH(
         var LAYOUT = R.layout.affiliate_performa_vertical_product_card_item_layout
 
         const val PRODUCT_ACTIVE = 1
+        const val PENDAPATAN = "Pendapatan"
+        const val KLIK = "Klik"
+        const val TERJUAL = "Terjual"
     }
 
     override fun bind(element: AffiliatePerformaSharedProductCardsModel?) {
@@ -33,14 +36,18 @@ class AffiliatePerformaSharedProductCardsItemVH(
 
     private fun setPerformaData(element: AffiliatePerformaSharedProductCardsModel?) {
         if (element?.product?.metrics?.isNotEmpty() == true) {
-            element.product.metrics?.get(0)?.let {
-                setCommisionData(element.product.metrics?.get(0)!!)
-            }
-            element.product.metrics?.get(1)?.let {
-                setSoldData(element.product.metrics?.get(1)!!)
-            }
-            element.product.metrics?.get(2)?.let {
-                setClickData(element.product.metrics?.get(2)!!)
+            element.product.metrics?.forEach { metric ->
+                when(metric?.metricTitle){
+                    PENDAPATAN -> {
+                        setCommisionData(metric)
+                    }
+                    KLIK -> {
+                        setClickData(metric)
+                    }
+                    TERJUAL -> {
+                        setSoldData(metric)
+                    }
+                }
             }
         }
     }

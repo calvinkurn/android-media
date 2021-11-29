@@ -133,7 +133,6 @@ class AffiliateHomeViewModel @Inject constructor(
             if (items.isNotEmpty()) {
                 for (product in items) {
                     product?.let {
-                        product.metrics = product.metrics?.sortedBy { metric -> metric?.order }
                         tempList.add(AffiliatePerformaSharedProductCardsModel(product))
                     }
                 }
