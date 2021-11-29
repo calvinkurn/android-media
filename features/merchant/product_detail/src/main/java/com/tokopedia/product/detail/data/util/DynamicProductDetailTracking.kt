@@ -33,7 +33,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 

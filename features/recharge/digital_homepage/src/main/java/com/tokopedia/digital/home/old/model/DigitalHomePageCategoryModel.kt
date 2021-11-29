@@ -3,6 +3,7 @@ package com.tokopedia.digital.home.old.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.digital.home.old.presentation.adapter.DigitalHomePageTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 class DigitalHomePageCategoryModel(@SerializedName("rechargeCatalogMenu")
                                    @Expose
@@ -38,5 +39,5 @@ class DigitalHomePageCategoryModel(@SerializedName("rechargeCatalogMenu")
                        val applink: String = "",
                        @SerializedName("icon")
                        @Expose
-                       val icon: String = "")
+                       val icon: String = ""): ImpressHolder()
 }

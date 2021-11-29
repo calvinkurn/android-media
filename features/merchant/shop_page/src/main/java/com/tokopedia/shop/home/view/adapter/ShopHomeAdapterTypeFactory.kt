@@ -13,6 +13,7 @@ import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
+import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PLAY_CAROUSEL_WIDGET
 import com.tokopedia.shop.home.WidgetName.PRODUCT
@@ -41,6 +42,7 @@ class ShopHomeAdapterTypeFactory(
         private val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
         private val shopProductEtalaseListViewHolderListener: ShopProductSortFilterViewHolder.ShopProductSortFilterViewHolderListener?,
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener,
+        private val shopHomeFlashSaleWidgetListener: ShopHomeFlashSaleWidgetListener,
         private val shopProductChangeGridSectionListener: ShopProductChangeGridSectionListener,
         private val playWidgetCoordinator: PlayWidgetCoordinator,
         private val isShowTripleDot: Boolean,
@@ -61,6 +63,7 @@ class ShopHomeAdapterTypeFactory(
             VOUCHER_STATIC -> ShopHomeVoucherViewHolder.LAYOUT
             RECENT_ACTIVITY, BUY_AGAIN, REMINDER -> getShopHomeCarouselProductPersonalizationViewHolder(baseShopHomeWidgetUiModel)
             NEW_PRODUCT_LAUNCH_CAMPAIGN -> getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel)
+            FLASH_SALE_TOKO -> ShopHomeFlashSaleViewHolder.LAYOUT
             PLAY_CAROUSEL_WIDGET -> CarouselPlayWidgetViewHolder.LAYOUT
             SHOWCASE_SLIDER_SMALL, SHOWCASE_SLIDER_MEDIUM -> return ShopHomeShowcaseListBaseWidgetViewHolder.LAYOUT
             SHOWCASE_SLIDER_TWO_ROWS -> {
@@ -213,6 +216,7 @@ class ShopHomeAdapterTypeFactory(
             ShopHomeNplCampaignViewHolder.LAYOUT -> {
                 ShopHomeNplCampaignViewHolder(parent, shopHomeCampaignNplWidgetListener)
             }
+            ShopHomeFlashSaleViewHolder.LAYOUT -> return ShopHomeFlashSaleViewHolder(parent, shopHomeFlashSaleWidgetListener)
             ShopHomeProductChangeGridSectionViewHolder.LAYOUT -> ShopHomeProductChangeGridSectionViewHolder(parent, shopProductChangeGridSectionListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(parent, playWidgetCoordinator))
             ShopHomeCarouselProductPersonalizationViewHolder.LAYOUT -> ShopHomeCarouselProductPersonalizationViewHolder(parent, shopHomeCarouselProductListener)

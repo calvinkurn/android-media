@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analytic_constant.Event.Companion.ADDTOCART
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
@@ -24,7 +25,7 @@ import java.util.*
  * Created by henrypriyono on 1/5/18.
  */
 object SearchTracking {
-    const val ACTION_FIELD = "/searchproduct - %s - %s"
+    private const val ACTION_FIELD = "/searchproduct - %s - %s - component:%s"
     private const val ORGANIC = "organic"
     private const val ORGANIC_ADS = "organic ads"
     private const val ECOMMERCE = "ecommerce"
@@ -178,35 +179,45 @@ object SearchTracking {
         item: Any?,
         isOrganicAds: Boolean,
         topadsTag: Int,
-        eventLabel: String?,
-        filterSortParams: String?,
-        userId: String?
+        eventLabel: String,
+        filterSortParams: String,
+        userId: String,
+        componentId: String,
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT,
-                        TrackAppUtils.EVENT_LABEL, eventLabel,
-                        SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                        SearchTrackingConstant.USER_ID, userId,
-                        SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                        ECOMMERCE, DataLayer.mapOf("click",
-                        DataLayer.mapOf("actionField",
-                                DataLayer.mapOf("list", getActionFieldString(isOrganicAds, topadsTag)),
-                                "products", DataLayer.listOf(item)
-                        )
+            DataLayer.mapOf(
+                TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT,
+                TrackAppUtils.EVENT_LABEL, eventLabel,
+                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+                SearchTrackingConstant.USER_ID, userId,
+                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+                ECOMMERCE, DataLayer.mapOf(
+                    "click", DataLayer.mapOf(
+                        "actionField", DataLayer.mapOf(
+                            "list", getActionFieldString(isOrganicAds, topadsTag, componentId)
+                        ),
+                        "products", DataLayer.listOf(item)
+                    )
                 ),
-                        "searchFilter", filterSortParams
-                )
+                "searchFilter", filterSortParams
+            )
         )
     }
 
     fun getActionFieldString(
         isOrganicAds: Boolean,
         topadsTag: Int,
+        componentId: String,
     ): String {
         val organicStatus = if (isOrganicAds) ORGANIC_ADS else ORGANIC
-        return String.format(ACTION_FIELD, organicStatus, topadsTag.toString())
+        return String.format(
+            ACTION_FIELD,
+            organicStatus,
+            topadsTag.toString(),
+            componentId,
+        )
     }
 
     @JvmStatic
@@ -234,14 +245,6 @@ object SearchTracking {
         trackingQueue.putEETracking(
                 map
         )
-    }
-
-    @JvmStatic
-    fun eventClickSuggestedSearch(currentKeyword: String?, suggestion: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION, String.format("%s - %s", currentKeyword, suggestion)))
     }
 
     @JvmStatic
@@ -419,26 +422,6 @@ object SearchTracking {
                 SearchEventTracking.Category.SEARCH_RESULT,
                 SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_RELATED,
                 keyword
-        )
-    }
-
-    @JvmStatic
-    fun trackEventImpressionTicker(keyword: String, typeId: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.IMPRESSION_TICKER,
-                "$typeId - $keyword"
-        )
-    }
-
-    @JvmStatic
-    fun trackEventClickTicker(keyword: String, typeId: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_TICKER,
-                "$typeId - $keyword"
         )
     }
 
@@ -796,52 +779,6 @@ object SearchTracking {
                 SearchEventTracking.Category.SEARCH_RESULT,
                 SearchEventTracking.Action.CLICK_INSPIRATION_CARD,
                 label
-        )
-    }
-
-    @JvmStatic
-    fun trackEventAddToCart(keyword: String?, isOrganicAds: Boolean, productItem: Any?) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        TrackAppUtils.EVENT, ADDTOCART,
-                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_ADD_TO_CART_ON_PRODUCT_OPTIONS,
-                        TrackAppUtils.EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(
-                            CURRENCY_CODE, IDR,
-                            SearchEventTracking.ECommerce.ADD, DataLayer.mapOf(
-                                SearchEventTracking.ECommerce.ACTION_FIELD, DataLayer.mapOf(
-                                    "list", getActionFieldString(isOrganicAds, 0)
-                                ),
-                                SearchEventTracking.ECommerce.PRODUCTS, DataLayer.listOf(productItem)
-                            )
-                        )
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventGoToShopPage(keyword: String?, item: Any?) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        TrackAppUtils.EVENT, SearchEventTracking.Event.PROMO_CLICK,
-                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK,
-                        TrackAppUtils.EVENT_LABEL, keyword,
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(item)))
-                )
-        )
-    }
-
-    @JvmStatic
-    fun trackEventShareProduct(queryKey: String, productId: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        TrackAppUtils.EVENT, SearchEventTracking.Event.SEARCH_RESULT,
-                        TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                        TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.CLICK_SHARE_PRODUCT_OPTIONS,
-                        TrackAppUtils.EVENT_LABEL, "$queryKey - $productId"
-                )
         )
     }
 
