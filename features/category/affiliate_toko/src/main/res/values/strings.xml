@@ -92,4 +92,5 @@
     <string name="affiliate_logout_description">Dengan kamu keluar akun disini, akun kamu di Tokopedia juga akan keluar</string>
     <string name="affiliate_batal">Batal</string>
     <string name="affiliate_terapkan">Terapkan</string>
+    <string name="affiliate_date_picker_header">Pilih tanggal</string>
 </resources>
