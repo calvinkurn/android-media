@@ -8,18 +8,24 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantManageBottomSheetContentBinding
+import com.tokopedia.product.addedit.tracking.CustomVariantTypeTracking
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
+import com.tokopedia.product.addedit.variant.di.DaggerAddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeSelectedAdapter
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
 class CustomVariantManageBottomSheet(
         private val selectedVariantDetails: List<VariantDetail>? = null,
@@ -27,6 +33,8 @@ class CustomVariantManageBottomSheet(
         private val variantDetails: List<VariantDetail>? = null
 ) : BottomSheetUnify() {
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var binding by autoClearedNullable<AddEditProductCustomVariantManageBottomSheetContentBinding>()
     private var onVariantTypeEditedListener: ((editedIndex: Int, editedLevel: Int, variantDetail: VariantDetail) -> Unit)? = null
     private var onVariantTypeDeletedListener: ((deletedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
@@ -38,6 +46,7 @@ class CustomVariantManageBottomSheet(
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initInjector()
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -50,6 +59,14 @@ class CustomVariantManageBottomSheet(
     override fun onPause() {
         super.onPause()
         dismiss()
+    }
+
+    private fun initInjector() {
+        DaggerAddEditProductVariantComponent.builder()
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(
+                        context?.applicationContext as BaseMainApplication))
+                .build()
+                .inject(this)
     }
 
     private fun getVariantDetailPosition(variantDetail: VariantDetail): Int? {
@@ -77,12 +94,16 @@ class CustomVariantManageBottomSheet(
             customVariantDetails?.getOrNull(index)?.let { variantDetail ->
                 val level = selectedVariantDetails?.indexOfLast { it.name == variantDetail.name }.orZero()
                 showEditVariantBottomSheet(level, variantDetail)
+
+                CustomVariantTypeTracking.clickEditVariant(userSession.shopId, variantDetail.name)
             }
             dismiss()
         }
         adapter.setOnDeleteButtonClickedListener {
             customVariantDetails?.getOrNull(it)?.let { variantDetail ->
                 showDeleteConfDialog(variantDetail)
+
+                CustomVariantTypeTracking.clickDeleteVariant(userSession.shopId, variantDetail.name)
             }
             dismiss()
         }

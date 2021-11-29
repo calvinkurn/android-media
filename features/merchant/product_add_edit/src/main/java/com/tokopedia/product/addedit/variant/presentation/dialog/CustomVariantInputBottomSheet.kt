@@ -17,6 +17,7 @@ import com.tokopedia.product.addedit.common.util.getTrimmedText
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.databinding.AddEditProductCustomVariantInputBottomSheetContentBinding
 import com.tokopedia.product.addedit.preview.presentation.model.VariantTitleValidationStatus
+import com.tokopedia.product.addedit.tracking.CustomVariantTypeTracking
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.di.DaggerAddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.adapter.VariantTypeSuggestionAdapter
@@ -24,6 +25,7 @@ import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProdu
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -34,6 +36,8 @@ class CustomVariantInputBottomSheet (
 
     @Inject
     lateinit var viewModel: AddEditProductVariantViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
     private var binding by autoClearedNullable<AddEditProductCustomVariantInputBottomSheetContentBinding>()
     private var onCustomVariantTypeSubmitted: ((variantTypeName: String) -> Unit)? = null
     private var onPredefinedVariantTypeSubmitted: ((variantDetail: VariantDetail) -> Unit)? = null
@@ -74,7 +78,8 @@ class CustomVariantInputBottomSheet (
 
     private fun initInjector() {
         DaggerAddEditProductVariantComponent.builder()
-            .addEditProductComponent(AddEditProductComponentBuilder.getComponent(requireContext().applicationContext as BaseMainApplication))
+            .addEditProductComponent(AddEditProductComponentBuilder.getComponent(
+                    context?.applicationContext as BaseMainApplication))
             .build()
             .inject(this)
     }
@@ -123,6 +128,8 @@ class CustomVariantInputBottomSheet (
             } catch (e: Exception) {
                 // no op
             }
+            CustomVariantTypeTracking.clickSelectVariantRecommendation(userSession.shopId,
+                    variantTypeName, isEditMode)
         }
         binding?.recyclerViewVariantSuggestion?.apply {
             layoutManager = LinearLayoutManager(context)
@@ -196,6 +203,7 @@ class CustomVariantInputBottomSheet (
             viewModel.getVariantDetailFromVariantId(newVariantType.variantId)
         }
         binding?.buttonSave?.isLoading = true
+        CustomVariantTypeTracking.clickSubmitVariantSuccess(userSession.shopId, variantTitle, isEditMode)
     }
 
     fun setOnCustomVariantTypeSubmitted(listener: (variantTypeName: String) -> Unit) {

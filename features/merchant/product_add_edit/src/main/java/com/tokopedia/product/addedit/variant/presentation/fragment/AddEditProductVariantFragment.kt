@@ -43,10 +43,7 @@ import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
-import com.tokopedia.product.addedit.tracking.ProductAddVariantTracking
-import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
-import com.tokopedia.product.addedit.tracking.ProductEditVariantTracking
+import com.tokopedia.product.addedit.tracking.*
 import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
@@ -704,6 +701,7 @@ class AddEditProductVariantFragment :
             }
 
             bottomSheet.show(childFragmentManager)
+            CustomVariantTypeTracking.clickEditExistingVariant(shopId)
         }
     }
 
@@ -726,6 +724,7 @@ class AddEditProductVariantFragment :
             }
 
             bottomSheet.show(childFragmentManager)
+            CustomVariantTypeTracking.clickCreateCustomVariant(shopId)
         }
     }
 
