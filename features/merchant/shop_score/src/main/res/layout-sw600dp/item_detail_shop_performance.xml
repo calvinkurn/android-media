@@ -29,14 +29,16 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPerformanceValue"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:text="@string/item_detail_performance_value"
         app:typographyType="body_2"
         app:typographyWeight="bold"
         android:textColor="@color/Unify_N700"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         app:layout_constraintStart_toEndOf="@id/tvTitlePerformanceProgress"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintBottom_toBottomOf="@id/tvTitlePerformanceProgress"
         app:layout_constraintTop_toTopOf="@id/tvTitlePerformanceProgress"/>
 

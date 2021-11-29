@@ -57,7 +57,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleShopPerformance"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl6"
@@ -65,7 +65,7 @@
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPerformanceLevel"
-        app:typographyType="heading_6" />
+        app:typographyType="heading_5" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_shop_score_performance"
@@ -112,14 +112,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvShopScoreValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl5"
         android:layout_marginTop="6dp"
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintStart_toEndOf="@id/barrierProgressBar"
         app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
-        app:typographyType="heading_2"
+        app:typographyType="heading_1"
         app:typographyWeight="bold"
         tools:text="@string/example_score_performance" />
 
@@ -128,15 +128,14 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl1"
+        android:layout_marginTop="14dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/maximum_score_performance"
         android:textColor="@color/Unify_Static_White"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"
-        app:layout_constraintTop_toTopOf="@id/tvShopScoreValue"
-        app:layout_constraintBottom_toBottomOf="@id/tvShopScoreValue"
-        app:typographyType="heading_5" />
+        app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
+        app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvHeaderShopService"
@@ -251,4 +250,3 @@
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
