@@ -57,7 +57,6 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setObservers()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -110,7 +109,6 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
         setupViewPager()
         setUpNavBar()
         checkLoggedIn()
-        setListeners()
     }
 
     private fun setUpNavBar() {
@@ -124,14 +122,6 @@ class AffiliateLoginFragment : BaseViewModelFragment<AffiliateLoginViewModel>() 
                 (activity as? AffiliateActivity)?.showAffiliatePortal()
             }
         }
-    }
-
-    private fun setListeners() {
-
-    }
-
-    private fun setObservers() {
-
     }
 
     private fun checkLoggedIn() {

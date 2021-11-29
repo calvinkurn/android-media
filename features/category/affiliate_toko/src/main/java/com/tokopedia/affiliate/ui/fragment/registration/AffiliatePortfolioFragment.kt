@@ -84,7 +84,6 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
     }
 
     private fun afterViewCreated() {
-        initClickListener()
         setUpNavBar()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         social_link_rv.layoutManager=layoutManager
@@ -105,10 +104,6 @@ class AffiliatePortfolioFragment: BaseViewModelFragment<AffiliatePortfolioViewMo
                 affiliateNavigationInterface.handleBackButton()
             }
         }
-    }
-
-    private fun initClickListener() {
-
     }
 
     private fun initObserver() {
