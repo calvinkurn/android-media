@@ -38,15 +38,8 @@ class PromoListHeaderEnabledViewHolder(private val viewBinding: PromoCheckoutMar
                 labelPromoListHeaderSubTitle.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             }
 
-            if (!element.uiState.isCollapsed) {
-                imageChevron.rotation = 180f
-            } else {
-                imageChevron.rotation = 0f
-            }
-
             setImageFilterNormal(imagePromoListHeader)
             labelPromoListHeaderSubTitle.show()
-            imageChevron.show()
             itemView.setOnClickListener {
                 if (adapterPosition != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(element)
             }
