@@ -8,6 +8,8 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
     companion object {
         private const val SCROLLING_POSITION = 100
         private const val ZERO_Y_DELTA = 0
+
+        private const val RV_RIGHT_DIRECTION = 1
     }
 
     private var isRecyclerViewHasScrolled = false
@@ -36,7 +38,13 @@ class SecondaryShopInfoAnimator(private val recyclerView: RecyclerView?) {
                     return
                 }
                 val offset = recyclerView.computeHorizontalScrollOffset()
-                if (offset >= SCROLLING_POSITION) {
+                // Scroll back to initial state if the rv has scrolled to determined position or
+                // if it has reached the end of rv
+                val shouldScrollBack =
+                    offset >= SCROLLING_POSITION || !recyclerView.canScrollHorizontally(
+                        RV_RIGHT_DIRECTION
+                    )
+                if (shouldScrollBack) {
                     recyclerView.smoothScrollBy(-SCROLLING_POSITION, ZERO_Y_DELTA)
                 }
             }
