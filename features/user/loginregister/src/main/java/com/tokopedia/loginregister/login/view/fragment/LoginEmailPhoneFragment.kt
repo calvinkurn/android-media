@@ -81,7 +81,6 @@ import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.const.LoginConstants
-import com.tokopedia.loginregister.login.const.LoginConstants.DiscoverLoginId.FACEBOOK
 import com.tokopedia.loginregister.login.di.LoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprintResult
@@ -795,10 +794,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
             socmedButtonsContainer?.removeAllViews()
             discoverData.providers.forEach { provider ->
-                if (provider.id.equals(FACEBOOK, ignoreCase = true)) {
-                    return@forEach
-                }
-
                 context?.let { context ->
                     val tv = LoginTextView(context, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     tv.setText(provider.name)
@@ -1156,7 +1151,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    fun isEnableEncryptConfig(): Boolean {
+    open fun isEnableEncryptConfig(): Boolean {
         return isEnableEncryptConfig
     }
 

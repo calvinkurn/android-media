@@ -60,7 +60,9 @@ data class Detail(
         @SerializedName("service_code")
         val serviceCode: String = "",
         @SerializedName("tracking_url")
-        val trackingUrl: String = ""
+        val trackingUrl: String = "",
+        @SerializedName("eta")
+        val eta: Eta = Eta()
 
 )
 
@@ -98,4 +100,46 @@ data class AdditionalInfo(
         val urlDetail: String = "",
         @SerializedName("url_text")
         val urlText: String = ""
+)
+
+data class Eta(
+
+        @field:SerializedName("is_updated")
+        val isUpdated: Boolean = false,
+
+        @field:SerializedName("user_info")
+        val userInfo: String = "",
+
+        @field:SerializedName("eta_histories")
+        val etaHistories: List<EtaHistoriesItem> = listOf(),
+
+        @field:SerializedName("triggered_by")
+        val triggeredBy: String = "",
+
+        @field:SerializedName("eta_max")
+        val etaMax: String = "",
+
+        @field:SerializedName("eta_min")
+        val etaMin: String = "",
+
+        @field:SerializedName("event_time")
+        val eventTime: String = "",
+
+        @field:SerializedName("user_updated_info")
+        val userUpdatedInfo: String = ""
+)
+
+data class EtaHistoriesItem(
+
+        @field:SerializedName("triggered_by")
+        val triggeredBy: String = "",
+
+        @field:SerializedName("eta_max")
+        val etaMax: String = "",
+
+        @field:SerializedName("eta_min")
+        val etaMin: String = "",
+
+        @field:SerializedName("event_time")
+        val eventTime: String = ""
 )

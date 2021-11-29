@@ -54,7 +54,7 @@
             android:layout_centerVertical="true"
             tools:layout_width="100dp"
             android:maxEms="12"
-            android:textSize="@dimen/sp_18"
+            android:textSize="18sp"
             android:lines="1"
             android:ellipsize="end"
             android:gravity="center_vertical|right"

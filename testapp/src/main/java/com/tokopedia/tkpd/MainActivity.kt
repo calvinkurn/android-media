@@ -65,6 +65,8 @@ class MainActivity : AppCompatActivity() {
             RouteManager.route(this, ApplinkConst.DEVELOPER_OPTIONS)
         }
 
+        etAppLink.setText(getDefaultAppLink())
+
         goToButton.setOnClickListener { goTo() }
     }
 
@@ -106,12 +108,23 @@ class MainActivity : AppCompatActivity() {
         setLoginStatus()
     }
 
-    fun goTo() {
+    private fun goTo() {
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
+        val appLink = etAppLink.text.toString()
+        if(appLink.isNotBlank())
+            RouteManager.route(this, appLink)
+        else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun getDefaultAppLink(): String {
+        /*
+         * Put your default applink here
+         */
+        return ""
     }
 }

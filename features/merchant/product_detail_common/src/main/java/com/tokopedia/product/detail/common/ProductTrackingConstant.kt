@@ -11,6 +11,8 @@ object ProductTrackingConstant {
         const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
         const val PRODUCT_DETAIL_PAGE_SHIPPING = "pdp courier section"
         const val GLOBAL_VARIANT_BOTTOM_SHEET = "%s - global variant bottomsheet" //page source
+        const val ITEM_CATEGORY_BUILDER = "%s / %s / %s / %s "
+        const val KEY_UNDEFINED = "undefined"
     }
 
     object Tracking {

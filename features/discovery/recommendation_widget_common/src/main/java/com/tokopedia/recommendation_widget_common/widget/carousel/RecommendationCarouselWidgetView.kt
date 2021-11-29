@@ -26,6 +26,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.viewutil.doSuccessOrFail
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.toDpInt
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_FAILED
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_LOADING
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
@@ -149,7 +150,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         isForceRefresh: Boolean = false,
         categoryIds: List<String> = listOf(),
         keyword: String = "",
-        parentProductId: String = "",
+        productIds: List<String> = listOf(),
         isTokonow: Boolean = false
     ) {
         try {
@@ -169,7 +170,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 isTokonow = isTokonow,
                 keyword = keyword,
                 categoryIds = categoryIds,
-                parentProductId = parentProductId
+                productIds = productIds
             )
         } catch (e: Exception) {
             this.basicListener?.onWidgetFail(pageName, e)
@@ -397,7 +398,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         itemView.post {
             layoutManager.scrollToPositionWithOffset(
                     scrollToPosition,
-                    context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16)
+                    16f.toDpInt()
             )
         }
     }
@@ -418,7 +419,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private fun bindWidgetWithPageName(
         pageName: String,
         isForceRefresh: Boolean,
-        parentProductId: String = "",
+        productIds: List<String> = listOf(),
         categoryIds: List<String> = listOf(),
         keyword: String = "",
         isTokonow: Boolean = false
@@ -429,7 +430,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             itemView.loadingRecom.visible()
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
-                productIds = listOf(parentProductId),
+                productIds = productIds,
                 categoryIds = categoryIds,
                 keywords = listOf(keyword),
                 isTokonow = isTokonow

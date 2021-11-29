@@ -20,6 +20,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
+import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
@@ -212,7 +213,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tvProductNotesEdit.setOnClickListener {
                 orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                 showNotesTextField()
-                tfNote.textFieldInput.setSelection(tfNote.textFieldInput.length())
+                tfNote.editText.setSelection(tfNote.editText.length())
             }
         }
     }
@@ -224,15 +225,15 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tvProductNotesEdit.gone()
             tfNote.visible()
             product.isEditingNotes = true
-            tfNote.requestFocus()
-            tfNote.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
-            tfNote.textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
-            tfNote.textFieldInput.setRawInputType(InputType.TYPE_CLASS_TEXT)
+            tfNote.editText.requestFocus()
+            tfNote.editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            tfNote.editText.imeOptions = EditorInfo.IME_ACTION_DONE
+            tfNote.editText.setRawInputType(InputType.TYPE_CLASS_TEXT)
             tfNote.setCounter(product.maxCharNote)
             if (noteTextWatcher != null) {
-                tfNote.textFieldInput.removeTextChangedListener(noteTextWatcher)
+                tfNote.editText.removeTextChangedListener(noteTextWatcher)
             }
-            tfNote.textFieldInput.setText(product.notes)
+            tfNote.editText.setText(product.notes)
             noteTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     product.notes = s?.toString() ?: ""
@@ -247,8 +248,8 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     /* no-op */
                 }
             }
-            tfNote.textFieldInput.addTextChangedListener(noteTextWatcher)
-            tfNote.textFieldInput.setOnEditorActionListener { v, actionId, _ ->
+            tfNote.editText.addTextChangedListener(noteTextWatcher)
+            tfNote.editText.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     product.isEditingNotes = false
                     renderNotes()
@@ -257,6 +258,13 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     true
                 } else false
             }
+            tfNote.editText.setOnFocusChangeListener { v, hasFocus ->
+                if (!hasFocus) {
+                    KeyboardHandler.DropKeyboard(v.context, v)
+                }
+            }
+            tfNote.editText.requestFocus()
+            showSoftKeyboard(tfNote.context, tfNote.editText)
         }
     }
 

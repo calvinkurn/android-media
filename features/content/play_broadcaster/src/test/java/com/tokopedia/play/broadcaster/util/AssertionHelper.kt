@@ -52,6 +52,24 @@ fun <T: Any> List<T>.assertEmpty() {
             .isEmpty()
 }
 
+fun String.assertEmpty() {
+    Assertions
+        .assertThat(this)
+        .isEmpty()
+}
+
+fun Boolean.assertTrue() {
+    Assertions
+        .assertThat(this)
+        .isTrue
+}
+
+fun Boolean.assertFalse() {
+    Assertions
+        .assertThat(this)
+        .isFalse
+}
+
 fun <T: Any> List<T>.assertCount(count: Int) {
     Assertions
             .assertThat(size)

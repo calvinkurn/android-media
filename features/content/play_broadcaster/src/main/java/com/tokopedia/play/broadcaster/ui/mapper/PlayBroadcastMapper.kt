@@ -4,11 +4,14 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.pinnedmessage.GetPinnedMessageResponse
+import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherConfig
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
-import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveInfoUiModel
+import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.pusher.PlayLiveLogState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -79,5 +82,13 @@ interface PlayBroadcastMapper {
     fun mapLiveInfo(
         activeIngestUrl: String,
         config: PlayLivePusherConfig
-    ): PlayLiveInfoUiModel
+    ): PlayLiveLogState
+
+    fun mapPinnedMessage(
+        response: GetPinnedMessageResponse.Data
+    ): List<PinnedMessageUiModel>
+
+    fun mapPinnedMessageSocket(
+        response: PinnedMessageSocketResponse
+    ): PinnedMessageUiModel
 }

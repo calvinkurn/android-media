@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
-import com.tokopedia.akamai_bot_lib.isAkamai
+import com.tokopedia.akamai_bot_lib.getAkamaiQuery
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.FingerprintManager
 import com.tokopedia.graphql.GraphqlCacheManager
@@ -19,6 +19,7 @@ import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.Const
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import com.tokopedia.graphql.util.Const.QUERY_HASHING_HEADER
+import com.tokopedia.graphql.util.Const.TKPD_AKAMAI
 import com.tokopedia.graphql.util.LoggingUtils
 import com.tokopedia.graphql.util.LoggingUtils.logGqlErrorSsl
 import com.tokopedia.logger.ServerLogger
@@ -26,7 +27,6 @@ import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*
 import okhttp3.internal.http2.ConnectionShutdownException
 import retrofit2.Response
-import timber.log.Timber
 import java.io.InterruptedIOException
 import java.lang.NullPointerException
 import java.net.SocketException
@@ -38,9 +38,9 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLHandshakeException
 
 class GraphqlCloudDataStore @Inject constructor(
-        private val api: GraphqlApiSuspend,
-        val cacheManager: GraphqlCacheManager,
-        private val fingerprintManager: FingerprintManager
+    private val api: GraphqlApiSuspend,
+    val cacheManager: GraphqlCacheManager,
+    private val fingerprintManager: FingerprintManager
 ) : GraphqlDataStore {
 
     /*
@@ -51,9 +51,9 @@ class GraphqlCloudDataStore @Inject constructor(
     private suspend fun getResponse(requests: List<GraphqlRequest>): Response<JsonArray> {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
         val header = mutableMapOf<String, String>()
-        if (isAkamai(requests.first().query)) {
-            header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().getAkamaiValue()
-        }
+
+        putAkamaiHeader(header, requests)
+
         if (requests[0].isDoQueryHash) {
             val queryHashingHeaderValue = StringBuilder()
             for (graphqlRequest in requests) {
@@ -65,7 +65,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         queryHashingHeaderValue.append(queryHashValue)
                     } else {
                         queryHashingHeaderValue.append(",")
-                                .append(queryHashValue)
+                            .append(queryHashValue)
                     }
                     graphqlRequest.query = ""
                 }
@@ -77,14 +77,35 @@ class GraphqlCloudDataStore @Inject constructor(
             }
             header[QUERY_HASHING_HEADER] = queryHashingHeaderValue.toString()
         }
-        return if(!requests[0].url.isNullOrEmpty()){
-            api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
-        } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+        val url = requests[0].url
+        return if(!url.isNullOrEmpty()){
+            api.getResponseSuspendWithPath(url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+        } else api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests), FingerprintManager.getQueryDigest(requests))
+    }
+
+    private fun putAkamaiHeader(header: MutableMap<String, String>, requests: List<GraphqlRequest>) {
+        //akamai query Logic
+        var akamaiQuery = ""
+        requests.forEach { req ->
+            val queryNamelist = req.queryNameList
+            akamaiQuery = if (queryNamelist?.isNotEmpty() == true) {
+                getAkamaiQuery(queryNamelist) ?: ""
+            } else {
+                getAkamaiQuery(req.query) ?: ""
+            }
+            if (akamaiQuery.isNotEmpty()) {
+                return@forEach
+            }
+        }
+        if (akamaiQuery.isNotEmpty()) {
+            header[AKAMAI_SENSOR_DATA_HEADER] = GraphqlClient.getFunction().akamaiValue
+            header[TKPD_AKAMAI] = akamaiQuery
+        }
     }
 
     override suspend fun getResponse(
-            requests: List<GraphqlRequest>,
-            cacheStrategy: GraphqlCacheStrategy
+        requests: List<GraphqlRequest>,
+        cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponseInternal {
         return withContext(Dispatchers.Default) {
             var result: Response<JsonArray>? = null
@@ -96,21 +117,24 @@ class GraphqlCloudDataStore @Inject constructor(
             } catch (e: Throwable) {
                 if (e is SSLHandshakeException) {
                     var tls: String
-                    var cipherSuites: String =""
+                    var cipherSuites: String = ""
                     try {
-                        tls = Arrays.toString(SSLContext.getDefault().defaultSSLParameters.protocols)
-                        cipherSuites = Arrays.toString(SSLContext.getDefault().defaultSSLParameters.cipherSuites)
+                        tls =
+                            Arrays.toString(SSLContext.getDefault().defaultSSLParameters.protocols)
+                        cipherSuites =
+                            Arrays.toString(SSLContext.getDefault().defaultSSLParameters.cipherSuites)
                     } catch (e: NoSuchAlgorithmException) {
                         tls = "Failed to get ssl"
                     } catch (e: NullPointerException) {
                         tls = "Got null on ssl"
                     }
-                    logGqlErrorSsl("kt",  requests.toString(), e, tls, cipherSuites)
+                    logGqlErrorSsl("kt", requests.toString(), e, tls, cipherSuites)
                 } else if (e !is UnknownHostException &&
-                        e !is SocketException &&
-                        e !is InterruptedIOException &&
-                        e !is ConnectionShutdownException &&
-                        e !is CancellationException) {
+                    e !is SocketException &&
+                    e !is InterruptedIOException &&
+                    e !is ConnectionShutdownException &&
+                    e !is CancellationException
+                ) {
                     LoggingUtils.logGqlError("kt", requests.toString(), e)
                 } else {
                     LoggingUtils.logGqlErrorNetwork("kt", requests.toString(), e)
@@ -125,13 +149,16 @@ class GraphqlCloudDataStore @Inject constructor(
             val gJsonArray = CommonUtils.getOriginalResponse(result)
 
             //Checking response CLC headers.
-            val cacheHeaders = if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""
-            else result.headers().get(GraphqlConstant.GqlApiKeys.CACHE);
+            val cacheHeaders =
+                if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""
+                else result.headers().get(GraphqlConstant.GqlApiKeys.CACHE);
 
-            val queryHashHeaders = if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.QUERYHASH) == null) ""
-            else result.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH)
+            val queryHashHeaders =
+                if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.QUERYHASH) == null) ""
+                else result.headers().get(GraphqlConstant.GqlApiKeys.QUERYHASH)
 
-            val gResponse = GraphqlResponseInternal(gJsonArray, false, cacheHeaders, queryHashHeaders)
+            val gResponse =
+                GraphqlResponseInternal(gJsonArray, false, cacheHeaders, queryHashHeaders)
 
             try {
                 result?.let {
@@ -144,34 +171,66 @@ class GraphqlCloudDataStore @Inject constructor(
                             if (requests.size > 0) {
                                 for (graphqlRequest in requests) {
                                     graphqlRequest.query = graphqlRequest.queryCopy
-                                    queryHashValues.append(cacheManager.getQueryHashValue(graphqlRequest.md5)).append(",")
+                                    queryHashValues.append(
+                                        cacheManager.getQueryHashValue(
+                                            graphqlRequest.md5
+                                        )
+                                    ).append(",")
                                     cacheManager.deleteQueryHashValue(graphqlRequest.md5)
                                 }
                             }
                             val header: MutableMap<String, String> = HashMap()
-                            if(requests.get(0).queryHashRetryCount > 0){
+                            if (requests.get(0).queryHashRetryCount > 0) {
                                 header[QUERY_HASHING_HEADER] = ";true"
-                                requests.get(0).queryHashRetryCount = requests.get(0).queryHashRetryCount - 1
-                            }
-                            else{
+                                requests.get(0).queryHashRetryCount =
+                                    requests.get(0).queryHashRetryCount - 1
+                            } else {
                                 header[QUERY_HASHING_HEADER] = ""
                             }
-                            ServerLogger.log(Priority.P1, "GQL_HASHING",
-                                    mapOf("type" to "error",
-                                            "name" to CacheHelper.getQueryName(requests[0].query),
-                                            "key" to requests[0].md5,
-                                            "hash" to queryHashValues.toString()
-                                    ))
-                            if(!requests[0].url.isNullOrEmpty()){
-                                api.getResponseSuspendWithPath(requests[0].url, requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+                            val opName = requests[0].operationName
+                            ServerLogger.log(
+                                Priority.P1, "GQL_HASHING",
+                                mapOf(
+                                    "type" to "error",
+                                    "name" to if (opName?.isNotEmpty() == true) {
+                                        opName
+                                    } else {
+                                        CacheHelper.getQueryName(requests[0].query)
+                                    },
+                                    "key" to requests[0].md5,
+                                    "hash" to queryHashValues.toString()
+                                )
+                            )
+                            val reqUrl = requests[0].url
+                            if (!reqUrl.isNullOrEmpty()) {
+                                api.getResponseSuspendWithPath(
+                                    reqUrl,
+                                    requests.toMutableList(),
+                                    header,
+                                    FingerprintManager.getQueryDigest(requests),
+                                    FingerprintManager.getQueryDigest(requests)
+                                )
                             } else {
-                                api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
+                                api.getResponseSuspend(
+                                    requests.toMutableList(),
+                                    header,
+                                    FingerprintManager.getQueryDigest(requests),
+                                    FingerprintManager.getQueryDigest(requests)
+                                )
                             }
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
-                            LoggingUtils.logGqlResponseCode(result.code(), requests.toString(), gResponse.originalResponse.toString())
+                            LoggingUtils.logGqlResponseCode(
+                                result.code(),
+                                requests.toString(),
+                                gResponse.originalResponse.toString()
+                            )
                         }
-                        LoggingUtils.logGqlSize("kt", requests, gResponse.originalResponse.toString())
+                        LoggingUtils.logGqlSize(
+                            "kt",
+                            requests,
+                            gResponse.originalResponse.toString()
+                        )
                         //Handling backend cache
                         val caches = CacheHelper.parseCacheHeaders(gResponse.beCache)
                         //handling query hash
@@ -190,23 +249,35 @@ class GraphqlCloudDataStore @Inject constructor(
                         requests.forEachIndexed { index, request ->
                             if (executeQueryHashFlow) {
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
-                                ServerLogger.log(Priority.P1, "GQL_HASHING",
-                                        mapOf("type" to "success",
-                                                "name" to CacheHelper.getQueryName(request.query),
-                                                "key" to request.md5,
-                                                "hash" to qhValues[index]
-                                        ))
+                                val opName = requests[0].operationName
+                                ServerLogger.log(
+                                    Priority.P1, "GQL_HASHING",
+                                    mapOf(
+                                        "type" to "success",
+                                        "name" to if (opName?.isNotEmpty() == true) {
+                                            opName
+                                        } else {
+                                            CacheHelper.getQueryName(requests[0].query)
+                                        },
+                                        "key" to request.md5,
+                                        "hash" to qhValues[index]
+                                    )
+                                )
                             }
                             if (request.isNoCache || (executeCacheFlow && caches[request.md5] == null)) {
                                 return@forEachIndexed  //Do nothing
                             }
-                            if(executeCacheFlow) {
+                            if (executeCacheFlow) {
                                 //Saving response for indivisual query.
                                 val cache = caches[request.md5]
-                                val objectData = gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
+                                val objectData =
+                                    gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
                                 if (objectData != null && cache != null) {
-                                    cacheManager.save(request.cacheKey(), objectData.toString(), cache.maxAge * 1000.toLong())
-                                    Timber.d("Android CLC - Request saved to cache " + CacheHelper.getQueryName(request.query) + " KEY: " + request.cacheKey())
+                                    cacheManager.save(
+                                        request.cacheKey(),
+                                        objectData.toString(),
+                                        cache.maxAge * 1000.toLong()
+                                    )
                                 }
                             }
                         }
@@ -216,10 +287,14 @@ class GraphqlCloudDataStore @Inject constructor(
                             CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
                                 gResponse.originalResponse.forEachIndexed { index, jsonElement ->
                                     if (!isError(jsonElement)) {
-                                        cacheManager.save(fingerprintManager.generateFingerPrint(requests[index].toString(),
-                                                cacheStrategy.isSessionIncluded),
-                                                jsonElement.toString(),
-                                                cacheStrategy.expiryTime)
+                                        cacheManager.save(
+                                            fingerprintManager.generateFingerPrint(
+                                                requests[index].toString(),
+                                                cacheStrategy.isSessionIncluded
+                                            ),
+                                            jsonElement.toString(),
+                                            cacheStrategy.expiryTime
+                                        )
                                     }
                                 }
                             }

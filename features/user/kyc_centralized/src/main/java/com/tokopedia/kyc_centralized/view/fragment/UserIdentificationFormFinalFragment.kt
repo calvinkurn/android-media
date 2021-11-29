@@ -40,6 +40,7 @@ import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
+import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
@@ -561,8 +562,12 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     fun deleteTmpFile(deleteKtp: Boolean, deleteFace: Boolean) {
-        if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
-        if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+        if(deleteKtp && deleteFace) {
+            FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
+        } else {
+            if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
+            if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+        }
     }
 
     private fun isUsingEncrypt(): Boolean {

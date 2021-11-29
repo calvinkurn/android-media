@@ -6,8 +6,10 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.databinding.ShopSearchProductEmptyStateBinding
 import com.tokopedia.shop.product.view.datamodel.ShopProductEmptySearchUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductEmptySearchViewHolder(val view: View,
                                        private val shopProductEmptySearchListener: ShopProductEmptySearchListener?): AbstractViewHolder<ShopProductEmptySearchUiModel>(view) {
@@ -16,7 +18,8 @@ class ShopProductEmptySearchViewHolder(val view: View,
         val LAYOUT = R.layout.shop_search_product_empty_state
     }
 
-    private val shopSearchEmptyState: EmptyStateUnify? = itemView.findViewById(R.id.shopSearchEmptyState)
+    private val viewBinding : ShopSearchProductEmptyStateBinding? by viewBinding()
+    private val shopSearchEmptyState: EmptyStateUnify? = viewBinding?.shopSearchEmptyState
 
     override fun bind(element: ShopProductEmptySearchUiModel) {
         try {

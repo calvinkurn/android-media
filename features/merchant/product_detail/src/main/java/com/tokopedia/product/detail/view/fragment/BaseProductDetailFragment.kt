@@ -131,7 +131,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
             getRecyclerView()?.post {
                 try {
                     getRecyclerView()?.smoothScrollToPosition(position)
-                } catch (e: Throwable) { }
+                } catch (_: Throwable) { }
             }
         }
     }

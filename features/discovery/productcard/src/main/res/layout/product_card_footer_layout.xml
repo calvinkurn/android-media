@@ -7,33 +7,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.ProgressBarUnify
-        android:id="@+id/progressBarStock"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/product_card_flashsale_progressbar_height"
-        android:layout_marginTop="@dimen/product_card_flashsale_progressbar_margintop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/textViewStockLabel"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/product_card_flashsale_label_height"
-        android:textStyle="bold"
-        android:textColor="@color/Unify_N700_68"
-        android:textSize="@dimen/sp_10"
-        android:layout_marginTop="@dimen/product_card_flashsale_label_margintop"
-        app:srcCompat="@drawable/ic_pdp_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBarStock"
-        app:typographyType="small"
-        app:typographyWeight="bold"
-        tools:text="989jt orang"
-        tools:visibility="visible"/>
-
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/buttonNotify"
         android:contentDescription="@string/content_desc_notifyMe"
@@ -47,7 +20,7 @@
         android:textColor="@color/Unify_G500"
         android:foreground="?attr/selectableItemBackground"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewStockLabel"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:unifyButtonType="main"
         app:unifyButtonVariant="ghost"

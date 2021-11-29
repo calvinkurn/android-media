@@ -24,11 +24,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.unifycomponents.TimerUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.*
 import java.math.RoundingMode
 
@@ -41,40 +43,41 @@ class ShopHomeNplCampaignViewHolder(
         private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView), CoroutineScope {
 
+    private val viewBinding: ItemShopHomeNewProductLaunchCampaignBinding? by viewBinding()
     private val masterJob = SupervisorJob()
     private var isRemindMe: Boolean? = null
     private val layoutRemindMe: View?
         get() = if(isRemindMe == true)
-            itemView.findViewById(R.id.layout_remind_me_notified)
+            viewBinding?.layoutRemindMeNotified?.root
         else
-            itemView.findViewById(R.id.layout_remind_me_un_notified)
+            viewBinding?.layoutRemindMeUnNotified?.root
     private val loaderRemindMe: View?
         get() = if(isRemindMe == true)
-            itemView.findViewById(R.id.loader_remind_me_notified)
+            viewBinding?.layoutRemindMeNotified?.loaderRemindMeNotified
         else
-            itemView.findViewById(R.id.loader_remind_me_un_notified)
+            viewBinding?.layoutRemindMeUnNotified?.loaderRemindMeUnNotified
     private val imageNotification: ImageView?
         get() = if(isRemindMe == true)
-            itemView.findViewById(R.id.image_notification_notified)
+            viewBinding?.layoutRemindMeNotified?.imageNotificationNotified
         else
-            itemView.findViewById(R.id.image_notification_un_notified)
+            viewBinding?.layoutRemindMeUnNotified?.imageNotificationUnNotified
     private val textRemindMe: Typography?
         get() = if(isRemindMe == true)
-            itemView.findViewById(R.id.text_remind_me_notified)
+            viewBinding?.layoutRemindMeNotified?.textRemindMeNotified
         else
-            itemView.findViewById(R.id.text_remind_me_un_notified)
-    private val rvProductCarousel: RecyclerView? = itemView.findViewById(R.id.rv_product_carousel)
-    private val bannerClickableArea: View? = itemView.findViewById(R.id.banner_clickable_area)
-    private val bannerBackground: ShopCarouselBannerImageUnify? = itemView.findViewById(R.id.banner_background)
-    private val layoutRemindMeNotified: View? = itemView.findViewById(R.id.layout_remind_me_notified)
-    private val layoutRemindMeUnNotified: View? = itemView.findViewById(R.id.layout_remind_me_un_notified)
-    private val textTimeDescription: Typography? = itemView.findViewById(R.id.text_time_description)
-    private val layoutTimer: View? = itemView.findViewById(R.id.layout_timer)
-    private val timer: TimerUnify? = itemView.findViewById(R.id.timer)
-    private val textDescription: Typography? = itemView.findViewById(R.id.text_description)
-    private val textSeeAll: Typography? = itemView.findViewById(R.id.text_see_all)
-    private val imageTnc: ImageView? = itemView.findViewById(R.id.image_tnc)
-    private val textTitle: Typography? = itemView.findViewById(R.id.text_title)
+            viewBinding?.layoutRemindMeUnNotified?.textRemindMeUnNotified
+    private val rvProductCarousel: RecyclerView? = viewBinding?.rvProductCarousel
+    private val bannerClickableArea: View? = viewBinding?.bannerClickableArea
+    private val bannerBackground: ShopCarouselBannerImageUnify? = viewBinding?.bannerBackground
+    private val layoutRemindMeNotified: View? = viewBinding?.layoutRemindMeNotified?.root
+    private val layoutRemindMeUnNotified: View? = viewBinding?.layoutRemindMeUnNotified?.root
+    private val textTimeDescription: Typography? = viewBinding?.layoutTimer?.textTimeDescription
+    private val layoutTimer: View? = viewBinding?.layoutTimer?.root
+    private val timer: TimerUnify? = viewBinding?.layoutTimer?.timer
+    private val textDescription: Typography? = viewBinding?.textDescription
+    private val textSeeAll: Typography? = viewBinding?.textSeeAll
+    private val imageTnc: ImageView? = viewBinding?.imageTnc
+    private val textTitle: Typography? = viewBinding?.textTitle
     override val coroutineContext = masterJob + Dispatchers.Main
 
     companion object {

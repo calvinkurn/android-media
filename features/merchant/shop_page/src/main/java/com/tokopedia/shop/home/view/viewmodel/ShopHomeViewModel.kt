@@ -124,9 +124,17 @@ class ShopHomeViewModel @Inject constructor(
         get() = _campaignNplRemindMeStatusData
     private val _campaignNplRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
 
+    val campaignFlashSaleStatusData: LiveData<Result<GetCampaignNotifyMeUiModel>>
+        get() = _campaignFlashSaleRemindMeStatusData
+    private val _campaignFlashSaleRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
+
     val checkCampaignNplRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
         get() = _checkCampaignNplRemindMeStatusData
     private val _checkCampaignNplRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
+
+    val checkCampaignFlashSaleRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
+        get() = _checkCampaignFlashSaleRemindMeStatusData
+    private val _checkCampaignFlashSaleRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
 
     val bottomSheetFilterLiveData : LiveData<Result<DynamicFilterModel>>
         get() = _bottomSheetFilterLiveData
@@ -180,12 +188,13 @@ class ShopHomeViewModel @Inject constructor(
     fun getNewProductList(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val listProductData = withContext(dispatcherProvider.io) {
-                getProductListData(shopId, page, shopProductFilterParameter, widgetUserAddressLocalData)
+                getProductListData(shopId, page, productPerPage, shopProductFilterParameter, widgetUserAddressLocalData)
             }
             _productListData.postValue(Success(listProductData))
         }) {
@@ -276,6 +285,7 @@ class ShopHomeViewModel @Inject constructor(
     private suspend fun getProductListData(
             shopId: String,
             page: Int,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): GetShopHomeProductUiModel {
@@ -296,11 +306,11 @@ class ShopHomeViewModel @Inject constructor(
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
-        return mapToShopHomeProductUiModel(shopId, page, productListResponse)
+        return mapToShopHomeProductUiModel(shopId, page, productPerPage, productListResponse)
     }
 
-    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
-        val isHasNextPage = ShopUtil.isHasNextPage(page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
+    private fun mapToShopHomeProductUiModel(shopId: String, page: Int, productPerPage: Int, productListResponse: ShopProduct.GetShopProduct) : GetShopHomeProductUiModel {
+        val isHasNextPage = ShopUtil.isHasNextPage(page, productPerPage, productListResponse.totalData)
         val productListUiModelData = productListResponse.data.map {
             ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                     it,
@@ -389,6 +399,18 @@ class ShopHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun getCampaignFlashSaleRemindMeStatus(campaignId: String) {
+        launchCatchError(block = {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                getCampaignNotifyMe(campaignId)
+            }
+            val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
+                getCampaignNotifyMeModel
+            )
+            _campaignFlashSaleRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+        }) {}
+    }
+
     private suspend fun getCampaignNotifyMe(campaignId: String): GetCampaignNotifyMeModel {
         val useCase = getCampaignNotifyMeUseCase.get()
         useCase.params = GetCampaignNotifyMeUseCase.createParams(campaignId)
@@ -413,6 +435,28 @@ class ShopHomeViewModel @Inject constructor(
                     it.cause,
                     it.message,
                     campaignId
+            )))
+        }
+    }
+
+    fun clickFlashSaleReminder(campaignId: String, action: String) {
+        launchCatchError(block = {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                checkCampaignNotifyMe(campaignId, action)
+            }
+            val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
+                checkCampaignNotifyMeModel.campaignId,
+                checkCampaignNotifyMeModel.success,
+                checkCampaignNotifyMeModel.message,
+                checkCampaignNotifyMeModel.errorMessage,
+                action
+            )
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
+        }) {
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Fail(CheckCampaignNplException(
+                it.cause,
+                it.message,
+                campaignId
             )))
         }
     }
@@ -447,12 +491,13 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getFilterResultCount(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ) {
         launchCatchError(block = {
             val filterResultProductCount = withContext(dispatcherProvider.io) {
-                getFilterResultCountData(shopId, tempShopProductFilterParameter, widgetUserAddressLocalData)
+                getFilterResultCountData(shopId, productPerPage, tempShopProductFilterParameter, widgetUserAddressLocalData)
             }
             _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
         }) {}
@@ -460,12 +505,13 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getFilterResultCountData(
             shopId: String,
+            productPerPage: Int,
             tempShopProductFilterParameter: ShopProductFilterParameter,
             widgetUserAddressLocalData: LocalCacheModel
     ): Int {
         val filter = ShopProductFilterInput(
                 ShopPageConstant.START_PAGE,
-                ShopPageConstant.DEFAULT_PER_PAGE,
+                productPerPage,
                 "",
                 ALL_SHOWCASE_ID,
                 tempShopProductFilterParameter.getSortId().toIntOrZero(),
@@ -649,6 +695,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getProductGridListWidgetData(
             shopId: String,
+            productPerPage: Int,
             shopProductFilterParameter: ShopProductFilterParameter,
             initialProductListData: ShopProduct.GetShopProduct?,
             widgetUserAddressLocalData: LocalCacheModel
@@ -658,7 +705,7 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io,
                     block = {
                         if (initialProductListData == null)
-                            getProductListData(shopId, ShopPageConstant.START_PAGE, shopProductFilterParameter, widgetUserAddressLocalData)
+                            getProductListData(shopId, ShopPageConstant.START_PAGE, productPerPage, shopProductFilterParameter, widgetUserAddressLocalData)
                         else
                             null
                     },
@@ -682,6 +729,7 @@ class ShopHomeViewModel @Inject constructor(
                 } else {
                     _productListData.postValue(Success(mapToShopHomeProductUiModel(
                             shopId,
+                            productPerPage,
                             ShopPageConstant.START_PAGE,
                             initialProductListData
                     )))

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.shop.score.penalty.presentation.adapter.diffutil.ShopPenaltyDiffUtilCallback
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSortFilterPenaltyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.shop.score.penalty.presentation.widget.OnStickySingleHeaderListener
@@ -30,7 +31,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }.takeIf { it != -1 }
 
     fun setPenaltyData(penaltyListUiModel: List<BasePenaltyPage>) {
-        val diffCallback = ShopPerformanceDiffUtilCallback(visitables, penaltyListUiModel)
+        val diffCallback = ShopPenaltyDiffUtilCallback(visitables, penaltyListUiModel)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(penaltyListUiModel)

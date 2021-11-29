@@ -3,7 +3,11 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
@@ -37,6 +41,15 @@ import java.util.concurrent.TimeUnit
 
 
 object ProductDetailUtil {
+
+    const val HOURS_IN_A_DAY = 24
+    const val DAYS_IN_A_MONTH = 30
+    const val MONTHS_IN_A_YEAR = 12
+
+    const val LAST_ONLINE_MONTH_THRESHOLD = 3
+    const val LAST_ONLINE_DAYS_RANGE_START = 3
+    const val LAST_ONLINE_DAYS_RANGE_END = 6
+    const val LAST_ONLINE_MINUTES_RANGE_END = 5
 
     private const val MAX_CHAR = 140
     private const val ALLOW_CLICK = true
@@ -167,13 +180,13 @@ internal fun String.getRelativeDate(context: Context): String {
 
     val minuteDivider: Long = 60
     val hourDivider = minuteDivider * 60
-    val dayDivider = hourDivider * 24
-    val monthDivider = dayDivider * 30
-    val yearDivider = monthDivider * 12
+    val dayDivider = hourDivider * ProductDetailUtil.HOURS_IN_A_DAY
+    val monthDivider = dayDivider * ProductDetailUtil.DAYS_IN_A_MONTH
+    val yearDivider = monthDivider * ProductDetailUtil.MONTHS_IN_A_YEAR
 
     return if (diff / yearDivider > 0) {
         context.getString(R.string.shop_online_last_date, getYear)
-    } else if (diff / monthDivider >= 3) {
+    } else if (diff / monthDivider >= ProductDetailUtil.LAST_ONLINE_MONTH_THRESHOLD) {
         context.getString(R.string.shop_online_last_date, getMonthAndYear)
     } else if (diff / dayDivider > 0) {
         val days = diff / dayDivider
@@ -181,7 +194,10 @@ internal fun String.getRelativeDate(context: Context): String {
             days <= 1 -> {
                 context.getString(R.string.shop_online_yesterday)
             }
-            days in 3..6 -> {
+            days in IntRange(
+                ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_START,
+                ProductDetailUtil.LAST_ONLINE_DAYS_RANGE_END
+            ) -> {
                 context.getString(R.string.shop_online_days_ago, diff / dayDivider)
             }
             else -> {
@@ -192,7 +208,7 @@ internal fun String.getRelativeDate(context: Context): String {
         context.getString(R.string.shop_online_hours_ago, diff / hourDivider)
     } else {
         val minutes = diff / minuteDivider
-        if (minutes in 0..5) context.getString(R.string.shop_online) else
+        if (minutes in 0..ProductDetailUtil.LAST_ONLINE_MINUTES_RANGE_END) context.getString(R.string.shop_online) else
             context.getString(R.string.shop_online_minute_ago, minutes)
     }
 }
@@ -256,7 +272,7 @@ inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit) 
 fun getIdLocale() = Locale("id", "ID")
 
 fun String.goToWebView(context: Context) {
-    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, this))
+    RouteManager.route(context, String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, this))
 }
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)

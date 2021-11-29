@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.shopcreation.domain.pojo.GetUserProfileCompletionPojo
-import com.tokopedia.loginregister.shopcreation.domain.query.MutationUserProfileValidate
+import com.tokopedia.loginregister.shopcreation.domain.query.QueryUserProfileCompletion
 import javax.inject.Inject
 
 /**
@@ -19,7 +19,7 @@ class GetUserProfileCompletionUseCase @Inject constructor(
 ) : CoroutineUseCase<Unit, GetUserProfileCompletionPojo>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return MutationUserProfileValidate.getQuery()
+        return QueryUserProfileCompletion.getQuery()
     }
 
     override suspend fun execute(params: Unit): GetUserProfileCompletionPojo {

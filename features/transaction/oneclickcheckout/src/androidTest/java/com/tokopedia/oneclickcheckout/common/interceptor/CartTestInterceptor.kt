@@ -53,6 +53,8 @@ const val GET_OCC_CART_PAGE_MULTIPLE_CREDIT_CARD_DELETED_REVAMP_RESPONSE_PATH = 
 const val GET_OCC_CART_PAGE_CREDIT_CARD_ERROR_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_error_revamp_response.json"
 const val GET_OCC_CART_PAGE_CREDIT_CARD_MIN_AMOUNT_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_min_amount_revamp_response.json"
 
+const val GET_OCC_CART_PAGE_CREDIT_CARD_AFPB_RESPONSE_PATH = "cart/get_occ_cart_page_credit_card_afpb_response.json"
+
 const val GET_OCC_CART_PAGE_DEBIT_CARD_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_debit_card_revamp_response.json"
 
 const val GET_OCC_CART_PAGE_SLASH_PRICE_REVAMP_RESPONSE_PATH = "cart/get_occ_cart_page_slash_price_revamp_response.json"

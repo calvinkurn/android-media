@@ -118,7 +118,7 @@ class BroadcastInteractiveViewComponent(
         }
     }
 
-    private fun cancelCoachMark() {
+    fun cancelCoachMark() {
         job.cancelChildren()
         hideCoachMark()
     }

@@ -8,7 +8,20 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.utils.*
+import com.tokopedia.topads.sdk.utils.PARAM_DEVICE
+import com.tokopedia.topads.sdk.utils.PARAM_EP
+import com.tokopedia.topads.sdk.utils.PARAM_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.PARAM_ITEM
+import com.tokopedia.topads.sdk.utils.PARAM_PAGE
+import com.tokopedia.topads.sdk.utils.PARAM_SRC
+import com.tokopedia.topads.sdk.utils.PARAM_TEMPLATE_ID
+import com.tokopedia.topads.sdk.utils.PARAM_USER_ID
+import com.tokopedia.topads.sdk.utils.UrlParamHelper
+import com.tokopedia.topads.sdk.utils.VALUE_DEVICE
+import com.tokopedia.topads.sdk.utils.VALUE_EP
+import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
+import com.tokopedia.topads.sdk.utils.VALUE_ITEM
+import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
 import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.unifyprinciples.Typography
 
@@ -85,6 +98,12 @@ class TopAdsHeadlineViewHolder(view: View, val userId: String) :
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
         topadsHeadlineView.displayAds(cpmModel)
-        titleView.show()
+        cpmModel.data?.let {
+            if(it.size > 0){
+                titleView.show()
+            } else {
+                titleView.hide()
+            }
+        }
     }
 }

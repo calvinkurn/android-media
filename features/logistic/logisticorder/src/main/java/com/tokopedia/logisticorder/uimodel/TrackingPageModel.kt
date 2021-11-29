@@ -33,7 +33,8 @@ data class DetailModel(
         var sendTime: String = "",
         var receiverName: String = "",
         var serviceCode: String = "",
-        var trackingUrl: String = ""
+        var trackingUrl: String = "",
+        var eta: EtaModel = EtaModel()
 )
 
 data class ProofModel(
@@ -58,4 +59,10 @@ data class AdditionalInfoModel(
         var notes: String = "",
         var urlDetail: String = "",
         var urlText: String = ""
+)
+
+data class EtaModel(
+        var userInfo: String = "",
+        var userUpdatedInfo: String = "",
+        var isChanged: Boolean = false
 )

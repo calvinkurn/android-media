@@ -171,7 +171,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             scroogeWebView = findViewById(R.id.scrooge_webview)
             progressBar = findViewById(R.id.progressbar)
             progressDialog = ProgressDialog(this)
-            progressDialog?.setMessage(getString(R.string.title_loading))
+            progressDialog?.setMessage(getString(com.tokopedia.abstraction.R.string.title_loading))
             tvTitle?.text = getString(R.string.toppay_title)
             val currentTransactionId = paymentPassData?.transactionId ?: ""
             tvTitle?.contentDescription = getString(R.string.toppay_title_content_desc, currentTransactionId)
@@ -332,7 +332,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun showProgressDialog() {
-        progressDialog?.show()
+        if (!isFinishing)
+            progressDialog?.show()
     }
 
     override fun onGoToOtpPage(transactionId: String, urlOtp: String) {

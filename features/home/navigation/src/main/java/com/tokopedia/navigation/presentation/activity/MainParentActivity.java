@@ -1,5 +1,9 @@
 package com.tokopedia.navigation.presentation.activity;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
@@ -25,7 +29,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.Keep;
 import androidx.annotation.RestrictTo;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
@@ -63,6 +66,7 @@ import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
+import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
@@ -88,7 +92,6 @@ import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitori
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
-import com.tokopedia.purchase_platform.common.utils.Switch;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -103,7 +106,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -113,12 +116,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import dagger.Lazy;
-import timber.log.Timber;
-
-import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
-import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
-import static com.tokopedia.utils.resources.DarkModeUtilsKt.isDarkMode;
 
 /**
  * Created by meta on 19/06/18.
@@ -279,7 +276,7 @@ public class MainParentActivity extends BaseActivity implements
                 return sendOpenHomeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext(), true);
         installDFonBackground();
         runRiskWorker();
 
@@ -356,7 +353,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void setDefaultShakeEnable() {
         cacheManager.edit()
-                .putBoolean(getString(R.string.pref_receive_shake), true)
+                .putBoolean(getString(R.string.pref_receive_shake_nav), true)
                 .apply();
     }
 
@@ -399,7 +396,7 @@ public class MainParentActivity extends BaseActivity implements
                 return executeFirstTimeEvent();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext(), true);
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
@@ -879,11 +876,11 @@ public class MainParentActivity extends BaseActivity implements
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
                 .backgroundContentColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700)
-                .shadowColorRes(R.color.Unify_N700_68)
+                .shadowColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 .titleTextColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N0)
                 .textColorRes(com.tokopedia.unifyprinciples.R.color.Unify_N150)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
+                .textSizeRes(com.tokopedia.navigation.R.dimen.mainparent_case_text_size)
+                .titleTextSizeRes(com.tokopedia.navigation.R.dimen.mainparent_case_title_text_size)
                 .nextStringRes(R.string.navigation_showcase_next)
                 .prevStringRes(R.string.navigation_showcase_prev)
                 .useCircleIndicator(true)

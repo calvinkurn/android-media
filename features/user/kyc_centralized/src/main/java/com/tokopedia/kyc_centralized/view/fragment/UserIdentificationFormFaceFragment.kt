@@ -26,6 +26,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycUrl
+import com.tokopedia.utils.file.FileUtil
 import javax.inject.Inject
 
 /**
@@ -138,6 +139,7 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     }
 
     override fun trackOnBackPressed() {
+        FileUtil.deleteFile(stepperModel?.ktpFile)
         analytics?.eventClickBackSelfiePage()
     }
 
