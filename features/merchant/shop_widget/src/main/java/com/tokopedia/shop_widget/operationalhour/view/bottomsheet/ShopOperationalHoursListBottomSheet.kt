@@ -110,9 +110,9 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
     }
 
     private fun showErrorToast(message: String) {
-        view?.let{
+        viewBinding?.let{
             Toaster.build(
-                it.rootView,
+                it.container,
                 message,
                 Toaster.LENGTH_INDEFINITE,
                 Toaster.TYPE_ERROR,
