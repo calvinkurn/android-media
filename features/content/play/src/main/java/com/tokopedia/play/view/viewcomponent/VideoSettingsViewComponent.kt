@@ -2,10 +2,12 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.animation.Animator
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.IconUnify.Companion.SCREEN_FULL
+import com.tokopedia.iconunify.IconUnify.Companion.SCREEN_NORMAL
 import com.tokopedia.play.R
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
@@ -26,7 +28,7 @@ class VideoSettingsViewComponent(
         private const val FADE_TRANSITION_DELAY = 3000L
     }
 
-    private val ivFullscreenControl: ImageView = findViewById(R.id.iv_fullscreen_control)
+    private val ivFullscreenControl: IconUnify = findViewById(R.id.iv_fullscreen_control)
 
     private val fadeInListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {
@@ -70,11 +72,7 @@ class VideoSettingsViewComponent(
     private val fadeInFadeOutAnimation = PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY, fadeInListener, fadeOutListener)
 
     internal fun setFullscreen(isFullscreen: Boolean) {
-        ivFullscreenControl.setImageResource(
-                if (isFullscreen) R.drawable.ic_play_exit_fullscreen
-                else R.drawable.ic_play_enter_fullscreen
-        )
-
+        ivFullscreenControl.setImage(if (isFullscreen) SCREEN_NORMAL else SCREEN_FULL)
         rootView.setOnClickListener {
             if (isFullscreen) listener.onExitFullscreen(this)
             else listener.onEnterFullscreen(this)

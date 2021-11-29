@@ -60,6 +60,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private var btnUpdateStockContainer: LinearLayout? = null
     private var btnUpdateStock: UnifyButton? = null
     private var footerContainer: LinearLayout? = null
+    private var shippingLocation: Typography? = null
     private var adapterPosition: Int = RecyclerView.NO_POSITION
 
     private var listener: TopchatProductAttachmentListener? = null
@@ -98,6 +99,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private var widthMultiplier = DEFAULT_WIDTH_MULTIPLIER
+    private var isCarousel = false
     private val bottomMarginOpposite = getOppositeMargin(context).toInt()
 
     constructor(context: Context?) : super(context) {
@@ -148,6 +150,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         btnUpdateStockContainer = findViewById(R.id.ll_seller_update_stock)
         btnUpdateStock = findViewById(R.id.btn_update_stock)
         footerContainer = findViewById(R.id.ll_footer)
+        shippingLocation = findViewById(R.id.tv_shipping_location)
     }
 
     private fun initLayoutView() {
@@ -163,6 +166,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
                 widthMultiplier = getFloat(
                     R.styleable.SingleProductAttachmentContainer_widthMultiplier,
                     DEFAULT_WIDTH_MULTIPLIER
+                )
+                isCarousel = getBoolean(
+                    R.styleable.SingleProductAttachmentContainer_isCarousel,
+                    false
                 )
             } finally {
                 recycle()
@@ -198,12 +205,12 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindIsLoading(product)
             bindProductClick(product)
             bindImage(product)
+            bindImageSize(product)
             bindImageClick(product)
             bindProductName(product)
             bindVariant(product)
             bindCampaign(product)
             bindPrice(product)
-            bindStatusContainer(product)
             bindRating(product)
             bindFreeShipping(product)
             bindFooter(product)
@@ -216,6 +223,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             bindSellerUpdateStockClick(product)
             bindMargin(product)
             bindContentPadding(product)
+            bindShippingLocation(product)
             listener.trackSeenProduct(product)
         }
     }
@@ -227,8 +235,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun initBackgroundDrawable(useStrokeSender: Boolean) {
         if (bgSender == null) {
-            val strokeColor =
-                if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_G200 else null
+            val strokeColor = if (useStrokeSender) com.tokopedia.unifyprinciples.R.color.Unify_G200 else null
             val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
             bgSender = ViewUtil.generateBackgroundWithShadow(
                 this,
@@ -297,6 +304,20 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindImage(product: ProductAttachmentUiModel) {
         thumbnail?.loadImageRounded(product.productImage, 8f.toPx())
+    }
+
+    private fun bindImageSize(product: ProductAttachmentUiModel) {
+        val thumbnailSize = if (isCarousel) {
+            CAROUSEL_THUMBNAIL_DIMENSION
+        } else {
+            SINGLE_THUMBNAIL_DIMENSION
+        }
+        val lp = thumbnail?.layoutParams
+        lp?.apply {
+            height = thumbnailSize.toInt()
+            width = thumbnailSize.toInt()
+        }
+        thumbnail?.layoutParams = lp
     }
 
     private fun bindProductName(product: ProductAttachmentUiModel) {
@@ -405,6 +426,10 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         }
     }
 
+    private fun bindShippingLocation(product: ProductAttachmentUiModel) {
+        // TODO: implement this
+    }
+
     private fun bindMargin(product: ProductAttachmentUiModel) {
         val lp = layoutParams
         if (lp is LinearLayout.LayoutParams) {
@@ -485,23 +510,17 @@ class SingleProductAttachmentContainer : ConstraintLayout {
         tv_price?.text = product.productPrice
     }
 
-    private fun bindStatusContainer(product: ProductAttachmentUiModel) {
-        if (product.hasFreeShipping() || (product.hasReview() && product.fromBroadcast())) {
-            statusContainer?.show()
-        } else {
-            statusContainer?.hide()
-        }
-    }
-
     @SuppressLint("SetTextI18n")
     private fun bindRating(product: ProductAttachmentUiModel) {
         if (product.hasReview() && commonListener?.isSeller() == false) {
             reviewScore?.text = product.rating.score.toString()
             reviewCount?.text = "(${product.rating.count})"
+            statusContainer?.show()
             reviewStar?.show()
             reviewScore?.show()
             reviewCount?.show()
         } else {
+            statusContainer?.hide()
             reviewStar?.hide()
             reviewScore?.hide()
             reviewCount?.hide()
@@ -685,6 +704,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     companion object {
         private const val DEFAULT_WIDTH_MULTIPLIER = 0.83f
         private const val MAX_VARIANT_LABEL_CHAR = 6
+        private val SINGLE_THUMBNAIL_DIMENSION = 104f.toPx()
+        private val CAROUSEL_THUMBNAIL_DIMENSION = 80f.toPx()
         private val LAYOUT = R.layout.item_topchat_product_card
     }
 }
