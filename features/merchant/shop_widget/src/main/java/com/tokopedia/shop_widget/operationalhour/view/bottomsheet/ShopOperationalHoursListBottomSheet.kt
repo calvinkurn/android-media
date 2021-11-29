@@ -110,15 +110,17 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
     }
 
     private fun showErrorToast(message: String) {
-        Toaster.build(
-            view?.rootView!!,
-            message,
-            Toaster.LENGTH_INDEFINITE,
-            Toaster.TYPE_ERROR,
-            getString(R.string.shop_widget_ops_hour_retry)
-        ) {
-            getShopOperationalHourData()
-        }.show()
+        view?.let{
+            Toaster.build(
+                it.rootView,
+                message,
+                Toaster.LENGTH_INDEFINITE,
+                Toaster.TYPE_ERROR,
+                getString(R.string.shop_widget_ops_hour_retry)
+            ) {
+                getShopOperationalHourData()
+            }.show()
+        }
     }
 
     private fun hideLoaderUnify() {
