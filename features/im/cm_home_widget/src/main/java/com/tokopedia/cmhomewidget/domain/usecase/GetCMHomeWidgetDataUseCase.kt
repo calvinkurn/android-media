@@ -13,19 +13,19 @@ import javax.inject.Inject
 class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<GetCMHomeWidgetDataGqlResponse>(graphqlRepository) {
 
-    private var previousHitTimeMillis = 0L
+    private var previousRefreshTimeMillis = 0L
 
     fun getCMHomeWidgetData(
         onSuccess: (CMHomeWidgetDataResponse) -> Unit,
         onError: (Throwable) -> Unit
     ) {
         try {
-            if (canHitApi()) {
+            if (isRefreshNeeded()) {
                 this.setTypeClass(GetCMHomeWidgetDataGqlResponse::class.java)
                 this.setGraphqlQuery(GetCMHomeWidgetGQLQuery())
                 this.execute(
                     { result ->
-                        updatePreviousHitTime()
+                        updatePreviousRefreshTime()
                         onSuccess(result.cmHomeWidgetDataResponse)
                     }, { error ->
                         onError(error)
@@ -37,15 +37,15 @@ class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlR
         }
     }
 
-    private fun canHitApi(): Boolean {
-        return (System.currentTimeMillis() - previousHitTimeMillis) > API_HIT_TIME_INTERVAL_MILLIS
+    private fun isRefreshNeeded(): Boolean {
+        return (System.currentTimeMillis() - previousRefreshTimeMillis) > REFRESH_INTERVAL_MILLIS
     }
 
-    private fun updatePreviousHitTime() {
-        previousHitTimeMillis = System.currentTimeMillis()
+    private fun updatePreviousRefreshTime() {
+        previousRefreshTimeMillis = System.currentTimeMillis()
     }
 
     companion object {
-        const val API_HIT_TIME_INTERVAL_MILLIS = 60000L //60 sec
+        const val REFRESH_INTERVAL_MILLIS = 60000L //60 sec
     }
 }
