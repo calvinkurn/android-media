@@ -4,14 +4,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
 import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
@@ -33,6 +36,7 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
 import kotlinx.android.synthetic.main.affiliate_background_layout.*
@@ -166,10 +170,8 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         affiliateVM.getErrorMessage().observe(this , { error ->
             when(error) {
                 is UnknownHostException, is SocketTimeoutException -> {
-
-                }
-                is IllegalStateException -> {
-
+                    Toaster.build(findViewById<FrameLayout>(R.id.parent_view), getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
                 else -> {
                     showLoginPortal()
@@ -194,7 +196,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
         Handler().postDelayed({
             splash_group.hide()
             showAffiliatePortal()
-        },3000)
+        }, AFFILIATE_SPLASH_TIME)
     }
 
     private fun openFragment(fragment: Fragment) {

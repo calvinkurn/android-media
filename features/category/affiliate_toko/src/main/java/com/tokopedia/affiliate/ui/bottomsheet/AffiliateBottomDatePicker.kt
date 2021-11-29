@@ -50,7 +50,7 @@ class AffiliateBottomDatePicker: BottomSheetUnify() , AffiliateDatePickerInterfa
         showKnob = false
         contentView = View.inflate(context,
             R.layout.affiliate_date_range_picker_bottom_sheet, null)
-        setTitle("Pilih tanggal")
+        setTitle(getString(R.string.affiliate_date_picker_header))
         dateRV = contentView?.findViewById(R.id.date_picker_rv)
         setData()
         initClickListener(contentView)

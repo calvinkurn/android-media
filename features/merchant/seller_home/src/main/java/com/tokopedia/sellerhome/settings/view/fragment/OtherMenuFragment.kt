@@ -271,8 +271,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun onFollowersCountClicked() {
-//        NewOtherMenuTracking.sendEventClickTotalFollowers()
-//        goToShopFavouriteList()
+        NewOtherMenuTracking.sendEventClickTotalFollowers()
+        goToShopFavouriteList()
     }
 
     override fun onSaldoClicked() {
@@ -620,6 +620,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     private fun observeToasterAlreadyShown() {
+        viewModel.setDefaultToasterState(false)
         viewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
             canShowErrorToaster = !isToasterAlreadyShown
         }

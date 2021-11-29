@@ -103,7 +103,6 @@ includeIfEnabled("features:home:dynamicbanner")
 includeIfEnabled("features:home:navigation")
 includeIfEnabled("features:home:navigation-common")
 includeIfEnabled("features:home:searchbar")
-includeIfEnabled("features:home:account-home")
 
 includeIfEnabled("features:im:common_promo")
 includeIfEnabled("features:im:referral")

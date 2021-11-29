@@ -122,17 +122,6 @@ open class ChooseAccountViewModel @Inject constructor(
         mutableGetAccountListPhoneResponse.value = Fail(throwable)
     }
 
-    private fun onSuccessGetAccountListPhoneNumber(data: AccountsDataModel) {
-        if (data.accountListDataModel.errorResponseDataModels.isEmpty()) {
-            mutableGetAccountListPhoneResponse.value = Success(data.accountListDataModel)
-        } else if (data.accountListDataModel.errorResponseDataModels[0].message.isNotEmpty()) {
-            mutableGetAccountListPhoneResponse.value =
-                Fail(MessageErrorException(data.accountListDataModel.errorResponseDataModels[0].message))
-        } else {
-            mutableGetAccountListPhoneResponse.value = Fail(RuntimeException())
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
         loginTokenUseCase.unsubscribe()

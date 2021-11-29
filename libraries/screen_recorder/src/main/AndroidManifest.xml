@@ -2,30 +2,34 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.screenrecorder">
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application>
-
-        <service android:name=".ScreenRecordService" android:enabled="true" android:exported="false"
+        <service
+            android:name=".ScreenRecordService"
+            android:enabled="true"
+            android:exported="false"
             android:foregroundServiceType="mediaProjection"
-            android:process=":ScreenRecorder"/>
-
-        <activity android:name=".ScreenRecorderActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:process=":ScreenRecorder" />
+        <activity
+            android:name=".ScreenRecorderActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:path="@string/path_screen_recorder"/>
+                    android:path="@string/path_screen_recorder" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
@@ -23,8 +24,11 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.affiliate_terms_and_condition_fragment_layout.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAndConditionViewModel>(){
@@ -106,12 +110,27 @@ class AffiliateTermsAndConditionFragment: BaseViewModelFragment<AffiliateTermsAn
             if(onBoardingData.data?.status == 1){
                 affiliateNavigationInterface.onRegistrationSuccessful()
             }else {
+                view?.let {
+                    Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
 
             }
         })
 
         affiliateTermsAndConditionViewModel.getErrorMessage().observe(this , {
-
+            if (it is UnknownHostException
+                    || it is SocketTimeoutException) {
+                view?.let {
+                    Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_internet_error),
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+            } else {
+                view?.let {
+                    Toaster.build(it, getString(com.tokopedia.affiliate_toko.R.string.affiliate_registeration_error),
+                            Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+            }
         })
 
         affiliateTermsAndConditionViewModel.progressBar().observe(this , { progress ->
