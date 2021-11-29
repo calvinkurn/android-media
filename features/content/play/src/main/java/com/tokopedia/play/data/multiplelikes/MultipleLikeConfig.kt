@@ -10,5 +10,5 @@ data class MultipleLikeConfig(
     val icon: String = "",
 
     @SerializedName("background_color")
-    val bgColor: String = "#FF000000",
+    val bgColor: String = "",
 )

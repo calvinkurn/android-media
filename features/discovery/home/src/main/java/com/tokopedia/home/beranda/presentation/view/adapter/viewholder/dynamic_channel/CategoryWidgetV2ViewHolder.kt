@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.CategoryWidgetV2SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 import java.util.HashMap
@@ -53,7 +54,7 @@ class CategoryWidgetV2ViewHolder (val view: View, private val categoryListener: 
                 false)
 
         if (recyclerView.itemDecorationCount == 0) {
-            recyclerView.addItemDecoration(CategoryWidgetV2SpacingItemDecoration(itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)))
+            recyclerView.addItemDecoration(CategoryWidgetV2SpacingItemDecoration(8f.toDpInt()))
         }
         setChannelDivider(channel)
     }

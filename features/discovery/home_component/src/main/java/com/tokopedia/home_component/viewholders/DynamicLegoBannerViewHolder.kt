@@ -26,6 +26,7 @@ import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.toPx
 import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
 
 /**
@@ -100,14 +101,14 @@ class DynamicLegoBannerViewHolder(itemView: View,
             //need to be deleted after rollence duration end
             if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_ROUNDED.toDpInt(itemView.context), false))
+                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_ROUNDED.toDpInt(), false))
                 marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             }
             //setup for lego 2 banner rollence
             //need to be deleted after rollence duration end
             else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isLego24UsingRollenceVariant) {
                 if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_ROUNDED.toDpInt(itemView.context), false))
+                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_ROUNDED.toDpInt(), false))
                 marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
             } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
@@ -131,9 +132,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
     }
 
-    private fun Float.toDpInt(context: Context): Int =
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics)
-            .toInt()
+    private fun Float.toDpInt(): Int = this.toPx().toInt()
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {

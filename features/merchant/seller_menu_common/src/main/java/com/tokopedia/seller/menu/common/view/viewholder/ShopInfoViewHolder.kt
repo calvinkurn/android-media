@@ -282,7 +282,7 @@ class ShopInfoViewHolder(
             else -> null
         }
 
-        val paddingTop = itemView?.resources?.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val paddingTop = itemView?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
         val paddingBottom = itemView?.resources?.getDimensionPixelSize(R.dimen.setting_status_padding_bottom)
         if (paddingTop != null && paddingBottom != null) {
             itemView.setPadding(0, paddingTop, 0, paddingBottom)

@@ -7,5 +7,5 @@ import com.tokopedia.shop.common.util.ShopProductViewGridType
  */
 
 interface ShopProductChangeGridSectionListener {
-    fun onChangeProductGridClicked(gridType: ShopProductViewGridType);
+    fun onChangeProductGridClicked(initialGridType: ShopProductViewGridType, finalGridType: ShopProductViewGridType)
 }
