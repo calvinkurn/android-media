@@ -5,10 +5,10 @@ import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -21,19 +21,17 @@ class TwoFactorViewModel @Inject constructor (@Named(SessionModule.SESSION_MODUL
 
     fun check(onSuccess: (ShowInterruptData) -> Unit, onError: (Throwable) -> Unit) {
         if(additionalCheckPreference.isNeedCheck() && userSession.isLoggedIn) {
-            launch {
-                try {
-                    val result = showInterruptUseCase(Unit).data
-                    if(result.popupType == AdditionalCheckConstants.POPUP_TYPE_NONE) {
-                        additionalCheckPreference.setInterval(result.accountLinkReminderData.interval)
-                    } else {
-                        additionalCheckPreference.setInterval(result.interval)
-                    }
-                    onSuccess(result)
-                } catch (e: Exception) {
-                    onError(e)
+            launchCatchError(block = {
+                val result = showInterruptUseCase(Unit).data
+                if(result.popupType == AdditionalCheckConstants.POPUP_TYPE_NONE) {
+                    additionalCheckPreference.setInterval(result.accountLinkReminderData.interval)
+                } else {
+                    additionalCheckPreference.setInterval(result.interval)
                 }
-            }
+                onSuccess(result)
+            }, onError = {
+                onError(it)
+            })
         }
     }
 }
