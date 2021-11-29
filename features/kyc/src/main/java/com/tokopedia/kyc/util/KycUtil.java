@@ -144,7 +144,7 @@ public class KycUtil {
         return stream.toByteArray();
     }
 
-    public static void sendEmail(Context context){
+    public static void sendEmail(Context context) {
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 
         emailIntent.setType(Constants.Values.TYPE);

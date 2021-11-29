@@ -45,7 +45,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.flightOrderList)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
-    
     implementation projectOrAar(rootProject.ext.features.tkpdcore)
     implementation projectOrAar(rootProject.ext.features.explore)
     implementation projectOrAar(rootProject.ext.features.loyalty)
@@ -67,10 +66,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
-    implementation projectOrAar(rootProject.ext.features.accountHome)
     implementation projectOrAar(rootProject.ext.features.attachproduct)
     implementation projectOrAar(rootProject.ext.features.basemvvm)
     implementation projectOrAar(rootProject.ext.features.loginregister)
+    implementation projectOrAar(rootProject.ext.features.homeAccountUser)
+    implementation projectOrAar(rootProject.ext.features.logout)
+    implementation projectOrAar(rootProject.ext.features.chooseaccount)
+    implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.features.commonDigital)
     implementation projectOrAar(rootProject.ext.features.digitalRecommendation)
     implementation projectOrAar(rootProject.ext.libraries.iris)
@@ -120,6 +122,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.keys)
     implementation projectOrAar(rootProject.ext.libraries.encryption)
+    implementation projectOrAar(rootProject.ext.features.agerestriction)
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.features.developerOptions)
     } else {
