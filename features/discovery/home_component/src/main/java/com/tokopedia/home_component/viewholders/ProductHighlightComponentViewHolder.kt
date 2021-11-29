@@ -109,6 +109,7 @@ class ProductHighlightComponentViewHolder(
             }
         } else {
             binding?.dealsCountDown?.gone()
+            binding?.dealsChannelSubtitle?.gone()
         }
     }
 

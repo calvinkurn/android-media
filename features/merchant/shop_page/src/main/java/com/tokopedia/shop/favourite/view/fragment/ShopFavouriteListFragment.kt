@@ -57,8 +57,8 @@ class ShopFavouriteListFragment : BaseListFragment<ShopFollowerUiModel?, ShopFav
     }
 
     override fun onItemClicked(shopFollowerUiModel: ShopFollowerUiModel?) {
-        val shopProfileIntent = RouteManager.getIntent(activity, ApplinkConst.PROFILE, shopFollowerUiModel?.id)
-        shopProfileIntent?.let { startActivity(it) }
+//        val shopProfileIntent = RouteManager.getIntent(activity, ApplinkConst.PROFILE, shopFollowerUiModel?.id)
+//        shopProfileIntent?.let { startActivity(it) }
     }
 
     override fun initInjector() {

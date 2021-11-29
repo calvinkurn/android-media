@@ -729,11 +729,6 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
 
     private fun renderActionWishlist(action: Action, data: CartItemHolderData) {
         val textMoveToWishlist = binding.textMoveToWishlist
-        if (data.isError) {
-            textMoveToWishlist.gone()
-            return
-        }
-
         if (data.isWishlisted && action.id == Action.ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
             textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))

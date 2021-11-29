@@ -42,6 +42,7 @@ import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -169,14 +170,22 @@ class MixTopComponentViewHolder(
         if(bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(bannerItem.gradientColor, itemView.context)) {
             background.gone()
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, 0, 0, 7f.toDpInt())
+            layoutParams.setMargins(0, 0, 0, 0)
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = itemView.context.resources.getDimensionPixelSize(R.dimen.home_padding_vertical_use_compat_padding_product_card).toFloat()
+            recyclerView.setPadding(0, 0, 0, 7f.toDpInt())
         } else {
             background.visible()
             background.setGradientBackground(bannerItem.gradientColor)
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.setMargins(0, itemView.context.resources.getDimensionPixelSize(R.dimen.home_margin_12_dp_product_card), 0, 12f.toDpInt())
+            layoutParams.setMargins(
+                0,
+                if (bannerTitle.isVisible || bannerDescription.isVisible) 6f.toDpInt() else itemView.context.resources.getDimensionPixelSize(
+                    R.dimen.home_margin_12_dp_product_card
+                ),
+                0,
+                0
+            )
             recyclerView.layoutParams = layoutParams
             recyclerView.translationY = 0f
         }
