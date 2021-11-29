@@ -15,7 +15,8 @@ data class PromoEligibilityHeaderUiModel(
     data class UiData(
             var title: String = "",
             var subTitle: String = "",
-            var tmpPromo: List<Visitable<*>> = emptyList()
+            var tmpPromo: List<Visitable<*>> = emptyList(),
+            var tabId: String = ""
     )
 
     data class UiState(

@@ -70,6 +70,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     title = couponSectionItem.title
                     subTitle = couponSectionItem.subTitle
                     tmpPromo = emptyList()
+                    tabId = couponSectionItem.id
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
@@ -86,6 +87,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     iconUrl = couponSubSection.iconUrl
                     identifierId = headerIdentifierId
                     tmpPromoItemList = emptyList()
+                    tabId = couponSubSection.id
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
                     isEnabled = couponSubSection.isEnabled

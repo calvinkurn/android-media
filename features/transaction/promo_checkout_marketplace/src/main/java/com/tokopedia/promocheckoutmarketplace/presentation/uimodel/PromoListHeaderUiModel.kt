@@ -17,7 +17,8 @@ class PromoListHeaderUiModel(
             var subTitle: String = "",
             var iconUrl: String = "",
             var identifierId: Int = 0,
-            var tmpPromoItemList: List<PromoListItemUiModel> = emptyList()
+            var tmpPromoItemList: List<PromoListItemUiModel> = emptyList(),
+            var tabId: String = ""
     ) {
         companion object {
             const val PROMO_TYPE_GLOBAL = 1

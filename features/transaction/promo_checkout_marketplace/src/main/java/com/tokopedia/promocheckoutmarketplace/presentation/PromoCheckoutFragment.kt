@@ -400,6 +400,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         currentTabUiModel?.let {
                             it.uiState.selectedTabPosition = tab?.position ?: 0
                             viewModel.changeSelectedTab(currentTabUiModel)
+                            scrollToTabIndex(currentTabUiModel)
                         }
                     }
 
@@ -1072,5 +1073,33 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onTabSelected(element: PromoTabUiModel) {
         viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
+        scrollToTabIndex(element)
+    }
+
+    private fun scrollToTabIndex(element: PromoTabUiModel) {
+        var tmpIndex = RecyclerView.NO_POSITION
+        adapter.data.forEachIndexed { index, visitable ->
+            if (visitable is PromoEligibilityHeaderUiModel) {
+                if (visitable.uiData.tabId == element.uiData.tabs[element.uiState.selectedTabPosition].id) {
+                    tmpIndex = index
+                }
+            } else if (visitable is PromoListHeaderUiModel) {
+                if (visitable.uiData.tabId == element.uiData.tabs[element.uiState.selectedTabPosition].id) {
+                    tmpIndex = index
+                }
+            }
+        }
+
+        if (tmpIndex != RecyclerView.NO_POSITION) {
+            recyclerView?.layoutManager?.let {
+                val linearSmoothScroller = object : LinearSmoothScroller(recyclerView?.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+                linearSmoothScroller.targetPosition = tmpIndex
+                it.startSmoothScroll(linearSmoothScroller)
+            }
+        }
     }
 }
