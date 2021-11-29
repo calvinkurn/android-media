@@ -3,9 +3,14 @@ package com.tokopedia.affiliate.ui.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.affiliate.adapter.AffiliateAdapter
+import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
@@ -13,8 +18,15 @@ import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransactionDetailViewModel>() {
@@ -42,19 +54,78 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
     }
 
     private fun afterViewCreated() {
+        initRv()
         initObserver()
+        getData()
+    }
+
+    private fun getData() {
         intent?.getStringExtra(PARAM_TRANSACTION)?.let { transactionID ->
             affiliateVM.affiliateCommission(transactionID)
         }
     }
 
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+    lateinit var detailsRV : RecyclerView
+    private fun initRv() {
+        detailsRV = findViewById(R.id.details_rv)
+        detailsRV.layoutManager = LinearLayoutManager(this)
+        detailsRV.adapter = adapter
+    }
+
+
     private fun initObserver() {
         affiliateVM.getErrorMessage().observe(this , {
-
+            hideView()
+            showError(it)
         })
         affiliateVM.getCommissionData().observe(this,{
             setData(it)
         })
+        affiliateVM.getDetailList().observe(this,{
+            adapter.addMoreData(it)
+        })
+        affiliateVM.progressBar().observe(this, { visibility ->
+            if (visibility != null) {
+                if (visibility) {
+                   findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.show()
+                    hideView()
+                } else {
+                    findViewById<LoaderUnify>(R.id.affiliate_progress_bar)?.gone()
+                    showView()
+                }
+            }
+        })
+    }
+
+    private fun showError(it: Throwable?) {
+        findViewById<GlobalError>(R.id.commision_global_error).run {
+            when (it) {
+                is UnknownHostException, is SocketTimeoutException -> {
+                    setType(GlobalError.NO_CONNECTION)
+                }
+                is IllegalStateException -> {
+                    setType(GlobalError.PAGE_FULL)
+                }
+                else -> {
+                    setType(GlobalError.SERVER_ERROR)
+                }
+            }
+            show()
+            setActionClickListener {
+                hide()
+                getData()
+            }
+        }
+    }
+
+
+    private fun hideView() {
+        findViewById<Group>(R.id.details_view).hide()
+    }
+    private fun showView(){
+        findViewById<Group>(R.id.details_view).show()
+        findViewById<GlobalError>(R.id.commision_global_error).hide()
     }
 
     private fun setData(commissionData: AffiliateCommissionDetailsData.GetAffiliateCommissionDetail?) {
@@ -72,24 +143,7 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
     }
 
     private fun setCommissionDetails(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?) {
-        if(detail?.isNotEmpty() == true)
-        {
-            detail.getOrNull(0)?.let {
-                findViewById<Typography>(R.id.commission_details).text = it.detailTitle
-            }
-            detail.getOrNull(1)?.let {
-                findViewById<Typography>(R.id.transaction_total_price_header).text = it.detailTitle
-                findViewById<Typography>(R.id.transaction_total_price).text = it.detailDescription
-            }
-            detail.getOrNull(2)?.let {
-                findViewById<Typography>(R.id.transaction_komisi_header).text = it.detailTitle
-                findViewById<Typography>(R.id.transaction_komisi).text = it.detailDescription
-            }
-            detail.getOrNull(3)?.let {
-                findViewById<Typography>(R.id.transaction_total_received_header).text = it.detailTitle
-                findViewById<Typography>(R.id.transaction_total_received).text = it.detailDescription
-            }
-        }
+
     }
 
     override fun getLayoutRes(): Int = R.layout.affiliate_transaction_detail_layout

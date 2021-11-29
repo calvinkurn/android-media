@@ -30,6 +30,8 @@ class AffiliateAdapterFactory(
             AffiliateStaggeredShimmerCardItemVH.LAYOUT -> AffiliateStaggeredShimmerCardItemVH(parent)
             AffiliateStaggeredPromotionCardItemVH.LAYOUT -> AffiliateStaggeredPromotionCardItemVH(parent,promotionClickInterface)
             AffiliateTransactionHistoryItemVH.LAYOUT -> AffiliateTransactionHistoryItemVH(parent)
+            AffiliateCommissionDetailsItemVH.LAYOUT -> AffiliateCommissionDetailsItemVH(parent)
+            AffiliateCommisionDivderItemVH.LAYOUT -> AffiliateCommisionDivderItemVH(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -80,5 +82,13 @@ class AffiliateAdapterFactory(
 
     override fun type(viewModel: AffiliateTransactionHistoryItemModel): Int {
         return AffiliateTransactionHistoryItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommissionItemModel): Int {
+        return AffiliateCommissionDetailsItemVH.LAYOUT
+    }
+
+    override fun type(viewModel: AffiliateCommisionDividerItemModel): Int {
+        return AffiliateCommisionDivderItemVH.LAYOUT
     }
 }

@@ -32,7 +32,9 @@ val GQL_Affiliate_Commission: String = """query getAffiliateCommissionDetail(${"
       }
       DetailTitle             
       Detail {
-        DetailStyle            
+        TextType
+        DetailType
+        TextSize           
         DetailTitle             
         DetailTooltip          
         DetailDescription     

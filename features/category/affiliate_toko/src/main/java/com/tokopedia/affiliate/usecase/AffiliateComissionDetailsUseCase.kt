@@ -19,7 +19,7 @@ class AffiliateCommissionDetailsUseCase @Inject constructor(
         return repository.getGQLData(
             GQL_Affiliate_Commission,
             AffiliateCommissionDetailsData::class.java,
-            createRequestParams("16d106d0-38ad-43b3-9245-99cab79eb09f")
+            createRequestParams(transactionID)
         )
 
     }

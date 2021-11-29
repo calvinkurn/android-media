@@ -8,25 +8,25 @@ data class AffiliateBalance(
 ) {
     data class AffiliateBalance(
             @SerializedName("Data")
-            var `data`: Data
+            var `data`: Data?
     ) {
         data class Data(
                 @SerializedName("Amount")
-                var amount: Int,
+                var amount: String?,
                 @SerializedName("AmountFormatted")
-                var amountFormatted: String,
+                var amountFormatted: String?,
                 @SerializedName("Error")
-                var error: Error,
+                var error: Error?,
                 @SerializedName("Status")
-                var status: Int,
+                var status: Int?,
                 @SerializedName("WalletStatus")
-                var walletStatus: String
+                var walletStatus: String?
         ) {
             data class Error(
                     @SerializedName("ErrorType")
-                    var errorType: Int,
+                    var errorType: Int?,
                     @SerializedName("Message")
-                    var message: String,
+                    var message: String?,
             )
         }
     }
