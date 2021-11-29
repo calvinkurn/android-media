@@ -1277,6 +1277,8 @@ class AddEditProductVariantFragment :
         variantValueLevel2Layout.hide()
         removeSizechart()
         layoutSizechart.hide()
+        buttonAddVariantType.isEnabled = true
+        titleLayoutVariantType.isActionButtonVisible = false
     }
 
     private fun removeSizechart() {
