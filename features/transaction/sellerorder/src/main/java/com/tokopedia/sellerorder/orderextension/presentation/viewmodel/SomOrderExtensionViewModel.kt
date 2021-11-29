@@ -57,26 +57,28 @@ class SomOrderExtensionViewModel @Inject constructor(
         _requestExtensionInfo.value = somGetOrderExtensionRequestInfoMapper.createLoadingData()
     }
 
-    private fun onSuccessGetSomRequestExtensionInfo(mappedResult: OrderExtensionRequestInfoUiModel) {
-        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
-            .OnSuccessGetOrderExtensionRequest(mappedResult)
-    }
+    private suspend fun onSuccessGetSomRequestExtensionInfo(mappedResult: OrderExtensionRequestInfoUiModel) =
+        withContext(dispatcher.main) {
+            orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+                .OnSuccessGetOrderExtensionRequest(mappedResult)
+        }
 
-    private fun onFailedGetOrderExtensionRequest(errorMessage: String) {
-        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
-            .OnFailedGetOrderExtensionRequest(errorMessage)
-    }
+    private suspend fun onFailedGetOrderExtensionRequest(errorMessage: String) =
+        withContext(dispatcher.main) {
+            orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+                .OnFailedGetOrderExtensionRequest(errorMessage)
+        }
 
     private fun startSendingOrderExtensionRequest(action: (OrderExtensionRequestInfoUiModel) -> Unit) {
         orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
             .OnStartSendingOrderExtensionRequest(action)
     }
 
-    private fun onFailedSendingOrderExtensionRequest(
+    private suspend fun onFailedSendingOrderExtensionRequest(
         errorMessage: String,
         orderId: String,
         sendTracker: Boolean
-    ) {
+    ) = withContext(dispatcher.main) {
         if (sendTracker) {
             SomAnalytics.eventFinishSendOrderExtensionRequest(
                 shopId = userSession.shopId,
@@ -88,22 +90,23 @@ class SomOrderExtensionViewModel @Inject constructor(
             .OnFailedSendingOrderExtensionRequest(errorMessage)
     }
 
-    private fun onOrderExtensionRequestCompleted(message: String, orderId: String) {
-        SomAnalytics.eventFinishSendOrderExtensionRequest(
-            shopId = userSession.shopId,
-            orderId = orderId,
-            success = true
-        )
-        orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
-            .OnSuccessSendingOrderExtensionRequest(message)
-    }
+    private suspend fun onOrderExtensionRequestCompleted(message: String, orderId: String) =
+        withContext(dispatcher.main) {
+            SomAnalytics.eventFinishSendOrderExtensionRequest(
+                shopId = userSession.shopId,
+                orderId = orderId,
+                success = true
+            )
+            orderExtensionRequestInfoUpdates.value = OrderExtensionRequestInfoUpdater
+                .OnSuccessSendingOrderExtensionRequest(message)
+        }
 
     fun getSomOrderExtensionRequestInfoLoadingState() {
         onLoadSomRequestExtensionInfo()
     }
 
     fun getSomOrderExtensionRequestInfo(orderId: String) {
-        launchCatchError(block = {
+        launchCatchError(context = dispatcher.io, block = {
             val result = somGetOrderExtensionRequestInfoUseCase.execute(orderId, userSession.shopId)
             val mappedResult = somGetOrderExtensionRequestInfoMapper.mapSuccessResponseToUiModel(result)
             onSuccessGetSomRequestExtensionInfo(mappedResult)
@@ -115,7 +118,7 @@ class SomOrderExtensionViewModel @Inject constructor(
 
     fun sendOrderExtensionRequest(orderId: String) {
         startSendingOrderExtensionRequest { requestExtensionInfo ->
-            launchCatchError(block = {
+            launchCatchError(context = dispatcher.io, block = {
                 if (requestExtensionInfo.isValid()) {
                     val selectedOptionCode = requestExtensionInfo.getSelectedOptionCode()
                     val result = somSendOrderRequestExtensionUseCase.execute(

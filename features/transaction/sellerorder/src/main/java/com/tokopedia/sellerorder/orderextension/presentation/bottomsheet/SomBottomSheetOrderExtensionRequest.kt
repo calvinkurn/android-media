@@ -73,10 +73,10 @@ class SomBottomSheetOrderExtensionRequest(
     override fun show() {
         if (!data.completed) {
             (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
-                16.toPx(),
-                0,
-                16.toPx(),
-                0.toPx()
+                BOTTOM_SHEET_GAP_DEFAULT.toPx(),
+                Int.ZERO,
+                BOTTOM_SHEET_GAP_DEFAULT.toPx(),
+                BOTTOM_SHEET_GAP_DEFAULT.toPx()
             )
             super.show()
         } else {

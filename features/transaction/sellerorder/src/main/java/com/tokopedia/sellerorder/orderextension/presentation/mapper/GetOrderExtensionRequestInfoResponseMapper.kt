@@ -13,9 +13,9 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
     fun createLoadingData(): OrderExtensionRequestInfoUiModel = OrderExtensionRequestInfoUiModel(
         items = mutableListOf<OrderExtensionRequestInfoUiModel.BaseOrderExtensionRequestInfoItem>().apply {
             addOrderExtensionHeader()
-            addOrderExtensionDescriptionShimmer(resourceProvider.dpToPx(304))
-            addOrderExtensionDescriptionShimmer(resourceProvider.dpToPx(304))
-            addOrderExtensionDescriptionShimmer(resourceProvider.dpToPx(249))
+            addOrderExtensionDescriptionShimmer(resourceProvider.getLongDescriptionShimmerWidth())
+            addOrderExtensionDescriptionShimmer(resourceProvider.getLongDescriptionShimmerWidth())
+            addOrderExtensionDescriptionShimmer(resourceProvider.getShortDescriptionShimmerWidth())
             addOrderExtensionOptionsTitle()
             addOrderExtensionOptionsShimmer()
             addOrderExtensionOptionsShimmer()

@@ -7,7 +7,6 @@ import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.utils.ErrorHandler
@@ -83,5 +82,13 @@ class ResourceProvider @Inject constructor(
             .append(" ")
             .append(createBoldText(newDeadline.orEmpty()).setColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
             .append(".")
+    }
+
+    fun getLongDescriptionShimmerWidth(): Int {
+        return context.resources.getDimension(R.dimen.som_order_extension_bottom_sheet_long_description_shimmer_width).toInt()
+    }
+
+    fun getShortDescriptionShimmerWidth(): Int {
+        return context.resources.getDimension(R.dimen.som_order_extension_bottom_sheet_short_description_shimmer_width).toInt()
     }
 }

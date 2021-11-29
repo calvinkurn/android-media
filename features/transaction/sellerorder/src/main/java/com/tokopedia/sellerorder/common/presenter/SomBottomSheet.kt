@@ -34,6 +34,7 @@ abstract class SomBottomSheet <T: ViewBinding> (
     companion object {
         private const val TAG_OVERLAY_VIEW = "tag_overlay_view"
         private const val OVERLAY_LAYOUT_ANIMATION_DURATION = 300L
+        const val BOTTOM_SHEET_GAP_DEFAULT = 16
     }
 
     private var overlayLayout: View? = null
@@ -271,12 +272,12 @@ abstract class SomBottomSheet <T: ViewBinding> (
 
     private fun clearSidePadding() {
         bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper)
-            ?.setPadding(0, 16.toPx(), 0, 0)
+            ?.setPadding(Int.ZERO, BOTTOM_SHEET_GAP_DEFAULT.toPx(), Int.ZERO, Int.ZERO)
         (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
-            16.toPx(),
-            0,
-            16.toPx(),
-            16.toPx()
+            BOTTOM_SHEET_GAP_DEFAULT.toPx(),
+            Int.ZERO,
+            BOTTOM_SHEET_GAP_DEFAULT.toPx(),
+            BOTTOM_SHEET_GAP_DEFAULT.toPx()
         )
     }
 
