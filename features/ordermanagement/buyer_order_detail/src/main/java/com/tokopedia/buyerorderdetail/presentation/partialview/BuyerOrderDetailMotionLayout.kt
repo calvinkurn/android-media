@@ -7,13 +7,6 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
     context: Context,
@@ -63,13 +56,17 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
     private fun startTransitionFromErrorStateToLoadingState(onTransitionEnd: () -> Unit) {
         startTransition(R.id.error_state, R.id.error_state_loading_intermediary, {
             findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).show()
-        }, onTransitionEnd)
+        }, {
+            startTransition(R.id.error_state_loading_intermediary, R.id.loading, onTransitionEnd = onTransitionEnd)
+        })
     }
 
     private fun startTransitionFromEmptyStateErrorToLoadingState(onTransitionEnd: () -> Unit) {
         startTransition(R.id.empty_state_error, R.id.empty_state_error_loading_intermediary, {
             findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).show()
-        }, onTransitionEnd)
+        }, {
+            startTransition(R.id.empty_state_error_loading_intermediary, R.id.loading, onTransitionEnd = onTransitionEnd)
+        })
     }
 
     private fun startTransitionFromLoadingToShowContentWithStickyButton() {
@@ -142,9 +139,13 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         when (currentState) {
             R.id.initial -> startTransitionFromInitialToLoadingState(onTransitionEnd)
             R.id.error_state -> startTransitionFromErrorStateToLoadingState(onTransitionEnd)
-            R.id.empty_state_error -> startTransitionFromEmptyStateErrorToLoadingState(
-                onTransitionEnd
-            )
+            R.id.empty_state_error -> startTransitionFromEmptyStateErrorToLoadingState(onTransitionEnd)
+            else -> {
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).show()
+                onTransitionStarted = null
+                onTransitionCompleted = onTransitionEnd
+                transitionToState(R.id.loading)
+            }
         }
     }
 
@@ -152,6 +153,12 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         when (currentState) {
             R.id.loading -> startTransitionFromLoadingToShowContentWithStickyButton()
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToShowContentWithStickyButton()
+            else -> {
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                onTransitionStarted = null
+                onTransitionCompleted = null
+                transitionToState(R.id.show_content_with_sticky_button)
+            }
         }
     }
 
@@ -159,6 +166,12 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         when (currentState) {
             R.id.loading -> startTransitionFromLoadingToShowContentWithoutStickyButton()
             R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton()
+            else -> {
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                onTransitionStarted = null
+                onTransitionCompleted = null
+                transitionToState(R.id.show_content_without_sticky_button)
+            }
         }
     }
 
@@ -167,6 +180,12 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.loading -> startTransitionFromLoadingToErrorState()
             R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToErrorState()
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToErrorState()
+            else -> {
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                onTransitionStarted = null
+                onTransitionCompleted = null
+                transitionToState(R.id.error_state)
+            }
         }
     }
 
@@ -175,6 +194,12 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.loading -> startTransitionFromLoadingToEmptyStateError()
             R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToEmptyStateError()
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToEmptyStateError()
+            else -> {
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                onTransitionStarted = null
+                onTransitionCompleted = null
+                transitionToState(R.id.empty_state_error)
+            }
         }
     }
 
