@@ -38,6 +38,7 @@ import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.linker.share.DataMapper;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -260,6 +261,7 @@ public class Utils {
     private void shareDeal(Context context, String slug, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setId(slug)
+                .setDescription("")
                 .setOgUrl(null)
                 .setType(LinkerData.ENTERTAINMENT_TYPE)
                 .setName(name)
@@ -275,8 +277,8 @@ public class Utils {
                     public void urlCreated(LinkerShareResult linkerShareData) {
                         Intent share = new Intent(android.content.Intent.ACTION_SEND);
                         share.setType("text/plain");
-                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getShareContents());
-                        share.putExtra(Intent.EXTRA_HTML_TEXT, linkerShareData.getShareContents());
+                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
+                        share.putExtra(Intent.EXTRA_HTML_TEXT, linkerShareData.getUrl());
                         Intent intent = Intent.createChooser(share, context.getResources().getString(com.tokopedia.digital_deals.R.string.share_link));
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         context.startActivity(intent);
