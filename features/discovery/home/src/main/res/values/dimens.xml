@@ -59,4 +59,9 @@
     <dimen name="bu_item_small_width">120dp</dimen>
     <dimen name="bu_item_small_height">108dp</dimen>
 
+    <dimen name="ovo_corner_radius">8dp</dimen>
+    <dimen name="ovo_elevation">2dp</dimen>
+    <dimen name="ovo_default_text_size">12sp</dimen>
+    <dimen name="home_tokopoints_header">10sp</dimen>
+    <dimen name="home_balance_default_text_size">10sp</dimen>
 </resources>

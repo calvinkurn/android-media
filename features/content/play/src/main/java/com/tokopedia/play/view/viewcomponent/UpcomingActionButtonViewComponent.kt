@@ -34,34 +34,53 @@ class UpcomingActionButtonViewComponent(
     }
 
     fun onButtonClick() {
-        setButtonStatus(Status.LOADING)
         listener.onClickActionButton()
     }
 
     fun setButtonStatus(status: Status) {
         when(status) {
             Status.REMIND_ME -> {
-                button.isLoading = false
+                setButtonMode(true)
                 button.text = getString(R.string.play_remind_me)
                 show()
             }
             Status.WATCH_NOW -> {
-                button.isLoading = false
+                setButtonMode(true)
                 button.text = getString(R.string.play_watch_now)
                 show()
             }
-            Status.HIDDEN -> {
-                invisible()
+            Status.REFRESH -> {
+                setButtonMode(false)
+                button.text = getString(R.string.play_upcoming_refresh)
+                show()
             }
             Status.LOADING -> {
                 show()
                 button.isLoading = true
             }
+            Status.HIDDEN -> {
+                invisible()
+            }
+        }
+    }
+
+    private fun setButtonMode(isMain: Boolean) {
+        button.isLoading = false
+
+        if(isMain) {
+            button.buttonVariant = UnifyButton.Variant.FILLED
+            button.buttonType = UnifyButton.Type.MAIN
+            button.isInverse = false
+        }
+        else {
+            button.buttonVariant = UnifyButton.Variant.GHOST
+            button.buttonType = UnifyButton.Type.ALTERNATE
+            button.isInverse = true
         }
     }
 
     enum class Status {
-        REMIND_ME, WATCH_NOW, HIDDEN, LOADING
+        REMIND_ME, WATCH_NOW, HIDDEN, REFRESH, LOADING
     }
 
     interface Listener {

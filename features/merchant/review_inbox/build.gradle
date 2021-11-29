@@ -31,9 +31,6 @@ android {
             ]
         }
     }
-    androidExtensions {
-        experimental = true
-    }
     defaultConfig {
         multiDexEnabled true
     }
