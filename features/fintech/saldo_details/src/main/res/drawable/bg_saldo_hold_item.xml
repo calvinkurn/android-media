@@ -3,7 +3,7 @@
 
     <gradient
         android:angle="270"
-        android:centerColor="@color/saldo_info_card_center_color"
-        android:endColor="@color/saldo_info_card_end_color"
-        android:startColor="@color/saldo_info_card_start_color" />
+        android:centerColor="@color/Unify_N0"
+        android:endColor="@color/Unify_N0"
+        android:startColor="@color/Unify_G100" />
 </shape>

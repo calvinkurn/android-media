@@ -11,22 +11,24 @@ import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
+import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import com.tokopedia.topchat.chatlist.usecase.*
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertEquals
+import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-// TODO: Postponed temporarily, waiting @rifqimfahmi
 class ChatItemListViewModelTest {
 
     @get:Rule val rule = InstantTaskExecutorRule()
@@ -41,6 +43,7 @@ class ChatItemListViewModelTest {
     private val getChatListUseCase: GetChatListMessageUseCase = mockk(relaxed = true)
     private val authorizeAccessUseCase: AuthorizeAccessUseCase = mockk(relaxed = true)
     private val userSession: UserSessionInterface = mockk(relaxed = true)
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase = mockk(relaxed = true)
 
     private val mutateChatListObserver: Observer<Result<ChatListPojo>> = mockk(relaxed = true)
     private val deleteChatObserver: Observer<Result<ChatDelete>> = mockk(relaxed = true)
@@ -59,6 +62,7 @@ class ChatItemListViewModelTest {
             unpinChatUseCase,
             getChatListUseCase,
             authorizeAccessUseCase,
+            moveChatToTrashUseCase,
             userSession,
             Dispatchers.Unconfined
     )
@@ -89,10 +93,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, 0, PARAM_TAB_USER)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage as buyer should return chat list of messages`() {
@@ -111,10 +112,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, BUYER)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage as seller should return chat list of messages`() {
@@ -139,10 +137,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, SELLER)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage as undefined should return chat list of messages as buyer`() {
@@ -161,10 +156,7 @@ class ChatItemListViewModelTest {
         viewModel.getChatListMessage(0, -1)
 
         // then
-        verify(exactly = 1) {
-            mutateChatListObserver.onChanged(expectedValue)
-            assertEquals(expectedValue, viewModel.mutateChatList.value)
-        }
+        assertThat(viewModel.mutateChatList.value, `is`(expectedValue))
     }
 
     @Test fun `getChatListMessage should throw the Fail state`() {
@@ -295,7 +287,66 @@ class ChatItemListViewModelTest {
         assert(viewModel.isChatAdminEligible.value is Fail)
     }
 
+    @Test
+    fun `on success delete chat`() {
+        // Given
+        val successDelete = ChatDelete(
+            isSuccess = 1, detailResponse = "", messageId = exMessageId.toLong())
+        val result = ChatDeleteStatus().apply {
+            this.chatMoveToTrash.list = listOf(successDelete)
+        }
+
+        coEvery {
+            moveChatToTrashUseCase.execute(exMessageId)
+        } returns result
+
+        // When
+        viewModel.chatMoveToTrash(exMessageId)
+
+        // Then
+        val actualResult = (viewModel.deleteChat.value as Success).data.isSuccess
+        assertTrue(actualResult == successDelete.isSuccess)
+    }
+
+    @Test
+    fun `on failed to delete chat`() {
+        // Given
+        val failedDelete = ChatDelete(
+            isSuccess = 0, detailResponse = "Error", messageId = exMessageId.toLong())
+        val result = ChatDeleteStatus().apply {
+            this.chatMoveToTrash.list = listOf(failedDelete)
+        }
+
+        coEvery {
+            moveChatToTrashUseCase.execute(exMessageId)
+        } returns result
+
+        // When
+        viewModel.chatMoveToTrash(exMessageId)
+
+        // Then
+        val actualResult = (viewModel.deleteChat.value as Fail).throwable.message
+        assertTrue(actualResult == failedDelete.detailResponse)
+    }
+
+    @Test
+    fun `on error delete chat`() {
+        // Given
+        val throwable = Throwable("Oops!")
+        coEvery {
+            moveChatToTrashUseCase.execute(exMessageId)
+        } throws throwable
+
+        // When
+        viewModel.chatMoveToTrash(exMessageId)
+
+        // Then
+        val actualResult = (viewModel.deleteChat.value as Fail).throwable.message
+        assertTrue(actualResult == throwable.message)
+    }
+
     companion object {
+        private const val exMessageId = "190378584"
         private val getChatList: ChatListPojo = FileUtil.parse(
                 "/success_get_chat_list.json",
                 ChatListPojo::class.java

@@ -60,13 +60,13 @@ class GetMultiLineGraphUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetMultiLineGraphResponse>(SUCCESS_RESPONSE)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val data = getMultiLineGraphUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(!data.isNullOrEmpty())
@@ -78,14 +78,14 @@ class GetMultiLineGraphUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetMultiLineGraphResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val multiLineGraphData = getMultiLineGraphUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(multiLineGraphData.isNullOrEmpty())

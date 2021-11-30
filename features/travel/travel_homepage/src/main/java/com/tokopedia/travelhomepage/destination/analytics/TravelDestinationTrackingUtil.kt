@@ -17,6 +17,7 @@ import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrack
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingActionConstant.DEALS_WIDGET_IMPRESSION
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingActionConstant.EVENTS_WIDGET_IMPRESSION
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingCategoryConstant.TRAVEL_HOMEPAGE_DESTINATION_CATEGORY
+import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingEventNameConstant.CLICK_HOMEPAGE
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingEventNameConstant.PRODUCT_CLICK
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingEventNameConstant.PRODUCT_VIEW
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingEventNameConstant.PROMO_CLICK
@@ -45,7 +46,6 @@ import com.tokopedia.travelhomepage.destination.analytics.TravelHomepageTracking
 import com.tokopedia.travelhomepage.destination.analytics.TravelHomepageTrackingEEConstant.PROMOTIONS
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
-import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingEventNameConstant.CLICK_HOMEPAGE
 
 /**
  * @author by jessica on 2020-01-13

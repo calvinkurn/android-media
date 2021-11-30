@@ -4,6 +4,7 @@
     <dimen name="sah_medium_widget_height">180dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
     <dimen name="sah_status_bar_elevation">4dp</dimen>
+    <dimen name="sah_keyboard_height_estimation">200dp</dimen>
     <dimen name="sah_dimen_1dp">1dp</dimen>
     <dimen name="sah_dimen_4dp">4dp</dimen>
     <dimen name="sah_dimen_5dp">5dp</dimen>
@@ -32,25 +33,22 @@
     <dimen name="setting_topads_description_padding_horizontal">3dp</dimen>
     <dimen name="setting_topads_button_margin">20dp</dimen>
     <dimen name="setting_topads_padding_bottom">30dp</dimen>
+    <dimen name="setting_logout_margin_start">60dp</dimen>
 
     // centralized promo
     <dimen name="centralized_promo_dimen_minus_2dp">-2dp</dimen>
     <dimen name="centralized_promo_dimen_minus_4dp">-4dp</dimen>
     <dimen name="centralized_promo_on_going_divider_height">1dp</dimen>
-    <dimen name="centralized_promo_post_desc_top_margin">3dp</dimen>
     <dimen name="centralized_promo_on_going_item_margin">2dp</dimen>
     <dimen name="centralized_promo_dimen_4dp">4dp</dimen>
     <dimen name="centralized_promo_dimen_10dp">10dp</dimen>
-    <dimen name="centralized_promo_post_title_left_margin">12dp</dimen>
     <dimen name="centralized_promo_dimen_12dp">12dp</dimen>
     <dimen name="centralized_promo_text_shimmer_height_12dp">12dp</dimen>
     <dimen name="centralized_promo_promo_creation_desc_line_height">18sp</dimen>
-    <dimen name="centralized_promo_post_widget_horizontal_margin">10dp</dimen>
     <dimen name="centralized_promo_on_going_caret_icon_size">18dp</dimen>
     <dimen name="centralized_promo_text_shimmer_height_18dp">18dp</dimen>
     <dimen name="centralized_promo_promo_creation_icon_size">56dp</dimen>
     <dimen name="centralized_promo_promo_creation_card_top_margin">28dp</dimen>
-    <dimen name="centralized_promo_post_item_image_size">50dp</dimen>
     <dimen name="centralized_promo_image_shimmer_height_150dp">150dp</dimen>
     <dimen name="centralized_promo_on_going_promo_item_width">160dp</dimen>
     <dimen name="centralized_promo_text_shimmer_width_200dp">200dp</dimen>
@@ -61,4 +59,22 @@
     <dimen name="centralized_promo_first_voucher_bottomsheet_item_title_margin_start">12dp</dimen>
     <dimen name="centralized_promo_first_voucher_bottomsheet_item_padding_bottom">24dp</dimen>
     <dimen name="centralized_promo_first_voucher_bottomsheet_padding_bottom">24dp</dimen>
+
+    <dimen name="sah_new_other_shop_avatar_border">1.5dp</dimen>
+    <dimen name="sah_new_other_balance_card_height">74dp</dimen>
+    <dimen name="sah_new_other_topads_auto_debit_fold_width">6dp</dimen>
+    <dimen name="sah_new_other_topads_auto_debit_fold_translation_y">-1dp</dimen>
+    <dimen name="sah_new_other_topads_auto_debit_icon_padding">5.5dp</dimen>
+    <dimen name="sah_new_other_header_background_height">154dp</dimen>
+    <dimen name="sah_new_other_shop_secondary_info_height">72dp</dimen>
+    <dimen name="sah_new_other_item_shop_info_margin">2dp</dimen>
+    <dimen name="sah_new_other_item_shop_shimmer_title_width">78dp</dimen>
+    <dimen name="sah_new_other_item_shop_shimmer_desc_width">112dp</dimen>
+    <dimen name="sah_new_other_item_shop_shimmer_width">92dp</dimen>
+    <dimen name="sah_new_other_item_error_margin">6dp</dimen>
+    <dimen name="sah_new_other_item_shop_follower_shimmer_width">62dp</dimen>
+    <dimen name="sah_new_other_header_shop_name_margin_bottom">11dp</dimen>
+    <dimen name="sah_new_other_header_share_width">18dp</dimen>
+    <dimen name="sah_new_other_layout_animation_start_margin_top">200dp</dimen>
+    <dimen name="sah_new_other_balance_info_shimmer_width">112dp</dimen>
 </resources>

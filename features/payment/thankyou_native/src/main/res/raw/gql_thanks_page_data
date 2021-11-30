@@ -1,5 +1,5 @@
-query ThanksPageData($paymentID : Int!, $merchant: String!){
-  thanksPageData(paymentID: $paymentID, merchant: $merchant){
+query ThanksPageData($paymentIDStr : String!, $merchant: String!){
+  thanksPageData(paymentIDStr: $paymentIDStr, merchant: $merchant){
     current_site
     business_unit
     merchant_code
@@ -18,6 +18,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
     order_amount_str
     amount
     amount_str
+    combine_amount
     payment_items{
         item_name
         item_desc
@@ -35,6 +36,8 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        gateway_name
        amount
        amount_str
+       amount_combine
+       amount_combine_str
     }
     promo_data {
         promo_code
@@ -68,6 +71,15 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
             thumbnail_product
             bebas_ongkir_dimension
             is_bbi
+            category_id
+            bundle_group_id
+        }
+        bundle_group_data {
+          group_id
+          icon
+          title
+          total_price
+          total_price_str
         }
         shipping_amount
         shipping_amount_str

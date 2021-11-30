@@ -1,9 +1,10 @@
 package com.tokopedia.sellerapp;
 
+import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -18,12 +19,9 @@ import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.applink.order.DeeplinkMapperOrder;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -33,13 +31,10 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.device.info.DeviceScreenInfo;
@@ -57,26 +52,21 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
-import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.fcm.di.DaggerGcmUpdateComponent;
 import com.tokopedia.sellerapp.fcm.di.GcmUpdateComponent;
-import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
-import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.sellerorder.common.presenter.fragments.SomContainerFragment;
-import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -88,6 +78,7 @@ import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -100,10 +91,6 @@ import javax.inject.Inject;
 import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Response;
-import timber.log.Timber;
-
-import static com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome.QUERY_PARAM_SEARCH;
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -152,7 +139,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this, true);
     }
 
     private boolean initLibraries(){
@@ -185,6 +172,7 @@ public abstract class SellerRouterApplication extends MainApplication implements
         excludeScreenList.add(Constants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override
@@ -226,45 +214,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = getHomeClass();
-        mNotificationPass.title = notifTitle;
-        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        return mNotificationPass;
-    }
-
-    private Intent getInboxReputationIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
-    }
-
-    @Override
-    public Intent getHomeIntent(Context context) {
-        UserSessionInterface userSession = new UserSession(context);
-        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalSellerapp.WELCOME);
-        if (userSession.isLoggedIn()) {
-            if (userSession.hasShop()) {
-                return SellerHomeActivity.createIntent(context);
-            } else {
-                return intent;
-            }
-        } else {
-            return intent;
-        }
-    }
-
-    @Override
-    public Class<?> getHomeClass() {
-        UserSessionInterface userSession = new UserSession(context);
-        if (userSession.isLoggedIn()) {
-            return SellerHomeActivity.class;
-        } else {
-            return SellerOnboardingBridgeActivity.class;
-        }
-    }
-
-    @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return null;
     }
@@ -278,7 +227,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     }
 
     private void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();
@@ -352,23 +300,12 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        if (context instanceof Activity) {
-            deepLinkDelegate.dispatchFrom((Activity) context, intent);
-        } else {
-            context.startActivity(intent);
-        }
+        RouteManager.route(context, applink);
     }
 
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        return intent;
+        return RouteManager.getIntent(context, applink);
     }
 
     @Override
@@ -415,34 +352,19 @@ public abstract class SellerRouterApplication extends MainApplication implements
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext(), true);
     }
 
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
-        if (activity != null) {
-            DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-            Intent intent = activity.getIntent();
-            intent.setData(Uri.parse(applink));
-            intent.putExtras(bundle);
-            deepLinkDelegate.dispatchFrom(activity, intent);
-        }
+        Intent intent = RouteManager.getIntent(activity, applink);
+        intent.putExtras(bundle);
+        activity.startActivity(intent);
     }
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLink);
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return null;
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(@NonNull Context context) {
-        return TalkInboxActivity.Companion.createIntent(context);
+        return false;
     }
 
     @Override
@@ -458,11 +380,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     @Override
     public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
         return remoteConfig.getBoolean(key, defaultValue);
-    }
-
-    @Override
-    public Class getDeeplinkClass() {
-        return DeepLinkActivity.class;
     }
 
     @Override
@@ -492,11 +409,11 @@ public abstract class SellerRouterApplication extends MainApplication implements
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage, int orderType, String searchKeyword, String orderId) {
+    public Fragment getSomListFragment(@NotNull Context context, @Nullable String tabPage, @NotNull String orderType, @NotNull String searchKeyword, @NotNull String orderId) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
-        bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
+        bundle.putString(SomConsts.FILTER_ORDER_TYPE, orderType);
         bundle.putString(QUERY_PARAM_SEARCH, searchKeyword);
         if (DeviceScreenInfo.isTablet(context)) {
             if (orderId != null && orderId.trim().length() > 0) {
@@ -529,34 +446,6 @@ public abstract class SellerRouterApplication extends MainApplication implements
     public void setOnboardingStatus(boolean status) {
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
-    }
-    private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
-    private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
-        return Class.forName(activityFullPath);
     }
 
     private Boolean isOldGcmUpdate() {

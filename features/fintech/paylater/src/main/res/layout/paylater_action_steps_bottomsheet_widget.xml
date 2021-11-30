@@ -31,13 +31,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_8"
         android:layout_marginBottom="@dimen/unify_space_16"
-        android:text="@string/pay_later_default_subtitle"
+        android:text="@string/pay_later_action_find_more"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/tickerPaylaterRegister"
         app:layout_constraintStart_toStartOf="@id/tickerPaylaterRegister"
         app:layout_constraintTop_toBottomOf="@+id/rvPayLaterRegisterSteps"
         app:unifyButtonSize="small"
-        app:unifyButtonType="main"
-        app:unifyButtonVariant="filled" />
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,5 +12,5 @@ data class Wholesale(
 
 data class WholesalePrice(
         @SerializedName("value")
-        val value: Int = 0
+        val value: Double = 0.0
 )

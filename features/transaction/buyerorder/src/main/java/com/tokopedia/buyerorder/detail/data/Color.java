@@ -13,11 +13,7 @@ public class Color {
     @SerializedName("textColor")
     @Expose
     private String textColor;
-    public Color(String border, String background, String textColor) {
-        this.border = border;
-        this.background = background;
-        this.textColor = textColor;
-    }
+
     public String border(){
         return border;
     }

@@ -1,0 +1,452 @@
+[
+  {
+    "data": {
+      "pdpGetData": {
+        "bebasOngkir": {
+          "images": [
+            {
+              "boType": 0,
+              "imageURL": "",
+              "tokoCabangImageURL": ""
+            }
+          ],
+          "products": [
+            {
+              "boType": 0,
+              "productID": "1994427768"
+            },
+            {
+              "boType": 0,
+              "productID": "1994427771"
+            },
+            {
+              "boType": 0,
+              "productID": "1994427770"
+            },
+            {
+              "boType": 0,
+              "productID": "1994427769"
+            }
+          ]
+        },
+        "cartRedirection": {
+          "alternate_copy": [
+            {
+              "cart_type": "remind_me",
+              "color": "secondary_gray",
+              "text": "Cek Wishlist Kamu"
+            },
+            {
+              "cart_type": "update_cart",
+              "color": "primary_green",
+              "text": "Simpan Perubahan"
+            }
+          ],
+          "data": [
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1994427767",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1994427768",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1994427769",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1994427770",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            },
+            {
+              "available_buttons": [
+                {
+                  "cart_type": "occ",
+                  "color": "secondary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": false,
+                  "text": "Beli Langsung"
+                },
+                {
+                  "cart_type": "normal",
+                  "color": "primary_green",
+                  "onboarding_message": "",
+                  "show_recommendation": true,
+                  "text": "+ Keranjang"
+                }
+              ],
+              "hide_floating_button": false,
+              "product_id": "1994427771",
+              "unavailable_buttons": [
+                "byme"
+              ]
+            }
+          ],
+          "error_message": [],
+          "status": "OK"
+        },
+        "error": {
+          "Code": 0,
+          "DevMessage": "",
+          "Message": ""
+        },
+        "installmentCalculation": {
+          "data": {
+            "credit_card": [],
+            "non_credit_card": [],
+            "tnc": []
+          },
+          "message": ""
+        },
+        "installmentRecommendation": {
+          "data": {
+            "monthly_price": 0,
+            "os_monthly_price": 0,
+            "partner_code": "",
+            "subtitle": ""
+          }
+        },
+        "merchantVoucherSummary": {
+          "imageURL": "",
+          "isShown": false,
+          "subtitle": "",
+          "title": []
+        },
+        "mostHelpFulReviewData": {
+          "list": []
+        },
+        "nearestWarehouse": [
+          {
+            "product_id": "1994427768",
+            "warehouse_info": {
+              "district_id": "2229",
+              "geolocation": "",
+              "is_fulfillment": false,
+              "postal_code": "16421",
+              "warehouse_id": "10301916"
+            }
+          },
+          {
+            "product_id": "1994427769",
+            "warehouse_info": {
+              "district_id": "2229",
+              "geolocation": "",
+              "is_fulfillment": false,
+              "postal_code": "16421",
+              "warehouse_id": "10301916"
+            }
+          },
+          {
+            "product_id": "1994427770",
+            "warehouse_info": {
+              "district_id": "2229",
+              "geolocation": "",
+              "is_fulfillment": false,
+              "postal_code": "16421",
+              "warehouse_id": "10301916"
+            }
+          },
+          {
+            "product_id": "1994427771",
+            "warehouse_info": {
+              "district_id": "2229",
+              "geolocation": "",
+              "is_fulfillment": false,
+              "postal_code": "16421",
+              "warehouse_id": "10301916"
+            }
+          }
+        ],
+        "ppGetItemDetailPage": {
+          "program": {
+            "iconURL": "",
+            "isAppLink": true,
+            "linkURL": "",
+            "partnerLogo": "",
+            "partnerText": "",
+            "protectionAvailable": false,
+            "subTitle": "",
+            "subTitlePDP": "",
+            "title": "",
+            "titlePDP": ""
+          }
+        },
+        "productView": "110",
+        "ratesEstimate": [
+          {
+            "bottomsheet": {
+              "buttonCopy": "",
+              "iconURL": "",
+              "subtitle": "",
+              "title": ""
+            },
+            "data": {
+              "cheapestShippingPrice": 43000,
+              "courierLabel": "",
+              "destination": "Dikirim ke <b>Bontoala, Kota Makassar</b>",
+              "eTAText": "Estimasi tiba 15 - 17 Aug",
+              "errors": [],
+              "icon": "https://ecs7.tokopedia.net/img/pdp/info/icon/courier@3x.png",
+              "subtitle": "Kurir lainnya: ",
+              "title": "Ongkir Reguler 43 rb",
+              "totalService": 2
+            },
+            "products": [
+              "1994427768",
+              "1994427769",
+              "1994427770",
+              "1994427771",
+              "1994427767"
+            ],
+            "warehouseID": "10301916"
+          }
+        ],
+        "reputationShop": {
+          "badge": "https://ecs7.tokopedia.net/img/repsys/badges-off.jpg",
+          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg",
+          "score": "0",
+          "scoreMap": "0"
+        },
+        "restrictionInfo": {
+          "message": "",
+          "restrictionData": []
+        },
+        "reviewImage": {
+          "detail": {
+            "imageCount": "",
+            "imageCountFmt": "",
+            "images": [],
+            "reviews": []
+          },
+          "hasNext": false,
+          "hasPrev": false,
+          "list": []
+        },
+        "shopCommitment": {
+          "error": {
+            "message": ""
+          },
+          "result": {
+            "isNowActive": false,
+            "staticMessages": {
+              "pdpMessage": ""
+            }
+          }
+        },
+        "shopFeature": {
+          "IsGoApotik": false
+        },
+        "shopInfo": {
+          "activeProduct": "0",
+          "badgeURL": "",
+          "closedInfo": {
+            "closedNote": "",
+            "detail": {
+              "openDateUTC": "0"
+            },
+            "reason": "",
+            "until": ""
+          },
+          "createInfo": {
+            "epochShopCreated": "1606308355",
+            "epochShopCreatedUTC": "1606283155",
+            "openSince": "November 2020",
+            "shopCreated": "2020-11-25"
+          },
+          "isAllowManage": 0,
+          "isFreeReturns": 0,
+          "location": "Kota Depok",
+          "shipmentInfo": [
+            {
+              "awbStatus": 0,
+              "code": "jne",
+              "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+              "isAvailable": 1,
+              "isPickup": 0,
+              "maxAddFee": 0,
+              "name": "JNE",
+              "product": [
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "Reguler",
+                  "shipProdID": "1",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "OKE",
+                  "shipProdID": "2",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "YES",
+                  "shipProdID": "6",
+                  "uiHidden": false
+                },
+                {
+                  "additionalFee": "0.000000",
+                  "isAvailable": 1,
+                  "minimumWeight": "0.000000",
+                  "productName": "JNE Trucking",
+                  "shipProdID": "22",
+                  "uiHidden": false
+                }
+              ],
+              "shipmentID": "1"
+            }
+          ],
+          "shippingLoc": {
+            "addressStreet": "",
+            "cityID": "0",
+            "cityName": "",
+            "countryName": "",
+            "districtID": "0",
+            "districtName": "",
+            "latitude": "",
+            "longitude": "",
+            "postalCode": "",
+            "provinceID": "0",
+            "provinceName": ""
+          },
+          "shopAssets": {
+            "avatar": "https://images.tokopedia.net/img/seller_no_logo_0.png",
+            "cover": "https://images.tokopedia.net/img/cache/1334/BpoSLE/seller_no_cover_0.png"
+          },
+          "shopCore": {
+            "description": "",
+            "domain": "qa-zxccv01",
+            "name": "qa-zxccv01",
+            "shopID": "10241240",
+            "tagLine": "",
+            "url": "https://www.tokopedia.com/qa-zxccv01"
+          },
+          "shopLastActive": "1628740138",
+          "shopStats": {
+            "productSold": "7",
+            "totalShowcase": "2",
+            "totalTx": "8"
+          },
+          "shopTerms": "0",
+          "shopTier": 0,
+          "shopType": 1,
+          "statusInfo": {
+            "isIdle": false,
+            "shopStatus": 1,
+            "statusMessage": "",
+            "statusTitle": ""
+          }
+        },
+        "shopPackSpeed": {
+          "hour": 0,
+          "speedFmt": "Tidak ada data"
+        },
+        "shopRatingsQuery": {
+          "ratingScore": 0
+        },
+        "shopTopChatSpeed": {
+          "messageResponseTime": "> 1 jam"
+        },
+        "uniqueSellingPoint": {
+          "bebasOngkirExtra": {
+            "icon": "https://images.tokopedia.net/img/pdp/icon/usp/boextoped.png"
+          }
+        },
+        "upcomingCampaigns": [],
+        "validateTradeIn": {
+          "isDiagnosed": false,
+          "isEligible": false,
+          "message": "",
+          "remainingPrice": "0",
+          "useKyc": false,
+          "usedPrice": "0",
+          "widgetString": ""
+        },
+        "wishlistCount": "0"
+      }
+    }
+  }
+]

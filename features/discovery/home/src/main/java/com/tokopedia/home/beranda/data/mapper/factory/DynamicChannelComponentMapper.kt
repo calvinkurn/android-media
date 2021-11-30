@@ -15,6 +15,14 @@ object DynamicChannelComponentMapper {
                 contextualInfo = channel.contextualInfo,
                 widgetParam = channel.widgetParam,
                 pageName = channel.pageName,
+                channelViewAllCard = ChannelViewAllCard(
+                        id = channel.viewAllCard.id,
+                        contentType = channel.viewAllCard.contentType,
+                        description = channel.viewAllCard.description,
+                        title = channel.viewAllCard.title,
+                        imageUrl = channel.viewAllCard.imageUrl,
+                        gradientColor = channel.viewAllCard.gradientColor
+                ),
                 channelHeader = ChannelHeader(
                         channel.header.id,
                         channel.header.name,

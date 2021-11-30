@@ -4,14 +4,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.DrawableMatcher
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
+import com.tokopedia.topchat.stub.common.RemoteConfigStub
 import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 
+@UiTest
 class TopchatRoomTemplateTest : TopchatRoomTest() {
 
     @Test
@@ -20,30 +23,28 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Hi barang ini ready gk?", "Lorem Ipsum"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // When
         clickTemplateChatAt(0)
 
         // Then
         assertTemplateChatVisibility(isDisplayed())
-        onView(withId(R.id.new_comment)).check(
-                matches(withText(" Hi barang ini ready gk? "))
-        )
+        assertComposedTextValue(" Hi barang ini ready gk? ")
     }
 
     @Test
     fun template_chat_hidden_if_disabled() {
         // Given
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(enable = false)
-        inflateTestFragment()
+        launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // Then
 
@@ -56,19 +57,17 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Hi barang ini ready gk?", "Lorem Ipsum"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // When
         clickTemplateChatAt(0)
 
         // Then
-        onView(withId(R.id.new_comment)).check(
-                matches(withText(" Hi barang ini ready gk? "))
-        )
+        assertComposedTextValue(" Hi barang ini ready gk? ")
         DrawableMatcher.compareDrawable(R.id.send_but, R.drawable.bg_topchat_send_btn)
     }
 
@@ -78,26 +77,33 @@ class TopchatRoomTemplateTest : TopchatRoomTest() {
         val templateChats = listOf(
                 "Test"
         )
-        setupChatRoomActivity()
         getChatUseCase.response = firstPageChatAsBuyer
         chatAttachmentUseCase.response = chatAttachmentResponse
         getTemplateChatRoomUseCase.response = generateTemplateResponse(templates = templateChats)
-        inflateTestFragment()
+        launchChatRoomActivity()
+        setupRemoteConfigValue(false)
 
         // When
         val count = activityTestRule.activity
-                .findViewById<RecyclerView>(R.id.recycler_view)
+                .findViewById<RecyclerView>(R.id.recycler_view_chatroom)
                 .adapter?.itemCount?: 0
         clickTemplateChatAt(0)
         clickSendBtn()
 
         // Then
         onView(
-                withRecyclerView(R.id.recycler_view).atPositionOnView(
+                withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
                         0, R.id.tvMessage
                 ))
                 .check(matches(withText("Test ")))
-        onView(withId(R.id.recycler_view)).check(matches(withTotalItem(count+1)))
-        onView(withId(R.id.new_comment)).check(matches(withText("")))
+        onView(withId(R.id.recycler_view_chatroom)).check(matches(withTotalItem(count+1)))
+        assertComposedTextValue("")
+    }
+
+    //Setup remoteconfig for toggle flexmode/not
+    private fun setupRemoteConfigValue(isFlexMode: Boolean) {
+        val remoteConfigStub = RemoteConfigStub()
+        remoteConfigStub.setBooleanResult(isFlexMode)
+        activity.remoteConfig = remoteConfigStub
     }
 }

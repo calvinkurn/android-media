@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.createreputation.presentation.fragment
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.review.common.data.ProductrevReviewAttachment
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
@@ -55,10 +55,10 @@ abstract class CreateReviewViewModelTestFixture {
             ProductrevReviewAttachment("ImageUrl4", "ImageUrl4"),
             ProductrevReviewAttachment("ImageUrl5", "ImageUrl5")
     )
-    protected val feedbackID = ArgumentMatchers.anyLong()
-    protected val reputationId = ArgumentMatchers.anyLong()
-    protected val productId = ArgumentMatchers.anyLong()
-    protected val shopId = ArgumentMatchers.anyLong()
+    protected val feedbackID = ArgumentMatchers.anyString()
+    protected val reputationId = ArgumentMatchers.anyString()
+    protected val productId = ArgumentMatchers.anyString()
+    protected val shopId = ArgumentMatchers.anyString()
     protected val reputationScore = ArgumentMatchers.anyInt()
     protected val rating = ArgumentMatchers.anyInt()
     protected val review = ArgumentMatchers.anyString()

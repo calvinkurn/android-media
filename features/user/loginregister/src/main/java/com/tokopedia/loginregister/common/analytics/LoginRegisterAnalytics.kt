@@ -287,21 +287,6 @@ class LoginRegisterAnalytics @Inject constructor(
                 map, applicationContext)
     }
 
-    //#13
-    fun eventClickLoginFacebook(applicationContext: Context) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                ACTION_LOGIN_FACEBOOK,
-                "click"
-        ))
-
-        val map = HashMap<String, Any>()
-        map[FirebaseParams.Home.LANDING_SCREEN_NAME] = "Facebook"
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.LOGIN_PAGE_CLICK_LOGIN_FACEBOOK,
-                map, applicationContext)
-    }
-
     //#15
     fun trackOnBackPressed() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -416,21 +401,6 @@ class LoginRegisterAnalytics @Inject constructor(
                 "click on masuk",
                 ""
         ))
-    }
-
-    fun eventClickRegisterFacebook(applicationContext: Context) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER,
-                ACTION_CLICK_CHANNEL,
-                LABEL_FACEBOOK
-        ))
-
-        val map = HashMap<String, Any>()
-        map[FirebaseParams.Home.LANDING_SCREEN_NAME] = "Facebook"
-        TrackAnalytics.sendEvent(FirebaseEvent.Home.SIGNUP_PAGE_CLICK_FACEBOOK,
-                map, applicationContext)
-
     }
 
     fun eventClickRegisterGoogle(applicationContext: Context) {
@@ -567,13 +537,6 @@ class LoginRegisterAnalytics @Inject constructor(
                     onSuccessLoginWithEmailSmartRegister()
                 }
             }
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> {
-                if (!isFromRegister) {
-                    onSuccessLoginWithFacebook()
-                } else {
-                    onSuccessLoginWithFacebookSmartRegister()
-                }
-            }
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> {
                 if (!isFromRegister) {
                     onSuccessLoginWithGoogle()
@@ -608,25 +571,6 @@ class LoginRegisterAnalytics @Inject constructor(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_PAGE,
                 ACTION_CLICK_ON_BUTTON_DAFTAR_PHONE,
-                LABEL_LOGIN_SUCCESS
-        ))
-    }
-
-    //#13
-    private fun onSuccessLoginWithFacebook() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                ACTION_LOGIN_FACEBOOK,
-                "success"
-        ))
-    }
-
-    private fun onSuccessLoginWithFacebookSmartRegister() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_PAGE,
-                ACTION_LOGIN_FACEBOOK,
                 LABEL_LOGIN_SUCCESS
         ))
     }
@@ -686,13 +630,6 @@ class LoginRegisterAnalytics @Inject constructor(
                     onErrorLoginWithPhone(errorMessage)
                 }
             }
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> {
-                if (isFromRegister) {
-                    onErrorLoginWithFacebookSmartRegister(errorMessage)
-                } else {
-                    onErrorLoginWithFacebook(errorMessage)
-                }
-            }
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> {
                 if (isFromRegister) {
                     onErrorLoginWithGoogleSmartRegister(errorMessage)
@@ -721,15 +658,6 @@ class LoginRegisterAnalytics @Inject constructor(
         ))
     }
 
-    private fun onErrorLoginWithFacebookSmartRegister(errorMessage: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_REGISTER,
-                CATEGORY_REGISTER_PAGE,
-                "click on button $FACEBOOK",
-                LABEL_FAILED + errorMessage
-        ))
-    }
-
     private fun onErrorLoginWithGoogleSmartRegister(errorMessage: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
@@ -745,16 +673,6 @@ class LoginRegisterAnalytics @Inject constructor(
                 CATEGORY_LOGIN_PAGE,
                 ACTION_CLICK_ON_LOGIN_WITH_PHONE,
                 LABEL_FAILED + errorMessage
-        ))
-    }
-
-    //#13
-    private fun onErrorLoginWithFacebook(errorMessage: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                "click on masuk dengan $FACEBOOK",
-                String.format("failed - %s", errorMessage)
         ))
     }
 
@@ -867,7 +785,6 @@ class LoginRegisterAnalytics @Inject constructor(
     fun getLoginMethodMoengage(loginMethod: String?): String? {
         return when (loginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> "Email"
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> "Facebook"
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> "Google"
             UserSessionInterface.LOGIN_METHOD_PHONE -> "Phone Number"
             else -> loginMethod
@@ -903,9 +820,6 @@ class LoginRegisterAnalytics @Inject constructor(
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> {
                 trackerSuccessRegisterSmartLoginGoogle()
             }
-            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> {
-                trackerSuccessRegisterSmartLoginFacebook()
-            }
         }
     }
 
@@ -933,16 +847,64 @@ class LoginRegisterAnalytics @Inject constructor(
                 "success"
         ))
     }
-    private fun trackerSuccessRegisterSmartLoginFacebook() {
+
+    fun eventSuccessLoginFromChooseAccount(actionLoginMethod: String, isFromRegister: Boolean) {
+        // old tracker from choose account flow
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_LOGIN_CLICK,
-                CATEGORY_LOGIN_PAGE,
-                ACTION_LOGIN_FACEBOOK,
-                "success"
+            EVENT_CLICK_LOGIN,
+            Category.LOGIN_WITH_PHONE,
+            Action.LOGIN_SUCCESS,
+            Label.TOKOCASH
         ))
     }
 
+    /* Tracker no.9 */
+    fun trackClickBiometricLoginBtn(){
+        val data = TrackAppUtils.gtmData(
+            EVENT_CLICK_LOGIN,
+            CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_LOGIN_FINGERPRINT,
+            "click")
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    /* Tracker no.5 */
+    fun trackOnLoginFingerprintSuccess(){
+        val data = TrackAppUtils.gtmData(
+            EVENT_CLICK_LOGIN,
+            CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_LOGIN_FINGERPRINT,
+            LABEL_SUCCESS)
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    /* Tracker no.1 - Failed */
+    fun trackOnLoginFingerprintFailed(errMsg: String){
+        val data = TrackAppUtils.gtmData(
+            EVENT_CLICK_LOGIN,
+            CATEGORY_LOGIN_PAGE,
+            ACTION_CLICK_LOGIN_FINGERPRINT,
+            "$LABEL_FAILED - $errMsg")
+
+        data[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
+        data[KEY_CURRENT_SITE] = CURRENT_SITE
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
     companion object {
+
+        private const val KEY_BUSINESS_UNIT = "businessUnit"
+        private const val KEY_CURRENT_SITE = "currentSite"
+
+        private const val BUSSINESS_UNIT = "user platform"
+        private const val CURRENT_SITE = "tokopediamarketplace"
+
 
         val SCREEN_LOGIN = "Login page"
         val SCREEN_ACCOUNT_ACTIVATION = "Account Activation Page"
@@ -970,6 +932,7 @@ class LoginRegisterAnalytics @Inject constructor(
         private val CATEGORY_LOGIN_PAGE = "login page"
         private val CATEGORY_LOGIN_PAGE_SMART_LOCK = "login page smart lock"
 
+        const val ACTION_CLICK_LOGIN_FINGERPRINT = "click on masuk dengan fingerprint"
 
         private val ACTION_REGISTER = "Register"
         private val ACTION_LOGIN_ERROR = "Login Error"
@@ -978,7 +941,6 @@ class LoginRegisterAnalytics @Inject constructor(
         private val ACTION_CLICK_CHANNEL = "Click Channel"
         private val ACTION_REGISTER_SUCCESS = "Register Success"
         private val ACTION_LOGIN_EMAIL = "click on button masuk"
-        private val ACTION_LOGIN_FACEBOOK = "click on masuk dengan facebook"
         private val ACTION_LOGIN_GOOGLE = "click on masuk dengan google"
         private val ACTION_TICKER_LOGIN = "click on ticker login"
         private val ACTION_LINK_TICKER_LOGIN = "click ticker link"
@@ -996,7 +958,6 @@ class LoginRegisterAnalytics @Inject constructor(
         private val LABEL_PASSWORD = "Kata Sandi"
         val LABEL_EMAIL = "Email"
         private val LABEL_GPLUS = "Google Plus"
-        val LABEL_FACEBOOK = "Facebook"
         private val LABEL_SAVE_PASSWORD = "Save Password"
         private val LABEL_NEVER_SAVE_PASSWORD = "Never"
         val LABEL_GMAIL = "Gmail"
@@ -1005,8 +966,26 @@ class LoginRegisterAnalytics @Inject constructor(
         private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
         private val LABEL_LOGIN_SUCCESS = "login success"
         private val LABEL_FAILED = "failed - "
+        private val LABEL_SUCCESS = "success"
 
         val GOOGLE = "google"
-        val FACEBOOK = "facebook"
+
+        object Event {
+            const val CLICK_REGISTER = "clickRegister"
+        }
+
+        object Category {
+            const val LOGIN_WITH_PHONE = "login with phone"
+            const val REGISTER_PAGE = "register page"
+        }
+
+        object Action {
+            const val LOGIN_SUCCESS = "login success"
+        }
+
+        object Label {
+            const val TOKOCASH = "Tokocash"
+            const val REGISTER_SUCCESS = "register success"
+        }
     }
 }

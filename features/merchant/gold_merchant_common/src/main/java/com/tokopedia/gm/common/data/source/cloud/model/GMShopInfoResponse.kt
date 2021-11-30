@@ -1,5 +1,6 @@
 package com.tokopedia.gm.common.data.source.cloud.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 /**
@@ -8,14 +9,20 @@ import com.google.gson.annotations.SerializedName
 
 data class GMShopInfoResponse(
         @SerializedName("goldGetPMShopInfo")
-        val goldGetPMShopInfo: GoldGetPMShopInfoDataModel? = GoldGetPMShopInfoDataModel()
+        val goldGetPMShopInfo: GoldGetPMShopInfoDataModel? = GoldGetPMShopInfoDataModel(),
+        @Expose
+        @SerializedName("shopInfoByID")
+        val shopInfoByID: ShopInfoByIDResponse.ShopInfoByID = ShopInfoByIDResponse.ShopInfoByID()
 )
 
 data class GoldGetPMShopInfoDataModel(
         @SerializedName("is_new_seller")
         val isNewSeller: Boolean? = true,
+        @Expose
+        @SerializedName("is_30_days_first_monday")
+        val is30DaysFirstMonday: Boolean? = false,
         @SerializedName("shop_age")
-        val shopAge: Int? = 0,
+        val shopAge: Long? = 0L,
         @SerializedName("is_kyc")
         val isKyc: Boolean? = false,
         @SerializedName("kyc_status_id")

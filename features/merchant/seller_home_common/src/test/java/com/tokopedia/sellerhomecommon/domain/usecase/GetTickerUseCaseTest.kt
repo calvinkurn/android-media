@@ -62,12 +62,11 @@ class GetTickerUseCaseTest {
                 title = "ticker seller",
                 type = 1,
                 message = "Bantu kami menjadi lebih baik dengan membagikan pengalamanmu <a href=\"https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU\">di sini</a><br>",
-                color = "#cde4c3",
                 redirectUrl = "https://docs.google.com/forms/d/1t-KeapZJwOeYOBnbXDEmzRJiUqMBicE9cQIauc40qMU"
         ))
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         coEvery {
@@ -77,7 +76,7 @@ class GetTickerUseCaseTest {
         val result = getTickerUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         coVerify {
@@ -94,14 +93,14 @@ class GetTickerUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetTickerResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val result = getTickerUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         Assert.assertTrue(result.isNullOrEmpty())

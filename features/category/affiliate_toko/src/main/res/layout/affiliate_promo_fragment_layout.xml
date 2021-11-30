@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/promo_navToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
+        app:toolbarContentType="typeCustom"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInitialTheme="light"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_link_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promo_navToolbar"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        android:text="@string/affiliate_paste_product_link" />
+
+    <com.tokopedia.affiliate.ui.custom.AffiliateLinkTextField
+        android:id="@+id/product_link_et"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/product_link_text"
+        app:layout_constraintStart_toStartOf="@id/product_link_text"
+        app:unify_text_field_placeholder="https://tokopedia.com/lipstick..."
+        app:unify_text_field_clearable="true"
+        app:unify_text_field_label_static="true"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/promotion_card_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/product_link_et"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="body_3"
+        android:text="@string/produk_ditemukan"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/promo_affiliate_progress_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="promo_affiliate_progress_bar,promo_affiliate_progress_title"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/promo_affiliate_progress_bar"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/promo_affiliate_progress_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="heading_3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promo_affiliate_progress_bar"
+        android:text="@string/tunggu_ya_produknya_lagi_dicari"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/promotion_card_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="@dimen/unify_space_48"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/promotion_recycler_view"
+            android:visibility="visible"
+            tools:itemCount="1"
+            tools:listitem="@layout/affiliate_promotion_product_card_item_layout"
+            tools:visibility="gone"
+            />
+
+        <RelativeLayout
+            android:id="@+id/recommended_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            >
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout_recommended"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/dp_4"
+                app:tabBackground="@color/Unify_N0"
+                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabIndicatorFullWidth="true"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                app:tabTextColor="@color/Unify_N700_68" />
+
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager_recommended"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tab_layout_recommended" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/dim_layer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/Unify_NN900"
+        android:alpha="0.7"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_link_et"
+        tools:visibility="invisible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

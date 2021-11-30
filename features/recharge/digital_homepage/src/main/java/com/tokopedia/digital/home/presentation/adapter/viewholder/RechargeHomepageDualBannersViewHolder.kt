@@ -3,10 +3,10 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeDualBannersBinding
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.*
-import kotlinx.android.synthetic.main.view_recharge_home_dual_banners.view.*
 
 /**
  * @author by resakemal on 21/06/20.
@@ -16,27 +16,28 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: Recha
         AbstractViewHolder<RechargeHomepageDualBannersModel>(itemView) {
 
     override fun bind(element: RechargeHomepageDualBannersModel) {
+        val bind = ViewRechargeHomeDualBannersBinding.bind(itemView)
         val section = element.section
         val items = when (section.items.size) {
             in 0..1 -> null
             2 -> section.items
             else -> section.items.subList(0, 2)
         }
-        with (itemView) {
+        with (bind) {
             items?.run {
-                view_recharge_home_dual_banners_container.show()
-                view_recharge_home_dual_banners_shimmering.hide()
+                viewRechargeHomeDualBannersContainer.show()
+                viewRechargeHomeDualBannersShimmering.root.hide()
 
-                view_recharge_home_dual_banners_title.displayTextOrHide(section.title)
-                view_recharge_home_dual_banners_image_1.loadImage(items[0].mediaUrl)
-                view_recharge_home_dual_banners_image_2.loadImage(items[1].mediaUrl)
-                view_recharge_home_dual_banners_image_1.setOnClickListener {
+                viewRechargeHomeDualBannersTitle.displayTextOrHide(section.title)
+                viewRechargeHomeDualBannersImage1.loadImage(items[0].mediaUrl)
+                viewRechargeHomeDualBannersImage2.loadImage(items[1].mediaUrl)
+                viewRechargeHomeDualBannersImage1.setOnClickListener {
                     listener.onRechargeSectionItemClicked(items[0])
                 }
-                view_recharge_home_dual_banners_image_2.setOnClickListener {
+                viewRechargeHomeDualBannersImage2.setOnClickListener {
                     listener.onRechargeSectionItemClicked(items[1])
                 }
-                this@with.addOnImpressionListener(section) {
+                root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             }
@@ -44,8 +45,8 @@ class RechargeHomepageDualBannersViewHolder(itemView: View?, val listener: Recha
                 if (section.title.isNotEmpty()) {
                     listener.onRechargeSectionEmpty(section.id)
                 } else {
-                    view_recharge_home_dual_banners_container.hide()
-                    view_recharge_home_dual_banners_shimmering.show()
+                    viewRechargeHomeDualBannersContainer.hide()
+                    viewRechargeHomeDualBannersShimmering.root.show()
 
                     listener.loadRechargeSectionData(element.visitableId())
                 }

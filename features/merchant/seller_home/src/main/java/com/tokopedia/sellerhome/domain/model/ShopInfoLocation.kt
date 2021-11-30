@@ -19,7 +19,7 @@ data class Result(
 
 data class ShippingLoc(
         @SerializedName("provinceID")
-        val provinceID: Int = -1
+        val provinceID: Long = -1
 )
 
-internal const val PROVINCE_ID_EMPTY = 0
+internal const val PROVINCE_ID_EMPTY = 0L

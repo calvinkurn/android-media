@@ -7,16 +7,26 @@ import android.view.ViewGroup
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
-import kotlinx.android.synthetic.main.fragment_hotel_pay_at_hotel_promo.*
+import com.tokopedia.hotel.databinding.FragmentHotelPayAtHotelPromoBinding
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
+
+    private var binding by autoClearedNullable<FragmentHotelPayAtHotelPromoBinding>()
+
     override fun onErrorRetryClicked() {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.fragment_hotel_pay_at_hotel_promo, container, false)
-        rootView.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        binding = FragmentHotelPayAtHotelPromoBinding.inflate(inflater, container, false)
+        binding?.root?.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        return binding?.root
+    }
 
-        return rootView
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        binding?.ivPayAtHotelPromo?.loadImage(getString(R.string.hotel_url_no_promo))
     }
 
     override fun getScreenName(): String = getString(R.string.hotel_pay_at_hotel_promo_header_title)
@@ -26,7 +36,7 @@ class HotelPayAtHotelPromoFragment : HotelBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btnHotelPayAtHotelPromo.setOnClickListener {
+        binding?.btnHotelPayAtHotelPromo?.setOnClickListener {
             activity?.onBackPressed()
         }
     }

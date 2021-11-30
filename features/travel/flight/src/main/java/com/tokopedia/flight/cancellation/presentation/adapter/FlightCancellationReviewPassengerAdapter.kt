@@ -3,9 +3,9 @@ package com.tokopedia.flight.cancellation.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.presentation.adapter.viewholder.FlightCancellationReviewPassengerViewHolder
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.databinding.ItemFlightReviewCancellationPassengerBinding
 
 /**
  * @author by furqan on 21/07/2020
@@ -15,8 +15,9 @@ class FlightCancellationReviewPassengerAdapter : RecyclerView.Adapter<FlightCanc
     private val passengerModelList: MutableList<FlightCancellationPassengerModel> = arrayListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FlightCancellationReviewPassengerViewHolder =
-            FlightCancellationReviewPassengerViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_flight_review_cancellation_passenger, parent, false))
+            FlightCancellationReviewPassengerViewHolder(
+                ItemFlightReviewCancellationPassengerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            )
 
     override fun getItemCount(): Int = passengerModelList.size
 

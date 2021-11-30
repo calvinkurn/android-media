@@ -14,10 +14,20 @@
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
     <string name="my_phone_inactive_change_at_setting">Nomor ponsel sudah tidak aktif?\nUbah nomor ponsel di Pengaturan</string>
     <string name="setting">Pengaturan</string>
+    
     <string name="cotp_miscall_onboarding_title">Kami akan Missed Call nomor kamu, panggilan ini tidak perlu dijawab.</string>
     <string name="cotp_miscall_onboarding_desc">4 digit terakhir dari nomor yang menelpon kamu adalah kode verifikasi kamu.</string>
-    <string name="cotp_miscall_onboarding_send_call">Missed Call Saya</string>
+    <string name="cotp_miscall_onboarding_title_new">Kami akan missed call nomor HP-mu, jangan angkat teleponnya.</string>
+    <string name="cotp_miscall_onboarding_desc_new">Kamu cuma perlu masukkan 6 digit terakhir dari nomor yang menelepon HP-mu. Pastikan HP-mu aktif, ya!</string>
+    <string name="cotp_miscall_onboarding_send_call">Missed Call Sekarang</string>
     <string name="cotp_miscall_verification_phone_code" tools:ignore="TypographyDashes">000-0000-</string>
+    <string name="cotp_miscall_verification_title">Masukkan 6 digit terakhir dari nomor yang menelepon kamu</string>
+    <string name="cotp_miscall_verification_desc">Ini kode verifikasimu, jangan kasih ke orang lain!</string>
+    <string name="cotp_miscall_resend">Missed call ulang</string>
+    <string name="cotp_miscall_use_other_method">ubah metode verifikasi</string>
+    <string name="cotp_miscall_resend_with_other_method">Nggak ada telepon yang masuk? Missed call ulang atau ubah metode verifikasi.</string>
+    <string name="cotp_miscall_coundown_text"><![CDATA[Mohon tunggu <b> %d detik </b> untuk missed call ulang.]]></string>
+    
     <string name="title_activity_activation">Aktivasi Akun</string>
     <string name="validation_title">Masukkan Kode Aktivasi</string>
     <string name="title_validation_otp">Aktivasi</string>
@@ -33,8 +43,11 @@
     <string name="forgot_pin">Lupa PIN Tokopedia</string>
     <string name="cellphone_number_has_changed">Nomor HP Sudah Berubah</string>
     <string name="change_inactive_phone_number">Nomor HP kamu tidak aktif lagi? Ubah Nomor HP</string>
-    <string name="change_phone_number">Ubah Nomor HP</string>
+    <string name="otp_change_phone_number">Ubah Nomor HP</string>
     <string name="change_inactive_phone_number_html"><![CDATA[Nomor HP kamu tidak aktif lagi? <a href="(%1$s)">Ubah Nomor HP</a>.]]></string>
+    <string name="wa_not_registered_title">Nomor kamu tidak terdaftar di WhatsApp</string>
+    <string name="wa_not_registered_subtitle">Lanjutkan verifikasi melalui metode lain, ya</string>
+    <string name="wa_not_registered_button_text">Metode Verifikasi Lain</string>
 
     <!--  otp notif  -->
     <string name="title_push_notif_receiver">Ada perangkat baru yang ingin mengakses akunmu</string>

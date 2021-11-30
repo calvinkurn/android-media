@@ -4,29 +4,11 @@
 
     <application>
         <activity
-            android:name=".homepage.presentation.activity.TravelHomepageActivity"
-            android:label="@string/travel_title_subhomepage"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_travel_entertainment"
-                    android:path="@string/path_travel_entertainment_home"
-                    android:scheme="@string/tokopedia_scheme" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".destination.presentation.activity.TravelDestinationActivity"
             android:label=""
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -40,5 +22,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

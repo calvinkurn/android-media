@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationEmptyDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
+import com.tokopedia.home_recom.view.viewholder.LoadMoreViewHolder
 import com.tokopedia.home_recom.view.viewholder.SimilarProductLoadMoreViewHolder
 
 /**
@@ -53,6 +54,7 @@ class SimilarProductRecommendationAdapter(
             SimilarProductLoadMoreViewHolder.LAYOUT -> layout.isFullSpan = true
             RecommendationErrorDataModel.LAYOUT -> layout.isFullSpan = true
             RecommendationEmptyDataModel.LAYOUT -> layout.isFullSpan = true
+            LoadMoreViewHolder.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }

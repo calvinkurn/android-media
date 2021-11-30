@@ -78,6 +78,11 @@ class DigitalCartActivityWithFintechTest {
                     InstrumentationMockHelper.getRawString(context, com.tokopedia.digital_checkout.test.R.raw.response_mock_get_cart_fintech),
                     MockModelConfig.FIND_BY_CONTAINS
             )
+            addMockResponse(
+                    KEY_DG_CANCEL_VOUCHER,
+                    InstrumentationMockHelper.getRawString(context, com.tokopedia.digital_checkout.test.R.raw.response_mock_cancel_voucher),
+                    MockModelConfig.FIND_BY_CONTAINS
+            )
         }
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -278,6 +283,7 @@ class DigitalCartActivityWithFintechTest {
 
     companion object {
         const val KEY_DG_CHECKOUT_GET_CART = "rechargeGetCart"
+        const val KEY_DG_CANCEL_VOUCHER = "clearCacheAutoApplyStack"
         const val ANALYTIC_VALIDATOR_DIGITAL_FINTECH_CART = "tracker/recharge/digital_checkout/digital_fintech_checkout.json"
     }
 

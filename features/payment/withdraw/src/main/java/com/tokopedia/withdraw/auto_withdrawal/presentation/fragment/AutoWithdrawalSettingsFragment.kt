@@ -516,14 +516,14 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun openTNCBottomSheet() {
         activity?.let { activity ->
-            tncTemplateStr?.let {
+            tncTemplateStr?.let { tncStr ->
                 val bottomSheetUnify = BottomSheetUnify()
                 val view = layoutInflater.inflate(R.layout.swd_layout_withdraw_tnc, null,
                         true)
                 val webView: TkpdWebView = view.findViewById(R.id.swd_tnc_webview)
                 bottomSheetUnify.setChild(view)
                 bottomSheetUnify.setShowListener {
-                    webView.loadData(tncTemplateStr, MIME_TYPE_TEXT_HTML, ENCODING_UTF_8)
+                    webView.loadData(tncStr, MIME_TYPE_TEXT_HTML, ENCODING_UTF_8)
                 }
                 bottomSheetUnify.show(activity.supportFragmentManager, TAG_AUTO_WITHDRAWAL_TNC_BOTTOM_SHEET)
                 analytics.onClickViewTermsCondition()
@@ -619,7 +619,7 @@ class AutoWithdrawalSettingsFragment : BaseDaggerFragment(), ScheduleChangeListe
 
     private fun registerForAutoWithdrawal(data: Intent) {
         if (data.hasExtra(ApplinkConstInternalGlobal.PARAM_UUID)) {
-            val uuid: String = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID)
+            val uuid: String = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_UUID) ?: ""
             autoWithdrawalUpsertRequest?.let {
                 it.token = uuid
                 upsertAutoWithdrawalSchedule(it)

@@ -92,13 +92,6 @@ open class WishlistModule {
             GraphqlHelper.loadRawString(context.resources,
                     com.tokopedia.recommendation_widget_common.R.raw.query_single_recommendation_widget)
 
-
-    @Provides
-    @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources,
-                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
-
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String =

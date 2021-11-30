@@ -41,6 +41,8 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
 
     private fun renderTicketTicker() {
         if (hasETicket) {
+            tickerFlightOrderJourneyETicket.setTextDescription(context
+                    .getString(R.string.flight_order_detail_e_ticket_available))
             tickerFlightOrderJourneyETicket.visibility = View.VISIBLE
         } else {
             tickerFlightOrderJourneyETicket.visibility = View.GONE

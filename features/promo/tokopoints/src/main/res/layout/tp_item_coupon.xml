@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="8dp"
     app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -96,8 +96,8 @@
             android:id="@+id/text_point_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="2dp"
             android:textColor="@color/Unify_G400"
             app:typographyType="body_2"
@@ -193,7 +193,7 @@
             android:id="@+id/button_continue"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="@dimen/tp_margin_medium"
             android:layout_marginRight="@dimen/tp_margin_medium"
             android:background="@drawable/bg_button_orange"
@@ -211,7 +211,7 @@
             app:layout_constraintHeight_default="wrap"
             app:layout_constraintHeight_max="@dimen/dp_32"
             app:layout_constraintTop_toBottomOf="@+id/img_banner"
-            app:layout_goneMarginTop="@dimen/dp_16"
+            app:layout_goneMarginTop="16dp"
             tools:text="Gunakan" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

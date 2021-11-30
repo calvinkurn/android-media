@@ -10,11 +10,25 @@
     <color name="play_dms_bottom_gradient_lighter">#00000000</color>
     <color name="play_dms_bottom_gradient_darker">#B331353B</color>
 
+    <color name="play_dms_bottom_sheet_background">#FFFFFF</color>
+
     <color name="play_dms_B600">#0066A9</color>
     <color name="play_dms_N700_68">#AD31353B</color>
+    <color name="play_dms_N700_80">#CC31353B</color>
     <color name="play_dms_R400">#FF5C84</color>
     <color name="play_dms_R500">#EF144A</color>
     <color name="play_dms_Y300">#FFC400</color>
     <color name="play_dms_Y400">#FF8B00</color>
     <color name="play_dms_Y500">#FA591D</color>
+
+    <!--Engagement Tools-->
+    <color name="play_dms_interactive_common_bg_g1">#F52E4D</color>
+    <color name="play_dms_interactive_common_bg_g2">#FF8215</color>
+
+    <color name="play_dms_leaderboard_winner_dark_color_1">#25292C</color>
+    <color name="play_dms_leaderboard_winner_dark_color_2">#33CC4C14</color>
+
+    <color name="play_dms_winner_ring_g1">#EF7E08</color>
+    <color name="play_dms_winner_ring_g2">#F1C53E</color>
+
 </resources>

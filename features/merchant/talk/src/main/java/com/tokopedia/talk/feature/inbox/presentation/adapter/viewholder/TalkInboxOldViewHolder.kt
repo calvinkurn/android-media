@@ -7,12 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.talk.R
+import com.tokopedia.talk.databinding.ItemTalkInboxOldBinding
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOldUiModel
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
-import com.tokopedia.talk.R
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
 class TalkInboxOldViewHolder(
         view: View,
@@ -23,6 +22,8 @@ class TalkInboxOldViewHolder(
         val LAYOUT = R.layout.item_talk_inbox_old
     }
 
+    private val binding: ItemTalkInboxOldBinding = ItemTalkInboxOldBinding.bind(view)
+
     override fun bind(element: TalkInboxOldUiModel) {
         with(element.inboxDetail) {
             setProductThumbnail(productThumbnail)
@@ -30,33 +31,33 @@ class TalkInboxOldViewHolder(
             setQuestion(content, isMasked)
             setNotification(isUnread)
             setCountAndDate(totalAnswer, lastReplyTime, element.isSellerView)
-            itemView.addOnImpressionListener(element.impressHolder) {
+            binding.root.addOnImpressionListener(element.impressHolder) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
-            itemView.setOnClickListener {
+            binding.root.setOnClickListener {
                 talkInboxViewHolderListener.onInboxItemClicked(null, element, adapterPosition)
             }
         }
     }
 
     private fun setProductThumbnail(productThumbnail: String) {
-        with(itemView) {
+        with(binding) {
             if(productThumbnail.isEmpty()) {
-            itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
-                talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+            talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(root.context, R.drawable.ic_deleted_talk_placeholder))
+                talkInboxProductName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
                 return
             }
             talkInboxProductThumbnail.setImageUrl(productThumbnail)
-            talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            talkInboxProductName.setTextColor(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
         }
     }
 
     private fun setProductName(productName: String) {
-        itemView.talkInboxProductName.text = productName
+        binding.talkInboxProductName.text = productName
     }
 
     private fun setQuestion(question: String, isMasked: Boolean) {
-        itemView.talkInboxMessage.apply {
+        binding.talkInboxMessage.apply {
             text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
             if(isMasked) {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
@@ -70,14 +71,14 @@ class TalkInboxOldViewHolder(
 
     private fun setNotification(isUnread: Boolean) {
         if(isUnread) {
-            itemView.talkInboxNotification.showWithCondition(isUnread)
+            binding.talkInboxNotification.showWithCondition(isUnread)
         } else {
-            itemView.talkInboxNotification.hide()
+            binding.talkInboxNotification.hide()
         }
     }
 
     private fun setCountAndDate(totalAnswer: Int, date: String, isSellerView: Boolean) {
-        with(itemView) {
+        with(binding) {
             when {
                 totalAnswer == 0 && isSellerView -> {
                     talkInboxAnswerCount.apply {
@@ -101,7 +102,7 @@ class TalkInboxOldViewHolder(
                     }
                 }
             }
-            talkInboxDate.text = context.getString(R.string.inbox_date_old, date)
+            talkInboxDate.text = root.context.getString(R.string.inbox_date_old, date)
         }
 
     }

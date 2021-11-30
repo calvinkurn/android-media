@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:card_type="border"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     android:paddingTop="@dimen/shop_vertical_padding"
     android:paddingBottom="@dimen/shop_vertical_padding"
-    android:layout_marginTop="@dimen/spacing_lvl3"
-    android:layout_marginBottom="@dimen/spacing_lvl3">
+    app:card_type="border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_view"
@@ -18,19 +17,18 @@
         android:background="@drawable/selectable_background_tokopedia"
         android:orientation="vertical">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/seamless_fragment_avatar"
             android:layout_width="@dimen/shop_img_size"
             android:layout_height="@dimen/shop_img_size"
             android:layout_alignParentTop="true"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:srcCompat="@drawable/ic_shop_dark_grey"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_shop_dark_grey" />
 
         <LinearLayout
             android:layout_width="@dimen/layout_lvl0"
@@ -46,13 +44,13 @@
                 android:id="@+id/seamless_fragment_shop_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/spacing_lvl2"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:drawablePadding="@dimen/spacing_lvl2"
                 android:textColor="@color/Unify_N700"
                 app:typographyType="heading_3"
-                tools:text="Toko Saya ini"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:text="Toko Saya ini" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/seamless_fragment_name"
@@ -64,14 +62,14 @@
                 app:typographyType="body_2"
                 tools:text="Albert Wesker" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/seamless_fragment_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl1"
-                android:fontFamily="roboto-medium"
-                android:textSize="@dimen/fontSize_lvl3"
                 android:textColor="@color/Unify_N700"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
                 tools:text="y***********@g****.com" />
 
         </LinearLayout>

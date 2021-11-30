@@ -6,10 +6,12 @@ import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.mvcwidget.MvcData
-import com.tokopedia.mvcwidget.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemNewShopProductMerchantVoucherBinding
 import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -17,28 +19,26 @@ import com.tokopedia.shop.product.view.datamodel.ShopMerchantVoucherUiModel
 
 class ShopMerchantVoucherViewHolder(itemView: View) : AbstractViewHolder<ShopMerchantVoucherUiModel>(itemView) {
 
+    private val viewBinding : ItemNewShopProductMerchantVoucherBinding? by viewBinding()
     private var merchantVoucherWidget: MvcView? = null
 
     init {
-        findViews(itemView)
+        findViews()
     }
 
     override fun bind(model: ShopMerchantVoucherUiModel) {
         model.data?.apply {
             merchantVoucherWidget?.setData(MvcData(
-                    title = titles?.firstOrNull()?.text ?: "",
-                    subTitle = model.data.subTitle ?: "",
-                    imageUrl = model.data.imageURL ?: ""
+                    animatedInfoList = model.data.animatedInfoList,
             ),
                     shopId = model.data.shopId ?: "0",
-                    isMainContainerSetFitsSystemWindows = false,
                     source = MvcSource.SHOP
             )
         }
     }
 
-    private fun findViews(view: View) {
-        merchantVoucherWidget = view.findViewById(R.id.merchantVoucherWidget)
+    private fun findViews() {
+        merchantVoucherWidget = viewBinding?.merchantVoucherWidget
     }
 
     companion object {

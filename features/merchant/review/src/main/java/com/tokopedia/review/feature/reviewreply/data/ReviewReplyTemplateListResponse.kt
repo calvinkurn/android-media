@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.reviewreply.data
 import com.google.gson.annotations.SerializedName
 
 data class ReviewReplyTemplateListResponse(
-        @SerializedName("reviewResponseTemplateList")
+        @SerializedName("reviewResponseTemplateListV2")
         val reviewResponseTemplateList: ReviewResponseTemplateList = ReviewResponseTemplateList()
 ) {
     data class ReviewResponseTemplateList(
@@ -14,19 +14,19 @@ data class ReviewReplyTemplateListResponse(
     ) {
         data class AutoReply(
                 @SerializedName("autoReplyId")
-                val autoReplyId: Int? = 0,
+                val autoReplyId: String? = "0",
                 @SerializedName("status")
-                val status: Int? = 0,
+                val status: Long? = 0,
                 @SerializedName("templateId")
-                val templateId: Int? = 0
+                val templateId: String? = "0"
         )
         data class ReplyTemplate(
                 @SerializedName("message")
                 val message: String? = "",
                 @SerializedName("status")
-                val status: Int? = 0,
+                val status: String? = "0",
                 @SerializedName("templateId")
-                val templateId: Int? = 0,
+                val templateId: String? = "0",
                 @SerializedName("title")
                 val title: String? = ""
         )

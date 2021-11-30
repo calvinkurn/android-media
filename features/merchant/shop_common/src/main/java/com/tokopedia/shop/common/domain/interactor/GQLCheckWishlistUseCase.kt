@@ -27,7 +27,7 @@ class GQLCheckWishlistUseCase @Inject constructor(
 
     private val query = """
             query CheckWishList(${'$'}productID:String!){
-              checkWishlist(productID:${'$'}productID){
+              checkWishlistV2(productID:${'$'}productID){
                 product_id
                 is_wishlist
               }

@@ -8,7 +8,7 @@
     android:paddingBottom="@dimen/layout_lvl1">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title"
+        android:id="@+id/tvShcBottomSheetListItemTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
@@ -17,7 +17,7 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_description"
+        android:id="@+id/tvShcBottomSheetListItemDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"

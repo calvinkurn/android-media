@@ -1,12 +1,11 @@
 package com.tokopedia.shop_settings.viewmodel.shopsettingsinfo
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
+import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
-import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
-import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -23,13 +22,13 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
     val rule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var checkOsMerchantUseCase: CheckOfficialStoreTypeUseCase
+    lateinit var checkOsMerchantUseCase: GqlGetIsShopOsUseCase
 
     @RelaxedMockK
     lateinit var getShopBasicDataUseCase: GetShopBasicDataUseCase
 
     @RelaxedMockK
-    lateinit var getShopStatusUseCase: GetShopStatusUseCase
+    lateinit var getShopStatusUseCase: GetPMStatusUseCase
 
     @RelaxedMockK
     lateinit var updateShopScheduleUseCase: UpdateShopScheduleUseCase
@@ -57,14 +56,5 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
                 getShopBasicDataUseCase,
                 CoroutineTestDispatchersProvider
         )
-    }
-
-    protected fun onCheckOsMerchantType_thenReturn() {
-        coEvery { checkOsMerchantUseCase.executeOnBackground() } returns CheckShopIsOfficialModel()
-    }
-
-    protected fun verifySuccessCheckOsMerchantTypeCalled(shopId: Int) {
-        verify { CheckOfficialStoreTypeUseCase.createRequestParam(shopId) }
-        coVerify { checkOsMerchantUseCase.executeOnBackground() }
     }
 }

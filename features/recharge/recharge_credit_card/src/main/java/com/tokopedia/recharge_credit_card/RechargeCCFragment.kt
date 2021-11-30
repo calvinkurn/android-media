@@ -10,18 +10,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_CLIENT_NUMBER
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_IDENTIFIER
 import com.tokopedia.recharge_credit_card.RechargeCCActivity.Companion.PARAM_OPERATOR_ID
@@ -146,7 +147,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun initializedViewModel() {
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             rechargeCCViewModel = viewModelProvider.get(RechargeCCViewModel::class.java)
             rechargeSubmitCCViewModel = viewModelProvider.get(RechargeSubmitCCViewModel::class.java)
         }
@@ -164,7 +165,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
         })
 
         rechargeCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
-            cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
+            var throwable =  MessageErrorException(getString(R.string.cc_bank_is_not_supported))
+            cc_widget_client_number.setErrorTextField(ErrorHandler.getErrorMessage(requireContext(), throwable))
         })
 
         rechargeCCViewModel.tickers.observe(viewLifecycleOwner, Observer {
@@ -234,10 +236,11 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 clientNumber, menuId)
     }
 
-    private fun showErrorToaster(message: String) {
+    private fun showErrorToaster(error: Throwable) {
         KeyboardHandler.hideSoftKeyboard(activity)
         view?.run {
-            Toaster.build(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+            Toaster.build(this, ErrorHandler.getErrorMessage(requireContext(), error),
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -264,7 +267,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialog.show()
             }
         } else {
-            showErrorToaster(getString(R.string.cc_error_default_message))
+            showErrorToaster(MessageErrorException(getString(R.string.cc_error_default_message)))
         }
     }
 
@@ -296,6 +299,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
             rechargeSubmitCCViewModel.postCreditCard(RechargeCCGqlQuery.rechargeCCSignature, categoryId, mapParam)
         } else {
+            hideLoading()
             navigateUserLogin()
         }
     }
@@ -316,7 +320,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private fun navigateToCart(passData: DigitalCheckoutPassData) {
         trackAddToCartEvent()
         context?.let {
-            val intent = RouteManager.getIntent(activity, DigitalCheckoutUtil.getApplinkCartDigital(it))
+            val intent = RouteManager.getIntent(it, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, passData)
             startActivityForResult(intent, REQUEST_CODE_CART)
         }
@@ -335,18 +339,17 @@ class RechargeCCFragment : BaseDaggerFragment() {
             REQUEST_CODE_CART -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
-                        val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
-                        if (!TextUtils.isEmpty(message)) {
-                            showErrorToaster(message)
+                        val error = data.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE) as Throwable
+                        if (!TextUtils.isEmpty(error.message)) {
+                            showErrorToaster(error)
                         }
                     }
                 }
             }
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
-                    checkoutPassDataState?.let {
-                        navigateToCart(it)
-                    }
+                    submitCreditCard(categoryId, operatorIdSelected,
+                            productIdSelected, cc_widget_client_number.getClientNumber())
                 }
             }
 

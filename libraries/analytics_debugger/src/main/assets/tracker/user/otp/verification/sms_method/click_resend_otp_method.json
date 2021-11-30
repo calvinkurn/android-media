@@ -1,0 +1,37 @@
+{
+  "readme": "Resend sms method",
+  "mode": "subset",
+  "query": [
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "change method",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "networkSpeed": ".+",
+      "clientId": ".+",
+      "isLoggedInStatus": false,
+      "appsflyerId": ".+",
+      "theme": ".+",
+      "shopId": ".*",
+      "screenName": "Input OTP sms",
+      "event": "openScreen",
+      "userId": ".*",
+      "sessionIris": ".+"
+    },
+    {
+      "eventCategory": "otp page",
+      "event": "clickOtp",
+      "eventAction": "click metode otp",
+      "sessionIris": ".+",
+      "eventLabel": "success - .+ - sms"
+    }
+  ]
+}

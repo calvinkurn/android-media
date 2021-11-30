@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="buyer_order_detail_motion_layout_duration_short">600</integer>
+    <integer name="buyer_order_detail_motion_layout_duration_long">1200</integer>
+</resources>

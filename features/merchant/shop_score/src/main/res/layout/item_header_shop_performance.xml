@@ -16,10 +16,10 @@
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constrainedHeight="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/bg_performance_headline" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -97,7 +97,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/ic_shop_score_performance"
         app:layout_constraintStart_toStartOf="@id/tvTitleShopPerformance"
         app:layout_constraintTop_toBottomOf="@id/tvTitleShopPerformance"
         app:srcCompat="@drawable/ic_progressbar_new_seller"
@@ -118,10 +117,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl5"
-        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginTop="6dp"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
         app:layout_constraintStart_toEndOf="@id/barrierProgressBar"
+        app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
         app:typographyType="heading_1"
         app:typographyWeight="bold"
         tools:text="@string/example_score_performance" />
@@ -131,11 +130,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl1"
-        android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginTop="14dp"
         android:text="@string/maximum_score_performance"
         android:textColor="@color/Unify_Static_White"
-        app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
         app:layout_constraintStart_toEndOf="@id/tvShopScoreValue"
+        app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
         app:typographyType="heading_3" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -162,9 +161,10 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:textColor="@color/Unify_Static_White"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/barrierTickerHasPenalty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvHeaderShopService"
@@ -176,18 +176,17 @@
         android:id="@+id/cardDescNewSeller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl5"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl5"
         app:cardBackgroundColor="@color/Unify_N0_20"
         app:cardCornerRadius="@dimen/spacing_lvl3"
         app:cardElevation="@dimen/layout_lvl0"
         app:layout_constraintBottom_toTopOf="@id/barrierTickerHasPenalty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvShopScoreMaximum"
-        tools:visibility="gone">
+        app:layout_constraintTop_toBottomOf="@id/tvShopScoreMaximum">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -198,7 +197,7 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="12dp"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:textColor="@color/Unify_Static_White"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -215,7 +214,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl3"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_marginBottom="12dp"
                 android:textColor="@color/Unify_Static_White"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -223,9 +222,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvHeaderShopServiceNewSeller"
                 app:typographyType="body_3"
                 tools:text="@string/desc_shop_score_service" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.Barrier
@@ -242,13 +239,11 @@
         android:id="@+id/tickerShopHasPenalty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:closeButtonVisibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/tvDescShopService"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

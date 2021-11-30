@@ -10,4 +10,12 @@
         <item name="android:windowSharedElementsUseOverlay">false</item>
 
     </style>
+
+    <style name="SomListTheme" parent="@style/Theme.White">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
 </resources>

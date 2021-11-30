@@ -1,4 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="sob_360dp">360dp</dimen>
+    <dimen name="sob_dimen_home_image_width">200dp</dimen>
+    <dimen name="sob_title_top_margin">72dp</dimen>
+    <dimen name="sob_view_pager_bottom_margin">16dp</dimen>
+    <dimen name="sob_skip_btn_top_margin">24dp</dimen>
+    <dimen name="sob_circle_bg_start_end_margin">32dp</dimen>
+    <dimen name="sob_dimen_20">20dp</dimen>
+    <dimen name="sob_dimen_28">28dp</dimen>
+    <dimen name="sob_dimen_48">48dp</dimen>
+    <dimen name="sob_dimen_72">72dp</dimen>
+    <dimen name="sob_dimen_88">88dp</dimen>
+    <dimen name="sob_dimen_104">104dp</dimen>
+    <dimen name="sob_dimen_112">112dp</dimen>
+    <dimen name="sob_dimen_120">120dp</dimen>
+    <dimen name="sob_dimen_144">144dp</dimen>
 </resources>

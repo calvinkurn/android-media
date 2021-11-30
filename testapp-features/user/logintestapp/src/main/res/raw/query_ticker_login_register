@@ -1,9 +1,0 @@
-query tickerLoginRegister($page: String!){
-  ticker {
-    tickers(page:$page){
-      title
-      message
-      color
-    }
-  }
-}

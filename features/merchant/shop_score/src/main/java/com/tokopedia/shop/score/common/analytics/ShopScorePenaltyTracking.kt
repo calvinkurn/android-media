@@ -15,7 +15,6 @@ import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_SHOP_SCORE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_WATCH_VIDEO
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CLICK_YOUR_SHOP_GET_PM
-import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.COMMUNICATION_PERIOD_OLD_SHOP_SCORE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.CURRENT_SITE
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.FREE_SHIPPING
 import com.tokopedia.shop.score.common.analytics.ShopScoreTrackingConstant.FREE_SHIPPING_IDENTIFIER
@@ -73,10 +72,6 @@ class ShopScorePenaltyTracking @Inject constructor(private val userSession: User
         else -> {
             SHOP_TYPE_RM
         }
-    }
-
-    fun clickMoreInfoTickerOldShopScore() {
-        sendShopScoreItemEvent(categoryName = COMMUNICATION_PERIOD_OLD_SHOP_SCORE, actionName = CLICK_LEARN_MORE)
     }
 
     fun clickHereTickerPenalty() {

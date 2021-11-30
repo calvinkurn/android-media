@@ -17,7 +17,7 @@ class GetVoucherRecommendationUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): VoucherRecommendationData {
         val graphqlRequest = GraphqlRequest(query, GetVoucherRecommendationResponse::class.java, params.parameters)
-        val graphqlResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+        val graphqlResponse = graphqlRepository.response(listOf(graphqlRequest))
         val errors = graphqlResponse.getError(GetVoucherRecommendationResponse::class.java)
         if (errors.isNullOrEmpty()) {
             val data = graphqlResponse.getData<GetVoucherRecommendationResponse>(GetVoucherRecommendationResponse::class.java)

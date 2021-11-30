@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class AddWishListResponse {
 
 
-    @SerializedName("wishlist_add")
+    @SerializedName("wishlist_add_v2")
     @Expose
     private Wishlist_add wishlist_add;
 

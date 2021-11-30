@@ -5,5 +5,4 @@ data class SpecsModel(
     val specsSummary: String,
     val bgDrawableRef: Int,
     val bgDrawableColorRef: Int,
-    val height: Int = 0
 )

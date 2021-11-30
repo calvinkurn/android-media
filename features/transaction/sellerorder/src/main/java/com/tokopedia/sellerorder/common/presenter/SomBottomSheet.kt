@@ -2,17 +2,23 @@ package com.tokopedia.sellerorder.common.presenter
 
 import android.animation.Animator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.Utils.hideKeyboard
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-abstract class SomBottomSheet(
+abstract class SomBottomSheet <T: ViewBinding> (
         childViewsLayoutResourceId: Int,
         private val showOverlay: Boolean,
         private val showCloseButton: Boolean,
@@ -32,15 +38,35 @@ abstract class SomBottomSheet(
     private var overlayFadeInAnimation: ValueAnimator? = null
     private var bottomSheetBehavior: BottomSheetBehavior<out View>? = null
     private var bottomSheetCallback: BottomSheetBehavior.BottomSheetCallback? = null
+    private var onDismissed: () -> Unit = {}
+    private var oneTimeOnDismissed: (() -> Unit)? = {}
+
+    protected var binding: T? = null
 
     protected var bottomSheetLayout: View? = null
-    protected var childViews: View? = null
 
-    abstract fun setupChildView()
+    @SuppressLint("ClickableViewAccessibility")
+    protected val hideKeyboardTouchListener = View.OnTouchListener { _, event ->
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            binding?.root?.hideKeyboard()
+        }
+        false
+    }
 
     init {
-        val childView = View.inflate(context, childViewsLayoutResourceId, null)
-        this.childViews = childView
+        inflateChildView(childViewsLayoutResourceId)
+        binding?.root?.setOnTouchListener(hideKeyboardTouchListener)
+    }
+
+    abstract fun bind(view: View): T
+    abstract fun setupChildView()
+
+    private fun inflateChildView(layoutId: Int) {
+        if (binding == null) {
+            View.inflate(context, layoutId, null).run {
+                binding = bind(this)
+            }
+        }
     }
 
     private fun showOverlay(view: ViewGroup) {
@@ -60,7 +86,7 @@ abstract class SomBottomSheet(
 
     private fun setupOverlayBackgroundColor(fragmentView: ViewGroup, overlayView: View) {
         if (!hasVisibleTransparentOverlay(fragmentView)) {
-            overlayView.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            overlayView.setBackgroundColor(ContextCompat.getColor(context, R.color._dms_bottomsheet_overlay_color))
         } else {
             overlayView.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent))
         }
@@ -104,7 +130,7 @@ abstract class SomBottomSheet(
         this?.run {
             if (overlayFadeOutAnimation?.isRunning == true) return
             overlayFadeInAnimation?.cancel()
-            overlayFadeOutAnimation = animateFade(alpha, 0f).apply {
+            overlayFadeOutAnimation = animateFade(alpha, Float.ZERO).apply {
                 addListener(object : Animator.AnimatorListener {
                     override fun onAnimationRepeat(animation: Animator?) {
                         // noop
@@ -112,6 +138,9 @@ abstract class SomBottomSheet(
 
                     override fun onAnimationEnd(animation: Animator?) {
                         this@run?.gone()
+                        onDismissed()
+                        oneTimeOnDismissed?.invoke()
+                        oneTimeOnDismissed = null
                     }
 
                     override fun onAnimationCancel(animation: Animator?) {
@@ -154,10 +183,12 @@ abstract class SomBottomSheet(
         val bottomSheetLayout = this.bottomSheetLayout ?: (View.inflate(context, com.tokopedia.unifycomponents.R.layout.bottom_sheet_layout, view) as ViewGroup).getChildAt(view.childCount - 1)?.apply {
             this as ViewGroup
             isClickable = true
-            if (childViews?.parent != null) {
-                (childViews?.parent as? ViewGroup)?.removeView(childViews)
+            binding?.run {
+                if (root.parent != null) {
+                    (root.parent as? ViewGroup)?.removeView(root)
+                }
+                addView(root)
             }
-            addView(childViews)
             val bottomSheetBehavior = bottomSheetBehavior ?: BottomSheetBehavior.from(this).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
@@ -174,12 +205,16 @@ abstract class SomBottomSheet(
     }
 
     open fun show() {
-        bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED
+        binding?.root?.post { bottomSheetBehavior?.state = BottomSheetBehavior.STATE_EXPANDED }
     }
 
-    open fun dismiss() {
+    fun dismiss(): Boolean {
+        binding?.root?.hideKeyboard()
         requireNotNull(bottomSheetBehavior).apply {
-            if (state != BottomSheetBehavior.STATE_HIDDEN) state = BottomSheetBehavior.STATE_HIDDEN
+            return if (state != BottomSheetBehavior.STATE_HIDDEN) {
+                state = BottomSheetBehavior.STATE_HIDDEN
+                true
+            } else false
         }
     }
 
@@ -210,12 +245,24 @@ abstract class SomBottomSheet(
         }
         setupBottomSheetContent(view)
         setTitle(bottomSheetTitle)
+        setupChildView()
         if (showCloseButton) {
             showCloseButton()
         }
         if (!showKnob) {
             hideKnob()
         }
-        setupChildView()
+    }
+
+    fun setOnDismiss(onDismissed: () -> Unit) {
+        this.onDismissed = onDismissed
+    }
+
+    fun setOneTimeOnDismiss(onDismissed: () -> Unit) {
+        this.oneTimeOnDismissed = onDismissed
+    }
+
+    fun clearViewBinding() {
+        binding = null
     }
 }

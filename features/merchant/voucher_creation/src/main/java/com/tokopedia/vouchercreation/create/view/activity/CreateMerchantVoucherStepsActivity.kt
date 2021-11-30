@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.view.activity
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -20,6 +21,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -81,6 +84,7 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
         const val ERROR_INITIATE = "error_initiate"
         const val REQUEST_CODE = 7137
+        const val ADMIN_RESTRICTION_REQUEST = 403
 
         const val FROM_VOUCHER_LIST = "from_voucher_list"
     }
@@ -414,6 +418,10 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
                                             bannerCashbackUntilLabelUrl
                                     )
                         }
+                        if (!isCreateVoucherEligible) {
+                            val adminRestrictionIntent = RouteManager.getIntent(this@CreateMerchantVoucherStepsActivity, ApplinkConstInternalSellerapp.ADMIN_RESTRICTION)
+                            startActivityForResult(adminRestrictionIntent, ADMIN_RESTRICTION_REQUEST)
+                        }
                         this@CreateMerchantVoucherStepsActivity.token = token
                         promoCodePrefix = voucherCodePrefix
                     }
@@ -630,5 +638,15 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     private fun onReturnToStep(@VoucherCreationStep step: Int) {
         viewModel.setStepPosition(step)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ADMIN_RESTRICTION_REQUEST) {
+            val centralizedPromoIntent = RouteManager.getIntent(applicationContext, ApplinkConstInternalSellerapp.CENTRALIZED_PROMO)
+            centralizedPromoIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(centralizedPromoIntent)
+            finish()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

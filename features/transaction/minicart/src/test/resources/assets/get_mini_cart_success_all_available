@@ -1,0 +1,223 @@
+{
+  "status": "OK",
+  "mini_cart": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "errors": [],
+      "empty_cart": {
+        "title": "Wah, keranjang belanjamu kosong",
+        "image": "https://ecs7.tokopedia.net/assets-tokopedia-lite/v2/zeus/kratos/103cf4bc.jpg",
+        "description": "Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!",
+        "buttons": [
+          {
+            "id": 1
+          }
+        ]
+      },
+      "out_of_service": {
+        "id": 0,
+        "code": "",
+        "image": "",
+        "title": "",
+        "description": "",
+        "buttons": []
+      },
+      "max_char_note": 144,
+      "header_title": "Belanjaanmu di TokoNOW!",
+      "shopping_summary": {
+        "total_wording": "Total Harga (3 Barang)",
+        "total_value": 4000,
+        "discount_total_wording": "Total Diskon Barang",
+        "discount_value": 0,
+        "payment_total_wording": "Total Bayar",
+        "payment_total_value": 4000
+      },
+      "available_section": {
+        "action": [
+          {
+            "id": 2,
+            "code": "DELETE",
+            "message": ""
+          },
+          {
+            "id": 3,
+            "code": "NOTES",
+            "message": "Tulis catatan untuk barang ini"
+          },
+          {
+            "id": 4,
+            "code": "VALIDATENOTES",
+            "message": "Maks. 144 character"
+          }
+        ],
+        "available_group": [
+          {
+            "cart_string": "11515028-0-11491038",
+            "errors": [],
+            "shop": {
+              "maximum_weight_wording": "Belanjaan TokoNOW! kamu terlalu berat {{weight}} kg untuk 1x pengiriman. Coba atur ulang pesanan.",
+              "maximum_shipping_weight": 1000,
+              "shop_id": 11515028,
+              "shop_name": "11515028tknw",
+              "shop_type_info": {
+                "badge": "https://images.tokopedia.net/img/now/badge/now-badge.png",
+                "shop_grade": 0,
+                "shop_tier": 2,
+                "title": "Official Store",
+                "title_fmt": "official_store"
+              }
+            },
+            "shipment_information": {
+              "shop_location": "Jakarta Selatan",
+              "estimation": "",
+              "free_shipping": {
+                "eligible": false,
+                "badge_url": ""
+              },
+              "free_shipping_extra": {
+                "eligible": false,
+                "badge_url": ""
+              }
+            },
+            "cart_details": [
+              {
+                "cart_id": "2838232325",
+                "selected_unavailable_action_link": "",
+                "errors": [],
+                "product": {
+                  "product_id": 1920796612,
+                  "product_weight": 100,
+                  "product_quantity": 1,
+                  "product_name": "PDP D4G1NG G1L1NG V4R 4LL ST0CK 1 - 4",
+                  "product_image": {
+                    "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/6/14/56448a31-a55b-4563-8d67-0695990cacf1.jpg"
+                  },
+                  "variant_description_detail": {
+                    "variant_name": [
+                      "4"
+                    ],
+                    "variant_description": "4"
+                  },
+                  "product_warning_message": "Sisa 1",
+                  "slash_price_label": "",
+                  "product_original_price": 0,
+                  "initial_price": 1000,
+                  "product_price": 1000,
+                  "product_information": [],
+                  "product_notes": "",
+                  "product_min_order": 1,
+                  "product_max_order": 30000,
+                  "product_invenage_value": 1,
+                  "product_switch_invenage": 1,
+                  "parent_id": 1920777155,
+                  "wholesale_price": [],
+                  "campaign_id": 0,
+                  "product_tracker_data": {
+                    "attribution": ""
+                  },
+                  "warehouse_id": 11491038,
+                  "category_id": 5071,
+                  "category": ""
+                }
+              },
+              {
+                "cart_id": "2838121062",
+                "selected_unavailable_action_link": "",
+                "errors": [],
+                "product": {
+                  "product_id": 1868874664,
+                  "product_weight": 100,
+                  "product_quantity": 1,
+                  "product_name": "c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 16",
+                  "product_image": {
+                    "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/5/28/a96159e5-c6c5-4c2c-a1cc-5afbaf98be84.jpg"
+                  },
+                  "variant_description_detail": {
+                    "variant_name": [],
+                    "variant_description": ""
+                  },
+                  "product_warning_message": "Sisa 5",
+                  "slash_price_label": "",
+                  "product_original_price": 0,
+                  "initial_price": 1000,
+                  "product_price": 1000,
+                  "product_information": [],
+                  "product_notes": "",
+                  "product_min_order": 1,
+                  "product_max_order": 30000,
+                  "product_invenage_value": 5,
+                  "product_switch_invenage": 1,
+                  "parent_id": 0,
+                  "wholesale_price": [],
+                  "campaign_id": 0,
+                  "product_tracker_data": {
+                    "attribution": ""
+                  },
+                  "warehouse_id": 11491038,
+                  "category_id": 4653,
+                  "category": ""
+                }
+              },
+              {
+                "cart_id": "2838119152",
+                "selected_unavailable_action_link": "",
+                "errors": [],
+                "product": {
+                  "product_id": 1868874657,
+                  "product_weight": 100,
+                  "product_quantity": 1,
+                  "product_name": "c4rt b3ac38cf56cc0ca716bbc91f0afde3d07751f512c54f49 14",
+                  "product_image": {
+                    "image_src_100_square": "https://ecs7.tokopedia.net/img/cache/100-square/hDjmkQ/2021/5/28/613daeaf-9527-43c0-a25a-04dcabec0ee1.jpg"
+                  },
+                  "variant_description_detail": {
+                    "variant_name": [],
+                    "variant_description": ""
+                  },
+                  "product_warning_message": "Sisa 5",
+                  "slash_price_label": "",
+                  "product_original_price": 0,
+                  "initial_price": 2000,
+                  "product_price": 2000,
+                  "product_information": [],
+                  "product_notes": "",
+                  "product_min_order": 1,
+                  "product_max_order": 30000,
+                  "product_invenage_value": 5,
+                  "product_switch_invenage": 1,
+                  "parent_id": 0,
+                  "wholesale_price": [],
+                  "campaign_id": 0,
+                  "product_tracker_data": {
+                    "attribution": ""
+                  },
+                  "warehouse_id": 11491038,
+                  "category_id": 4652,
+                  "category": ""
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "unavailable_ticker": "",
+      "unavailable_section_action": [
+        {
+          "id": 7,
+          "code": "SHOWLESS",
+          "message": "Tampilkan lebih sedikit"
+        },
+        {
+          "id": 8,
+          "code": "SHOWMORE",
+          "message": "Tampilkan semua"
+        }
+      ],
+      "unavailable_section": [],
+      "total_product_count": 3,
+      "total_product_price": 4000,
+      "total_product_error": 0
+    }
+  }
+}

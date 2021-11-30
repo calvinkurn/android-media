@@ -5,12 +5,14 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.usecase.campaignusecase.CampaignNotifyUserCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardItemUseCase
@@ -20,6 +22,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,7 +32,7 @@ import kotlin.coroutines.CoroutineContext
 private const val REGISTER = "REGISTER"
 private const val UNREGISTER = "UNREGISTER"
 private const val SOURCE = "discovery"
-private const val DEFAULT_COLOR = "#1e31353b"
+private const val CAROUSEL_NOT_FOUND = -1
 
 class MasterProductCardItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -38,7 +41,8 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
     private val showLoginLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private val notifyMeCurrentStatus: MutableLiveData<Boolean> = MutableLiveData()
-    private val showNotifyToast: MutableLiveData<Pair<Boolean, String?>> = MutableLiveData()
+    private val showNotifyToast: SingleLiveEvent<Pair<Boolean, String?>> = SingleLiveEvent()
+    private var lastQuantity:Int = 0
 
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase
@@ -51,6 +55,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     override fun onAttachToViewHolder() {
         super.onAttachToViewHolder()
+        components.shouldRefreshComponent = null
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
@@ -58,6 +63,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                 productData.hasNotifyMe = getNotifyText(productData.notifyMe).isNotEmpty()
                 dataItem.value = productData
                 setProductStockWording(productData)
+                lastQuantity = productData.quantity
                 productCardModelLiveData.value = DiscoveryDataMapper().mapDataItemToProductCardModel(productData, components.name)
             }
         }
@@ -66,6 +72,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private fun setProductStockWording(dataItem: DataItem) {
         if (dataItem.stockWording == null || dataItem.stockWording?.title.isNullOrEmpty()) {
             dataItem.stockWording = getStockWord(dataItem)
+        }else if(dataItem.stockWording?.color.isNullOrEmpty()){
+            dataItem.stockWording?.let {
+                it.color = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
+            }
         }
     }
 
@@ -180,7 +190,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     private fun getStockWord(dataItem: DataItem): StockWording {
         val stockWordData = StockWording(title = "")
-        var stockWordTitleColour = getStockColor(R.color.clr_1e31353b)
+        var stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_20)
         var stockWordTitle = ""
         var stockAvailableCount: String? = ""
         dataItem.let {
@@ -199,7 +209,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
                             customStock <= threshold -> {
                                 stockWordTitle = getStockText(R.string.tersisa)
                                 stockAvailableCount = customStock.toString()
-                                stockWordTitleColour = getStockColor(R.color.clr_ef144a)
+                                stockWordTitleColour = getStockColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
                             }
                             else -> {
                                 stockWordTitle = getStockText(R.string.terjual)
@@ -221,8 +231,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
         return try {
             application.resources.getString(colorID)
         } catch (exception: Resources.NotFoundException) {
-            exception.printStackTrace()
-            return DEFAULT_COLOR
+            application.resources.getString(R.string.discovery_product_stock_color)
         }
     }
 
@@ -243,4 +252,27 @@ class MasterProductCardItemViewModel(val application: Application, val component
         }
         return ""
     }
+
+    fun updateProductQuantity(quantity: Int){
+        components.data?.firstOrNull()?.quantity = quantity
+    }
+
+    fun getProductDataItem(): DataItem? {
+        return components.data?.firstOrNull()
+    }
+
+    fun handleATCFailed(){
+        components.data?.firstOrNull()?.quantity = lastQuantity
+        onAttachToViewHolder()
+    }
+
+    fun getParentPositionForCarousel():Int{
+        return if(components.name == ComponentNames.ProductCardSprintSaleCarouselItem.componentName || components.name == ComponentNames.ProductCardCarouselItem.componentName){
+            getComponent(components.parentComponentId,components.pageEndPoint)?.let {
+                it.position
+            }?:CAROUSEL_NOT_FOUND
+        }else
+            CAROUSEL_NOT_FOUND
+    }
+
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="MyEditTextStyle" parent="Widget.AppCompat.EditText">
-        <item name="colorControlActivated">#dc8f41</item>
+        <item name="colorControlActivated">@color/Unify_Y500</item>
     </style>
 
     <style name="CustomUnifyDialog" parent="android:Theme.Dialog">

@@ -7,7 +7,10 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.shop.R
-import kotlinx.android.synthetic.main.item_shop_request_unmoderate.view.*
+import com.tokopedia.shop.databinding.ItemShopRequestUnmoderateBinding
+import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopRequestUnmoderateBottomSheetAdapter(
         context: Context?,
@@ -50,7 +53,7 @@ class ShopRequestUnmoderateBottomSheetAdapter(
 
     override fun onBindViewHolder(holder: ShopRequestUnmoderateBottomSheetViewHolder, position: Int) {
         holder.bind(requestUnmoderateOptionList[position])
-        holder.itemView.btn_radio_unmoderate_option?.isChecked = (lastSelectedRadioPosition == position)
+        holder.btnRadioUnModerateOption?.isChecked = (lastSelectedRadioPosition == position)
     }
 
 
@@ -60,9 +63,12 @@ class ShopRequestUnmoderateBottomSheetAdapter(
     inner class ShopRequestUnmoderateBottomSheetViewHolder(
             itemView: View
     ) : RecyclerView.ViewHolder(itemView) {
+        private val viewBinding: ItemShopRequestUnmoderateBinding? by viewBinding()
+        val btnRadioUnModerateOption: RadioButtonUnify? = viewBinding?.btnRadioUnmoderateOption
+        private val tvOptionName: Typography? = viewBinding?.tvOptionName
 
         fun bind(item: ShopUnmoderateOption) {
-            itemView.tv_option_name?.text = item.optionText
+            tvOptionName?.text = item.optionText
             itemView.setOnClickListener {
                 lastSelectedRadioPosition = adapterPosition
                 notifyDataSetChanged()

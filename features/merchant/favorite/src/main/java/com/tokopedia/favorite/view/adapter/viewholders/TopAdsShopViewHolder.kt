@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.favorite.R
 import com.tokopedia.favorite.view.adapter.TopAdsShopAdapter
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener
-import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 
 /**
  * @author kulomady on 1/24/17.
@@ -18,7 +18,7 @@ class TopAdsShopViewHolder(
         itemView: View,
         private val favoriteClickListener: FavoriteClickListener,
         private val impressionImageLoadedListener: TopAdsShopAdapter.ImpressionImageLoadedListener
-) : AbstractViewHolder<TopAdsShopViewModel?>(itemView) {
+) : AbstractViewHolder<TopAdsShopUiModel?>(itemView) {
 
     companion object {
         @JvmField
@@ -29,7 +29,7 @@ class TopAdsShopViewHolder(
     var recShopRecyclerView: RecyclerView = itemView.findViewById<View>(R.id.rec_shop_recycler_view) as RecyclerView
     private val context: Context = itemView.context
 
-    override fun bind(element: TopAdsShopViewModel?) {
+    override fun bind(element: TopAdsShopUiModel?) {
         val topAdsShopAdapter = TopAdsShopAdapter(favoriteClickListener, impressionImageLoadedListener)
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recShopRecyclerView.layoutManager = linearLayoutManager

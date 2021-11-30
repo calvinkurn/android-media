@@ -1,0 +1,32 @@
+query ace_search_product($params: String!) {
+            ace_search_product(params: $params) {
+                data {
+                  products {
+                    id
+                    name
+                    url
+                    imageURL
+                    price
+                    stock
+                    priceInt
+                    shop {
+                      id
+                      name
+                      isGoldShop
+                      isOfficial
+                    }
+                    categoryID
+                    categoryBreadcrumb
+                    freeOngkir {
+                      isActive
+                      imgURL
+                    }
+                    originalPrice
+                    discountPercentage
+                    wishlist
+                    minOrder
+                    status
+                  }
+                }
+            }
+        }

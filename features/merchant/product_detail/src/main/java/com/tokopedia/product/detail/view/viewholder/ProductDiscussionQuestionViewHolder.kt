@@ -9,10 +9,12 @@ import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.talk.Question
+import com.tokopedia.product.detail.databinding.ItemDynamicDiscussionMostHelpfulQuestionAndAnswerBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful_question_and_answer.view.*
 
 class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+    private val binding = ItemDynamicDiscussionMostHelpfulQuestionAndAnswerBinding.bind(view)
 
     fun bind(question: Question, dynamicProductDetailListener: DynamicProductDetailListener, type: String, name: String, adapterPosition: Int, itemCount: Int) {
         with(question) {
@@ -36,111 +38,111 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
     }
 
     private fun showQuestion(question: String) {
-        itemView.productDetailDiscussionInquiry.apply {
+        binding.productDetailDiscussionInquiry.apply {
             text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
         }
     }
 
     private fun showInquirerProfilePicture(inquirerThumbnail: String) {
         if(inquirerThumbnail.isNotEmpty()) {
-            itemView.productDetailDiscussionInquirerProfilePicture.apply {
+            binding.productDetailDiscussionInquirerProfilePicture.apply {
                 loadIcon(inquirerThumbnail)
                 show()
             }
         } else {
-            itemView.productDetailDiscussionInquirerProfilePicture.hide()
+            binding.productDetailDiscussionInquirerProfilePicture.hide()
         }
     }
 
     private fun showInquirerName(inquirerName: String) {
         if(inquirerName.isNotEmpty()) {
-            itemView.productDetailDiscussionInquirerName.apply{
+            binding.productDetailDiscussionInquirerName.apply{
                 text = inquirerName
                 show()
             }
         } else {
-            itemView.productDetailDiscussionInquirerName.hide()
+            binding.productDetailDiscussionInquirerName.hide()
         }
     }
 
     private fun showInquiryDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.productDetailDiscussionInquiryDate.apply {
+            binding.productDetailDiscussionInquiryDate.apply {
                 text = date
                 show()
             }
         } else {
-            itemView.productDetailDiscussionInquiryDate.hide()
+            binding.productDetailDiscussionInquiryDate.hide()
         }
     }
 
     private fun showAnswer(answer: String) {
         if(answer.isNotEmpty()) {
-            itemView.productDetailDiscussionRespondentAnswer.apply {
+            binding.productDetailDiscussionRespondentAnswer.apply {
                 isEnabled = true
                 text = HtmlCompat.fromHtml(answer, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
                 show()
             }
         } else {
-            itemView.productDetailDiscussionRespondentAnswer.hide()
+            binding.productDetailDiscussionRespondentAnswer.hide()
         }
     }
 
     private fun showProfilePicture(userThumbNail: String) {
         if(userThumbNail.isNotEmpty()) {
-            itemView.productDetailDiscussionRespondentProfilePicture.apply {
+            binding.productDetailDiscussionRespondentProfilePicture.apply {
                 loadIcon(userThumbNail)
                 show()
             }
         } else {
-            itemView.productDetailDiscussionRespondentProfilePicture.hide()
+            binding.productDetailDiscussionRespondentProfilePicture.hide()
         }
     }
 
     private fun showDisplayName(userName: String) {
         if(userName.isNotEmpty()) {
-            itemView.productDetailDiscussionRespondentDisplayName.apply{
+            binding.productDetailDiscussionRespondentDisplayName.apply{
                 text = userName
                 show()
             }
         } else {
-            itemView.productDetailDiscussionRespondentDisplayName.hide()
+            binding.productDetailDiscussionRespondentDisplayName.hide()
         }
     }
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.productDetailDiscussionRespondentResponseDate.apply {
+            binding.productDetailDiscussionRespondentResponseDate.apply {
                 text = date
                 show()
             }
         } else {
-            itemView.productDetailDiscussionRespondentResponseDate.hide()
+            binding.productDetailDiscussionRespondentResponseDate.hide()
         }
     }
 
     private fun showSellerLabelWithCondition(isSeller: Boolean) {
         if(isSeller) {
-            itemView.productDetailDiscussionRespondentSellerLabel.show()
-            itemView.productDetailDiscussionRespondentDisplayName.hide()
+            binding.productDetailDiscussionRespondentSellerLabel.show()
+            binding.productDetailDiscussionRespondentDisplayName.hide()
         } else {
-            itemView.productDetailDiscussionRespondentSellerLabel.hide()
+            binding.productDetailDiscussionRespondentSellerLabel.hide()
         }
     }
 
     private fun showNoAnswersText() {
-        itemView.productDetailDiscussionNoAnswersText.show()
+        binding.productDetailDiscussionNoAnswersText.show()
         hideOtherElements()
     }
 
     private fun hideNoAnswersText() {
-        itemView.productDetailDiscussionNoAnswersText.hide()
+        binding.productDetailDiscussionNoAnswersText.hide()
     }
 
     private fun showNumberOfOtherAnswersWithCondition(questionId: String, answer: Int, dynamicProductDetailListener: DynamicProductDetailListener, adapterPosition: Int, type: String, name: String, itemCount: Int) {
         val answersToShow = answer - 1
         if(answersToShow > 0) {
-            itemView.productDetailDiscussionSeeOtherAnswers.apply {
+            binding.productDetailDiscussionSeeOtherAnswers.apply {
                 text = itemView.context.getString(R.string.product_detail_discussion_total_answers, answersToShow)
                 setOnClickListener {
                     dynamicProductDetailListener.goToTalkReply(questionId, ComponentTrackDataModel(type, name, adapterPosition), itemCount.toString())
@@ -148,12 +150,12 @@ class ProductDiscussionQuestionViewHolder(view: View) : RecyclerView.ViewHolder(
                 show()
             }
         } else {
-            itemView.productDetailDiscussionSeeOtherAnswers.hide()
+            binding.productDetailDiscussionSeeOtherAnswers.hide()
         }
     }
 
     private fun hideOtherElements() {
-        itemView.apply {
+        binding.apply {
             productDetailDiscussionRespondentAnswer.hide()
             productDetailDiscussionRespondentProfilePicture.hide()
             productDetailDiscussionRespondentDisplayName.hide()

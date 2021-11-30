@@ -85,18 +85,6 @@
     {
       "pageType": "/shoppage",
       "eventCategory": "shop page - (buyer|seller)",
-      "productId": ".+",
-      "dimension90": ".*",
-      "shopId": ".+",
-      "shopType": ".+",
-      "event": "clickWishlist",
-      "eventAction": "(add|remove) wishlist - (.+) - (.+) - (.+)",
-      "sessionIris": ".+",
-      "eventLabel":"(.+) - general - (.+)"
-    },
-    {
-      "pageType": "/shoppage",
-      "eventCategory": "shop page - (buyer|seller)",
       "shopId": ".+",
       "shopType": ".+",
       "event": "clickShopPage",

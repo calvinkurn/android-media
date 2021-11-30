@@ -23,5 +23,6 @@
         android:id="@+id/recycler_view_menu_component"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3" />
+        android:paddingTop="@dimen/spacing_lvl3"
+        android:clipToPadding="false" />
 </LinearLayout>

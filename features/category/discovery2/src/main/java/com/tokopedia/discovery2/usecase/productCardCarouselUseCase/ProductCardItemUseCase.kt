@@ -39,6 +39,8 @@ class ProductCardItemUseCase @Inject constructor() {
 
     private fun reInitialiseTabComponents(componentsItem: ComponentsItem) {
         if (componentsItem.name == ComponentNames.ProductCardSprintSale.componentName
+            || componentsItem.name == ComponentNames.ProductCardRevamp.componentName
+            || componentsItem.name == ComponentNames.ProductCardCarousel.componentName
                 || componentsItem.name == ComponentNames.ProductCardSprintSaleCarousel.componentName) {
             shouldReSync = true
             componentsItem.setComponentsItem(null)

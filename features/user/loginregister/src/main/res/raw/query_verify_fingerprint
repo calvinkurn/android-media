@@ -1,7 +1,0 @@
-query verify_fingerprint($signature: String!, $datetime: String!) {
-    VerifyFingerprint(signature: $signature, datetime: $datetime) {
-        isValid
-        message
-        errorMessage
-    }
- }

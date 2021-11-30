@@ -1,0 +1,167 @@
+[
+  {
+    "data": {
+      "get_all_profiles_occ": {
+        "error_message": [],
+        "status": "OK",
+        "data": {
+          "messages": [],
+          "tickers": [],
+          "success": 1,
+          "max_profile": 5,
+          "enable_occ_revamp": true,
+          "profiles": [
+            {
+              "profile_id": 1,
+              "enable": false,
+              "status": 2,
+              "address": {
+                "address_id": 1,
+                "receiver_name": "User 1",
+                "address_name": "Address 1",
+                "address_street": "Address Street 1",
+                "district_id": 1,
+                "district_name": "District 1",
+                "city_id": 1,
+                "city_name": "City 1",
+                "province_id": 1,
+                "province_name": "Province 1",
+                "phone": "1",
+                "longitude": "1",
+                "latitude": "1",
+                "postal_code": "1",
+                "geolocation": "1,1"
+              },
+              "payment": {
+                "enable": 1,
+                "active": 1,
+                "gateway_code": "PAYMENT1",
+                "gateway_name": "Payment 1",
+                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png",
+                "description": "",
+                "url": "",
+                "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"BCAVA\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/BCAVA\",\"high_risk_flag\":\"\",\"description\":\"BCA Virtual Account\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-bca.png\",\"signature\":\"32da4c67c5de0c18da43b76f45a34dcef5fb9335\",\"customer_name\":\"Hansen Prod\",\"customer_email\":\"hansen.wijaya+occ@tokopedia.com\",\"user_id\":117045551}"
+              },
+              "shipment": {
+                "service_id": 1002,
+                "service_duration": "Same Day (6-8 jam)",
+                "service_name": "Same Day"
+              }
+            },
+            {
+              "profile_id": 2,
+              "enable": false,
+              "status": 1,
+              "address": {
+                "address_id": 1,
+                "receiver_name": "User 1",
+                "address_name": "Address 1",
+                "address_street": "Address Street 1",
+                "district_id": 1,
+                "district_name": "District 1",
+                "city_id": 1,
+                "city_name": "City 1",
+                "province_id": 1,
+                "province_name": "Province 1",
+                "phone": "1",
+                "longitude": "1",
+                "latitude": "1",
+                "postal_code": "1",
+                "geolocation": "1,1"
+              },
+              "payment": {
+                "enable": 1,
+                "active": 1,
+                "gateway_code": "ALFAMART",
+                "gateway_name": "Alfamart / Alfamidi / Lawson / Dan+Dan",
+                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/alfamart.png",
+                "description": "",
+                "url": "",
+                "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"ALFAMART\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/ALFAMART\",\"high_risk_flag\":\"\",\"description\":\"Alfamart / Alfamidi / Lawson / Dan+Dan\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/alfamart.png\",\"signature\":\"26d841013fdf4da20bd7a284ef31187b1abc0c98\",\"customer_name\":\"Hansen Prod\",\"customer_email\":\"hansen.wijaya+occ@tokopedia.com\",\"user_id\":117045551}"
+              },
+              "shipment": {
+                "service_id": 1304,
+                "service_duration": "Reguler (\u003e 9 hari)",
+                "service_name": "Reguler"
+              }
+            },
+            {
+              "profile_id": 3,
+              "enable": true,
+              "status": 1,
+              "address": {
+                "address_id": 1,
+                "receiver_name": "User 1",
+                "address_name": "Address 1",
+                "address_street": "Address Street 1",
+                "district_id": 1,
+                "district_name": "District 1",
+                "city_id": 1,
+                "city_name": "City 1",
+                "province_id": 1,
+                "province_name": "Province 1",
+                "phone": "1",
+                "longitude": "1",
+                "latitude": "1",
+                "postal_code": "1",
+                "geolocation": "1,1"
+              },
+              "payment": {
+                "enable": 1,
+                "active": 1,
+                "gateway_code": "OVOCASH",
+                "gateway_name": "OVO",
+                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/ovo.png",
+                "description": "",
+                "url": "",
+                "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"OVOCASH\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/OVOCASH\",\"high_risk_flag\":\"\",\"description\":\"OVO\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/ovo.png\",\"signature\":\"19eda5fde65120450f038cba7e2580c2022a1e12\",\"customer_name\":\"Hansen Prod\",\"customer_email\":\"hansen.wijaya+occ@tokopedia.com\",\"user_id\":117045551}"
+              },
+              "shipment": {
+                "service_id": 1104,
+                "service_duration": "Reguler (2-4 hari)",
+                "service_name": "Reguler"
+              }
+            },
+            {
+              "profile_id": 4,
+              "enable": true,
+              "status": 1,
+              "address": {
+                "address_id": 1,
+                "receiver_name": "User 1",
+                "address_name": "Address 1",
+                "address_street": "Address Street 1",
+                "district_id": 1,
+                "district_name": "District 1",
+                "city_id": 1,
+                "city_name": "City 1",
+                "province_id": 1,
+                "province_name": "Province 1",
+                "phone": "1",
+                "longitude": "1",
+                "latitude": "1",
+                "postal_code": "1",
+                "geolocation": "1,1"
+              },
+              "payment": {
+                "enable": 1,
+                "active": 1,
+                "gateway_code": "MANDIRIVA",
+                "gateway_name": "Mandiri Virtual Account",
+                "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-mandiri.png",
+                "description": "",
+                "url": "",
+                "metadata": "{\"success\":true,\"message\":\"Success\",\"gateway_code\":\"MANDIRIVA\",\"express_checkout_param\":{\"account_name\":\"\",\"account_number\":\"\",\"bank_id\":\"\",\"pan\":\"\",\"issuer\":\"\",\"card_token\":\"\",\"card_type\":\"\",\"total_saved_card\":\"\",\"installment_term\":\"0\",\"expiry\":\"\",\"bank_code\":\"\"},\"express_checkout_url\":\"https://pay.tokopedia.com/v2/api/payment/MANDIRIVA\",\"high_risk_flag\":\"\",\"description\":\"Mandiri Virtual Account\",\"image\":\"https://ecs7.tokopedia.net/img/toppay/payment-logo/icon-mandiri.png\",\"signature\":\"c3b71ac59cb74c5dc945608d23a7f54eec0f15c8\",\"customer_name\":\"Hansen Prod\",\"customer_email\":\"hansen.wijaya+occ@tokopedia.com\",\"user_id\":117045551}"
+              },
+              "shipment": {
+                "service_id": 1002,
+                "service_duration": "Same Day (6-8 jam)",
+                "service_name": "Same Day"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+]

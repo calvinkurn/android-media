@@ -26,7 +26,7 @@ class FlightSearchDataCloudSource @Inject constructor(
             val params = mapOf(PARAM_FLIGHT_SEARCH to searchParam)
             val grapqhRequest = GraphqlRequest(flightSearchSingleQuery, FlightSearchEntity.Response::class.java, params)
 
-            val rawResponse = graphqlRepository.getReseponse(listOf(grapqhRequest))
+            val rawResponse = graphqlRepository.response(listOf(grapqhRequest))
             val response = rawResponse.getSuccessData<FlightSearchEntity.Response>().flightSearch
             if (response.error.isNotEmpty()) {
                 throw FlightSearchThrowable().apply {
@@ -44,7 +44,7 @@ class FlightSearchDataCloudSource @Inject constructor(
             val params = mapOf(PARAM_FLIGHT_SEARCH to combineParam)
             val graphqlRequest = GraphqlRequest(flightSearchCombineQuery, FlightSearchCombineEntity.Response::class.java, params)
 
-            val rawResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+            val rawResponse = graphqlRepository.response(listOf(graphqlRequest))
             val response = rawResponse.getSuccessData<FlightSearchCombineEntity.Response>().flightSearchCombine
             if (response.error.isNotEmpty()) {
                 throw FlightSearchThrowable().apply {

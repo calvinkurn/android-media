@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.analytics.ReferralAnalytics;
@@ -34,7 +35,9 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
     private TextView referralCodeTextView;
     private ImageView imgTick;
     private TextView btnCopyReferralCode;
+    private ImageView imgAppShare;
     private String code, owner;
+    private static String URL_IMG_APP_SHARE = "https://images.tokopedia.net/img/android/im/referral/welcome_image.png";
     @Inject
     ReferralFriendsWelcomePresenter presenter;
     @Inject
@@ -97,6 +100,7 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
         btnReferralExplore = view.findViewById(R.id.btn_referral_explore);
         welcomeMessageSubHearer = view.findViewById(R.id.tv_referral_subheader);
         TextViewHelpLink = view.findViewById(R.id.tv_referral_help_link);
+        imgAppShare = view.findViewById(R.id.img_app_share);
 
         btnReferralExplore.setOnClickListener(v -> {
             referralAnalytics.eventReferralAndShare(
@@ -116,7 +120,7 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
 
         referralCodeTextView.setText(code);
         welcomeMessageSubHearer.setText(Html.fromHtml(presenter.getSubHeaderFromFirebase(owner)));
-
+        JvmMediaLoader.loadImage(imgAppShare, URL_IMG_APP_SHARE);
     }
 
     @Override

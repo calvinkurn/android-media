@@ -1,6 +1,0 @@
-mutation editTransfer($transactionID:String!, $merchantCode:String!, $accName:String!, $accNo:String!, $bankID:Int!, $note:String!){
-  editTransfer(transactionID:$transactionID, merchantCode:$merchantCode, accName:$accName, accNo:$accNo, bankID:$bankID, note:$note){
-    success
-    message
-  }
-}

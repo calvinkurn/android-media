@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sob_open_tokopedia_seller">Masuk Tokopedia Seller</string>
-    <string name="sob_header_text_page_1">Atur stok dan terima \npesanan dengan cepat dan \nmudah</string>
-    <string name="sob_header_text_page_2">Balas chat pembelimu di \nmana saja, kapan saja \n</string>
-    <string name="sob_header_text_page_3">Pasang promosi dan iklan \nuntuk memajukan bisnismu \n</string>
-
-    <string name="sob_illustration_content_desc">Sellerapp Onboarding Illustration</string>
+    <string name="sob_next">Lanjut</string>
+    <string name="sob_previous">Sebelumnya</string>
+    <string name="sob_skip">Lewati</string>
+    <string name="sob_login">Masuk</string>
+    <string name="sob_slider_title_home">Akses cepat semua aktivitas \ntokomu di 1 halaman</string>
+    <string name="sob_slider_title_statistics">Pantau perkembangan toko \nuntuk atur strategi penjualanmu</string>
+    <string name="sob_slider_title_promo">Banyak pilihan promosi dan iklan \nuntuk memajukan bisnismu</string>
+    <string name="sob_slider_title_message">Sigap balas pembeli supaya \nnggak ada pesanan terlewat</string>
+    <string name="sob_slider_title_manage">Lebih praktis atur produk dan \nkelola pesanan sekaligus</string>
 </resources>

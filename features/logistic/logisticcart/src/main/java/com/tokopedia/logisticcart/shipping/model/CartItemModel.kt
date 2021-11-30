@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class CartItemModel(
@@ -9,6 +9,7 @@ data class CartItemModel(
         var shopId: String = "",
         var shopName: String = "",
         var productId: Long = 0,
+        var productCatId: Long = 0,
         var name: String = "",
         var price: Double = 0.0,
         var originalPrice: Double = 0.0,
@@ -17,6 +18,7 @@ data class CartItemModel(
         var weightUnit: Int = 0,
         var weight: Double = 0.0,
         var weightFmt: String = "",
+        var weightActual: Double = 0.0,
         var quantity: Int = 0,
         var noteToSeller: String = "",
         var imageUrl: String = "",
@@ -28,6 +30,7 @@ data class CartItemModel(
         var fInsurance: Boolean = false,
         var fCancelPartial: Boolean = false,
         var isError: Boolean = false,
+        var isShopError: Boolean = false,
         var errorMessage: String = "",
         var errorMessageDescription: String = "",
         var isProtectionAvailable: Boolean = false,
@@ -52,5 +55,16 @@ data class CartItemModel(
         var deviceModel: String = "",
         var diagnosticId: String = "",
         var productInformation: List<String> = emptyList(),
-        var productAlertMessage: String = ""
+        var productAlertMessage: String = "",
+        var isBundlingItem: Boolean = false,
+        var bundlingItemPosition: Int = 0,
+        var bundleId: String = "",
+        var bundleGroupId: String = "",
+        var bundleType: String = "",
+        var bundleTitle: String = "",
+        var bundlePrice: Long = 0L,
+        var bundleSlashPriceLabel: String = "",
+        var bundleOriginalPrice: Long = 0L,
+        var bundleQuantity: Int = 0,
+        var bundleIconUrl: String = ""
 ) : Parcelable

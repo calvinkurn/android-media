@@ -21,9 +21,7 @@ class AddCreditCardFragment : BaseWebViewFragment() {
 
     private lateinit var paymentSignature: PaymentSignature
 
-    override fun getUrl(): String {
-        return ""
-    }
+    override fun getUrl() = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +57,7 @@ class AddCreditCardFragment : BaseWebViewFragment() {
                 "$SIGNATURE=${getUrlEncoded(paymentSignature.hash)}"
     }
 
-    private fun getUrlEncoded(valueStr: String): String {
-        return URLEncoder.encode(valueStr, ENCODING_UTF_8)
-    }
+    private fun getUrlEncoded(valueStr: String) = URLEncoder.encode(valueStr, ENCODING_UTF_8)
 
     override fun initInjector() {
     }
@@ -98,11 +94,9 @@ class AddCreditCardFragment : BaseWebViewFragment() {
         const val CUSTOMER_MSISDN = "customer_msisdn"
         const val SIGNATURE = "signature"
 
-        fun createInstance(bundle: Bundle?): AddCreditCardFragment {
-            return AddCreditCardFragment().apply {
-                if (bundle != null)
-                    arguments = bundle
-            }
+        fun createInstance(bundle: Bundle?) = AddCreditCardFragment().apply {
+            if (bundle != null)
+                arguments = bundle
         }
     }
 }

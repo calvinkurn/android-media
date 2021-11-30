@@ -16,11 +16,11 @@
         android:layout_height="match_parent"
         android:background="@color/play_widget_dms_light_gray">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/play_widget_thumbnail"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,17 +66,19 @@
             tools:visibility="gone"
             />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/play_widget_iv_action"
             android:layout_width="@dimen/play_widget_more_action_size"
             android:layout_height="@dimen/play_widget_more_action_size"
             android:layout_marginTop="@dimen/spacing_lvl3"
             android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:scaleType="centerInside"
             android:visibility="gone"
+            app:icon_color_light_enable="@color/Unify_Static_White"
+            app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_name="MENU_KEBAB_VERTICAL"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_play_more_white"
-            android:scaleType="centerInside"
             tools:visibility="visible" />
 
         <include
@@ -107,7 +109,7 @@
             android:id="@+id/play_widget_badge_promo"
             layout="@layout/layout_promo_badge"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/play_widget_channel_medium_promo_height"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginBottom="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toTopOf="@+id/play_widget_info_container"

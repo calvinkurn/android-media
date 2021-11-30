@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import com.tokopedia.shop.settings.databinding.FragmentShopEtalaseAddEditBinding
 import com.tokopedia.shop.settings.etalase.data.PowerMerchantAccessModel
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
@@ -28,14 +29,19 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_shop_etalase_add_edit.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         PowerMerchantAccessBottomSheet.BottomSheetListener {
     @Inject
     lateinit var viewModel: ShopSettingsEtalaseAddEditViewModel
+
+    private var binding by autoClearedNullable<FragmentShopEtalaseAddEditBinding>()
+
     private var tfEtalaseLabel: TextFieldUnify? = null
+    private var scrollView: View? = null
+    private var loader: View? = null
     private var isEdit: Boolean = false
     private var etalase: ShopEtalaseUiModel = ShopEtalaseUiModel()
     private var listEtalaseModel: List<ShopEtalaseModel>? = null
@@ -66,13 +72,9 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         getComponent(ShopSettingsComponent::class.java).inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_etalase_add_edit, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tfEtalaseLabel = view.findViewById(R.id.text_etalase_label)
+        initView()
 
         arguments?.let {
             isEdit = it.getBoolean(PARAM_IS_EDIT, false)
@@ -99,6 +101,18 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         }
         getEtalaseList()
         observeData()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+        binding = FragmentShopEtalaseAddEditBinding.inflate(inflater, container, false)
+        return binding?.root as View
+    }
+
+    private fun initView() {
+        tfEtalaseLabel = binding?.textEtalaseLabel
+        scrollView = binding?.scrollView
+        loader = binding?.loader
     }
 
     private fun observeData() {
@@ -159,7 +173,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetEtalaseList(list: List<ShopEtalaseModel>) {
-        scroll_view.visibility = View.VISIBLE
+        scrollView?.visibility = View.VISIBLE
         (activity as? ShopSettingsEtalaseAddEditActivity)?.showSaveButton()
         listEtalaseModel = list
     }

@@ -64,6 +64,9 @@ object DigitalCheckoutTrackingConst {
 
         const val NONE = "none"
         const val CROSSELL_CARD_TYPE = "crossell icon"
+
+        const val REGULAR_PRODUCT = "regular product"
+        const val SPECIAL_PROMO = "special product promo"
     }
 
     object Misc {

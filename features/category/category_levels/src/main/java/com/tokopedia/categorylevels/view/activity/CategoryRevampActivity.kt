@@ -35,12 +35,12 @@ class CategoryRevampActivity : DiscoveryActivity() {
         return CategoryRevampRepoProvider((application as BaseMainApplication).baseAppComponent, departmentName, departmentId, categoryUrl)
     }
 
-    override fun getPageIdentifier(): String {
-        return departmentId
-    }
-
     override fun getTraceName(): String {
         return CATEGORY_LEVELS_RESULT_TRACE
+    }
+
+    override fun isFromCategory(): Boolean {
+        return true
     }
 
     override fun getAnalytics(): BaseDiscoveryAnalytics {

@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.tokopedia.logger.datasource.db.Logger
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Class to process the message that will be sent to scalyr/new relic
@@ -20,14 +21,16 @@ class LoggerReporting {
     var packageName: String? = null
     var tagMapsScalyr: HashMap<String, Tag> = hashMapOf()
     var tagMapsNewRelic: HashMap<String, Tag> = hashMapOf()
+    var tagMapsEmbrace: HashMap<String, Tag> = hashMapOf()
 
     fun getProcessedMessage(priority: Priority, tag: String,
                             oriMessageMap: Map<String, String>,
                             userId: String): Logger? {
         val timeStamp = System.currentTimeMillis()
         val priorityText = when (priority) {
-            Priority.P1 -> "P1"
-            Priority.P2 -> "P2"
+            Priority.P1 -> P1
+            Priority.P2 -> P2
+            Priority.SF -> SF
         }
         val tagMapKey = StringBuilder(priorityText).append(DELIMITER_TAG_MAPS).append(tag).toString()
 
@@ -37,6 +40,10 @@ class LoggerReporting {
         }
 
         tagMapsNewRelic[tagMapKey]?.let {
+            priorityTag = it.postPriority
+        }
+
+        tagMapsEmbrace[tagMapKey]?.let {
             priorityTag = it.postPriority
         }
 
@@ -62,27 +69,39 @@ class LoggerReporting {
         val p = when (priority) {
             P1 -> Constants.SEVERITY_HIGH
             P2 -> Constants.SEVERITY_MEDIUM
+            SF -> Constants.SEVERITY_SF
             else -> -1
         }
+
         with(mapMessage) {
-            put("log_tag", tag)
-            put("log_timestamp", timeStamp.toString())
-            put("log_time", getReadableTimeStamp(timeStamp))
-            put("log_did", partDeviceId)
-            put("log_uid", userId)
-            put("log_vernm", versionName)
-            put("log_vercd", versionCode.toString())
-            put("log_os", Build.VERSION.RELEASE)
-            put("log_device", Build.MODEL)
-            put("log_packageName", packageName.toString())
-            put("log_installer", installer.toString())
-            put("log_debug", debug.toString())
-            put("log_priority", p.toString())
-            for (item in message) {
-                if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
-                    put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
-                } else {
-                    put(item.key, item.value)
+            put(Constants.PRIORITY_LOG, p.toString())
+            put(Constants.TAG_LOG, tag)
+            if (priority == SF) {
+                for (item in message) {
+                    if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
+                        put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
+                    } else {
+                        put(item.key, item.value)
+                    }
+                }
+            } else {
+                put("log_timestamp", timeStamp.toString())
+                put("log_time", getReadableTimeStamp(timeStamp))
+                put("log_did", partDeviceId)
+                put("log_uid", userId)
+                put("log_vernm", versionName)
+                put("log_vercd", versionCode.toString())
+                put("log_os", Build.VERSION.RELEASE)
+                put("log_device", Build.MODEL)
+                put("log_packageName", packageName.toString())
+                put("log_installer", installer.toString())
+                put("log_debug", debug.toString())
+                for (item in message) {
+                    if (item.value.length > Constants.MAX_LENGTH_PER_ITEM) {
+                        put(item.key, item.value.substring(0, Constants.MAX_LENGTH_PER_ITEM))
+                    } else {
+                        put(item.key, item.value)
+                    }
                 }
             }
         }
@@ -149,6 +168,30 @@ class LoggerReporting {
         }
     }
 
+    fun setPopulateTagMapsEmbrace(tags: List<String>?) {
+        tagMapsEmbrace.clear()
+        if (tags.isNullOrEmpty()) {
+            return
+        }
+        for (tag in tags) {
+            val tagSplit = tag.split(DELIMITER_TAG_MAPS.toRegex()).dropLastWhile { it.isEmpty() }
+            if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
+                continue
+            }
+            tagSplit[2].toDoubleOrNull()?.let {
+                val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
+                if (randomNumber <= it) {
+                    val tagKey = StringBuilder()
+                            .append(tagSplit[0])
+                            .append(DELIMITER_TAG_MAPS)
+                            .append(tagSplit[1])
+                            .toString()
+                    tagMapsEmbrace[tagKey] = Tag(getPriority(tagSplit[3]))
+                }
+            }
+        }
+    }
+
     companion object {
         const val DELIMITER_TAG_MAPS = "#"
         const val DELIMITER = ","
@@ -160,6 +203,7 @@ class LoggerReporting {
         const val PREFIX = "P"
         const val P1 = "P1"
         const val P2 = "P2"
+        const val SF = "SF"
 
         const val TAG_OFFLINE = "offline"
         const val TAG_ONLINE = "online"

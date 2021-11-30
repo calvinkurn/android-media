@@ -2,57 +2,60 @@ package com.tokopedia.sellerhome.settings.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.gm.common.constant.COMMUNICATION_PERIOD
-import com.tokopedia.gm.common.constant.END_PERIOD
-import com.tokopedia.gm.common.constant.TRANSITION_PERIOD
-import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller.active.common.service.UpdateShopActiveService
 import com.tokopedia.seller.menu.common.analytics.*
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
-import com.tokopedia.seller.menu.common.view.uimodel.*
-import com.tokopedia.seller.menu.common.view.uimodel.base.*
-import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.StatisticMenuItemUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingShopInfoImpressionTrackable
+import com.tokopedia.seller.menu.common.view.uimodel.base.SettingUiModel
+import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
+import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
-import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
-import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingShopOperationalTracker
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
+import com.tokopedia.sellerhome.settings.view.adapter.OtherMenuAdapter
+import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
@@ -62,31 +65,43 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.url.Env
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_other_menu.*
+import java.io.File
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback, SettingTrackingListener {
+class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
+    SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuViewHolder.Listener,
+    StatusBarCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
 
     companion object {
-        private const val APPLINK_FORMAT = "%s?url=%s"
+        private const val TAB_PM_PARAM = "tab"
 
-        private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
-        private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
-        private const val MAXIMUM_ALPHA = 255f
-        private const val ALPHA_CHANGE_THRESHOLD = 150
+        private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
+        private const val DELIMITER = " - "
 
-        private const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
+        const val OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME = "Seller App - Lainnya"
+        const val OTHER_MENU_SHARE_BOTTOM_SHEET_FEATURE_NAME = "Share"
 
-        private const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
-        private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+        const val TOPADS_BOTTOMSHEET_TAG = "topads_bottomsheet"
 
-        private const val ERROR_GET_SETTING_SHOP_INFO = "Error when get shop info in other setting."
-        private const val ERROR_GET_SHOP_OPERATIONAL_HOUR = "Error when get operational hour in other setting."
+        const val GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY"
+        const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
+
+        const val SHOP_BADGE = "shop badge"
+        const val SHOP_FOLLOWERS = "shop followers"
+        const val SHOP_INFO = "shop info"
+        const val OPERATIONAL_HOUR = "operational hour"
+        const val SALDO_BALANCE = "saldo balance"
+        const val TOPADS_BALANCE = "topads balance"
+        const val TOPADS_AUTO_TOPUP = "topads auto topup"
+        const val FREE_SHIPPING = "free shipping"
 
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
@@ -94,38 +109,27 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
-    @Inject
-    lateinit var sellerHomeConfig: SellerHomeRemoteConfig
+
     @Inject
     lateinit var freeShippingTracker: SettingFreeShippingTracker
+
     @Inject
     lateinit var shopOperationalTracker: SettingShopOperationalTracker
 
-    @Inject lateinit var settingPerformanceTracker: SettingPerformanceTracker
+    @Inject
+    lateinit var settingPerformanceTracker: SettingPerformanceTracker
 
-    private var otherMenuViewHolder: OtherMenuViewHolder? = null
+    @Inject
+    lateinit var sellerMenuTracker: SellerMenuTracker
 
-    private var startToTransitionOffset = 0
-    private var statusInfoTransitionOffset = 0
-
-    private var isInitialStatusBar = false
-    private var isDefaultDarkStatusBar = true
-
-    private var canShowErrorToaster = true
-
-    @FragmentType
-    private var currentFragmentType: Int = FragmentType.OTHER
-
-    private val otherMenuViewModel by lazy {
+    private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
-    }
-
-    private val statusBarHeight by lazy {
-        context?.let { StatusbarHelper.getStatusBarHeight(it) }
     }
 
     private val topAdsBottomSheet by lazy {
@@ -142,80 +146,85 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        getAllShopInfoData()
+    private val isSharingEnabled by lazy {
+        context?.let {
+            UniversalShareBottomSheet.isCustomSharingEnabled(it)
+        } == true
     }
+
+    @FragmentType
+    private var currentFragmentType: Int = FragmentType.OTHER
+
+    private var viewHolder: OtherMenuViewHolder? = null
+
+    private var multipleErrorSnackbar: Snackbar? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
+    private var canShowErrorToaster = true
+    private var hasShownMultipleErrorToaster = false
+
+    private var shopShareInfo: OtherMenuShopShareData? = null
+    private var shopSnippetImageUrl: String = ""
+    private var shopShareImagePath: String = ""
+    private var canShowShareBottomSheet = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         (activity as? SellerHomeActivity)?.attachCallback(this)
+        viewModel.run {
+            setErrorStateMapDefaultValue()
+            setSuccessStateMapDefaultValue()
+        }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_other_menu, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_new_other_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupOffset()
-        setupView(view)
+        context?.let {
+            viewHolder = OtherMenuViewHolder(view, it, this, userSession, this)
+        }
+        viewHolder?.setInitialLayouts()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBar()
+        }
         observeLiveData()
-        observeShopPeriod()
-        context?.let { UpdateShopActiveService.startService(it) }
     }
 
-    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory(this, userSession = userSession)
-
-    override fun onItemClicked(settingUiModel: SettingUiModel) {}
-
-    override fun getScreenName(): String = ""
-
-    override fun initInjector() {
-        DaggerSellerHomeComponent.builder()
-                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllOtherMenuData()
+        if (isSharingEnabled) {
+            viewModel.getShopShareInfoData()
+        }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        deletePreviousSavedImage()
+    }
+
+    override fun onItemClicked(t: SettingUiModel?) {}
 
     override fun loadData(page: Int) {}
 
-    override fun onShopInfoClicked() {
-        RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
+    override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory =
+        OtherMenuAdapterTypeFactory(this, userSession = userSession)
+
+    override fun initInjector() {
+        DaggerSellerHomeComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
-    override fun onShopBadgeClicked() {
-        goToReputationHistory()
-    }
-
-    override fun onFollowersCountClicked() {
-        goToShopFavouriteList()
-    }
-
-    override fun onSaldoClicked() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
-            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-        else {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
-            context?.startActivity(intent)
-        }
-    }
-
-    override fun onKreditTopadsClicked() {
-        val bottomSheet = childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
-        if (bottomSheet is BottomSheetUnify) {
-            bottomSheet.dismiss()
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
-        } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
-        }
-    }
-
-    override fun onRefreshShopInfo() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo()
-        otherMenuViewModel.getShopPeriodType()
-    }
+    override fun getScreenName(): String = ""
 
     override fun sendImpressionDataIris(settingShopInfoImpressionTrackable: SettingShopInfoImpressionTrackable) {
         if (settingShopInfoImpressionTrackable is StatisticMenuItemUiModel) {
@@ -225,32 +234,132 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun setStatusBar() {
-        (activity as? Activity)?.run {
-            if (isInitialStatusBar && !isDefaultDarkStatusBar) {
-                requestStatusBarLight()
-            } else {
-                requestStatusBarDark()
-            }
+    override fun createAdapterInstance(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> {
+        return OtherMenuAdapter(context, this, adapterTypeFactory)
+    }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.rv_sah_new_other_menu
+
+    override fun goToPrintingPage() {
+        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
+        val applink = String.format(SellerBaseUrl.APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
+        RouteManager.getIntent(context, applink)?.let {
+            context?.startActivity(it)
         }
     }
 
-    override fun onStatusBarNeedDarkColor(isDefaultDark: Boolean) {
-        isDefaultDarkStatusBar = isDefaultDark
-        setStatusBarStateInitialIsLight(!isDefaultDark)
-        if (otherMenuViewModel.isStatusBarInitialState.value == false && !isDefaultDark) {
-            setStatusBarStateInitialIsLight(isDefaultDark)
+    override fun goToSettings() {
+        startActivity(Intent(context, MenuSettingActivity::class.java))
+    }
+
+    override fun getRecyclerView(): RecyclerView? = getRecyclerView(view)
+
+    override fun getFragmentAdapter(): BaseListAdapter<SettingUiModel, OtherMenuAdapterTypeFactory> =
+        adapter
+
+    override fun onShopInfoClicked() {
+        RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
+    }
+
+    override fun onRmTransactionClicked() {
+        goToNewMembershipScheme()
+    }
+
+    override fun onShopBadgeClicked() {
+        NewOtherMenuTracking.sendEventClickShopReputationBadge()
+        goToReputationHistory()
+    }
+
+    override fun onFollowersCountClicked() {
+        NewOtherMenuTracking.sendEventClickTotalFollowers()
+        goToShopFavouriteList()
+    }
+
+    override fun onSaldoClicked() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+        else {
+            val intent = RouteManager.getIntent(
+                context,
+                ApplinkConstInternalGlobal.WEBVIEW,
+                ApplinkConst.WebViewUrl.SALDO_DETAIL
+            )
+            context?.startActivity(intent)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (currentFragmentType == FragmentType.OTHER) {
-                setStatusBar()
-            }
+        NewOtherMenuTracking.sendEventClickSaldoBalance()
+    }
+
+    override fun onKreditTopadsClicked() {
+        val bottomSheet =
+            childFragmentManager.findFragmentByTag(TOPADS_BOTTOMSHEET_TAG)
+        if (bottomSheet is BottomSheetUnify) {
+            bottomSheet.dismiss()
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
+        } else {
+            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+        }
+        NewOtherMenuTracking.sendEventClickTopadsBalance()
+    }
+
+    override fun onFreeShippingClicked() {
+        freeShippingTracker.trackFreeShippingClick()
+        val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
+        if (isActivityResumed()) {
+            freeShippingBottomSheet.show(childFragmentManager)
         }
     }
 
-    override fun setCurrentFragmentType(fragmentType: Int) {
-        currentFragmentType = fragmentType
+    override fun onShopOperationalClicked() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
+    }
+
+    override fun onGoToPowerMerchantSubscribe(tab: String?, isUpdate: Boolean) {
+        sellerMenuTracker.sendEventClickShopSettingNew()
+        if (tab != null) {
+            val appLink = ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE
+            val appLinkPMTabBuilder =
+                Uri.parse(appLink).buildUpon().appendQueryParameter(TAB_PM_PARAM, tab)
+            if (isUpdate) {
+                appLinkPMTabBuilder.appendQueryParameter(
+                    ApplinkConstInternalMarketplace.ARGS_IS_UPGRADE,
+                    isUpdate.toString()
+                )
+            }
+            val appLinkPMTab = appLinkPMTabBuilder.build().toString()
+            context.let { RouteManager.route(it, appLinkPMTab) }
+        }
+    }
+
+    override fun onRefreshShopInfo() {
+        viewModel.getUserShopInfo()
+    }
+
+    override fun onShopBadgeRefresh() {
+        viewModel.getShopBadge()
+    }
+
+    override fun onShopTotalFollowersRefresh() {
+        viewModel.getShopTotalFollowers()
+    }
+
+    override fun onUserInfoRefresh() {
+        viewModel.getUserShopInfo()
+    }
+
+    override fun onOperationalHourRefresh() {
+        viewModel.getShopOperational()
+    }
+
+    override fun onSaldoBalanceRefresh() {
+        viewModel.getBalanceInfo()
+    }
+
+    override fun onKreditTopAdsRefresh() {
+        viewModel.getKreditTopAds()
+    }
+
+    override fun onFreeShippingRefresh() {
+        viewModel.getFreeShippingStatus()
     }
 
     override fun onTopAdsTooltipClicked(isTopAdsActive: Boolean) {
@@ -258,19 +367,302 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         bottomSheetChildView?.run {
             with(topAdsBottomSheet) {
                 setChild(this@run)
-                show(this@OtherMenuFragment.childFragmentManager, TOPADS_BOTTOMSHEET_TAG)
+                show(
+                    this@OtherMenuFragment.childFragmentManager,
+                    TOPADS_BOTTOMSHEET_TAG
+                )
             }
         }
     }
 
-    override fun onFreeShippingClicked() {
-        val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
-        if (isActivityResumed()) {
-            freeShippingBottomSheet.show(childFragmentManager)
+    override fun onTopadsValueSet() {
+        viewModel.startToggleTopadsCredit()
+    }
+
+    override fun onShareButtonClicked() {
+        NewOtherMenuTracking.sendEventClickShareButton(userSession.shopId, userSession.userId)
+        saveImageToStorageBeforeShowBottomsheet()
+    }
+
+    override fun onScrollToTop() {
+        viewHolder?.scrollToTop()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun setStatusBar() {
+        (activity as? Activity)?.requestStatusBarLight()
+    }
+
+    override fun setCurrentFragmentType(fragmentType: Int) {
+        currentFragmentType = fragmentType
+        if (fragmentType != FragmentType.OTHER) {
+            multipleErrorSnackbar?.dismiss()
         }
     }
 
-    private fun setupBottomSheetLayout(isTopAdsActive: Boolean) : View? {
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            type = LinkerData.SHOP_TYPE
+            uri = shopShareInfo?.coreUrl
+            id = userSession.shopId
+            //set and share in the Linker Data
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            ogTitle = getShareBottomSheetOgTitle()
+            ogDescription = getShareBottomSheetOgDescription()
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    checkUsingCustomBranchLinkDomain(linkerShareData)
+                    val shareString = getString(
+                        R.string.sah_new_other_share_text,
+                        userSession.shopName,
+                        linkerShareData?.shareContents
+                    )
+                    shareModel.subjectName = userSession.shopName
+                    SharingUtil.executeShareIntent(
+                        shareModel,
+                        linkerShareData,
+                        activity,
+                        view,
+                        shareString
+                    )
+
+                    NewOtherMenuTracking.sendEventClickSharingChannel(
+                        shopId = userSession.shopId,
+                        userId = userSession.userId,
+                        channel = shareModel.channel.orEmpty()
+                    )
+
+                    universalShareBottomSheet?.dismiss()
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+    }
+
+    override fun onCloseOptionClicked() {
+        NewOtherMenuTracking.sendEventClickCloseShareBottomSheet(
+            userSession.shopId,
+            userSession.userId
+        )
+    }
+
+    override fun onShopStatusImpression(shopType: ShopType) {
+        NewOtherMenuTracking.sendEventImpressionShopStatus(shopType)
+    }
+
+    override fun onFreeShippingImpression() {
+        freeShippingTracker.trackFreeShippingImpression()
+    }
+
+    private fun observeLiveData() {
+        observeShopBadge()
+        observeShopTotalFollowers()
+        observeShopStatus()
+        observeShopOperationalHour()
+        observeSaldoBalance()
+        observeKreditTopads()
+        observeFreeShipping()
+        observeIsTopAdsAutoTopup()
+        observeShopPeriod()
+        observeShopShareInfo()
+        observeShouldSwipeSecondaryInfo()
+        observeMultipleErrorToaster()
+        observeToasterAlreadyShown()
+        observeToggleTopadsCount()
+    }
+
+    private fun observeShopBadge() {
+        viewModel.shopBadgeLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setReputationBadgeData(it)
+            if (it is SettingResponseState.SettingError) {
+                showErrorToaster(it.throwable) {
+                    onShopBadgeRefresh()
+                }
+                logHeaderError(it.throwable, SHOP_BADGE)
+            }
+        }
+    }
+
+    private fun observeShopTotalFollowers() {
+        viewModel.shopTotalFollowersLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setShopFollowersData(it)
+            if (it is SettingResponseState.SettingError) {
+                showErrorToaster(it.throwable) {
+                    onShopTotalFollowersRefresh()
+                }
+                logHeaderError(it.throwable, SHOP_FOLLOWERS)
+            }
+        }
+    }
+
+    private fun observeShopStatus() {
+        viewModel.userShopInfoLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setShopStatusData(it)
+            if (it is SettingResponseState.SettingError) {
+                showErrorToaster(it.throwable) {
+                    onRefreshShopInfo()
+                }
+                logHeaderError(it.throwable, SHOP_INFO)
+            }
+        }
+    }
+
+    private fun observeShopOperationalHour() {
+        viewModel.shopOperationalLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setShopOperationalData(it)
+            if (it is SettingResponseState.SettingError) {
+                showErrorToaster(it.throwable) {
+                    onOperationalHourRefresh()
+                }
+                logHeaderError(it.throwable, OPERATIONAL_HOUR)
+            }
+        }
+    }
+
+    private fun observeSaldoBalance() {
+        viewModel.balanceInfoLiveData.observe(viewLifecycleOwner) {
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceSaldoData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onSaldoBalanceRefresh()
+                    }
+                    logHeaderError(it.throwable, SALDO_BALANCE)
+                }
+            }
+        }
+    }
+
+    private fun observeKreditTopads() {
+        viewModel.kreditTopAdsLiveData.observe(viewLifecycleOwner) {
+            activity?.runOnUiThread {
+                viewHolder?.setBalanceTopadsData(it)
+                if (it is SettingResponseState.SettingError) {
+                    showErrorToaster(it.throwable) {
+                        onKreditTopAdsRefresh()
+                    }
+                    logHeaderError(it.throwable, TOPADS_BALANCE)
+                }
+            }
+        }
+    }
+
+    private fun observeFreeShipping() {
+        viewModel.freeShippingLiveData.observe(viewLifecycleOwner) {
+            viewHolder?.setFreeShippingData(it)
+            if (it is SettingResponseState.SettingError) {
+                showErrorToaster(it.throwable) {
+                    onFreeShippingRefresh()
+                }
+                logHeaderError(it.throwable, FREE_SHIPPING)
+            }
+        }
+    }
+
+    private fun observeIsTopAdsAutoTopup() {
+        viewModel.isTopAdsAutoTopupLiveData.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    viewHolder?.setIsTopadsAutoTopup(result.data)
+                }
+                is Fail -> {
+                    showErrorToaster(result.throwable)
+                    logHeaderError(result.throwable, TOPADS_AUTO_TOPUP)
+                }
+            }
+        }
+    }
+
+    private fun observeShopPeriod() {
+        observe(viewModel.shopPeriodType) {
+            when (it) {
+                is Success -> {
+                    setTrackerPerformanceMenu(it.data.isNewSeller)
+                }
+                is Fail -> { }
+            }
+        }
+        viewModel.getShopPeriodType()
+    }
+
+    private fun observeShopShareInfo() {
+        viewModel.shopShareInfoLiveData.observe(viewLifecycleOwner) { shareInfo ->
+            if (isSharingEnabled) {
+                animateShareButtonFromShareData(shareInfo)
+            }
+        }
+    }
+
+    private fun observeShouldSwipeSecondaryInfo() {
+        viewModel.shouldSwipeSecondaryInfo.observe(viewLifecycleOwner) { shouldSwipe ->
+            if (shouldSwipe) {
+                viewHolder?.swipeSecondaryInfoGently()
+            }
+        }
+    }
+
+    private fun observeMultipleErrorToaster() {
+        viewModel.shouldShowMultipleErrorToaster.observe(viewLifecycleOwner) { shouldShowError ->
+            if (shouldShowError) {
+                showMultipleErrorToaster()
+            } else {
+                multipleErrorSnackbar?.dismiss()
+            }
+        }
+    }
+
+    private fun observeToasterAlreadyShown() {
+        viewModel.setDefaultToasterState(false)
+        viewModel.isToasterAlreadyShown.observe(viewLifecycleOwner) { isToasterAlreadyShown ->
+            canShowErrorToaster = !isToasterAlreadyShown
+        }
+    }
+
+    private fun observeToggleTopadsCount() {
+        viewModel.numberOfTopupToggleCounts.observe(viewLifecycleOwner) { count ->
+            if (count != null) {
+                viewHolder?.toggleTopadsTopup()
+            }
+        }
+    }
+
+    private fun goToReputationHistory() {
+        val reputationHistoryIntent =
+            RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
+                putExtra(GO_TO_REPUTATION_HISTORY, true)
+            }
+        startActivity(reputationHistoryIntent)
+    }
+
+    private fun goToShopFavouriteList() {
+        val shopFavouriteListIntent =
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST)
+                .apply {
+                    putExtra(EXTRA_SHOP_ID, userSession.shopId)
+                }
+        startActivity(shopFavouriteListIntent)
+    }
+
+    private fun goToNewMembershipScheme() {
+        context?.let {
+            RouteManager.route(it, SellerBaseUrl.getNewMembershipSchemeApplink())
+        }
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
+    }
+
+    private fun setupBottomSheetLayout(isTopAdsActive: Boolean): View? {
         val bottomSheetInfix: String
         val bottomSheetDescription: String
         if (isTopAdsActive) {
@@ -278,353 +670,201 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
         } else {
             bottomSheetInfix = resources.getString(R.string.setting_topads_status_inactive)
-            bottomSheetDescription = resources.getString(R.string.setting_topads_description_inactive)
+            bottomSheetDescription =
+                resources.getString(R.string.setting_topads_description_inactive)
         }
         val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
         return topAdsBottomSheetView?.apply {
-            findViewById<Typography>(R.id.topAdsBottomSheetTitle).text = bottomSheetTitle
-            findViewById<TextView>(R.id.topAdsBottomSheetDescription).text = bottomSheetDescription
-            findViewById<UnifyButton>(R.id.topAdsNextButton).setOnClickListener{
+            findViewById<Typography>(R.id.topAdsBottomSheetTitle)?.text = bottomSheetTitle
+            findViewById<TextView>(R.id.topAdsBottomSheetDescription)?.text = bottomSheetDescription
+            findViewById<UnifyButton>(R.id.topAdsNextButton)?.setOnClickListener {
                 onKreditTopadsClicked()
             }
         }
     }
 
-    private fun setStatusBarStateInitialIsLight(isLight: Boolean) {
-        isInitialStatusBar = isLight
+    private fun showMultipleErrorToaster() {
+        multipleErrorSnackbar =
+            view?.run {
+                Toaster.build(
+                    this,
+                    context?.getString(R.string.setting_header_multiple_error_message)
+                        .orEmpty(),
+                    Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_NORMAL,
+                    context?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry).orEmpty()
+                )
+                {
+                    viewModel.reloadErrorData()
+                    viewModel.onShownMultipleError()
+                    hasShownMultipleErrorToaster = false
+                }.addCallback(object : Snackbar.Callback() {
+                    override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                        super.onDismissed(transientBottomBar, event)
+                        viewModel.onShownMultipleError()
+                        hasShownMultipleErrorToaster = false
+                    }
+                })
+            }
+        multipleErrorSnackbar?.show()
+        viewModel.onShownMultipleError(true)
+        hasShownMultipleErrorToaster = true
     }
 
-    private fun observeLiveData() {
-        with(otherMenuViewModel) {
-            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
-                when(result) {
-                    is Success -> {
-                        showSettingShopInfoState(result.data)
-                        otherMenuViewModel.getFreeShippingStatus()
-                        otherMenuViewModel.getShopOperational()
-                    }
-                    is Fail -> {
-                        SellerHomeErrorHandler.logExceptionToCrashlytics(result.throwable, ERROR_GET_SETTING_SHOP_INFO)
-                        showSettingShopInfoState(SettingResponseState.SettingError)
-                    }
-                }
-            })
-            isToasterAlreadyShown.observe(viewLifecycleOwner, Observer { isToasterAlreadyShown ->
-                canShowErrorToaster = !isToasterAlreadyShown
-            })
+    private fun showErrorToaster(throwable: Throwable, onRetryAction: () -> Unit = {}) {
+        viewModel.onCheckDelayErrorResponseTrigger()
+        val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
+        if (canShowToaster && !hasShownMultipleErrorToaster) {
+            val errorMessage = context?.let {
+                ErrorHandler.getErrorMessage(it, throwable)
+            } ?: resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message)
+            view?.showToasterError(errorMessage, onRetryAction)
         }
-        observeFreeShippingStatus()
-        observeShopOperationalHour()
     }
 
-    private fun observeFreeShippingStatus() {
-        observe(otherMenuViewModel.isFreeShippingActive) { freeShippingActive ->
-            if(freeShippingActive) {
-                otherMenuViewHolder?.setupFreeShippingLayout()
-            } else {
-                otherMenuViewHolder?.hideFreeShippingLayout()
-            }
-        }
-    }
-
-    private fun observeShopPeriod() {
-        observe(otherMenuViewModel.shopPeriodType) {
-            when (it) {
-                is Success -> {
-                    setPerformanceMenu(it.data)
-                }
-                is Fail -> {}
-            }
-        }
-        otherMenuViewModel.getShopPeriodType()
-    }
-
-    private fun setPerformanceMenu(shopInfoPeriodUiModel: ShopInfoPeriodUiModel) {
-        if (shopInfoPeriodUiModel.periodType.isNotBlank()) {
-            if (shopInfoPeriodUiModel.periodType == TRANSITION_PERIOD || shopInfoPeriodUiModel.periodType == END_PERIOD) {
-                val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                    it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
-                }
-
-                if (shopPerformanceData != null) {
-                    return
-                } else {
-                    val promotionItem = adapter.list.filterIsInstance<MenuItemUiModel>().find {
-                        it.onClickApplink == ApplinkConstInternalSellerapp.CENTRALIZED_PROMO
-                    }
-                    val promotionIndex = adapter.list.indexOfFirst { it == promotionItem }
-                    val performanceData = MenuItemUiModel(
-                            resources.getString(R.string.setting_menu_performance),
-                            null,
-                            ApplinkConstInternalMarketplace.SHOP_PERFORMANCE,
-                            eventActionSuffix = SettingTrackingConstant.SHOP_PERFORMANCE,
-                            iconUnify = IconUnify.PERFORMANCE,
-                    )
-                    performanceData.clickSendTracker = {
-                        settingPerformanceTracker.clickItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
-                    if (promotionIndex != -1) {
-                        adapter.addElement(promotionIndex + 1, performanceData)
-                        adapter.notifyItemRangeInserted(promotionIndex, 1)
-                        settingPerformanceTracker.impressItemEntryPointPerformance(shopInfoPeriodUiModel.isNewSeller)
-                    }
-                }
-            }
-        } else return
-    }
-
-    private fun observeShopOperationalHour() {
-        otherMenuViewModel.shopOperational.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> otherMenuViewHolder?.showOperationalHourLayout(it.data)
-                is Fail -> {
-                    otherMenuViewHolder?.onErrorGetSettingShopInfoData()
-                    SellerHomeErrorHandler.logExceptionToCrashlytics(
-                        it.throwable,
-                        ERROR_GET_SHOP_OPERATIONAL_HOUR
-                    )
-                }
-            }
-        })
-    }
-
-    private fun populateAdapterData() {
-        val settingList = mutableListOf(
-                SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
-                StatisticMenuItemUiModel(
-                        title = resources.getString(R.string.setting_menu_statistic),
-                        clickApplink = ApplinkConstInternalMechant.MERCHANT_STATISTIC_DASHBOARD,
-                        iconUnify = IconUnify.GRAPH),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_ads_and_shop_promotion),
-                        null,
-                        ApplinkConstInternalSellerapp.CENTRALIZED_PROMO,
-                        eventActionSuffix = SettingTrackingConstant.SHOP_ADS_AND_PROMOTION,
-                        iconUnify = IconUnify.PROMO_ADS),
-                SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_discussion),
-                        null,
-                        ApplinkConst.TALK,
-                        eventActionSuffix = SettingTrackingConstant.DISCUSSION,
-                        iconUnify = IconUnify.DISCUSSION),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_review),
-                        null,
-                        ApplinkConst.REPUTATION,
-                        eventActionSuffix = SettingTrackingConstant.REVIEW,
-                        iconUnify = IconUnify.STAR),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_complaint),
-                        null,
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.COMPLAINT,
-                        iconUnify = IconUnify.PRODUCT_INFO
-                ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.HOSTNAME}${SellerBaseUrl.RESO_INBOX_SELLER}")
-                    val intent = RouteManager.getIntent(context, applink)
-                    context?.startActivity(intent)
-                },
-                DividerUiModel(),
-                PrintingMenuItemUiModel(
-                        resources.getString(R.string.setting_menu_product_package),
-                        IconUnify.PACKAGE
-                ) { goToPrintingPage() },
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_finance_service),
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.FINANCIAL_SERVICE,
-                        iconUnify = IconUnify.FINANCE
-                ) {
-                    RouteManager.route(context, ApplinkConst.LAYANAN_FINANSIAL)
-                },
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_seller_education_center),
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.SELLER_CENTER,
-                        iconUnify = IconUnify.SHOP_INFO
-                ) {
-                    val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, "${SellerBaseUrl.SELLER_HOSTNAME}${SellerBaseUrl.SELLER_EDU}")
-                    val intent = RouteManager.getIntent(context, applink)
-                    context?.startActivity(intent)
-                },
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_tokopedia_care),
-                        null,
-                        ApplinkConst.CONTACT_US_NATIVE,
-                        eventActionSuffix = SettingTrackingConstant.TOKOPEDIA_CARE,
-                        iconUnify = IconUnify.CALL_CENTER),
-                DividerUiModel(DividerType.THIN_PARTIAL),
-                MenuItemUiModel(
-                        resources.getString(R.string.setting_menu_setting),
-                        null,
-                        null,
-                        eventActionSuffix = SettingTrackingConstant.SETTINGS,
-                        iconUnify = IconUnify.SETTING
-                ) {
-                    startActivity(Intent(context, MenuSettingActivity::class.java))
-                }
+    private fun logHeaderError(throwable: Throwable, errorType: String) {
+        SellerHomeErrorHandler.logException(
+            throwable,
+            context?.getString(R.string.setting_header_error_message,
+                errorType
+            ).orEmpty()
         )
-        adapter.data.addAll(settingList)
-        adapter.notifyDataSetChanged()
-        renderList(settingList)
     }
 
-    private fun getAllShopInfoData() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo()
+    private fun setTrackerPerformanceMenu(isNewSeller: Boolean) {
+        val shopPerformanceData = adapter.list.filterIsInstance<MenuItemUiModel>().find {
+            it.onClickApplink == ApplinkConstInternalMarketplace.SHOP_PERFORMANCE
+        }
+        if (shopPerformanceData != null) {
+            settingPerformanceTracker.impressItemEntryPointPerformance(isNewSeller)
+        }
+        shopPerformanceData?.clickSendTracker = {
+            settingPerformanceTracker.clickItemEntryPointPerformance(isNewSeller)
+        }
     }
 
-    private fun showAllLoadingShimmering() {
-        showSettingShopInfoState(SettingResponseState.SettingLoading)
+    private fun animateShareButtonFromShareData(shareInfo: OtherMenuShopShareData?) {
+        if (shareInfo != null) {
+            viewHolder?.runShareButtonAnimation()
+            shopShareInfo = shareInfo
+        }
     }
 
-    private fun showSettingShopInfoState(settingResponseState: SettingResponseState) {
-        when(settingResponseState) {
-            is SettingSuccess -> {
-                if (settingResponseState is SettingShopInfoUiModel) {
-                    otherMenuViewHolder?.onSuccessGetSettingShopInfoData(settingResponseState)
+    private fun saveImageToStorageBeforeShowBottomsheet() {
+        shopShareInfo?.shopSnippetUrl?.let { snippetUrl ->
+            if (snippetUrl.isNotEmpty() && canShowShareBottomSheet) {
+                canShowShareBottomSheet = false
+                shopSnippetImageUrl = snippetUrl
+                context?.let {
+                    SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImagePath ->
+                        canShowShareBottomSheet = true
+                        deletePreviousSavedImage()
+                        shopShareImagePath = storageImagePath
+                        showUniversalShareBottomSheet(storageImagePath)
+                    }
                 }
-            }
-            is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
-            is SettingResponseState.SettingError -> {
-                val canShowToaster = currentFragmentType == FragmentType.OTHER && canShowErrorToaster
-                if (canShowToaster) {
-                    view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
-                }
-                otherMenuViewHolder?.onErrorGetSettingShopInfoData()
             }
         }
     }
 
-    private fun retryFetchAfterError() {
-        showAllLoadingShimmering()
-        otherMenuViewModel.getAllSettingShopInfo(isToasterRetry = true)
-    }
-
-    private fun View.showToasterError(errorMessage: String) {
-        Toaster.build(this,
-                errorMessage,
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR,
-                resources.getString(R.string.setting_toaster_error_retry)
-        ) {
-            retryFetchAfterError()
-        }.show()
-    }
-
-    private fun setupView(view: View) {
-        view.run {
-            statusBarBackground?.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, statusBarHeight ?: HEIGHT_OFFSET)
+    private fun deletePreviousSavedImage() {
+        if (shopShareImagePath.isNotBlank()) {
+            File(shopShareImagePath).run {
+                if (exists()) {
+                    delete()
+                }
+            }
         }
-        populateAdapterData()
-        recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let {
-            otherMenuViewHolder = OtherMenuViewHolder(
-                itemView = view,
-                context = it,
-                listener = this,
-                trackingListener = this,
-                freeShippingTracker = freeShippingTracker,
-                shopOperationalTracker = shopOperationalTracker,
-                userSession = userSession
+    }
+
+    private fun showUniversalShareBottomSheet(storageImageUrl: String) {
+        universalShareBottomSheet = null
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@OtherMenuFragment)
+            setUtmCampaignData(
+                OTHER_MENU_SHARE_BOTTOM_SHEET_PAGE_NAME,
+                userSession.userId,
+                userSession.shopId,
+                OTHER_MENU_SHARE_BOTTOM_SHEET_FEATURE_NAME
             )
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isDefaultDarkStatusBar) {
-                activity?.requestStatusBarDark()
-            } else {
-                activity?.requestStatusBarLight()
+            setMetaData(
+                userSession.shopName,
+                userSession.shopAvatar,
+                ""
+            )
+            setOgImageUrl(shopSnippetImageUrl)
+        }.also { shareBottomSheet ->
+            activity?.supportFragmentManager?.let { fm ->
+                shareBottomSheet.run {
+                    imageSaved(storageImageUrl)
+                    show(fm, this@OtherMenuFragment)
+
+                    NewOtherMenuTracking.sendEventImpressionViewOnSharingChannel(
+                        userSession.shopId, userSession.userId
+                    )
+                }
             }
         }
-        observeRecyclerViewScrollListener()
     }
 
-    private fun setupOffset() {
-        activity?.theme?.let {
-            val tv = TypedValue()
-            if (it.resolveAttribute(R.attr.actionBarSize, tv, true)) {
-                startToTransitionOffset = START_OFFSET
-            }
+    private fun getShareBottomSheetOgTitle(): String {
+        return shopShareInfo?.let {
+            "${
+                joinStringWithDelimiter(
+                    userSession.shopName,
+                    it.location,
+                    delimiter = DELIMITER
+                )
+            } $TOKOPEDIA_SUFFIX"
+        }.orEmpty()
+    }
+
+    private fun getShareBottomSheetOgDescription(): String {
+        return shopShareInfo?.let {
+            joinStringWithDelimiter(it.description, it.tagline, delimiter = DELIMITER)
+        }.orEmpty()
+    }
+
+    private fun joinStringWithDelimiter(vararg listString: String, delimiter: String): String {
+        val filteredListString = listString.filter {
+            it.isNotEmpty()
         }
-        statusInfoTransitionOffset = statusBarHeight ?: HEIGHT_OFFSET
+        return TextUtils.join(delimiter, filteredListString)
     }
 
-    private fun observeRecyclerViewScrollListener() {
-        this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
-            calculateSearchBarView(scrollView.scrollY)
-        })
+    private fun checkUsingCustomBranchLinkDomain(linkerShareData: LinkerShareResult?) {
+        val shopBranchLinkDomain = shopShareInfo?.branchLinkDomain.orEmpty()
+        if (shopBranchLinkDomain.isNotEmpty())
+            changeLinkerShareDataContent(linkerShareData, shopBranchLinkDomain)
     }
 
-    private fun calculateSearchBarView(offset: Int) {
-        val endToTransitionOffset = startToTransitionOffset + statusInfoTransitionOffset
-        val maxTransitionOffset = endToTransitionOffset - startToTransitionOffset
-
-        //Offset Alpha is not actually needed for changing the status bar color (only needed the offset),
-        //but we will preserve the variable in case the stakeholders need to change the status bar alpha according to the scroll position
-        val offsetAlpha = (MAXIMUM_ALPHA/maxTransitionOffset).times(offset - startToTransitionOffset)
-        if (offsetAlpha >= ALPHA_CHANGE_THRESHOLD) {
-            if (isInitialStatusBar) {
-                setDarkStatusBar()
-                otherMenuViewModel.setIsStatusBarInitialState(false)
-            }
-            shopStatusHeader?.gone()
-            shopStatusHeaderIcon?.gone()
-            bg_white_other_menu?.gone()
-        } else {
-            if (!isInitialStatusBar) {
-                setLightStatusBar()
-                otherMenuViewModel.setIsStatusBarInitialState(true)
-            }
-            shopStatusHeader?.visible()
-            shopStatusHeaderIcon?.visible()
-            bg_white_other_menu?.visible()
-        }
-    }
-
-    private fun setLightStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!isDefaultDarkStatusBar){
-                activity?.requestStatusBarLight()
-            }
-            setStatusBarStateInitialIsLight(true)
-            statusBarBackground?.hide()
+    private fun changeLinkerShareDataContent(
+        linkerShareData: LinkerShareResult?,
+        shopBranchLinkDomain: String
+    ) {
+        linkerShareData?.apply {
+            shareContents = replaceLastUrlSegment(shareContents.orEmpty(), shopBranchLinkDomain)
+            url = replaceLastUrlSegment(url.orEmpty(), shopBranchLinkDomain)
+            shareUri = replaceLastUrlSegment(shareUri.orEmpty(), shopBranchLinkDomain)
         }
     }
 
-    private fun setDarkStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarStateInitialIsLight(false)
-            activity?.requestStatusBarDark()
-            statusBarBackground?.show()
-        }
+    private fun replaceLastUrlSegment(urlString: String, replacementValue: String): String {
+        return urlString.split("/").toMutableList().also { list ->
+            list[list.lastIndex] = replacementValue
+        }.joinToString("/")
     }
 
-    private fun goToReputationHistory() {
-        val reputationHistoryIntent = RouteManager.getIntent(context, ApplinkConst.REPUTATION).apply {
-            putExtra(GO_TO_REPUTATION_HISTORY, true)
-        }
-        startActivity(reputationHistoryIntent)
-    }
-
-    private fun goToShopFavouriteList() {
-        val shopFavouriteListIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST).apply {
-            putExtra(EXTRA_SHOP_ID, userSession.shopId)
-        }
-        startActivity(shopFavouriteListIntent)
-    }
-
-    private fun goToPrintingPage() {
-        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
-        val applink = String.format(APPLINK_FORMAT, ApplinkConst.WEBVIEW, url)
-        RouteManager.getIntent(context, applink)?.let {
-            context?.startActivity(it)
-        }
-    }
-
-    private fun isActivityResumed(): Boolean {
-        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
-        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
+    private fun View.showToasterError(errorMessage: String, onRetryAction: () -> Unit) {
+        Toaster.build(
+            this,
+            errorMessage,
+            Snackbar.LENGTH_LONG,
+            Toaster.TYPE_ERROR,
+            resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry)
+        ) {
+            onRetryAction()
+        }.show()
     }
 
 }

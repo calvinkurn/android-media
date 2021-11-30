@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel
+import com.tokopedia.chat_common.data.BannedProductAttachmentUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BannedProductAttachmentViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
 import com.tokopedia.topchat.R
@@ -55,13 +55,13 @@ class TopchatBannedProductAttachmentViewHolder(
     private val padding = itemView?.context?.resources?.getDimension(R.dimen.dp_topchat_12)?.toInt()
             ?: 0
 
-    override fun bind(viewModel: BannedProductAttachmentViewModel) {
-        super.bind(viewModel)
-        bindBackground(viewModel)
+    override fun bind(uiModel: BannedProductAttachmentUiModel) {
+        super.bind(uiModel)
+        bindBackground(uiModel)
     }
 
-    private fun bindBackground(viewModel: BannedProductAttachmentViewModel) {
-        if (viewModel.isSender) {
+    private fun bindBackground(uiModel: BannedProductAttachmentUiModel) {
+        if (uiModel.isSender) {
             container?.background = bgSender
         } else {
             container?.background = bgOpposite

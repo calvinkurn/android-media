@@ -18,5 +18,5 @@ data class OrderPriority(
 
         @SerializedName("price")
         @Expose
-        val price: Int = 0
+        val price: Double = 0.0
 )

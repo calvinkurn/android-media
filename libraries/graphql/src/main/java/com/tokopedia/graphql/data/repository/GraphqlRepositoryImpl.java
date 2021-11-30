@@ -21,8 +21,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.graphql.util.CacheHelper;
 import com.tokopedia.graphql.util.LoggingUtils;
 import com.tokopedia.graphql.util.NullCheckerKt;
-import com.tokopedia.logger.ServerLogger;
-import com.tokopedia.logger.utils.Priority;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -84,6 +82,7 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
 
             if (response.getOriginalResponse() != null) {
                 for (int i = 0; i < response.getOriginalResponse().size(); i++) {
+                    String operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
                     try {
                         JsonElement data = response.getOriginalResponse().get(i).getAsJsonObject().get(GraphqlConstant.GqlApiKeys.DATA);
                         if (data != null && !data.isJsonNull()) {
@@ -101,13 +100,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                             errors.put(requests.get(i).getTypeOfT(), CommonUtils.fromJson(error.toString(), new TypeToken<List<GraphqlError>>() {
                             }.getType()));
                         }
+                        LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
+                        LoggingUtils.logGqlSuccessRate(operationName, "1");
                     } catch (JsonSyntaxException jse) {
+                        LoggingUtils.logGqlSuccessRate(operationName, "0");
                         jse.printStackTrace();
-                        Map<String, String> messageMap = new HashMap<>();
-                        messageMap.put("type", "json");
-                        messageMap.put("err", Log.getStackTraceString(jse));
-                        messageMap.put("req", String.valueOf(requests));
-                        ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
+                        LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -129,12 +127,14 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
     }
 
     private Observable<GraphqlResponseInternal> getCloudResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
+        String operationName = "";
         try {
             List<GraphqlRequest> copyRequests = new ArrayList<>();
             copyRequests.addAll(requests);
 
             int counter = copyRequests.size();
             for (int i = 0; i < counter; i++) {
+                operationName = CacheHelper.getQueryName(requests.get(i).getQuery());
                 if (copyRequests.get(i).isNoCache()) {
                     continue;
                 }
@@ -158,14 +158,12 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                 mRefreshRequests.add(copyRequests.get(i));
                 requests.remove(copyRequests.get(i));
 
-                Timber.d("Android CLC - Request served from cache " + CacheHelper.getQueryName(copyRequests.get(i).getQuery()) + " KEY: " + copyRequests.get(i).cacheKey());
+                LoggingUtils.logGqlParseSuccess("java", String.valueOf(requests));
+                LoggingUtils.logGqlSuccessRate(operationName, "1");
             }
         } catch (JsonSyntaxException jse) {
-            Map<String, String> messageMap = new HashMap<>();
-            messageMap.put("type", "json");
-            messageMap.put("err", Log.getStackTraceString(jse));
-            messageMap.put("req", String.valueOf(requests));
-            ServerLogger.log(Priority.P1, "GQL_PARSE_ERROR", messageMap);
+            LoggingUtils.logGqlSuccessRate(operationName, "0");
+            LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
         } catch (Exception e) {
             e.printStackTrace();
         }

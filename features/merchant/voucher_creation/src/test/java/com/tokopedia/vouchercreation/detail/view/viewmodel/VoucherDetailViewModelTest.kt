@@ -12,6 +12,7 @@ import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetBroadCastMetaDataUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
+import com.tokopedia.vouchercreation.voucherlist.model.remote.ChatBlastSellerMetadata
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -180,6 +181,42 @@ class VoucherDetailViewModelTest {
             }
 
             assert(cancelVoucherResultLiveData.value is Fail)
+        }
+    }
+
+    @Test
+    fun `success get getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } returns ChatBlastSellerMetadata()
+
+            getBroadCastMetaData()
+
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Success)
+        }
+    }
+
+    @Test
+    fun `error get getBroadCastMetaData`() = runBlocking {
+        with(mViewModel) {
+            val dummyThrowable = MessageErrorException("")
+
+            coEvery {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            } throws dummyThrowable
+
+            getBroadCastMetaData()
+
+            coVerify {
+                getBroadCastMetaDataUseCase.executeOnBackground()
+            }
+
+            assert(broadCastMetadata.value is Fail)
         }
     }
 

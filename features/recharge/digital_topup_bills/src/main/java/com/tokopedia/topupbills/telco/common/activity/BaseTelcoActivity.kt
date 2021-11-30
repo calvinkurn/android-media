@@ -63,13 +63,13 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
         return false
     }
 
-    override fun onMenuOpened(featureId: Int, menu: Menu?): Boolean {
+    override fun onMenuOpened(featureId: Int, menu: Menu): Boolean {
         showBottomMenus()
         return false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId ?: "" == R.id.action_overflow_menu) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId ?: "" == R.id.action_overflow_menu) {
             showBottomMenus()
             return true
         }
@@ -96,6 +96,14 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity(), HasComponent<Digit
             menuBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
         menuBottomSheet.show(supportFragmentManager, TAG_TELCO_MENU)
+    }
+
+    fun setupAppBar() {
+        (toolbar as HeaderUnify).transparentMode = true
+        if (::menuTelco.isInitialized) {
+            menuTelco.getItem(0).icon = ContextCompat.getDrawable(this@BaseTelcoActivity,
+                    com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
+        }
     }
 
     fun onCollapseAppBar() {

@@ -4,10 +4,10 @@ import com.tokopedia.shop.score.penalty.presentation.adapter.filter.BaseFilterPe
 import com.tokopedia.shop.score.penalty.presentation.adapter.filter.FilterPenaltyAdapterFactory
 
 data class PenaltyFilterUiModel(
-        val title: String = "",
-        val isDividerVisible: Boolean = false,
-        var chipsFilerList: List<ChipsFilterPenaltyUiModel> = listOf()
-): BaseFilterPenaltyPage {
+    val title: String = "",
+    val isDividerVisible: Boolean = false,
+    var chipsFilterList: List<ChipsFilterPenaltyUiModel> = listOf()
+) : BaseFilterPenaltyPage {
 
     data class ChipsFilterPenaltyUiModel(
         var title: String = "",

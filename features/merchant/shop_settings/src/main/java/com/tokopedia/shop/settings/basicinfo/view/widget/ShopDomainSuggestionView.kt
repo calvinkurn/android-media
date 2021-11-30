@@ -10,12 +10,13 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopDomainSuggestionAdapter
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopDomainSuggestionAdapterFactoryImpl
 import com.tokopedia.shop.settings.basicinfo.view.model.ShopDomainSuggestion
-import kotlinx.android.synthetic.main.layout_shop_domain_suggestion.view.*
+import com.tokopedia.unifycomponents.ChipsUnify
 
 class ShopDomainSuggestionView: FrameLayout {
 
     private var adapter: ShopDomainSuggestionAdapter? = null
     private var onClickItemListener: ((String) -> Unit)? = null
+    private var suggestionList: RecyclerView? = null
 
     constructor (context: Context): super(context)
 
@@ -25,13 +26,13 @@ class ShopDomainSuggestionView: FrameLayout {
 
     init {
         inflate(context, R.layout.layout_shop_domain_suggestion, this)
-
+        suggestionList = findViewById(R.id.suggestionList)
         adapter = ShopDomainSuggestionAdapter(ShopDomainSuggestionAdapterFactoryImpl {
             onClickItemListener?.invoke(it)
         })
 
-        suggestionList.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        suggestionList.adapter = adapter
+        suggestionList?.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        suggestionList?.adapter = adapter
     }
 
     fun show(data: List<String>) {

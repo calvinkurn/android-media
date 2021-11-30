@@ -22,5 +22,7 @@ data class DataSetStateChooseAddressResponse(
         @SerializedName("is_success")
         var isSuccess: Int = 0,
         @SerializedName("chosen_address")
-        var chosenAddressData:  ChosenAddressDataResponse = ChosenAddressDataResponse()
+        var chosenAddressData:  ChosenAddressDataResponse = ChosenAddressDataResponse(),
+        @SerializedName("tokonow")
+        var tokonow: Tokonow = Tokonow()
 )

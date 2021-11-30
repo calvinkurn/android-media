@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/form_address_negative"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_label"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_counter="30"
+        app:text_field_label="Label Alamat"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_label_alamat_chips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_kota_kecamatan"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_32"
+        app:text_field_label="@string/txt_kota_kecamatan"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_alamat"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_32"
+        app:text_field_label="@string/txt_alamat_lengkap"
+        app:text_field_counter="200"/>
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/et_courier_note"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/unify_space_32"
+        app:text_field_counter="45"
+        app:text_field_label="Catatan Untuk Kurir (Opsional)"
+        app:text_field_message="Warna rumah, patokan, pesan khusus, dll"/>
+
+</LinearLayout>

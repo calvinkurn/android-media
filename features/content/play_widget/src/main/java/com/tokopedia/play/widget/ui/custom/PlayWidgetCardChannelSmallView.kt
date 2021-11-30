@@ -17,7 +17,7 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetSmallChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.play_common.view.loadImage
+import com.tokopedia.unifycomponents.ImageUnify
 
 /**
  * Created by jegul on 06/10/20
@@ -30,7 +30,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     private val flBorder: FrameLayout
-    private val ivCover: ImageView
+    private val ivCover: ImageUnify
     private val pvVideo: PlayerView
     private val llTotalView: LinearLayout
     private val tvTotalView: TextView
@@ -39,6 +39,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     private val tvTitle: TextView
     private val tvUpcoming: TextView
     private val tvContextualInfo: TextView
+    private val ivGiveaway: ImageView
 
     private var mListener: Listener? = null
 
@@ -57,6 +58,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         tvTitle = view.findViewById(R.id.tv_title)
         tvUpcoming = view.findViewById(R.id.tv_upcoming)
         tvContextualInfo = view.findViewById(R.id.tv_contextual_info)
+        ivGiveaway = view.findViewById(R.id.iv_giveaway)
     }
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
@@ -74,6 +76,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         } else {
             if (::mModel.isInitialized) {
                 player.videoUrl = mModel.video.videoUrl
+                player.shouldCache = !mModel.video.isLive
                 player.start()
             }
             player.listener = playerListener
@@ -97,10 +100,11 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
     fun setModel(model: PlayWidgetSmallChannelUiModel) {
         mModel = model
 
-        ivCover.loadImage(model.video.coverUrl)
+        ivCover.setImageUrl(model.video.coverUrl)
 
         handleType(model.channelType)
         handleTotalView(model.channelType, model.totalViewVisible, model.totalView)
+        handleGiveaway(model.hasGiveaway)
 
         tvTitle.text = model.title
         tvUpcoming.text = model.startTime
@@ -163,6 +167,11 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
             tvTotalView.text = totalViewString
         }
         else llTotalView.gone()
+    }
+
+    private fun handleGiveaway(hasGiveaway: Boolean) {
+        if(hasGiveaway) ivGiveaway.visible()
+        else ivGiveaway.gone()
     }
 
     interface Listener {

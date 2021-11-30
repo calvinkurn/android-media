@@ -47,6 +47,7 @@ open class ChatBackgroundUseCase @Inject constructor(
                 },
                 {
                     withContext(dispatchers.main) {
+                        it.printStackTrace()
                         onError(it)
                     }
                 }

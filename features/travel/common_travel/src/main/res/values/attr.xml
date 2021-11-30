@@ -39,7 +39,7 @@
         <attr name="ctv_hour_title" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="DepartureLabelView">
+    <declare-styleable name="DepartureTripLabelView">
         <attr name="dlv_icon" format="reference" />
     </declare-styleable>
 

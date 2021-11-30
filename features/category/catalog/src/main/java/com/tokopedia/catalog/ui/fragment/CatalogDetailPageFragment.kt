@@ -48,12 +48,8 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -239,7 +235,16 @@ class CatalogDetailPageFragment : Fragment(),
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
+            setupSearchbar(listOf(HintData(context.getString(R.string.catalog_nav_bar_search_hint))))
             setBadgeCounter(IconList.ID_CART, getCartCounter())
+            setOnBackButtonClickListener {
+                CatalogDetailAnalytics.sendEvent(
+                        CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                        CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                        CatalogDetailAnalytics.ActionKeys.CLICK_BACK_BUTTON,
+                        catalogId,userSession.userId)
+                activity?.onBackPressed()
+            }
             show()
         }
     }
@@ -294,24 +299,21 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     private fun generateCatalogShareData(catalogId: String) {
+        CatalogDetailAnalytics.sendEvent(
+                CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
+                CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
+                CatalogDetailAnalytics.ActionKeys.CLICK_SHARE,
+                catalogId,userSession.userId)
         val linkerData = LinkerData()
         linkerData.id = catalogId
         linkerData.name = getString(R.string.catalog_message_share_catalog)
-        linkerData.uri = "${CatalogConstant.CATALOG_URL}$catalogId"
+        if(!catalogUrl.contains("www."))
+            linkerData.uri = catalogUrl.replace("https://","https://www.")
+        else
+            linkerData.uri = catalogUrl
         linkerData.description = getString(R.string.catalog_message_share_catalog)
         linkerData.isThrowOnError = true
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                CatalogUtil.linkerDataMapper(linkerData), object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                if(linkerShareData.url != null) {
-                    CatalogUtil.shareData(requireActivity(), linkerData.description, linkerShareData.url)
-                }
-            }
-            override fun onError(linkerError: LinkerError) {
-                CatalogUtil.shareData(requireActivity(), linkerData.description, linkerData.uri)
-            }
-        }))
+        CatalogUtil.shareData(requireActivity(), linkerData.description, linkerData.uri)
     }
 
     private fun showImage(currentItem: Int) {

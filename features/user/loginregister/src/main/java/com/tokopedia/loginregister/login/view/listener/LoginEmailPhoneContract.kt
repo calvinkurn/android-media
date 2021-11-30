@@ -1,24 +1,14 @@
 package com.tokopedia.loginregister.login.view.listener
 
-import android.content.Context
-import androidx.fragment.app.Fragment
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
-import com.tokopedia.loginregister.login.domain.StatusFingerprint
-import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
-import java.util.*
 
 /**
  * @author by nisie on 18/01/19.
@@ -48,9 +38,7 @@ interface LoginEmailPhoneContract {
 
         fun onErrorDiscoverLogin(throwable: Throwable)
 
-        fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemDataModel>)
-
-        fun getFacebookCredentialListener(): GetFacebookCredentialSubscriber.GetFacebookCredentialListener
+        fun onSuccessDiscoverLogin(discoverData: DiscoverData)
 
         fun stopTrace()
 
@@ -59,12 +47,6 @@ interface LoginEmailPhoneContract {
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
         fun onErrorReloginAfterSQ(): Function1<Throwable, Unit>
-
-        fun onErrorLoginFacebook(email: String): Function1<Throwable, Unit>
-
-        fun onSuccessLoginFacebookPhone(): Function1<LoginTokenPojo, Unit>
-
-        fun onErrorLoginFacebookPhone(): Function1<Throwable, Unit>
 
         fun onErrorLoginGoogle(email: String?): Function1<Throwable, Unit>
 
@@ -108,10 +90,6 @@ interface LoginEmailPhoneContract {
 
         fun onGetDynamicBannerError(throwable: Throwable)
 
-        fun onErrorCheckStatusFingerprint(e: Throwable)
-
-        fun onSuccessCheckStatusFingerprint(data: StatusFingerprint)
-
         fun goToFingerprintRegisterPage()
 
         fun getFingerprintConfig(): Boolean
@@ -120,7 +98,7 @@ interface LoginEmailPhoneContract {
 
         fun goToChooseAccountPage(accessToken: String, phoneNumber: String)
 
-        fun goToChooseAccountPageFacebook(accessToken: String)
+        fun goToChooseAccountPageFingerprint(validateToken: String)
 
         fun goToAddPin2FA(enableSkip2FA: Boolean)
 
@@ -143,41 +121,5 @@ interface LoginEmailPhoneContract {
         fun showLocationAdminPopUp()
 
         fun showGetAdminTypeError(throwable: Throwable)
-    }
-
-    interface Presenter : CustomerPresenter<View> {
-        fun loginEmail(email: String, password: String)
-
-        fun loginEmailV2(email: String, password: String, useHash: Boolean = false)
-
-        fun loginGoogle(accessToken: String, email: String)
-
-        fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager)
-
-        fun getUserInfo()
-
-        fun getUserInfoFingerprint()
-
-        fun discoverLogin(context: Context)
-
-        fun loginFacebook(context: Context, accessToken: AccessToken, email: String)
-
-        fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String)
-
-        fun reloginAfterSQ(validateToken: String)
-
-        fun getTickerInfo()
-
-        fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
-
-        fun checkStatusFingerprint()
-
-        fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
-
-        fun removeFingerprintData()
-
-        fun getDynamicBanner(page: String)
-
-        fun cancelJobs()
     }
 }

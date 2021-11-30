@@ -2,12 +2,14 @@ package com.tokopedia.smartbills.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.data.RechargeField
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
 data class RechargeBills(
-        @SerializedName("Flag")
+        @SerializedName("UUID")
+        @Expose
+        val uuid: String = "",
+        @SerializedName("flag")
         @Expose
         val flag: Boolean = false,
         @SerializedName("index")
@@ -34,6 +36,9 @@ data class RechargeBills(
         @SerializedName("clientNumber")
         @Expose
         val clientNumber: String = "",
+        @SerializedName("newBillLabel")
+        @Expose
+        val newBillLabel: NewBillLabel = NewBillLabel(),
         @SerializedName("amount")
         @Expose
         val amount: Float = 0f,
@@ -74,8 +79,14 @@ data class RechargeBills(
         @SerializedName("DueDateLabel")
         @Expose
         var dueDateLabel: DueUrgency = DueUrgency(),
+        @SerializedName("sections")
+        @Expose
+        var section: Section = Section(),
+        @SerializedName("promo")
+        @Expose
+        var promo: Promo = Promo(),
 
-): Visitable<SmartBillsAdapterFactory> {
+        ): RechargeBillsModel() {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
         }
@@ -96,3 +107,12 @@ data class RechargeBills(
                 }
         }
 }
+
+data class NewBillLabel(
+        @SerializedName("isNewLabel")
+        @Expose
+        val isNewLabel: Boolean = false,
+        @SerializedName("text")
+        @Expose
+        val text: String = "",
+)

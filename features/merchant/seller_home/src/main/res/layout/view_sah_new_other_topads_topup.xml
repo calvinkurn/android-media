@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_new_other_topads_topup_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN950"
+        android:alpha="1"
+        android:ellipsize="end"
+        android:lines="1"
+        app:typographyType="heading_5"
+        tools:text="Rp0"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_new_other_topads_topup_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sah_new_other_topads_topup_now"
+        android:textColor="@color/Unify_NN950"
+        android:alpha="0"
+        android:ellipsize="end"
+        android:lines="1"
+        app:typographyType="heading_5"/>
+
+</FrameLayout>

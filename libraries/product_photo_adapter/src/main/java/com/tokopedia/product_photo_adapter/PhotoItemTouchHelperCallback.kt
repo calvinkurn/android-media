@@ -7,6 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 
 class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : ItemTouchHelper.Callback() {
 
+    companion object{
+        private const val RV_ALPHA_VALUE = 0.5f
+    }
+
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
         // dragging is limited to horizontal directions
         val dragFlags = ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -57,7 +61,7 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
             recyclerView.adapter?.let {
                 for (i in 0 until it.itemCount) {
                     if (i == currentPosition) continue
-                    recyclerView.getChildAt(i)?.alpha = 0.5f
+                    recyclerView.getChildAt(i)?.alpha = RV_ALPHA_VALUE
                 }
             }
         }

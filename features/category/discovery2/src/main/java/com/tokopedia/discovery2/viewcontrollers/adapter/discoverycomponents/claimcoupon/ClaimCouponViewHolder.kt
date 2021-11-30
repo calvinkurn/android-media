@@ -44,8 +44,10 @@ class ClaimCouponViewHolder(itemView: View, private val fragment: Fragment) : Ab
         if (claimCouponViewModel.components.properties?.columns == DOUBLE_COLUMNS) {
             spanCount = 2
             addShimmer(true)
-        } else
+        } else {
+            spanCount = 1
             addShimmer(false)
+        }
         recyclerView.layoutManager = GridLayoutManager(itemView.context, spanCount, GridLayoutManager.VERTICAL, false)
 
     }

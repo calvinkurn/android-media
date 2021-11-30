@@ -7,8 +7,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.RawValue
-import org.json.JSONObject
 
 /**
  *
@@ -68,11 +66,11 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "channelName")
         var channelName: String? = null,
 
-        @Embedded(prefix = "persist")
+        @ColumnInfo(name = "persistButton")
         var persistentButtonList: ArrayList<PersistentButton>? = null,
 
         @ColumnInfo(name = "videoPush")
-        var videoPushModel: @RawValue JSONObject? = null,
+        var videoPushModel: String? = null,
 
         @ColumnInfo(name = "subText")
         var subText: String? = null,

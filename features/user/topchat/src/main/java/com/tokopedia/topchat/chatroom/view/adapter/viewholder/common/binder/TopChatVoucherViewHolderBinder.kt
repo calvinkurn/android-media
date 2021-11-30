@@ -8,17 +8,14 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 object TopChatVoucherViewHolderBinder {
 
     fun bindVoucherView(
-            element: TopChatVoucherUiModel,
-            merchantVoucherView: MerchantVoucherView?,
-            voucherListener: TopChatVoucherListener?
+        element: TopChatVoucherUiModel,
+        merchantVoucherView: MerchantVoucherView?
     ) {
-        merchantVoucherView?.onMerchantVoucherViewListener = object : MerchantVoucherView.OnMerchantVoucherViewListener {
-            override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-                voucherListener?.onVoucherCopyClicked(
-                        merchantVoucherViewModel.voucherCode, element.messageId, element.replyId,
-                        element.blastId, element.attachmentId, element.replyTime, element.fromUid
-                )
-            }
+        merchantVoucherView?.onMerchantVoucherViewListener = object : MerchantVoucherView
+        .OnMerchantVoucherViewListener {
+            override fun onMerchantUseVoucherClicked(
+                merchantVoucherViewModel: MerchantVoucherViewModel
+            ) { }
 
             override fun isOwner(): Boolean {
                 return element.isSender
@@ -28,9 +25,9 @@ object TopChatVoucherViewHolderBinder {
     }
 
     fun bindClick(
-            element: TopChatVoucherUiModel,
-            merchantVoucherView: MerchantVoucherView?,
-            voucherListener: TopChatVoucherListener
+        element: TopChatVoucherUiModel,
+        merchantVoucherView: MerchantVoucherView?,
+        voucherListener: TopChatVoucherListener
     ) {
         merchantVoucherView?.setOnClickListener {
             element.voucher.isPublic = !element.hasCtaCopy()

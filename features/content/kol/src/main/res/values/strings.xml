@@ -16,8 +16,15 @@
     <string name="kol_title_comment">Comments</string>
     <string name="prompt_delete_comment_kol">Apakah anda ingin menghapus komen ini?</string>
     <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
-    <string name="see_more_comments">Lihat Comments Sebelumnya</string>
+    <string name="see_more_comments">Lihat komen sebelumnya</string>
     <string name="write_comment">Tulis komentar…</string>
+
+    <!-- Kol Comment New -->
+    <string name="kol_activity_title">Komentar</string>
+    <string name="kol_delete_1_comment">1 Komentar dihapus.</string>
+    <string name="kol_delete_comment_ok">Kembalikan</string>
+    <string name="kol_adding_comment_error">Oops, tidak bisa memberi komentar.</string>
+    <string name="kol_deleting_comment_error">Oops, tidak bisa menghapus komentar.</string>
 
     <!--Kol Following List-->
     <string name="title_following_kol">Following</string>

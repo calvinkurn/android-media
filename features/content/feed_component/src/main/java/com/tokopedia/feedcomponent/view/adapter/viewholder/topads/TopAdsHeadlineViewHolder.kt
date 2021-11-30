@@ -19,6 +19,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsHeadlineView
 import com.tokopedia.user.session.UserSessionInterface
 
 const val TOPADS_HEADLINE_VALUE_SRC = "fav_product"
+const val TOPADS_DEFAULT_VARIANT = 1
 
 class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionInterface,
                                private val topAdsHeadlineListener: TopAdsHeadlineListener? = null) : AbstractViewHolder<TopadsHeadlineUiModel>(view), TopAdsShopFollowBtnClickListener, TopAdsBannerClickListener {
@@ -44,7 +45,7 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     }
 
     private fun fetchTopadsHeadlineAds(topadsHeadLinePage: Int) {
-        topadsHeadlineView.getHeadlineAds(getHeadlineAdsParam(topadsHeadLinePage), this::onSuccessResponse, this::hideHeadlineView)
+        topadsHeadlineView.getHeadlineAds(getHeadlineAdsParam(topadsHeadLinePage), this::onSuccessResponse, this::removeTopadsView)
     }
 
     private fun getHeadlineAdsParam(topadsHeadLinePage: Int): String {
@@ -87,17 +88,15 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
     private fun showHeadlineView(cpmModel: CpmModel?) {
         topadsHeadlineView.hideShimmerView()
         topadsHeadlineView.show()
-        cpmModel?.let {
-            topadsHeadlineView.displayAds(it)
+        val layoutType = cpmModel?.data?.firstOrNull()?.cpm?.layout
+        if (layoutType == TOPADS_DEFAULT_VARIANT) {
+            cpmModel?.let {
+                topadsHeadlineView.displayAds(it)
+            }
+            topadsHeadlineUiModel?.let { setImpressionListener(it) }
+        } else {
+            removeTopadsView()
         }
-        topadsHeadlineUiModel?.let { setImpressionListener(it) }
-    }
-
-    interface TopAdsHeadlineListener {
-        fun onFollowClick(positionInFeed: Int, shopId: String, adId: String)
-        fun onTopAdsHeadlineImpression(position: Int, cpmModel: CpmModel)
-        fun onTopAdsProductItemListsner(position: Int, product: Product, cpmData: CpmData)
-        fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData)
     }
 
     override fun onFollowClick(shopId: String, adId: String) {
@@ -116,5 +115,12 @@ class TopAdsHeadlineViewHolder(view: View, private val userSession: UserSessionI
         data?.let {
             topAdsHeadlineListener?.onTopAdsHeadlineAdsClick(position, applink, it)
         }
+    }
+
+    private fun removeTopadsView(){
+        topadsHeadlineView.hideShimmerView()
+        topadsHeadlineView.hide()
+        this.itemView.hide()
+        topAdsHeadlineListener?.hideTopadsView(adapterPosition)
     }
 }

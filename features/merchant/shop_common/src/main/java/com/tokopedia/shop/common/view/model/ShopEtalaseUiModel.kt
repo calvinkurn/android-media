@@ -7,5 +7,6 @@ data class ShopEtalaseUiModel(
         var name: String = "",
         var count: Int = 0,
         var imageUrl: String? = "",
+        var alias: String = "",
         var type: Int = 1
 ): ImpressHolder()

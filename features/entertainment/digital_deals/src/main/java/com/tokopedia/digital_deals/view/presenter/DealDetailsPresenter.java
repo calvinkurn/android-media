@@ -362,7 +362,11 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         NsqEntertainmentModel nsqEntertainmentModel = new NsqEntertainmentModel();
         nsqEntertainmentModel.setValue(data.getDisplayName());
         nsqEntertainmentModel.setPrice(Utils.getSingletonInstance().convertToCurrencyString(data.getSalesPrice()));
-        nsqEntertainmentModel.setImageUrl(data.getMediaUrl().get(0).getUrl());
+        if(data.getMediaUrl() != null) {
+            nsqEntertainmentModel.setImageUrl(data.getMediaUrl().get(0).getUrl());
+        } else {
+            nsqEntertainmentModel.setImageUrl("");
+        }
         nsqEntertainmentModel.setId(data.getBrand().getTitle());
         nsqEntertainmentModel.setPricePrefix(Utils.getSingletonInstance().convertToCurrencyString(data.getMrp()));
         nsqEntertainmentModel.setUrl("https://www.tokopedia.com/deals/i/" + data.getSeoUrl() + "/");
@@ -396,5 +400,11 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     @Override
     public void getEventContent(@NotNull Function1<? super EventContentData, Unit> onSuccess, @NotNull Function1<? super Throwable, Unit> onError) {
         getEventContentUseCase.getEventContent(onSuccess, onError, this.typeId, String.valueOf(dealsDetailsResponse.getId()));
+    }
+
+    @Override
+    public void detachView() {
+        this.mTouchViewPager = null;
+        super.detachView();
     }
 }

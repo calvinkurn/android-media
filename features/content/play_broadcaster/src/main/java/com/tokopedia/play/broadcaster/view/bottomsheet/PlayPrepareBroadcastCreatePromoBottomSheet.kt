@@ -149,24 +149,20 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         }
         ivPlayPrepareBroadcastWithPromoEdit.setOnClickListener { onLiveWithPromoChecked() }
         btnPlayPrepareBroadcastNext.setOnClickListener {
-            dialog?.window?.let {
-                it.decorView.animate()
-                        .setDuration(ANIMATION_DURATION)
-                        .translationX((screenWidth * -1).toFloat())
-                        .setListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(p0: Animator?) {}
+            dialog?.window?.decorView?.animate()?.setDuration(ANIMATION_DURATION)?.translationX((screenWidth * -1).toFloat())
+                ?.setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(p0: Animator?) {}
 
-                            override fun onAnimationEnd(p0: Animator?) {
-                                listener?.onVoucherSaved(radioPlayPrepareBroadcastWithPromo.isChecked, promoPercentage, promoQuota)
-                                dismiss()
-                            }
+                    override fun onAnimationEnd(p0: Animator?) {
+                        listener.onVoucherSaved(radioPlayPrepareBroadcastWithPromo.isChecked, promoPercentage, promoQuota)
+                        dismiss()
+                    }
 
-                            override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationCancel(p0: Animator?) {}
 
-                            override fun onAnimationStart(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator?) {}
 
-                        })
-            }
+                })
         }
 
         percentageTextWatcher = createPercentageTextWatcher()
@@ -195,23 +191,20 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
             }
             else -> {
                 if (!isEditPage) {
-                    dialog?.window?.let {
-                        it.decorView.animate()
-                                .setDuration(ANIMATION_DURATION)
-                                .translationX(screenWidth.toFloat())
-                                .setListener(object : Animator.AnimatorListener {
-                                    override fun onAnimationRepeat(p0: Animator?) {}
+                    dialog?.window?.decorView?.animate()
+                        ?.setDuration(ANIMATION_DURATION)
+                        ?.translationX(screenWidth.toFloat())
+                        ?.setListener(object : Animator.AnimatorListener {
+                            override fun onAnimationRepeat(p0: Animator?) {}
 
-                                    override fun onAnimationEnd(p0: Animator?) {
-                                        dismiss()
-                                    }
+                            override fun onAnimationEnd(p0: Animator?) {
+                                dismiss()
+                            }
 
-                                    override fun onAnimationCancel(p0: Animator?) {}
+                            override fun onAnimationCancel(p0: Animator?) {}
 
-                                    override fun onAnimationStart(p0: Animator?) {}
-
-                                })
-                    }
+                            override fun onAnimationStart(p0: Animator?) {}
+                        })
                 } else {
                     dismiss()
                 }

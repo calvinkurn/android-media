@@ -3,7 +3,6 @@ package com.tokopedia.devicefingerprint.datavisor.workmanager
 import android.content.Context
 import androidx.work.*
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.cache.FingerprintCache
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DEFAULT_VALUE_DATAVISOR
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance.Companion.DV_SHARED_PREF_NAME
@@ -11,6 +10,7 @@ import com.tokopedia.devicefingerprint.datavisor.response.SubmitDeviceInitRespon
 import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
+import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.user.session.UserSession
@@ -106,12 +106,12 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) : Coroutine
     fun setTokenLocal(context: Context, token: String) {
         val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
         val now = System.currentTimeMillis()
-        sp.edit().putString(KEY_TOKEN, token)
-                .putLong(KEY_TS_TOKEN, now)
-                .apply()
+        val editor = sp.edit()
+        editor.putString(KEY_TOKEN, token).putLong(KEY_TS_TOKEN, now)
+        editor.apply()
         lastToken = token
         lastTimestampToken = now
-        FingerprintCache.clearFingerprintCache(context)
+        FingerprintModelGenerator.expireFingerprint()
     }
 
     suspend fun sendErrorDataVisorToServer(runAttemptCount: Int, errorMessage: String) {

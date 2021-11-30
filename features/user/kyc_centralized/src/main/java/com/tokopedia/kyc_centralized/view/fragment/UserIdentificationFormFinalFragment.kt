@@ -37,8 +37,10 @@ import com.tokopedia.kyc_centralized.data.model.response.KycData
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.ImageEncryptionUtil
 import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil
+import com.tokopedia.kyc_centralized.util.KycUploadErrorCodeUtil.KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity
+import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.kyc_centralized.view.viewmodel.KycUploadViewModel
@@ -56,7 +58,6 @@ import com.tokopedia.user_identification_common.KycUrl
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import kotlinx.android.synthetic.main.layout_kyc_upload_error.*
 import com.tokopedia.utils.file.FileUtil
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -121,7 +122,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
         initView(view)
         encryptImage()
         setContentView()
-        if (projectId == 4) //TradeIn project Id
+        if (projectId == TRADE_IN_PROJECT_ID) //TradeIn project Id
             uploadButton?.setText(R.string.upload_button_tradein)
         return view
     }
@@ -519,25 +520,35 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     private fun setFailedResult(throwable: Throwable) {
         val errorCode = KycUploadErrorCodeUtil.getErrorCode(throwable)
-        when (throwable) {
-            is SocketTimeoutException -> {
-                isSocketTimeoutException = true
-                setViews(getString(R.string.kyc_upload_failed_reason_bad_network_title),
+        if(errorCode == KYC_UPLOAD_ERROR_ENCRYPT_DECRYPT) {
+            setViews(getString(R.string.kyc_upload_failed_reason_encrypt_title),
+                "${getString(R.string.kyc_upload_failed_reason_encrypt)} ($errorCode)",
+                com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL)
+            kyc_upload_error_button?.setOnClickListener {
+                deleteTmpFile(deleteKtp = true, deleteFace = true)
+                stepperListener?.finishPage()
+            }
+        } else {
+            when (throwable) {
+                is SocketTimeoutException -> {
+                    isSocketTimeoutException = true
+                    setViews(getString(R.string.kyc_upload_failed_reason_bad_network_title),
                         getString(R.string.kyc_upload_failed_reason_bad_network),
                         com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_NETWORK)
-            }
-            else -> {
-                setViews(getString(R.string.kyc_upload_failed_reason_general_title),
+                }
+                else -> {
+                    setViews(getString(R.string.kyc_upload_failed_reason_general_title),
                         "${getString(R.string.kyc_upload_failed_reason_general)} ($errorCode)",
                         com.tokopedia.kyc_centralized.KycUrl.SCAN_FACE_FAIL_GENERAL)
+                }
             }
-        }
-        kyc_upload_error_button?.setOnClickListener {
-            if (!isKycSelfie) {
-                analytics?.eventClickConnectionTimeout()
-                openLivenessView()
-            } else {
-                uploadKycFiles()
+            kyc_upload_error_button?.setOnClickListener {
+                if (!isKycSelfie) {
+                    analytics?.eventClickConnectionTimeout()
+                    openLivenessView()
+                } else {
+                    uploadKycFiles()
+                }
             }
         }
     }
@@ -551,8 +562,12 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
     }
 
     fun deleteTmpFile(deleteKtp: Boolean, deleteFace: Boolean) {
-        if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
-        if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+        if(deleteKtp && deleteFace) {
+            FileUtil.deleteFolder(context?.externalCacheDir?.absolutePath + FILE_NAME_KYC)
+        } else {
+            if (deleteKtp) FileUtil.deleteFile(stepperModel?.ktpFile)
+            if (deleteFace) FileUtil.deleteFile(stepperModel?.faceFile)
+        }
     }
 
     private fun isUsingEncrypt(): Boolean {
@@ -564,6 +579,7 @@ class UserIdentificationFormFinalFragment : BaseDaggerFragment(), UserIdentifica
 
     companion object {
         private var projectId = 0
+        private const val TRADE_IN_PROJECT_ID = 4
         private const val NOT_RETAKE = 0
         private const val RETAKE_KTP = 1
         private const val RETAKE_FACE = 2

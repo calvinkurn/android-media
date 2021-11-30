@@ -1,6 +1,7 @@
 package com.tokopedia.logger.repository
 
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDataSource
+import com.tokopedia.logger.datasource.cloud.LoggerCloudEmbraceImpl
 import com.tokopedia.logger.datasource.cloud.LoggerCloudNewRelicImpl
 import com.tokopedia.logger.datasource.db.LoggerDao
 import com.tokopedia.logger.model.newrelic.NewRelicConfig
@@ -21,6 +22,9 @@ abstract class LoggerRepositoryTestFixture {
     lateinit var loggerCloudNewRelicImpl: LoggerCloudNewRelicImpl
 
     @RelaxedMockK
+    lateinit var loggerCloudEmbraceImpl: LoggerCloudEmbraceImpl
+
+    @RelaxedMockK
     lateinit var scalyrConfigs: List<ScalyrConfig>
 
     @RelaxedMockK
@@ -34,10 +38,13 @@ abstract class LoggerRepositoryTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        encrypt = {s : String -> s}
-        decrypt = {s : String -> s}
-        loggerRepository = LoggerRepository(loggerDao, loggerCloudDataSource, loggerCloudNewRelicImpl,
-                scalyrConfigs, newRelicConfigs, encrypt, decrypt)
+        encrypt = { s: String -> s }
+        decrypt = { s: String -> s }
+        loggerRepository = LoggerRepository(
+                loggerDao, loggerCloudDataSource, loggerCloudNewRelicImpl,
+                loggerCloudEmbraceImpl,
+                scalyrConfigs, newRelicConfigs, encrypt, decrypt
+        )
     }
 
 }

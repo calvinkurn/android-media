@@ -22,12 +22,15 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.manager.ProductCardOptionsManager;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.utils.ViewUtilsKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel;
+import com.tokopedia.navigation.domain.model.RecomTitle;
 import com.tokopedia.navigation.domain.model.Recommendation;
+import com.tokopedia.navigation.domain.model.TopadsHeadlineUiModel;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
@@ -45,16 +48,15 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -78,11 +80,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int HELP_MENU = 3;
     public static final int DEFAULT_SPAN_COUNT = 2;
     public static final int SINGLE_SPAN_COUNT = 1;
+    public static final int HEADLINE_POS_NOT_TO_BE_ADDED = 11;
     private static final String PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
     private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
-    private static final String AB_TEST_INBOX_KEY = "Inbox Talk Release";
     private static final String PAGE_SOURCE_KEY = "pageSource";
     private static final String PAGE_SOURCE = "review inbox";
 
@@ -97,6 +99,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Inject
     RemoteConfig remoteConfig;
 
+    @Inject
+    UserSessionInterface userSessionInterface;
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
     private View emptyLayout;
@@ -106,6 +111,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private List<Visitable> visitables;
     private RemoteConfigInstance remoteConfigInstance;
     private String talkUnreadCount = "";
+    private CpmModel headlineData;
+    private boolean isAdded;
+    private int headlineExperimentPosition = HEADLINE_POS_NOT_TO_BE_ADDED;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -132,9 +140,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                     false);
             int position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1);
-            if(position < 0 || adapter.getList().size() <= position) return;
+            if (position < 0 || adapter.getList().size() <= position) return;
 
-            if(adapter.getList().get(position) instanceof  Recommendation){
+            if (adapter.getList().get(position) instanceof Recommendation) {
                 Recommendation recommendation = (Recommendation) adapter.getList().get(position);
                 recommendation.getRecommendationItem().setWishlist(wishlistStatusFromPdp);
                 adapter.notifyItemChanged(position);
@@ -146,7 +154,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if(productCardOptionsModel.getWishlistResult().isUserLoggedIn()){
+        if (productCardOptionsModel.getWishlistResult().isUserLoggedIn()) {
             handleWishlistActionForLoggedInUser(productCardOptionsModel);
         } else {
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
@@ -154,7 +162,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     private void handleWishlistActionForLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
-        if(productCardOptionsModel.getWishlistResult().isSuccess()){
+        if (productCardOptionsModel.getWishlistResult().isSuccess()) {
             handleWishlistActionSuccess(productCardOptionsModel);
         } else {
             handleWishlistActionFailed();
@@ -171,8 +179,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         if (isAddWishlist) {
             showSuccessAddWishlist();
-        }
-        else {
+        } else {
             showSuccessRemoveWishlist();
         }
     }
@@ -220,17 +227,17 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void initView(View view) {
         this.intiInjector();
         presenter.setView(this);
+        presenter.preFetchTopAdsHeadline();
 
         List<Visitable> dataInbox = getData();
-        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this, this, this, this);
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(userSessionInterface, this, this, this, this);
         adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
-                .getDimensionPixelSize(R.dimen.dp_8)));
+        recyclerView.addItemDecoration(new RecomItemDecoration(ViewUtilsKt.toDpInt(8f)));
         layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);
@@ -240,17 +247,17 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isAdded = false;
                 endlessRecyclerViewScrollListener.resetState();
                 adapter.clearAllElements();
                 adapter.addElement(getData());
                 presenter.getInboxData();
-                presenter.getFirstRecomData();
+                presenter.preFetchTopAdsHeadline();
             }
         });
 
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
-        presenter.getFirstRecomData();
     }
 
     @NonNull
@@ -274,13 +281,13 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
-        if(presenter.isLoggedIn()){
-            if(isAddWishlist){
+        if (presenter.isLoggedIn()) {
+            if (isAddWishlist) {
                 presenter.addWishlist(item, callback);
             } else {
                 presenter.removeWishlist(item, callback);
             }
-        }else{
+        } else {
             RouteManager.route(getContext(), ApplinkConst.LOGIN);
         }
     }
@@ -289,11 +296,11 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
         if (item.isTopAds()) {
             onClickTopAds(item);
-        }else {
+        } else {
             onClickOrganic(item);
         }
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(item.getProductId()));
-        if(position.length >= 1) intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[0]);
+        if (position.length >= 1) intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[0]);
         startActivityForResult(intent, REQUEST_FROM_PDP);
     }
 
@@ -320,9 +327,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onProductImpression(@NotNull RecommendationItem item) {
-        if(item.isTopAds()){
+        if (item.isTopAds()) {
             onImpressionTopAds(item);
-        }else {
+        } else {
             onImpressionOrganic(item);
         }
     }
@@ -349,7 +356,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         switch (position) {
             case CHAT_MENU:
                 boolean isChatUsingOld = remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_OLD);
-                if(isChatUsingOld) {
+                if (isChatUsingOld) {
                     RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_OLD);
                 } else {
                     RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
@@ -358,14 +365,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             case DISCUSSION_MENU:
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
-                    if(useNewPage()) {
-                        InboxGtmTracker.getInstance().sendNewPageInboxTalkTracking(getContext(), presenter.getUserId(), talkUnreadCount);
-                    } else {
-                        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
-                                "inbox - talk",
-                                "click on diskusi product",
-                                ""));
-                    }
+                    InboxGtmTracker.getInstance().sendNewPageInboxTalkTracking(getContext(), presenter.getUserId(), talkUnreadCount);
                     RouteManager.route(getActivity(), ApplinkConstInternalGlobal.INBOX_TALK);
                 }
                 break;
@@ -373,7 +373,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), Uri.parse(ApplinkConst.REPUTATION).buildUpon().appendQueryParameter(PAGE_SOURCE_KEY, PAGE_SOURCE).build().toString());
                 break;
             case HELP_MENU:
-                RouteManager.route(getActivity(),ApplinkConst.INBOX_TICKET);
+                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
                 break;
         }
     }
@@ -436,11 +436,37 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         adapter.showLoading();
     }
 
+    @Override
+    public void onTopAdsHeadlineReceived(CpmModel data) {
+        this.headlineData = data;
+        presenter.getFirstRecomData();
+
+        if (data == null
+                || data.getData() == null
+                || data.getData().isEmpty()
+                || data.getData().get(0) == null
+                || data.getData().get(0).getCpm() == null
+                || adapter == null) {
+            return;
+        }
+
+        headlineExperimentPosition = data.getData().get(0).getCpm().getPosition()
+                + adapter.getList().size();
+    }
 
     @Override
-    public void onRenderRecomInbox(List<Visitable> list) {
+    public void onRenderRecomInbox(List<Visitable> list, RecomTitle title) {
         this.visitables = list;
         adapter.addElement(list);
+
+        if (headlineExperimentPosition != HEADLINE_POS_NOT_TO_BE_ADDED
+                && headlineExperimentPosition <= adapter.getList().size() && !isAdded) {
+            adapter.addElement(headlineExperimentPosition,
+                    new TopadsHeadlineUiModel(headlineData, 0));
+            isAdded = true;
+        }
+
+
     }
 
     @Override
@@ -466,7 +492,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Override
     public int getStartProductPosition() {
         //product start after inbox data (like chat, diskusi, etc) + 1 recom title
-        return (getData().size()-1)+1;
+        return (getData().size() - 1) + 1;
     }
 
     private void onImpressionTopAds(RecommendationItem item) {
@@ -502,25 +528,5 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onTopAdsImageViewClicked(@org.jetbrains.annotations.Nullable String applink) {
         if (applink == null) return;
         RouteManager.route(getContext(), applink);
-    }
-
-    @Nullable
-    private AbTestPlatform getAbTestPlatform() {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = new RemoteConfigInstance(getActivity().getApplication());
-        }
-        try {
-            return remoteConfigInstance.getABTestPlatform();
-        } catch (IllegalStateException exception) {
-            return null;
-        }
-    }
-
-    private Boolean useNewPage() {
-        if(getAbTestPlatform() == null) {
-            return false;
-        }
-        String remoteConfigValue = getAbTestPlatform().getString(AB_TEST_INBOX_KEY);
-        return !remoteConfigValue.isEmpty();
     }
 }

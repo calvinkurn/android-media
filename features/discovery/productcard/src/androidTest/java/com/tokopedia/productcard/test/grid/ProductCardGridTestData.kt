@@ -1,8 +1,9 @@
 package com.tokopedia.productcard.test.grid
 
 import android.view.View
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel.LabelGroup
 import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
 import com.tokopedia.productcard.test.productCardModelMatcherData
@@ -14,14 +15,15 @@ import org.hamcrest.Matcher
 
 internal val productCardGridTestData = productCardModelMatcherData + mutableListOf<ProductCardModelMatcher>().also {
     it.add(testOutOfStock())
+    it.add(testSimilarProductButton())
 }
 
 private fun testOutOfStock(): ProductCardModelMatcher {
-    val labelProductStatus = ProductCardModel.LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Stok habis", type = TRANSPARENT_BLACK)
+    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Stok habis", type = TRANSPARENT_BLACK)
     val productCardModel = ProductCardModel(
             isOutOfStock = true,
             productImageUrl = productImageUrl,
-            labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
             },
             productName = "Out of stock",
@@ -29,11 +31,31 @@ private fun testOutOfStock(): ProductCardModelMatcher {
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = ViewMatchers.isDisplayed()
-        it[R.id.outOfStockOverlay] = ViewMatchers.isDisplayed()
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.outOfStockOverlay] = isDisplayed()
         it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testSimilarProductButton(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Similar Product Button",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp8.999.000",
+        shopLocation = "DKI Jakarta",
+        hasSimilarProductButton = true
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.buttonSeeSimilarProduct] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

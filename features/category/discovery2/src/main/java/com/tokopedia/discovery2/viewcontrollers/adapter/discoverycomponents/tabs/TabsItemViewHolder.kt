@@ -4,10 +4,12 @@ import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.discovery2.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -36,9 +38,7 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
                     item.name?.let { name ->
                         setTabText(name)
                     }
-                    item.fontColor?.let { fontColor ->
-                        setFontColor(fontColor)
-                    }
+                    setFontColor(item.fontColor)
                     showSelectedView(item.isSelected)
                 }
             })
@@ -59,13 +59,19 @@ class TabsItemViewHolder(itemView: View, fragment: Fragment) : AbstractViewHolde
         tabTextView.text = name
     }
 
-    private fun setFontColor(fontColor: String) {
-        if (fontColor.length > 1) {
-            tabTextView.setTextColor(Color.parseColor(fontColor))
-            selectedView.setBackgroundColor(Color.parseColor(fontColor))
+    private fun setFontColor(fontColor: String?) {
+        try {
+            if(fontColor.isNullOrEmpty()){
+                tabTextView.setTextColor(ContextCompat.getColor(itemView.context, RUnify.color.Unify_G500))
+                selectedView.setBackgroundColor(ContextCompat.getColor(itemView.context, RUnify.color.Unify_G500))
+            }else{
+                tabTextView.setTextColor(Color.parseColor(fontColor))
+                selectedView.setBackgroundColor(Color.parseColor(fontColor))
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
         }
     }
-
 
     private fun showSelectedView(isSelected: Boolean) {
         if (isSelected) {

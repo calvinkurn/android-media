@@ -3,12 +3,13 @@ package com.tokopedia.play.view.measurement.bounds.provider.videobounds
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
+import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play_common.util.extension.awaitMeasured
-import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
@@ -19,8 +20,9 @@ class PortraitVideoBoundsProvider(
         private val container: ViewGroup
 ) : VideoBoundsProvider {
 
-    private val toolbarView = container.findViewById<View>(R.id.view_toolbar)
+    private val toolbarView = container.findViewById<View>(R.id.view_toolbar_room)
     private val statsInfoView = container.findViewById<View>(R.id.view_stats_info)
+    private val partnerInfoView = container.findViewById<View>(R.id.view_partner_info)
     private val sendChatView = container.findViewById<View>(R.id.view_send_chat)
     private val quickReplyView = container.findViewById<View>(R.id.rv_quick_reply)
     private val chatListView = container.findViewById<View>(R.id.view_chat_list)
@@ -28,10 +30,11 @@ class PortraitVideoBoundsProvider(
 
     override suspend fun getVideoTopBounds(videoOrientation: VideoOrientation): Int = coroutineScope {
         return@coroutineScope if (videoOrientation.isHorizontal) {
-            val toolbarLayout = async { toolbarView.awaitMeasured() }
-            val statsInfoLayout = async { statsInfoView.awaitMeasured() }
+            val toolbarLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, toolbarView::awaitMeasured) }) {}
+            val statsInfoLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, statsInfoView::awaitMeasured) }) {}
+            val partnerInfoLayout = asyncCatchError(block = { measureWithTimeout(MEASURE_TOP_BOUNDS_TIMEOUT, partnerInfoView::awaitMeasured) }) {}
 
-            awaitAll(toolbarLayout, statsInfoLayout)
+            awaitAll(toolbarLayout, statsInfoLayout, partnerInfoLayout)
 
             val toolbarViewTotalHeight = run {
                 val marginLp = toolbarView.layoutParams as ViewGroup.MarginLayoutParams
@@ -43,9 +46,14 @@ class PortraitVideoBoundsProvider(
                 statsInfoView.height + marginLp.bottomMargin + marginLp.topMargin
             }
 
+            val partnerInfoTotalHeight = run {
+                val marginLp = partnerInfoView.layoutParams as ViewGroup.MarginLayoutParams
+                partnerInfoView.height + marginLp.bottomMargin + marginLp.topMargin
+            }
+
             val statusBarHeight = container.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
 
-            toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight
+            toolbarViewTotalHeight + statsInfoTotalHeight + partnerInfoTotalHeight + statusBarHeight
         } else 0
     }
 
@@ -57,7 +65,8 @@ class PortraitVideoBoundsProvider(
         }
 
         val chatListViewTotalHeight = run {
-            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_vertical_max_height)
+            val height =
+                container.resources.getDimensionPixelSize(R.dimen.play_chat_vertical_max_height)
             val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         }
@@ -65,7 +74,10 @@ class PortraitVideoBoundsProvider(
         val quickReplyViewTotalHeight = run {
             val height = if (hasQuickReply) {
                 if (quickReplyView.height <= 0) {
-                    quickReplyView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    quickReplyView.measure(
+                        View.MeasureSpec.UNSPECIFIED,
+                        View.MeasureSpec.UNSPECIFIED
+                    )
                     quickReplyView.measuredHeight
                 } else quickReplyView.height
             } else 0
@@ -76,8 +88,10 @@ class PortraitVideoBoundsProvider(
         val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(container.context)
         val requiredMargin = offset16
 
-        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
+        return@coroutineScope getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
+    }
 
-        return@coroutineScope interactionTopmostY
+    companion object {
+        private const val MEASURE_TOP_BOUNDS_TIMEOUT = 35000L
     }
 }

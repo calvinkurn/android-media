@@ -1,0 +1,94 @@
+{
+  "status": "OK",
+  "chatReplies": {
+    "minReplyTime": "1593320444778",
+    "maxReplyTime": "1593320444778",
+    "block": {
+      "blockedUntil": "",
+      "isBlocked": false,
+      "isPromoBlocked": false
+    },
+    "hasNext": false,
+    "hasNextAfter": false,
+    "textareaReply": 1,
+    "replyIDsAttachment": "439369778,439369779,439369780",
+    "contacts": [
+      {
+        "role": "User",
+        "userId": 7977933,
+        "shopId": 5665147,
+        "interlocutor": false,
+        "name": "Buyer Testing",
+        "tag": "Penjual",
+        "thumbnail": "https://accounts.tokopedia.com/image/v1/u/7977933/user_thumbnail/desktop",
+        "domain": "",
+        "isOfficial": false,
+        "isGold": false,
+        "badge": "",
+        "status": {
+          "timestamp": 0,
+          "timestampStr": "",
+          "isOnline": false
+        }
+      },
+      {
+        "role": "Shop Owner",
+        "userId": 29240564,
+        "shopId": 5665147,
+        "interlocutor": true,
+        "name": "Seller Testing",
+        "tag": "Pengguna",
+        "thumbnail": "https://imagerouter.tokopedia.com/image/v1/s/5665147/shop_xs_thumbnail/desktop",
+        "domain": "lorealparis",
+        "isOfficial": true,
+        "isGold": true,
+        "badge": "https://ecs7.tokopedia.net/chat/tc_os_icon.png",
+        "status": {
+          "timestamp": 1607337686,
+          "timestampStr": "1607337686",
+          "isOnline": true
+        }
+      }
+    ],
+    "list": [
+      {
+        "date": "27 Jul 2021",
+        "chats": [
+          {
+            "time": "16:10",
+            "replies": [
+              {
+                "msgId": 1,
+                "replyId": "123",
+                "senderId": 12,
+                "senderName": "roro",
+                "role": "Shop Owner",
+                "msg": "Test SRW Change Address",
+                "fraudStatus": 0,
+                "replyTime": "1627377033992402000",
+                "status": 1,
+                "attachmentID": 0,
+                "isOpposite": true,
+                "isHighlight": false,
+                "isRead": true,
+                "blastId": 0,
+                "source": "smart_reply_stock_availability",
+                "label": "Dikirim otomatis sesuai stok terbaru",
+                "attachment": {
+                  "id": 0,
+                  "type": 27,
+                  "attributes": "{\"cta_button\": {  \"header\": \"Pengiriman ke Pembeli\",  \"url\": \"m.example/1213\",  \"text_url\": \"Ubah alamat\",  \"body\": \"Hi Ryan! Setelah Mimin cek, ini estimasi ongkir “iPhone 12 64GB Origi...” ke alamatmu: Bebas Ongkir | Rp0 Instan | Rp25.000-Rp27.000 Same Day | Rp15.000-16.000 Next Day | Rp10.000 Reguler | Rp7.000 Ekonomi | Rp5.000 Kargo | Rp5.000\",  \"type\": 1,  \"status\": 1,  \"extras\": {    \"extras_product\":[      {        \"product_id\": 1360053646,        \"url\": \"https://www.tokopedia.com/retail-mogul/matchstick-monkey-teether-orange?whid=0\"      }    ],    \"intent\": \"stock_availability\",    \"location_stock\": {      \"address_id\": 1,      \"district_id\": 2,      \"postal_code\": \"10110\",      \"latlon\": \"1212131,1313313\"    }  }}}",
+                  "fallback": {
+                    "message": "Test SRW Change Address",
+                    "html": "Test SRW Change Address"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+

@@ -1,8 +1,9 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 
 /**
  * Created by jegul on 06/03/20
@@ -10,12 +11,12 @@ import com.tokopedia.variant_common.model.VariantCategory
 class VariantSheetUiModel(
         var product: PlayProductUiModel.Product,
         val action: ProductAction,
-        val parentVariant: ProductVariantCommon? = null,
+        val parentVariant: ProductVariant? = null,
         var stockWording: String? = null,
         var listOfVariantCategory: List<VariantCategory> = listOf(),
-        var mapOfSelectedVariants: MutableMap<String, Int> = mutableMapOf()
+        var mapOfSelectedVariants: MutableMap<String, String> = mutableMapOf()
 ) {
     fun isPartialySelected(): Boolean = mapOfSelectedVariants.any {
-        it.value == 0
+        it.value.toLongOrZero() == 0L
     } || mapOfSelectedVariants.isEmpty()
 }

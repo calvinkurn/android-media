@@ -13,9 +13,11 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/spacing_lvl5"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/desc_notifcenter_empty_state_illustration"
         android:scaleType="fitCenter" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tp_empty_notification_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_lvl4"

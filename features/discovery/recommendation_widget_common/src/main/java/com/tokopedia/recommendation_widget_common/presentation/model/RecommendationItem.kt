@@ -1,9 +1,10 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(
-        val productId: Int = 0,
+        val productId: Long = 0L,
         val name: String = "",
         val categoryBreadcrumbs: String = "",
         val url: String = "",
@@ -31,10 +32,11 @@ data class RecommendationItem(
         val shopType: String = "",
         val shopName: String = "",
         var cartId: String = "",
-        val quantity: Int = 0,
+        var quantity: Int = 0,
         val header: String = "",
         val pageName: String = "",
         val minOrder: Int = 0,
+        val maxOrder: Int = 0,
         val location: String = "",
         val badgesUrl: List<String> = listOf(),
         val type: String = "",
@@ -42,10 +44,14 @@ data class RecommendationItem(
         val freeOngkirImageUrl: String = "",
         val labelGroupList: List<RecommendationLabel> = listOf(),
         val isGold: Boolean = false,
-        val isOfficial:Boolean = false,
+        val isOfficial: Boolean = false,
         // for tracker field
         val dimension61: String = "",
-        val specs: List<RecommendationSpecificationLabels> = listOf()
+        val specs: List<RecommendationSpecificationLabels> = listOf(),
+        //for tokonow
+        val parentID: Long = 0L,
+        val isRecomProductShowVariantAndCart:Boolean = false,
+        var currentQuantity: Int = 0 // change this quantity before atc/update/delete, if failed then return this value to quantity
 ): ImpressHolder(){
 
     override fun equals(other: Any?): Boolean {
@@ -93,6 +99,9 @@ data class RecommendationItem(
         if (freeOngkirImageUrl != other.freeOngkirImageUrl) return false
         if (labelGroupList != other.labelGroupList) return false
         if (isGold != other.isGold) return false
+        if (parentID != other.parentID) return false
+        if (isRecomProductShowVariantAndCart != other.isRecomProductShowVariantAndCart) return false
+        if (currentQuantity != other.currentQuantity) return false
 
         return true
     }
@@ -139,6 +148,9 @@ data class RecommendationItem(
         result = HASH_CODE * result + isGold.hashCode()
         result = HASH_CODE * result + isOfficial.hashCode()
         result = HASH_CODE * result + dimension61.hashCode()
+        result = HASH_CODE * result + parentID.hashCode()
+        result = HASH_CODE * result + isRecomProductShowVariantAndCart.hashCode()
+        result = HASH_CODE * result + currentQuantity.hashCode()
         return result
     }
 
@@ -146,6 +158,31 @@ data class RecommendationItem(
         private const val HASH_CODE = 31
     }
 
+    fun isProductHasParentID(): Boolean {
+        return parentID != 0L
+    }
+
+    //default value 0
+    fun setDefaultCurrentStock() {
+        this.quantity = 0
+        this.currentQuantity = 0
+    }
+
+    //func to update quantity from minicart
+    fun updateItemCurrentStock(quantity: Int) {
+        this.quantity = quantity
+        this.currentQuantity = quantity
+    }
+
+    //call this when product card update values
+    fun onCardQuantityChanged(updatedQuantity : Int) {
+        currentQuantity = updatedQuantity
+    }
+
+    //call this when failed atc / update / delete
+    fun onFailedUpdateCart() {
+        currentQuantity = quantity
+    }
 }
 
 data class RecommendationSpecificationLabels(var specTitle: String = "", val specSummary: String = "")

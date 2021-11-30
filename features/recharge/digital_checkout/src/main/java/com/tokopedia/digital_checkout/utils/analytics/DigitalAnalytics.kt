@@ -287,7 +287,7 @@ class DigitalAnalytics {
                 DigitalCheckoutTrackingConst.Product.KEY_PRICE, cartDigitalInfoData.attributes.pricePlain.toString(),
                 DigitalCheckoutTrackingConst.Product.KEY_BRAND, cartDigitalInfoData.attributes.operatorName?.toLowerCase(),
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY, cartDigitalInfoData.attributes.categoryName?.toLowerCase(),
-                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, DigitalCheckoutTrackingConst.Value.NONE,
+                DigitalCheckoutTrackingConst.Product.KEY_VARIANT, if (cartDigitalInfoData.isSpecialProduct) DigitalCheckoutTrackingConst.Value.SPECIAL_PROMO else DigitalCheckoutTrackingConst.Value.REGULAR_PRODUCT,
                 DigitalCheckoutTrackingConst.Product.KEY_QUANTITY, "1",
                 DigitalCheckoutTrackingConst.Product.KEY_CATEGORY_ID, categoryId,
                 DigitalCheckoutTrackingConst.Product.KEY_CART_ID, cartDigitalInfoData.id,

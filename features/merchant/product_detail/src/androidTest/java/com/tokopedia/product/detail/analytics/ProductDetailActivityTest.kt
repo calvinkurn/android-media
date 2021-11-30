@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.analytics
 import android.app.Activity
 import android.app.Instrumentation
 import android.content.Intent
+import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingPolicies
@@ -16,15 +18,19 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
+import com.tokopedia.product.detail.util.ProductDetailNetworkIdlingResource
+import com.tokopedia.product.detail.util.ProductIdlingInterface
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
+import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -41,7 +47,7 @@ import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
 
 @LargeTest
-@RunWith(AndroidJUnit4::class)
+@RunWith(AndroidJUnit4ClassRunner::class)
 class ProductDetailActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
@@ -49,47 +55,63 @@ class ProductDetailActivityTest {
     private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
-    var activityRule: IntentsTestRule<ProductDetailActivity> = object : IntentsTestRule<ProductDetailActivity>(ProductDetailActivity::class.java) {
-        override fun beforeActivityLaunched() {
-            super.beforeActivityLaunched()
-            clearLogin()
-        }
+    var activityRule: ActivityTestRule<ProductDetailActivity> = IntentsTestRule(ProductDetailActivity::class.java,
+            false,
+            false)
 
-        override fun getActivityIntent(): Intent {
-            return ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
-        }
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule(isFromNetwork = true,
+            sendValidationResult = true)
 
-        override fun afterActivityLaunched() {
-            super.afterActivityLaunched()
-            waitForData()
-            productDetailLoadTimeMonitoringListener.onStartPltListener()
-            activity.productDetailLoadTimeMonitoringListener = productDetailLoadTimeMonitoringListener
-            markAsIdleIfPltIsSucceed()
-        }
-    }
+    private val idlingResource by lazy {
+        ProductDetailNetworkIdlingResource(object : ProductIdlingInterface {
+            override fun getName(): String = "networkFinish"
 
-    val productDetailLoadTimeMonitoringListener = object : ProductDetailLoadTimeMonitoringListener {
-        override fun onStartPltListener() {
-            ProductDetailIdlingResource.increment()
-        }
+            override fun idleState(): Boolean {
+                val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+                if (fragment.view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action) == null) {
+                    throw RuntimeException("button not found")
+                }
 
-        override fun onStopPltListener() {
-            ProductDetailIdlingResource.decrement()
-        }
+                return fragment.view?.findViewById<ConstraintLayout>(R.id.partial_layout_button_action)?.visibility == View.VISIBLE
+            }
+        })
     }
 
     @Before
     fun setup() {
-        setUpTimeoutIdlingResource()
-        IdlingRegistry.getInstance().register(ProductDetailIdlingResource.idlingResource)
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(ProductDetailMockResponse())
+        clearLogin()
+        gtmLogDBSource.deleteAll().toBlocking().first()
+
+        val intent = ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
+        activityRule.launchActivity(intent)
+
+        setUpTimeoutIdlingResource()
         intendingIntent()
     }
 
     @After
     fun finish() {
         IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource)
+    }
+
+    /**
+     * view product page
+     * impression - modular component
+     */
+    @Test
+    fun tracker_journey_id_56() {
+        actionTest {
+            fakeLogin()
+
+        } assertTest {
+            waitForTrackerSent()
+            performClose(activityRule)
+
+            assertThanos("56")
+            finishTest()
+        }
     }
 
     @Test
@@ -191,7 +213,7 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickThreadDetail() {
         actionTest {
-            fakeLogin()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             clickThreadDetailDiscussion()
         } assertTest {
             performClose(activityRule)
@@ -203,8 +225,9 @@ class ProductDetailActivityTest {
 
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(hasDescendant(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll))), scrollTo()))
-        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
-        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(13, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
+        onView(allOf(withId(R.id.productDiscussionMostHelpfulSeeAll)))
+                .check(matches(isDisplayed()))
+                .perform(click())
     }
 
     private fun clickThreadDetailDiscussion() {
@@ -223,10 +246,15 @@ class ProductDetailActivityTest {
     private fun setUpTimeoutIdlingResource() {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
+        IdlingRegistry.getInstance().register(idlingResource)
+
     }
 
-    private fun waitForData() {
-        Thread.sleep(5000L)
+    private fun getPositionViewHolderByName(name: String): Int {
+        val fragment = activityRule.activity.supportFragmentManager.findFragmentByTag("productDetailTag") as DynamicProductDetailFragment
+        return fragment.productAdapter?.currentList?.indexOfFirst {
+            it.name() == name
+        } ?: 0
     }
 
     private fun finishTest() {
@@ -267,15 +295,12 @@ class ProductDetailActivityTest {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
-    private fun markAsIdleIfPltIsSucceed() {
-        val performanceData = activityRule.activity.pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
-        if (performanceData?.isSuccess == true) {
-            productDetailLoadTimeMonitoringListener.onStopPltListener()
-        }
+    private fun assertThanos(trackerId:String) {
+        assertThat(cassavaTestRule.validate(trackerId), hasAllSuccess())
     }
 
     companion object {
-        const val PRODUCT_ID = "1267836204"
+        const val PRODUCT_ID = "1994427767"
         const val ADD_TO_CART_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_login.json"
         const val ADD_TO_CART_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_add_to_cart_choose_variant_non_login.json"
         const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"

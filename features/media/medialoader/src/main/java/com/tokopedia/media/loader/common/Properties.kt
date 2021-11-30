@@ -34,7 +34,8 @@ open class Properties(
         internal var transforms: List<Transformation<Bitmap>>? = null,
         internal var centerCrop: Boolean = false,
         internal var centerInside: Boolean = false,
-        internal var fitCenter: Boolean = false
+        internal var fitCenter: Boolean = false,
+        internal var isAdaptiveSizeImageRequest: Boolean = false,
 ) {
 
     /*
@@ -49,11 +50,15 @@ open class Properties(
     // getting the load time on listener
     internal var loadTime: String = ""
 
-    // validation of performance monitoring
-    internal val isTrackable: Boolean = data is String && data.toString().contains(CDN_IMAGE_URL)
-
     // versioning of cache
     internal val cacheVersionNumber = "+v2"
+
+    // flag to check wether icon or not
+    internal var isIcon = false
+
+    fun isIcon(value: Boolean) = apply {
+        isIcon = value
+    }
 
     internal fun setImageSize(width: Int, height: Int) = apply {
         this.imageViewSize = Pair(width, height)
@@ -174,15 +179,19 @@ open class Properties(
         this.centerInside = true
     }
 
+    // adaptive image size request
+    fun adaptiveImageSizeRequest(isAdaptive: Boolean) = apply {
+        this.isAdaptiveSizeImageRequest = isAdaptive
+    }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
-                isTrackable == other.isTrackable &&
                 imageViewSize == other.imageViewSize &&
+                isIcon == other.isIcon &&
                 urlHasQualityParam == other.urlHasQualityParam &&
                 renderDelay == other.renderDelay &&
                 loadTime == other.loadTime &&
-                isTrackable == other.isTrackable &&
                 thumbnailUrl == other.thumbnailUrl &&
                 blurHash == other.blurHash &&
                 isAnimate == other.isAnimate &&
@@ -200,17 +209,17 @@ open class Properties(
                 transforms == other.transforms &&
                 centerCrop == other.centerCrop &&
                 centerInside == other.centerInside &&
-                fitCenter == other.fitCenter
+                fitCenter == other.fitCenter &&
+                isAdaptiveSizeImageRequest == other.isAdaptiveSizeImageRequest
     }
 
     override fun hashCode(): Int {
         var result = thumbnailUrl.hashCode()
-        result = 3 * result + isTrackable.hashCode()
         result = 3 * result + imageViewSize.hashCode()
+        result = 3 * result + isIcon.hashCode()
         result = 3 * result + urlHasQualityParam.hashCode()
         result = 3 * result + renderDelay.hashCode()
         result = 3 * result + loadTime.hashCode()
-        result = 3 * result + isTrackable.hashCode()
         result = 3 * result + blurHash.hashCode()
         result = 3 * result + isAnimate.hashCode()
         result = 3 * result + isCircular.hashCode()
@@ -228,6 +237,7 @@ open class Properties(
         result = 3 * result + centerCrop.hashCode()
         result = 3 * result + fitCenter.hashCode()
         result = 3 * result + centerInside.hashCode()
+        result = 3 * result + isAdaptiveSizeImageRequest.hashCode()
         return result
     }
 

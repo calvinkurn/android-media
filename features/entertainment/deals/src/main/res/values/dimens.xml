@@ -17,6 +17,7 @@
     <dimen name="deals_dp_79">79dp</dimen>
     <dimen name="deals_dp_100">100dp</dimen>
     <dimen name="deals_dp_141">141dp</dimen>
+    <dimen name="deals_dp_180">180dp</dimen>
     <dimen name="deals_dp_200">200dp</dimen>
 
     <dimen name="deals_item_banner_width">288dp</dimen>

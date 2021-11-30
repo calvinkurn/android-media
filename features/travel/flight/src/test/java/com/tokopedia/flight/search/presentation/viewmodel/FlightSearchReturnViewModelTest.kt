@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightAnalyticsScreenName
 import com.tokopedia.flight.dummy.*
 import com.tokopedia.flight.homepage.presentation.model.FlightClassModel
 import com.tokopedia.flight.homepage.presentation.model.FlightPassengerModel
@@ -412,7 +413,7 @@ class FlightSearchReturnViewModelTest {
 
         // then
         every { flightAnalytics.eventSearchProductClickV2FromList(defaultSearchPassData, any<FlightJourneyModel>(),
-                FlightAnalytics.Screen.SEARCH, any()) }
+                FlightAnalyticsScreenName.SEARCH, any()) }
     }
 
     @Test
@@ -425,7 +426,7 @@ class FlightSearchReturnViewModelTest {
 
         // then
         every { flightAnalytics.eventSearchProductClickV2FromList(defaultSearchPassData, any<FlightJourneyModel>(),
-                FlightAnalytics.Screen.SEARCH, any()) }
+                FlightAnalyticsScreenName.SEARCH, any()) }
     }
 
     @Test
@@ -445,7 +446,7 @@ class FlightSearchReturnViewModelTest {
         // then
         verify {
             flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY,
-                    adapterPosition, FlightAnalytics.Screen.SEARCH, any())
+                    adapterPosition, FlightAnalyticsScreenName.SEARCH, any())
         }
         val returnJourney = flightSearchReturnViewModel.selectedReturnJourney!!
         returnJourney.duration shouldBe VALID_RETURN_JOURNEY.duration
@@ -504,7 +505,7 @@ class FlightSearchReturnViewModelTest {
         // then
         verify {
             flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassDataModel, VALID_RETURN_JOURNEY,
-                    adapterPosition, FlightAnalytics.Screen.SEARCH, any())
+                    adapterPosition, FlightAnalyticsScreenName.SEARCH, any())
         }
         val returnJourney = flightSearchReturnViewModel.selectedReturnJourney!!
         returnJourney.duration shouldBe VALID_RETURN_JOURNEY.duration

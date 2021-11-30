@@ -219,6 +219,10 @@ class LottieBottomNav : LinearLayout {
             icon.tag = context.getString(R.string.tag_lottie_animation_view) + bottomMenu.id
             icon.layoutParams = imgLayoutParam
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
+            icon.setFailureListener {
+                //we need to set our own failure listener to avoid crash
+                //especially for xiaomi android 8
+            }
             bottomMenu.animName?.let {
                 icon.setAnimation(bottomMenu.animName)
                 icon.speed = bottomMenu.animSpeed

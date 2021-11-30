@@ -13,6 +13,7 @@ data class CardWidgetUiModel(
         override val title: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
+        override val tag: String,
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
@@ -31,7 +32,7 @@ data class CardWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<CardDataUiModel> {
-        return CardWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+        return CardWidgetUiModel(id, widgetType, title, subtitle, tooltip, tag, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<CardDataUiModel>): Boolean {

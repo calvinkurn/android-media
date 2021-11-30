@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.domain.entity
 
-import com.tokopedia.createpost.view.viewmodel.MediaModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 
 
 data class FeedDetail (

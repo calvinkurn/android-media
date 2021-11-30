@@ -1,26 +1,24 @@
 package com.tokopedia.sellerhomecommon.presentation.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcItemWidgetFilterBinding
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
-import kotlinx.android.synthetic.main.shc_item_widget_filter.view.*
 
 /**
  * Created By @ilhamsuaib on 06/11/20
  */
 
 class WidgetFilterAdapter(
-        private val filterItems: List<WidgetFilterUiModel>,
-        private val listener: Listener
+    private val filterItems: List<WidgetFilterUiModel>,
+    private val listener: Listener
 ) : RecyclerView.Adapter<WidgetFilterAdapter.WidgetFilterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WidgetFilterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.shc_item_widget_filter, parent, false)
-        return WidgetFilterViewHolder(view)
+        val binding = ShcItemWidgetFilterBinding.inflate(inflater, parent, false)
+        return WidgetFilterViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: WidgetFilterViewHolder, position: Int) {
@@ -31,9 +29,11 @@ class WidgetFilterAdapter(
 
     fun getItems() = filterItems
 
-    class WidgetFilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class WidgetFilterViewHolder(
+        private val binding: ShcItemWidgetFilterBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: WidgetFilterUiModel, listener: Listener) = with(itemView) {
+        fun bind(item: WidgetFilterUiModel, listener: Listener) = with(binding) {
 
             tvShcWidgetFilterName.text = item.name
             radShcWidgetFilter.isChecked = item.isSelected
@@ -41,7 +41,7 @@ class WidgetFilterAdapter(
             radShcWidgetFilter.setOnClickListener {
                 listener.onItemClick(item)
             }
-            setOnClickListener {
+            root.setOnClickListener {
                 listener.onItemClick(item)
             }
         }

@@ -19,10 +19,10 @@
 
     <!-- Tkpd Design -->
     <style name="TextInputLayoutColorLine" parent="Theme.Design.Light">
-        <item name="android:textColorHint">@color/font_black_secondary_54</item>
-        <item name="colorControlNormal">@color/colorGray</item>
-        <item name="colorControlActivated">@color/tkpd_main_green</item>
-        <item name="colorControlHighlight">@color/tkpd_main_green</item>
+        <item name="android:textColorHint">@color/Unify_Static_Black_44</item>
+        <item name="colorControlNormal">@color/Unify_N200</item>
+        <item name="colorControlActivated">@color/Unify_G500</item>
+        <item name="colorControlHighlight">@color/Unify_G500</item>
     </style>
 
     <style name="TextInputLayout">
@@ -32,9 +32,9 @@
     </style>
 
     <style name="HintTextInputLayout" parent="TextInputLayout">
-        <item name="defaultTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="focusedTextColorLabel">@color/font_black_secondary_54</item>
-        <item name="disabledTextColorLabel">@color/font_black_secondary_54</item>
+        <item name="defaultTextColorLabel">@color/Unify_Static_Black_44</item>
+        <item name="focusedTextColorLabel">@color/Unify_Static_Black_44</item>
+        <item name="disabledTextColorLabel">@color/Unify_Static_Black_44</item>
         <item name="android:theme">@style/HintTextInputLayoutColorLine</item>
     </style>
 </resources>

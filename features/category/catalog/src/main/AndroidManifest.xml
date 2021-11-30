@@ -4,7 +4,9 @@
     <application>
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogDetailPageActivity"
-            android:screenOrientation="portrait">
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -29,9 +31,11 @@
         </activity>
         <activity
             android:name="com.tokopedia.catalog.ui.activity.CatalogGalleryActivity"
+            android:theme="@style/Theme.WhiteUnify"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.activity.CatalogYoutubePlayerActivity"
-            android:screenOrientation="landscape"
-            />
+        <activity
+            android:name=".ui.activity.CatalogYoutubePlayerActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:screenOrientation="landscape" />
     </application>
 </manifest>

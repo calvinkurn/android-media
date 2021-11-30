@@ -19,9 +19,9 @@
         android:layout_width="@dimen/dp_50"
         android:layout_height="@dimen/dp_50"
         android:layout_gravity="center"
-        android:layout_marginHorizontal="@dimen/dp_16"
+        android:layout_marginHorizontal="16dp"
         android:visibility="gone"
-        app:loader_corner_radius="@dimen/dp_10"
+        app:loader_corner_radius="10dp"
         app:loader_type="circular"
         tools:visibility="visible" />
 

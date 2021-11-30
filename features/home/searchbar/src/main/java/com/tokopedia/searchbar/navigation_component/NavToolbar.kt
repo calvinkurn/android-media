@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.util.AttributeSet
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -34,6 +34,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Fill.TO
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
+import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotificationModel
 import com.tokopedia.searchbar.navigation_component.di.DaggerNavigationComponent
 import com.tokopedia.searchbar.navigation_component.di.module.NavigationModule
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -78,6 +79,12 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val STATUS_BAR_LIGHT = 0
             const val STATUS_BAR_DARK = 1
         }
+
+        object SearchBarType {
+            const val TYPE_CLICK = 0
+            const val TYPE_EDITABLE = 1
+        }
+        private const val MAX_BACKGROUND_ALPHA = 225f
     }
 
     //public variable
@@ -101,6 +108,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var invertSearchBarColor: Boolean = false
     private var lifecycleOwner: LifecycleOwner? = null
     private var useCentralizedIconNotification = mapOf<Int, Boolean>()
+    private var searchbarType: Int? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -207,12 +215,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 lightCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT) },
                 darkCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK) }
         )
+
+        viewModel?.navNotificationLiveData?.value?.let {
+            updateCentralizedNotificationData(it)
+        }
     }
 
     /**
      * Call this function to let the NavToolbar manage your status bar transparency
      */
-    fun setupToolbarWithStatusBar(activity: Activity, statusBarTheme: Int? = null, applyPadding: Boolean = true) {
+    fun setupToolbarWithStatusBar(activity: Activity, statusBarTheme: Int? = null, applyPadding: Boolean = true, applyPaddingNegative: Boolean = false) {
         statusBarUtil = StatusBarUtil(WeakReference(activity))
 
         statusBarTheme?.let {
@@ -224,6 +236,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
 
         if (applyPadding) applyStatusBarPadding()
+        if (applyPaddingNegative) resetPadding()
     }
 
     /**
@@ -233,7 +246,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if(shadowApplied){
             shadowApplied = false
             if (lineShadow) {
-                dividerUnify?.visibility = View.INVISIBLE
+                divider?.visibility = View.INVISIBLE
                 navToolbar?.background = ColorDrawable(getLightIconColor())
                 setBackgroundAlpha(0f)
                 navToolbar?.updatePadding(bottom = 0)
@@ -253,8 +266,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             shadowApplied = true
 
             if (lineShadow) {
-                setBackgroundAlpha(225f)
-                dividerUnify?.visibility = View.VISIBLE
+                setBackgroundAlpha(MAX_BACKGROUND_ALPHA)
+                divider?.visibility = View.VISIBLE
                 navToolbar?.updatePadding(bottom = 0)
             } else {
                 val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
@@ -303,10 +316,15 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                        searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
                        durationAutoTransition: Long = 0,
                        shouldShowTransition: Boolean = true,
-                       disableDefaultGtmTracker: Boolean = false
-    ) {
-        showSearchbar()
+                       disableDefaultGtmTracker: Boolean = false,
+                       searchbarType: Int = SearchBarType.TYPE_CLICK,
+                       navSearchbarInterface: ((text: CharSequence?,
+                                                start: Int,
+                                                count: Int,
+                                                after: Int) -> Unit)? = null,
+                       editorActionCallback: ((hint: String) -> Unit)? = null
 
+    ) {
         var applinkForController = applink
         if (applink.isEmpty()) applinkForController = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE
         navSearchBarController = NavSearchbarController(
@@ -315,9 +333,31 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 searchbarClickCallback = searchbarClickCallback,
                 searchbarImpressionCallback = searchbarImpressionCallback,
                 topNavComponentListener = this,
-                disableDefaultGtmTracker = disableDefaultGtmTracker
+                disableDefaultGtmTracker = disableDefaultGtmTracker,
+                navSearchbarInterface = navSearchbarInterface,
+                editorActionCallback = editorActionCallback
         )
-        navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
+        this.searchbarType = searchbarType
+        searchbarTypeValidation(
+            searchbarType = searchbarType,
+            ifClickSearchbarType = {
+                navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
+            },
+            ifEditableSearchbarType = {
+                val hint = hints.getOrNull(0)
+                navSearchBarController.setEditableSearchbar(hint?.placeholder?:"")
+            }
+        )
+    }
+
+    fun searchbarTypeValidation(searchbarType: Int,
+                                ifClickSearchbarType: () -> Unit = {},
+                                ifEditableSearchbarType: () -> Unit = {}) {
+        if (searchbarType == SearchBarType.TYPE_CLICK) {
+            ifClickSearchbarType.invoke()
+        } else if (searchbarType == SearchBarType.TYPE_EDITABLE) {
+            ifEditableSearchbarType.invoke()
+        }
     }
 
     fun setBadgeCounter(iconId: Int, counter: Int) {
@@ -457,14 +497,29 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         viewModel?.applyNotification()
     }
 
+    fun hideKeyboard() {
+        navSearchBarController.etSearch?.clearFocus()
+        val `in` = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        `in`.hideSoftInputFromWindow(navSearchBarController.etSearch?.windowToken, 0)
+    }
+
+    fun getCurrentSearchbarText(): String {
+        return navSearchBarController.etSearch?.text?.toString() ?: ""
+    }
+
     private fun applyStatusBarPadding() {
         var pT = 0
         pT = ViewHelper.getStatusBarHeight(context)
         navToolbar?.updatePadding(top = pT)
     }
 
+    private fun resetPadding() {
+        var pT = 0
+        navToolbar?.updatePadding(top = pT)
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun onStartListener(owner: LifecycleOwner){
+    private fun onStartListener(owner: LifecycleOwner) {
         this.lifecycleOwner = owner
         observeLiveData()
     }
@@ -474,6 +529,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (::navSearchBarController.isInitialized) {
             navSearchBarController.startHintAnimation()
         }
+        viewModel?.getNotification()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -487,14 +543,18 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         lifecycleOwner?.let {owner ->
             viewModel?.navNotificationLiveData?.observe(owner, Observer {
                 it?.let {
-                    setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalInbox)
-                    setCentralizedBadgeCounter(IconList.ID_CART, it.totalCart)
-                    setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, it.totalNotif)
-                    setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalNewInbox)
-                    setCentralizedBadgeCounter(IconList.ID_NAV_GLOBAL, it.totalGlobalNavNotif)
+                    updateCentralizedNotificationData(it)
                 }
             })
         }
+    }
+
+    private fun updateCentralizedNotificationData(it: TopNavNotificationModel) {
+        setCentralizedBadgeCounter(IconList.ID_MESSAGE, it.totalInbox)
+        setCentralizedBadgeCounter(IconList.ID_CART, it.totalCart)
+        setCentralizedBadgeCounter(IconList.ID_NOTIFICATION, it.totalNotif)
+        setCentralizedBadgeCounter(IconList.ID_INBOX, it.totalNewInbox)
+        setCentralizedBadgeCounter(IconList.ID_NAV_GLOBAL, it.totalGlobalNavNotif)
     }
 
     private fun Toolbar.updatePadding(left: Int = paddingLeft, top: Int = ViewHelper.getStatusBarHeight(context), right: Int = paddingRight, bottom: Int = paddingBottom) {
@@ -548,7 +608,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun configureInitialFillBasedOnAttribute() {
         if (toolbarInitialFillColor == TOOLBAR_TRANSPARENT) {
             toolbarFillColor = getLightIconColor()
-            dividerUnify?.visibility = View.INVISIBLE
+            divider?.visibility = View.INVISIBLE
             navToolbar?.background = ColorDrawable(toolbarFillColor)
             setBackgroundAlpha(0f)
         } else {
@@ -605,8 +665,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun showSearchbar(hints: List<HintData>? = null) {
         hideToolbarContent(hideSearchbar = false)
         showToolbarContent(showSearchbar = true)
-
-        hints?.let { setupSearchbar(hints = hints) }
     }
 
     private fun showCustomView() {
@@ -616,7 +674,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.searchbar_dms_state_light_icon)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(
@@ -640,13 +698,6 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private fun toolbarThemeCondition(lightCondition: () -> Unit = {}, darkCondition: () -> Unit = {}) {
         if (toolbarThemeType == TOOLBAR_LIGHT_TYPE) lightCondition.invoke()
         if (toolbarThemeType == TOOLBAR_DARK_TYPE) darkCondition.invoke()
-    }
-
-    override fun onVisibilityAggregated(isVisible: Boolean) {
-        super.onVisibilityAggregated(isVisible)
-        if (isVisible) {
-            viewModel?.getNotification()
-        }
     }
 
     override fun getUserId(): String = userSessionInterface?.userId?:""

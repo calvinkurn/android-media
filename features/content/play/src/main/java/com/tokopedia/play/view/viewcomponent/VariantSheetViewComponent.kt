@@ -25,12 +25,13 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
+import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.variant_common.model.ProductVariantCommon
-import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
-import com.tokopedia.variant_common.view.ProductVariantListener
 
 /**
  * Created by jegul on 31/07/20
@@ -38,23 +39,23 @@ import com.tokopedia.variant_common.view.ProductVariantListener
 class VariantSheetViewComponent(
         container: ViewGroup,
         private val listener: Listener
-) : ViewComponent(container, R.id.cl_variant_sheet), ProductVariantListener {
+) : ViewComponent(container, R.id.cl_variant_sheet), AtcVariantListener {
 
     private val clProductVariant: ConstraintLayout = findViewById(R.id.cl_product_variant)
     private val phProductVariant: ConstraintLayout = findViewById(R.id.ph_product_variant)
-    private val tvSheetTitle: TextView = findViewById(R.id.tv_sheet_title)
+    private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val rvVariantList: RecyclerView = findViewById(R.id.rv_variant_list)
     private val btnAction: UnifyButton = findViewById(R.id.btn_action)
     private val phBtnAction: View = findViewById(R.id.ph_btn_action)
     private val btnContainer: ConstraintLayout = findViewById(R.id.btn_container)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
-    private val ivProductImage: ImageView = findViewById(R.id.iv_product_image)
+    private val ivProductImage: ImageUnify = findViewById(R.id.iv_product_image)
     private val tvProductTitle: TextView = findViewById(R.id.tv_product_title)
     private val llProductDiscount: LinearLayout = findViewById(R.id.ll_product_discount)
     private val tvProductDiscount: TextView = findViewById(R.id.tv_product_discount)
     private val tvOriginalPrice: TextView = findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = findViewById(R.id.tv_current_price)
-    private val ivFreeShipping: ImageView = findViewById(R.id.iv_free_shipping)
+    private val ivFreeShipping: ImageUnify = findViewById(R.id.iv_free_shipping)
 
     private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
@@ -67,7 +68,7 @@ class VariantSheetViewComponent(
     private var variantSheetUiModel: VariantSheetUiModel? = null
 
     init {
-        findViewById<ImageView>(R.id.iv_sheet_close)
+        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
                 .setOnClickListener {
                     listener.onCloseButtonClicked(this)
                 }
@@ -106,7 +107,7 @@ class VariantSheetViewComponent(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
+    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute, state: Int) {
         variantSheetUiModel?.let {
             it.mapOfSelectedVariants[variantOptions.variantCategoryKey] = variantOptions.variantId
         }
@@ -121,31 +122,31 @@ class VariantSheetViewComponent(
 
         if (!listOfVariants.isNullOrEmpty()) {
             val pairSelectedProduct = VariantCommonMapper.selectedProductData(
-                    variantSheetUiModel?.parentVariant?: ProductVariantCommon())
+                    variantSheetUiModel?.parentVariant?: ProductVariant())
             val selectedProduct = pairSelectedProduct?.second
             if (selectedProduct != null) {
                 val stock = selectedProduct.stock
 
                 val product = PlayProductUiModel.Product(
-                        id = selectedProduct.productId.toString(),
+                        id = selectedProduct.productId,
                         shopId = variantSheetUiModel?.product?.shopId.toEmptyStringIfNull(),
                         imageUrl = selectedProduct.picture?.original ?: "",
                         title = selectedProduct.name,
-                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
+                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock ?: 0),
                         isVariantAvailable = true,
                         price = if (selectedProduct.campaign?.isActive == true) {
                             DiscountedPrice(
                                     originalPrice = selectedProduct.campaign?.originalPriceFmt.toEmptyStringIfNull(),
-                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice?.toDouble()?:0.0,
+                                    discountedPriceNumber = selectedProduct.campaign?.discountedPrice ?: 0.0,
                                     discountPercent = selectedProduct.campaign?.discountedPercentage?.toInt()?:0,
                                     discountedPrice = selectedProduct.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                             )
                         } else {
-                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price.toDouble())
+                            OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), selectedProduct.price)
                         },
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         isFreeShipping = variantSheetUiModel?.product?.isFreeShipping ?: false,
-                        applink = null
+                        applink = variantSheetUiModel?.product?.applink
                 )
                 variantSheetUiModel?.stockWording = stock?.stockWordingHTML
                 variantSheetUiModel?.product = product

@@ -4,7 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.oneclickcheckout.common.view.model.Failure
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentOvoCustomerData
-import com.tokopedia.oneclickcheckout.preference.edit.domain.payment.GetOvoTopUpUrlUseCase
+import com.tokopedia.oneclickcheckout.payment.topup.domain.GetOvoTopUpUrlUseCase
+import com.tokopedia.oneclickcheckout.payment.topup.view.OvoTopUpWebViewViewModel
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert.assertEquals

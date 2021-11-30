@@ -41,7 +41,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_draft.*
 import javax.inject.Inject
 
-class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListener {
+open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListener {
 
     companion object {
         const val SCREEN_NAME = "/draft product page"

@@ -2,6 +2,7 @@ package com.tokopedia.topupbills.telco.prepaid.adapter.viewholder
 
 import android.graphics.Paint
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -14,9 +15,12 @@ import com.tokopedia.topupbills.telco.prepaid.adapter.TelcoProductAdapter
 import com.tokopedia.unifycomponents.Label
 import kotlinx.android.synthetic.main.item_telco_product.view.*
 
-class TelcoProductViewHolder(itemView: View, private val productType: Int,
-                             val listener: OnClickListener)
-    : AbstractViewHolder<TelcoProduct>(itemView) {
+class TelcoProductViewHolder(
+    itemView: View,
+    private val productType: Int,
+    private val isSingleMCCM: Boolean,
+    val listener: ActionListener
+) : AbstractViewHolder<TelcoProduct>(itemView) {
 
     lateinit var adapter: TelcoProductAdapter
 
@@ -24,6 +28,10 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         with(itemView) {
             telco_prepaid_title_product.text = element.attributes.desc
 
+            if (element.isSpecialProductPromo())
+                listener.onTrackSpecialProductImpression(element, adapterPosition)
+
+            renderCardSize()
             renderDescProduct(element)
             renderSeeMoreBtn(element)
             renderTextColor(element.attributes.status)
@@ -34,9 +42,21 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         }
     }
 
+    private fun renderCardSize() {
+        with(itemView) {
+            if (productType == TelcoProductType.PRODUCT_MCCM) {
+                if (isSingleMCCM){
+                    telco_layout_product_card.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+                } else {
+                    telco_layout_product_card.layoutParams.width = context.resources.getDimensionPixelSize(R.dimen.telco_mccm_card_item_width)
+                }
+            }
+        }
+    }
+
     private fun renderDescProduct(element: TelcoProduct) {
         with(itemView) {
-            if (productType == TelcoProductType.PRODUCT_LIST) {
+            if (productType == TelcoProductType.PRODUCT_LIST || productType == TelcoProductType.PRODUCT_MCCM) {
                 telco_empty_view.hide()
                 telco_desc_product.show()
                 telco_desc_product.text = element.attributes.detail
@@ -135,8 +155,9 @@ class TelcoProductViewHolder(itemView: View, private val productType: Int,
         const val PRODUCT_STATUS_OUT_OF_STOCK = 3
     }
 
-    interface OnClickListener {
+    interface ActionListener {
         fun onClickItemProduct(element: TelcoProduct, position: Int)
         fun onClickSeeMoreProduct(element: TelcoProduct, position: Int)
+        fun onTrackSpecialProductImpression(itemProduct: TelcoProduct, position: Int)
     }
 }

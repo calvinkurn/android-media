@@ -74,7 +74,7 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
     private fun getReportReason(){
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(query, ProductReportReason.Response::class.java)
-            val data = graphqlRepository.getReseponse(listOf(graphqlRequest))
+            val data = graphqlRepository.response(listOf(graphqlRequest))
             val list = data.getSuccessData<ProductReportReason.Response>().data
             reasonResponse.postValue(Success(list))
         }){

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
@@ -19,6 +20,13 @@ abstract class BaseBottomSheet : BottomSheetUnify() {
     abstract fun getResLayout(): Int
 
     abstract fun setupView(): Unit?
+
+    protected open fun initInjector() {}
+
+    @SuppressWarnings("unchecked")
+    open fun <C> getComponent(componentType: Class<C>): C? {
+        return componentType.cast((activity as? HasComponent<C>)?.component)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

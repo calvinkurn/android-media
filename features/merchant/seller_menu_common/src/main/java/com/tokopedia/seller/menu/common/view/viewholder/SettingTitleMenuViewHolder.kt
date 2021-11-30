@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller.menu.common.R
+import com.tokopedia.seller.menu.common.databinding.SettingTitleMenuBinding
 import com.tokopedia.seller.menu.common.view.uimodel.SettingTitleMenuUiModel
-import kotlinx.android.synthetic.main.setting_title_menu.view.*
 
 class SettingTitleMenuViewHolder(itemView: View) : AbstractViewHolder<SettingTitleMenuUiModel>(itemView) {
 
@@ -16,15 +16,18 @@ class SettingTitleMenuViewHolder(itemView: View) : AbstractViewHolder<SettingTit
         val LAYOUT = R.layout.setting_title_menu
     }
 
+    private val binding = SettingTitleMenuBinding.bind(itemView)
+
     override fun bind(element: SettingTitleMenuUiModel) {
-        with(itemView) {
-            if (element.iconUnify != null) {
-                settingTitleIcon.visible()
-                settingTitleIcon.setImage(element.iconUnify)
+        with(binding.settingTitleIcon) {
+            if (element.iconUnify == null) {
+                invisible()
             } else {
-                settingTitleIcon.invisible()
+                visible()
+                setImage(element.iconUnify)
             }
-            settingTitleText.text = element.settingTitle
         }
+        binding.settingTitleText.text = element.settingTitle
     }
+
 }

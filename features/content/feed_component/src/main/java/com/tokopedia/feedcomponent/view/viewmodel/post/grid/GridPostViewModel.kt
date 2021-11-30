@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.viewmodel.post.grid
 
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 
@@ -14,5 +15,10 @@ data class GridPostViewModel(
         val showGridButton: Boolean = true,
         val trackingList: MutableList<TrackingViewModel> = ArrayList(),
         override var postId: Int = 0,
-        override var positionInFeed: Int = 0
-) : BasePostViewModel
+        override var positionInFeed: Int = 0,
+        val postType: String="",
+        val isFollowed: Boolean = false,
+        val shopId: String="",
+        val itemListFeedXProduct :List<FeedXProduct> = ArrayList(),
+
+        ) : BasePostViewModel

@@ -7,10 +7,10 @@ import com.google.gson.annotations.SerializedName
  * @author by furqan on 30/04/18.
  */
 
-class CancellationDetailsAttribute(
+data class CancellationDetailsAttribute(
         @SerializedName("journey_id")
         @Expose
-        var journeyId: Long = 0,
+        var journeyId: String = "",
         @SerializedName("passenger_id")
         @Expose
         val passengerId: String = "") {

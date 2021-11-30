@@ -13,14 +13,14 @@ import kotlinx.android.synthetic.main.empty_product_info.view.*
 import kotlinx.android.synthetic.main.fragment_product_info.view.*
 
 
-class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : AbstractViewHolder<ProductInfoDataModel>(view) {
+class ProductInfoViewHolder(view: View, val listener: ProductInfoListener?) : AbstractViewHolder<ProductInfoDataModel>(view) {
 
     init {
         view.hide()
     }
 
     override fun bind(element: ProductInfoDataModel) {
-        if(element.productDetailData == null){
+        if (element.productDetailData == null) {
             // show error
             itemView.show()
             itemView.container_empty.show()
@@ -136,40 +136,41 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
 
     private fun onProductImpression(productInfoDataModel: ProductInfoDataModel){
         productInfoDataModel.productDetailData?.let {
-            if (it.isTopads) {
-                itemView.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
-                    override fun onViewHint() {
-                        listener.onProductAnchorImpression(productInfoDataModel)
+            itemView.addOnImpressionListener(productInfoDataModel, object: ViewHintListener {
+                override fun onViewHint() {
+                    if (it.isTopads) {
+                        listener?.onProductAnchorImpression(productInfoDataModel)
                     }
-                })
-            }
+                    listener?.onProductAnchorImpressionHitGTM(productInfoDataModel)
+                }
+            })
         }
     }
 
     private fun onClickProductCard(productInfoDataModel: ProductInfoDataModel){
         itemView.product_card?.setOnClickListener {
-            listener.onProductAnchorClick(productInfoDataModel)
+            listener?.onProductAnchorClick(productInfoDataModel)
         }
     }
 
     private fun onClickAddToCart(productInfoDataModel: ProductInfoDataModel){
         itemView.add_to_cart?.show()
         itemView.add_to_cart?.setOnClickListener {
-            listener.onProductAnchorAddToCart(productInfoDataModel)
+            listener?.onProductAnchorAddToCart(productInfoDataModel)
         }
     }
 
     private fun onClickBuyNow(productInfoDataModel: ProductInfoDataModel){
         itemView.buy_now?.show()
         itemView.buy_now?.setOnClickListener {
-            listener.onProductAnchorBuyNow(productInfoDataModel)
+            listener?.onProductAnchorBuyNow(productInfoDataModel)
         }
     }
 
     private fun onClickWishlist(productInfoDataModel: ProductInfoDataModel){
         itemView.fab_detail?.setOnClickListener {
-            listener.onProductAnchorClickWishlist(productInfoDataModel, !itemView.fab_detail.isActivated){ state, throwable ->
-                if(state){
+            listener?.onProductAnchorClickWishlist(productInfoDataModel, !itemView.fab_detail.isActivated) { state, throwable ->
+                if (state) {
                     itemView.fab_detail.isActivated = !itemView.fab_detail.isActivated
                     updateWishlist(itemView.fab_detail.isActivated)
                 }
@@ -179,6 +180,7 @@ class ProductInfoViewHolder(view: View, val listener: ProductInfoListener) : Abs
 
     interface ProductInfoListener{
         fun onProductAnchorImpression(productInfoDataModel: ProductInfoDataModel)
+        fun onProductAnchorImpressionHitGTM(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel)
         fun onProductAnchorBuyNow(productInfoDataModel: ProductInfoDataModel)

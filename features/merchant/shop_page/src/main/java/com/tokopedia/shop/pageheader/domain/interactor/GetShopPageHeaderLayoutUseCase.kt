@@ -24,7 +24,7 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
                 else
                     CacheType.CLOUD_THEN_CACHE
         ).build()
-        val gqlResponse = graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(request), cacheStrategy)
         val error = gqlResponse.getError(ShopPageHeaderLayoutResponse::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData(ShopPageHeaderLayoutResponse::class.java)
@@ -69,6 +69,25 @@ class GetShopPageHeaderLayoutUseCase @Inject constructor(
                         link
                         isBottomSheet
                         label
+                      }
+                      ... on ImageText {
+                        images {
+                          style
+                          data {
+                            image
+                            imageLink
+                            isBottomSheet
+                          }
+                        }
+                        textComponent {
+                          style
+                          data {
+                            icon
+                            textLink
+                            textHtml
+                            isBottomSheet
+                          }
+                        }
                       }
                     }
                   }

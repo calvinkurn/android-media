@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,13 +12,17 @@ import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.presentation.adapter.TravelDestinationArticleAdapter
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import kotlinx.android.synthetic.main.layout_travel_destination_article.view.*
 
 /**
  * @author by jessica on 2020-01-03
  */
 
-class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolderBindListener: OnViewHolderBindListener,
+class TravelDestinationArticleViewHolder(itemView: View,
+                                         private val onViewHolderBindListener: OnViewHolderBindListener,
                                          private val actionListener: ActionListener)
     : AbstractViewHolder<TravelArticleModel>(itemView) {
 
@@ -40,7 +43,7 @@ class TravelDestinationArticleViewHolder(itemView: View, private val onViewHolde
 
                     iv_travel_destination_article_item.loadImage(element.items[0].imageUrl)
                     tv_travel_destination_article_item_title.text = element.items[0].title
-                    tv_travel_destination_article_item_subtitle.text = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS, element.items[0].publishedDate))
+                    tv_travel_destination_article_item_subtitle.text = element.items[0].publishedDate.toDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS).toString(DateUtil.DEFAULT_VIEW_FORMAT)
                     travel_destination_highlight_article.setOnClickListener {
                         actionListener.onTrackArticleItemClick(element.items[0], adapterPosition)
                         actionListener.clickAndRedirect(element.items[0].appUrl,

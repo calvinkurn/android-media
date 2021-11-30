@@ -2,36 +2,20 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.DeferredAttachment
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewCard
 import com.tokopedia.topchat.chatroom.domain.pojo.review.ReviewReminderAttribute
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 
-class ReviewUiModel constructor(
-        reply: Reply,
-        reviewCard: ReviewCard
-) : SendableViewModel(
-        messageId = reply.msgId.toString(),
-        fromUid = reply.senderId.toString(),
-        from = reply.senderName,
-        fromRole = reply.role,
-        attachmentId = reply.attachment.id,
-        attachmentType = reply.attachment.type.toString(),
-        replyTime = reply.replyTime,
-        message = reply.msg,
-        source = reply.source,
-        replyId = reply.replyId,
-        isDummy = false,
-        isRead = reply.isRead,
-        isSender = !reply.isOpposite,
-        startTime = reply.replyTime
-), Visitable<TopChatTypeFactory>, DeferredAttachment {
+class ReviewUiModel private constructor(
+    builder: Builder
+) : SendableUiModel(builder), Visitable<TopChatTypeFactory>, DeferredAttachment {
 
-    var reply: Reply = reply
+    var reply: Reply = builder.reply
         private set
-    var reviewCard: ReviewCard = reviewCard
+    var reviewCard: ReviewCard = builder.reviewCard
         private set
 
     val impressHolder = ImpressHolder()
@@ -115,4 +99,23 @@ class ReviewUiModel constructor(
         }
     }
 
+    class Builder : SendableUiModel.Builder<Builder, ReviewUiModel>() {
+
+        internal var reply: Reply = Reply()
+        internal var reviewCard: ReviewCard = ReviewCard()
+
+        fun withReply(reply: Reply): Builder {
+            this.reply = reply
+            return self()
+        }
+
+        fun withReviewCard(reviewCard: ReviewCard): Builder {
+            this.reviewCard = reviewCard
+            return self()
+        }
+
+        override fun build(): ReviewUiModel {
+            return ReviewUiModel(this)
+        }
+    }
 }

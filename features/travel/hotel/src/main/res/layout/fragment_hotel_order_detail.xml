@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <include layout="@layout/layout_order_detail_transaction_detail" />
+            <include android:id="@+id/layoutOrderDetailTransaction" layout="@layout/layout_order_detail_transaction_detail" />
 
             <include
                 android:id="@+id/order_hotel_detail"
@@ -32,6 +32,7 @@
                 tools:visibility="visible"/>
 
             <include
+                android:id="@+id/layoutOrderDetailPayment"
                 layout="@layout/layout_order_detail_payment_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -66,9 +67,10 @@
         android:visibility="gone"
         android:background="@color/Unify_N0">
 
-        <ProgressBar
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/hotel_50dp"
             android:layout_height="@dimen/hotel_50dp"
+            app:loader_type="circle"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -77,4 +79,9 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include
+        android:id="@+id/container_error"
+        layout="@layout/item_network_error_view"
+        android:visibility="gone"
+        tools:visibility="visible" />
 </androidx.constraintlayout.widget.ConstraintLayout>

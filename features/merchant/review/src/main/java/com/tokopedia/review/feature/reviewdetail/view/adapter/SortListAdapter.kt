@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.review.R
+import com.tokopedia.review.databinding.ItemChipsBinding
 import com.tokopedia.review.feature.reviewdetail.view.model.SortItemUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_chips.view.*
 
 class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListener.Sort) : RecyclerView.Adapter<SortListAdapter.SortListViewHolder>() {
 
@@ -64,8 +64,11 @@ class SortListAdapter(private val topicSortFilterListener: TopicSortFilterListen
     }
 
     class SortListViewHolder(itemView: View, private val topicSortFilterListener: TopicSortFilterListener.Sort) : RecyclerView.ViewHolder(itemView) {
+
+        private val binding = ItemChipsBinding.bind(itemView)
+
         fun bind(data: SortItemUiModel) {
-            with(itemView) {
+            with(binding) {
                 chipsItem.apply {
                     centerText = true
                     chipText = data.title

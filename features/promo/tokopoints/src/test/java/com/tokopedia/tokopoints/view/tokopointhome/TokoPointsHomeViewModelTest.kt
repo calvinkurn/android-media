@@ -7,10 +7,14 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter
+import com.tokopedia.tokopoints.view.model.homeresponse.RecommendationWrapper
+import com.tokopedia.tokopoints.view.model.homeresponse.TokopointSuccess
 import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardTickerListResponse
+import com.tokopedia.tokopoints.view.model.rewrdsStatusMatching.RewardsTickerList
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.model.usersaving.TokopointsUserSaving
@@ -20,6 +24,7 @@ import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -33,107 +38,32 @@ class TokoPointsHomeViewModelTest {
 
 
     lateinit var viewModel: TokoPointsHomeViewModel
-    val repository = mockk<TokopointsHomeUsecase>()
-    val recomUsecase = mockk<RewardsRecommUsecase>()
-    val requestParams: RequestParams = mockk()
-    val productCardModel = mockk<ProductCardModel>()
-    val productItem = mockk<RecommendationItem>()
-    val recommendationWidgetList: List<RecommendationWidget> = arrayListOf(RecommendationWidget())
-    val recommendationList: List<RecommendationWrapper> = arrayListOf(RecommendationWrapper(productItem,productCardModel))
+    lateinit var repository: TokopointsHomeUsecase
+    lateinit var recomUsecase: RewardsRecommUsecase
+    private val requestParams: RequestParams = mockk()
+    private val productCardModel = mockk<ProductCardModel>()
+    private val productItem = mockk<RecommendationItem>()
+    private val recommendationWidgetList: List<RecommendationWidget> =
+        arrayListOf(RecommendationWidget())
+    private val recommendationList: List<RecommendationWrapper> =
+        arrayListOf(RecommendationWrapper(productItem, productCardModel))
 
     @get:Rule
     var rule = InstantTaskExecutorRule()
 
+    @ExperimentalCoroutinesApi
     @Before
     fun setUp() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        viewModel = TokoPointsHomeViewModel(repository,recomUsecase)
+        repository = mockk(relaxed = true)
+        recomUsecase = mockk(relaxed = true)
+        viewModel = TokoPointsHomeViewModel(repository, recomUsecase)
     }
 
+    @ExperimentalCoroutinesApi
     @After
     fun tearDown() {
         Dispatchers.resetMain()
-    }
-
-    @Test
-    fun `getTokoPointDetail for success data`() {
-        val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
-            every { onChanged(any()) } just Runs
-        }
-        val tokopediaRewardTopsectionData = mockk<TokopediaRewardTopSection> {
-            every { isShowIntroActivity } returns false
-            every { isShowSavingPage } returns false
-        }
-        val dataSection = mockk<List<SectionContent>>()
-
-        coEvery { repository.getTokoPointDetailData() } returns mockk {
-            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
-                every { tokopediaRewardTopSection } returns tokopediaRewardTopsectionData
-            }
-            every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
-                every { sectionContent } returns mockk {
-                    every { sectionContent } returns dataSection
-                }
-            }
-        }
-        commonRecomDatacall()
-        viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
-        viewModel.getTokoPointDetail()
-
-        verify(ordering = Ordering.ORDERED) {
-            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
-            tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
-        }
-
-        val result = viewModel.tokopointDetailLiveData.value as Success
-        assert(result.data.sectionList == dataSection)
-        assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
-        assert(result.data.recomData?.recommendationWrapper == recommendationList)
-    }
-
-    @Test
-    fun `getTokoPointDetail for userSavingVisible`() {
-        val tokopointObserver = mockk<Observer<Resources<TokopointSuccess>>>() {
-            every { onChanged(any()) } just Runs
-        }
-        val tokopediaRewardTopsectionData = mockk<TokopediaRewardTopSection> {
-            every { isShowIntroActivity } returns false
-            every { isShowSavingPage } returns true
-        }
-        val dataSection = mockk<List<SectionContent>>()
-        val dataUserSavingResponse = mockk<TokopointsUserSaving>()
-
-        coEvery { repository.getTokoPointDetailData() } returns mockk {
-            every { getData<RewardResponse>(RewardResponse::class.java) } returns mockk {
-                every { tokopediaRewardTopSection } returns tokopediaRewardTopsectionData
-            }
-            every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
-                every { sectionContent } returns mockk {
-                    every { sectionContent } returns dataSection
-                }
-            }
-
-        }
-        coEvery { repository.getUserSavingData() } returns mockk {
-            every { getData<UserSavingResponse>(UserSavingResponse::class.java) } returns mockk {
-                every { tokopointsUserSaving } returns dataUserSavingResponse
-            }
-        }
-
-        commonRecomDatacall()
-        viewModel.tokopointDetailLiveData.observeForever(tokopointObserver)
-        viewModel.getTokoPointDetail()
-
-        verify(ordering = Ordering.ORDERED) {
-            tokopointObserver.onChanged(ofType(Loading::class as KClass<Loading<TokopointSuccess>>))
-            tokopointObserver.onChanged(ofType(Success::class as KClass<Success<TokopointSuccess>>))
-        }
-
-        val result = viewModel.tokopointDetailLiveData.value as Success
-        assert(result.data.sectionList == dataSection)
-        assert(result.data.topSectionResponse.tokopediaRewardTopSection == tokopediaRewardTopsectionData)
-        assert(result.data.topSectionResponse.userSavingResponse == dataUserSavingResponse)
-        assert(result.data.recomData?.recommendationWrapper == recommendationList)
     }
 
     @Test
@@ -190,12 +120,5 @@ class TokoPointsHomeViewModelTest {
         viewModel.rewardIntroData.observeForever(tokopointIntroObserver)
         viewModel.getRewardIntroData()
         verify(exactly = 1) { tokopointIntroObserver.onChanged(any()) }
-    }
-
-    fun `commonRecomDatacall`(){
-        coEvery {  recomUsecase.getRequestParams(1, "", "") } returns requestParams
-        every { recomUsecase.getData(requestParams) } returns recommendationWidgetList
-        coEvery { recomUsecase.mapper.recommWidgetToListOfVisitables(recommendationWidgetList[0]) } returns recommendationList
-
     }
 }

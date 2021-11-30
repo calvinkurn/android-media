@@ -122,7 +122,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for product impression with no coach mark shown`(productItemDataView: ProductItemDataView) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
         }
 
         verify(exactly = 0) {
@@ -160,7 +160,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
                     SearchConstant.TopAdsComponent.ORGANIC_ADS
             )
 
-            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(capture(capturedProductItemViewModel), capture(suggestedRelatedKeywordSlot))
         }
 
         verify(exactly = 0) {
@@ -173,7 +173,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Given View already load data`(searchProductWithTopAdsResponseJSON, true)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = true, isOrganicAds = false)
-        val firstProductPosition = 0
+        val firstProductPosition = 1
 
         `When handle product impressed`(productItemViewModel, firstProductPosition)
 
@@ -203,7 +203,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
         `Given View already load data`(searchProductCommonResponseJSON, true)
 
         val productItemViewModel = findProductItemFromVisitableList(isTopAds = false, isOrganicAds = false)
-        val firstProductPosition = 0
+        val firstProductPosition = 1
 
         `When handle product impressed`(productItemViewModel, firstProductPosition)
 
@@ -213,7 +213,7 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
 
     private fun `Then verify interaction for product impression with coach mark shown`(productItemDataView: ProductItemDataView, position: Int) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot), any())
+            productListView.sendProductImpressionTrackingEvent(productItemDataView, capture(suggestedRelatedKeywordSlot))
             productListView.showOnBoarding(position)
         }
     }

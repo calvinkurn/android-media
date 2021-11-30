@@ -1,5 +1,6 @@
 package com.tokopedia.ordermanagement.snapshot.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class SnapshotResponse(
@@ -13,6 +14,18 @@ data class Data(
 )
 
 data class GetOrderSnapshot(
+	@field:SerializedName("bundle_id")
+	val bundleId: String = "",
+
+	@field:SerializedName("bundle_variant_name")
+	val bundleName: String = "",
+
+	@field:SerializedName("product_bundling_icon")
+	val bundleIcon: String = "",
+
+	@field:SerializedName("is_have_bundle_product")
+	val isBundleProduct: Boolean = false,
+
 	@field:SerializedName("product_price_formatted")
 	val productPriceFormatted: String = "",
 
@@ -70,7 +83,10 @@ data class ShopSummary(
 	val logo: String = "",
 
 	@field:SerializedName("shop_name")
-	val shopName: String = ""
+	val shopName: String = "",
+
+	@field:SerializedName("badge_url")
+	val badgeUrl: String = ""
 )
 
 data class ProductAdditionalData(

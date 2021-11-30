@@ -15,7 +15,7 @@
 
     <include
         android:layout_marginTop="18dp"
-        layout="@layout/home_account_financial_shimmer"
+        layout="@layout/home_account_balance_and_point_shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

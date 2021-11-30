@@ -1,0 +1,108 @@
+{
+  "notifcenter_detail_v3": {
+    "paging": {
+      "has_next": false,
+      "has_prev": false
+    },
+    "new_paging": {
+      "has_next": false,
+      "has_prev": false
+    },
+    "new_list": [
+      {
+        "notif_id": "123",
+        "user_id": 9075738,
+        "shop_id": 0,
+        "section_id": "digital_goods",
+        "section_key": "Top up \u0026 bills",
+        "section_icon": "https://cdn.tokopedia.net/img/notif-center/digital/bills.png",
+        "subsection_key": "",
+        "template_key": "rechargeapp_failed_education",
+        "title": "Pembayaran Voucher Belajar belum berhasil",
+        "button_text": "Klik di sini",
+        "short_description": "short description html",
+        "short_description_html": "short description html",
+        "is_longer_content": false,
+        "show_bottomsheet": false,
+        "type_bottomsheet": 0,
+        "content": "",
+        "type_of_user": 1,
+        "type_link": 8,
+        "create_time": "Kemarin",
+        "create_time_unix": 1624528646,
+        "update_time": "2021-06-24 16:57:26.474464291 +0700 WIB",
+        "update_time_unix": 1624528646,
+        "expire_time": "2021-07-09 16:57:26.474881078 +0700 WIB",
+        "expire_time_unix": 1625824646,
+        "status": 0,
+        "read_status": 2,
+        "notif_order_type": 1,
+        "is_last_journey": true,
+        "unique_id": 0,
+        "widget": {
+          "title": "747330958",
+          "description": "- Ramadhan Ramadhan Ramadhan",
+          "message": "ini widget msg",
+          "image": "https://images.tokopedia.net/img/notif-center/icon-dg/belajar.png",
+          "button_text": "asdf",
+          "desktop_button_link": "",
+          "mobile_button_link": "",
+          "android_button_link": "",
+          "ios_button_link": ""
+        },
+        "track_history": [],
+        "image": [
+          {
+            "url": "https://ecs7.tokopedia.net/img/recharge/category/education/colored-active.png",
+            "width": 320,
+            "height": 320,
+            "ratio": {
+              "x": 1,
+              "y": 1
+            }
+          }
+        ],
+        "data_notification": {
+          "app_link": "tokopedia://digital/order/747330958",
+          "desktop_link": "",
+          "info_thumbnail_url": "https://ecs7.tokopedia.net/img/recharge/category/education/colored-active.png",
+          "mobile_link": "",
+          "product_name": "",
+          "product_url": "",
+          "checkout_url": ""
+        },
+        "total_product": 0,
+        "product_data": [],
+        "bottomsheet": {
+          "title": "",
+          "button_cta": {
+            "type": 0,
+            "text": "",
+            "link": "",
+            "data": ""
+          },
+          "components": []
+        }
+      }
+    ],
+    "list": [],
+    "user_info": {
+      "user_id": 9075738,
+      "shop_id": 6551359,
+      "email": "",
+      "fullname": "bcdua"
+    },
+    "options": {
+      "longer_content": 150
+    },
+    "empty_state_content": {
+      "content": "",
+      "link": {
+        "desktop_link": "",
+        "mobile_link": "",
+        "android_link": "",
+        "ios_link": ""
+      }
+    }
+  }
+}

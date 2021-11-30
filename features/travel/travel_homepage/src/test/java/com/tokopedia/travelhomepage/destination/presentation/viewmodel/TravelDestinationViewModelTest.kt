@@ -1,19 +1,13 @@
 package com.tokopedia.travelhomepage.destination.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.common.travel.data.entity.TravelMetaModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationCityModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
+import com.tokopedia.travelhomepage.destination.model.*
 import com.tokopedia.travelhomepage.destination.usecase.GetEmptyModelsUseCase
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageOrderListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageRecommendationModel
 import com.tokopedia.travelhomepage.shouldBe
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -77,7 +71,7 @@ class TravelDestinationViewModelTest {
         result[TravelDestinationCityModel.Response::class.java] = TravelDestinationCityModel.Response(cityModel)
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getDestinationCityData("", "")
@@ -94,7 +88,7 @@ class TravelDestinationViewModelTest {
         errors[GraphqlError::class.java] = listOf(GraphqlError())
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         // when
         viewModel.getDestinationCityData("", "")
@@ -115,7 +109,7 @@ class TravelDestinationViewModelTest {
         result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response(TravelArticleModel())
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")
@@ -140,7 +134,7 @@ class TravelDestinationViewModelTest {
         errors[TravelArticleModel.Response::class.java] = listOf(GraphqlError())
         val gqlResponse = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")
@@ -164,7 +158,7 @@ class TravelDestinationViewModelTest {
         result[TravelArticleModel.Response::class.java] = TravelArticleModel.Response()
         val gqlResponse = GraphqlResponse(result, errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")
@@ -187,7 +181,7 @@ class TravelDestinationViewModelTest {
         errors[TravelArticleModel.Response::class.java] = listOf(GraphqlError())
         val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
 
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         viewModel.getAllContent("", "", "", "", "10")

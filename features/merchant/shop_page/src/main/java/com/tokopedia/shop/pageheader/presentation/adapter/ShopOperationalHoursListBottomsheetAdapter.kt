@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
+import com.tokopedia.shop.databinding.ItemShopOperationalHoursBinding
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by Rafli Syam on 16/04/2021
@@ -23,13 +25,22 @@ class ShopOperationalHoursListBottomsheetAdapter(
         private val ITEM_LAYOUT = R.layout.item_shop_operational_hours
 
         // Days Name List
-        const val MONDAY = "Senin"
-        const val TUESDAY = "Selasa"
-        const val WEDNESDAY = "Rabu"
-        const val THURSDAY = "Kamis"
-        const val FRIDAY = "Jumat"
-        const val SATURDAY = "Sabtu"
-        const val SUNDAY = "Minggu"
+        const val MONDAY_LABEL = "Senin"
+        const val TUESDAY_LABEL = "Selasa"
+        const val WEDNESDAY_LABEL = "Rabu"
+        const val THURSDAY_LABEL = "Kamis"
+        const val FRIDAY_LABEL = "Jumat"
+        const val SATURDAY_LABEL = "Sabtu"
+        const val SUNDAY_LABEL = "Minggu"
+
+        // Days Number List
+        const val MONDAY_NUMBER = 1
+        const val TUESDAY_NUMBER = 2
+        const val WEDNESDAY_NUMBER = 3
+        const val THURSDAY_NUMBER = 4
+        const val FRIDAY_NUMBER = 5
+        const val SATURDAY_NUMBER = 6
+        const val SUNDAY_NUMBER = 7
 
         // Time Constant
         const val START_TIME_INDEX = 0
@@ -53,22 +64,23 @@ class ShopOperationalHoursListBottomsheetAdapter(
     inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         private var dayNameMap: Map<Int, String> = mapOf(
-                1 to MONDAY,
-                2 to TUESDAY,
-                3 to WEDNESDAY,
-                4 to THURSDAY,
-                5 to FRIDAY,
-                6 to SATURDAY,
-                7 to SUNDAY
+                MONDAY_NUMBER to MONDAY_LABEL,
+                TUESDAY_NUMBER to TUESDAY_LABEL,
+                WEDNESDAY_NUMBER to WEDNESDAY_LABEL,
+                THURSDAY_NUMBER to THURSDAY_LABEL,
+                FRIDAY_NUMBER to FRIDAY_LABEL,
+                SATURDAY_NUMBER to SATURDAY_LABEL,
+                SUNDAY_NUMBER to SUNDAY_LABEL
         )
+        private val viewBinding: ItemShopOperationalHoursBinding? by viewBinding()
         private var tvOperationalDay: Typography? = null
         private var tvOperationalDateTime: Typography? = null
         private var itemDivider: View? = null
 
         init {
-            tvOperationalDay = itemView.findViewById(R.id.tvOperationalDay)
-            tvOperationalDateTime = itemView.findViewById(R.id.tvOperationalDateTime)
-            itemDivider = itemView.findViewById(R.id.item_separator_ops_hour)
+            tvOperationalDay = viewBinding?.tvOperationalDay
+            tvOperationalDateTime = viewBinding?.tvOperationalDateTime
+            itemDivider = viewBinding?.itemSeparatorOpsHour
         }
 
         fun bind(element: ShopOperationalHour) {

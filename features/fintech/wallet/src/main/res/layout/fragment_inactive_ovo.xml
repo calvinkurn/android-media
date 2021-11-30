@@ -3,21 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/layout_lvl3"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/unify_space_24"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/image_ovo"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_210"
+            android:layout_height="@dimen/wallet_inactive_ovo_dp_210"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginBottom="@dimen/unify_space_16"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/wallet_ic_intro_activation" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -26,28 +27,28 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
-            android:textColor="@color/light_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_2"
             app:typographyWeight="bold"
-            android:text="OVO kamu belum aktif" />
+            android:text="@string/wallet_ovo_kamu_belum_aktif" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/desc_ovo_activation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/unify_space_16"
+            android:layout_marginBottom="@dimen/unify_space_24"
             android:gravity="center"
-            android:textColor="#ae31353b"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_2"
-            android:text="Lakukan aktivasi segera karena diskon ini berlaku untuk pembayaran dengan OVO." />
+            android:text="@string/wallet_ovo_activation_desc" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_topup_activation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Aktivasi OVO"
+            android:text="@string/wallet_aktivasi_ovo"
             android:textStyle="bold"
             app:unifyButtonSize="large"
             app:unifyButtonType="main"
@@ -57,22 +58,24 @@
             android:id="@+id/btn_learn_more"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:text="Pelajari Selengkapnya"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:text="@string/wallet_learn_more"
             android:textStyle="bold"
             app:unifyButtonSize="large"
             app:unifyButtonType="alternate"
             app:unifyButtonVariant="ghost" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tnc_ovo"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:textColor="@color/Unify_N700_44"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/unify_space_16"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_16"
+            android:layout_marginBottom="@dimen/unify_space_16"
             android:gravity="center_horizontal"
             android:text="@string/wallet_announcement_ovo_text_tnc" />
 

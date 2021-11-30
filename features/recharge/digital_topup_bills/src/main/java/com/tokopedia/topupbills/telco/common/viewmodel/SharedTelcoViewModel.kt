@@ -87,7 +87,7 @@ class SharedTelcoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogPrefixSelect::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
+                graphqlRepository.response(listOf(graphqlRequest),
                         GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
                                 .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
             }.getSuccessData<TelcoCatalogPrefixSelect>()

@@ -12,6 +12,7 @@
       "event": ".*",
       "userId": ".*",
       "sessionIris": ".*",
+      "theme": ".*",
       "currentSite": "tokopediamarketplace",
       "businessUnit": "home & browse"
     }

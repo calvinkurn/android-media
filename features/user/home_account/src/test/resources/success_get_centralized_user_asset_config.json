@@ -1,0 +1,37 @@
+{
+  "GetCentralizedUserAssetConfig": {
+    "asset_config_horizontal": [
+      {
+        "title": "OVO6",
+        "subtitle_color": "#purple",
+        "subtitle": "Saldo",
+        "applink": "tokopedia://",
+        "icon": "https://www.tokopedia.com",
+        "is_active": false,
+        "id": "ovo6"
+      }
+    ],
+    "asset_config_vertical": [
+      {
+        "title": "Dana",
+        "subtitle_color": "#purple",
+        "subtitle": "Saldo",
+        "applink": "tokopedia://",
+        "icon": "https://www.tokopedia.com",
+        "is_active": false,
+        "id": "dana"
+      }
+    ],
+    "asset_config": [
+      {
+        "title": "OVO",
+        "subtitle_color": "#purple",
+        "subtitle": "Saldo",
+        "applink": "tokopedia://",
+        "icon": "https://www.tokopedia.com",
+        "is_active": false,
+        "id": "ovo"
+      }
+    ]
+  }
+}

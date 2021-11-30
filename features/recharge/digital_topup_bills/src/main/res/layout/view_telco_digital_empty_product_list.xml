@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:visibility="gone"
-    android:padding="@dimen/layout_lvl2">
+    android:padding="@dimen/layout_lvl2"
+    tools:visibility="visible">
 
     <ImageView
         android:id="@+id/telco_image_empty"

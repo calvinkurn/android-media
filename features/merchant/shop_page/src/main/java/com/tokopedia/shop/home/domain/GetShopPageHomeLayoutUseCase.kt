@@ -47,6 +47,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                 publishDate
                 widgets {
                   widgetID
+                  widgetMasterID
                   layoutOrder
                   name
                   type
@@ -57,6 +58,8 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                     cover
                     ratio
                     isATC
+                    etalaseID
+                    isShowEtalaseName
                   }
                   data {
                     ... on DisplayWidget {
@@ -64,6 +67,12 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                    }
+                    ... on EtalaseWidget {
+                      imageUrl
+                      appLink
+                      linkID
+                      Name
                     }
                     ... on ProductWidget {
                       productID

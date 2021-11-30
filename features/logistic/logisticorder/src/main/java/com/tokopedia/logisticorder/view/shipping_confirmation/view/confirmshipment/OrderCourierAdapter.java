@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.List;
 
@@ -68,7 +68,7 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
 
         private ImageView courierLogo;
 
-        private TextView courierName;
+        private Typography courierName;
 
         private RadioButton courierCheckBox;
 

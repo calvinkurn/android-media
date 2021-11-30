@@ -7,12 +7,18 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
-import com.tokopedia.product.detail.data.model.ratesestimate.P2RatesEstimateData
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.renderHtmlBold
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -36,6 +42,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
     private val shipmentTokoCabangGroup: Group? = itemView.findViewById(R.id.group_fullfillment)
     private val shipmentLocalLoad: LocalLoad? = itemView.findViewById(R.id.local_load_pdp_shipment)
 
+    private val shipmentSeparator: View? = itemView.findViewById(R.id.pdp_shipment_separator)
     private val shipmentTitle: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_title)
     private val shipmentDestination: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_destination)
     private val shipmentEstimation: Typography? = itemView.findViewById(R.id.txt_pdp_shipment_estimation)
@@ -49,6 +56,10 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
     override fun bind(element: ProductShipmentDataModel) {
         val data = element.rates
+
+        if (element.isTokoNow) {
+            shipmentSeparator?.visibility = View.GONE
+        }
 
         when {
             element.shouldShowShipmentError -> {
@@ -72,6 +83,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
 
                 itemView.addOnImpressionListener(element.impressHolder) {
                     listener.showCoachmark(shipmentTitle, element.isBoeType())
+                    listener.onImpressComponent(getComponentTrackData(element))
                 }
 
                 renderShipmentSuccess(element)
@@ -108,7 +120,7 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         val rates = element.rates
         adjustUiSuccess(rates.title, rates.instanLabel, element.isCod)
         if (rates.instanLabel.isEmpty() && !element.isCod) {
-            renderSubtitleGreen()
+            renderSubtitleGreen(element.isTokoNow)
             hideLabelAndBo()
             shipmentArrow?.hide()
             return@with
@@ -121,8 +133,12 @@ class ProductShipmentViewHolder(view: View, private val listener: DynamicProduct
         }
     }
 
-    private fun renderSubtitleGreen() = with(itemView) {
-        otherCourierTxt?.text = context.getString(R.string.pdp_shipping_choose_courier_label)
+    private fun renderSubtitleGreen(isTokoNow: Boolean) = with(itemView) {
+        otherCourierTxt?.text = if (isTokoNow) {
+            context.getString(R.string.merchant_product_detail_label_selengkapnya)
+        } else {
+            context.getString(R.string.pdp_shipping_choose_courier_label)
+        }
         otherCourierTxt?.setWeight(Typography.BOLD)
         otherCourierTxt?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         otherCourierTxt?.show()

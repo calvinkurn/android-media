@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
+import android.content.Context
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
@@ -17,6 +18,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
@@ -39,6 +42,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -77,6 +81,7 @@ open class DynamicPostViewHolder(v: View,
         const val PAYLOAD_FOLLOW = 15
         const val PAYLOAD_ANIMATE_FOOTER = 16
         const val PAYLOAD_PLAY_VIDEO = 17
+        const val PAYLOAD_PLAY_VOD = 18
 
         const val MAX_CHAR = 140
         const val CAPTION_END = 90
@@ -92,6 +97,7 @@ open class DynamicPostViewHolder(v: View,
 
         const val POSTTAG_PRODUCT = "product"
         const val POSTTAG_BUTTONCTA = "buttoncta"
+        const val ANIMATION_DURATION = 2000L
     }
 
     override fun bind(element: DynamicPostViewModel?) {
@@ -101,7 +107,7 @@ open class DynamicPostViewHolder(v: View,
         }
 
         bindTitle(element.title, element.template.cardpost.title)
-        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName)
+        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "")
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
@@ -121,6 +127,7 @@ open class DynamicPostViewHolder(v: View,
             PAYLOAD_FOLLOW -> bindFollow(element.header.followCta)
             PAYLOAD_ANIMATE_FOOTER -> animateFooter()
             PAYLOAD_PLAY_VIDEO -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
+            PAYLOAD_PLAY_VOD -> bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
             else -> bind(element)
         }
     }
@@ -140,7 +147,7 @@ open class DynamicPostViewHolder(v: View,
         return template.text || template.textBadge || template.ctaLink
     }
 
-    private fun bindHeader(postId: Int, header: Header, template: TemplateHeader, activityName: String) {
+    private fun bindHeader(postId: Int, header: Header, template: TemplateHeader, activityName: String, shopId: String) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 if (!TextUtils.isEmpty(header.avatar)) {
@@ -150,7 +157,13 @@ open class DynamicPostViewHolder(v: View,
                             MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
                     )
                 }
-                itemView.authorImage.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
+                itemView.authorImage.setOnClickListener {
+                    onAvatarClick(header.avatarApplink,
+                        postId,
+                        activityName,
+                        header.followCta,
+                        shopId)
+                }
             }
 
             if (template.avatarBadge && header.avatarBadgeImage.isNotBlank()) {
@@ -164,7 +177,7 @@ open class DynamicPostViewHolder(v: View,
 
             itemView.authorTitle.shouldShowWithAction(template.avatarTitle) {
                 itemView.authorTitle.text = MethodChecker.fromHtml(header.avatarTitle)
-                itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
+                itemView.authorTitle.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta, shopId) }
             }
 
             itemView.authorSubtitile.shouldShowWithAction(template.avatarDate) {
@@ -179,7 +192,7 @@ open class DynamicPostViewHolder(v: View,
                             SpannableString(header.avatarDate)
                         }
                 itemView.authorSubtitile.text = spannableString
-                itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta) }
+                itemView.authorSubtitile.setOnClickListener { onAvatarClick(header.avatarApplink, postId, activityName, header.followCta, shopId) }
             }
 
             itemView.headerAction.shouldShowWithAction(template.followCta
@@ -190,7 +203,19 @@ open class DynamicPostViewHolder(v: View,
             itemView.menu.shouldShowWithAction(template.report) {
                 if (canShowMenu(header.reportable, header.deletable, header.editable)) {
                     itemView.menu.setOnClickListener {
-                        listener.onMenuClick(adapterPosition, postId, header.reportable, header.deletable, header.editable)
+                        listener.onMenuClick(
+                            adapterPosition,
+                            postId,
+                            header.reportable,
+                            header.deletable,
+                            header.editable,
+                            true,
+                            "",
+                            "",
+                            "",
+                            false,
+                            ""
+                        )
                     }
                 } else{
                     itemView.menu.hide()
@@ -203,8 +228,23 @@ open class DynamicPostViewHolder(v: View,
         return reportable || deletable || editable
     }
 
-    private fun onAvatarClick(redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta) {
-        listener.onAvatarClick(adapterPosition, redirectUrl, activityId, activityName, followCta)
+    private fun onAvatarClick(
+        redirectUrl: String,
+        activityId: Int,
+        activityName: String,
+        followCta: FollowCta,
+        shopId: String,
+    ) {
+        listener.onAvatarClick(
+            adapterPosition,
+            redirectUrl,
+            activityId,
+            activityName,
+            followCta,
+            shopId = shopId,
+            isVideo = false,
+            isCaption = false
+        )
     }
 
     private fun bindFollow(followCta: FollowCta) {
@@ -218,10 +258,11 @@ open class DynamicPostViewHolder(v: View,
 
         itemView.headerAction.setOnClickListener {
             listener.onHeaderActionClick(
-                    adapterPosition,
-                    followCta.authorID,
-                    followCta.authorType,
-                    followCta.isFollow
+                adapterPosition,
+                followCta.authorID,
+                followCta.authorType,
+                followCta.isFollow,
+                isVideo = false
             )
         }
     }
@@ -230,7 +271,7 @@ open class DynamicPostViewHolder(v: View,
         Handler().postDelayed({
             itemView.footerBackground.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.anim_fade_in)
             itemView.footerBackground.visibility = View.VISIBLE
-        }, 2000)
+        }, ANIMATION_DURATION)
     }
 
 
@@ -337,8 +378,25 @@ open class DynamicPostViewHolder(v: View,
 
             if (template.like) {
                 itemView.likeGroup.show()
-                itemView.likeIcon.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
-                itemView.likeText.setOnClickListener { listener.onLikeClick(adapterPosition, id, footer.like.isChecked) }
+                itemView.likeIcon.setOnClickListener {
+                    listener.onLikeClick(
+                        adapterPosition,
+                        id,
+                        footer.like.isChecked,
+                        "",
+                        false,
+                        false, "", false
+                    )
+                }
+                itemView.likeText.setOnClickListener {
+                    listener.onLikeClick(
+                        adapterPosition,
+                        id,
+                        footer.like.isChecked,
+                        "",
+                        isFollowed = false, type = false, "", false
+                    )
+                }
                 bindLike(footer.like)
             } else {
                 itemView.likeGroup.hide()
@@ -346,8 +404,25 @@ open class DynamicPostViewHolder(v: View,
 
             if (template.comment) {
                 itemView.commentGroup.show()
-                itemView.commentIcon.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
-                itemView.commentText.setOnClickListener { listener.onCommentClick(adapterPosition, id) }
+                itemView.commentIcon.setOnClickListener {
+                    listener.onCommentClick(
+                        adapterPosition,
+                        id,
+                        "",
+                        "",
+                        isFollowed = false,
+                        false
+                    )
+                }
+                itemView.commentText.setOnClickListener {
+                    listener.onCommentClick(
+                        adapterPosition,
+                        id, "",
+                        "",
+                        isFollowed = false,
+                        isVideo = false
+                    )
+                }
                 bindComment(footer.comment)
             } else {
                 itemView.commentGroup.hide()
@@ -358,22 +433,24 @@ open class DynamicPostViewHolder(v: View,
                 itemView.shareText.text = footer.share.text
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
-                            adapterPosition,
-                            id,
-                            footer.share.title,
-                            footer.share.description,
-                            footer.share.url,
-                            footer.share.imageUrl
+                        adapterPosition,
+                        id,
+                        footer.share.title,
+                        footer.share.description,
+                        footer.share.url,
+                        footer.share.imageUrl,
+                        video = false
                     )
                 }
                 itemView.shareText.setOnClickListener {
                     listener.onShareClick(
-                            adapterPosition,
-                            id,
-                            footer.share.title,
-                            footer.share.description,
-                            footer.share.url,
-                            footer.share.imageUrl
+                        adapterPosition,
+                        id,
+                        footer.share.title,
+                        footer.share.description,
+                        footer.share.url,
+                        footer.share.imageUrl,
+                        video = false
                     )
                 }
 
@@ -518,32 +595,176 @@ open class DynamicPostViewHolder(v: View,
     }
 
     interface DynamicPostListener {
-        fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta)
+        fun onAvatarClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            activityId: Int,
+            activityName: String,
+            followCta: FollowCta,
+            type: String = "",
+            isFollowed: Boolean = false,
+            shopId: String,
+            isVideo: Boolean,
+            isCaption: Boolean
+        )
 
-        fun onHeaderActionClick(positionInFeed: Int, id: String, type: String, isFollow: Boolean)
+        fun onHeaderActionClick(
+            positionInFeed: Int,
+            id: String,
+            type: String,
+            isFollow: Boolean,
+            postType: String = "",
+            isVideo: Boolean
+        )
 
-        fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean)
+        fun onMenuClick(
+            positionInFeed: Int,
+            postId: Int,
+            reportable: Boolean,
+            deletable: Boolean,
+            editable: Boolean,
+            isFollowed: Boolean,
+            authorId: String,
+            authorType: String,
+            postType: String = "",
+            isVideo: Boolean,
+            caption: String,
+            playChannelId: String = ""
+        )
 
         fun onCaptionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean)
+        fun onLikeClick(
+            positionInFeed: Int,
+            id: Int,
+            isLiked: Boolean,
+            postType: String = "",
+            isFollowed: Boolean = false,
+            type: Boolean = false,
+            shopId: String = "",
+            isVideo: Boolean = false,
+            playChannelId: String = ""
+        )
 
-        fun onCommentClick(positionInFeed: Int, id: Int)
+        fun onCommentClick(
+            positionInFeed: Int,
+            id: Int,
+            authorType: String,
+            type: String,
+            isFollowed: Boolean = false,
+            isVideo: Boolean,
+            shopId: String = "",
+            playChannelId: String = "",
+            isClickIcon:Boolean = true
+        )
 
         fun onStatsClick(title: String, activityId: String, productIds: List<String>, likeCount: Int, commentCount: Int)
 
-        fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, imageUrl: String)
+        fun onShareClick(
+            positionInFeed: Int,
+            id: Int,
+            title: String,
+            description: String,
+            url: String,
+            imageUrl: String,
+            postTypeASGC: Boolean = false,
+            type: String = "",
+            isFollowed: Boolean = false,
+            shopId: String = "",
+            video: Boolean,
+            isTopads:Boolean = false,
+            playChannelId: String = ""
+        )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
+        fun onPostTagItemBSClick(
+            positionInFeed: Int,
+            redirectUrl: String,
+            postTagItem: FeedXProduct,
+            itemPosition: Int
+        )
+        fun onFullScreenCLick(
+                feedXCard: FeedXCard,
+                positionInFeed: Int,
+                redirectUrl: String,
+                currentTime: Long,
+                shouldTrack: Boolean,
+                isFullScreenButton: Boolean
+        )
+        fun addVODView(
+                feedXCard: FeedXCard,
+                playChannelId: String,
+                rowNumber: Int,
+                time:Long,
+                hitTrackerApi:Boolean
+        )
+        fun onPostTagBubbleClick(
+                positionInFeed: Int,
+                redirectUrl: String,
+                postTagItem: FeedXProduct,
+                adClickUrl: String
+        )
+        fun onPostTagItemBSImpression(
+            activityId: String,
+            postTagItemList: List<FeedXProduct>,
+            type: String,
+            shopId: String,
+            isFollowed: Boolean
+        )
+
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
 
-        fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String)
+        fun onPostTagItemBuyClicked(
+            positionInFeed: Int,
+            postTagItem: PostTagItem,
+            authorType: String
+        )
 
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
+
+        fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
+
+        fun onTagClicked(
+                postId: Int,
+                products: List<FeedXProduct>,
+                listener: DynamicPostListener,
+                id: String,
+                type: String,
+                isFollowed: Boolean,
+                isVideo: Boolean = false,
+                positionInFeed: Int,
+                playChannelId: String = "",
+                shopName: String = ""
+        )
+
+        fun onReadMoreClicked(
+            postId: String,
+            shopId: String = "",
+            type: String,
+            isFollowed: Boolean,
+            isVideo: Boolean
+        )
+
+        fun onBottomSheetMenuClicked(
+            item: ProductPostTagViewModelNew,
+            context: Context,
+            shopId: String = ""
+        )
+
+        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean)
+
+        fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
+
+        fun onHashtagClickedFeed(hashtagText: String, feedXCard: FeedXCard)
+
+        fun onFollowClickAds(positionInFeed: Int, shopId: String, adId: String)
+
+        fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int)
+
     }
 }

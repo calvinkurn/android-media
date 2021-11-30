@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="12dp"
+    android:layout_marginRight="12dp"
+    android:layout_marginBottom="4dp"
+    android:background="@color/Unify_N0"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="0dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="false"
+    android:clickable="true"
+    android:focusable="true"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/productImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:unify_image_corner_radius="0"
+            android:background="@color/Unify_N0"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center_vertical"
+            tools:ignore="ContentDescription"
+            tools:src="@tools:sample/avatars" />
+
+        <LinearLayout
+            android:id="@+id/productNameSection"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="Fellow - Stagg EKG Electric Pour Over Kettle jcinecoheh" />
+
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/productPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="bottom"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN400"
+                android:visibility="visible"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:text="Rp2.750.000"
+                tools:visibility="visible" />
+
+
+        </LinearLayout>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/product_content_tag_delete_button"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="12dp"
+            app:icon_color_light_enable="@color/Unify_NN950"
+            app:icon_color_night_enable="@color/Unify_NN950"
+            app:icon_name="DELETE"
+            app:unify_image_type="circle" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

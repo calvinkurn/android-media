@@ -1,21 +1,20 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
-import com.tokopedia.oneclickcheckout.order.data.get.OnboardingComponentResponse
-
 data class OrderProfile(
-        val onboardingHeaderMessage: String = "",
-        val onboardingComponent: OnboardingComponentResponse = OnboardingComponentResponse(),
-        val hasPreference: Boolean = false,
-        val profileRevampWording: String = "",
-        val isRecom: Boolean = false,
         val profileId: Int = 0,
-        val status: Int = 0,
         val enable: Boolean = true,
         val message: String = "",
         val address: OrderProfileAddress = OrderProfileAddress(),
         val payment: OrderProfilePayment = OrderProfilePayment(),
         val shipment: OrderProfileShipment = OrderProfileShipment()
-)
+) {
+    val isValidProfile: Boolean
+        get() = address.addressId > 0 && payment.gatewayCode.isNotEmpty()
+
+    fun isDisableChangeCourierAndNeedPinpoint(): Boolean {
+        return shipment.isDisableChangeCourier && address.hasNoPinpoint
+    }
+}
 
 data class OrderProfileAddress(
         val addressId: Long = 0,
@@ -34,10 +33,15 @@ data class OrderProfileAddress(
         val postalCode: String = "",
         val state: Int = 0,
         val stateDetail: String = "",
-        val status: Int = 0
+        val status: Int = 0,
+        val tokoNowShopId: String = "",
+        val tokoNowWarehouseId: String = ""
 ) {
     internal val isMainAddress: Boolean
         get() = status == STATUS_MAIN_ADDRESS
+
+    internal val hasNoPinpoint: Boolean
+        get() = longitude.isEmpty() || latitude.isEmpty()
 
     companion object {
         private const val STATUS_MAIN_ADDRESS = 2
@@ -51,7 +55,15 @@ data class OrderProfileShipment(
         val spId: Int = 0,
         val recommendationServiceId: Int = 0,
         val recommendationSpId: Int = 0,
-        val isFreeShippingSelected: Boolean = false
+        val isFreeShippingSelected: Boolean = false,
+        val isDisableChangeCourier: Boolean = false,
+        val autoCourierSelection: Boolean = false,
+        val courierSelectionError: CourierSelectionError = CourierSelectionError()
+)
+
+data class CourierSelectionError(
+        val title: String = "",
+        val description: String = ""
 )
 
 data class OrderProfilePayment(

@@ -104,7 +104,7 @@ class ProductSelectableViewHolder(
     interface Listener {
 
         fun onImageLoaded(position: Int, isSuccess: Boolean) {}
-        fun onProductSelectStateChanged(productId: Long, isSelected: Boolean)
+        fun onProductSelectStateChanged(productId: String, isSelected: Boolean)
         fun onProductSelectError(reason: Throwable)
     }
 }

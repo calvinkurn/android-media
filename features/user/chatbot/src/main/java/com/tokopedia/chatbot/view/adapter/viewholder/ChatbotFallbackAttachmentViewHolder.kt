@@ -1,7 +1,7 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
@@ -11,13 +11,13 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 class ChatbotFallbackAttachmentViewHolder(itemView: View,
                                           private val chatLinkHandlerListener: ChatLinkHandlerListener,
                                           chatbotAdapterListener: ChatbotAdapterListener)
-    : BaseChatBotViewHolder<FallbackAttachmentViewModel>(itemView, chatbotAdapterListener) {
+    : BaseChatBotViewHolder<FallbackAttachmentUiModel>(itemView, chatbotAdapterListener) {
 
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
 
-    override fun bind(viewModel: FallbackAttachmentViewModel) {
-        super.bind(viewModel)
-        ChatbotMessageViewHolderBinder.bindChatMessage(viewModel.message, customChatLayout, movementMethod)
+    override fun bind(uiModel: FallbackAttachmentUiModel) {
+        super.bind(uiModel)
+        ChatbotMessageViewHolderBinder.bindChatMessage(uiModel.message, customChatLayout, movementMethod)
     }
 
     override fun getCustomChatLayoutId(): Int =  com.tokopedia.chatbot.R.id.customChatLayout

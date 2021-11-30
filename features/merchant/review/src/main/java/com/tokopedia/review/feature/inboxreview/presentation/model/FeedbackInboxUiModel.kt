@@ -4,16 +4,16 @@ import com.tokopedia.review.feature.inboxreview.presentation.adapter.BaseInboxRe
 import com.tokopedia.review.feature.inboxreview.presentation.adapter.InboxReviewAdapterTypeFactory
 
 data class FeedbackInboxUiModel(
-        var feedbackId: Int = 0,
+        var feedbackId: String = "",
         var rating: Int = 0,
-        var userID: Int = 0,
+        var userID: String = "",
         var username: String = "",
-        var productID: Int = 0,
+        var productID: String = "",
         var productName: String = "",
         var productImageUrl: String = "",
         var productVariant: String = "",
         var attachments: List<Attachment> = mutableListOf(),
-        var variantID: Int = 0,
+        var variantID: String = "",
         var variantName: String = "",
         var invoiceID: String = "",
         var reviewText: String = "",

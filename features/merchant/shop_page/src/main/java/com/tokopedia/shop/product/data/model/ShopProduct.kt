@@ -62,7 +62,8 @@ data class ShopProduct(
         data class Response(
                 @SerializedName("GetShopProduct")
                 @Expose
-                val getShopProduct: GetShopProduct = GetShopProduct())
+                val getShopProduct: GetShopProduct = GetShopProduct()
+        )
 
         data class GetShopProduct(
                 @SerializedName("data")
@@ -77,9 +78,28 @@ data class ShopProduct(
                 @Expose
                 val status: String = "",
 
+                @SerializedName("suggestion")
+                @Expose
+                val suggestion: ShopProductSearchSuggestion = ShopProductSearchSuggestion(),
+
                 @SerializedName("totalData")
                 @Expose
                 val totalData: Int = 0
+        )
+
+        data class ShopProductSearchSuggestion(
+                @SerializedName("text")
+                @Expose
+                val text: String = "",
+                @SerializedName("query")
+                @Expose
+                val query: String = "",
+                @SerializedName("response_code")
+                @Expose
+                val responseCode: String = "",
+                @SerializedName("keyword_process")
+                @Expose
+                val keywordProcess: String = ""
         )
 
         data class Price(

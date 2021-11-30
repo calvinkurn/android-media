@@ -40,11 +40,11 @@ class ShareVoucherViewHolder(
             tvMvcSocmed.text = element.socmedName
             icMvcSocmed.loadImageDrawable(element.icon)
 
-            if (element.status == ELIGIBLE_STATUS && element.quota > 0) {
+            if (element.status == ELIGIBLE_STATUS && element.promo > 0) {
                 // replace %s wit the number of quota
                 val quotaText = String.format(
                         itemView.context.getString(R.string.mvc_broadcast_chat_quota).toBlankOrString(),
-                        element.quota.toString()
+                        element.promo.toString()
                 )
                 quotaView?.text = quotaText
                 freeLabelView?.show()

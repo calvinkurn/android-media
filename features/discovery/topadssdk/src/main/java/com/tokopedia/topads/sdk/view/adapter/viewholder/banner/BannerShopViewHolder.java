@@ -56,7 +56,12 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
         final Cpm cpm = element.getCpmData().getCpm();
         if(cpm!=null) {
             descriptionTxt.setText(TopAdsBannerView.Companion.escapeHTML(cpm.getCpmShop().getSlogan()));
-            ctaTxt.setText(cpm.getCta());
+            if (element.isShowCta()) {
+                ctaTxt.setText(cpm.getCta());
+                ctaTxt.setVisibility(View.VISIBLE);
+            } else {
+                ctaTxt.setVisibility(View.GONE);
+            }
             cardView.setOnClickListener(v -> {
                 if(topAdsBannerClickListener!=null) {
                     topAdsBannerClickListener.onBannerAdsClicked(getAdapterPosition(), element.getAppLink(), element.getCpmData());

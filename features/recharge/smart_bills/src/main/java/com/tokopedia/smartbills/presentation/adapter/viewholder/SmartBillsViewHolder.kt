@@ -1,6 +1,7 @@
 package com.tokopedia.smartbills.presentation.adapter.viewholder
 
 import android.content.Context
+import android.graphics.Paint
 import android.view.View
 import android.widget.CompoundButton
 import androidx.annotation.LayoutRes
@@ -13,9 +14,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.data.SmartBillsItemDetail
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.ACTION_TYPE
+import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Companion.PAID_TYPE
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
+import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.disableView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
+
 
 /**
  * @author by resakemal on 17/05/20
@@ -23,17 +28,47 @@ import kotlinx.android.synthetic.main.view_smart_bills_item.view.*
 
 class SmartBillsViewHolder(val view: View,
                            checkableListener: CheckableInteractionListener,
-                           val detailListener: DetailListener) :
-        BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
+                           private val detailListener: DetailListener,
+                           private val accordionType: Int = 0
+) : BaseCheckableViewHolder<RechargeBills>(view, checkableListener) {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_smart_bills_item
+        const val ZERO_PERCENT = 0
     }
 
     override fun bind(element: RechargeBills) {
         super.bind(element)
         with(view) {
+
+            if(accordionType == ACTION_TYPE){
+                //showing overlay white
+                smart_bills_view_disable.show()
+
+                //disabling view to cannot clicked
+                disableView()
+                tv_smart_bills_item_detail.gone()
+                cb_smart_bills_item.disableView()
+                tv_smart_bills_item_title.disableView()
+                tv_smart_bills_item_description_bill_name.disableView()
+                tv_smart_bills_item_description_number.disableView()
+                tv_smart_bills_item_price.disableView()
+                tv_smart_bills_percentage_label.disableView()
+                tv_smart_bills_percentage_amount.disableView()
+                tv_due_message.disableView()
+                tv_due_date_label.disableView()
+                tv_smart_bills_item_detail.disableView()
+                cb_smart_bills_item.gone()
+                cb_smart_bills_item_accordion.show()
+                cb_smart_bills_item_accordion.disableView()
+            } else if(accordionType == PAID_TYPE){
+                //remove checkbox in paid type
+                disableView()
+                cb_smart_bills_item.gone()
+                tv_smart_bills_item_price.gone()
+            }
+
 
             val title = when {
                 (element.categoryName.isNotEmpty() && element.productName.isNotEmpty()) -> String.format("%s - %s", element.categoryName, element.productName)
@@ -75,7 +110,12 @@ class SmartBillsViewHolder(val view: View,
                 } else this.gone()
             }
 
-            tv_smart_bills_item_price.text = element.amountText
+            if(!element.amountText.isNullOrEmpty() && accordionType != PAID_TYPE) {
+                tv_smart_bills_item_price.show()
+                tv_smart_bills_item_price.text = if (accordionType != ACTION_TYPE)
+                    element.amountText else getString(R.string.smart_bills_clustering_price)
+            } else tv_smart_bills_item_price.gone()
+
             ImageHandler.LoadImage(iv_smart_bills_item_icon, element.iconURL)
 
             setOnClickListener {
@@ -142,6 +182,33 @@ class SmartBillsViewHolder(val view: View,
                 tv_due_date_label.gone()
                 iv_urgency_icon.gone()
             }
+
+            if(element.promo.percentage == ZERO_PERCENT){
+                tv_smart_bills_percentage_label.gone()
+                tv_smart_bills_percentage_amount.gone()
+            } else {
+                tv_smart_bills_percentage_label.apply {
+                    show()
+                    text = String.format("%s%%", element.promo.percentage.toString())
+                }
+
+                tv_smart_bills_percentage_amount.apply {
+                    show()
+                    text = element.promo.slashAmountText
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                }
+            }
+
+            if(element.newBillLabel.isNewLabel && element.newBillLabel.text.isNotEmpty()){
+                icon_menu_sbm_delete.apply {
+                    show()
+                    setOnClickListener {
+                        detailListener.onDeleteClicked(element)
+                    }
+                }
+            } else {
+                icon_menu_sbm_delete.gone()
+            }
         }
     }
 
@@ -151,6 +218,7 @@ class SmartBillsViewHolder(val view: View,
 
     interface DetailListener {
         fun onShowBillDetail(bill: RechargeBills, bottomSheet: SmartBillsItemDetailBottomSheet)
+        fun onDeleteClicked(bill: RechargeBills)
     }
 
     private fun getDueUrgencyColor(type: Int, context: Context): Int {

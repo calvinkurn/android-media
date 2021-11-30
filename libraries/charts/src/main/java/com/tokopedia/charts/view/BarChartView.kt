@@ -3,7 +3,7 @@ package com.tokopedia.charts.view
 import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.YAxis
@@ -11,16 +11,15 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
-import com.tokopedia.charts.R
 import com.tokopedia.charts.common.ChartColor
+import com.tokopedia.charts.common.utils.RoundedBarChartRenderer
 import com.tokopedia.charts.config.BarChartConfig
+import com.tokopedia.charts.databinding.ViewBarChartBinding
 import com.tokopedia.charts.model.AxisLabel
 import com.tokopedia.charts.model.BarChartConfigModel
 import com.tokopedia.charts.model.BarChartData
-import com.tokopedia.charts.common.utils.RoundedBarChartRenderer
 import com.tokopedia.charts.renderer.EllipsizedXAxisRenderer
 import com.tokopedia.kotlin.extensions.view.orZero
-import kotlinx.android.synthetic.main.view_bar_chart.view.*
 
 /**
  * Created By @ilhamsuaib on 09/07/20
@@ -28,9 +27,17 @@ import kotlinx.android.synthetic.main.view_bar_chart.view.*
 
 class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
 
+    private var binding: ViewBarChartBinding? = null
+
     init {
-        View.inflate(context, R.layout.view_bar_chart, this).apply {
-            val xAxisRenderer = EllipsizedXAxisRenderer(barChart.viewPortHandler, barChart.xAxis, barChart.getTransformer(YAxis.AxisDependency.LEFT))
+        binding = ViewBarChartBinding.inflate(
+            LayoutInflater.from(context), this, true
+        ).apply {
+            val xAxisRenderer = EllipsizedXAxisRenderer(
+                barChart.viewPortHandler,
+                barChart.xAxis,
+                barChart.getTransformer(YAxis.AxisDependency.LEFT)
+            )
             barChart.setXAxisRenderer(xAxisRenderer)
         }
     }
@@ -43,9 +50,10 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
             this.config = it
         }
 
-        with(barChart) {
+        binding?.barChart?.run {
             if (config.isRoundedBarEnabled) {
-                renderer = RoundedBarChartRenderer(this, animator, viewPortHandler, config.barBorderRadius)
+                renderer =
+                    RoundedBarChartRenderer(this, animator, viewPortHandler, config.barBorderRadius)
             }
 
             setupXAxis()
@@ -81,7 +89,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         }
 
         val barData = BarData(barDataSets.toList())
-        barChart.data = barData
+        binding?.barChart?.data = barData
 
         if (data.metrics.size > 1) {
             showMultiBar(data)
@@ -89,12 +97,12 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
     }
 
     fun invalidateChart() {
-        barChart.invalidate()
+        binding?.barChart?.invalidate()
     }
 
     private fun setYAxisLabelFormatter() {
         val yAxisConfig = config.yAxisConfig
-        barChart.axisLeft.run {
+        binding?.barChart?.axisLeft?.run {
             axisMinimum = yAxisConfig.axisMinimum
             setLabelCount(config.yAxisConfig.labelCount, true)
             valueFormatter = object : ValueFormatter() {
@@ -106,7 +114,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
     }
 
     private fun setChartAnimation() {
-        with(barChart) {
+        binding?.barChart?.run {
             when {
                 (config.xAnimationDuration > 0 && config.yAnimationDuration > 0) -> {
                     animateXY(config.xAnimationDuration, config.yAnimationDuration)
@@ -123,9 +131,11 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
 
     private fun setChartTooltip() {
         if (config.isTooltipEnabled) {
-            val tooltip = config.tooltip
-            tooltip?.markerView?.chartView = barChart
-            barChart?.marker = tooltip?.markerView
+            binding?.run {
+                val tooltip = config.tooltip
+                tooltip?.markerView?.chartView = barChart
+                barChart.marker = tooltip?.markerView
+            }
         }
     }
 
@@ -133,7 +143,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         val labelsStrs = labels.map { it.valueFmt }
         val xAxisConfig = config.xAxisConfig
 
-        with(barChart.xAxis) {
+        binding?.barChart?.xAxis?.run {
             valueFormatter = object : ValueFormatter() {
                 override fun getAxisLabel(value: Float, axis: AxisBase?): String {
                     return xAxisConfig.labelFormatter.getAxisLabel(value)
@@ -142,9 +152,9 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         }
 
         if (labelsStrs.size > 7) {
-            barChart.isScaleXEnabled = true
+            binding?.barChart?.isScaleXEnabled = true
         } else {
-            barChart.isScaleXEnabled = config.isScaleXEnabled
+            binding?.barChart?.isScaleXEnabled = config.isScaleXEnabled
         }
     }
 
@@ -163,15 +173,18 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
         // (0.2 + 0.03) * 4 + 0.08 = 1.00 -> interval per "group"
 
         // specify the width each bar should have
-        barChart.barData.barWidth = barWidth
-        barChart.xAxis.axisMinimum = startValue
-        barChart.xAxis.axisMaximum = startValue + barChart.barData.getGroupWidth(groupSpace, barSpace) * groupCount
-        barChart.groupBars(startValue, groupSpace, barSpace)
+        binding?.run {
+            barChart.barData.barWidth = barWidth
+            barChart.xAxis.axisMinimum = startValue
+            barChart.xAxis.axisMaximum =
+                startValue + barChart.barData.getGroupWidth(groupSpace, barSpace) * groupCount
+            barChart.groupBars(startValue, groupSpace, barSpace)
+        }
     }
 
     private fun setupYAxis() {
         val axisConfig = config.yAxisConfig
-        with(barChart.axisLeft) {
+        binding?.barChart?.axisLeft?.run {
             axisConfig.typeface?.let { tf ->
                 typeface = tf
             }
@@ -185,7 +198,7 @@ class BarChartView(context: Context, attrs: AttributeSet?) : LinearLayout(contex
 
     private fun setupXAxis() {
         val axisConfig = config.xAxisConfig
-        with(barChart.xAxis) {
+        binding?.barChart?.xAxis?.run {
             axisConfig.typeface?.let { tf ->
                 typeface = tf
             }

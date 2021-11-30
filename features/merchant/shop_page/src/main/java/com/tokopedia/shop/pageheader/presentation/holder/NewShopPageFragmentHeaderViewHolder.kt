@@ -3,10 +3,10 @@ package com.tokopedia.shop.pageheader.presentation.holder
 import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,6 +21,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.data.source.cloud.model.followshop.FollowShop
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
+import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageHeaderAdapter
 import com.tokopedia.shop.pageheader.presentation.adapter.typefactory.widget.ShopPageHeaderAdapterTypeFactory
@@ -29,13 +30,10 @@ import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.Shop
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.*
-import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choose_address_widget
-import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.choosee_address_widget_bottom_shadow
-import kotlinx.android.synthetic.main.new_partial_new_shop_page_header.view.tickerShopStatus
 
-class NewShopPageFragmentHeaderViewHolder(private val view: View, private val listener: ShopPageFragmentViewHolderListener,
+class NewShopPageFragmentHeaderViewHolder(private val viewBindingShopContentLayout: NewShopPageFragmentContentLayoutBinding?, private val listener: ShopPageFragmentViewHolderListener,
                                           private val shopPageTracking: ShopPageTrackingBuyer?,
                                           private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
                                           private val context: Context,
@@ -46,14 +44,19 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                           private val shopActionButtonWidgetFollowButtonComponentListener: ShopActionButtonWidgetFollowButtonComponentViewHolder.Listener,
                                           private val shopActionButtonWidgetNoteButtonComponentListener: ShopActionButtonWidgetNoteButtonComponentViewHolder.Listener,
                                           private val shopPlayWidgetListener: ShopHeaderPlayWidgetViewHolder.Listener,
-                                          private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener
+                                          private val chooseAddressWidgetListener: ChooseAddressWidget.ChooseAddressWidgetListener,
+                                          private val shopPerformanceWidgetImageTextListener: ShopPerformanceWidgetImageTextComponentViewHolder.Listener
 ) {
     private var isShopFavorite = false
+    private var isUserNeverFollow = false
     private val chooseAddressWidget: ChooseAddressWidget?
-        get() = view.choose_address_widget
+        get() = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.chooseAddressWidget
     private var coachMark: CoachMark2? = null
 
     private var shopPageHeaderAdapter: ShopPageHeaderAdapter? = null
+    private val chooseAddressWidgetBottomShadow: View? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.chooseeAddressWidgetBottomShadow
+    private val rvShopPageHeaderWidget: RecyclerView? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.rvShopPageHeaderWidget
+    private val tickerShopStatus: Ticker? = viewBindingShopContentLayout?.layoutPartialShopPageHeader?.tickerShopStatus
 
     fun updateChooseAddressWidget(){
         chooseAddressWidget?.updateWidget()
@@ -65,7 +68,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
     fun setupChooseAddressWidget(remoteConfig: RemoteConfig, isMyShop: Boolean) {
         chooseAddressWidget?.apply {
-            val isRollOutUser = ChooseAddressUtils.isRollOutUser(view.context)
+            val isRollOutUser = true
             val isRemoteConfigChooseAddressWidgetEnabled = remoteConfig.getBoolean(
                     ShopPageConstant.ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET,
                     true
@@ -73,9 +76,9 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
             if (isRollOutUser && isRemoteConfigChooseAddressWidgetEnabled && !isMyShop) {
                 show()
                 bindChooseAddress(chooseAddressWidgetListener)
-                view.choosee_address_widget_bottom_shadow?.show()
+                chooseAddressWidgetBottomShadow?.show()
             } else {
-                view.choosee_address_widget_bottom_shadow?.hide()
+                chooseAddressWidgetBottomShadow?.hide()
                 hide()
             }
         }
@@ -90,21 +93,24 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                 shopActionButtonWidgetFollowButtonComponentListener,
                 shopActionButtonWidgetNoteButtonComponentListener,
                 shopPageTrackingSGCPlayWidget,
-                shopPlayWidgetListener
+                shopPlayWidgetListener,
+                shopPerformanceWidgetImageTextListener
         ))
-        view.rv_shop_page_header_widget?.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-        view.rv_shop_page_header_widget?.itemAnimator = null
-        view.rv_shop_page_header_widget?.adapter = shopPageHeaderAdapter
+        rvShopPageHeaderWidget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvShopPageHeaderWidget?.itemAnimator = null
+        rvShopPageHeaderWidget?.adapter = shopPageHeaderAdapter
         shopPageHeaderAdapter?.setData(listWidget)
     }
 
     fun setFollowStatus(followStatus: FollowStatus?) {
         isShopFavorite = followStatus?.status?.userIsFollowing == true
+        isUserNeverFollow = followStatus?.status?.userNeverFollow == true
         followStatus?.let {
             shopPageHeaderAdapter?.setFollowButtonData(
                     it.followButton?.buttonLabel.orEmpty(),
                     it.followButton?.voucherIconURL.orEmpty(),
-                    isShopFavorite
+                    isShopFavorite,
+                    isUserNeverFollow
             )
         }
     }
@@ -139,16 +145,16 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
     }
 
     private fun showShopStatusTicker(shopPageHeaderDataModel: ShopPageHeaderDataModel, isMyShop: Boolean = false) {
-        view.tickerShopStatus.show()
-        view.tickerShopStatus.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
-        view.tickerShopStatus.setHtmlDescription(
+        tickerShopStatus?.show()
+        tickerShopStatus?.tickerTitle = MethodChecker.fromHtml(shopPageHeaderDataModel.statusTitle).toString()
+        tickerShopStatus?.setHtmlDescription(
                 if(shopPageHeaderDataModel.shopStatus == ShopStatusDef.MODERATED && isMyShop) {
                     generateShopModerateTickerDescription(shopPageHeaderDataModel.statusMessage)
                 } else {
                     shopPageHeaderDataModel.statusMessage
                 }
         )
-        view.tickerShopStatus.setDescriptionClickEvent(object : TickerCallback {
+        tickerShopStatus?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 // set tracker data based on shop status
                 when (shopPageHeaderDataModel.shopStatus) {
@@ -185,14 +191,14 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
 
         })
         if (isMyShop) {
-            view.tickerShopStatus.closeButtonVisibility = View.GONE
+            tickerShopStatus?.closeButtonVisibility = View.GONE
         } else {
-            view.tickerShopStatus.closeButtonVisibility = View.VISIBLE
+            tickerShopStatus?.closeButtonVisibility = View.VISIBLE
         }
     }
 
     private fun hideShopStatusTicker() {
-        view.tickerShopStatus.hide()
+        tickerShopStatus?.hide()
     }
 
     private fun generateShopModerateTickerDescription(originalStatusMessage: String) : String {
@@ -239,7 +245,7 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                                 shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                             },
                             onCoachMarkChooseAddressWidgetImpressed = {
-                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                                ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
                             }
                     )
                 }
@@ -251,20 +257,20 @@ class NewShopPageFragmentHeaderViewHolder(private val view: View, private val li
                         shopPageTracking?.impressionCoachMarkFollowUnfollowShop(shopId, userId)
                     },
                     onCoachMarkChooseAddressWidgetImpressed = {
-                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(view.context)
+                        ChooseAddressUtils.coachMarkLocalizingAddressAlreadyShown(context)
                     }
             )
         }
     }
 
     private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
-        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(view.context)
+        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(context)
         return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
             chooseAddressWidget?.let {
                 CoachMark2Item(
                         it,
-                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
-                        view.context?.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
+                        context.getString(R.string.shop_page_choose_address_widget_coachmark_title).orEmpty(),
+                        context.getString(R.string.shop_page_choose_address_widget_coachmark_description).orEmpty()
                 )
             }
         } else {

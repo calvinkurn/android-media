@@ -14,9 +14,9 @@ import java.lang.reflect.Type
 object Teleporter {
     var teleporterPatternList: List<TeleporterPattern>? = null
     var lastFetch: Long = 0L
-    const val DURATION_FETCH = 900000
-    const val MAINAPP_TELEPORTER_REMOTE_CONFIG = "android_mainapp_teleporter"
-    const val SELLERAPP_TELEPORTER_REMOTE_CONFIG = "android_sellerapp_teleporter"
+    const val DURATION_FETCH = 100000
+    const val MAINAPP_TELEPORTER_REMOTE_CONFIG = "android_mainapp_teleporter_v3"
+    const val SELLERAPP_TELEPORTER_REMOTE_CONFIG = "android_sellerapp_teleporter_v3"
     val gson = Gson()
 
     /**
@@ -52,7 +52,7 @@ object Teleporter {
             lateinit var pathMatchMap: Map<String, String>
 
             val patternMatch = patternList.asSequence().filter { pattern ->
-                pattern.scheme == schemeToCheck && pattern.host == hostToCheck
+                isMatchAllRequirements(pattern) && pattern.scheme == schemeToCheck && pattern.host == hostToCheck
             }.filter {
                 var conditionPathPassed = true
                 // check path
@@ -102,6 +102,39 @@ object Teleporter {
         } catch (e: Exception) {
             return ""
         }
+    }
+
+    private fun isMatchAllRequirements(pattern: TeleporterPattern) : Boolean {
+        if (!isEligible(pattern.manufacturers, android.os.Build.MANUFACTURER)) return false
+        if (!isEligible(pattern.models, android.os.Build.MODEL)) return false
+
+        if (!isRangeEligible(minRange = pattern.minAppVer, maxRange = pattern.maxAppVer, value = GlobalConfig.VERSION_CODE)) return false
+        if (!isRangeEligible(minRange = pattern.minOsVer, maxRange = pattern.maxOsVer, value = android.os.Build.VERSION.SDK_INT)) return false
+
+        if ("all" != pattern.environment && GlobalConfig.isAllowDebuggingTools() && "dev" != pattern.environment) return false
+        if ("all" != pattern.environment && !GlobalConfig.isAllowDebuggingTools() && "prod" != pattern.environment) return false
+
+        return true
+    }
+
+    private fun isEligible(requirements: String, value: String?): Boolean {
+        if (requirements.isBlank()) return false
+
+        val requirementList = requirements.split("\\s*,\\s*").map { s -> s.trim() }
+        return ("all" == requirementList[0] || requirementList.contains(value))
+    }
+
+    private fun isRangeEligible(minRange: String, maxRange: String, value: Int): Boolean {
+        if (minRange == "all" || maxRange == "all") return true
+
+        if (minRange.isBlank() || maxRange.isBlank()) return false
+
+        val min = minRange.toIntOrNull()
+        val max = maxRange.toIntOrNull()
+
+        if (min == null || max == null) return false
+
+        return (min <= value && value <= max)
     }
 
     private fun getConfig(context: Context): List<TeleporterPattern>? {

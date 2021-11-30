@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -52,8 +53,10 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
 
             if(!item.isNullOrEmpty()){
                 (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackBannerImpression(
-                        item[0].data ?: ArrayList(),
-                        carouselBannerViewModel.getComponentPosition())
+                    item[0].data ?: ArrayList(),
+                    carouselBannerViewModel.getComponentPosition(),
+                    Utils.getUserId(fragment.context)
+                )
             }
         })
 
@@ -85,8 +88,8 @@ class CarouselBannerViewHolder(itemView: View, private val fragment: Fragment) :
             val radius = resources.getDimensionPixelSize(R.dimen.dp_4)
             val padding = resources.getDimensionPixelSize(R.dimen.dp_5)
             val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
-            val activeColor = ContextCompat.getColor(context, R.color.activeBannerDot)
-            val inActiveColor = ContextCompat.getColor(context, R.color.inActiveBannerDot)
+            val activeColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+            val inActiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N150)
             return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.CAROUSEL_BANNER_INDICATOR, this@CarouselBannerViewHolder)
         }
     }

@@ -3,7 +3,7 @@ package com.tokopedia.recommendation_widget_common.presentation.model
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 
 data class RecommendationWidget(
-        val recommendationItemList: List<RecommendationItem> = listOf(),
+        var recommendationItemList: List<RecommendationItem> = listOf(),
         val title: String = "",
         val subtitle: String = "",
         val foreignTitle: String = "",
@@ -25,5 +25,14 @@ data class RecommendationWidget(
         val headerBackImage: String = "",
         val headerBackColor: String = "",
         val recommendationConfig: RecommendationConfig = RecommendationConfig(),
-        var recommendationBanner: RecommendationBanner? = null
-)
+        var recommendationBanner: RecommendationBanner? = null,
+        //for recom PDP since there is possibility gql return empty page name and recom list
+        var recomUiPageName: String = "",
+        var isTokonow: Boolean = false
+) {
+    fun copyRecomItemList(): List<RecommendationItem> {
+        val newList = mutableListOf<RecommendationItem>()
+        recommendationItemList.forEach { newList.add(it.copy()) }
+        return newList
+    }
+}

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changepin.data.ChangePin2FAData
 import com.tokopedia.profilecompletion.changepin.data.ResetPin2FaPojo
@@ -157,12 +158,23 @@ class ChangePinViewModel @Inject constructor(
     private fun onSuccessResetPin2FA(): (ResetPin2FaPojo) -> Unit {
         return {
             when {
-                it.data.is_success == 1 -> mutableResetPin2FAResponse.value = Success(it.data)
+                it.data.is_success == 1 -> {
+                    saveToken(it.data)
+                    mutableResetPin2FAResponse.value = Success(it.data)
+                }
                 it.data.error.isNotEmpty() ->
                     mutableResetPin2FAResponse.value = Fail(MessageErrorException(it.data.error))
                 else -> mutableResetPin2FAResponse.value = Fail(RuntimeException())
             }
         }
+    }
+
+    private fun saveToken(data: ChangePin2FAData) {
+        userSession.setToken(
+            data.accessToken,
+            "Bearer",
+            EncoderDecoder.Encrypt(data.refreshToken, userSession.refreshTokenIV)
+        )
     }
 
     fun resetPin(validateToken: String?) {

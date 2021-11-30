@@ -40,7 +40,7 @@ class GetUserRoleUseCaseTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        params = GetUserRoleUseCase.createParam(12345)
+        params = GetUserRoleUseCase.createParam("12345")
         getUserRoleUseCase = GetUserRoleUseCase(gqlRepository)
     }
 
@@ -50,13 +50,13 @@ class GetUserRoleUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetUserRoleModel>(RESPONSE_SUCCESS)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val result = getUserRoleUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assert(result.isNotEmpty())
@@ -68,14 +68,14 @@ class GetUserRoleUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetUserRoleModel>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(RuntimeException::class.java)
         val result = getUserRoleUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assert(result.isNullOrEmpty())

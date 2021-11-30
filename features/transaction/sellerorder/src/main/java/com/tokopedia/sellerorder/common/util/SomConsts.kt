@@ -122,10 +122,6 @@ object SomConsts {
     const val TOPADS_MANUAL_ADS = 3
     const val TOPADS_AUTO_ADS = 4
 
-    const val KEY_WAITING_PAYMENT_ORDER_LIST_RESULT = "waiting_payment_order_list_result"
-    const val KEY_WAITING_PAYMENT_ORDER_LIST_PAGING_RESULT = "waiting_payment_order_list_paging_result"
-
-
     //SOM FILTER LABEL
     const val FILTER_SORT = "Urutkan"
     const val FILTER_STATUS_ORDER = "Status Pesanan"
@@ -151,4 +147,12 @@ object SomConsts {
     const val PRINT_AWB_WEBVIEW_TITLE = "Pengaturan Label Pengiriman"
 
     const val PREFIX_HTTP = "http"
+    const val PREFIX_HTTPS = "https://"
+
+    // Set Delivered Consts
+    const val SOM_SET_DELIVERED_SUCCESS_CODE = 1
+
+    const val DEFAULT_INVALID_ORDER_ID = "0"
+
+    const val ENCODING_UTF_8 = "UTF-8"
 }

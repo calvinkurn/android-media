@@ -32,7 +32,7 @@ class KeywordAdsViewModel @Inject constructor(
     fun searchKeyword(keyword:String,product_ids : String,onSucceed:(List<SearchData>)->Unit ){
         GraphqlHelper.loadRawString(context.resources, R.raw.topads_gql_search_keywords)?.let { query ->
             val params = mapOf(ParamObject.PRODUCT_IDS to product_ids,
-                    ParamObject.SEARCH_TERM to keyword, ParamObject.SHOP_id to userSession.shopId.toInt())
+                    ParamObject.SEARCH_TERM to keyword, ParamObject.SHOP_id to userSession.shopId)
 
             searchKeywordUseCase.setTypeClass(KeywordSearch::class.java)
             searchKeywordUseCase.setRequestParams(params)

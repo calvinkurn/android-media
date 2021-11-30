@@ -54,6 +54,11 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
+    <!--    Dynamic feature for Login Fingerprint-->
+    <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
+    <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
+    <string name="title_base_login_fingerprint">Masuk dengan Sidik Jari</string>
+
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
 
@@ -74,6 +79,9 @@
     <!-- Dynamic feature for Fintech-->
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="ovop2p_app_name">Saldo</string>
+    <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
+    <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
+    <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
 
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
@@ -89,6 +97,7 @@
     <string name="recharge_slice_host">recharge_slice</string>
     <string name="recharge_slice_main_path">/main</string>
     <string name="recharge_pdp_emoney_toolbar_title">Uang Elektronik</string>
+    <string name="smart_bills_action_bar_title">Bayar Sekaligus</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -151,6 +160,7 @@
     <string name="label_kategori">Belanja di Tokopedia</string>
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
+    <string name="label_affiliate">Affiliate</string>
 
 
     <!--Contact Us-->
@@ -202,11 +212,19 @@
 
     <string name="label_image_preview">Gambar Bukti</string>
 
+    <string name="title_pinpoint_new">Tentukan Pinpoint Lokasi</string>
+
+    <string name="title_address_form">Detail Alamat</string>
+
+    <string name="title_activity_cpl">Pengiriman Per Produk</string>
+
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
 
     <!-- Dynamic feature for Power Merchant-->
     <string name="pm_title_activity">Power Merchant</string>
+    <string name="pm_benefit_package_title_activity">Paket Keuntungan</string>
+
     <string name="pm_title_tnc">Syarat dan Ketentuan</string>
     <string name="pm_title_cancellation_questionnaire">Berhenti Power Merchant</string>
 
@@ -291,6 +309,7 @@
 
     <!--Play-->
     <string name="title_play_df">Play</string>
+    <string name="title_play_broadcaster_df">Play Broadcaster</string>
 
     <!--Interest Pick-->
     <string name="ip_title">Pilih Inspirasi Kamu</string>
@@ -308,7 +327,7 @@
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_activity_shipping_address">Alamat Pengiriman</string>
     <string name="title_one_click_checkout">Beli Langsung</string>
-    <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
+    <string name="title_one_click_checkout_choose_payment_method">Pilih Metode Pembayaran</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
     <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
@@ -329,6 +348,7 @@
 
     <!-- Content -->
     <string name="kol_title_comment">Comments</string>
+    <string name="kol_activity_title">Komentar</string>
     <string name="kol_title_post_detail">Post Detail</string>
     <string name="kol_title_media_preview">Media Preview</string>
     <string name="kol_title_video_detail">Video Detail</string>
@@ -368,4 +388,18 @@
     <string name="vidpick_app_name">Video Recorder</string>
     <string name="album">Album</string>
     <string name="edit_image">Edit Gambar</string>
+
+    <!--Dynamic feature TokopediaNOW! -->
+    <string name="title_tokopedia_now">Tokopedia NOW</string>
+
+    <!-- Review   -->
+    <string name="title_review">Ulasan</string>
+
+    <string name="title_image_picker_insta_df">Media Picker</string>
+
+    <string name="title_feed_create_post">Create Post</string>
+    <string name="swd_activity_withdraw">Penarikan Saldo</string>
+    <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
+    <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+    <string name="cu_surey_layana">Survey Layana</string>
 </resources>

@@ -22,6 +22,4 @@ public interface ApplinkRouter {
     boolean isSupportApplink(String appLink);
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
-
-    ApplinkDelegate applinkDelegate();
 }

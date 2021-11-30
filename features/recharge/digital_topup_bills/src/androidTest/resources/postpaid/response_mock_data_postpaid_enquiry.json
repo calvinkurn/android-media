@@ -2,26 +2,28 @@
   {
     "data": {
       "status": "OK",
-      "enquiry": {
+      "rechargeInquiry": {
+        "status": "DONE",
+        "retrySec": null,
         "attributes": {
-          "UserID": "19016871",
+          "UserID": "17211378",
           "ProductID": "559",
-          "ClientNumber": "081232323232",
+          "ClientNumber": "081288888888",
           "Title": "Detail Pembayaran",
-          "Price": "Rp 2.000",
-          "PricePlain": 2000,
+          "Price": "Rp800.000.000",
+          "PricePlain": 800000000,
           "mainInfo": [
             {
               "label": "Nomor Telepon",
-              "value": "081232323232"
+              "value": "081288888888"
             },
             {
               "label": "Nama",
-              "value": "Tokopedia User"
+              "value": "Tokope*** Use*"
             },
             {
               "label": "Total Bayar",
-              "value": "Rp 2.000"
+              "value": "Rp800.000.000"
             }
           ]
         }

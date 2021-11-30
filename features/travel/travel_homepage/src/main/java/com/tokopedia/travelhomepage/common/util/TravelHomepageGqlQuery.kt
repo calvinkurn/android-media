@@ -44,84 +44,6 @@ object TravelHomepageGqlQuery {
         }
     """.trimIndent()
 
-    val CATEGORY_LIST = """
-        query {
-          travelCategoryList() {
-            category{
-              product
-              attributes{
-                title
-                webURL
-                appURL
-                imageURL
-              }
-            }
-          }
-        }
-    """.trimIndent()
-
-    val HOMEPAGE_DESTINATION = """
-        query {
-          TravelDestination() {
-            destination{
-              attributes{
-                title
-                subtitle
-                webURL
-                appURL
-                imageURL
-                }
-            }
-            meta{
-              title
-            }
-          }
-        }
-    """.trimIndent()
-
-    val DYNAMIC_SUBHOMEPAGE = """
-        query dynamic(${'$'}dataType:TravelUnifiedSubhomepageDataType!,${'$'}widgetType: TravelUnifiedSubhomepageWidgetType!,${'$'}data: TravelUnifiedSubhomepageRequestData!) {
-          TravelGetDynamicSubhomepage(dataType:${'$'}dataType, widgetType:${'$'}widgetType, data:${'$'}data){
-            id
-            product
-            promoCode
-            description
-            cityID
-            title
-            subtitle
-            prefix
-            prefixStyle
-            value
-            imageURL
-            webURL
-            appURL
-          }
-        }
-    """.trimIndent()
-
-    val LAYOUT_SUBHOMEPAGE = """
-        query {
-          travelLayoutSubhomepage {
-            data{
-              id
-              dataType
-              widgetType
-              priority
-              title
-              subtitle
-              appURL
-              webURL
-              metaText
-            }
-            meta{
-              templateID
-              templateName
-            }
-
-          }
-        }
-    """.trimIndent()
-
     val ORDER_LIST = """
         query TravelCollectiveOrderList(${'$'}page: Int!,${'$'}perPage: Int!,${'$'}filterStatus: String!,${'$'}cityID: Int) {
           TravelCollectiveOrderList(product: ALL, page:${'$'}page, perPage:${'$'}perPage, filterStatus:${'$'}filterStatus, cityID:${'$'}cityID) {
@@ -141,30 +63,6 @@ object TravelHomepageGqlQuery {
                 appURL
                 webURL
               }
-          }
-        }
-    """.trimIndent()
-
-    val RECENT_SEARCHES = """
-        query{
-          TravelCollectiveRecentSearches(product:ALL){
-            items {
-              product
-              title
-              subtitle
-              prefix
-              prefixStyling
-              value
-              webURL
-              appURL
-              imageURL
-            }
-            meta {
-              title
-              webURL
-              appURL
-              type
-            }
           }
         }
     """.trimIndent()

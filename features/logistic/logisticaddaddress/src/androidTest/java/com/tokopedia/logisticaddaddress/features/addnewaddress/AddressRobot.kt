@@ -12,7 +12,7 @@ import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
-import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
 
@@ -22,16 +22,14 @@ class AddressRobot {
 
     fun launchFrom(rule: ActivityTestRule<PinpointMapActivity>, screenName: String) {
         val i = Intent()
-        i.putExtra(CheckoutConstant.EXTRA_REF, screenName)
+        i.putExtra(EXTRA_REF, screenName)
         rule.launchActivity(i)
         waitForData()
     }
 
     fun searchWithKeyword(keyword: String) {
-        onView(allOf(withId(R.id.et_search_logistic), withEffectiveVisibility(Visibility.VISIBLE)))
-                .check(matches(isDisplayed()))
-                .perform(typeText(keyword), closeSoftKeyboard())
-        // delay for text field debounce
+        onView(withId(R.id.layout_search)).perform(click())
+        onView(withId(R.id.searchbar_textfield)).perform(typeText(keyword), closeSoftKeyboard())
         waitForData()
     }
 
@@ -51,7 +49,8 @@ class AddressRobot {
     }
 
     fun searchCityWithKeyword(keyword: String) {
-        onView(withId(R.id.et_search_district_recommendation))
+        onView(withId(R.id.layout_search)).perform(click())
+        onView(allOf(withId(R.id.searchbar_textfield), withEffectiveVisibility(Visibility.VISIBLE)))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
         waitForData()

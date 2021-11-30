@@ -20,6 +20,8 @@ import com.tokopedia.usecase.coroutines.Result
 
 object ProductMapper {
 
+    private const val BUNDLE_CAMPAIGN_TYPE = "4"
+
     fun mapToUiModels(
         productList: List<Product>?,
         access: ProductManageAccess?,
@@ -54,9 +56,15 @@ object ProductMapper {
                 hasStockReserved = it.hasStockReserved,
                 topAdsInfo = topAdsInfo,
                 access = access,
-                isCampaign = it.isCampaign
+                isCampaign = it.isCampaign,
+                campaignTypeList = it.campaignTypeList,
+                isProductBundling = it.getIsProductBundling()
             )
         } ?: emptyList()
+    }
+
+    private fun Product.getIsProductBundling(): Boolean {
+        return campaignTypeList?.any { it.id == BUNDLE_CAMPAIGN_TYPE } == true
     }
 
     private fun mapProductStatus(product: Product): ProductStatus? {

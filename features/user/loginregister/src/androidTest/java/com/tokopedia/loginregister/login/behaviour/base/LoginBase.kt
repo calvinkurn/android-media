@@ -5,15 +5,15 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.discover.data.DiscoverItemDataModel
+import com.tokopedia.loginregister.discover.pojo.DiscoverData
+import com.tokopedia.loginregister.discover.pojo.DiscoverPojo
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.login.behaviour.activity.LoginActivityStub
 import com.tokopedia.loginregister.login.behaviour.data.*
 import com.tokopedia.loginregister.login.behaviour.di.DaggerBaseAppComponentStub
@@ -24,19 +24,17 @@ import com.tokopedia.loginregister.login.behaviour.di.modules.DaggerMockLoginReg
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
 import com.tokopedia.loginregister.login.idling.FragmentTransactionIdle
-import com.tokopedia.loginregister.login.view.model.DiscoverDataModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.hamcrest.CoreMatchers.not
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import javax.inject.Inject
 
-open class LoginBase {
+open class LoginBase: LoginRegisterBase() {
 
     var isDefaultRegisterCheck = true
     var isDefaultDiscover = true
@@ -82,16 +80,11 @@ open class LoginBase {
     lateinit var getAdminTypeUseCaseStub: GetAdminTypeUseCaseStub
 
     @Inject
-    lateinit var getFacebookCredentialUseCaseStub: GetFacebookCredentialUseCaseStub
-
-    @Inject
     lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
 
     @Inject
-    lateinit var statusPinUseCaseStub: StatusPinUseCaseStub
-
-    @Inject
     lateinit var tickerInfoUseCaseStub: TickerInfoUseCaseStub
+
 
     @Inject
     lateinit var userSessionStub: UserSessionInterface
@@ -124,10 +117,9 @@ open class LoginBase {
 
     protected fun setDefaultDiscover() {
         val mockProviders = arrayListOf(
-                DiscoverItemDataModel("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
-                DiscoverItemDataModel("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
+            ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
         )
-        val response = DiscoverDataModel(mockProviders, "")
+        val response = DiscoverPojo(DiscoverData(mockProviders, ""))
         discoverUseCaseStub.response = response
     }
 
@@ -158,6 +150,7 @@ open class LoginBase {
             setRegisterCheckDefaultResponse()
         }
         launchDefaultFragment()
+        clearEmailInput()
         test.invoke()
     }
 
@@ -190,18 +183,8 @@ open class LoginBase {
         viewInteraction.perform(ViewActions.click())
     }
 
-    fun clickSubmit(){
-        val viewInteraction = onView(withId(R.id.register_btn)).check(matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(ViewActions.click())
-    }
-
     fun clickUbahButton() {
         onView(withId(R.id.change_button)).check(matches(ViewMatchers.isDisplayed())).perform(ViewActions.click())
-    }
-
-    fun inputEmailOrPhone(value: String) {
-        val viewInteraction = onView(withId(R.id.input_email_phone)).check(matches(isDisplayed()))
-        viewInteraction.perform(ViewActions.typeText(value))
     }
 
     fun inputPassword(value: String) {
@@ -209,45 +192,8 @@ open class LoginBase {
         viewInteraction.perform(ViewActions.typeText(value))
     }
 
-    fun deleteEmailOrPhoneInput() {
-        val viewInteraction = onView(withId(R.id.input_email_phone)).check(matches(isDisplayed()))
-        viewInteraction.perform(clearText())
-    }
-
-    fun clickSocmedButton() {
-        onView(withId(R.id.socmed_btn))
-                .check(matches(ViewMatchers.isDisplayed()))
-                .perform(ViewActions.click())
-    }
-
     fun shouldBeEnabled(id: Int) {
         onView(withId(id)).check(matches(isEnabled()))
-    }
-
-    fun shouldBeDisabled(id: Int) {
-        onView(withId(id)).check(matches(not(isEnabled())))
-    }
-
-    fun shouldBeDisplayed(id: Int) {
-        onView(withId(id)).check(matches(isDisplayed()))
-    }
-
-    fun shouldBeHidden(id: Int) {
-        onView(withId(id)).check(matches(not(isDisplayed())))
-    }
-
-    fun isDisplayingGivenText(id: Int, givenText: String) {
-        onView(withId(id)).check(matches(withText(givenText))).check(matches(isDisplayed()))
-    }
-
-    fun isTextInputHasError(id: Int, errorText: String) {
-        onView(withId(id)).check(matches(hasErrorText(errorText))).check(matches(isDisplayed()))
-    }
-
-    fun isDialogDisplayed(text: String) {
-        onView(withText(text))
-                .inRoot(RootMatchers.isDialog())
-                .check(matches(isDisplayed()))
     }
 
     fun isEmailExtensionDisplayed() {

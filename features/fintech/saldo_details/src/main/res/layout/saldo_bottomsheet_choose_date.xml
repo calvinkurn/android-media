@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.calendar.UnifyCalendar
+        android:id="@+id/calendar_unify"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/unifyButtonSelect"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/unifyButtonSelect"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonSize="medium"
+        android:text="@string/saldo_save_date"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

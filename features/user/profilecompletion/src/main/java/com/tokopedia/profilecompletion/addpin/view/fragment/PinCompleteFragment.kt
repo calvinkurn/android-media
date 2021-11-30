@@ -65,7 +65,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
                 titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.title_change_pin))
             }
-            SOURCE_FORGOT_PIN or SOURCE_FORGOT_PIN_2FA -> {
+            SOURCE_FORGOT_PIN, SOURCE_FORGOT_PIN_2FA -> {
                 titleComplete.text = getString(R.string.change_pin_success)
                 setToolbarTitle(resources.getString(R.string.change_pin_title_setting))
             }

@@ -9,8 +9,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.deals.R
 import com.tokopedia.deals.common.utils.DealsUtils
-import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.deals.search.listener.DealsSearchListener
+import com.tokopedia.deals.search.model.visitor.VoucherModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 
 class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchListener): AbstractViewHolder<VoucherModel>(itemView) {
@@ -39,7 +39,7 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
         } else {
             mrpPrice.visibility = View.GONE
         }
-        if (element.discountText.isNotEmpty()) {
+        if (element.discountText.isNotEmpty() && !element.discountText.startsWith(ZERO_PERCENT)) {
             discount.visibility = View.VISIBLE
             discount.text = element.discountText
             discount.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_deals_softpink_box)
@@ -67,5 +67,6 @@ class VoucherViewHolder(itemView: View, private val searchListener: DealsSearchL
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_deals_voucher
+        private const val ZERO_PERCENT = "0%"
     }
 }

@@ -34,4 +34,21 @@ object CommonTopupBillsGqlMutation {
           }
         }
     """.trimIndent()
+
+    val updateSeamlessFavoriteNumber = """
+        mutation updateFavorite(${'$'}updateRequest: favoriteDetailUpdateRequest!) {
+          updateFavoriteDetail(updateRequest:${'$'}updateRequest) {
+            clientNumber
+            operatorID
+            productID
+            categoryID
+            label
+            lastUpdated
+            lastOrderDate
+            totalTransaction
+            subscribed
+            wishlist
+          }
+        }
+    """.trimIndent()
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.app;
 
-import android.annotation.SuppressLint;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -20,15 +20,11 @@ import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
-import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
@@ -41,39 +37,32 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.common.ui.MaintenancePage;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl;
 import com.tokopedia.fcmcommon.domain.UpdateFcmTokenUseCase;
-import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
-import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -81,9 +70,7 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promotionstarget.presentation.GratifCmInitializer;
 import com.tokopedia.pushnotif.PushNotification;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.GraphqlHelper;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -93,7 +80,6 @@ import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
@@ -115,10 +101,6 @@ import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
-import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
-import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
-
 
 /**
  * @author normansyahputa on 12/15/16.
@@ -132,8 +114,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NetworkRouter,
         OmsModuleRouter,
         TkpdAppsFlyerRouter,
-        LinkerRouter,
-        KYCRouter {
+        LinkerRouter {
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
     private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
@@ -159,7 +140,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         warmUpGQLClient();
         initIris();
         performLibraryInitialisation();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
     }
 
@@ -195,7 +175,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this, true);
     }
 
     private boolean initLibraries() {
@@ -206,7 +186,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMDependencies(){
-        GratifCmInitializer.INSTANCE.start(this);
+        WeaveInterface gratiWeave = () -> {
+            GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gratiWeave, RemoteConfigKey.ENABLE_ASYNC_GRATIFICATION_INIT, getApplicationContext(), false);
+
+
     }
 
     private void initialiseHansel() {
@@ -217,7 +203,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeHanselInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(hanselWeave, RemoteConfigKey.ENABLE_ASYNC_HANSEL_INIT, getApplicationContext(), true);
     }
 
     private boolean executeHanselInit() {
@@ -238,7 +224,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeIrisInitialize();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this, true);
     }
 
     private boolean executeIrisInitialize() {
@@ -290,35 +276,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return getAppComponent().ChuckerInterceptor();
     }
 
-    @Override
-    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
-                                                Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = getHomeClass();
-        mNotificationPass.title = notifTitle;
-        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        return mNotificationPass;
-    }
-
     private Intent getInboxReputationIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     private void forceLogout() {
-        PasswordGenerator.clearTokenStorage(context);
         TrackApp.getInstance().getMoEngage().logoutEvent();
         UserSessionInterface userSession = new UserSession(context);
         userSession.logoutSession();
-    }
-
-    public Intent getHomeIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.HOME);
-    }
-
-    @Override
-    public Class<?> getHomeClass() {
-        return MainParentActivity.class;
     }
 
     @Override
@@ -426,17 +391,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(appLink);
+        return false;
     }
 
     @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return new ApplinkUnsupportedImpl(activity);
-    }
-
-    @Override
-    public ApplinkDelegate applinkDelegate() {
-        return DeeplinkHandlerActivity.getApplinkDelegateInstance();
     }
 
     @Override
@@ -455,28 +415,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
         if (activity != null) {
-            ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
-            Intent intent = activity.getIntent();
-            intent.setData(Uri.parse(applink));
-            intent.putExtras(bundle);
-            deepLinkDelegate.dispatchFrom(activity, intent);
+            RouteManager.route(activity, bundle, applink);
         }
     }
 
     @Override
     public Intent getApplinkIntent(Context context, String applink) {
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
-        if (context instanceof Activity) {
-            try {
-                return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
-            } catch (Exception e) {
-
-            }
-        }
-
-        return intent;
+        return RouteManager.getIntent(context, applink);
     }
 
     @Override
@@ -530,7 +475,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return true;
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(weave, ENABLE_ASYNC_GCM_LEGACY, getApplicationContext(), true);
     }
 
     @Override
@@ -551,7 +496,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeAppflyerInit();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext());
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext(), true);
     }
 
     private boolean executeAppflyerInit() {
@@ -574,6 +519,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override
@@ -591,39 +537,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MaintenancePage.createIntentFromNetwork(getAppContext());
     }
 
-    @SuppressLint("MissingPermission")
-    @Override
-    public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
-                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType) {
-        Bundle bundle = new Bundle();
-        BaseDaggerFragment baseDaggerFragment = null;
-        switch (cameraType) {
-            case KYC_CARDID_CAMERA:
-                baseDaggerFragment = FragmentCardIdCamera.newInstance();
-                bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
-                bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
-                baseDaggerFragment.setArguments(bundle);
-                break;
-            case KYC_SELFIEID_CAMERA:
-                baseDaggerFragment = new FragmentSelfieIdCamera();
-                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);
-                bundle.putSerializable(FragmentSelfieIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
-                baseDaggerFragment.setArguments(bundle);
-                break;
-        }
-        return baseDaggerFragment;
-    }
 
     @Override
     public IAppNotificationReceiver getAppNotificationReceiver() {
         return new AppNotificationReceiver();
     }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context mContext) {
-        return null;
-    }
-
 
     @Override
     public void sendRefreshTokenAnalytics(String errorMessage) {
@@ -636,28 +554,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";
-
-    @Override
-    public Class<?> getInboxMessageActivityClass() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_MESSAGE_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
-
-    @Override
-    public Class<?> getInboxResCenterActivityClassReal() {
-        Class<?> parentIndexHomeClass = null;
-        try {
-            parentIndexHomeClass = getActivityClass(INBOX_RESCENTER_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return parentIndexHomeClass;
-    }
 
     private static Class<?> getActivityClass(String activityFullPath) throws ClassNotFoundException {
         return Class.forName(activityFullPath);

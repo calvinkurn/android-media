@@ -1,7 +1,7 @@
 package com.tokopedia.logisticCommon.data.entity.address
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserAddress(
@@ -26,6 +26,8 @@ data class UserAddress(
         var isCorner: Boolean = false,
         var state: Int = 0,
         var stateDetail: String = "",
+        var shopId: String = "",
+        var warehouseId: String = ""
 ) : Parcelable {
 
     companion object {

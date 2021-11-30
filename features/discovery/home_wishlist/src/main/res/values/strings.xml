@@ -32,7 +32,9 @@
     <string name="label_cart_wishlist">Keranjang</string>
     <string name="label_delete_wishlist_cancel">Batal</string>
     <string name="label_delete_wishlist_manage">Atur</string>
-
+    <string name="label_wishlist_count">%s Barang Wishlist</string>
+    <string name="hint_wishlist">Cari Wishlist</string>
     <string name="content_desc_close_text_search">Close search wishlist</string>
     <string name="content_desc_custom_search_magnify_icon">Search</string>
+    <string name="page_name_wishlist">Wishlist</string>
 </resources>

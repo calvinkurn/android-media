@@ -2,7 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import com.google.gson.annotations.SerializedName
 
-data class OccPromptResponse(
+class OccPromptResponse(
         @SerializedName("type")
         val type: String = "",
         @SerializedName("title")
@@ -15,7 +15,7 @@ data class OccPromptResponse(
         val buttons: List<OccPromptButtonResponse> = emptyList()
 )
 
-data class OccPromptButtonResponse(
+class OccPromptButtonResponse(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("link")

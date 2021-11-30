@@ -11,7 +11,11 @@ import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductUpcomingTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
@@ -23,7 +27,6 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
@@ -43,14 +46,13 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         const val THEMATIC_CAMPAIGN = 5
 
         // time unit
-        private const val ONE_SECOND = 1000L
+        private const val ONE_THOUSAND = 1000L
     }
 
     // upcoming components - structure type 1
     private var campaignRibbonType1View: View? = null
     private var campaignNameViews1: Typography? = null
     private var timerView1: TimerUnifySingle? = null
-    private var regulatoryInfoLayout1: View? = null
     private var remindMeButton1: Typography? = null
 
     // ongoing components - structure type 2
@@ -91,7 +93,6 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         campaignRibbonType1View = rootView.findViewById(R.id.campaign_ribbon_type_1)
         campaignNameViews1 = campaignRibbonType1View?.findViewById(R.id.tpg_campaign_name_s1)
         timerView1 = campaignRibbonType1View?.findViewById(R.id.tus_timer_view_s1)
-        regulatoryInfoLayout1 = campaignRibbonType1View?.findViewById(R.id.regulatory_info_layout_s1)
         remindMeButton1 = campaignRibbonType1View?.findViewById(R.id.remind_me_button_s1)
         // TYPE 2 PROPERTIES
         campaignRibbonType2View = rootView.findViewById(R.id.campaign_ribbon_type_2)
@@ -147,13 +148,11 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val campaign = onGoingData.campaign
         if (onGoingData.thematicCampaign.campaignName.isEmpty()) {
             if (campaign.shouldShowRibbonCampaign) {
-                // thematic data
-                val thematicCampaign = onGoingData.thematicCampaign
                 // render campaign name
                 campaignNameViews3?.text = campaign.campaignTypeName
                 // render campaign ribbon background
-                val gradientDrawable = getGradientDrawableForBackGround(campaign.background, SLASH_PRICE)
-                campaignRibbonType3View?.background = gradientDrawable
+                val backGroundColorData = campaign.background
+                renderBackGroundColor(campaignRibbonType3View, backGroundColorData, SLASH_PRICE)
                 // show count down wording
                 endsInWordingView3?.show()
                 // render ongoing count down timer
@@ -175,7 +174,8 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
         if (thematicCampaign.background.isNotBlank()) {
-            campaignRibbonType3View?.background = getGradientDrawableForBackGround(thematicCampaign.background)
+            val backGroundColorData = thematicCampaign.background
+            renderBackGroundColor(campaignRibbonType3View, backGroundColorData)
         }
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
@@ -228,47 +228,52 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
     // UPCOMING CAMPAIGN -  use campaign ribbon structure type 1
     fun renderUpComingCampaignRibbon(upcomingData: ProductNotifyMeDataModel?, upcomingIdentifier: String) {
         showCampaignRibbonType1()
-        val gradientDrawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
-            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_blue)
-        } else {
-            ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
-        }
-        // render campaign ribbon background
-        gradientDrawable?.run { campaignRibbonType1View?.background = gradientDrawable }
-        // render campaign name
+        renderUpcomingBackground(upcomingData, upcomingIdentifier)
+        renderTimerUpcoming(upcomingData)
         val campaignTypeName = upcomingData?.upcomingNplData?.ribbonCopy ?: ""
         campaignNameViews1?.text = if (campaignTypeName.isNotEmpty()) campaignTypeName else context.getString(R.string.notify_me_title)
-        // count down timer
+        updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
+    }
+
+    private fun renderTimerUpcoming(upcomingData: ProductNotifyMeDataModel?) {
         upcomingData?.let { data ->
             renderUpComingNplCountDownTimer(
                     data.startDate,
                     timerView1
             )
         }
-        // update remind me button
-        updateRemindMeButton(listener, upcomingData, upcomingIdentifier)
-        // hide regulatory info
-        regulatoryInfoLayout1?.hide()
     }
+
+    private fun renderUpcomingBackground(upcomingData: ProductNotifyMeDataModel?,
+                                         upcomingIdentifier: String) {
+        if (upcomingData?.bgColorUpcoming == null ||
+                upcomingData.bgColorUpcoming.isEmpty()) {
+            val drawable = if (upcomingIdentifier == ProductUpcomingTypeDef.UPCOMING_NPL) {
+                ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_blue)
+            } else {
+                ContextCompat.getDrawable(context, R.drawable.bg_gradient_default_red)
+            }
+            drawable?.run { campaignRibbonType1View?.background = this }
+        } else {
+            getGradientDrawableForBackGround(upcomingData.bgColorUpcoming).run {
+                campaignRibbonType1View?.background = this
+            }
+        }
+    }
+
 
     private fun renderUpComingNplCountDownTimer(startDateData: String, timerView: TimerUnifySingle?) {
         try {
-            val now = System.currentTimeMillis()
-            val startTime = startDateData.toLongOrZero() * ONE_SECOND
+            val startTime = startDateData.toLongOrZero() * ONE_THOUSAND
             val startDate = Date(startTime)
             val calendar = Calendar.getInstance()
             calendar.time = startDate
             timerView?.targetDate = calendar
             timerView?.isShowClockIcon = false
 
-            // less then 24 hours campaign period
-            if (TimeUnit.MILLISECONDS.toDays(startDate.time - now) < 1) {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
-                timerView?.onFinish = {
-                    listener?.refreshPage()
-                }
-            } else {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
+            timerView?.timerFormat = TimerUnifySingle.FORMAT_AUTO
+            timerView?.onFinish = {
+                listener?.refreshPage()
             }
             timerView?.show()
         } catch (e: Throwable) {
@@ -306,14 +311,13 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
         }
     }
 
-    // ONGOING CAMPAIGN - use campaign ribbon structure type 2 -
+    // ONGOING CAMPAIGN - use campaign ribbon structure type 2
     private fun renderOnGoingCampaignRibbon(onGoingData: ProductContentMainData) {
         val campaign = onGoingData.campaign
         val thematicCampaign = onGoingData.thematicCampaign
         // render campaign ribbon background
-        val gradientHexCodes = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
-        val gradientDrawable = getGradientDrawableForBackGround(gradientHexCodes)
-        campaignRibbonType2View?.background = gradientDrawable
+        val backGroundColorData = if (thematicCampaign.background.isNotBlank()) thematicCampaign.background else campaign.background
+        renderBackGroundColor(campaignRibbonType2View, backGroundColorData)
         // render campaign logo
         if (thematicCampaign.icon.isNotBlank()) {
             campaignLogoView2?.loadImage(thematicCampaign.icon)
@@ -369,27 +373,44 @@ class CampaignRibbon @JvmOverloads constructor(context: Context, attrs: Attribut
 
     private fun renderOnGoingCountDownTimer(campaign: CampaignModular, timerView: TimerUnifySingle?) {
         try {
-            val dateFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.getDefault())
             val now = System.currentTimeMillis()
-            val endDate = dateFormat.parse(campaign.endDate)
-            val calendar = Calendar.getInstance()
-            calendar.time = endDate
-            timerView?.targetDate = calendar
-            timerView?.isShowClockIcon = false
+            val endDateLong = campaign.endDateUnix.toLongOrNull()
+            endDateLong?.run {
+                val endDateMillis = this * ONE_THOUSAND
+                val endDate = Date(endDateMillis)
+                val calendar = Calendar.getInstance()
+                calendar.time = endDate
+                timerView?.targetDate = calendar
+                timerView?.isShowClockIcon = false
 
-            // less then 24 hours campaign period
-            if (TimeUnit.MILLISECONDS.toDays(endDate.time - now) < 1) {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_HOUR
+                timerView?.timerFormat = TimerUnifySingle.FORMAT_AUTO
                 timerView?.onFinish = {
                     callback?.onOnGoingCampaignEnded(campaign)
                     listener?.showAlertCampaignEnded()
                 }
-            } else {
-                timerView?.timerFormat = TimerUnifySingle.FORMAT_DAY
+                timerView?.show()
             }
-            timerView?.show()
         } catch (ex: Exception) {
             this.hide()
+        }
+    }
+
+    private fun renderBackGroundColor(view: View?, backGroundColorData: String, campaignTypes: Int = FLASH_SALE) {
+        val colorCount = backGroundColorData.split(",").size
+        if (colorCount == 1) {
+            val backgroundColor = getBackGroundColor(backGroundColorData)
+            view?.setBackgroundColor(backgroundColor)
+        } else {
+            val gradientDrawable = getGradientDrawableForBackGround(backGroundColorData, campaignTypes)
+            view?.background = gradientDrawable
+        }
+    }
+
+    private fun getBackGroundColor(colorString: String): Int {
+        return try {
+            Color.parseColor(colorString)
+        } catch (ex: Exception) {
+            ContextCompat.getColor(context, R.color.product_detail_dms_default_green_bg_start_gradient_color)
         }
     }
 

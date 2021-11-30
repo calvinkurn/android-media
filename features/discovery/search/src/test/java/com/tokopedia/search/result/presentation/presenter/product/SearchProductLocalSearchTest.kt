@@ -40,6 +40,10 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
         SearchApiConst.SRP_PAGE_ID to "1234"
     )
+    private val expectedDimension90 =
+            "${searchParameter[SearchApiConst.SRP_PAGE_TITLE]}.${searchParameter[SearchApiConst.NAVSOURCE]}." +
+                    "local_search.${searchParameter[SearchApiConst.SRP_PAGE_ID]}"
+
 
     @Test
     fun `Show page title and remove top ads in page 1`() {
@@ -54,7 +58,8 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         `Then verify visitable list contains title`()
         `Then verify visitable list does not contain CPM`()
         `Then verify visitable list does not contain top ads`(searchProductModel)
-        `Then verify product item contains page title`()
+        `Then verify product item`(searchProductModel)
+        `Then verify product has dimension90`()
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -80,7 +85,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     }
 
     private fun `Then verify visitable list contains title`() {
-        val searchProductTitle = visitableList[0]
+        val searchProductTitle = visitableList[1]
         searchProductTitle.shouldBeInstanceOf<SearchProductTitleDataView>()
 
         val searchProductTitleViewModel = searchProductTitle as SearchProductTitleDataView
@@ -107,10 +112,27 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
         }
     }
 
-    private fun `Then verify product item contains page title`() {
-        visitableList.filterIsInstance<ProductItemDataView>().all {
-            it.pageTitle == searchProductPageTitle
-        } shouldBe true
+    private fun `Then verify product item`(
+        searchProductModel: SearchProductModel,
+    ) {
+        visitableList
+            .filterIsInstance<ProductItemDataView>()
+            .forEachIndexed { index, productItemDataView ->
+            val productItem = searchProductModel.searchProduct.data.productList[index]
+
+            productItemDataView.assertOrganicProduct(productItem, index + 1)
+        }
+    }
+
+    private fun `Then verify product has dimension90`() {
+        val visitableList = visitableListSlot.captured
+        val index = visitableList.indexOfFirst { it is ProductItemDataView }
+
+        val visitable = visitableList[index]
+        visitable.shouldBeInstanceOf<ProductItemDataView>()
+
+        val productItemDataView = visitable as ProductItemDataView
+        productItemDataView.dimension90 shouldBe expectedDimension90
     }
 
     @Test
@@ -127,7 +149,8 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
         `Then verify request params during local search`(requestParamsLoadMore)
         `Then verify visitable list does not contain top ads`(searchProductModelPage2)
-        `Then verify product item contains page title`()
+        `Then verify product item`(searchProductModelPage2)
+        `Then verify product has dimension90`()
     }
 
     private fun `Given Search Product Load More API will return Search Product Model`(searchProductModelPage2: SearchProductModel) {
@@ -207,6 +230,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
 
             val broadMatchViewModel = visitable as BroadMatchDataView
             broadMatchViewModel.isAppendTitleInTokopedia shouldBe true
+            broadMatchViewModel.dimension90 shouldBe expectedDimension90
 
             index++
         }

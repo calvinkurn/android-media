@@ -17,22 +17,22 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TR
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_OPEN_SHOP_TICKER
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_QR_CODE
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_RECENT_VIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_SUBSCRIPTION
-import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.common.util.Event
-import com.tokopedia.homenav.common.util.isABNewTokopoint
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.domain.model.MainNavProfileCache
 import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.datamodel.*
+import com.tokopedia.homenav.mainnav.view.datamodel.account.*
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_FAILED
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_LOADING
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel.Companion.NAV_PROFILE_STATE_SUCCESS
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
@@ -55,7 +55,6 @@ class MainNavViewModel @Inject constructor(
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>,
         private val getProfileDataUseCase: Lazy<GetProfileDataUseCase>,
-        private val getProfileDataCacheUseCase: Lazy<GetProfileDataCacheUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val accountAdminInfoUseCase: Lazy<AccountAdminInfoUseCase>
 ): BaseViewModel(baseDispatcher.get().io) {
@@ -64,10 +63,10 @@ class MainNavViewModel @Inject constructor(
         private const val INDEX_MODEL_ACCOUNT = 0
         private const val INDEX_HOME_BACK_SEPARATOR = 1
         private const val ON_GOING_TRANSACTION_TO_SHOW = 6
-        private const val INDEX_DEFAULT_BU_POSITION = 1
         private const val INDEX_DEFAULT_ALL_TRANSACTION = 1
 
         private const val SOURCE = "dave_home_nav"
+        private const val MAX_ORDER_TO_SHOW = 6
     }
 
 
@@ -83,6 +82,7 @@ class MainNavViewModel @Inject constructor(
 
     private var pageSource: String = ""
     private var pageSourceDefault: String = "Default"
+    private var mainNavProfileCache: MainNavProfileCache? = null
 
     private var _mainNavListVisitable = setInitialState()
 
@@ -99,6 +99,10 @@ class MainNavViewModel @Inject constructor(
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel(
             dataList = _mainNavListVisitable
     ))
+
+    val profileDataLiveData: LiveData<AccountHeaderDataModel>
+        get() = _profileDataLiveData
+    private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
 
     // ============================================================================================
     // ================================ Live Data Controller ======================================
@@ -134,8 +138,20 @@ class MainNavViewModel @Inject constructor(
 
     fun setPageSource(pageSource: String = pageSourceDefault) {
         this.pageSource = pageSource
-        if (pageSource == ApplinkConsInternalNavigation.SOURCE_HOME) { removeHomeBackButtonMenu() }
+        if (isLaunchedFromHome()) {
+                        removeHomeBackButtonMenu()
+        }
         else { addHomeBackButtonMenu() }
+    }
+
+    fun setProfileCache(mainNavProfileCache: MainNavProfileCache?) {
+        this.mainNavProfileCache = mainNavProfileCache
+    }
+
+    private fun isLaunchedFromHome(): Boolean {
+        return pageSource == ApplinkConsInternalNavigation.SOURCE_HOME ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
     }
 
     fun getPageSource(): String {
@@ -149,9 +165,9 @@ class MainNavViewModel @Inject constructor(
     fun setInitialState(): MutableList<Visitable<*>> {
         val initialList = mutableListOf<Visitable<*>>()
         if (userSession.get().isLoggedIn) {
-            initialList.add(InitialShimmerProfileDataModel())
+            initialList.add(AccountHeaderDataModel(state = NAV_PROFILE_STATE_LOADING))
         } else {
-            initialList.add(AccountHeaderDataModel(loginState = getLoginState()))
+            initialList.add(AccountHeaderDataModel(loginState = getLoginState(), state = NAV_PROFILE_STATE_SUCCESS))
         }
         initialList.addTransactionMenu()
         initialList.addBUTitle()
@@ -250,11 +266,6 @@ class MainNavViewModel @Inject constructor(
                         addWidgetList(result, it)
                     }
                 }
-
-                onlyForNonLoggedInUser {
-                    delay(1000)
-                    _allProcessFinished.postValue(Event(true))
-                }
             } catch (e: Exception) {
                 //if bu cache is already exist in list
                 //then error state is not needed
@@ -273,19 +284,30 @@ class MainNavViewModel @Inject constructor(
                             _mainNavListVisitable.indexOf(it)
                     )
                 }
-                onlyForNonLoggedInUser {
-                    delay(1000)
-                    _allProcessFinished.postValue(Event(true))
-                }
                 e.printStackTrace()
             }
         })
     }
 
-    suspend fun getProfileDataCached() {
+    fun getProfileDataCached() {
         try {
-            val accountHeaderModel = getProfileDataCacheUseCase.get().executeOnBackground()
-            updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+            mainNavProfileCache?.let {
+                val accountHeaderModel = AccountHeaderDataModel(
+                    profileDataModel = ProfileDataModel(
+                        userName = it.profileName?:"",
+                        userImage = it.profilePicUrl?:""
+                    ),
+                    profileMembershipDataModel = ProfileMembershipDataModel(
+                        badge = it.memberStatusIconUrl?:""
+                    ),
+                    isCacheData = true,
+                    state = NAV_PROFILE_STATE_SUCCESS,
+                    profileSellerDataModel = ProfileSellerDataModel(
+                        isGetShopLoading = true
+                    )
+                )
+                updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -297,17 +319,14 @@ class MainNavViewModel @Inject constructor(
             val adminData = async { getAdminData() }
 
             accountHeaderModel.await().apply {
-                adminData.await().let { (adminRoleText, canGoToSellerAccount, isShopActive) ->
-                    val adminRole =
-                            if (isShopActive) {
-                                adminRoleText
-                            } else {
-                                null
-                            }
+                adminData.await().let { (_, canGoToSellerAccount, _) ->
+                    val adminRole = null
                     setAdminData(adminRole, canGoToSellerAccount)
                 }
             }.let {
+                it.state = NAV_PROFILE_STATE_SUCCESS
                 updateWidget(it, INDEX_MODEL_ACCOUNT)
+                _profileDataLiveData.postValue(it)
             }
         } catch (e: Exception) {
             val accountModel = _mainNavListVisitable.find {
@@ -315,16 +334,8 @@ class MainNavViewModel @Inject constructor(
             } as? AccountHeaderDataModel
 
             accountModel?.let { account ->
-                if (account.isProfileLoading) {
-                    updateWidget(account.copy(
-                            isTokopointExternalAmountError = isABNewTokopoint(),
-                            isGetShopError = true,
-                            isProfileLoading = false,
-                            isGetOvoError = !isABNewTokopoint(),
-                            isGetSaldoError = !isABNewTokopoint(),
-                            isGetUserMembershipError = true,
-                            isGetUserNameError = true
-                    ), INDEX_MODEL_ACCOUNT)
+                if (account.state == NAV_PROFILE_STATE_LOADING) {
+                    updateWidget(account.copy(state = NAV_PROFILE_STATE_FAILED), INDEX_MODEL_ACCOUNT)
                 }
             }
             e.printStackTrace()
@@ -369,7 +380,7 @@ class MainNavViewModel @Inject constructor(
             val orderList = getUohOrdersNavUseCase.get().executeOnBackground()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
-                val othersTransactionCount = orderList.size - 6
+                val othersTransactionCount = orderList.size - MAX_ORDER_TO_SHOW
                 val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemDataModel(
                         NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
@@ -486,7 +497,9 @@ class MainNavViewModel @Inject constructor(
         } as? AccountHeaderDataModel
         newAccountData?.let { accountModel ->
             //set shimmering before getting the data
-            updateWidget(accountModel.copy(isGetShopLoading = true, isGetShopError = true), INDEX_MODEL_ACCOUNT)
+            updateWidget(accountModel.copy(
+                profileSellerDataModel = accountModel.profileSellerDataModel.copy(isGetShopLoading = true, isGetShopError = true)
+            ), INDEX_MODEL_ACCOUNT)
 
             launchCatchError(coroutineContext, block = {
                 val call = async {
@@ -500,25 +513,14 @@ class MainNavViewModel @Inject constructor(
                     }
                 }
                 val response = call.await()
-                val (adminRoleText, canGoToSellerAccount, isShopActive) = adminDataCall.await()
+                val (_, canGoToSellerAccount, _) = adminDataCall.await()
                 val result = (response.takeIf { it is Success } as? Success<ShopData>)?.data
                 result?.let {
                     accountModel.run {
-                        val shopName: String
-                        val shopId: String
-                        val adminRole: String?
-                        val orderCount: Int
-                        if (isShopActive) {
-                            shopName = it.userShopInfo.info.shopName
-                            shopId = it.userShopInfo.info.shopId
-                            orderCount = getTotalOrderCount(it.notifications)
-                            adminRole = adminRoleText
-                        } else {
-                            shopName = ""
-                            shopId = ""
-                            adminRole = null
-                            orderCount = 0
-                        }
+                        val shopName = it.userShopInfo.info.shopName
+                        val shopId: String = if(it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
+                        val adminRole = null
+                        val orderCount = getTotalOrderCount(it.notifications)
                         setUserShopName(shopName, shopId, orderCount)
                         setAdminData(adminRole, canGoToSellerAccount)
                     }
@@ -528,12 +530,16 @@ class MainNavViewModel @Inject constructor(
 
                 val fail = (response.takeIf { it is Fail } )
                 fail?.let {
-                    updateWidget(accountModel.copy(isGetShopError = true, isGetShopLoading = false), INDEX_MODEL_ACCOUNT)
+                    updateWidget(accountModel.copy(
+                        profileSellerDataModel = accountModel.profileSellerDataModel.copy(isGetShopError = true, isGetShopLoading = false)
+                    ), INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
                 }
 
             }){
-                updateWidget(accountModel.copy(isGetShopError = true, isGetShopLoading = false), INDEX_MODEL_ACCOUNT)
+                updateWidget(accountModel.copy(
+                    profileSellerDataModel = accountModel.profileSellerDataModel.copy(isGetShopError = true, isGetShopLoading = false)
+                ), INDEX_MODEL_ACCOUNT)
             }
         }
     }
@@ -596,14 +602,11 @@ class MainNavViewModel @Inject constructor(
         return Triple(adminRoleText, canGoToSellerAccount, isShopActive)
     }
 
-    fun findComplainModelPosition(): Int? {
+    fun findComplainModelPosition(): Int {
         val findComplainModel = _mainNavListVisitable.find {
             it is HomeNavMenuDataModel && it.id == ID_TOKOPEDIA_CARE
         }
-        findComplainModel?.let{
-            return _mainNavListVisitable.indexOf(it)
-        }
-        return null
+        return _mainNavListVisitable.indexOf(findComplainModel)
     }
 
 

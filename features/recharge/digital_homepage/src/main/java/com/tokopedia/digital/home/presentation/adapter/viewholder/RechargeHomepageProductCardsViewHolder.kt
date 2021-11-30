@@ -5,15 +5,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsBinding
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardsModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsAdapter
-import com.tokopedia.digital.home.presentation.adapter.RechargeItemProductCardsDecorator
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
+import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel.Companion.SECTION_PRODUCT_CARD_ROW_1X1
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.view_recharge_home_product_cards.view.*
 
 /**
  * @author by resakemal on 22/06/20.
@@ -23,29 +22,25 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: Recha
         AbstractViewHolder<RechargeHomepageProductCardsModel>(itemView) {
 
     override fun bind(element: RechargeHomepageProductCardsModel) {
+        val bind = ViewRechargeHomeProductCardsBinding.bind(itemView)
         val section = element.section
-        with(itemView) {
+        with(bind) {
             if (section.items.isNotEmpty()) {
-                view_recharge_home_product_cards_container.show()
-                view_recharge_home_product_cards_shimmering.hide()
+                viewRechargeHomeProductCardsContainer.show()
+                viewRechargeHomeProductCardsShimmering.root.hide()
 
-                rv_recharge_home_product_cards.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                rvRechargeHomeProductCards.layoutManager = LinearLayoutManager(root.context, RecyclerView.HORIZONTAL, false)
 
-                val displayMetrics = itemView.context.resources.displayMetrics
-                while (rv_recharge_home_product_cards.itemDecorationCount > 0) rv_recharge_home_product_cards.removeItemDecorationAt(0)
-                rv_recharge_home_product_cards.addItemDecoration(RechargeItemProductCardsDecorator(
-                        PRODUCT_CARDS_SPACE_DP.dpToPx(displayMetrics)
-                ))
+                rvRechargeHomeProductCards.adapter = RechargeItemProductCardsAdapter(section.items, listener,
+                        section.template == SECTION_PRODUCT_CARD_ROW_1X1)
 
-                rv_recharge_home_product_cards.adapter = RechargeItemProductCardsAdapter(section.items, listener)
-
-                tv_recharge_home_product_cards_title.text = section.title
-                addOnImpressionListener(section) {
+                tvRechargeHomeProductCardsTitle.text = section.title
+                root.addOnImpressionListener(section) {
                     listener.onRechargeSectionItemImpression(section)
                 }
             } else {
-                view_recharge_home_product_cards_container.hide()
-                view_recharge_home_product_cards_shimmering.show()
+                viewRechargeHomeProductCardsContainer.hide()
+                viewRechargeHomeProductCardsShimmering.root.show()
 
                 listener.loadRechargeSectionData(element.visitableId())
             }
@@ -54,6 +49,5 @@ class RechargeHomepageProductCardsViewHolder(itemView: View, val listener: Recha
 
     companion object {
         val LAYOUT = R.layout.view_recharge_home_product_cards
-        const val PRODUCT_CARDS_SPACE_DP = 8
     }
 }

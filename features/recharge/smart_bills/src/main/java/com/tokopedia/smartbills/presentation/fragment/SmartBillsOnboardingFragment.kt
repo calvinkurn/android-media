@@ -16,6 +16,9 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalDeals
+import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.smartbills.R
 import kotlinx.android.synthetic.main.fragment_smart_bills_onboarding.*
@@ -60,7 +63,9 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         // If user has logged in, redirect to smart bills page
         if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_CODE_LOGIN) {
-            activity?.finish()
+            context?.let {
+                RouteManager.route(it, ApplinkConsInternalDigital.SMART_BILLS)
+            }
         }
     }
 

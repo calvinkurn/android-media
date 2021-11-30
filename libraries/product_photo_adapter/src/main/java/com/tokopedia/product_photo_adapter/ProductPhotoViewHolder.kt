@@ -44,7 +44,7 @@ class ProductPhotoViewHolder(itemView: View,
         dragHandleView = itemView.findViewById(R.id.iv_drag_handle)
         deleteButton = itemView.findViewById(R.id.iv_delete_button)
 
-        productPhotoView?.setOnTouchListener { _, _ ->
+        productPhotoView?.setOnLongClickListener {
             onPhotoChangeListener.onStartDrag(this)
             true
         }

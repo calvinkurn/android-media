@@ -13,6 +13,7 @@ data class SectionWidgetUiModel(
         override val title: String,
         override val subtitle: String,
         override val tooltip: TooltipUiModel?,
+        override val tag: String,
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
@@ -23,7 +24,8 @@ data class SectionWidgetUiModel(
         override var isLoading: Boolean,
         override var isFromCache: Boolean,
         override var isNeedToBeRemoved: Boolean = false,
-        override var emptyState: WidgetEmptyStateUiModel
+        override var emptyState: WidgetEmptyStateUiModel,
+        var shouldShow: Boolean = true
 ) : BaseWidgetUiModel<BaseDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
@@ -31,7 +33,7 @@ data class SectionWidgetUiModel(
     }
 
     override fun copy(): BaseWidgetUiModel<BaseDataUiModel> {
-        return SectionWidgetUiModel(id, widgetType, title, subtitle, tooltip, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
+        return SectionWidgetUiModel(id, widgetType, title, subtitle, tooltip, tag, appLink, dataKey, ctaText, isShowEmpty, data, impressHolder, isLoaded, isLoading, isFromCache, isNeedToBeRemoved, emptyState)
     }
 
     override fun needToRefreshData(other: BaseWidgetUiModel<BaseDataUiModel>): Boolean {

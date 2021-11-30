@@ -1,19 +1,15 @@
 package com.tokopedia.loginregister.login.di
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
-import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
-import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreferenceManager
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 /**
@@ -31,22 +27,14 @@ open class LoginModule {
     @LoginScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher {
-        return Main
+        return Dispatchers.Main
     }
 
     @LoginScope
     @Provides
-    @RequiresApi(Build.VERSION_CODES.M)
-    open fun provideCryptographyUtils(): Cryptography? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            CryptographyUtils()
-        } else null
-    }
-
-    @LoginScope
-    @Provides
-    fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
-        return FingerprintPreferenceHelper(context)
+    @Named(NAMED_DISPATCHERS_IO)
+    fun provideIoDispatcher(): CoroutineDispatcher {
+        return Dispatchers.IO
     }
 
     @LoginScope
@@ -55,7 +43,11 @@ open class LoginModule {
         return SocmedBottomSheet(context)
     }
 
+    @Provides
+    fun provideFingerprintPreferenceManager(@ApplicationContext context: Context): FingerprintPreference = FingerprintPreferenceManager(context)
+
     companion object {
+        const val NAMED_DISPATCHERS_IO = "DispatcherIO"
         const val LOGIN_CACHE = "LOGIN_CACHE"
     }
 }

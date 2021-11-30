@@ -8,7 +8,6 @@ import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -17,6 +16,7 @@ import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -191,7 +191,7 @@ class HotelHomepageViewModelTest {
                 HotelPropertyDefaultHome.PropertyDefaultHomeMetaAndData(
                         data = defaultHomeData
                 ))
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(HotelPropertyDefaultHome.Response::class.java to data),
                         mapOf<Type, List<GraphqlError>>(), false)
 
@@ -207,7 +207,7 @@ class HotelHomepageViewModelTest {
     @Test
     fun getDefaultHomeParameter_shouldReturnEmptyAndNull() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(),
                         mapOf<Type, List<GraphqlError>>(), false)
 
@@ -257,7 +257,7 @@ class HotelHomepageViewModelTest {
     @Test
     fun deleteRecentSearch_shouldReturnSuccess() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(HotelDeleteRecentSearchEntity.Response::class.java to HotelDeleteRecentSearchEntity.Response(HotelDeleteRecentSearchEntity(true))),
                         mapOf<Type, List<GraphqlError>>(), false)
 
@@ -273,7 +273,7 @@ class HotelHomepageViewModelTest {
     @Test
     fun deleteRecentSearch_shouldReturnFail() {
         //given
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+        coEvery { graphqlRepository.response(any(), any()) } returns
                 GraphqlResponse(mapOf<Type, Any>(),
                         mapOf<Type, List<GraphqlError>>(GraphqlError::class.java to listOf(GraphqlError())), false)
 

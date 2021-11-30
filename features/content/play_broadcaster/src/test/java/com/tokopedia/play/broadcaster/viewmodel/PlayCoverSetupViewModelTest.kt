@@ -41,6 +41,7 @@ class PlayCoverSetupViewModelTest {
     private lateinit var broadcastScheduleDataStore: BroadcastScheduleDataStore
     private lateinit var titleDataStore: TitleDataStore
     private lateinit var tagsDataStore: TagsDataStore
+    private lateinit var interactiveDataStore: InteractiveDataStore
 
     private lateinit var channelConfigStore: ChannelConfigStore
     private lateinit var titleConfigStore: TitleConfigStore
@@ -54,8 +55,6 @@ class PlayCoverSetupViewModelTest {
 
     private val modelBuilder = UiModelBuilder()
 
-    private val uploadCoverTitleException = IllegalStateException("error upload cover title")
-
     @Before
     fun setUp() {
         channelConfigStore = ChannelConfigStoreImpl()
@@ -66,7 +65,8 @@ class PlayCoverSetupViewModelTest {
         broadcastScheduleDataStore = BroadcastScheduleDataStoreImpl(dispatcherProvider, mockk())
         titleDataStore = TitleDataStoreImpl(dispatcherProvider, mockk(), mockk())
         tagsDataStore = TagsDataStoreImpl(dispatcherProvider, mockk())
-        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore)
+        interactiveDataStore = InteractiveDataStoreImpl()
+        mockSetupDataStore = MockSetupDataStore(productDataStore, coverDataStore, broadcastScheduleDataStore, titleDataStore, tagsDataStore, interactiveDataStore)
 
         viewModel = PlayCoverSetupViewModel(
                 hydraConfigStore = HydraConfigStoreImpl(

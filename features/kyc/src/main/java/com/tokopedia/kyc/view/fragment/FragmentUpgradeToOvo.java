@@ -7,12 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.media.loader.JvmMediaLoader;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
@@ -35,8 +37,10 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
     private LoaderUiListener loaderUiListener;
     private Button proceedWithUpgrade;
     private Button upgradeLater;
+    private ImageView imgOvo;
     public static String TAG = "start_upgrade";
     private Snackbar errorSnackbar;
+    private static String URL_IMG_PREMIERE_UPGRADE = "https://images.tokopedia.net/img/android/kyc/ovo_premier_upgrade_ovo.png";
 
     @Inject
     EligibilityCheckPresenter eligibilityCheckPresenter;
@@ -62,6 +66,8 @@ public class FragmentUpgradeToOvo extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.upgrade_ovo, container, false);
         proceedWithUpgrade = view.findViewById(R.id.upgrade_btn);
         upgradeLater = view.findViewById(R.id.later_btn);
+        imgOvo = view.findViewById(R.id.image_ovo);
+        JvmMediaLoader.loadImage(imgOvo, URL_IMG_PREMIERE_UPGRADE);
         proceedWithUpgrade.setOnClickListener(this::onClick);
         upgradeLater.setOnClickListener(this::onClick);
         return view;

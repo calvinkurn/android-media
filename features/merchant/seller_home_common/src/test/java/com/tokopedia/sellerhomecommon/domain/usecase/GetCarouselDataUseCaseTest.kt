@@ -55,13 +55,13 @@ class GetCarouselDataUseCaseTest {
         val successResponse = TestHelper.createSuccessResponse<GetCarouselDataResponse>(RESPONSE_SUCCESS)
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val carouselData = getCarouselDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(!carouselData.isNullOrEmpty())
@@ -73,14 +73,14 @@ class GetCarouselDataUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<GetCarouselDataResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val carouselData = getCarouselDataUseCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertTrue(carouselData.isNullOrEmpty())

@@ -28,14 +28,15 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.databinding.ItemSomListOrderBinding
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifycomponents.toPx
-import kotlinx.android.synthetic.main.item_som_list_order.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 open class SomListOrderViewHolder(
-        itemView: View?,
+        itemView: View,
         protected val listener: SomListOrderItemListener
 ) : AbstractViewHolder<SomListOrderUiModel>(itemView) {
 
@@ -48,6 +49,8 @@ open class SomListOrderViewHolder(
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
         private val endedOrderStatusCode = completedOrderStatusCodes.plus(cancelledOrderStatusCodes)
     }
+
+    protected val binding by viewBinding<ItemSomListOrderBinding>()
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
@@ -75,14 +78,14 @@ open class SomListOrderViewHolder(
         payloads.firstOrNull()?.let {
             if (it is Bundle) {
                 if (it.containsKey(TOGGLE_SELECTION)) {
-                    itemView.container?.layoutTransition?.enableTransitionType(CHANGING)
+                    binding?.container?.layoutTransition?.enableTransitionType(CHANGING)
                     element?.let {
                         setupOrderCard(it)
                         setupStatusIndicator(it)
                         setupCheckBox(it)
                         setupQuickActionButton(element)
                     }
-                    itemView.container?.layoutTransition?.disableTransitionType(CHANGING)
+                    binding?.container?.layoutTransition?.disableTransitionType(CHANGING)
                     return
                 }
             } else if (it is Pair<*, *>) {
@@ -92,7 +95,7 @@ open class SomListOrderViewHolder(
                     setupOrderCard(newItem)
                     val oldIsEnded = oldItem.orderStatusId in endedOrderStatusCode
                     val newIsEnded = newItem.orderStatusId in endedOrderStatusCode
-                    itemView.container?.layoutTransition?.enableTransitionType(CHANGING)
+                    binding?.container?.layoutTransition?.enableTransitionType(CHANGING)
                     if (oldItem.statusIndicatorColor != newItem.statusIndicatorColor) {
                         setupStatusIndicator(newItem)
                     }
@@ -130,7 +133,7 @@ open class SomListOrderViewHolder(
                         setupQuickActionButton(newItem)
                     }
                     onBindFinished(newItem)
-                    itemView.container?.layoutTransition?.disableTransitionType(CHANGING)
+                    binding?.container?.layoutTransition?.disableTransitionType(CHANGING)
                     return
                 }
             }
@@ -139,7 +142,7 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupQuickActionButton(element: SomListOrderUiModel) {
-        with(itemView) {
+        binding?.run{
             val firstButton = element.buttons.firstOrNull()
             if (firstButton != null && !listener.isMultiSelectEnabled()) {
                 btnQuickAction?.text = firstButton.displayName
@@ -153,7 +156,7 @@ open class SomListOrderViewHolder(
     }
 
     private fun setupDestinationInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
-        with(itemView) {
+        binding?.run {
             tvSomListDestinationValue.text = element.destinationProvince
             icSomListDestination.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
             tvSomListDestinationValue.showWithCondition(element.destinationProvince.isNotBlank() && !orderEnded)
@@ -162,7 +165,7 @@ open class SomListOrderViewHolder(
 
     @SuppressLint("SetTextI18n")
     private fun setupCourierInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
-        with(itemView) {
+        binding?.run {
             tvSomListCourierValue.text = "${element.courierName}${" - ${element.courierProductName}".takeIf { element.courierProductName.isNotBlank() }.orEmpty()}"
             icSomListCourier.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
             tvSomListCourierValue.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
@@ -171,7 +174,7 @@ open class SomListOrderViewHolder(
 
     @SuppressLint("SetTextI18n")
     private fun setupProductList(element: SomListOrderUiModel) {
-        with(itemView) {
+        binding?.run {
             ivSomListProduct.apply {
                 loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
                 if (element.tickerInfo.text.isNotBlank()) {
@@ -180,7 +183,8 @@ open class SomListOrderViewHolder(
                     setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
                 }
             }
-            element.orderProduct.firstOrNull()?.let { product ->
+            val displayedProduct = element.orderProduct.firstOrNull()
+            displayedProduct?.let { product ->
                 val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
 
@@ -205,15 +209,15 @@ open class SomListOrderViewHolder(
                     showWithCondition(productVariant.isNotBlank())
                 }
                 tvSomListProductExtra.apply {
-                    text = getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-                    showWithCondition(element.orderProduct.size > 1)
+                    text = getString(R.string.som_list_more_products, (element.productCount - 1).toString())
+                    showWithCondition(element.productCount > 1)
                 }
             }
         }
     }
 
     private fun setupTicker(element: SomListOrderUiModel) {
-        with(itemView) {
+        binding?.run {
             if (element.tickerInfo.text.isNotBlank()) {
                 tickerSomListOrder.apply {
                     setTextDescription(element.tickerInfo.text)
@@ -226,15 +230,15 @@ open class SomListOrderViewHolder(
 
     @SuppressLint("SetTextI18n")
     private fun setupDeadline(element: SomListOrderUiModel) {
-        with(itemView) {
+        binding?.run {
             val deadlineText = element.deadlineText
             val deadlineColor = element.deadlineColor
             if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
-                val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), Color.parseColor(deadlineColor))
-                val textBackgroundDrawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response_text).apply {
+                val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(root.context, com.tokopedia.unifyprinciples.R.color.Unify_G900), Color.parseColor(deadlineColor))
+                val textBackgroundDrawable = MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_text).apply {
                     colorFilter = filter
                 }
-                val iconBackgroundDrawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response_icon).apply {
+                val iconBackgroundDrawable = MethodChecker.getDrawable(root.context, R.drawable.bg_due_response_icon).apply {
                     colorFilter = filter
                 }
                 tvSomListDeadline.apply {
@@ -262,21 +266,21 @@ open class SomListOrderViewHolder(
     }
 
     private fun setupInvoice(element: SomListOrderUiModel) {
-        itemView.tvSomListInvoice.apply {
+        binding?.tvSomListInvoice?.run {
             text = element.orderResi
             showWithCondition(element.orderResi.isNotBlank())
         }
     }
 
     private fun setupBuyerName(element: SomListOrderUiModel) {
-        itemView.tvSomListBuyerName.apply {
+        binding?.tvSomListBuyerName?.run {
             text = element.buyerName
             showWithCondition(element.buyerName.isNotBlank())
         }
     }
 
     private fun setupOrderStatus(element: SomListOrderUiModel) {
-        itemView.tvSomListOrderStatus.apply {
+        binding?.tvSomListOrderStatus?.run {
             text = element.status
             showWithCondition(element.status.isNotBlank())
         }
@@ -284,7 +288,7 @@ open class SomListOrderViewHolder(
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupCheckBox(element: SomListOrderUiModel) {
-        with(itemView) {
+        binding?.run {
             checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())
             checkBoxSomListMultiSelect.isChecked = element.isChecked
             checkBoxSomListMultiSelect.skipAnimation()
@@ -306,11 +310,11 @@ open class SomListOrderViewHolder(
     }
 
     private fun setupStatusIndicator(element: SomListOrderUiModel) {
-        with(itemView) {
+        binding?.run {
             if (listener.isMultiSelectEnabled()) {
                 somOrderListIndicator.gone()
             } else {
-                somOrderListIndicator.background = Utils.getColoredIndicator(context, element.statusIndicatorColor)
+                somOrderListIndicator.background = Utils.getColoredIndicator(root.context, element.statusIndicatorColor)
                 somOrderListIndicator.show()
             }
         }
@@ -342,7 +346,7 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun onBindFinished(element: SomListOrderUiModel) {
-        itemView.btnQuickAction?.let { btnQuickAction ->
+        binding?.btnQuickAction?.let { btnQuickAction ->
             if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
                     element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
                     btnQuickAction.isVisible) {
@@ -355,7 +359,7 @@ open class SomListOrderViewHolder(
         if (element.cancelRequest != 0 && element.cancelRequestStatus != 0) {
             listener.onCheckBoxClickedWhenDisabled()
         } else {
-            itemView.checkBoxSomListMultiSelect.apply {
+            binding?.checkBoxSomListMultiSelect?.run {
                 isChecked = !isChecked
                 element.isChecked = isChecked
             }
@@ -364,8 +368,8 @@ open class SomListOrderViewHolder(
     }
 
     protected open fun setupOrderCard(element: SomListOrderUiModel) {
-        itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) 0.5f else 1f
-        itemView.setOnClickListener {
+        binding?.cardSomOrder?.alpha = if (listener.isMultiSelectEnabled() && hasActiveRequestCancellation(element)) 0.5f else 1f
+        binding?.root?.setOnClickListener {
             if (listener.isMultiSelectEnabled()) touchCheckBox(element)
             else listener.onOrderClicked(element)
         }

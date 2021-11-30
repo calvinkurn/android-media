@@ -93,6 +93,10 @@ data class FlightVerifyParam(
                 @Expose
                 var dob: String = "",
 
+                @SerializedName("identificationNumber")
+                @Expose
+                var identificationNumber: String = "",
+
                 @SerializedName("nationality")
                 @Expose
                 var nationality: String = "",

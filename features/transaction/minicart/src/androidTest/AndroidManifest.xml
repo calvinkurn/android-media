@@ -1,0 +1,18 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.minicart"
+    android:versionCode="1"
+    android:versionName="1.0.0">
+
+    <application
+        android:label="Mini Cart Test"
+        tools:replace="android:label">
+
+        <activity
+            android:name="com.tokopedia.minicart.ExampleActivity"
+            android:label="Mini Cart Example"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"/>
+
+    </application>
+</manifest>

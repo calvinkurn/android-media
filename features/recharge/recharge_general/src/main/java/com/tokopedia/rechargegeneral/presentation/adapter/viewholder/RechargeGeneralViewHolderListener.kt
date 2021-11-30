@@ -9,6 +9,8 @@ interface OnInputListener {
     fun onTextChangeInput()
     fun onCustomInputClick(field: TopupBillsInputFieldWidget,
                            enquiryData: RechargeGeneralProductInput? = null,
-                           productData: List<RechargeGeneralProductSelectData>? = null)
+                           productData: List<RechargeGeneralProductSelectData>? = null,
+                           position: Int = 0
+    )
     fun onInfoClick(text: String)
 }

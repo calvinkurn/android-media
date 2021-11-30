@@ -17,13 +17,13 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
         const val PRODUCT_ID = "productId"
         const val REPUTATION_FORM_QUERY_CLASS_NAME = "ReputationForm"
         const val REPUTATION_FORM_QUERY = """
-            query productrevGetForm(${'$'}reputationId:Int!,${'$'}productId:Int!){
-              productrevGetForm(reputationID:${'$'}reputationId, productID:${'$'}productId){
-                reputationID
+            query productrevGetFormV2(${'$'}reputationId:String!,${'$'}productId:String!){
+              productrevGetFormV2(reputationID:${'$'}reputationId, productID:${'$'}productId){
+                reputationIDStr
                 orderID
                 validToReview
                 productData{
-                  productID
+                  productIDStr
                   productName
                   productPageURL
                   productImageURL
@@ -34,7 +34,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
                   }
                 }
                 shopData{
-                  shopID
+                  shopIDStr
                   shopOpen
                   shopName
                 }
@@ -52,10 +52,10 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
             }
         """
 
-        fun createRequestParam(reputationId: Long, productId: Long): RequestParams {
+        fun createRequestParam(reputationId: String, productId: String): RequestParams {
             return RequestParams.create().apply {
-                putLong(REPUTATION_ID, reputationId)
-                putLong(PRODUCT_ID, productId)
+                putString(REPUTATION_ID, reputationId)
+                putString(PRODUCT_ID, productId)
             }
         }
     }
@@ -67,7 +67,7 @@ class GetProductReputationForm @Inject constructor(private val graphqlRepository
         val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
         val graphqlRequest = GraphqlRequest(ReputationForm.GQL_QUERY, ProductRevGetForm::class.java, requestParams.parameters)
 
-        val response = graphqlRepository.getReseponse(listOf(graphqlRequest), cacheStrategy)
+        val response = graphqlRepository.response(listOf(graphqlRequest), cacheStrategy)
 
         val data: ProductRevGetForm? = response.getData(ProductRevGetForm::class.java)
         val error= response.getError(ProductRevGetForm::class.java)

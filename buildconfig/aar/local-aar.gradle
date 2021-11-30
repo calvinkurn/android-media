@@ -1,0 +1,30 @@
+ext.projectOrAar = { moduleName ->
+    def nameTrim = moduleName
+    if (moduleName.startsWith(":")) {
+        nameTrim = moduleName.replaceFirst(":", "")
+    }
+    if (rootProject.ext.useAARForDevBuild && !rootProject.ext.inDevModules.contains(nameTrim)) {
+        def moduleAarName = nameTrim.replace(":", "_")
+        println("${rootProject.ext.localAARPublishConfig.groupId}:$moduleAarName:${rootProject.ext.localAARPublishConfig.version}")
+        return "${rootProject.ext.localAARPublishConfig.groupId}:$moduleAarName:${rootProject.ext.localAARPublishConfig.version}"
+    } else {
+        return project("$moduleName")
+    }
+}
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        if (useAARForDevBuild) {
+            inDevModules.each { moduleName ->
+                try {
+                    def nameTrim = moduleName
+                    if (moduleName.startsWith(":")) {
+                        nameTrim = moduleName.replaceFirst(":", "")
+                    }
+                    nameTrim = nameTrim.replace(":", "_")
+                    substitute module("${rootProject.ext.localAARPublishConfig.groupId}:$nameTrim:${rootProject.ext.localAARPublishConfig.version}") with project(moduleName)
+                } catch(Exception ex) {}
+            }
+        }
+    }
+}

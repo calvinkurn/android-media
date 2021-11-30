@@ -31,8 +31,8 @@ class ProductReportFormActivity : BaseSimpleActivity(), HasComponent<MerchantRep
     }
 
     override fun getNewFragment(): Fragment {
-        val cacheId = intent.getStringExtra(REASON_CACHE_ID)
-        val productId = intent.getStringExtra(PRODUCT_ID)
+        val cacheId = intent.getStringExtra(REASON_CACHE_ID) ?: ""
+        val productId = intent.getStringExtra(PRODUCT_ID) ?: ""
         return ProductReportSubmitFragment.createInstance(cacheId, productId)
     }
 }

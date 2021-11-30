@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorder.detail.data;
 
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,15 +8,6 @@ public class DetailsData {
     @Expose
 
     private OrderDetails orderDetails;
-
-    public DetailsData(OrderDetails orderDetails) {
-        this.orderDetails = orderDetails;
-    }
-
-    @Override
-    public String toString() {
-        return "[DetailsData:{" + orderDetails + "}]";
-    }
 
     public OrderDetails  orderDetails() {
         return orderDetails;

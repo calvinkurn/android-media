@@ -12,7 +12,7 @@ class TopAdsDebuggerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_analytics_debugger)
+        setContentView(R.layout.activity_simple_toolbar)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.subtitle = "Tokopedia"

@@ -9,8 +9,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.vouchercreation.common.consts.GqlQueryConstant.GET_INIT_VOUCHER_ELIGIBILITY_QUERY
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
+import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.model.VoucherListParam
@@ -31,18 +34,25 @@ import javax.inject.Inject
  */
 
 class VoucherListViewModel @Inject constructor(
-        private val getVoucherListUseCase: GetVoucherListUseCase,
-        private val getNotStartedVoucherListUseCase: GetVoucherListUseCase,
-        private val cancelVoucherUseCase: CancelVoucherUseCase,
-        private val shopBasicDataUseCase: ShopBasicDataUseCase,
-        private val voucherDetailUseCase: VoucherDetailUseCase,
-        private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
-        private val dispatchers: CoroutineDispatchers
+    private val getVoucherListUseCase: GetVoucherListUseCase,
+    private val getNotStartedVoucherListUseCase: GetVoucherListUseCase,
+    private val cancelVoucherUseCase: CancelVoucherUseCase,
+    private val shopBasicDataUseCase: ShopBasicDataUseCase,
+    private val voucherDetailUseCase: VoucherDetailUseCase,
+    private val getBroadCastMetaDataUseCase: GetBroadCastMetaDataUseCase,
+    private val initiateVoucherUseCase: InitiateVoucherUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
+    var isEligibleToCreateVoucher = false
+    var currentPage: Int = 1
+
     private var showBroadCastChatTicker: Boolean = true
+    private var isFreeBroadCastIconVisible: Boolean = false
+    private var isSuccessDialogDisplayed: Boolean = false
 
     private val bcTickerExpirationPeriod = 3 // months
+    private val isUpdate = false
 
     private val notStartedVoucherRequestParam by lazy {
         VoucherListParam.createParam(status = VoucherStatus.NOT_STARTED)
@@ -133,6 +143,9 @@ class VoucherListViewModel @Inject constructor(
     val shopBasicLiveData: LiveData<Result<ShopBasicDataResult>>
         get() = _shopBasicLiveData
 
+    private val createVoucherEligibilityLiveData = MutableLiveData<Result<InitiateVoucherUiModel>>()
+    val createVoucherEligibility: LiveData<Result<InitiateVoucherUiModel>> get() = createVoucherEligibilityLiveData
+
     fun getActiveVoucherList(isFirstTime: Boolean) {
         launchCatchError(block = {
             if (isFirstTime) {
@@ -213,12 +226,40 @@ class VoucherListViewModel @Inject constructor(
         })
     }
 
+    fun getCreateVoucherEligibility() {
+        launchCatchError(block = {
+            initiateVoucherUseCase.query = GET_INIT_VOUCHER_ELIGIBILITY_QUERY
+            initiateVoucherUseCase.params = InitiateVoucherUseCase.createRequestParam(isUpdate)
+            createVoucherEligibilityLiveData.value = Success(withContext(dispatchers.io) {
+                initiateVoucherUseCase.executeOnBackground()
+            })
+        }, onError = {
+            createVoucherEligibilityLiveData.value = Fail(it)
+        })
+    }
+
     fun setShowBroadCastChatTicker(showBroadCastChatTicker: Boolean) {
         this.showBroadCastChatTicker = showBroadCastChatTicker
     }
 
     fun getShowBroadCastChatTicker(): Boolean {
         return showBroadCastChatTicker
+    }
+
+    fun setIsFreeBroadCastIconVisible(broadCastQuota: Int) {
+        this.isFreeBroadCastIconVisible = (broadCastQuota > 0)
+    }
+
+    fun isFreeBroadCastIconVisible(): Boolean {
+        return isFreeBroadCastIconVisible
+    }
+
+    fun setIsSuccessDialogDisplayed(isDisplayed: Boolean) {
+        this.isSuccessDialogDisplayed = isDisplayed
+    }
+
+    fun isSuccessDialogDisplayed() : Boolean {
+        return isSuccessDialogDisplayed
     }
 
     fun isBroadCastChatTickerExpired(firstTimeVisitLong: Long): Boolean {

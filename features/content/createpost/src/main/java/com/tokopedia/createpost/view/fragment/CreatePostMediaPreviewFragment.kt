@@ -12,8 +12,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.RelatedProductAdapter
-import com.tokopedia.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.createpost.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
+import com.tokopedia.createpost.common.view.viewmodel.MediaType
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
@@ -105,7 +106,7 @@ class CreatePostMediaPreviewFragment : BaseDaggerFragment() {
             updateMainImageText()
         }
 
-        val relatedProducts = ArrayList(viewModel.relatedProducts)
+        val relatedProducts = ArrayList<RelatedProductItem>(viewModel.relatedProducts)
         productAdapter.setList(relatedProducts)
         productAdapter.removeEmpty()
         relatedProductRv.adapter = productAdapter

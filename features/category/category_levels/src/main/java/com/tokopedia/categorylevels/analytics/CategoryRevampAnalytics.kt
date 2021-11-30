@@ -7,6 +7,9 @@ import com.tokopedia.discovery2.data.AdditionalInfo
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.topads.sdk.domain.model.CpmData
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -22,18 +25,25 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     : BaseDiscoveryAnalytics(pageType, pagePath, pageIdentifier, campaignCode, sourceIdentifier, trackingQueue) {
 
     private var categoryPageIdentifier : String = pageIdentifier
+    private var categoryUrl : String? = null
+    private var oldCategoryPageIdentifier : String = pageIdentifier
 
     private fun changePageIdentifier(pageIdentifier: String){
         categoryPageIdentifier = pageIdentifier
+    }
+
+    override fun setOldTabPageIdentifier(pageIdentifier: String) {
+        oldCategoryPageIdentifier = categoryPageIdentifier
+        changePageIdentifier(pageIdentifier)
     }
 
     private var viewedProductsSet: ArrayList<String> = arrayListOf()
     private var viewedBestSellerProductsSet: ArrayList<String> = arrayListOf()
     private var dimension40 = ""
     private fun createGeneralEvent(eventName: String = EVENT_CLICK_CATEGORY,
-                                   eventCategory: String = "$VALUE_CATEGORY_PAGE - $categoryPageIdentifier",
+                                   eventCategory: String = VALUE_CATEGORY_PAGE,
                                    eventAction: String,
-                                   eventLabel: String = EMPTY_STRING): MutableMap<String, Any> {
+                                   eventLabel: String = categoryPageIdentifier): MutableMap<String, Any> {
         return mutableMapOf(
                 KEY_EVENT to eventName,
                 KEY_EVENT_CATEGORY to eventCategory,
@@ -50,11 +60,11 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     override fun trackSearchClick() {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE - $pageIdentifier", eventAction = EVENT_CLICK_SEARCH))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE", eventAction = EVENT_CLICK_SEARCH))
     }
 
     override fun trackGlobalNavBarClick(buttonName: String, userID: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE - $pageIdentifier", eventAction = "click $buttonName nav"))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventCategory = "$VALUE_TOP_NAV - $VALUE_CATEGORY_PAGE", eventAction = "click $buttonName nav"))
     }
 
     override fun trackShareClick() {
@@ -100,12 +110,28 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
                 EVENT_PROMO_CLICK to mapOf(
                         KEY_PROMOTIONS to list))
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_NAVIGATION_CHIPS)
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
+            eventAction = CLICK_NAVIGATION_CHIPS,
+            eventLabel = oldCategoryPageIdentifier)
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
+    override fun trackTabsClick(
+        id: String,
+        parentPosition: Int,
+        dataItem: DataItem,
+        tabPosition1: Int
+    ) {
+        dataItem.title = dataItem.name
+        trackClickNavigationChips(dataItem, tabPosition1)
+    }
+
     override fun trackClickNavigationDropDown() {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_NAVIGATION_DROPDOWN))
+    }
+
+    override fun trackCategoryTreeDropDownClick(userLoggedIn: Boolean) {
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_NAVIGATION_DROPDOWN))
     }
 
@@ -113,24 +139,28 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CLOSE_NAVIGATION))
     }
 
+    override fun trackCategoryTreeCloseClick(userLoggedIn: Boolean) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CLOSE_NAVIGATION))
+    }
+
     override fun trackClickExpandNavigationAccordion(categoryId: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_EXPAND_NAVIGATION_ACCORDION, eventLabel = categoryId
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_EXPAND_NAVIGATION_ACCORDION, eventLabel = "$categoryPageIdentifier - $categoryId"
                 ?: ""))
     }
 
     override fun trackClickCollapseNavigationAccordion(categoryId: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_COLLAPSE_NAVIGATION_ACCORDION, eventLabel = categoryId
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_COLLAPSE_NAVIGATION_ACCORDION, eventLabel = "$categoryPageIdentifier - $categoryId"
                 ?: ""))
     }
 
     override fun trackClickCategoryOption(categoryId: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CATEGORY_OPTION, eventLabel = categoryId
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CATEGORY_OPTION, eventLabel = "$categoryPageIdentifier - $categoryId"
                 ?: ""))
     }
 
     override fun trackClickQuickFilter(filterName: String, componentName: String?, value: String, isFilterSelected: Boolean) {
         val selected = if (isFilterSelected) "true" else "false"
-        val map = createGeneralEvent(eventAction = CLICK_FILTER_CHIPS, eventLabel = "$filterName - $value - $selected")
+        val map = createGeneralEvent(eventAction = CLICK_FILTER_CHIPS, eventLabel = "$categoryPageIdentifier - $filterName - $value - $selected")
         getTracker().sendGeneralEvent(map)
     }
 
@@ -173,10 +203,10 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             }
             productMap[KEY_NAME] = it.name.toString()
             var label = ""
-            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+            getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedFilters?.forEach { map ->
                 label = "$label&${map.key}=${map.value}"
             }
-            getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+            getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedSort?.forEach { map ->
                 label = "$label&${map.key}=${map.value}"
             }
             productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
@@ -226,10 +256,10 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 productMap[KEY_ID] = it.productId.toString()
                 productMap[LIST] = productCardItemList
                 var label = ""
-                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedFilters?.forEach { map ->
+                getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedFilters?.forEach { map ->
                     label = "$label&${map.key}=${map.value}"
                 }
-                getComponent(componentsItems.parentComponentId, pageIdentifier)?.selectedSort?.forEach { map ->
+                getComponent(componentsItems.parentComponentId, categoryPageIdentifier)?.selectedSort?.forEach { map ->
                     label = "$label&${map.key}=${map.value}"
                 }
                 productMap[FIELD_DIMENSION_61] = label.removePrefix("&")
@@ -277,6 +307,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
 
     override fun trackOpenScreen(screenName: String, additionalInfo: AdditionalInfo?, userLoggedIn: Boolean) {
         additionalInfo?.categoryData?.let {
+            categoryUrl = it[KEY_URL] ?: ""
             if(it[KEY_REDIRECTION_URL].isNullOrEmpty())
                 TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME, createOpenScreenEventMap(rootId = it[KEY_ROOT_ID], parent = it[KEY_PARENT], id = it[KEY_CATEGORY_ID_MAP], url = it[KEY_URL]))
             if(!it[KEY_CATEGORY_ID_MAP].isNullOrEmpty()){
@@ -325,7 +356,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             if(map.key!= ORIGIN_FILTER)
             label = "$label&${map.key}=${map.value}"
         }
-        getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = label.removePrefix("&")))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventName = EVENT_CLICK_FILTER, eventAction = APPLY_FILTER, eventLabel = "$categoryPageIdentifier - ${label.removePrefix("&")}"))
     }
 
 
@@ -341,7 +372,89 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         return categoryPageIdentifier
     }
 
-    override fun trackLihatSemuaClick(headerName: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_LIHAT_SEMUA, eventLabel = CAROUSEL_BEST_SELLER))
+    override fun trackLihatSemuaClick(dataItem: DataItem?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_LIHAT_SEMUA, eventLabel = "$categoryPageIdentifier - $CAROUSEL_BEST_SELLER"))
+    }
+
+    override fun onTopadsHeadlineImpression(cpmModel: CpmModel, adapterPosition: Int) {
+        val list = ArrayList<Map<String, Any>>()
+        cpmModel.data.firstOrNull()?.let {
+            val productItem = HashMap<String, Any>()
+            productItem[KEY_NAME] = CATEGORY_TOPADS_CARD
+            productItem[KEY_ID] = it.id
+            productItem[KEY_POSITION] = 1.toString()
+            productItem[KEY_CREATIVE] = it.applinks
+            list.add(productItem)
+        }
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+                eventAction = IMPRESSION_TOPADS_HEADLINE)
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                com.tokopedia.discovery2.analytics.EVENT_PROMO_VIEW to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun onTopAdsHeadlineAdsClick(position: Int, applink: String?, cpmData: CpmData, components: ComponentsItem, userLoggedIn: Boolean) {
+        if(applink?.contains("shop") == true && position == 0) {
+            sendShopHeadlineClickEvent(position, cpmData, true)
+        } else if(applink?.contains("shop") == true && position == 1){
+            sendShopHeadlineClickEvent(position, cpmData, false)
+        } else {
+            val productId = applink?.substring(applink.lastIndexOf("/") + 1)
+            val clickedProducts : MutableList<Product> = mutableListOf()
+            for((index, productItem) in cpmData.cpm.cpmShop.products.withIndex()) {
+                if(productId.equals(productItem.id)) {
+                    clickedProducts.clear()
+                    clickedProducts.add(productItem)
+                    sendTopAdsHeadlineProductClick(clickedProducts, index+1)
+                }
+            }
+        }
+    }
+
+    private fun sendTopAdsHeadlineProductClick(clickedProducts: MutableList<Product>, position: Int) {
+        val list = ArrayList<Map<String, Any>>()
+        for (item in clickedProducts) {
+            val productItem = HashMap<String, Any>()
+            productItem[KEY_NAME] = item.name
+            productItem[KEY_ID] = item.id
+            productItem[KEY_POSITION] = position.toString()
+            productItem[LIST] = "$categoryUrl - topads headline"
+            productItem[PRICE] = CurrencyFormatHelper.convertRupiahToInt(item.priceFormat ?: "")
+            productItem[KEY_VARIANT] = ""
+            productItem[KEY_BRAND] = ""
+            productItem[CATEGORY] = ""
+            list.add(productItem)
+        }
+        val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK,
+                eventAction = CLICK_TOPADS_HEADLINE_PRODUCT, eventLabel = "$categoryPageIdentifier - $CLICK_PRODUCT")
+        val eCommerce = mapOf(
+                CLICK to mapOf(
+                        ACTION_FIELD to mapOf(
+                                LIST to "$categoryUrl - topads headline"
+                        ),
+                        PRODUCTS to list
+                )
+        )
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    private fun sendShopHeadlineClickEvent(position: Int, it: CpmData, isCekSekarang : Boolean) {
+        val list = ArrayList<Map<String, Any>>()
+        val productItem = HashMap<String, Any>()
+        productItem[KEY_NAME] = CATEGORY_TOPADS_CARD
+        productItem[KEY_ID] = it.id
+        productItem[KEY_POSITION] = position.toString()
+        productItem[KEY_CREATIVE] = it.applinks
+        list.add(productItem)
+        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK,
+                eventAction = CLICK_TOPADS_HEADLINE, eventLabel = if(isCekSekarang) "$categoryPageIdentifier -$CEK_SEKARANG" else "$categoryPageIdentifier - $HEADLINE_SHOP_NAME")
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                com.tokopedia.discovery2.analytics.EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 }

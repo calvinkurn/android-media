@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:id="@+id/recyclerViewEmailExtension"
-  android:layout_width="match_parent"
-  android:layout_height="@dimen/dp_48"
-  android:orientation="horizontal"
-  android:background="@color/Unify_N0"
-  app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-  tools:listitem="@layout/layout_list_email_extension">
-  
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/recyclerViewEmailExtension"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/layout_lvl6"
+    android:background="@color/Unify_N0"
+    android:orientation="horizontal"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+    tools:listitem="@layout/layout_list_email_extension">
+
 </androidx.recyclerview.widget.RecyclerView>

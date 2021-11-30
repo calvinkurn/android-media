@@ -1,10 +1,13 @@
 package com.tokopedia.mvcwidget
 
+import android.os.Parcelable
 import androidx.annotation.StringDef
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.DEFAULT
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.FIRST_FOLLOW
+import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_CLOSE
 import com.tokopedia.mvcwidget.FollowWidgetType.Companion.MEMBERSHIP_OPEN
+import kotlinx.android.parcel.Parcelize
 
 data class TokopointsCatalogMVCListResponse(
         @SerializedName("tokopointsCatalogMVCList") val data: TokopointsCatalogMVCList? = null
@@ -31,6 +34,8 @@ data class CatalogList(
         @SerializedName("baseCode") val baseCode: String?,
         @SerializedName("promoID") val promoID: String?,
         @SerializedName("title") val title: String?,
+        @SerializedName("catalogType") val catalogType: Int,
+        @SerializedName("promoType") val promoType: String?,
         @SerializedName("maximumBenefitAmount") val maximumBenefitAmount: String?,
         @SerializedName("minimumUsageAmount") val minimumUsageAmount: String?,
         @SerializedName("minimumUsageLabel") val minimumUsageLabel: String?,
@@ -45,10 +50,14 @@ data class FollowWidget(
         @SerializedName("isShown") val isShown: Boolean?,
         @FollowWidgetType @SerializedName("type") val type: String?,
         @SerializedName("content") val content: String?,
+        @SerializedName("contentDetails") val contentDetails: String?,
+        @SerializedName("membershipMinimumTransaction") val membershipMinimumTransaction: Int?,
+        @SerializedName("membershipMinimumTransactionLabel") val membershipMinimumTransactionLabel: String?,
         @SerializedName("iconURL") val iconURL: String?,
         @SerializedName("membershipCardID") val membershipCardID: String?,
         @SerializedName("membershipHowTo") val membershipHowTo: List<MembershipHowTo?>?,
-) : MvcListItem
+        @SerializedName("isCollapsed") var isCollapsed : Boolean = false
+        ) : MvcListItem
 
 data class MembershipHowTo(
         @SerializedName("imageURL") val imageURL: String?,
@@ -61,17 +70,17 @@ data class TokopointsCatalogMVCSummaryResponse(
 
 data class TokopointsCatalogMVCSummary(
         @SerializedName("resultStatus") val resultStatus: ResultStatus?,
-        @SerializedName("titles") val titles: List<Titles?>?,
         @SerializedName("isShown") val isShown: Boolean?,
-        @SerializedName("subTitle") val subTitle: String?,
-        @SerializedName("imageURL") val imageURL: String?,
         @SerializedName("counterTotal") val counterTotal: Int?,
-)
+        @SerializedName("animatedInfos") val animatedInfoList: List<AnimatedInfos?>?
+        )
 
-data class Titles(
-        @SerializedName("text") val text: String?,
-        @SerializedName("icon") val icon: String?
-)
+@Parcelize
+data class AnimatedInfos(
+        @SerializedName("title") val title: String?,
+        @SerializedName("subTitle") val subTitle: String?,
+        @SerializedName("iconURL") val iconURL: String?
+):Parcelable
 
 data class MembershipRegisterResponse(
         @SerializedName("membershipRegister") val data: MembershipRegister? = null
@@ -104,12 +113,13 @@ data class FollowShop(
 )
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(FIRST_FOLLOW, MEMBERSHIP_OPEN,DEFAULT)
+@StringDef(FIRST_FOLLOW, MEMBERSHIP_OPEN, MEMBERSHIP_CLOSE, DEFAULT)
 annotation class FollowWidgetType {
 
     companion object {
         const val FIRST_FOLLOW = "first_follow"
         const val MEMBERSHIP_OPEN = "membership_open"
+        const val MEMBERSHIP_CLOSE = "membership_close"
         const val DEFAULT = "default"
     }
 }

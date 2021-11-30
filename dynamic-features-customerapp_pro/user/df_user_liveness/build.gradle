@@ -10,12 +10,12 @@ repositories{
     google()
     mavenCentral()
     mavenLocal()
-    jcenter()
     maven { url "https://maven.google.com" }
 }
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -61,5 +61,5 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp_pro)
 
-    implementation project(rootProject.ext.features.liveness)
+    implementation projectOrAar(rootProject.ext.features.liveness)
 }

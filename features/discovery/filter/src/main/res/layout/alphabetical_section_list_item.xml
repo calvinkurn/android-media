@@ -9,7 +9,7 @@
         android:id="@+id/section_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16"
+        android:padding="16dp"
         android:background="@color/Unify_N0"
         style="@style/TextView.Small.Green.Bold"
         tools:text="Section Header"

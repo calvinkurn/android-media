@@ -14,6 +14,7 @@ data class ProductMediaDataModel(
 ) : DynamicPdpDataModel {
     companion object {
         const val VIDEO_TYPE = "video"
+        const val IMAGE_TYPE = "image"
     }
 
     fun isMediaContainsVideo(): Boolean = listOfMedia.any { it.type == VIDEO_TYPE }

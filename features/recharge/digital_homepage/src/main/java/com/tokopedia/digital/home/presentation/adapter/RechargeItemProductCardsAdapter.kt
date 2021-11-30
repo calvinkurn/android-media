@@ -2,24 +2,29 @@ package com.tokopedia.digital.home.presentation.adapter
 
 import android.text.Html
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.annotation.NonNull
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.digital.home.R
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.loadImage
-import kotlinx.android.synthetic.main.view_recharge_home_product_cards_item.view.*
 
-class RechargeItemProductCardsAdapter(val items: List<RechargeHomepageSections.Item>, val onItemBindListener: RechargeHomepageItemListener)
+
+class RechargeItemProductCardsAdapter(val items: List<RechargeHomepageSections.Item>,
+                                      val onItemBindListener: RechargeHomepageItemListener,
+                                      private val isProductCard1x1: Boolean = false)
     : RecyclerView.Adapter<RechargeItemProductCardsAdapter.RechargeItemProductCardViewHolder>() {
 
     override fun onBindViewHolder(viewHolder: RechargeItemProductCardViewHolder, position: Int) {
-        viewHolder.bind(items[position], onItemBindListener)
+        viewHolder.bind(items[position], onItemBindListener, isProductCard1x1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): RechargeItemProductCardViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_recharge_home_product_cards_item, parent, false)
+        
+        val view = ViewRechargeHomeProductCardsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RechargeItemProductCardViewHolder(view)
     }
 
@@ -27,17 +32,28 @@ class RechargeItemProductCardsAdapter(val items: List<RechargeHomepageSections.I
         return items.size
     }
 
-    class RechargeItemProductCardViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener) {
-            itemView.iv_recharge_home_product_cards_item.loadImage(element.mediaUrl)
-            itemView.tv_recharge_home_product_cards_item_category.text = element.title
-            itemView.tv_recharge_home_product_cards_item_title.text = element.subtitle
-            itemView.tv_recharge_home_product_cards_item_price_info.text = Html.fromHtml(element.label1)
-            itemView.tv_recharge_home_product_cards_item_price.text = element.label2
-            itemView.setOnClickListener {
-                onItemBindListener.onRechargeSectionItemClicked(element)
+    class RechargeItemProductCardViewHolder(val binding: ViewRechargeHomeProductCardsItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(element: RechargeHomepageSections.Item, onItemBindListener: RechargeHomepageItemListener,
+                 isProductCard1x1: Boolean) {
+            with(binding) {
+                if (isProductCard1x1) {
+                        (ivRechargeHomeProductCardsItem.layoutParams as ConstraintLayout.LayoutParams)
+                            .dimensionRatio = SQUARE_DIMEN_RATIO
+                    ivRechargeHomeProductCardsItem.scaleType = ImageView.ScaleType.FIT_CENTER
+                }
+                ivRechargeHomeProductCardsItem.loadImage(element.mediaUrl)
+                tvRechargeHomeProductCardsItemCategory.text = element.title
+                tvRechargeHomeProductCardsItemTitle.text = element.subtitle
+                tvRechargeHomeProductCardsItemPriceInfo.text = Html.fromHtml(element.label1)
+                tvRechargeHomeProductCardsItemPrice.text = element.label2
+                root.setOnClickListener {
+                    onItemBindListener.onRechargeSectionItemClicked(element)
+                }
             }
         }
 
+        companion object {
+            const val SQUARE_DIMEN_RATIO = "1:1"
+        }
     }
 }

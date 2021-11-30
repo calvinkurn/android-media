@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffcallback.WaitingPaymentOrderDiffCallback
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
+import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.ErrorType
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderErrorNetworkUiModel
 
 /**
@@ -25,7 +26,7 @@ class WaitingPaymentOrderAdapter(
         this.recyclerView = recyclerView
     }
 
-    fun setErrorNetworkModel(errorType: Int, onRetryListener: ErrorNetworkModel.OnRetryListener) {
+    fun setErrorNetworkModel(@ErrorType errorType: Int, onRetryListener: ErrorNetworkModel.OnRetryListener) {
         setErrorNetworkModel(WaitingPaymentOrderErrorNetworkUiModel(errorType).apply {
             this.onRetryListener = onRetryListener
         })

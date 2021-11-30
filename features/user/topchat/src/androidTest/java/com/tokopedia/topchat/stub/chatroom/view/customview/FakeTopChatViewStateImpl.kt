@@ -2,9 +2,10 @@ package com.tokopedia.topchat.stub.chatroom.view.customview
 
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.test.espresso.idling.CountingIdlingResource
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.listener.TypingListener
+import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
@@ -24,7 +25,6 @@ class FakeTopChatViewStateImpl(
         headerMenuListener: HeaderMenuListener,
         toolbar: Toolbar,
         analytics: TopChatAnalytics,
-        private val countingIdlingResource: CountingIdlingResource
 ) : TopChatViewStateImpl(
         view,
         typingListener,
@@ -37,18 +37,27 @@ class FakeTopChatViewStateImpl(
         toolbar,
         analytics) {
 
+
+    override fun showHeaderMenuBottomSheet(
+        chatroomViewModel: ChatroomViewModel,
+        headerMenuListener: HeaderMenuListener
+    ) {
+        super.showHeaderMenuBottomSheet(chatroomViewModel, headerMenuListener)
+        sendListener.getSupportChildFragmentManager().executePendingTransactions()
+    }
+
     override fun onGlobalLayout() {
-        countingIdlingResource.increment()
+        TopchatRoomTest.keyboardStateIdling?.increment()
         super.onGlobalLayout()
     }
 
     override fun onKeyboardOpened() {
         super.onKeyboardOpened()
-        countingIdlingResource.decrement()
+        TopchatRoomTest.keyboardStateIdling?.decrement()
     }
 
     override fun onKeyboardClosed() {
         super.onKeyboardClosed()
-        countingIdlingResource.decrement()
+        TopchatRoomTest.keyboardStateIdling?.decrement()
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailDataModel
 import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
 import com.tokopedia.product.estimasiongkir.data.model.RatesEstimateRequest

@@ -35,7 +35,7 @@ public class RemoveWishListUseCase {
 
         Map<String, Object> variables = new HashMap<>();
         if (!productId.isEmpty()) {
-            variables.put(PARAM_PRODUCT_ID, Integer.parseInt(productId));
+            variables.put(PARAM_PRODUCT_ID, productId);
         }
         if (!userId.isEmpty()) {
             variables.put(PARAM_USER_ID, Integer.parseInt(userId));

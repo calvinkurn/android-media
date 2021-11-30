@@ -11,7 +11,6 @@ import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.oneclickcheckout.common.idling.OccIdlingResource
@@ -20,8 +19,8 @@ import com.tokopedia.oneclickcheckout.common.robot.orderSummaryPage
 import com.tokopedia.oneclickcheckout.common.rule.FreshIdlingResourceTestRule
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageActivity
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -44,11 +43,7 @@ class OrderSummaryPageActivityTrackingTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private var idlingResource: IdlingResource? = null
 
-    private val gtmLogDBSource = GtmLogDBSource(context)
-
     private val cartInterceptor = OneClickCheckoutInterceptor.cartInterceptor
-    private val preferenceInterceptor = OneClickCheckoutInterceptor.preferenceInterceptor
-    private val logisticInterceptor = OneClickCheckoutInterceptor.logisticInterceptor
     private val promoInterceptor = OneClickCheckoutInterceptor.promoInterceptor
     private val checkoutInterceptor = OneClickCheckoutInterceptor.checkoutInterceptor
 
@@ -66,7 +61,6 @@ class OrderSummaryPageActivityTrackingTest {
     @After
     fun cleanup() {
         IdlingRegistry.getInstance().unregister(idlingResource)
-        activityRule.finishActivity()
     }
 
     @Test
@@ -79,17 +73,7 @@ class OrderSummaryPageActivityTrackingTest {
         intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
-//            clickOnboardingInfo()
-//            closeBottomSheet()
-//
-//            cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_MANY_PROFILE_REVAMP_RESPONSE_PATH
-//            clickAddPreferenceForNewBuyer()
-
             clickButtonPromo()
-
-//            clickAddOrChangePreferenceRevamp {
-//                clickAddPreference()
-//            }
 
             cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_REVAMP_RESPONSE_PATH
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
@@ -98,19 +82,13 @@ class OrderSummaryPageActivityTrackingTest {
                 clickAddress(1)
             }
 
-//            clickAddOrChangePreferenceRevamp {
-//                clickEditPreference(1)
-//            }
-//
-//            clickAddOrChangePreferenceRevamp {
-//                clickUsePreference(1)
-//            }
-
             clickChangeCourierRevamp {
                 promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_HALF_APPLIED_RESPONSE
                 chooseCourierWithText("AnterAja")
             }
 
+            // wait for bottom sheet to fully close
+            Thread.sleep(2000)
             clickButtonPromo()
 
             promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_BBO_APPLIED_RESPONSE
@@ -118,9 +96,9 @@ class OrderSummaryPageActivityTrackingTest {
 
             clickButtonPromo()
 
-            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
+            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_PRICE_CHANGE_RESPONSE_PATH
             pay()
-            closeBottomSheet()
+            clickDialogPrimaryButton()
 
             checkoutInterceptor.customCheckoutResponsePath = null
             pay()
@@ -142,7 +120,6 @@ class OrderSummaryPageActivityTrackingTest {
             checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
             pay()
             clickButtonContinueWithRedPromo()
-            closeBottomSheet()
             closeBottomSheet()
 
             checkoutInterceptor.customCheckoutResponsePath = null

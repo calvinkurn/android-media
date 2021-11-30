@@ -66,24 +66,24 @@ class PostMessageUseCaseTest {
 
 
     /************************************* getCreateTicketResult() **********************************/
-    @Test
-    fun `check function invocation getCreateTicketResult`() {
-        runBlockingTest {
-            coEvery {
-                contactUsRepository.getGQLData("",
-                        TicketReplyResponse::class.java,
-                        any())
-            } returns mockk()
-
-            postMessageUseCase.getCreateTicketResult(mockk(relaxed = true))
-
-            coVerify(exactly = 1) {
-                contactUsRepository.getGQLData("",
-                        TicketReplyResponse::class.java,
-                        any())
-            }
-        }
-    }
+//    @Test
+//    fun `check function invocation getCreateTicketResult`() {
+//        runBlockingTest {
+//            coEvery {
+//                contactUsRepository.getGQLData("",
+//                        TicketReplyResponse::class.java,
+//                        any())
+//            } returns mockk()
+//
+//            postMessageUseCase.getCreateTicketResult(mockk(relaxed = true))
+//
+//            coVerify(exactly = 1) {
+//                contactUsRepository.getGQLData("",
+//                        TicketReplyResponse::class.java,
+//                        any())
+//            }
+//        }
+//    }
 
     /************************************* getCreateTicketResult() **********************************/
 

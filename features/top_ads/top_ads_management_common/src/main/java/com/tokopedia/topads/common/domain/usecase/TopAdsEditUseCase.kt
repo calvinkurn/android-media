@@ -14,13 +14,14 @@ import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_EDIT_OPTION
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_GROUP_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_PRICE_BID
 import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_RECOM_EDIT_SOURCE
 import com.tokopedia.topads.common.data.internal.ParamObject.PRODUCT
 import com.tokopedia.topads.common.data.raw.EDIT_GROUP_QUERY
 import com.tokopedia.topads.common.data.response.FinalAdResponse
 import com.tokopedia.topads.common.data.response.GroupEditInput
-import com.tokopedia.topads.common.data.response.TopadsManageGroupAdsInput
+import com.tokopedia.topads.common.data.response.TopadsManagePromoGroupProductInput
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -63,11 +64,12 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
         return tempRequest
     }
 
-    private fun convertToParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?): TopadsManageGroupAdsInput {
+    private fun convertToParam(dataProduct: MutableList<GroupEditInput.Group.AdOperationsItem>?, dataGroup: HashMap<String, Any?>?): TopadsManagePromoGroupProductInput {
         val priceBidGroup = dataGroup?.get(PARAM_PRICE_BID) as? Int
         val dailyBudgetGroup = dataGroup?.get(PARAM_DAILY_BUDGET) as? Double
         val groupId = dataGroup?.get(PARAM_GROUP_Id) as String
-        return TopadsManageGroupAdsInput().apply {
+        val groupType = dataGroup?.get(PARAM_GROUP_TYPE) as String
+        return TopadsManagePromoGroupProductInput().apply {
             shopID = userSession.shopId
             keywordOperation = null
             groupID = groupId
@@ -76,10 +78,9 @@ class TopAdsEditUseCase @Inject constructor(val userSession: UserSessionInterfac
                     action = PARAM_EDIT_OPTION,
                     group = GroupEditInput.Group(
                             adOperations = dataProduct,
+                            type = groupType,
                             name = null,
-                            type = PRODUCT,
                             dailyBudget = dailyBudgetGroup,
-                            priceBid = priceBidGroup?.toDouble()
                     )
             )
         }

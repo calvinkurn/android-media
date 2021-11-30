@@ -24,12 +24,13 @@ object RatesMapper {
                 boType = ratesModel.freeShipping.flag,
                 freeOngkirEstimation = ratesModel.freeShipping.etaText,
                 freeOngkirImageUrl = request.freeOngkirUrl,
-                freeOngkirPrice = ratesModel.freeShipping.shipping_price,
+                freeOngkirPrice = ratesModel.freeShipping.shippingPrice,
                 isFulfillment = request.isFulfillment,
                 tokoCabangContent = ratesModel.tokoCabangData.content,
                 tokoCabangIcon = ratesModel.tokoCabangData.iconUrl,
                 tokoCabangTitle = ratesModel.tokoCabangData.title,
-                uspTokoCabangImgUrl = request.uspImageUrl
+                uspTokoCabangImgUrl = request.uspImageUrl,
+                freeOngkirTokoNowText =ratesModel.freeShipping.title
         )
         val productServiceData: MutableList<ProductShippingVisitable> = mapToServicesData(ratesModel.rates)
         productServiceData.add(0, productShippingHeader)

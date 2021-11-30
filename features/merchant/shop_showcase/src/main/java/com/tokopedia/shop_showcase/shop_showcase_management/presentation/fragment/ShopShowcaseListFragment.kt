@@ -38,6 +38,8 @@ import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.*
 import com.tokopedia.shop_showcase.common.util.ShowcaseErrorHandler
 import com.tokopedia.shop_showcase.common.util.ShowcaseListException
+import com.tokopedia.shop_showcase.databinding.FragmentShopShowcaseListBinding
+import com.tokopedia.shop_showcase.databinding.SettingItemMenuBinding
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.activity.ShopShowcaseAddActivity
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
@@ -66,7 +68,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
                            isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false,
-                           isSellerNeedToHideShowcaseGroupValue: Boolean = false
+                           isNeedToOpenCreateShowcase: Boolean? = false, isSellerNeedToHideShowcaseGroupValue: Boolean = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -77,6 +79,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
+            bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE, isNeedToOpenCreateShowcase ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE,
@@ -86,6 +89,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         }
 
         const val REQUEST_EDIT_SHOWCASE_CODE = 1
+        private const val LOAD_DATA_DELAY_MILLIS = 500L
     }
 
     private val userSession: UserSessionInterface by lazy {
@@ -95,17 +99,18 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     @Inject
     lateinit var viewModel: ShopShowcaseListViewModel
     lateinit var shopShowcaseFragmentNavigation: ShopShowcaseFragmentNavigation
-    private lateinit var btnAddEtalase: UnifyButton
-    private lateinit var searchbar: SearchBarUnify
-    private lateinit var loading: LoaderUnify
-    private lateinit var bottomSheet: BottomSheetUnify
-    private lateinit var headerUnify: HeaderUnify
-    private lateinit var headerLayout: CardView
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var emptyStateContainer: LinearLayout
-    private lateinit var imgEmptyState: ImageView
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var globalError: GlobalError
+    private var _binding: FragmentShopShowcaseListBinding? = null
+    private var buttonAddEtalase: UnifyButton? = null
+    private var searchbarShowcaseList: SearchBarUnify? = null
+    private var loader: LoaderUnify? = null
+    private var bottomSheet: BottomSheetUnify? = null
+    private var headerUnify: HeaderUnify? = null
+    private var headerLayoutShowcaseList: CardView? = null
+    private var recyclerView: RecyclerView? = null
+    private var emptyStateContainer: LinearLayout? = null
+    private var imageEmptyState: ImageView? = null
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var globalErrorShowcaseList: GlobalError? = null
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
     private var showcaseList: List<ShopEtalaseModel> = listOf()
@@ -119,6 +124,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
+    private var isNeedToOpenCreateShowcase = false
     private var isReorderList = false
     private var isSellerNeedToHideShowcaseGroupValue = false
 
@@ -190,29 +196,32 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
+            isNeedToOpenCreateShowcase = it.getBoolean(ShopShowcaseParamConstant.EXTRA_IS_NEED_TO_OPEN_CREATE_SHOWCASE)
             isSellerNeedToHideShowcaseGroupValue = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE)
         }
         super.onCreate(savedInstanceState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
-        headerUnify = view.findViewById(R.id.showcase_list_toolbar)
-        headerLayout = view.findViewById(R.id.header_layout)
-        globalError = view.findViewById(R.id.globalError)
-        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
-        btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
-        loading = view.findViewById(R.id.loading)
-        searchbar = view.findViewById(R.id.searchbar)
-        emptyStateContainer = view.findViewById(R.id.empty_state)
-        imgEmptyState = view.findViewById(R.id.img_empty_state)
-        recyclerView = view.findViewById(R.id.rv_list_etalase)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val binding = FragmentShopShowcaseListBinding.inflate(inflater, container, false).apply {
+            headerUnify = showcaseListToolbar
+            headerLayoutShowcaseList = headerLayout
+            globalErrorShowcaseList = globalError
+            swipeRefreshLayout = swipeRefresh
+            buttonAddEtalase = btnAddEtalase
+            loader = loading
+            searchbarShowcaseList = searchbar
+            emptyStateContainer = emptyState
+            imageEmptyState = imgEmptyState
+            recyclerView = rvListEtalase
+        }
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         shopShowcaseListAdapter = ShopShowcaseListAdapter(this, isMyShop)
-        recyclerView.layoutManager = layoutManager
-        recyclerView.adapter = shopShowcaseListAdapter
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = shopShowcaseListAdapter
 
-        return view
+        _binding = binding
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -230,15 +239,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeDeleteShopShowcase()
         observeTotalProduct()
 
-        btnAddEtalase.setOnClickListener {
-//            isNeedToGoToAddShowcase = true
+        buttonAddEtalase?.setOnClickListener {
             tracking?.clickTambahEtalase(shopId, shopType)
             checkTotalProduct()
         }
     }
 
     private fun initSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener {
+        swipeRefreshLayout?.setOnRefreshListener {
             refreshData()
         }
     }
@@ -250,21 +258,20 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun initSearchbar() {
-        searchbar.searchBarTextField.setOnFocusChangeListener(object : View.OnFocusChangeListener {
-            override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                if (hasFocus) {
-                    tracking?.clickSearchBar(shopId, shopType)
-                }
+        searchbarShowcaseList?.searchBarTextField?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                tracking?.clickSearchBar(shopId, shopType)
             }
-        })
+        }
 
-        searchbar.searchBarTextField.addTextChangedListener(object : AfterTextWatcher() {
+        searchbarShowcaseList?.searchBarTextField?.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 showLoading(true)
 
                 val shopShowcaseViewModelList = ArrayList<ShopEtalaseModel>()
                 if (showcaseList != null && showcaseList.size > 0) {
                     val lowercaseKeyword = s.toString().toLowerCase()
+                    tracking?.userTypeSearch(shopId, userSession.userId, lowercaseKeyword)
                     for (showcase in showcaseList) {
                         if (showcase.name.toLowerCase().contains(lowercaseKeyword)) {
                             shopShowcaseViewModelList.add(showcase)
@@ -287,18 +294,16 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun initRecyclerView() {
         var currentScrollPosition = 0
 
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
-                val HAS_ELEVATION = 16.0f
-                val NO_ELEVATION = 0f
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        headerLayout?.cardElevation = NO_ELEVATION
+                        headerLayoutShowcaseList?.cardElevation = CARD_HEADER_NO_ELEVATION
                     } else {
-                        headerLayout?.cardElevation = HAS_ELEVATION
+                        headerLayoutShowcaseList?.cardElevation = CARD_HEADER_ELEVATION
                     }
                 }
             }
@@ -317,6 +322,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.deleteShopShowcaseResponse.removeObservers(this)
         viewModel.shopTotalProduct.removeObservers(this)
         super.onDestroy()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun sendClickShowcaseMenuMore(dataShowcase: ShopEtalaseModel, position: Int) {
@@ -460,11 +470,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
+        if (isNeedToOpenCreateShowcase && isMyShop) {
+            checkTotalProduct()
+        }
         if (isNeedToGoToAddShowcase && isMyShop) {
             checkTotalProduct()
             Handler().postDelayed({
                 viewModel.getShopShowcaseListAsSeller()
-            }, 500)
+            }, LOAD_DATA_DELAY_MILLIS)
         } else {
             if (!isMyShop) {
                 viewModel.getShopShowcaseListAsBuyer(
@@ -491,54 +504,58 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun handleEditShowcase(dataShowcase: ShopEtalaseModel, position: Int) {
-        bottomSheet = BottomSheetUnify()
-        bottomSheet.setTitle(getString(R.string.setting_showcase))
-        bottomSheet.setCloseClickListener {
-            onDismissBottomSheet()
-        }
-        val bottomSheetView = LayoutInflater.from(context).inflate(R.layout.setting_item_menu, null)
-        val btnEditBottomSheet: LinearLayout = bottomSheetView.findViewById(R.id.ubah_container)
-        val btnDeleteBottomSheet: LinearLayout = bottomSheetView.findViewById(R.id.hapus_container)
-        val showcaseId = dataShowcase.id
-        val showcaseName = dataShowcase.name
-        bottomSheetView.apply {
-            btnEditBottomSheet.setOnClickListener {
+        context?.let {
+            bottomSheet = BottomSheetUnify()
+            bottomSheet?.setTitle(it.getString(R.string.setting_showcase))
+            bottomSheet?.setCloseClickListener {
                 onDismissBottomSheet()
-                tracking?.clickEditMenu(shopId, shopType)
-                val isActionEdit = true
-                val intent = ShopShowcaseAddActivity.createIntent(context, isActionEdit, showcaseId, showcaseName)
-                startActivityForResult(intent, REQUEST_EDIT_SHOWCASE_CODE)
             }
-            btnDeleteBottomSheet.setOnClickListener {
-                onDismissBottomSheet()
-                tracking?.clickDeleteMenu(shopId, shopType)
-                if (showcaseId.isNotEmpty()) {
-                    showDeleteDialog(showcaseId)
-                } else {
-                    showErrorResponse(context.getString(R.string.error_happens))
+            val bottomSheetBinding = SettingItemMenuBinding.inflate(layoutInflater).apply {
+                val btnEditBottomSheet: LinearLayout = ubahContainer
+                val btnDeleteBottomSheet: LinearLayout = hapusContainer
+                val showcaseId = dataShowcase.id
+                val showcaseName = dataShowcase.name
+                context?.let { ctx ->
+                    btnEditBottomSheet.setOnClickListener {
+                        onDismissBottomSheet()
+                        tracking?.clickEditMenu(shopId, shopType)
+                        val isActionEdit = true
+                        val intent = ShopShowcaseAddActivity.createIntent(ctx, isActionEdit, showcaseId, showcaseName)
+                        startActivityForResult(intent, ShopShowcaseListFragment.REQUEST_EDIT_SHOWCASE_CODE)
+                    }
+
+                    btnDeleteBottomSheet.setOnClickListener {
+                        onDismissBottomSheet()
+                        tracking?.clickDeleteMenu(shopId, shopType)
+                        if (showcaseId.isNotEmpty()) {
+                            showDeleteDialog(showcaseId)
+                        } else {
+                            showErrorResponse(ctx.getString(R.string.error_happens))
+                        }
+                    }
                 }
             }
+            bottomSheet?.setChild(bottomSheetBinding.root)
         }
-        bottomSheet.setChild(bottomSheetView)
         fragmentManager?.let {
-            bottomSheet.show(it, "Bottomsheet edit showcase show")
+            bottomSheet?.show(it, "Bottomsheet edit showcase show")
         }
     }
 
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
-            loading.visibility = View.VISIBLE
-            swipeRefreshLayout.gone()
+            loader?.visibility = View.VISIBLE
+            swipeRefreshLayout?.gone()
         } else {
-            loading.visibility = View.GONE
-            swipeRefreshLayout.visible()
+            loader?.visibility = View.GONE
+            swipeRefreshLayout?.visible()
         }
     }
 
     private fun onDismissBottomSheet() {
         try {
             if (bottomSheet != null) {
-                bottomSheet.dismiss()
+                bottomSheet?.dismiss()
             }
         } catch (e: Exception) {
         }
@@ -552,15 +569,15 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun isSearchShowcaseFound(isFound: Boolean) {
         if (isFound) {
-            loading.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-            emptyStateContainer.visibility = View.GONE
-            ImageHandler.loadImage(context, imgEmptyState, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
+            loader?.visibility = View.GONE
+            recyclerView?.visibility = View.VISIBLE
+            emptyStateContainer?.visibility = View.GONE
+            ImageHandler.loadImage(context, imageEmptyState, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
         } else {
-            loading.visibility = View.GONE
-            recyclerView.visibility = View.GONE
-            emptyStateContainer.visibility = View.VISIBLE
-            ImageHandler.loadImage(context, imgEmptyState, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
+            loader?.visibility = View.GONE
+            recyclerView?.visibility = View.GONE
+            emptyStateContainer?.visibility = View.VISIBLE
+            ImageHandler.loadImage(context, imageEmptyState, ImageAssets.SEARCH_SHOWCASE_NOT_FOUND, null)
         }
     }
 
@@ -577,13 +594,13 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun setupBuyerView() {
-        btnAddEtalase.visibility = View.GONE
-        headerUnify.actionTextView?.visibility = View.GONE
+        buttonAddEtalase?.visibility = View.GONE
+        headerUnify?.actionTextView?.visibility = View.GONE
     }
 
     private fun setupSellerView() {
-        btnAddEtalase.visibility = View.VISIBLE
-        headerUnify.actionTextView?.visibility = View.VISIBLE
+        buttonAddEtalase?.visibility = View.VISIBLE
+        headerUnify?.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun stopPerformanceMonitoring() {
@@ -611,39 +628,39 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun hideGlobalError() {
-        globalError.visibility = View.GONE
-        headerLayout.visibility = View.VISIBLE
-        swipeRefreshLayout.visibility = View.VISIBLE
+        globalErrorShowcaseList?.visibility = View.GONE
+        headerLayoutShowcaseList?.visibility = View.VISIBLE
+        swipeRefreshLayout?.visibility = View.VISIBLE
     }
 
     private fun showGlobalError(errorType: Int) {
-        globalError.setType(errorType)
-        globalError.visibility = View.VISIBLE
-        headerLayout.visibility = View.GONE
-        swipeRefreshLayout.visibility = View.GONE
-        loading.visibility = View.GONE
-        emptyStateContainer.visibility = View.GONE
-        globalError.setActionClickListener {
+        globalErrorShowcaseList?.setType(errorType)
+        globalErrorShowcaseList?.visibility = View.VISIBLE
+        headerLayoutShowcaseList?.visibility = View.GONE
+        swipeRefreshLayout?.visibility = View.GONE
+        loader?.visibility = View.GONE
+        emptyStateContainer?.visibility = View.GONE
+        globalErrorShowcaseList?.setActionClickListener {
             refreshData()
         }
     }
 
     private fun showLoadingSwipeToRefresh(isLoading: Boolean){
         if (isLoading) {
-            swipeRefreshLayout.isRefreshing = true
+            swipeRefreshLayout?.isRefreshing = true
         } else {
-            swipeRefreshLayout.isRefreshing = false
+            swipeRefreshLayout?.isRefreshing = false
         }
     }
 
     private fun initHeaderUnify() {
-        headerUnify.apply {
+        headerUnify?.apply {
             setNavigationOnClickListener {
                 tracking?.clickBackButton(shopId, shopType)
                 activity?.finish()
             }
         }
-        headerUnify.actionTextView?.setOnClickListener {
+        headerUnify?.actionTextView?.setOnClickListener {
             val shopShowcaseViewModelList = ArrayList<ShopEtalaseModel>()
             for (shopShowcaseViewModel in showcaseList) {
                 shopShowcaseViewModelList.add(shopShowcaseViewModel)
@@ -692,4 +709,3 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
 }
-

@@ -4,18 +4,18 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.ItemFlightSearchNewBinding
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
-import kotlinx.android.synthetic.main.item_flight_search_new.view.*
 
 /**
  * @author by furqan on 13/04/2020
  */
-class FlightSearchViewHolder(itemView: View,
+class FlightSearchViewHolder(val binding: ItemFlightSearchNewBinding,
                              private val onFLightSearchListener: FlightSearchAdapterTypeFactory.OnFlightSearchListener)
-    : AbstractViewHolder<FlightJourneyModel>(itemView) {
+    : AbstractViewHolder<FlightJourneyModel>(binding.root) {
 
     override fun bind(element: FlightJourneyModel) {
-        with(itemView) {
+        with(binding) {
             tvDepartureTime.text = element.departureTime
             tvDepartureAirport.text = element.departureAirport
             tvArrivalTime.text = element.arrivalTime
@@ -30,31 +30,31 @@ class FlightSearchViewHolder(itemView: View,
             setSavingPrice(element)
             setBestPairingPrice(element)
             setSeatDistanceAndRapidTest(element)
-            setOnClickListener {
+            root.setOnClickListener {
                 onFLightSearchListener.onItemClicked(element, adapterPosition)
             }
         }
     }
 
     private fun setDuration(element: FlightJourneyModel) {
-        with(itemView) {
+        with(binding) {
             var totalTransitAndStop = element.totalTransit
             for (route in element.routeList) {
                 totalTransitAndStop += route.stops
             }
 
             if (totalTransitAndStop > 0) {
-                tvFlightDuration.text = context.getString(R.string.flight_label_duration_transit,
+                tvFlightDuration.text = itemView.context.getString(R.string.flight_label_duration_transit,
                         element.duration, totalTransitAndStop.toString())
             } else {
-                tvFlightDuration.text = context.getString(R.string.flight_label_duration_direct,
+                tvFlightDuration.text = itemView.context.getString(R.string.flight_label_duration_direct,
                         element.duration)
             }
         }
     }
 
     private fun setSavingPrice(element: FlightJourneyModel) {
-        with(itemView) {
+        with(binding) {
             if (element.beforeTotal != null && element.beforeTotal.isNotEmpty()) {
                 tvFlightStrikePrice.visibility = View.VISIBLE
                 tvFlightStrikePrice.text = TextHtmlUtils.getTextFromHtml(getString(R.string.flight_label_saving_price_html, element.beforeTotal))
@@ -65,7 +65,7 @@ class FlightSearchViewHolder(itemView: View,
     }
 
     private fun setAirline(element: FlightJourneyModel) {
-        with(itemView) {
+        with(binding) {
             if (element.airlineDataList != null && element.airlineDataList.size > 1) {
                 val flightAirlineList = element.airlineDataList
                 flightMultiAirline.setAirlineLogos(null)
@@ -85,7 +85,7 @@ class FlightSearchViewHolder(itemView: View,
     }
 
     private fun setBestPairingPrice(element: FlightJourneyModel) {
-        with(itemView) {
+        with(binding) {
             when {
                 element.isBestPairing -> {
                     tagBestPairing.visibility = View.VISIBLE
@@ -103,10 +103,10 @@ class FlightSearchViewHolder(itemView: View,
     }
 
     private fun setAdditionalArrivalDay(element: FlightJourneyModel) {
-        with(itemView) {
+        with(binding) {
             if (element.addDayArrival > 0) {
                 tvFlightAdditionalDay.visibility = View.VISIBLE
-                tvFlightAdditionalDay.text = context.getString(R.string.flight_label_duration_add_day, element.addDayArrival)
+                tvFlightAdditionalDay.text = itemView.context.getString(R.string.flight_label_duration_add_day, element.addDayArrival)
             } else {
                 tvFlightAdditionalDay.visibility = View.GONE
             }
@@ -114,7 +114,7 @@ class FlightSearchViewHolder(itemView: View,
     }
 
     private fun setSeatDistanceAndRapidTest(element: FlightJourneyModel) {
-        with(itemView) {
+        with(binding) {
             if (element.isSeatDistancing) {
                 labelSeatDistancing.visibility = View.VISIBLE
             } else {

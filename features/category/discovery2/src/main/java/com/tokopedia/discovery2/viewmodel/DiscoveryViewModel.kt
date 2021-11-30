@@ -8,7 +8,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
+import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
+import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.analytics.DISCOVERY_DEFAULT_PAGE_TYPE
@@ -34,12 +40,18 @@ import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
 import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -50,8 +62,13 @@ import kotlin.coroutines.CoroutineContext
 
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 private const val IS_ADULT = 1
+private const val SCROLL_DEPTH = 100
 
 class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: DiscoveryDataUseCase,
+                                             private val getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
+                                             private val addToCartUseCase: AddToCartUseCase,
+                                             private val updateCartUseCase: UpdateCartUseCase,
+                                             private val deleteCartUseCase: DeleteCartUseCase,
                                              private val userSession: UserSessionInterface,
                                              private val trackingQueue: TrackingQueue,
                                              private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
@@ -60,8 +77,30 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
-    private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     private val discoveryBottomNavLiveData = MutableLiveData<Result<ComponentsItem>>()
+
+    var miniCartSimplifiedData: MiniCartSimplifiedData? = null
+
+    val miniCartAdd: LiveData<Result<AddToCartDataModel>>
+        get() = _miniCartAdd
+    private val _miniCartAdd = SingleLiveEvent<Result<AddToCartDataModel>>()
+
+    val miniCart: LiveData<Result<MiniCartSimplifiedData>>
+        get() = _miniCart
+    private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
+
+    val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
+        get() = _miniCartUpdate
+    private val _miniCartUpdate = SingleLiveEvent<Result<UpdateCartV2Data>>()
+
+    val miniCartRemove: LiveData<Result<Pair<String,String>>>
+        get() = _miniCartRemove
+    private val _miniCartRemove = SingleLiveEvent<Result<Pair<String,String>>>()
+
+    val miniCartOperationFailed:LiveData<Pair<Int,Int>>
+        get() = _miniCartOperationFailed
+    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
+
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -82,6 +121,100 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
+    fun getMiniCartItem(productId: String): MiniCartItem? {
+        val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
+        return items.firstOrNull { it.productId == productId }
+    }
+
+    fun addProductToCart(
+        parentPosition:Int,
+        position:Int,
+        productId: String,
+        quantity: Int,
+        shopId: String
+    ) {
+        val miniCartItem = getMiniCartItem(productId)
+        when {
+            miniCartItem == null -> addItemToCart(parentPosition,position,productId, shopId, quantity)
+            quantity.isZero() -> removeItemCart(parentPosition,position,miniCartItem)
+            else -> updateItemCart(parentPosition,position,miniCartItem, quantity)
+        }
+    }
+
+
+    private fun addItemToCart(
+        parentPosition:Int,
+        position:Int,
+        productId: String,
+        shopId: String,
+        quantity: Int) {
+        val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
+            productId = productId,
+            shopId = shopId,
+            quantity = quantity
+        )
+        addToCartUseCase.setParams(addToCartRequestParams)
+        addToCartUseCase.execute({
+            _miniCartAdd.postValue(Success(it))
+        }, {
+            _miniCartAdd.postValue(Fail(it))
+            _miniCartOperationFailed.postValue(Pair(parentPosition,position))
+        })
+    }
+
+    private fun updateItemCart(
+        parentPosition:Int,
+        position:Int,
+        miniCartItem: MiniCartItem,
+        quantity: Int) {
+        miniCartItem.quantity = quantity
+        val updateCartRequest = UpdateCartRequest(
+            cartId = miniCartItem.cartId,
+            quantity = miniCartItem.quantity,
+            notes = miniCartItem.notes
+        )
+        updateCartUseCase.setParams(
+            updateCartRequestList = listOf(updateCartRequest),
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+        )
+        updateCartUseCase.execute({
+            _miniCartUpdate.value = Success(it)
+        }, {
+            _miniCartUpdate.postValue(Fail(it))
+            _miniCartOperationFailed.postValue(Pair(parentPosition,position))
+        })
+    }
+
+    fun getMiniCart(shopId: List<String>, warehouseId: String?) {
+        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+            launchCatchError(block = {
+                getMiniCartUseCase.setParams(shopId)
+                getMiniCartUseCase.execute({
+                    miniCartSimplifiedData = it
+                    _miniCart.postValue(Success(it))
+                }, {
+                    _miniCart.postValue(Fail(it))
+                })
+            }) {
+                _miniCart.postValue(Fail(it))
+            }
+        }
+    }
+
+    private fun removeItemCart(parentPosition: Int, position: Int, miniCartItem: MiniCartItem) {
+        deleteCartUseCase.setParams(
+            cartIdList = listOf(miniCartItem.cartId)
+        )
+        deleteCartUseCase.execute({
+            val productId = miniCartItem.productId
+            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
+            _miniCartRemove.postValue(Success(data))
+        }, {
+            _miniCartRemove.postValue(Fail(it))
+            _miniCartOperationFailed.postValue(Pair(parentPosition, position))
+        })
+    }
+
     fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
         launchCatchError(
                 block = {
@@ -92,12 +225,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
                     data.let {
                         setDiscoveryLiveState(it.pageInfo)
+                        setPageInfo(it)
                         withContext(Dispatchers.Default) {
                             discoveryResponseList.postValue(Success(it.components))
                             findCustomTopChatComponentsIfAny(it.components)
                             findBottomTabNavDataComponentsIfAny(it.components)
                         }
-                        setPageInfo(it)
                     }
                 },
                 onError = {
@@ -269,5 +402,17 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     discoveryPageInfo.value = Fail(it)
                 }
         )
+    }
+
+    fun getScrollDepth(offset: Int, extent: Int, range: Int): Int {
+        return if(range > 0) SCROLL_DEPTH * (offset + extent) / range else 0
+    }
+
+    fun getShareUTM(data:PageInfo) : String{
+        var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
+        if(data.campaignCode != null && data.campaignCode.length > 11){
+            campaignCode = data.campaignCode.substring(0,11)
+        }
+        return "${data.identifier}-${campaignCode}"
     }
 }

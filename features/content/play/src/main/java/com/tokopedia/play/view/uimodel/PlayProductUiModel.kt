@@ -22,6 +22,4 @@ sealed class PlayProductUiModel {
     ) : PlayProductUiModel()
 
     object Placeholder : PlayProductUiModel()
-
-    object SeeMore: PlayProductUiModel()
 }

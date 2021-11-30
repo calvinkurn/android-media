@@ -2,35 +2,56 @@ package com.tokopedia.topchat.stub.chatroom.view.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.test.espresso.idling.CountingIdlingResource
 import com.tokopedia.chat_common.BaseChatToolbarActivity
+import com.tokopedia.chat_common.data.BaseChatUiModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
 import com.tokopedia.topchat.stub.chatroom.view.customview.FakeTopChatViewStateImpl
 
-class TopChatRoomFragmentStub : TopChatRoomFragment() {
+open class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
-    lateinit var keyboardStateIdling: CountingIdlingResource
+    /**
+     * show bottomsheet immediately
+     */
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
+        super.onRetrySendImage(element)
+        childFragmentManager.executePendingTransactions()
+    }
+
+    override fun showChangeAddressBottomSheet() {
+        if (SUCCESS_CHANGE_ADDRESS) {
+            getChangeAddressListener().onAddressDataChanged()
+        }
+    }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return FakeTopChatViewStateImpl(
                 view, this, this, this,
                 this, this, this, this,
                 (activity as BaseChatToolbarActivity).getToolbar(), analytics,
-                keyboardStateIdling
         ).also {
             topchatViewState = it
         }
     }
 
+    override fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence) {
+        super.showMsgMenu(msg, text)
+        childFragmentManager.executePendingTransactions()
+    }
+
+    override fun onDetach() {
+        SUCCESS_CHANGE_ADDRESS = false
+        super.onDetach()
+    }
+
     companion object {
+        var SUCCESS_CHANGE_ADDRESS = true
         fun createInstance(
-                bundle: Bundle,
-                keyboardStateIdling: CountingIdlingResource
+                bundle: Bundle
         ): TopChatRoomFragmentStub {
             return TopChatRoomFragmentStub().apply {
                 arguments = bundle
-                this.keyboardStateIdling = keyboardStateIdling
             }
         }
     }

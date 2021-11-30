@@ -10,11 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.recharge_pdp_emoney.R
+import com.tokopedia.recharge_pdp_emoney.databinding.FragmentEmoneyRecentNumberBinding
 import com.tokopedia.recharge_pdp_emoney.di.EmoneyPdpComponent
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.EmoneyPdpRecentTransactionAdapter
 import com.tokopedia.recharge_pdp_emoney.presentation.adapter.viewholder.RecentTransactionViewHolder
 import com.tokopedia.recharge_pdp_emoney.presentation.viewmodel.EmoneyPdpViewModel
-import kotlinx.android.synthetic.main.fragment_emoney_recent_number.*
+import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
 /**
@@ -23,13 +24,16 @@ import javax.inject.Inject
 class EmoneyPdpRecentTransactionFragment : BaseDaggerFragment(), RecentTransactionViewHolder.ActionListener {
     override fun getScreenName(): String = ""
 
+    private var binding by autoCleared<FragmentEmoneyRecentNumberBinding>()
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
     private val emoneyPdpViewModel by lazy { viewModelFragmentProvider.get(EmoneyPdpViewModel::class.java) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_emoney_recent_number, container, false)
+        binding = FragmentEmoneyRecentNumberBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun initInjector() {
@@ -41,8 +45,8 @@ class EmoneyPdpRecentTransactionFragment : BaseDaggerFragment(), RecentTransacti
 
         val recommendationData = arguments?.getParcelableArrayList<TopupBillsRecommendation>(EXTRA_RECENT_TRANSACTION)
                 ?: arrayListOf()
-        emoneyRecentNumberList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        emoneyRecentNumberList.adapter = EmoneyPdpRecentTransactionAdapter(recommendationData, this)
+        binding.emoneyRecentNumberList.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.emoneyRecentNumberList.adapter = EmoneyPdpRecentTransactionAdapter(recommendationData, this)
 
     }
 

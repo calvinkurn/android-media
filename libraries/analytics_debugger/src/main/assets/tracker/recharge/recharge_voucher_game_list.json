@@ -16,7 +16,8 @@
       "eventName": "openScreen",
       "shopId": ".+",
       "category": "Voucher Game",
-      "event": "openScreen"
+      "event": "openScreen",
+      "theme": "light|dark"
     },
     {
       "promotions": [

@@ -16,7 +16,7 @@ class GetHomeDynamicChannelsRepository @Inject constructor(
 ){
     suspend fun getDynamicChannelData(params: RequestParams): HomeChannelData {
         try {
-            val gqlResponse = graphqlRepository.getReseponse(
+            val gqlResponse = graphqlRepository.response(
                     listOf(buildRequest(params)), GraphqlCacheStrategy
                     .Builder(CacheType.ALWAYS_CLOUD).build())
             val errors = gqlResponse.getError(HomeChannelData::class.java)

@@ -1,20 +1,26 @@
 package com.tokopedia.shop.score.penalty.presentation.adapter
 
 import android.os.Handler
+import android.os.Looper
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.shop.score.penalty.presentation.adapter.diffutil.ShopPenaltyDiffUtilCallback
 import com.tokopedia.shop.score.penalty.presentation.adapter.viewholder.ItemSortFilterPenaltyViewHolder
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import com.tokopedia.shop.score.penalty.presentation.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.score.penalty.presentation.widget.StickySingleHeaderView
+import com.tokopedia.shop.score.performance.presentation.adapter.diffutilscallback.ShopPerformanceDiffUtilCallback
+import com.tokopedia.shop.score.performance.presentation.model.BaseShopPerformance
 
-class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory):
-        BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory),
-        StickySingleHeaderView.OnStickySingleHeaderAdapter {
+class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapterFactory) :
+    BaseListAdapter<Visitable<*>, PenaltyPageAdapterFactory>(penaltyPageAdapterFactory),
+    StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private var onStickySingleHeaderViewListener: OnStickySingleHeaderListener? = null
     private var recyclerView: RecyclerView? = null
@@ -25,9 +31,11 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }.takeIf { it != -1 }
 
     fun setPenaltyData(penaltyListUiModel: List<BasePenaltyPage>) {
+        val diffCallback = ShopPenaltyDiffUtilCallback(visitables, penaltyListUiModel)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         visitables.clear()
         visitables.addAll(penaltyListUiModel)
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun removePenaltyListData() {
@@ -36,14 +44,23 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         notifyItemRangeRemoved(visitables.size, penaltyListCount)
     }
 
+    fun removeShopPenaltyAllData() {
+        val shopPerformanceDataCount = visitables.filterIsInstance<BasePenaltyPage>().count()
+        if (shopPerformanceDataCount.isMoreThanZero()) {
+            visitables.removeAll { it is BasePenaltyPage }
+            notifyItemRangeRemoved(visitables.size, shopPerformanceDataCount)
+        }
+    }
+
     fun updatePenaltyListData(penaltyListUiModel: List<BasePenaltyPage>) {
         visitables.addAll(penaltyListUiModel)
         notifyItemRangeInserted(visitables.size, penaltyListUiModel.size)
     }
 
-    fun updateChipsSelected(chipsList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>,) {
+    fun updateChipsSelected(chipsList: List<ItemSortFilterPenaltyUiModel.ItemSortFilterWrapper>) {
         val updateIndex = visitables.indexOfFirst { it is ItemSortFilterPenaltyUiModel }
-        visitables.filterIsInstance<ItemSortFilterPenaltyUiModel>().firstOrNull()?.itemSortFilterWrapperList = chipsList
+        visitables.filterIsInstance<ItemSortFilterPenaltyUiModel>()
+            .firstOrNull()?.itemSortFilterWrapperList = chipsList
         if (updateIndex != -1) {
             notifyItemChanged(updateIndex)
         }
@@ -87,15 +104,17 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
         }
     }
 
+    fun removeShopPenaltyLoading() {
+        if (visitables.getOrNull(lastIndex) is LoadingModel) {
+            visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
+        }
+    }
+
     fun refreshSticky() {
         if (onStickySingleHeaderViewListener != null) {
             recyclerView?.post { onStickySingleHeaderViewListener?.refreshSticky() }
         }
-    }
-
-    override fun clearAllElements() {
-        super.clearAllElements()
-        refreshSticky()
     }
 
     override val stickyHeaderPosition: Int
@@ -109,9 +128,10 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
 
     override fun bindSticky(viewHolder: RecyclerView.ViewHolder?) {
         if (viewHolder is ItemSortFilterPenaltyViewHolder) {
-            visitables.filterIsInstance(ItemSortFilterPenaltyUiModel::class.java).firstOrNull()?.let {
-                viewHolder.bind(it)
-            }
+            visitables.filterIsInstance(ItemSortFilterPenaltyUiModel::class.java).firstOrNull()
+                ?.let {
+                    viewHolder.bind(it)
+                }
         }
     }
 
@@ -120,7 +140,7 @@ class PenaltyPageAdapter(private val penaltyPageAdapterFactory: PenaltyPageAdapt
     }
 
     override fun onStickyHide() {
-        Handler().post {
+        Handler(Looper.getMainLooper()).post {
             penaltySortFilterPosition?.let { notifyItemChanged(it) }
         }
     }

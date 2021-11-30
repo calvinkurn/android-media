@@ -3,13 +3,15 @@ package com.tokopedia.topchat.chatsearch.view.adapter.viewholder
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.media.loader.loadImageCircle
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatsearch.util.Utils
 import com.tokopedia.topchat.chatsearch.view.uimodel.SearchResultUiModel
+import com.tokopedia.topchat.common.Constant
 import com.tokopedia.unifyprinciples.Typography
 
 class ItemSearchChatViewHolder(
@@ -36,7 +38,7 @@ class ItemSearchChatViewHolder(
     }
 
     private fun bindUserImageProfile(element: SearchResultUiModel) {
-        ImageHandler.loadImageCircle2(itemView.context, thumbnail, element.thumbnailUrl)
+        thumbnail?.loadImageCircle(element.thumbnailUrl)
     }
 
     private fun bindUserName(element: SearchResultUiModel) {
@@ -60,6 +62,9 @@ class ItemSearchChatViewHolder(
         itemView.setOnClickListener {
             val chatRoomIntent = RouteManager.getIntent(it.context, ApplinkConst.TOPCHAT, element.msgId.toString())
             chatRoomIntent.putExtra(ApplinkConst.Chat.SOURCE_PAGE, ApplinkConst.Chat.SOURCE_CHAT_SEARCH)
+            chatRoomIntent.putExtra(Constant.CHAT_USER_ROLE_KEY, element.contact.role)
+            chatRoomIntent.putExtra(Constant.CHAT_CURRENT_ACTIVE, element.msgId)
+            Utils.putExtraForFoldable(chatRoomIntent, element.msgId, element.contact.role)
             it.context.startActivity(chatRoomIntent)
         }
     }

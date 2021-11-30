@@ -44,6 +44,9 @@ class LogisticTestInterceptor : BaseOccInterceptor() {
             }
             return mockResponse(copy, getJsonFromResource(GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH))
         }
+        if (requestString.contains(SET_CHOSEN_ADDRESS_QUERY)) {
+            return mockResponse(copy, getJsonFromResource(SET_CHOSEN_ADDRESS_DEFAULT_RESPONSE_PATH))
+        }
         return chain.proceed(chain.request())
     }
 
@@ -60,6 +63,7 @@ class LogisticTestInterceptor : BaseOccInterceptor() {
 const val RATES_QUERY = "ratesV3"
 const val GET_ADDRESS_LIST_QUERY = "keroAddressCorner"
 const val GET_SHIPPING_DURATION_QUERY = "ongkir_shipper_service"
+const val SET_CHOSEN_ADDRESS_QUERY = "keroAddrSetStateChosenAddress"
 
 const val RATES_DEFAULT_RESPONSE_PATH = "logistic/rates_default_response.json"
 const val RATES_WITH_INSURANCE_RESPONSE_PATH = "logistic/rates_with_insurance_response.json"
@@ -67,6 +71,12 @@ const val RATES_WITH_NO_PROFILE_DURATION_RESPONSE_PATH = "logistic/rates_no_prof
 const val RATES_ETA_RESPONSE_PATH = "logistic/rates_eta_response.json"
 const val RATES_ETA_WITH_BOE_RESPONSE_PATH = "logistic/rates_eta_with_boe_response.json"
 
+const val RATES_TOKONOW_RP0_RESPONSE_PATH = "logistic/rates_tokonow_rp0_response.json"
+const val RATES_TOKONOW_DISCOUNT_RESPONSE_PATH = "logistic/rates_tokonow_discount_response.json"
+const val RATES_TOKONOW_NO_DISCOUNT_RESPONSE_PATH = "logistic/rates_tokonow_no_discount_response.json"
+
 const val GET_ADDRESS_LIST_DEFAULT_RESPONSE_PATH = "logistic/get_address_list_default_response.json"
 
 const val GET_SHIPPING_DURATION_DEFAULT_RESPONSE_PATH = "logistic/get_shipping_duration_list_default_response.json"
+
+const val SET_CHOSEN_ADDRESS_DEFAULT_RESPONSE_PATH = "logistic/set_chosen_address_response.json"

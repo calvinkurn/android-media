@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="@dimen/spacing_lvl4"
+    android:background="?selectableItemBackground"
+    tools:layout_height="@dimen/sah_new_other_shop_secondary_info_height">
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_sah_new_other_shop_status_success_os"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="ic_sah_new_other_shop_status_os, tv_sah_new_other_shop_status_os"
+        tools:visibility="gone"/>
+    
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_sah_new_other_shop_status_pm_pro"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_sah_new_other_shop_status_title"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:icon_name="BADGE_PMPRO_FILLED"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_new_other_shop_status_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN600"
+        android:layout_marginBottom="@dimen/sah_new_other_item_shop_info_margin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_sah_new_other_shop_status_pm_pro"
+        app:layout_constraintEnd_toStartOf="@id/ic_sah_new_other_shop_status_pm"
+        app:layout_constraintBottom_toTopOf="@id/tv_sah_new_other_shop_status_desc"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="body_3"
+        tools:text="Power Merchant"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_sah_new_other_shop_status_pm"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_title"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_title"
+        app:layout_constraintStart_toEndOf="@id/tv_sah_new_other_shop_status_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:icon_name="BADGE_PM_FILLED"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_sah_new_other_shop_status_warning"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_sah_new_other_shop_status_desc"
+        app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_desc"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_desc"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:icon_name="WARNING"
+        app:icon_color_light_enable="@color/Unify_RN500"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_new_other_shop_status_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_sah_new_other_shop_status_title"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_sah_new_other_shop_status_warning"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="heading_5"
+        tools:text="Tidak Aktif"
+        tools:textColor="@color/Unify_RN500"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/ic_sah_new_other_shop_status_os"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/tv_sah_new_other_shop_status_os"
+        app:layout_constraintTop_toTopOf="@id/tv_sah_new_other_shop_status_os"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sah_new_other_shop_status_os"
+        app:icon_name="BADGE_OS_FILLED"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_sah_new_other_shop_status_os"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/official_store"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ic_sah_new_other_shop_status_os"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:typographyType="heading_5" />
+
+    <include
+        layout="@layout/partial_item_sah_new_other_loading"
+        android:id="@+id/shimmer_sah_new_other_shop_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <include
+        layout="@layout/partial_item_sah_new_other_failed"
+        android:id="@+id/error_state_sah_new_other_shop_status"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

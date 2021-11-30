@@ -1,7 +1,9 @@
 package com.tokopedia.product.manage.common.feature.list.data.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 data class ProductUiModel(
@@ -21,7 +23,9 @@ data class ProductUiModel(
         val hasStockReserved: Boolean,
         val topAdsInfo: TopAdsInfo?,
         val access: ProductManageAccess?,
-        val isCampaign: Boolean
+        val isCampaign: Boolean,
+        val campaignTypeList: List<ProductCampaignType>?,
+        val isProductBundling: Boolean,
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)
@@ -38,4 +42,6 @@ data class ProductUiModel(
 
     fun hasEditPriceAccess() = access?.editPrice == true
     fun hasEditProductAccess() = access?.editProduct == true
+
+    fun getCampaignTypeCount() = campaignTypeList?.count().orZero()
 }

@@ -36,6 +36,7 @@ abstract class BaseProductDetailScreenShotTest {
         const val KEY_SHOP = "shop_credibility"
         const val KEY_DISCUSSION = "discussion_faq"
         const val KEY_RECOM = "pdp_5"
+        const val KEY_BEST_SELLER_INFO = "best_seller"
     }
 
     @get:Rule
@@ -68,12 +69,13 @@ abstract class BaseProductDetailScreenShotTest {
                 "${filePrefix()}-full")
 
         //Screenshot partial view
-        findViewAndScreenShot(com.tokopedia.product.detail.R.id.base_btn_action, filePrefix(), "button")
+        findViewAndScreenShot(com.tokopedia.product.detail.R.id.partial_layout_button_action, filePrefix(), "button")
 
         //Screenshot per-viewholder
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_CONTENT), filePrefix(), "content")
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_SOCIAL_PROOF), filePrefix(), "social proof")
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_REVIEW), filePrefix(), "review")
+        findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_BEST_SELLER_INFO), filePrefix(), "best seller info")
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_VARIANT), filePrefix(), "variant")
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_INFO), filePrefix(), "info")
         findViewHolderAndScreenshot(com.tokopedia.product.detail.R.id.rv_pdp, activity.getPositionViewHolderByName(KEY_SHOP), filePrefix(), "shop info")

@@ -1,33 +1,39 @@
 package com.tokopedia.product.detail.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.pdplayout.PdpGetLayout
 import com.tokopedia.product.detail.common.data.model.pdplayout.ProductDetailLayout
+import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.ratesestimate.UserLocationRequest
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.TobacoErrorException
+import com.tokopedia.product.detail.di.RawQueryKeyConstant.NAME_LAYOUT_ID_DAGGER
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import javax.inject.Named
 
-open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductDetailDataModel>() {
+open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase,
+                                                   @Named(NAME_LAYOUT_ID_DAGGER) private val layoutIdTest: String) : UseCase<ProductDetailDataModel>() {
 
     companion object {
-        val QUERY = """
-            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation) {
-              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation) {
+        const val QUERY = """
+            query pdpGetLayout(${'$'}productID : String, ${'$'}shopDomain :String, ${'$'}productKey :String, ${'$'}whID : String, ${'$'}layoutID : String, ${'$'}userLocation: pdpUserLocation, ${'$'}extParam: String) {
+              pdpGetLayout(productID:${'$'}productID, shopDomain:${'$'}shopDomain,productKey:${'$'}productKey, apiVersion: 1, whID:${'$'}whID, layoutID:${'$'}layoutID, userLocation:${'$'}userLocation, extParam:${'$'}extParam) {
                 name
                 pdpSession
                 basicInfo {
+                  isTokoNow
                   shopName
                   productID
                   shopID
@@ -42,6 +48,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                   catalogID
                   isLeasing
                   isBlacklisted
+                  totalStockFmt
                   menu {
                     id
                     name
@@ -53,6 +60,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                     title
                     breadcrumbURL
                     isAdult
+                    isKyc
                     lastUpdateCategory
                     detail {
                       id
@@ -198,6 +206,18 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         text
                       }
                     }
+                    ... on pdpDataCategoryCarousel {
+                        titleCarousel
+                        linkText
+                        applink
+                        list {
+                          categoryID
+                          icon
+                          title
+                          isApplink
+                          applink
+                        }
+                    }
                      ... on pdpDataCustomInfo {
                        icon
                        title
@@ -211,6 +231,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       parentID
                       defaultChild
                       sizeChart
+                      maxFinalPrice
                       variants {
                         productVariantID
                         variantID
@@ -233,9 +254,11 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         priceFmt
                         sku
                         optionID
+                        optionName
                         productName
                         productURL
                         isCOD
+                        isWishlist
                         picture {
                           url
                           url200
@@ -246,6 +269,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           stockWording
                           stockWordingHTML
                           minimumOrder
+                          maximumOrder
+                          stockFmt
+                          stockCopy
                         }
                         isWishlist
                         campaignInfo {
@@ -276,29 +302,52 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           additionalInfo
                         }
                       }
+                    },
+                     ... on pdpDataOneLiner {
+                       productID
+                       oneLinerContent
+                       linkText
+                       color
+                       applink
+                       separator
+                       icon
+                       isVisible
                     }
                   }
                 }
               }
             }
-        """.trimIndent()
+        """
 
-        fun createParams(productId: String, shopDomain: String, productKey: String, whId: String, layoutId: String, userLocationRequest: UserLocationRequest): RequestParams =
-                RequestParams.create().apply {
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                    putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
-                    putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
-                    putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
-                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
-                }
+        fun createParams(productId: String,
+                         shopDomain: String,
+                         productKey: String,
+                         whId: String,
+                         layoutId: String,
+                         userLocationRequest: UserLocationRequest,
+                         extParam: String): RequestParams =
+            RequestParams.create().apply {
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+                putString(ProductDetailCommonConstant.PARAM_SHOP_DOMAIN, shopDomain)
+                putString(ProductDetailCommonConstant.PARAM_PRODUCT_KEY, productKey)
+                putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, whId)
+                putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutId)
+                putString(ProductDetailCommonConstant.PARAM_EXT_PARAM, extParam.encodeToUtf8())
+                putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, userLocationRequest)
+            }
     }
 
     var requestParams = RequestParams.EMPTY
 
+    @GqlQuery("PdpGetLayoutQuery", QUERY)
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
-        gqlUseCase.addRequest(GraphqlRequest(QUERY, ProductDetailLayout::class.java, requestParams.parameters))
+        val layoutId = requestParams.getString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, "")
+        if (layoutId.isEmpty() && layoutIdTest.isNotBlank()) {
+            requestParams.putString(ProductDetailCommonConstant.PARAM_LAYOUT_ID, layoutIdTest)
+        }
+
+        gqlUseCase.addRequest(GraphqlRequest(PdpGetLayoutQuery(), ProductDetailLayout::class.java, requestParams.parameters))
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
 
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
@@ -306,7 +355,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
-                ?: PdpGetLayout()
+            ?: PdpGetLayout()
 
         if (gqlResponse.isCached) {
             ServerLogger.log(Priority.P2, "PDP_CACHE", mapOf("type" to "true", "productId" to productId))
@@ -330,5 +379,4 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
         val p1VariantData = DynamicProductDetailMapper.mapVariantIntoOldDataClass(data)
         return ProductDetailDataModel(getDynamicProductInfoP1, initialLayoutData, p1VariantData)
     }
-
 }

@@ -27,7 +27,7 @@
         android:lines="2"
         android:paddingLeft="@dimen/unify_space_4"
         android:paddingRight="@dimen/unify_space_4"
-        android:paddingBottom="@dimen/dp_10"
+        android:paddingBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

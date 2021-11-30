@@ -4,9 +4,12 @@ import android.view.View
 import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.officialstore.analytics.OfficialStoreTracking
+import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     // Lego layout event handlers
@@ -36,7 +39,7 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String)
     fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String)
     fun onClickMixTopBannerItem(applink: String)
-    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String)
+    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String, channelBannerAttribution: String = "")
 
     fun onClickMixLeftBannerImage(channel: Channel, position: Int)
     fun onMixLeftBannerImpressed(channel: Channel, position: Int)
@@ -48,5 +51,22 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String)
     fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
     fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
+
+    //featured shop OS
+    fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String)
+    fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int)
+    fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String)
+    fun goToApplink(applink: String)
+    
+    //recommendation widget
+    fun onBestSellerClick(appLink: String)
+    fun onBestSellerThreeDotsClick(recommendationItem: RecommendationItem, widgetPosition: Int)
+    fun onBestSellerSeeMoreTextClick(appLink: String)
+    fun onBestSellerSeeAllCardClick(appLink: String)
+
+    fun getOSCategory(): Category?
+    fun isLogin(): Boolean
+    fun getUserId(): String
+    fun getTrackingObject(): OfficialStoreTracking?
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.data.pojo.membership
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -22,6 +23,7 @@ data class TokopointStatusPojo(
 )
 
 data class TierPojo(
+        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
         @Expose
         val id: Int = 0,

@@ -1,0 +1,78 @@
+[
+  {
+    "data": {
+      "validate_use_promo_revamp": {
+        "status": "OK",
+        "message": [],
+        "error_code": "200",
+        "code": "200000",
+        "promo": {
+          "global_success": true,
+          "message": {
+            "state": "red",
+            "color": "#ade3af",
+            "text": "Kamu berpotensi dapat cashback sebesar Rp10.000 setelah pesanan selesai"
+          },
+          "success": true,
+          "codes": [
+            "TESTACK25"
+          ],
+          "promo_code_id": 0,
+          "title_description": "",
+          "discount_amount": 0,
+          "cashback_wallet_amount": 0,
+          "cashback_advocate_referral_amount": 0,
+          "cashback_voucher_description": "",
+          "invoice_description": "",
+          "gateway_id": "",
+          "is_coupon": 1,
+          "coupon_description": "",
+          "is_tokopedia_gerai": false,
+          "voucher_orders": [],
+          "benefit_details": [],
+          "benefit_summary_info": {
+            "final_benefit_text": "",
+            "final_benefit_amount": 0,
+            "final_benefit_amount_str": "",
+            "summaries": []
+          },
+          "clashing_info_detail": {
+            "clash_message": "",
+            "clash_reason": "",
+            "is_clashed_promos": false,
+            "options": []
+          },
+          "tracking_details": [],
+          "tokopoints_detail": {
+            "conversion_rate": {
+              "rate": 0,
+              "points_coefficient": 0,
+              "external_currency_coefficient": 0
+            }
+          },
+          "ticker_info": {
+            "unique_id": "",
+            "status_code": 0,
+            "message": ""
+          },
+          "additional_info": {
+            "message_info": {
+              "message": "Makin hemat pakai promo",
+              "detail": ""
+            },
+            "error_detail": {
+              "message": ""
+            },
+            "empty_cart_info": {
+              "image_url": "",
+              "message": "",
+              "detail": ""
+            },
+            "usage_summaries": [],
+            "sp_ids": []
+          }
+        }
+      }
+    }
+  }
+]

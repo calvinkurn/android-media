@@ -110,8 +110,4 @@ public class GCMHandler {
             return true;
         }
     }
-
-    private boolean isPlayServicesAvailable() {
-        return isPlayServicesAvailable((Activity) context);
-    }
 }

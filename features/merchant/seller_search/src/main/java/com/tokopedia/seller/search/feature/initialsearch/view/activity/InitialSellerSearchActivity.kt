@@ -34,12 +34,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchComponent>,
-        GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
-        HistoryViewUpdateListener, SuggestionViewUpdateListener, GlobalSearchSellerPerformanceMonitoringListener {
-
-    companion object {
-        const val MIN_CHARACTER_SEARCH = 3
-    }
+    GlobalSearchView.GlobalSearchViewListener, GlobalSearchView.SearchTextBoxListener,
+    HistoryViewUpdateListener, SuggestionViewUpdateListener,
+    GlobalSearchSellerPerformanceMonitoringListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -51,7 +48,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         GlobalSearchSellerPerformanceMonitoring(GlobalSearchSellerPerformanceMonitoringType.SEARCH_SELLER)
     }
 
-    private var searchBarView: GlobalSearchView? = null
+    private var globalSearchView: GlobalSearchView? = null
 
     private var mSuggestionView: ConstraintLayout? = null
     private var mInitialStateView: ConstraintLayout? = null
@@ -73,10 +70,18 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
 
     override fun getComponent(): InitialSearchComponent {
         return DaggerInitialSearchComponent
-                .builder()
-                .globalSearchSellerComponent(GlobalSearchSellerComponentBuilder.getComponent(application))
-                .initialSearchModule(InitialSearchModule())
-                .build()
+            .builder()
+            .globalSearchSellerComponent(GlobalSearchSellerComponentBuilder.getComponent(application))
+            .initialSearchModule(InitialSearchModule())
+            .build()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        SellerSearchTracking.clickBackButtonSearchEvent(
+            userId,
+            globalSearchView?.binding?.searchBarView?.searchBarTextField?.text?.trim().toString().orEmpty()
+        )
     }
 
     private fun proceed() {
@@ -91,31 +96,33 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     private fun initSearchBarView() {
-        searchBarView?.setActivity(this)
-        searchBarView?.setSearchViewListener(this)
-        searchBarView?.setSearchTextBoxListener(this)
+        globalSearchView?.setActivity(this)
+        globalSearchView?.setSearchViewListener(this)
+        globalSearchView?.setSearchTextBoxListener(this)
         initialStateFragment?.setHistoryViewUpdateListener(this)
         suggestionFragment?.setSuggestionViewUpdateListener(this)
         setInitialKeyword()
     }
 
     private fun initView() {
-        searchBarView = findViewById(R.id.globalSearchSeller)
+        globalSearchView = findViewById(R.id.globalSearchSeller)
         mSuggestionView = findViewById(R.id.search_suggestion_container)
         mInitialStateView = findViewById(R.id.search_initial_state_container)
-        suggestionFragment = supportFragmentManager.findFragmentById(R.id.search_suggestion) as? SuggestionSearchFragment
-        initialStateFragment = supportFragmentManager.findFragmentById(R.id.search_initial_state) as? InitialSearchFragment
+        suggestionFragment =
+            supportFragmentManager.findFragmentById(R.id.search_suggestion) as? SuggestionSearchFragment
+        initialStateFragment =
+            supportFragmentManager.findFragmentById(R.id.search_initial_state) as? InitialSearchFragment
     }
 
     private fun setInitialKeyword() {
         getKeywordFromIntent().let { keyword ->
             proceedSearchKeyword(keyword)
-            searchBarView?.setKeyword(keyword)
+            globalSearchView?.setKeyword(keyword)
         }
     }
 
     private fun getKeywordFromIntent(): String =
-            intent?.data?.getQueryParameter(GlobalSearchSellerConstant.KEYWORD).orEmpty()
+        intent?.data?.getQueryParameter(GlobalSearchSellerConstant.KEYWORD).orEmpty()
 
     override fun onQueryTextChangeListener(keyword: String) {
         viewModel.getTypingSearch(keyword)
@@ -125,8 +132,8 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         SellerSearchTracking.clickClearSearchBoxEvent(userId)
     }
 
-    override fun onBackButtonSearchBar() {
-        SellerSearchTracking.clickBackButtonSearchEvent(userId)
+    override fun onBackButtonSearchBar(keyword: String) {
+        SellerSearchTracking.clickBackButtonSearchEvent(userId, keyword)
     }
 
     override fun setUserIdFromFragment(userId: String) {
@@ -144,23 +151,33 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     }
 
     override fun dropKeyboardHistory() {
-        searchBarView?.clearFocus()
-        KeyboardHandler.DropKeyboard(this, searchBarView)
+        globalSearchView?.clearFocus()
+        KeyboardHandler.DropKeyboard(this, globalSearchView)
     }
 
     override fun setKeywordSearchBarView(keyword: String) {
-        searchBarView?.setKeywordSearchBar(keyword)
+        globalSearchView?.setKeywordSearchBar(keyword)
     }
 
     override fun dropKeyboardSuggestion() {
-        searchBarView?.clearFocus()
-        KeyboardHandler.DropKeyboard(this, searchBarView)
+        globalSearchView?.clearFocus()
+        KeyboardHandler.DropKeyboard(this, globalSearchView)
     }
 
     private fun setWhiteStatusBar() {
-        window?.decorView?.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+        window?.decorView?.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
+            )
+        )
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0))
+            setStatusBarColor(
+                ContextCompat.getColor(
+                    this,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                )
+            )
             setLightStatusBar(true)
         }
     }
@@ -171,7 +188,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
                 is Success -> it.data
                 is Fail -> getString(R.string.placeholder_search_seller)
             }
-            searchBarView?.setPlaceholder(placeholder)
+            globalSearchView?.setPlaceholder(placeholder)
         }
         viewModel.getSearchPlaceholder()
     }
@@ -186,11 +203,7 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
         if (keyword.isEmpty()) {
             initialStateFragment?.historySearch(keyword)
         } else {
-            if (keyword.length < MIN_CHARACTER_SEARCH) {
-                initialStateFragment?.onMinCharState()
-            } else {
-                suggestionFragment?.suggestionSearch(keyword)
-            }
+            suggestionFragment?.suggestionSearch(keyword)
         }
     }
 
@@ -205,5 +218,4 @@ class InitialSellerSearchActivity : BaseActivity(), HasComponent<InitialSearchCo
     override fun finishMonitoring() {
         performanceMonitoring.stopPerformanceMonitoring()
     }
-
 }

@@ -184,6 +184,7 @@
     <string name="topads_dash_perclick">per klik</string>
     <string name="topads_dash_choose_date">Pilih Tanggal</string>
     <string name="topads_dash_status">Status</string>
+    <string name="topads_dash_ad_placement">Penempatan Iklan</string>
     <string name="topads_dash_filter_title">Urutkan</string>
     <string name="topads_dash_filter_sheet_title">Filter dan Urutkan</string>
     <string name="topads_dash_tidak_tampil">Tidak Tampil</string>
@@ -225,7 +226,8 @@
     <string name="topads_dash_date_bulan_ini">Bulan ini</string>
     <string name="topads_dash_search_hint">Cari grup iklan</string>
     <string name="topads_dash_date_custom">Custom</string>
-    <string name="topads_dash_biaya_pencarian">Biaya Pencarian</string>
+    <string name="topads_dash_biaya_pencarian">Biaya Iklan Pencarian</string>
+    <string name="topads_dash_biaya_rekomendasi">Biaya Iklan Rekomendasi</string>
     <string name="topads_dash_anggaran_harian">Anggaran harian</string>
     <string name="topads_dash_custom_date_desc">Pilih Tanggal</string>
     <string name="topads_dash_klik">/klik</string>

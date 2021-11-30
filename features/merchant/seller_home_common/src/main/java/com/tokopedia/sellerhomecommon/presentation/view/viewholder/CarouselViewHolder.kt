@@ -8,33 +8,45 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
+import com.tokopedia.sellerhomecommon.databinding.ShcCarouselWidgetBinding
+import com.tokopedia.sellerhomecommon.databinding.ShcPartialCarouselWidgetEmptyBinding
 import com.tokopedia.sellerhomecommon.presentation.adapter.CarouselBannerAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
-import kotlinx.android.synthetic.main.shc_carousel_widget.view.*
-import kotlinx.android.synthetic.main.shc_partial_carousel_widget_shimmering.view.*
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
+import com.tokopedia.sellerhomecommon.utils.toggleWidgetHeight
+import com.tokopedia.unifycomponents.NotificationUnify
 
 /**
  * Created By @ilhamsuaib on 20/05/20
  */
 
 class CarouselViewHolder(
-        itemView: View?,
-        private val listener: Listener
+    itemView: View,
+    private val listener: Listener
 ) : AbstractViewHolder<CarouselWidgetUiModel>(itemView) {
 
     companion object {
         val RES_LAYOUT = R.layout.shc_carousel_widget
     }
 
+    private val binding by lazy { ShcCarouselWidgetBinding.bind(itemView) }
+    private val emptyStateBinding by lazy {
+        ShcPartialCarouselWidgetEmptyBinding.bind(binding.root)
+    }
+    private val shimmeringBinding by lazy { binding.shcCarouselLoadingState }
+    private val errorStateBinding by lazy { binding.shcCarouselErrorState }
+
     private var hasSetSnapHelper = false
 
     override fun bind(element: CarouselWidgetUiModel) {
-        itemView.rvCarouselBanner.isNestedScrollingEnabled = false
-        itemView.visible()
+        if (!listener.getIsShouldRemoveWidget()) {
+            itemView.toggleWidgetHeight(true)
+        }
+        binding.rvCarouselBanner.isNestedScrollingEnabled = false
         observeState(element)
     }
 
@@ -50,45 +62,66 @@ class CarouselViewHolder(
         }
     }
 
-    private fun setOnLoadingState() = with(itemView) {
+    private fun setOnLoadingState() = with(binding) {
         tvCarouselBannerTitle.gone()
         rvCarouselBanner.gone()
         indicatorCarouselBanner.gone()
-        bannerImagesShimmering.visible()
-        commonWidgetErrorState.gone()
+        shimmeringBinding.bannerImagesShimmering.visible()
+        errorStateBinding.commonWidgetErrorState.gone()
+        emptyStateBinding.groupShcCarouselEmpty.gone()
     }
 
-    private fun setOnErrorState() = with(itemView) {
+    private fun setOnErrorState() = with(binding) {
         tvCarouselBannerTitle.visible()
-        commonWidgetErrorState.visible()
+        errorStateBinding.commonWidgetErrorState.visible()
         rvCarouselBanner.gone()
-        bannerImagesShimmering.gone()
+        shimmeringBinding.bannerImagesShimmering.gone()
         indicatorCarouselBanner.gone()
         btnCarouselSeeAll.gone()
-        ImageHandler.loadImageWithId(itemView.imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
+        emptyStateBinding.groupShcCarouselEmpty.gone()
+        ImageHandler.loadImageWithId(
+            errorStateBinding.imgWidgetOnError,
+            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+        )
     }
 
     private fun setOnSuccessState(element: CarouselWidgetUiModel) {
-        val data = element.data?.items
-
-        if (!data.isNullOrEmpty()) {
-            with(itemView) {
-                tvCarouselBannerTitle.text = element.title
-                tvCarouselBannerTitle.visible()
-                rvCarouselBanner.visible()
-                commonWidgetErrorState.gone()
-                bannerImagesShimmering.gone()
-
-                setupBanner(element)
-                setupCta(element)
+        with(binding) {
+            tvCarouselBannerTitle.text = element.title
+            tvCarouselBannerTitle.visible()
+        }
+        setTagNotification(element.tag)
+        if (element.isEmpty()) {
+            if (element.isShowEmpty && element.shouldShowEmptyStateIfEmpty()) {
+                setupEmptyState(element)
+            } else {
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    listener.onRemoveWidget(adapterPosition)
+                    itemView.toggleWidgetHeight(false)
+                }
             }
         } else {
-            itemView.gone()
-            listener.removeWidget(adapterPosition, element)
+            setupCarousel(element)
         }
     }
 
-    private fun setupBanner(element: CarouselWidgetUiModel) = with(itemView) {
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(binding) {
+            notifTagCarousel.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagCarousel.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
+            }
+        }
+    }
+
+    private fun setupBanner(element: CarouselWidgetUiModel) = with(binding) {
         val banners = element.data?.items.orEmpty()
 
         val indicatorVisibility = if (banners.size <= 1) View.GONE else View.VISIBLE
@@ -122,12 +155,12 @@ class CarouselViewHolder(
         }
     }
 
-    private fun setupCta(element: CarouselWidgetUiModel) = with(itemView) {
+    private fun setupCta(element: CarouselWidgetUiModel) = with(binding) {
         if (element.ctaText.isNotEmpty() && element.appLink.isNotEmpty()) {
             btnCarouselSeeAll.visible()
             btnCarouselSeeAll.text = element.ctaText
             btnCarouselSeeAll.setOnClickListener {
-                if (RouteManager.route(context, element.appLink)) {
+                if (RouteManager.route(root.context, element.appLink)) {
                     listener.sendCarouselCtaClickEvent(element.dataKey)
                 }
             }
@@ -136,12 +169,70 @@ class CarouselViewHolder(
         }
     }
 
+    private fun setupCarousel(element: CarouselWidgetUiModel) {
+        with(binding) {
+            rvCarouselBanner.visible()
+            errorStateBinding.commonWidgetErrorState.gone()
+            shimmeringBinding.bannerImagesShimmering.gone()
+            emptyStateBinding.groupShcCarouselEmpty.gone()
+
+            setupBanner(element)
+            setupCta(element)
+        }
+    }
+
+    private fun setupEmptyState(element: CarouselWidgetUiModel) {
+        with(binding) {
+            errorStateBinding.commonWidgetErrorState.gone()
+            rvCarouselBanner.gone()
+            shimmeringBinding.bannerImagesShimmering.gone()
+            indicatorCarouselBanner.gone()
+            btnCarouselSeeAll.gone()
+
+            emptyStateBinding.groupShcCarouselEmpty.visible()
+            emptyStateBinding.tvShcCarouselEmptyTitle.run {
+                text = element.emptyState.title.takeIf { it.isNotBlank() }
+                    ?: getString(R.string.shc_empty_state_title)
+                visible()
+            }
+            emptyStateBinding.tvShcCarouselEmptyDesc.run {
+                text = element.emptyState.description
+                showWithCondition(element.emptyState.description.isNotBlank())
+            }
+            emptyStateBinding.btnShcCarouselEmpty.run {
+                text = element.emptyState.ctaText
+                showWithCondition(element.emptyState.ctaText.isNotBlank())
+                setOnClickListener {
+                    if (RouteManager.route(itemView.context, element.emptyState.appLink)) {
+                        listener.sendCarouselEmptyStateCtaClickEvent(element)
+                    }
+                }
+            }
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                emptyStateBinding.imgShcCarouselEmpty,
+                element.emptyState.imageUrl.takeIf { it.isNotBlank() }
+                    ?: SellerHomeUrl.IMG_EMPTY_STATE)
+        }
+    }
+
     interface Listener : BaseViewHolderListener {
 
-        fun sendCarouselImpressionEvent(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {}
+        fun sendCarouselImpressionEvent(
+            dataKey: String,
+            carouselItems: List<CarouselItemUiModel>,
+            position: Int
+        ) {
+        }
 
-        fun sendCarouselClickTracking(dataKey: String, carouselItems: List<CarouselItemUiModel>, position: Int) {}
+        fun sendCarouselClickTracking(
+            dataKey: String,
+            carouselItems: List<CarouselItemUiModel>,
+            position: Int
+        ) {
+        }
 
         fun sendCarouselCtaClickEvent(dataKey: String) {}
+
+        fun sendCarouselEmptyStateCtaClickEvent(element: CarouselWidgetUiModel) {}
     }
 }

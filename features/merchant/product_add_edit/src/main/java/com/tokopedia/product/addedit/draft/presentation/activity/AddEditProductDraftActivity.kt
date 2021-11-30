@@ -15,7 +15,7 @@ import com.tokopedia.product.addedit.draft.presentation.fragment.AddEditProductD
 import kotlinx.android.synthetic.main.activity_add_edit_product_draft.*
 
 
-class AddEditProductDraftActivity : BaseSimpleActivity(), HasComponent<AddEditProductDraftComponent> {
+open class AddEditProductDraftActivity : BaseSimpleActivity(), HasComponent<AddEditProductDraftComponent> {
 
     private val addEditProductDraftFragment: AddEditProductDraftFragment by lazy {
         AddEditProductDraftFragment.newInstance()

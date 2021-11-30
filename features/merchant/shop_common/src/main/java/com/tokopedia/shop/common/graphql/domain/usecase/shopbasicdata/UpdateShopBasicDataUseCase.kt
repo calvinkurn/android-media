@@ -20,11 +20,9 @@ class UpdateShopBasicDataUseCase @Inject constructor(
         private const val DOMAIN = "domain"
         private const val TAGLINE = "tagline"
         private const val DESCRIPTION = "description"
-        private const val LOGO_CODE = "logoCode"
-        private const val FILE_PATH = "filePath"
-        private const val FILE_NAME = "fileName"
+        private const val IMG_ID = "imgId"
 
-        private val paramKeys = listOf(NAME, DOMAIN, TAGLINE, DESCRIPTION, LOGO_CODE, FILE_PATH, FILE_NAME)
+        private val paramKeys = listOf(NAME, DOMAIN, TAGLINE, DESCRIPTION, IMG_ID)
 
         @JvmStatic
         fun createRequestParam(
@@ -32,7 +30,7 @@ class UpdateShopBasicDataUseCase @Inject constructor(
                 domain: String?,
                 tagLine: String?,
                 description: String?,
-                logoCode: String?
+                imgId: String?
         ): RequestParams {
             val requestParams = RequestParams()
 
@@ -41,13 +39,28 @@ class UpdateShopBasicDataUseCase @Inject constructor(
             requestParams.putString(TAGLINE, tagLine)
             requestParams.putString(DESCRIPTION, description)
 
-            logoCode?.let { requestParams.putString(LOGO_CODE, logoCode) }
+            imgId?.let { requestParams.putString(IMG_ID, imgId) }
             return requestParams
         }
     }
 
     init {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_mutation_shop_basic_data)
+        val query = """
+            mutation updateShopInfo(${'$'}name :String, ${'$'}domain :String, ${'$'}tagline :String, ${'$'}description :String, ${'$'}imgId :String){
+              updateShopInfo(input: {
+                  name: ${'$'}name,
+                  domain: ${'$'}domain,
+                  tagline: ${'$'}tagline,
+                  description: ${'$'}description,
+                  logo: {
+                    imgID: ${'$'}imgId
+                  }
+                }) {
+                  success
+                  message
+                }
+            }
+        """.trimIndent()
         setGraphqlQuery(query)
         setTypeClass(ShopBasicDataMutation::class.java)
     }

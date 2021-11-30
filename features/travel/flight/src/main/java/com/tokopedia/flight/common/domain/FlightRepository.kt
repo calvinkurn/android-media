@@ -6,7 +6,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 /**
- * Created by zulfikarrahman on 10/25/17.
+ * Created by Furqan on 06/10/2021.
  */
 interface FlightRepository : FlightOrderRepository {
     suspend fun uploadCancellationAttachmentCoroutine(params: Map<String, RequestBody>, file: MultipartBody.Part): CancellationAttachmentUploadEntity

@@ -13,8 +13,6 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.github.moduth.blockcanary.BlockCanary;
-import com.github.moduth.blockcanary.BlockCanaryContext;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
@@ -35,20 +33,19 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
-import com.tokopedia.moengage_wrapper.MoengageInteractor;
-import com.tokopedia.moengage_wrapper.interfaces.MoengageInAppListener;
-import com.tokopedia.moengage_wrapper.interfaces.MoengagePushListener;
 import com.tokopedia.media.common.Loader;
-import com.tokopedia.media.common.common.ToasterActivityLifecycle;
+import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.sellerapp.anr.AnrActivityLifecycleCallback;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.SessionActivityLifecycleCallbacks;
+import com.tokopedia.sellerfeedback.SellerFeedbackScreenshot;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokopatch.TokoPatch;
 import com.tokopedia.track.TrackApp;
@@ -72,8 +69,7 @@ import static com.tokopedia.utils.permission.SlicePermission.SELLER_ORDER_AUTHOR
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication implements
-        MoengagePushListener, MoengageInAppListener {
+public class SellerMainApplication extends SellerRouterApplication {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
     private static final String ADD_BROTLI_INTERCEPTOR = "android_add_brotli_interceptor";
@@ -86,40 +82,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
-    @Override
-    public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName, extras, deepLinkUri);
-    }
-
-    @Override
-    public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName, extras, deepLinkUri);
-    }
-
-    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        if (deepLinkUri != null) {
-            Timber.d("FCM moengage SELLER clicked " + deepLinkUri.toString());
-            if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
-                Intent intent = new Intent(this, DeepLinkActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setData(Uri.parse(deepLinkUri.toString()));
-                startActivity(intent);
-
-            } else if (Constants.Schemes.APPLINKS_SELLER.equals(deepLinkUri.getScheme())) {
-                Intent intent = new Intent(this, DeepLinkHandlerActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setData(Uri.parse(deepLinkUri.toString()));
-                startActivity(intent);
-            } else {
-                Timber.d("FCM entered no one");
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-
-    }
 
     @Override
     public void onCreate() {
@@ -154,8 +116,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
         super.onCreate();
         initLogManager();
-        MoengageInteractor.INSTANCE.setPushListener(SellerMainApplication.this);
-        MoengageInteractor.INSTANCE.setInAppListener(this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(SellerMainApplication.this);
         GraphqlClient.setContextData(this);
         GraphqlClient.init(this, remoteConfig.getBoolean(ADD_BROTLI_INTERCEPTOR, false));
@@ -164,7 +124,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
 
         initAppNotificationReceiver();
         registerActivityLifecycleCallbacks();
-        initBlockCanary();
         TokoPatch.init(this);
         initSlicePermission();
 
@@ -258,6 +217,13 @@ public class SellerMainApplication extends SellerRouterApplication implements
             public String getNewRelicConfig() {
                 return remoteConfig.getString(REMOTE_CONFIG_NEW_RELIC_KEY_LOG);
             }
+
+            @NotNull
+            @Override
+            public String getEmbraceConfig() {
+                //no op because embrace for now not yet implemented in sellerapp
+                return "";
+            }
         });
     }
 
@@ -282,10 +248,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
         }
     }
 
-    public void initBlockCanary() {
-        BlockCanary.install(context, new BlockCanaryContext()).start();
-    }
-
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new NewRelicInteractionActCall());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
@@ -294,8 +256,10 @@ public class SellerMainApplication extends SellerRouterApplication implements
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
-        registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
         registerActivityLifecycleCallbacks(new PageInfoPusherSubscriber());
+        registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
+        registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
     }
 
     @Override
@@ -364,12 +328,6 @@ public class SellerMainApplication extends SellerRouterApplication implements
     private Boolean getSliceRemoteConfig() {
         return remoteConfig != null
                 && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_SELLER, false);
-    }
-
-
-    @Override
-    public Class<?> getDeeplinkClass() {
-        return DeepLinkActivity.class;
     }
 
 }

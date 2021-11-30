@@ -54,6 +54,8 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
     private static final String HCI_CAMERA_SELFIE = "android-js-call://selfie";
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
+    public static final String CUST_OVERLAY_URL = "imgurl";
+    private static final String CUST_HEADER = "header_text";
 
     private WebView mWebView;
     private ProgressBar mProgress;
@@ -198,7 +200,17 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Uri uri = Uri.parse(url);
                 Intent responseIntent = new Intent();
+                String queryParam = null;
+                String headerText = null;
+
+                try {
+                    queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+                    headerText = uri.getQueryParameter(CUST_HEADER);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 boolean returnVal = true;
                 if (url.equalsIgnoreCase(ADD_CC_SUCESS_CALLBACK)) {
@@ -225,12 +237,12 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
                 } else if (url.contains(HCI_CAMERA_KTP)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE, queryParam, headerText);
                     return true;
                 } else if (url.contains(HCI_CAMERA_SELFIE)) {
                     view.stopLoading();
                     mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                    startActivityForResult(RouteManager.getIntent(ScroogeActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+                    routeToHomeCredit(ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE, queryParam, headerText);
                     return true;
                 } else {
                     returnVal = false;
@@ -279,5 +291,14 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         bm.compress(Bitmap.CompressFormat.JPEG, 60, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
+    }
+
+    private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {
+        Intent intent = RouteManager.getIntent(ScroogeActivity.this, appLink);
+        if (overlayUrl != null)
+            intent.putExtra(CUST_OVERLAY_URL, overlayUrl);
+        if (headerText != null)
+            intent.putExtra(CUST_HEADER, headerText);
+        startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
     }
 }

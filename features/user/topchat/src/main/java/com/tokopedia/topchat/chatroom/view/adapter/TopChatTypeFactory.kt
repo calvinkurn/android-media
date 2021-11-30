@@ -3,8 +3,10 @@ package com.tokopedia.topchat.chatroom.view.adapter
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBannerUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlertUiModel
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.SrwBubbleUiModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterListener
 import com.tokopedia.topchat.chatroom.view.uimodel.*
@@ -28,9 +30,9 @@ interface TopChatTypeFactory {
             adapterListener: AdapterListener
     ): AbstractViewHolder<*>
 
-    fun type(roomSettingFraudAlert: RoomSettingFraudAlert): Int
+    fun type(roomSettingFraudAlertUiModel: RoomSettingFraudAlertUiModel): Int
 
-    fun type(roomSettingBanner: RoomSettingBanner): Int
+    fun type(roomSettingBannerUiModel: RoomSettingBannerUiModel): Int
 
     fun type(quotationViewModel: QuotationUiModel): Int
 
@@ -45,5 +47,7 @@ interface TopChatTypeFactory {
     fun type(broadCastUiModel: BroadCastUiModel): Int
 
     fun type(reviewUiModel: ReviewUiModel): Int
+    fun type(srwBubbleUiModel: SrwBubbleUiModel): Int
+    fun type(getReminderTickerUiModel: ReminderTickerUiModel): Int
 
 }

@@ -9,6 +9,7 @@ data class BroadMatchDataView(
         val applink: String = "",
         val isAppendTitleInTokopedia: Boolean = false,
         val broadMatchItemDataViewList: List<BroadMatchItemDataView> = listOf(),
+        val dimension90: String = "",
 ) : Visitable<ProductListTypeFactory> {
 
     override fun type(typeFactory: ProductListTypeFactory): Int {

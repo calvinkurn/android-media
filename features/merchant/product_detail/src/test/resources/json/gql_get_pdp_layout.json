@@ -37,6 +37,7 @@
             "name": "Wajan",
             "title": "Wajan"
           },
+          "isTokoNow": true,
           "condition": "NEW",
           "gtin": "",
           "isBlacklisted": false,

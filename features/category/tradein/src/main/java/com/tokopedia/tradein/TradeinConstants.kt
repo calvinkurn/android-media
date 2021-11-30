@@ -8,7 +8,6 @@ object TradeinConstants {
     var LAKU6_BASEURL = getInstance().LAKU6
     @JvmField
     var LAKU6_BASEURL_STAGING = "http://wst.laku6.com"
-    const val APPID = "1:109002668043:android:f4cc247c743f7921"
     const val ACTION_GO_TO_SHIPMENT = "ACTION_GO_TO_SHIPMENT"
     const val CAMPAIGN_ID_PROD = "tokopediaTradeInProduction"
     const val CAMPAIGN_ID_STAGING = "tokopediaSandbox"

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@color/Unify_N0"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/tokonowSearchCategoryBackgroundImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/tokopedianow_header_background_content_description"
+        app:srcCompat="@drawable/tokopedianow_ic_header_background" />
+
+    <View
+        android:id="@+id/tokonowSearchCategoryStatusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_gravity="top"
+        android:background="@color/Unify_G500"
+        android:visibility="visible" />
+
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/tokonowSearchCategoryNavToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:toolbarAlwaysShowShadow="false"
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarInitialFillColor="transparent"
+        app:toolbarInvertSearchBarColor="true"
+        app:toolbarInitialTheme="light" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tokonowSearchCategoryContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:fitsSystemWindows="true"
+        android:orientation="horizontal">
+
+        <com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
+            android:id="@+id/tokonowSearchCategoryStickyView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+                android:id="@+id/tokonowSearchCategorySwipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/tokonowSearchCategoryRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:paddingBottom="64dp" />
+
+            </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+        </com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView>
+
+        <com.tokopedia.minicart.common.widget.MiniCartWidget
+            android:id="@+id/tokonowSearchCategoryMiniCart"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/tokonowSearchCategoryLoader"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:loader_type="circular"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+

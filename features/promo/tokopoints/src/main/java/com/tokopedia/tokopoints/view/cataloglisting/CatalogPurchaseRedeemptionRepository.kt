@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.cataloglisting
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.CommonConstant
@@ -51,7 +52,7 @@ open class CatalogPurchaseRedeemptionRepository @Inject constructor(private val 
         mRefreshCatalogStatus.executeOnBackground().getSuccessData<CatalogStatusOuter>()
     }
 
-    suspend fun startSaveCoupon(id: Int) = withContext(Dispatchers.IO) {
+    suspend fun startSaveCoupon(id: Int) : RedeemCouponBaseEntity {
         val variables: MutableMap<String, Any> = HashMap()
         variables[CommonConstant.GraphqlVariableKeys.CATALOG_ID] = id
         variables[CommonConstant.GraphqlVariableKeys.IS_GIFT] = 0 //Never be a gift
@@ -61,7 +62,16 @@ open class CatalogPurchaseRedeemptionRepository @Inject constructor(private val 
                 variables, false)
         mRedeemCouponUseCase.clearRequest()
         mRedeemCouponUseCase.addRequest(request)
-        mRedeemCouponUseCase.executeOnBackground().getSuccessData<RedeemCouponBaseEntity>()
+        val gqlResponse = mRedeemCouponUseCase.executeOnBackground()
+        val error = gqlResponse.getError(RedeemCouponBaseEntity::class.java)
+        if (error == null || error.isEmpty()) {
+            return gqlResponse.getData(RedeemCouponBaseEntity::class.java)
+        } else {
+            val developerMessage = error[0].extensions.developerMessage
+            throw CatalogGqlError(MessageErrorException(error.mapNotNull {
+                it.message
+            }.joinToString(separator = ", ")),developerMessage = developerMessage)
+        }
     }
 
     suspend fun redeemCoupon(promoCode: String) = withContext(Dispatchers.IO) {

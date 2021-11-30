@@ -2,18 +2,25 @@ package com.tokopedia.kyc_centralized.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.BulletSpan
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity.Companion.createIntent
@@ -23,8 +30,10 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
+import kotlin.math.roundToInt
 
 /**
  * @author by alvinatin on 12/11/18.
@@ -33,6 +42,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
     protected var onboardingImage: LottieAnimationView? = null
     protected var title: TextView? = null
     protected var subtitle: TextView? = null
+    protected var bulletTextLayout: LinearLayout? = null
     protected var button: UnifyButton? = null
     protected var correctImage: ImageView? = null
     protected var wrongImage: ImageView? = null
@@ -88,6 +98,7 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         button = view.findViewById(R.id.button)
         correctImage = view.findViewById(R.id.image_selfie_correct)
         wrongImage = view.findViewById(R.id.image_selfie_wrong)
+        bulletTextLayout = view.findViewById(R.id.layout_info_bullet)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -153,11 +164,57 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             return true
         }
 
+    protected fun addText(text: String): Typography? {
+        return context?.let {
+            Typography(it).apply {
+                this.setType(Typography.BODY_2)
+                this.text = text
+                this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            }
+        }
+    }
+
+    protected fun addTextWithBullet(text: String): Typography? {
+        return context?.let {
+            Typography(it).apply {
+                val radius = DP_4.dpToPx(resources.displayMetrics)
+                val gapWidth = DP_12.dpToPx(resources.displayMetrics)
+                val margin = DP_8.dpToPx(resources.displayMetrics)
+                val span = SpannableString(text)
+                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+
+                val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    BulletSpan(gapWidth, color, radius)
+                } else {
+                    BulletSpan(gapWidth, color)
+                }
+
+                span.setSpan(bulletSpan, 0, text.length, 0)
+
+                setMargins(this, 0, 0, 0, margin)
+                this.setType(Typography.BODY_2)
+                this.text = span
+                this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            }
+        }
+    }
+
+    private fun setMargins(view: View, left: Int, top: Int, right: Int, bottom: Int) {
+        if (view.layoutParams is ViewGroup.MarginLayoutParams) {
+            val p = view.layoutParams as ViewGroup.MarginLayoutParams
+            p.setMargins(left, top, right, bottom)
+            view.requestLayout()
+        }
+    }
+
     abstract override fun initInjector()
     protected abstract fun setContentView()
     protected abstract fun encryptImage()
 
     companion object {
+        private const val DP_4 = 4
+        private const val DP_8 = 8
+        private const val DP_12 = 12
         const val EXTRA_KYC_STEPPER_MODEL = "kyc_stepper_model"
     }
 }

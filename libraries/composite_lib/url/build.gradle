@@ -5,6 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
     repositories {
+        google()
         mavenCentral()
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
@@ -16,7 +17,7 @@ buildscript {
 project.ext {
     artifactId = 'url'
     groupId = 'com.tokopedia.url'
-    versionName = "1.0.10"
+    versionName = "1.0.13"
     artifactName = "url-debug"
 }
 

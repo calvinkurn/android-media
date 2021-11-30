@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.di.broadcast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.play.broadcaster.di.key.FragmentKey
+import com.tokopedia.play.broadcaster.view.bottomsheet.PlayInteractiveLeaderBoardBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayProductLiveBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.*
 import com.tokopedia.play.broadcaster.view.fragment.factory.PlayBroadcastFragmentFactory
@@ -48,4 +49,9 @@ abstract class PlayBroadcastFragmentModule {
     @IntoMap
     @FragmentKey(PlayPermissionFragment::class)
     abstract fun getPermissionFragment(fragment: PlayPermissionFragment): Fragment
+
+    @Binds
+    @IntoMap
+    @FragmentKey(PlayInteractiveLeaderBoardBottomSheet::class)
+    abstract fun getInteractiveLeaderBoardBottomSheet(fragment: PlayInteractiveLeaderBoardBottomSheet): Fragment
 }

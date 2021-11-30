@@ -66,7 +66,7 @@ class GetProductRatingOverallUseCase @Inject constructor(
         val requests = mutableListOf(ratingProductRequest, productListRequest)
 
         try {
-            val gqlResponse = graphQlRepository.getReseponse(requests)
+            val gqlResponse = graphQlRepository.response(requests)
 
             if (gqlResponse.getError(ProductRatingOverallResponse::class.java)?.isNullOrEmpty() != true) {
                 productRatingWrapperUiModel.productRatingOverall =

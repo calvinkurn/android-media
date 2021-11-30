@@ -27,6 +27,8 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
     private val verticalDecription: Typography = itemView.findViewById(R.id.vertical_decription_tv)
     private val horizontalTitle: Typography = itemView.findViewById(R.id.horizontal_title_tv)
     private val horizontalDecription: Typography = itemView.findViewById(R.id.horizontal_decription_tv)
+    private val horizontalButton: UnifyButton = itemView.findViewById(R.id.horizontal_button)
+    private val horizontalImageView: DeferredImageView = itemView.findViewById(R.id.horizontal_image_empty_state)
     private val verticalButton: UnifyButton = itemView.findViewById(R.id.vertical_button)
     private val verticalImageView: DeferredImageView = itemView.findViewById(R.id.vertical_image_empty_state)
 
@@ -43,6 +45,16 @@ class EmptyStateViewHolder(itemView: View, private val fragment: Fragment) : Abs
                 verticalView.hide()
                 horizontalTitle.text = it.title
                 horizontalDecription.text = it.description
+                if (it.isFilterState) {
+                    horizontalButton.show()
+                    horizontalButton.setOnClickListener {
+                        emptyStateViewModel.handleEmptyStateReset()
+                    }
+                    horizontalImageView.loadRemoteImageDrawable(FILTER_EMPTY_IMAGE,  ImageDensityType.SUPPORT_SINGLE_DPI)
+                }else{
+                    horizontalButton.hide()
+                    horizontalImageView.loadRemoteImageDrawable(EMPTY_IMAGE)
+                }
             } else {
                 setVerticalState(it)
             }

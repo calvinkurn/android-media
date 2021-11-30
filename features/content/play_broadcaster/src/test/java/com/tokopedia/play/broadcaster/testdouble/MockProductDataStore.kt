@@ -15,7 +15,7 @@ class MockProductDataStore(
         dispatcherProvider: CoroutineDispatchers
 ) : ProductDataStore {
 
-    val selectedProductsId: List<Long>
+    val selectedProductsId: List<String>
         get() = getSelectedProducts().map { it.id }
 
     private var isSuccess = false
@@ -34,7 +34,7 @@ class MockProductDataStore(
         realImpl.selectProduct(product, isSelected)
     }
 
-    override fun isProductSelected(productId: Long): Boolean {
+    override fun isProductSelected(productId: String): Boolean {
         return realImpl.isProductSelected(productId)
     }
 

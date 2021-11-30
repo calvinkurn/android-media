@@ -18,7 +18,22 @@ object TrackingPageQuery {
                   send_date
                   send_time
                   service_code
-        		  tracking_url
+                  tracking_url
+                  eta {
+                    triggered_by
+                    eta_min
+                    eta_max
+                    event_time
+                    is_updated
+                    user_info
+                    user_updated_info
+                    eta_histories { 
+                        triggered_by
+                        eta_min
+                        eta_max
+                        event_time
+                    }
+                  }
                 }
                 track_history {
                   date_time
@@ -54,7 +69,7 @@ object TrackingPageQuery {
 
     val retryBooking = """
         mutation RetryBooking(${'$'}id: String!){
-          retryBooking(orderID: {'$'}id){
+          retryBooking(orderID: ${'$'}id){
             order_id
             order_tx_id
             awbnum

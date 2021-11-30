@@ -45,5 +45,7 @@ data class RechargePersoItem(
         val weblink: String = "",
         @Expose
         @SerializedName("tracking")
-        val tracking: List<RechargeBUWidgetTrackingData> = listOf()
+        val tracking: List<RechargeBUWidgetTrackingData> = listOf(),
+        @SerializedName("tracking_data")
+        val trackingData: RechargeBUWidgetNewTrackingData = RechargeBUWidgetNewTrackingData()
 )

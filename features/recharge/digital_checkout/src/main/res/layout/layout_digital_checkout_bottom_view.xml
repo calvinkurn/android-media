@@ -24,7 +24,8 @@
         app:layout_constraintEnd_toStartOf="@id/btnCheckout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
-        app:typographyType="body_3" />
+        app:typographyType="body_3"
+        app:layout_goneMarginTop="@dimen/spacing_lvl4" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTotalPayment"
@@ -49,6 +50,6 @@
         android:text="@string/digital_cart_checkout_pay_label_cta"
         app:layout_constraintBottom_toBottomOf="@id/tvTotalPayment"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/digitalPromoBtnView"
+        app:layout_constraintTop_toTopOf="@id/tvTotalPaymentLabel"
         app:unifyButtonSize="medium" />
 </androidx.constraintlayout.widget.ConstraintLayout>

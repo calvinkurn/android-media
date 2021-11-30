@@ -21,6 +21,7 @@ query Notification($cursor: String) {
     inbox_counter{
       all{
         total_int
+        notifcenter_int
       }
     }
     resolutionAs {

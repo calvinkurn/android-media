@@ -18,14 +18,14 @@
             android:id="@+id/feed_background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="null"
+            android:contentDescription="@string/feed_background_image"
             android:background="@drawable/gradient_feed"/>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:contentDescription="null"
+            android:contentDescription="@string/feed_header_mask"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_searchbar_feed_header_mask"/>
     </FrameLayout>
@@ -68,17 +68,23 @@
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="40dp"
             android:visibility="visible"
             app:layout_scrollFlags="enterAlways"
             app:tabMode="fixed"
             app:tabGravity="fill"
             app:tabIndicatorHeight="@dimen/dp_1"
-            app:tabSelectedTextColor="@color/Unify_G400"
+            app:tabSelectedTextColor="@color/Unify_GN500"
             app:tabTextColor="@color/Unify_N700_32"
             app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
-            app:tabIndicatorColor="@color/Unify_G400"
+            app:tabIndicatorColor="@color/Unify_GN500"
             android:theme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
+            android:id="@+id/postUpdateView"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -106,86 +112,16 @@
     </FrameLayout>
 
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/layout_grey_popup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/Unify_N700_44"
-            android:visibility="gone">
-
-        </FrameLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_feed"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:visibility="gone"
-            app:backgroundTint="@color/Unify_G400"
-            app:srcCompat="@drawable/ic_feed_post_plus"
-            tools:visibility="visible"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_feed_byme"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_above="@id/fab_feed"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:visibility="invisible"
-            app:backgroundTint="@color/Unify_N0"
-            app:srcCompat="@drawable/ic_feed_post_byme"/>
-
-
-        <TextView
-            android:id="@+id/text_fab_byme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/feed_create_post_byme"
-            android:layout_toLeftOf="@id/fab_feed_byme"
-            android:layout_alignTop="@id/fab_feed_byme"
-            android:layout_alignBottom="@id/fab_feed_byme"
-            android:textColor="@color/Unify_N0"
-            android:layout_marginRight="@dimen/dp_12"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"/>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_feed_shop"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_above="@id/fab_feed_byme"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:visibility="invisible"
-            app:backgroundTint="@color/Unify_N0"
-            app:srcCompat="@drawable/ic_feed_post_shop"/>
-
-        <TextView
-            android:id="@+id/text_fab_shop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/feed_create_post_shop"
-            android:layout_toLeftOf="@id/fab_feed_shop"
-            android:layout_alignTop="@id/fab_feed_shop"
-            android:layout_alignBottom="@id/fab_feed_shop"
-            android:textColor="@color/Unify_N0"
-            android:layout_marginRight="@dimen/dp_12"
-            android:textSize="@dimen/sp_14"
-            android:textStyle="bold"/>
-    </RelativeLayout>
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+        android:id="@+id/fab_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/Unify_GN500"
+        app:fbType="circle"
+        app:srcCompat="@drawable/ic_feed_post_plus"
+        tools:visibility="visible"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

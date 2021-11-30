@@ -8,11 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.search.adapter.SearchEventViewHolder
 import com.tokopedia.entertainment.search.adapter.viewmodel.SearchEventModel
-import com.tokopedia.entertainment.search.analytics.EventSearchPageTracking
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import kotlinx.android.synthetic.main.ent_search_event_list_item.view.*
@@ -36,7 +34,6 @@ class SearchEventListViewHolder(val view: View,
 
     override fun bind(element: SearchEventModel) {
         eventListAdapter.listKegiatan = element.listEvent
-        eventListAdapter.resources = element.resources
         eventListAdapter.notifyDataSetChanged()
     }
 
@@ -56,7 +53,6 @@ class SearchEventListViewHolder(val view: View,
     class KegiatanAdapter(val listener: SearchEventListListener) : RecyclerView.Adapter<KegiatanHolder>(){
 
         lateinit var listKegiatan : List<KegiatanSuggestion>
-        lateinit var resources: Resources
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KegiatanHolder {
             return KegiatanHolder(LayoutInflater.from(parent.context)
@@ -80,7 +76,6 @@ class SearchEventListViewHolder(val view: View,
 
             holder.view.setOnClickListener {
                 listener.clickEventSearchSuggestion(element, listKegiatan, position+1)
-                RouteManager.route(holder.view.context, element.app_url)
             }
 
             if(element.tanggal_kegiatan.isBlank() || element.tanggal_kegiatan.equals("0") || element.category.equals("3")){
@@ -90,7 +85,7 @@ class SearchEventListViewHolder(val view: View,
             } else{
                 holder.view.txtTanggalSearch.visibility = View.VISIBLE
                 holder.view.txtTanggalSearch.text = DateFormatUtils.getFormattedDate(element.tanggal_kegiatan, "dd MMM")
-                holder.view.txtLokasiSearch.text = String.format(resources.getString(R.string.ent_search_black_circle, element.lokasi_kegiatan))
+                holder.view.txtLokasiSearch.text = String.format(holder.view.resources.getString(R.string.ent_search_black_circle, element.lokasi_kegiatan))
             }
         }
     }

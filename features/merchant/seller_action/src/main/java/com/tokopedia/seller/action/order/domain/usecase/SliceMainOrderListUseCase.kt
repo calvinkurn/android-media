@@ -56,7 +56,7 @@ class SliceMainOrderListUseCase @Inject constructor(private val gqlRepository: G
 
     override suspend fun executeOnBackground(): List<Order> {
         val request = GraphqlRequest(QUERY, SellerActionOrder::class.java, params.parameters)
-        val response = gqlRepository.getReseponse(listOf(request), cacheStrategy)
+        val response = gqlRepository.response(listOf(request), cacheStrategy)
 
         val errors = response.getError(SellerActionOrder::class.java)
         if (errors.isNullOrEmpty()) {

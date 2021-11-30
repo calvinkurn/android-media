@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.HttpErrorException
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
@@ -35,9 +34,8 @@ import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper.getRequestBody
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.exception.ResponseDataNullException
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
@@ -49,9 +47,6 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.net.ConnectException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -65,24 +60,24 @@ class DigitalCartViewModel @Inject constructor(
         private val digitalPatchOtpUseCase: DigitalPatchOtpUseCase,
         private val digitalCheckoutUseCase: DigitalCheckoutUseCase,
         private val userSession: UserSessionInterface,
-        private val dispatcher: CoroutineDispatcher,
+        private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val _cartDigitalInfoData = MutableLiveData<CartDigitalInfoData>()
     val cartDigitalInfoData: LiveData<CartDigitalInfoData>
         get() = _cartDigitalInfoData
 
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String>
-        get() = _errorMessage
+    private val _errorThrowable = MutableLiveData<Fail>()
+    val errorThrowable: LiveData<Fail>
+        get() = _errorThrowable
 
     private val _isNeedOtp = MutableLiveData<String>()
     val isNeedOtp: LiveData<String>
         get() = _isNeedOtp
 
-    private val _isSuccessCancelVoucherCart = MutableLiveData<Result<Boolean>>()
-    val isSuccessCancelVoucherCart: LiveData<Result<Boolean>>
-        get() = _isSuccessCancelVoucherCart
+    private val _cancelVoucherData = MutableLiveData<Result<CancelVoucherData>>()
+    val cancelVoucherData: LiveData<Result<CancelVoucherData>>
+        get() = _cancelVoucherData
 
     private val _totalPrice = MutableLiveData<Double>()
     val totalPrice: LiveData<Double>
@@ -113,15 +108,16 @@ class DigitalCartViewModel @Inject constructor(
     private val paymentSummary = PaymentSummary(mutableListOf())
 
     fun getCart(categoryId: String,
-                errorNotLoginMessage: String = "") {
+                errorNotLoginMessage: String = "",
+                isSpecialProduct: Boolean) {
         if (!userSession.isLoggedIn) {
-            _errorMessage.postValue(errorNotLoginMessage)
+            _errorThrowable.postValue(Fail(MessageErrorException(errorNotLoginMessage)))
         } else {
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
                     DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
-                    onSuccessGetCart(categoryId),
+                    onSuccessGetCart(categoryId, isSpecialProduct),
                     onErrorGetCart()
             )
         }
@@ -129,7 +125,8 @@ class DigitalCartViewModel @Inject constructor(
 
     fun processPatchOtpCart(digitalIdentifierParam: RequestBodyIdentifier,
                             digitalCheckoutPassData: DigitalCheckoutPassData,
-                            errorNotLoginMessage: String = "") {
+                            errorNotLoginMessage: String = "",
+                            isSpecialProduct: Boolean) {
         launchCatchError(block = {
             val otpResponse = withContext(dispatcher) {
                 val attributes = RequestBodyOtpSuccess.Attributes(DeviceUtil.localIpAddress, DeviceUtil.userAgentForApiCall, digitalIdentifierParam)
@@ -145,24 +142,30 @@ class DigitalCartViewModel @Inject constructor(
             val responsePatchOtpSuccess = data.data as ResponsePatchOtpSuccess
 
             if (responsePatchOtpSuccess.success) {
-                getCart(digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage)
+                getCart(digitalCheckoutPassData.categoryId ?: "", errorNotLoginMessage,
+                        isSpecialProduct)
             }
 
         }) {
-            handleError(it)
+            _showLoading.postValue(false)
+            if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
+            } else _errorThrowable.postValue(Fail(it))
         }
     }
 
-    private fun onSuccessGetCart(categoryId: String): (RechargeGetCart.Response) -> Unit {
+    private fun onSuccessGetCart(categoryId: String, isSpecialProduct: Boolean)
+            : (RechargeGetCart.Response) -> Unit {
         return {
-            val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it)
+            val mappedCartData = DigitalCheckoutMapper.mapGetCartToCartDigitalInfoData(it, isSpecialProduct)
             mapDataSuccessCart(mappedCartData, categoryId)
         }
     }
 
     private fun onErrorGetCart(): (Throwable) -> Unit {
         return {
-            handleError(it)
+            _showLoading.postValue(false)
+            _errorThrowable.postValue(Fail(it))
         }
     }
 
@@ -175,71 +178,77 @@ class DigitalCartViewModel @Inject constructor(
             _isNeedOtp.postValue(userSession.phoneNumber)
         } else {
 
+            //set up price and also payment summary based on response from BE
             val pricePlain = mappedCartData.attributes.pricePlain
-            _totalPrice.postValue(pricePlain + mappedCartData.attributes.adminFee)
+            _totalPrice.postValue(calculateTotalPrice(pricePlain, mappedCartData.attributes.adminFee,
+                    mappedCartData.attributes.isOpenAmount))
             paymentSummary.summaries.clear()
             paymentSummary.addToSummary(SUMMARY_TOTAL_PAYMENT_POSITION, Payment(STRING_SUBTOTAL_TAGIHAN, getStringIdrFormat(pricePlain)))
-            if (mappedCartData.attributes.adminFee > 0) {
-                paymentSummary.addToSummary(SUMMARY_ADMIN_FEE_POSITION, Payment(STRING_ADMIN_FEE, getStringIdrFormat(mappedCartData.attributes.adminFee.toDouble())))
+
+            if (mappedCartData.attributes.isOpenAmount && mappedCartData.attributes.adminFee > 0) {
+                paymentSummary.addToSummary(SUMMARY_ADMIN_FEE_POSITION, Payment(STRING_ADMIN_FEE, getStringIdrFormat(mappedCartData.attributes.adminFee)))
             }
             _payment.postValue(paymentSummary)
 
+            //render checkout page
             requestCheckoutParam.transactionAmount = pricePlain
-
             _cartDigitalInfoData.postValue(mappedCartData)
 
-            val promoData = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
-            promoData?.let {
-                _promoData.postValue(it)
+            //render promo
+            val promo = DigitalCheckoutMapper.mapToPromoData(mappedCartData)
+            promo?.let {
+                _promoData.postValue(promo)
             }
+
+            //show checkout page
             _showContentCheckout.postValue(true)
             _showLoading.postValue(false)
         }
     }
 
-    fun handleError(e: Throwable) {
-        if (e is UnknownHostException) {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)
-        } else if (e is SocketTimeoutException || e is ConnectException) {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
-        } else if (e is ResponseErrorException) {
-            _errorMessage.postValue(e.message)
-        } else if (e is ResponseDataNullException) {
-            _errorMessage.postValue(e.message)
-        } else if (e is HttpErrorException) {
-            _errorMessage.postValue(e.message)
-        } else {
-            _errorMessage.postValue(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
-        }
-        _showLoading.postValue(false)
+    fun cancelVoucherCart(promoCode: String, defaultErrorMsg: String) {
+        cancelVoucherUseCase.execute(promoCode, onSuccessCancelVoucher(defaultErrorMsg),
+                onErrorCancelVoucher(defaultErrorMsg))
     }
 
-    fun cancelVoucherCart() {
-        cancelVoucherUseCase.execute(onSuccessCancelVoucher(), onErrorCancelVoucher())
+    private fun calculateTotalPrice(totalPrice: Double, adminFee: Double, isOpenAmount: Boolean): Double {
+        return if (isOpenAmount) {
+            totalPrice + adminFee
+        } else totalPrice
     }
 
-    private fun onSuccessCancelVoucher(): (CancelVoucherData.Response) -> Unit {
+    private fun onSuccessCancelVoucher(defaultErrorMsg: String): (CancelVoucherData.Response) -> Unit {
         return {
             if (it.response.success) {
                 setPromoData(PromoData(state = TickerCheckoutView.State.EMPTY, description = ""))
-                _isSuccessCancelVoucherCart.postValue(Success(true))
+                _cancelVoucherData.postValue(Success(it.response))
             } else {
-                _isSuccessCancelVoucherCart.postValue(Fail(Throwable("")))
+                _cancelVoucherData.postValue(Fail(MessageErrorException(defaultErrorMsg)))
             }
         }
     }
 
-    private fun onErrorCancelVoucher(): (Throwable) -> Unit {
+    private fun onErrorCancelVoucher(defaultErrorMsg: String): (Throwable) -> Unit {
         return {
-            _isSuccessCancelVoucherCart.postValue(Fail(it))
+            if (it.message.isNullOrEmpty()) {
+                _cancelVoucherData.postValue(Fail(MessageErrorException(defaultErrorMsg)))
+            } else {
+                _cancelVoucherData.postValue(Fail(it))
+            }
         }
     }
 
     private fun onReceivedPromoCode() {
         resetCheckoutSummaryPromoAndTotalPrice()
-        val promoDataValue = promoData.value?.amount ?: 0
-        if (promoDataValue > 0) {
-            paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.toDouble()))))
+
+        val promoDataValue = promoData.value ?: PromoData()
+        if (promoDataValue.amount > 0) {
+            if (promoDataValue.isActive()) {
+                paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(STRING_KODE_PROMO, String.format("-%s", getStringIdrFormat(promoDataValue.amount.toDouble()))))
+            } else {
+                //if it is inactive and have promo amount
+                paymentSummary.addToSummary(SUMMARY_PROMO_CODE_POSITION, Payment(promoDataValue.description, String.format("-%s", getStringIdrFormat(promoDataValue.amount.toDouble()))))
+            }
             _payment.postValue(paymentSummary)
             _totalPrice.forceRefresh()
         } else {
@@ -270,14 +279,14 @@ class DigitalCartViewModel @Inject constructor(
         updateCheckoutSummaryWithFintechProduct(fintechProduct, isChecked)
     }
 
-    fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
+    private fun updateTotalPriceWithFintechProduct(inputPrice: Double?) {
         cartDigitalInfoData.value?.attributes?.let { attributes ->
             var totalPrice = inputPrice ?: attributes.pricePlain
 
             requestCheckoutParam.fintechProducts.forEach { fintech ->
                 totalPrice += fintech.value.fintechAmount
             }
-            _totalPrice.postValue(totalPrice + attributes.adminFee)
+            _totalPrice.postValue(calculateTotalPrice(totalPrice, attributes.adminFee, attributes.isOpenAmount))
         }
     }
 
@@ -341,7 +350,10 @@ class DigitalCartViewModel @Inject constructor(
                     }
 
                 }) {
-                    handleError(it)
+                    _showLoading.postValue(false)
+                    if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
+                        _errorThrowable.postValue(Fail(MessageErrorException(it.message)))
+                    } else _errorThrowable.postValue(Fail(it))
                 }
             }
         }
@@ -371,7 +383,7 @@ class DigitalCartViewModel @Inject constructor(
     fun applyPromoData(promoData: PromoData) {
         if (promoData.state == TickerCheckoutView.State.FAILED || promoData.state == TickerCheckoutView.State.EMPTY) {
             resetCheckoutSummaryPromoAndTotalPrice()
-        } else if (promoData.state == TickerCheckoutView.State.ACTIVE) {
+        } else if (promoData.state == TickerCheckoutView.State.ACTIVE || promoData.state == TickerCheckoutView.State.INACTIVE) {
             onReceivedPromoCode()
         }
     }

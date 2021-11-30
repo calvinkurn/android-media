@@ -8,7 +8,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtTitle"
+        android:id="@+id/txt_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Title"
@@ -16,13 +16,13 @@
         app:typographyType="heading_5"
         android:visibility="gone"
         tools:visibility="visible"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
         app:typographyWeight="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/lstTicker"
+        android:id="@+id/lst_ticker"
         android:clipToPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

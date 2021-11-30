@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.domain.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.play.broadcaster.socket.PlaySocketEnum
-import com.tokopedia.play.broadcaster.socket.PlaySocketType
+import com.tokopedia.play.broadcaster.data.type.PlaySocketEnum
+import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 
 /**
  * Created by jegul on 10/07/20

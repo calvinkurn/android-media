@@ -1,0 +1,18 @@
+{
+  "readme": "Search Shop General Search Tracking",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickTopNav",
+      "eventCategory": "top nav",
+      "eventAction": "general search shop",
+      "eventLabel": ".+|.+|\\d|.+|.+|.+|.+",
+      "currentSite": "tokopediamarketplace",
+      "businessUnit": "search",
+      "pageSource": ".+",
+      "relatedKeyword": ".+ - .+",
+      "sessionIris": ".+",
+      "searchFilter": ".*"
+    }
+  ]
+}

@@ -10,9 +10,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.databinding.FilterRadioItemBinding
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import kotlinx.android.synthetic.main.filter_radio_item.view.*
-
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterListener: SomSubRadioButtonFilterListener) :
         RecyclerView.Adapter<SomSubFilterRadioButtonAdapter.RadioButtonViewHolder>() {
@@ -77,27 +77,29 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
     inner class RadioButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
             SomSubFilterChildCheckBoxAdapter.SomSubChildFilterListener {
 
-        fun bind(item: SomFilterChipsUiModel) {
-            with(itemView) {
-                setChildStatusList()
-                label_radio.text = item.name
-                rb_filter.setOnCheckedChangeListener(null)
-                rb_filter.isChecked = item.isSelected
-                rb_filter.skipAnimation()
-                toggleChildStatus(item, rb_filter.isChecked)
+        private val binding by viewBinding<FilterRadioItemBinding>()
 
-                rb_filter.setOnCheckedChangeListener { _, _ ->
+        fun bind(item: SomFilterChipsUiModel) {
+            binding?.run {
+                setChildStatusList()
+                labelRadio.text = item.name
+                rbFilter.setOnCheckedChangeListener(null)
+                rbFilter.isChecked = item.isSelected
+                rbFilter.skipAnimation()
+                toggleChildStatus(item, rbFilter.isChecked)
+
+                rbFilter.setOnCheckedChangeListener { _, _ ->
                     clickHandlerRadio(item, adapterPosition)
                     somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
                 }
-                setOnClickListener {
-                    rb_filter.isChecked = !rb_filter.isChecked
+                root.setOnClickListener {
+                    rbFilter.isChecked = !rbFilter.isChecked
                 }
             }
         }
 
         private fun setChildStatusList() {
-            with(itemView) {
+            binding?.run {
                 rvChildStatus = rvChildFilterStatus
                 somSubFilterChildCheckBoxAdapter = SomSubFilterChildCheckBoxAdapter(this@RadioButtonViewHolder)
                 rvChildFilterStatus?.apply {
@@ -108,7 +110,7 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         }
 
         private fun toggleChildStatus(item: SomFilterChipsUiModel, isChecked: Boolean) {
-            with(itemView) {
+            binding?.run {
                 if (item.childStatus.isEmpty()) {
                     rvChildFilterStatus.hide()
                 } else if (item.childStatus.isNotEmpty() && isChecked) {

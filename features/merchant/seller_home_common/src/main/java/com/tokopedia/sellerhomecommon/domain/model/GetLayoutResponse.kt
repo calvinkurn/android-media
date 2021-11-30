@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class GetLayoutResponse(
-        @Expose
-        @SerializedName("GetSellerDashboardPageLayout")
-        val layout: GetSellerDashboardLayout?
+    @Expose
+    @SerializedName("GetSellerDashboardPageLayout")
+    val layout: GetSellerDashboardLayout? = GetSellerDashboardLayout()
 )
 
 data class GetSellerDashboardLayout(
-        @Expose
-        @SerializedName("widget")
-        val widget: List<WidgetModel>?
+    @Expose
+    @SerializedName("widget")
+    val widget: List<WidgetModel>? = emptyList()
 )

@@ -10,11 +10,14 @@ class ChatBubbleItemDecorator(private val dateIndicator: (String) -> Unit) : Rec
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDrawOver(c, parent, state)
         val topChild = parent.getChildAt(parent.childCount - 1)
-        val date = parent.findContainingViewHolder(topChild)?.itemView?.findViewById<Typography>(R.id.date)
+        if (topChild!=null){
+            val date = parent.findContainingViewHolder(topChild)?.itemView?.findViewById<Typography>(R.id.date)
 
-        if (!date?.text.isNullOrEmpty()) {
-            dateIndicator.invoke(date?.text.toString())
+            if (!date?.text.isNullOrEmpty()) {
+                dateIndicator.invoke(date?.text.toString())
+            }
         }
+
 
     }
 

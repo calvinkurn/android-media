@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="shake_tkpd_main_green">#42b549</color>
-    <color name="shake_transparent">#00000000</color>
+    <color name="shake_transparent">@android:color/transparent</color>
     <color name="shake_black_54">#8a000000</color>
     <color name="shake_black_b3">#b3000000</color>
     <color name="shake_black_36">#5b000000</color>

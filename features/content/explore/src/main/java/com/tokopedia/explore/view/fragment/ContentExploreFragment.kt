@@ -37,6 +37,7 @@ import com.tokopedia.explore.view.uimodel.ExploreViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.user.session.UserSessionInterface
+import io.embrace.android.embracesdk.Embrace
 import javax.inject.Inject
 
 /**
@@ -190,6 +191,7 @@ class ContentExploreFragment :
         if (userVisibleHint && isAdded && activity != null && ::presenter.isInitialized) {
             if (!hasLoadedOnce) {
                 performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE)
+                Embrace.getInstance().startEvent(PEFORMANCE_EXPLORE, null, false)
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }
@@ -392,6 +394,7 @@ class ContentExploreFragment :
     override fun stopTrace() {
         if (::performanceMonitoring.isInitialized && !isTraceStopped) {
             performanceMonitoring.stopTrace()
+            Embrace.getInstance().endEvent(PEFORMANCE_EXPLORE)
             isTraceStopped = true
         }
     }

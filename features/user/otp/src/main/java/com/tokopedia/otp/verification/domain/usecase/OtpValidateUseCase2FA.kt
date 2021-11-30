@@ -17,7 +17,7 @@ import com.tokopedia.otp.verification.domain.query.OtpValidateQuery2FA
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class OtpValidateUseCase2FA @Inject constructor(
+open class OtpValidateUseCase2FA @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         dispatcher: CoroutineDispatchers
 ) : BaseOtpUseCase<OtpValidatePojo>(dispatcher) {
@@ -44,7 +44,7 @@ class OtpValidateUseCase2FA @Inject constructor(
                 OtpValidatePojo::class.java,
                 parameter
         )
-        return@withContext graphqlRepository.getReseponse(listOf(request), cacheStrategy)
+        return@withContext graphqlRepository.response(listOf(request), cacheStrategy)
     }.getSuccessData()
 
     companion object {

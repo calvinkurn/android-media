@@ -20,6 +20,7 @@ import com.tokopedia.media.loader.loadAsGif
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaDataSource
+import io.embrace.android.embracesdk.Embrace
 
 const val FPM_ATTRIBUTE_IMAGE_URL = "image_url"
 const val FPM_PRODUCT_ORGANIC_CHANNEL = "home_product_organic"
@@ -32,43 +33,19 @@ const val FPM_SEE_ALL_CARD_BACKGROUND = "home_see_all_card_background_image"
 const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
+val EXCLUDED_EMBRACE_FPM = arrayListOf(com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER)
+
 fun ImageView.loadGif(url: String) = loadAsGif(url)
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: MediaListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     this.loadImage(url) {
         listener({ resource, dataSource ->
-            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+            handleOnResourceReady(dataSource, resource, performanceMonitoring, fpmItemLabel)
             listener?.onLoaded(resource, dataSource)
         }, {
             GlideErrorLogHelper().logError(context, it, url)
             listener?.onFailed(it)
-        })
-    }
-}
-
-fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadImage(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
-        fitCenter()
-        listener({ resource, dataSource ->
-            handleOnResourceReady(dataSource, resource, performanceMonitoring)
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
-        })
-    }
-}
-
-fun ImageView.loadIconFitCenter(url: String, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
-    this.loadIcon(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
-        fitCenter()
-        listener({ resource, dataSource ->
-            handleOnResourceReady(dataSource, resource, performanceMonitoring)
-        }, {
-            GlideErrorLogHelper().logError(context, it, url)
         })
     }
 }
@@ -99,7 +76,7 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
                         dataSource: DataSource?,
                         isFirstResource: Boolean
                 ): Boolean {
-                    handleOnResourceReady(MediaDataSource.mapTo(dataSource), null, performanceMonitoring)
+                    handleOnResourceReady(MediaDataSource.mapTo(dataSource), null, performanceMonitoring, fpmItemLabel)
                     return false
                 }
             })
@@ -120,18 +97,10 @@ fun ImageView.loadMiniImage(
         overrideSize(Resize(width, height))
         listener({ resource, dataSource ->
             onLoaded()
-            handleOnResourceReady(dataSource, resource, performanceMonitoring)
+            handleOnResourceReady(dataSource, resource, performanceMonitoring, fpmItemLabel)
         }, {
             onFailed()
         })
-    }
-}
-
-fun ImageView.loadImageCenterCrop(url: String){
-    this.loadImage(url) {
-        setPlaceHolder(R.drawable.placeholder_grey)
-        setRoundedRadius(15.toFloat())
-        centerCrop()
     }
 }
 
@@ -149,14 +118,23 @@ fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : Performan
     val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
 
     if (fpmItemLabel.isNotEmpty()) {
+        if (!EXCLUDED_EMBRACE_FPM.contains(fpmItemLabel)) {
+            Embrace.getInstance().startEvent(fpmItemLabel, null, false)
+        }
         performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
     }
     return performanceMonitoring
 }
 
-fun handleOnResourceReady(dataSource: MediaDataSource?, resource: Bitmap?, performanceMonitoring: PerformanceMonitoring?) {
+fun handleOnResourceReady(dataSource: MediaDataSource?,
+                          resource: Bitmap?,
+                          performanceMonitoring: PerformanceMonitoring?,
+                          fpmItemLabel: String) {
     if (dataSource == MediaDataSource.REMOTE) {
         performanceMonitoring?.stopTrace()
+        if (!EXCLUDED_EMBRACE_FPM.contains(fpmItemLabel)) {
+            Embrace.getInstance().endEvent(fpmItemLabel)
+        }
     }
 }

@@ -1,11 +1,16 @@
 package com.tokopedia.filter.newdynamicfilter.controller
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.LevelThreeCategory
 import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
+import com.tokopedia.filter.testutils.jsonToObject
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.core.Is.`is`
 import org.junit.Test
 import java.util.*
 
@@ -660,6 +665,26 @@ class FilterControllerTest {
         assertActiveFilterMap(expectedMap)
     }
 
+    @Test
+    fun `active filter map with same value should not have separator`() {
+        val sameOptionValue = "1234"
+        val susuOption = Option(key = SearchApiConst.SC, value = sameOptionValue, name = "susu")
+        val semuaSusuOption = Option(key = SearchApiConst.SC, value = sameOptionValue, name = "semua susu")
+
+        val filterParameter = mapOf(
+                susuOption.key to susuOption.value,
+                semuaSusuOption.key to semuaSusuOption.value,
+        )
+        val filterList = listOf(Filter(options = listOf(susuOption, semuaSusuOption)))
+
+        filterController.initFilterController(filterParameter, filterList)
+
+        val expectedMap = mutableMapOf<String, String>()
+        expectedMap[SearchApiConst.SC] = sameOptionValue
+
+        assertActiveFilterMap(expectedMap)
+    }
+
     private fun assertFilterValueCorrect(optionList: List<Option>) {
         for(option in optionList) {
             val actualFilterValue = filterController.getFilterValue(option.key)
@@ -815,5 +840,63 @@ class FilterControllerTest {
         assert(filterController.getFilterViewState(jabodetabekOption)) {
             "Jabodetabek Option should now be selected"
         }
+    }
+
+    @Test
+    fun `getActiveSavedOptionList returns list of saved options after set filter`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val filterList = dynamicFilter.data.filter
+        filterController.initFilterController(mapOf(), filterList)
+
+        val filterToApply = filterList[0]
+        val optionToApply = filterToApply.options[0]
+        filterController.setFilter(optionToApply, isFilterApplied = true)
+
+        val savedOptionList = filterController.getActiveSavedOptionList()
+
+        assertThat(savedOptionList.size, `is`(1))
+        savedOptionList[0].assert(optionToApply, filterToApply)
+    }
+
+    private fun SavedOption.assert(option: Option, filter: Filter) {
+        assertThat(key, `is`(option.key))
+        assertThat(value, `is`(option.value))
+        assertThat(name, `is`(option.name))
+        assertThat(title, `is`(filter.title))
+    }
+
+    @Test
+    fun `getActiveSavedOptionList returns list of saved options if already initialized with map parameter`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val filterList = dynamicFilter.data.filter
+        val appliedFilter = filterList[0]
+        val appliedOption = appliedFilter.options[0]
+        val parameterAfterOptionApplied = mapOf(appliedOption.key to appliedOption.value)
+        filterController.initFilterController(parameterAfterOptionApplied, filterList)
+
+        val savedOptionList = filterController.getActiveSavedOptionList()
+
+        assertThat(savedOptionList.size, `is`(1))
+        savedOptionList[0].assert(appliedOption, appliedFilter)
+    }
+
+    @Test
+    fun `getActiveSavedOptionList returns list of saved options from both map parameter and set filter`() {
+        val dynamicFilter = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val filterList = dynamicFilter.data.filter
+        val appliedFilterToMap = filterList[0]
+        val appliedOptionToMap = appliedFilterToMap.options[0]
+        val parameterAfterOptionApplied = mapOf(appliedOptionToMap.key to appliedOptionToMap.value)
+        filterController.initFilterController(parameterAfterOptionApplied, filterList)
+
+        val filterToApply = filterList[0]
+        val optionToApply = filterToApply.options[1]
+        filterController.setFilter(optionToApply, isFilterApplied = true)
+
+        val savedOptionList = filterController.getActiveSavedOptionList()
+
+        assertThat(savedOptionList.size, `is`(2))
+        savedOptionList[0].assert(appliedOptionToMap, appliedFilterToMap)
+        savedOptionList[1].assert(optionToApply, filterToApply)
     }
 }

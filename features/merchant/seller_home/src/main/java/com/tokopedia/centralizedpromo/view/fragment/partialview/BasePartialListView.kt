@@ -1,6 +1,5 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
-import android.view.View
 import androidx.annotation.CallSuper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -8,13 +7,14 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapter
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.BaseUiListModel
+import com.tokopedia.sellerhome.databinding.FragmentCentralizedPromoBinding
 
 abstract class BasePartialListView<T : BaseUiListModel<V>, F : BaseAdapterTypeFactory, V : Visitable<F>>(
-        view: View,
-        typeFactory: F,
-        coachMarkListener: CoachMarkListener,
-        showCoachMark: Boolean
-) : BasePartialView<T>(coachMarkListener, view, showCoachMark) {
+    binding: FragmentCentralizedPromoBinding,
+    typeFactory: F,
+    coachMarkListener: CoachMarkListener,
+    showCoachMark: Boolean
+) : BasePartialView<T>(coachMarkListener, binding, showCoachMark) {
 
     protected val adapter by lazy {
         CentralizedPromoAdapter<V, F>(typeFactory, ::onResultDispatched)

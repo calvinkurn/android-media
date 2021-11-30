@@ -66,7 +66,7 @@ abstract class BaseARActivity<T : BaseARViewModel> : BaseViewModelActivity<T>() 
         super.onCreate(savedInstanceState)
         arVM = ViewModelProviders.of(this,getVMFactory()).get(getViewModelType())
         origin = intent.getIntExtra("ORIGIN", 1)
-        destinationUrlGtm = intent.getStringExtra("DESTINATION_GTM")
+        destinationUrlGtm = intent.getStringExtra("DESTINATION_GTM") ?: ""
         when (origin) {
             1 -> {
                 event = CATEGORYPAGE

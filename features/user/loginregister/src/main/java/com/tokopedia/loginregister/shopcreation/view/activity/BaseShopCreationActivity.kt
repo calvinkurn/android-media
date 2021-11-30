@@ -10,7 +10,6 @@ import android.view.WindowManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.DaggerShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
@@ -23,7 +22,7 @@ import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 abstract class BaseShopCreationActivity : BaseSimpleActivity(), HasComponent<ShopCreationComponent> {
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_creation
+        return com.tokopedia.loginregister.R.layout.activity_shop_creation
     }
 
     @SuppressLint("InlinedApi")
@@ -51,7 +50,7 @@ abstract class BaseShopCreationActivity : BaseSimpleActivity(), HasComponent<Sho
             .builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build()
 
     override fun onBackPressed() {
-        val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
+        val fragment = this.supportFragmentManager.findFragmentById(com.tokopedia.loginregister.R.id.parent_view)
         (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
             super.onBackPressed()
         }

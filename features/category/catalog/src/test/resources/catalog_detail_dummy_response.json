@@ -1,0 +1,115 @@
+{
+  "data": {
+    "catalogGetDetailModular": {
+      "basicInfo": {
+        "id": "63",
+        "departmentId": "3055",
+        "name": "Apple iPhone 4 - 16GB",
+        "brand": "",
+        "tag": "",
+        "description": "iPhone 4 merupakan produk telepon genggam keluaran Apple. iPhone 4 dirilis pada bulan Juni tahun 2010. Dilengkapi dengan chipset Apple A4 dan CPU 1.0 GHz Cortex-A8.\r\n\r\niPhone 4 berkapasitas 16 GB ini memiliki kamera utama dengan kapasitas 5 MP dan dilengkapi fitur geo-tagging, touch focus dan HDR photo. iPhone 4 memiliki 2 macam varian warna yaitu warna hitam dan putih.",
+        "shortDescription": "iPhone 4 merupakan produk telepon genggam keluaran Apple. iPhone 4 dirilis pada bulan Juni tahun 2010. Dilengkapi dengan chipset Apple A4 dan CPU 1.0 GHz Cortex-A8.\r\n\r\niPhone 4 berkapasitas 16 GB ini memiliki kamera utama dengan kapasitas 5 MP dan dilengkapi fitur geo-tagging, touch focus dan HDR photo. iPhone 4 memiliki 2 macam varian warna yaitu warna hitam dan putih.",
+        "url": "https://tokopedia.com/catalog/brandnotspecified-63/apple-iphone-4-16gb",
+        "mobileUrl": "https://tokopedia.com/catalog/brandnotspecified-63/apple-iphone-4-16gb",
+        "catalogImage": [
+          {
+            "imageUrl": "https://imagerouter.tokopedia.com/img/300/catalog/2015/11/20/3454752/3454752_0652fca1-bad7-40cf-9820-bc36f8c46299.png",
+            "isPrimary": true
+          }
+        ],
+        "marketPrice": [
+          {
+            "min": 789999,
+            "max": 1500000,
+            "minFmt": "Rp. 789.999",
+            "maxFmt": "Rp. 1.500.000",
+            "date": "2020-02-01",
+            "name": "Tokopedia"
+          }
+        ],
+        "longDescription": []
+      },
+      "components": [
+        {
+          "id": 1,
+          "name": "Catalog Top Spec",
+          "type": "catalog-spec-horizontal-scroll",
+          "sticky": false,
+          "data": [
+            {
+              "key": "Features",
+              "value": "Yes, Yes, MMS, SMS &#40;threaded view&#41;, Push Email, Email, iOS 4, PowerVR SGX535GPU, Apple A4 chipset, 1 GHz ARM Cortex-A8 processor, Yes",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Catalog Spec",
+          "type": "catalog-spec-full-data",
+          "sticky": false,
+          "data": [
+            {
+              "name": "General",
+              "icon": "",
+              "row": [
+                {
+                  "key": "Brand",
+                  "value": "Apple"
+                }
+              ]
+            },
+            {
+              "name": "Features",
+              "icon": "https://images.tokopedia.net/img/catalog/topspec/icons/setting.png",
+              "row": [
+                {
+                  "key": "GPS",
+                  "value": "Yes"
+                },
+                {
+                  "key": "Browser",
+                  "value": "Yes"
+                }
+              ]
+            },
+            {
+              "name": "Data",
+              "icon": "",
+              "row": [
+                {
+                  "key": "Bluetooth",
+                  "value": "Yes"
+                }
+              ]
+            },
+            {
+              "name": "Camera",
+              "icon": "",
+              "row": [
+                {
+                  "key": "Front",
+                  "value": "Yes"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Product Filter",
+          "type": "product-list-filter",
+          "sticky": true,
+          "data": []
+        },
+        {
+          "id": 6,
+          "name": "Product List",
+          "type": "product-list-infinite-scroll",
+          "sticky": false,
+          "data": []
+        }
+      ]
+    }
+  }
+}

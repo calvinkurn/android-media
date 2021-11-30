@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.*
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -22,7 +23,7 @@ import com.tokopedia.play.broadcaster.ui.model.ProductLoadingUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play.broadcaster.ui.viewholder.ProductSelectableViewHolder
 import com.tokopedia.play.broadcaster.util.extension.productEtalaseEmpty
-import com.tokopedia.play.broadcaster.util.extension.showToaster
+import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
 import com.tokopedia.play.broadcaster.util.scroll.EndlessRecyclerViewScrollListener
 import com.tokopedia.play.broadcaster.view.adapter.ProductSelectableAdapter
 import com.tokopedia.play.broadcaster.view.contract.ProductSetupListener
@@ -32,12 +33,11 @@ import com.tokopedia.play.broadcaster.view.partial.BottomActionViewComponent
 import com.tokopedia.play.broadcaster.view.partial.SelectedProductPageViewComponent
 import com.tokopedia.play.broadcaster.view.viewmodel.DataStoreViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayEtalasePickerViewModel
-import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
 import com.tokopedia.play_common.lifecycle.viewLifecycleBound
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.doOnPreDraw
 import com.tokopedia.play_common.util.scroll.StopFlingScrollListener
 import com.tokopedia.play_common.viewcomponent.viewComponent
@@ -50,7 +50,7 @@ import javax.inject.Inject
  */
 class PlayEtalaseDetailFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val dispatcher: CoroutineDispatchers,
+        dispatcher: CoroutineDispatchers,
         private val analytic: PlayBroadcastAnalytic
 ) : PlayBaseSetupFragment(), FragmentWithDetachableView {
 
@@ -72,7 +72,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private val selectedProductPageView by viewComponent {
         SelectedProductPageViewComponent(view as ViewGroup, object : SelectedProductPageViewComponent.Listener {
-            override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+            override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
                 viewModel.selectProduct(productId, isSelected)
                 onSelectedProductChanged()
             }
@@ -111,15 +111,17 @@ class PlayEtalaseDetailFragment @Inject constructor(
                         }
                     }
 
-                    override fun onProductSelectStateChanged(productId: Long, isSelected: Boolean) {
+                    override fun onProductSelectStateChanged(productId: String, isSelected: Boolean) {
                         viewModel.selectProduct(productId, isSelected)
-                        analytic.clickProductCard(productId.toString(), isSelected)
+                        analytic.clickProductCard(productId, isSelected)
                     }
 
                     override fun onProductSelectError(reason: Throwable) {
-                        showToaster(
-                                message = reason.localizedMessage,
-                                actionLabel = getString(R.string.play_ok)
+                        showErrorToaster(
+                            err = reason,
+                            customErrMessage = reason.localizedMessage,
+                            actionLabel = getString(R.string.play_ok),
+                            showErrorCode = false,
                         )
                     }
                 })
@@ -231,18 +233,26 @@ class PlayEtalaseDetailFragment @Inject constructor(
         }
     }
 
-    private fun showToaster(message: String, type: Int = Toaster.TYPE_NORMAL, duration: Int = Toaster.LENGTH_SHORT, actionLabel: String = "") {
+    private fun showErrorToaster(
+        err: Throwable,
+        customErrMessage: String? = null,
+        duration: Int = Toaster.LENGTH_LONG,
+        actionLabel: String = "",
+        showErrorCode: Boolean = true,
+    ) {
         if (toasterBottomMargin == 0) {
             val offset8 = resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
             toasterBottomMargin = bottomActionView.rootView.height + offset8
         }
 
-        view?.showToaster(
-                message = message,
-                type = type,
-                duration = duration,
-                actionLabel = actionLabel,
-                bottomMargin = toasterBottomMargin
+        view?.showErrorToaster(
+            err = err,
+            customErrMessage = customErrMessage,
+            className = this::class.java.simpleName,
+            duration = duration,
+            actionLabel = actionLabel,
+            showErrorCode = showErrorCode,
+            bottomMargin = toasterBottomMargin,
         )
     }
 
@@ -272,16 +282,14 @@ class PlayEtalaseDetailFragment @Inject constructor(
 
     private fun onUploadFailed(e: Throwable?) {
         bottomActionView.setLoading(false)
-        e?.localizedMessage?.let {
-            errMessage -> showToaster(errMessage, type = Toaster.TYPE_ERROR)
-        }
+        e?.let { showErrorToaster(e) }
     }
 
     /**
      * Observe
      */
     private fun observeProductsInSelectedEtalase() {
-        viewModel.observableSelectedEtalase.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedEtalase.observe(viewLifecycleOwner) {
             bottomSheetHeader.setHeader(getString(R.string.play_etalase_detail_header, it.currentValue.name, it.currentValue.totalProduct), isRoot = false)
             val flattenValues = it.currentValue.productMap.values.flatten()
             when (it.state) {
@@ -308,18 +316,18 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     showProductEmptyError(flattenValues.isEmpty())
                 }
             }
-        })
+        }
     }
 
     private fun observeSelectedProducts() {
-        viewModel.observableSelectedProducts.observe(viewLifecycleOwner, Observer {
+        viewModel.observableSelectedProducts.observe(viewLifecycleOwner) {
             bottomActionView.setupBottomActionWithProducts(it)
             selectedProductPageView.onSelectedProductsUpdated(it)
-        })
+        }
     }
 
     private fun observeUploadProduct() {
-        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.observableUploadProductEvent.observe(viewLifecycleOwner) {
             when (it) {
                 NetworkResult.Loading -> bottomActionView.setLoading(true)
                 is NetworkResult.Fail -> onUploadFailed(it.error)
@@ -328,7 +336,7 @@ class PlayEtalaseDetailFragment @Inject constructor(
                     if (data != null) onUploadSuccess()
                 }
             }
-        })
+        }
     }
 
     /**

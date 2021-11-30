@@ -5,7 +5,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.variant_common.constant.VariantConstant
+import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.variant_common.model.MultiOriginData
 import com.tokopedia.variant_common.model.VariantMultiOriginResponse
 import com.tokopedia.variant_common.util.VariantUtil
@@ -34,7 +34,7 @@ class GetNearestWarehouseUseCase @Inject constructor(private val rawQueries: Map
         val warehouseRequest = GraphqlRequest(rawQueries[VariantConstant.QUERY_MULTI_ORIGIN],
                 VariantMultiOriginResponse::class.java, requestParams.parameters)
 
-        val gqlResponse = graphqlRepository.getReseponse(listOf(warehouseRequest), VariantUtil.getCacheStrategy(forceRefresh))
+        val gqlResponse = graphqlRepository.response(listOf(warehouseRequest), VariantUtil.getCacheStrategy(forceRefresh))
         val data = gqlResponse.getData<VariantMultiOriginResponse>(VariantMultiOriginResponse::class.java)
         val error = gqlResponse.getError(VariantMultiOriginResponse::class.java) ?: listOf()
 

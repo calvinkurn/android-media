@@ -1,7 +1,9 @@
 package com.tokopedia.logisticorder.view
 
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 class TrackingPageActivity : BaseSimpleActivity() {
 
@@ -12,13 +14,23 @@ class TrackingPageActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         var fragment : TrackingPageFragment? = null
-        if (intent.extras != null && intent.data?.lastPathSegment != null) {
+        if (intent.data?.lastPathSegment != null) {
             var orderId = intent?.data?.lastPathSegment
             var urlLiveTracking = intent?.data?.getQueryParameter(URL_LIVE_TRACKING)
             var orderCaller = intent?.data?.getQueryParameter(ORDER_CALLER)
             fragment = TrackingPageFragment.createFragment(orderId, urlLiveTracking, orderCaller)
         }
         return fragment
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700))
     }
 
 

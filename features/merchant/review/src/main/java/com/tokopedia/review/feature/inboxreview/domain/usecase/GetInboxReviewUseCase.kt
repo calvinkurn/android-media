@@ -23,14 +23,14 @@ class GetInboxReviewUseCase @Inject constructor(
             query productrevGetInboxReviewByShop(${'$'}page: Int!, ${'$'}limit: Int!, ${'$'}filterBy: String!) {
               productrevGetInboxReviewByShop(page: ${'$'}page, limit: ${'$'}limit, filterBy: ${'$'}filterBy) {
                 list {
-                    feedbackID
+                    feedbackIDStr
                     rating
                     user {
-                        userID
+                        userIDStr
                         userName
                     }
                     product {
-                        productID
+                        productIDStr
                         productName
                         productImageURL
                         productVariant {
@@ -71,7 +71,7 @@ class GetInboxReviewUseCase @Inject constructor(
     @GqlQuery(INBOX_REVIEW_QUERY_CLASS_NAME, INBOX_REVIEW_QUERY)
     override suspend fun executeOnBackground(): InboxReviewResponse.ProductGetInboxReviewByShop {
         val gqlRequest = GraphqlRequest(InboxReview.GQL_QUERY, InboxReviewResponse::class.java, params)
-        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
+        val gqlResponse = graphQlRepository.response(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<InboxReviewResponse>(InboxReviewResponse::class.java).productrevGetInboxReviewByShop

@@ -55,6 +55,16 @@ object ProductAddEditTracking {
                         KEY_CURRENT_SITE to CURRENT_SITE))
     }
 
+    fun sendAddProductClickWithoutScreenAndUserId(action: String, label: String = "") {
+        getTracker().sendGeneralEventCustom(
+            EVENT_CLICK_ADD_PRODUCT,
+            CAT_ADD_PRODUCT_PAGE,
+            action,
+            label,
+            mapOf(KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                KEY_CURRENT_SITE to CURRENT_SITE))
+    }
+
     fun sendAddProductImpression(userId: String, action: String, label: String = "") {
         val map = mapOf(
                 KEY_EVENT to EVENT_VIEW_ADD_PRODUCT,

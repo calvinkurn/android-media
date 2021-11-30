@@ -10,7 +10,6 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
-import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
@@ -24,6 +23,7 @@ import com.tokopedia.flight.search.presentation.viewmodel.FlightSearchReturnView
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.utils.date.DateUtil
 import kotlinx.android.synthetic.main.fragment_flight_search_return.*
 
 /**
@@ -164,7 +164,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             departureTripLabel.setAirline(flightJourneyModel.airlineDataList[0].shortName)
         }
 
-        departureTripLabel.setDate("${FlightDateUtil.formatToUi(flightSearchViewModel.flightSearchPassData.departureDate)} | ")
+        departureTripLabel.setDate("${DateUtil.formatToUi(flightSearchViewModel.flightSearchPassData.departureDate)} | ")
 
         if (flightJourneyModel.addDayArrival > 0) {
             departureTripLabel.setTime("${flightJourneyModel.departureTime} - ${flightJourneyModel.arrivalTime} (+${flightJourneyModel.addDayArrival}h)")

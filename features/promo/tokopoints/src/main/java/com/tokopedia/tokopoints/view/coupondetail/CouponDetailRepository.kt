@@ -31,7 +31,7 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_APPLY_COUPON],
                 ApplyCouponBaseEntity::class.java,
                 variables, false)
-        repository.getReseponse(listOf(request), cacheStrategy)
+        repository.response(listOf(request), cacheStrategy)
 
     }
 
@@ -44,7 +44,7 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_COUPON_DETAIL],
                 CouponDetailOuter::class.java,
                 variables, false)
-        repository.getReseponse(listOf(request), cacheStrategy)
+        repository.response(listOf(request), cacheStrategy)
     }
 
     suspend fun reFetchRealCode(uniqueCouponCode: String) = withContext(Dispatchers.IO) {
@@ -55,7 +55,7 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_REFETCH_REAL_CODE],
                 CouponDetailOuter::class.java,
                 variables, false)
-        repository.getReseponse(listOf(request), cacheStrategy)
+        repository.response(listOf(request), cacheStrategy)
     }
 
 
@@ -67,7 +67,7 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_SWIPE_COUPON],
                 CouponSwipeUpdateOuter::class.java,
                 variables, false)
-        repository.getReseponse(listOf(request), cacheStrategy)
+        repository.response(listOf(request), cacheStrategy)
     }
 
     suspend fun getUserPhoneVerificationInfo() = withContext(Dispatchers.IO) {
@@ -75,6 +75,6 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_USER_INFO],
                 PhoneVerificationResponse::class.java,
                 null, false)
-        repository.getReseponse(listOf(request), cacheStrategy)
+        repository.response(listOf(request), cacheStrategy)
     }
 }

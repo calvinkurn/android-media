@@ -31,7 +31,15 @@ data class HotelTransportDetail(
 
         @SerializedName("contactInfo")
         @Expose
-        val contactInfo: List<ContactInfo> = listOf()
+        val contactInfo: List<ContactInfo> = listOf(),
+
+        @SerializedName("contactButtonWording")
+        @Expose
+        val contactButtonWording: String = "",
+
+        @SerializedName("tickerContactHotel")
+        @Expose
+        val tickerContactHotel: String = "",
 ) {
 
     data class PropertyDetail(

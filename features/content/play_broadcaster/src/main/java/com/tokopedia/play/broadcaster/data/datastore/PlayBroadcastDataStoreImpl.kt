@@ -5,10 +5,13 @@ import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.data.model.SerializableCoverData
 import com.tokopedia.play.broadcaster.data.model.SerializableHydraSetupData
 import com.tokopedia.play.broadcaster.data.model.SerializableProductData
+import com.tokopedia.play.broadcaster.error.ClientException
+import com.tokopedia.play.broadcaster.error.PlayErrorCode
 import com.tokopedia.play.broadcaster.type.OutOfStock
 import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import javax.inject.Inject
@@ -33,7 +36,12 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
         requireNotNull(cover)
         val (coverImage, coverSource) = when(val cropState = cover.croppedCover) {
             is CoverSetupState.Cropped -> cropState.coverImage to cropState.coverSource
-            else -> throw IllegalStateException("Cover in this state should have been cropped")
+            else -> throw ClientException(PlayErrorCode.Play001)
+        }
+
+        val title = when(val title = mSetupDataStore.getTitle()) {
+            is PlayTitleUiModel.HasTitle -> title.title
+            else -> throw ClientException(PlayErrorCode.Play002)
         }
 
         return SerializableHydraSetupData(
@@ -49,7 +57,7 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                 },
                 selectedCoverData = SerializableCoverData(
                         coverImageUriString = coverImage.toString(),
-                        coverTitle = "", //TODO("Handle This")
+                        coverTitle = title,
                         coverSource = coverSource.sourceString,
                         productId = if (coverSource is CoverSource.Product) coverSource.id else null
                 )

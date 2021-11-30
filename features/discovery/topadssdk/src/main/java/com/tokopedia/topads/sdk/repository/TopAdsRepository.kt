@@ -13,9 +13,9 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsmageViewResponse
 import com.tokopedia.usecase.RequestParams
 import java.lang.reflect.Type
 
-class TopAdsRepository {
+open class TopAdsRepository {
 
-    private val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
+    protected open val restRepository: RestRepository by lazy { RestRequestInteractor.getInstance().restRepository }
 
     suspend fun getImageData(queryParams: MutableMap<String, Any>): ArrayList<TopAdsImageViewModel> {
 
@@ -50,7 +50,7 @@ class TopAdsRepository {
             val model = TopAdsImageViewModel()
             val image = getImageById(data?.banner?.images, queryParams[DIMEN_ID] as? Int)
             with(model) {
-                bannerId = data?.id.toString()
+                bannerId = data?.id
                 bannerName = data?.banner?.name ?: ""
                 position = data?.banner?.position ?: 0
                 adClickUrl = data?.adClickUrl ?: ""
@@ -60,6 +60,9 @@ class TopAdsRepository {
                 imageWidth = image.second
                 imageHeight = image.third
                 nextPageToken = response.header?.pagination?.nextPageToken
+                shopId = data?.banner?.shop?.id?.toString()?:""
+                currentPage = response.header?.pagination?.currentPage ?: ""
+                kind = response.header?.pagination?.kind ?: ""
             }
             list.add(model)
         }

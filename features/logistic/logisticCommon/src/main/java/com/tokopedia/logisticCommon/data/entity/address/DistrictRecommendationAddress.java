@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class DistrictRecommendationAddress implements Parcelable {
 
-    private int districtId;
+    private long districtId;
     private String districtName;
-    private int cityId;
+    private long cityId;
     private String cityName;
-    private int provinceId;
+    private long provinceId;
     private String provinceName;
     private ArrayList<String> zipCodes;
 
@@ -19,11 +19,11 @@ public class DistrictRecommendationAddress implements Parcelable {
 
     }
 
-    public int getDistrictId() {
+    public long getDistrictId() {
         return districtId;
     }
 
-    public void setDistrictId(int districtId) {
+    public void setDistrictId(long districtId) {
         this.districtId = districtId;
     }
 
@@ -35,11 +35,11 @@ public class DistrictRecommendationAddress implements Parcelable {
         this.districtName = districtName;
     }
 
-    public int getCityId() {
+    public long getCityId() {
         return cityId;
     }
 
-    public void setCityId(int cityId) {
+    public void setCityId(long cityId) {
         this.cityId = cityId;
     }
 
@@ -51,11 +51,11 @@ public class DistrictRecommendationAddress implements Parcelable {
         this.cityName = cityName;
     }
 
-    public int getProvinceId() {
+    public long getProvinceId() {
         return provinceId;
     }
 
-    public void setProvinceId(int provinceId) {
+    public void setProvinceId(long provinceId) {
         this.provinceId = provinceId;
     }
 
@@ -80,22 +80,22 @@ public class DistrictRecommendationAddress implements Parcelable {
     }
 
     protected DistrictRecommendationAddress(Parcel in) {
-        districtId = in.readInt();
+        districtId = in.readLong();
         districtName = in.readString();
-        cityId = in.readInt();
+        cityId = in.readLong();
         cityName = in.readString();
-        provinceId = in.readInt();
+        provinceId = in.readLong();
         provinceName = in.readString();
         zipCodes = in.createStringArrayList();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(districtId);
+        dest.writeLong(districtId);
         dest.writeString(districtName);
-        dest.writeInt(cityId);
+        dest.writeLong(cityId);
         dest.writeString(cityName);
-        dest.writeInt(provinceId);
+        dest.writeLong(provinceId);
         dest.writeString(provinceName);
         dest.writeStringList(zipCodes);
     }

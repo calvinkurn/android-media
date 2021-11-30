@@ -3,10 +3,12 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.ITEM_CATEGORY_BUILDER
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Category.KEY_UNDEFINED
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -31,8 +33,8 @@ object TrackingUtil {
 
     fun getBoTypeString(boType: Int): String {
         return when (boType) {
-            ProductDetailConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
-            ProductDetailConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
+            ProductDetailCommonConstant.BEBAS_ONGKIR_EXTRA -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR_EXTRA
+            ProductDetailCommonConstant.BEBAS_ONGKIR_NORMAL -> ProductTrackingConstant.Tracking.VALUE_BEBAS_ONGKIR
             else -> ProductTrackingConstant.Tracking.VALUE_NONE_OTHER
         }
     }
@@ -56,43 +58,11 @@ object TrackingUtil {
         return "${productInfo?.shopTypeString ?: ""} - ${productInfo?.basic?.shopName ?: ""} - ${productInfo?.data?.name ?: ""}"
     }
 
-    fun createMvcListMap(viewModelList: List<MerchantVoucherViewModel>, shopId: Int, startIndex: Int): List<Any> {
-        val list = mutableListOf<Any>()
-        for (i in viewModelList.indices) {
-            val viewModel = viewModelList[i]
-            val position = startIndex.plus(i).plus(1)
-            if (viewModel.isAvailable()) {
-                list.add(
-                        DataLayer.mapOf(
-                                ProductTrackingConstant.Tracking.ID, shopId.toString(),
-                                ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductTrackingConstant.Label.PDP, position.toString(), viewModel.voucherName).joinToString(" - "),
-                                ProductTrackingConstant.Tracking.PROMO_POSITION, position,
-                                ProductTrackingConstant.Tracking.PROMO_ID, viewModel.voucherId,
-                                ProductTrackingConstant.Tracking.PROMO_CODE, viewModel.voucherCode
-                        )
-                )
-            }
-        }
-        return list
-    }
-
     fun getTickerTypeInfoString(tickerType:Int) : String {
         return when(tickerType){
             Ticker.TYPE_INFORMATION -> "info"
             Ticker.TYPE_WARNING -> "warning"
             else -> "other"
-        }
-    }
-
-    fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, shopId: String, position: Int): List<Any> {
-        return vouchers.withIndex().filter { it.value.isAvailable() }.map {
-            DataLayer.mapOf(
-                    ProductTrackingConstant.Tracking.ID, shopId,
-                    ProductTrackingConstant.Tracking.PROMO_NAME, listOf(ProductTrackingConstant.Label.PDP, (position + it.index + 1).toString(), it.value.voucherName).joinToString(" - "),
-                    ProductTrackingConstant.Tracking.PROMO_POSITION, (position + it.index + 1).toString(),
-                    ProductTrackingConstant.Tracking.PROMO_ID, it.value.voucherId,
-                    ProductTrackingConstant.Tracking.PROMO_CODE, it.value.voucherCode
-            )
         }
     }
 
@@ -149,7 +119,7 @@ object TrackingUtil {
         mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
 
         if (componentTrackDataModel != null)
-            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${elementName};cpos:${componentTrackDataModel.adapterPosition};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentName};temp:${componentTrackDataModel.componentType};elem:${elementName};cpos:${componentTrackDataModel.adapterPosition};"
         else
             mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = ""
 
@@ -185,17 +155,14 @@ object TrackingUtil {
     }
 
     fun getEnhanceCategoryFormatted(detail: List<Category.Detail>?): String {
-        val list = ArrayList<String>()
-        if (detail != null) {
-            for (i in 0 until detail.size) {
-                list.add(detail[i].name)
-            }
-        }
-        return TextUtils.join("/", list)
+        val categoryNameLvl1 = detail?.firstOrNull()?.id ?: KEY_UNDEFINED
+        val categoryNameLvl2 = detail?.getOrNull(1)?.id ?: KEY_UNDEFINED
+        val categoryNameLvl3 = detail?.getOrNull(2)?.id ?: KEY_UNDEFINED
+        return String.format(ITEM_CATEGORY_BUILDER, categoryNameLvl1, categoryNameLvl2, categoryNameLvl3, KEY_UNDEFINED)
     }
 
-    fun getFormattedPrice(price: Int): String {
-        return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    fun getFormattedPrice(price: Double): String {
+        return CurrencyFormatUtil.getThousandSeparatorString(price, false, 0).formattedString
     }
 
     fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {

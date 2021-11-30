@@ -3,7 +3,7 @@ package com.tokopedia.power_merchant.subscribe.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePMUseCase
-import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMDeactivationQuestionnaireUseCase
+import com.tokopedia.power_merchant.subscribe.domain.usecase.GetPMDeactivationQuestionnaireUseCase
 import com.tokopedia.power_merchant.subscribe.view.model.DeactivationQuestionnaireUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.verifyErrorEquals
@@ -21,6 +21,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.ArgumentMatchers.anyBoolean
 
 /**
  * Created By @ilhamsuaib on 21/04/21
@@ -62,7 +63,7 @@ class DeactivationViewModelTest {
             getPmDeactivationQuestionnaireUseCase.executeOnBackground()
         } returns result
 
-        viewModel.getPMCancellationQuestionnaireData(pmTire)
+        viewModel.getPMCancellationQuestionnaireData(pmTire, anyBoolean())
 
         val expected = Success(result)
 
@@ -80,7 +81,7 @@ class DeactivationViewModelTest {
             getPmDeactivationQuestionnaireUseCase.executeOnBackground()
         } throws exception
 
-        viewModel.getPMCancellationQuestionnaireData(pmTire)
+        viewModel.getPMCancellationQuestionnaireData(pmTire, anyBoolean())
 
         val expected = Fail(exception)
 

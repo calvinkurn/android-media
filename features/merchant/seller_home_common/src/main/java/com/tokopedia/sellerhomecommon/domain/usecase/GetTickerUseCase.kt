@@ -27,7 +27,7 @@ class GetTickerUseCase(
 
     override suspend fun executeOnBackground(): List<TickerItemUiModel> {
         val gqlRequest = GraphqlRequest(QUERY, GetTickerResponse::class.java, params.parameters)
-        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = graphqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val errors = gqlResponse.getError(GetTickerResponse::class.java)
         if (errors.isNullOrEmpty()) {
@@ -56,7 +56,6 @@ class GetTickerUseCase(
                   title
                   ticker_type
                   message
-                  color
                 }
               }
             }

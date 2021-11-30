@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.view.viewmodel
 
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastSetupDataStore
 import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
@@ -28,6 +29,8 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
 
     val addedTags: Set<String>
         get() = _observableAddedTags.value.orEmpty()
+    val channelId: String
+        get() = hydraConfigStore.getChannelId()
 
     val observableRecommendedTagsModel: LiveData<List<PlayTagUiModel>>
         get() = _observableRecommendedTagsModel
@@ -77,7 +80,7 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
     }
 
     fun toggleTag(tag: String) {
-        if(!isTagValid(tag)) return
+//        if(!isTagValid(tag)) return
 
         val oldAddedTags = addedTags
         val newAddedTags = if (!oldAddedTags.contains(tag)) oldAddedTags + tag
@@ -130,11 +133,11 @@ class PlayTitleAndTagsSetupViewModel @Inject constructor(
      * Mock data
      */
     private fun getTags() {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             val recommendedTags = getRecommendedTags().toSet()
             val addedNotRecommendedTags = withContext(dispatcher.computation) { addedTags - recommendedTags }
             _observableRecommendedTags.value = addedNotRecommendedTags + recommendedTags
-        }
+        }) {}
     }
 
     private suspend fun getRecommendedTags(): List<String> = withContext(dispatcher.io) {

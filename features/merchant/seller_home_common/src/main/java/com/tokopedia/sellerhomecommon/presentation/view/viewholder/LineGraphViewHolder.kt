@@ -13,26 +13,20 @@ import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
+import com.tokopedia.sellerhomecommon.databinding.ShcLineGraphWidgetBinding
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
-import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
-import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
-import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
-import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
-import kotlinx.android.synthetic.main.shc_line_graph_widget.view.*
-import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
-import kotlinx.android.synthetic.main.shc_partial_common_widget_state_loading.view.*
-import kotlinx.android.synthetic.main.shc_partial_line_graph_state_empty.view.*
+import com.tokopedia.sellerhomecommon.utils.*
+import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created By @ilhamsuaib on 20/05/20
  */
 
 class LineGraphViewHolder(
-        view: View?,
-        private val listener: Listener
+    view: View?,
+    private val listener: Listener
 ) : AbstractViewHolder<LineGraphWidgetUiModel>(view) {
 
     companion object {
@@ -41,13 +35,22 @@ class LineGraphViewHolder(
 
         @LayoutRes
         private val TOOLTIP_RES_LAYOUT = R.layout.shc_partial_chart_tooltip
+        private const val ANIMATION_DURATION = 200
     }
+
+    private val binding by lazy { ShcLineGraphWidgetBinding.bind(itemView) }
+    private val emptyStateBinding by lazy { binding.shcLineGraphEmptyState }
+    private val errorStateBinding by lazy { binding.shcLineGraphErrorState }
+    private val loadingStateBinding by lazy { binding.shcLineGraphLoadingState }
 
     private var showAnimation: ValueAnimator? = null
     private var hideAnimation: ValueAnimator? = null
     private var showEmptyState: Boolean = false
 
-    override fun bind(element: LineGraphWidgetUiModel) = with(itemView) {
+    override fun bind(element: LineGraphWidgetUiModel) = with(binding) {
+        if (!listener.getIsShouldRemoveWidget()) {
+            itemView.toggleWidgetHeight(true)
+        }
         showAnimation?.end()
         hideAnimation?.end()
         observeState(element)
@@ -59,11 +62,12 @@ class LineGraphViewHolder(
         tvLineGraphSubValue.text = data?.description.orEmpty().parseAsHtml()
 
         setupTooltip(element)
+        setTagNotification(element.tag)
     }
 
-    private fun openAppLink(appLink: String, dataKey: String, value: String) {
-        if (RouteManager.route(itemView.context, appLink)) {
-            listener.sendLineGraphCtaClickEvent(dataKey, value)
+    private fun openAppLink(element: LineGraphWidgetUiModel) {
+        if (RouteManager.route(itemView.context, element.appLink)) {
+            listener.sendLineGraphCtaClickEvent(element)
         }
     }
 
@@ -75,6 +79,7 @@ class LineGraphViewHolder(
      * */
     private fun observeState(element: LineGraphWidgetUiModel) {
         val data: LineGraphDataUiModel? = element.data
+        itemView.show()
         when {
             null == data -> {
                 showViewComponent(false, element)
@@ -95,9 +100,10 @@ class LineGraphViewHolder(
         }
     }
 
-    private fun setupTooltip(element: LineGraphWidgetUiModel) = with(itemView) {
+    private fun setupTooltip(element: LineGraphWidgetUiModel) = with(binding) {
         val tooltip = element.tooltip
-        val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
+        val shouldShowTooltip =
+            (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
             tvLineGraphTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvLineGraphTitle.setOnClickListener {
@@ -108,65 +114,97 @@ class LineGraphViewHolder(
         }
     }
 
-    private fun onStateLoading(isShown: Boolean) = with(itemView) {
-        shimmerWidgetCommon.visibility = if (isShown) View.VISIBLE else View.GONE
+    private fun onStateLoading(isShown: Boolean) {
+        loadingStateBinding.shimmerWidgetCommon
+            .visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
     private fun onStateError(isShown: Boolean) = with(itemView) {
-        ImageHandler.loadImageWithId(imgWidgetOnError, com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
-        commonWidgetErrorState.visibility = if (isShown) View.VISIBLE else View.GONE
+        ImageHandler.loadImageWithId(
+            errorStateBinding.imgWidgetOnError,
+            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+        )
+        errorStateBinding.commonWidgetErrorState
+            .visibility = if (isShown) View.VISIBLE else View.GONE
     }
 
-    private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) = with(itemView) {
-        val componentVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
-        tvLineGraphValue.visibility = componentVisibility
-        tvLineGraphSubValue.visibility = componentVisibility
-        btnLineGraphMore.visibility = componentVisibility
-        btnLineGraphNext.visibility = componentVisibility
-        lineGraphView.visibility = componentVisibility
+    private fun showViewComponent(isShown: Boolean, element: LineGraphWidgetUiModel) =
+        with(binding) {
+            val componentVisibility = if (isShown) View.VISIBLE else View.INVISIBLE
+            tvLineGraphValue.visibility = componentVisibility
+            tvLineGraphSubValue.visibility = componentVisibility
+            btnLineGraphMore.visibility = componentVisibility
+            btnLineGraphNext.visibility = componentVisibility
+            lineGraphView.visibility = componentVisibility
 
-        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
-        val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
-        btnLineGraphMore.visibility = ctaVisibility
-        btnLineGraphNext.visibility = ctaVisibility
-        btnLineGraphMore.text = element.ctaText
+            val isCtaVisible =
+                element.appLink.isNotBlank() && element.ctaText.isNotBlank() && isShown
+            val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
+            btnLineGraphMore.visibility = ctaVisibility
+            btnLineGraphNext.visibility = ctaVisibility
+            btnLineGraphMore.text = element.ctaText
 
-        if (isCtaVisible) {
-            btnLineGraphMore.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
+            if (isCtaVisible) {
+                btnLineGraphMore.setOnClickListener {
+                    openAppLink(element)
+                }
+                btnLineGraphNext.setOnClickListener {
+                    openAppLink(element)
+                }
             }
-            btnLineGraphNext.setOnClickListener {
-                openAppLink(element.appLink, element.dataKey, element.data?.header.orEmpty())
+
+            if (isShown) {
+                showEmptyState = showEmpty(element)
+                showLineGraph(element)
+                itemView.addOnImpressionListener(element.impressHolder) {
+                    listener.sendLineGraphImpressionEvent(element)
+                }
+                if (element.isEmpty()) {
+                    if (element.isShowEmpty) {
+                        if (element.shouldShowEmptyStateIfEmpty()) {
+                            setupEmptyState(element)
+                        } else {
+                            animateHideEmptyState()
+                        }
+                    } else {
+                        if (listener.getIsShouldRemoveWidget()) {
+                            listener.removeWidget(adapterPosition, element)
+                        } else {
+                            listener.onRemoveWidget(adapterPosition)
+                            itemView.toggleWidgetHeight(false)
+                        }
+                    }
+                } else {
+                    animateHideEmptyState()
+                }
             }
         }
 
-        if (isShown) {
-            showEmptyState = showEmpty(element)
-            showLineGraph(element)
-            itemView.addOnImpressionListener(element.impressHolder) {
-                listener.sendLineGraphImpressionEvent(element)
-            }
-            if (showEmptyState) {
-                showEmptyState = true
-                setupEmptyState(element.emptyState)
-            } else {
-                animateHideEmptyState()
+    private fun setTagNotification(tag: String) {
+        val isTagVisible = tag.isNotBlank()
+        with(binding) {
+            notifTagLineGraph.showWithCondition(isTagVisible)
+            if (isTagVisible) {
+                notifTagLineGraph.setNotification(
+                    tag,
+                    NotificationUnify.TEXT_TYPE,
+                    NotificationUnify.COLOR_TEXT_TYPE
+                )
             }
         }
     }
 
     private fun showEmpty(element: LineGraphWidgetUiModel): Boolean {
-        return element.isShowEmpty && element.data?.list?.all { it.yVal == 0f } == true &&
-                element.emptyState.title.isNotBlank() && element.emptyState.description.isNotBlank() &&
-                element.emptyState.ctaText.isNotBlank() && element.emptyState.appLink.isNotBlank()
+        return element.isEmpty() && element.shouldShowEmptyStateIfEmpty() && element.isShowEmpty
     }
 
-    private fun setupEmptyState(emptyState: WidgetEmptyStateUiModel) {
-        with(emptyState) {
-            itemView.tvLineGraphEmptyStateTitle.text = title
-            itemView.tvLineGraphEmptyStateDescription.text = description
-            itemView.tvShcMultiLineEmptyStateCta.text = ctaText
-            itemView.tvShcMultiLineEmptyStateCta.setOnClickListener {
+    private fun setupEmptyState(element: LineGraphWidgetUiModel) {
+        with(element.emptyState) {
+            emptyStateBinding.tvLineGraphEmptyStateTitle.text = title
+            emptyStateBinding.tvLineGraphEmptyStateDescription.text = description
+            emptyStateBinding.tvShcMultiLineEmptyStateCta.text = ctaText
+            emptyStateBinding.tvShcMultiLineEmptyStateCta.setOnClickListener {
+                listener.sendLineChartEmptyStateCtaClickEvent(element)
                 RouteManager.route(itemView.context, appLink)
             }
             animateShowEmptyState()
@@ -174,7 +212,7 @@ class LineGraphViewHolder(
     }
 
     private fun showLineGraph(element: LineGraphWidgetUiModel) {
-        with(itemView.lineGraphView) {
+        with(binding.lineGraphView) {
             init(getLineChartConfig(element))
             setDataSets(getLineChartData(element))
             invalidateChart()
@@ -189,11 +227,11 @@ class LineGraphViewHolder(
         val yAxisLabel = getYAxisLabel(element)
 
         return LineChartData(
-                chartEntry = chartEntry,
-                yAxisLabel = yAxisLabel,
-                config = LineChartEntryConfigModel(
-                        lineWidth = 1.8f
-                )
+            chartEntry = chartEntry,
+            yAxisLabel = yAxisLabel,
+            config = LineChartEntryConfigModel(
+                lineWidth = 1.8f
+            )
         )
     }
 
@@ -206,8 +244,8 @@ class LineGraphViewHolder(
     private fun getLineChartConfig(element: LineGraphWidgetUiModel): LineChartConfigModel {
         val lineChartData = getLineChartData(element)
         return LineChartConfig.create {
-            xAnimationDuration { 200 }
-            yAnimationDuration { 200 }
+            xAnimationDuration { ANIMATION_DURATION }
+            yAnimationDuration { ANIMATION_DURATION }
             tooltipEnabled { !showEmptyState }
             setChartTooltip(getLineGraphTooltip())
 
@@ -233,17 +271,17 @@ class LineGraphViewHolder(
 
     private fun getLineGraphTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, TOOLTIP_RES_LAYOUT)
-                .setOnDisplayContent { view, data, x, y ->
-                    (data as? LineChartEntry)?.let {
-                        view.tvShcTooltipTitle.text = it.xLabel
-                        view.tvShcTooltipValue.text = it.yLabel
-                    }
+            .setOnDisplayContent { view, data, x, y ->
+                (data as? LineChartEntry)?.let {
+                    view.findViewById<Typography>(R.id.tvShcTooltipTitle).text = it.xLabel
+                    view.findViewById<Typography>(R.id.tvShcTooltipValue).text = it.yLabel
                 }
+            }
     }
 
     private fun View?.animatePop(from: Float, to: Float): ValueAnimator {
         val animator = ValueAnimator.ofFloat(from, to)
-        animator.duration = 200L
+        animator.duration = ANIMATION_DURATION.toLong()
         animator.addUpdateListener { valueAnimator ->
             this?.context?.let {
                 scaleX = (valueAnimator.animatedValue as? Float).orZero()
@@ -256,18 +294,18 @@ class LineGraphViewHolder(
 
     private fun animateShowEmptyState() {
         if (hideAnimation?.isRunning == true) hideAnimation?.end()
-        itemView.multiLineEmptyState.show()
-        showAnimation = itemView.multiLineEmptyState.animatePop(0f, 1f)
+        emptyStateBinding.multiLineEmptyState.show()
+        showAnimation = emptyStateBinding.multiLineEmptyState.animatePop(0f, 1f)
     }
 
     private fun animateHideEmptyState() {
         if (showAnimation?.isRunning == true) showAnimation?.end()
-        hideAnimation = itemView.multiLineEmptyState.animatePop(1f, 0f)
+        hideAnimation = emptyStateBinding.multiLineEmptyState.animatePop(1f, 0f)
         hideAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                itemView.multiLineEmptyState?.gone()
+                emptyStateBinding.multiLineEmptyState.gone()
                 hideAnimation?.removeListener(this)
             }
 
@@ -283,6 +321,8 @@ class LineGraphViewHolder(
 
         fun sendLineGraphImpressionEvent(model: LineGraphWidgetUiModel) {}
 
-        fun sendLineGraphCtaClickEvent(dataKey: String, chartValue: String) {}
+        fun sendLineGraphCtaClickEvent(model: LineGraphWidgetUiModel) {}
+
+        fun sendLineChartEmptyStateCtaClickEvent(model: LineGraphWidgetUiModel) {}
     }
 }

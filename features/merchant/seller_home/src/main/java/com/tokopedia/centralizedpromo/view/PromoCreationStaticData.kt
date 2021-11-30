@@ -1,8 +1,8 @@
 package com.tokopedia.centralizedpromo.view
 
-import android.content.Context
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.centralizedpromo.common.util.CentralizedPromoResourceProvider
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
@@ -11,51 +11,60 @@ import com.tokopedia.sellerhome.R
 
 object PromoCreationStaticData {
     fun provideStaticData(
-        context: Context,
+        resourceProvider: CentralizedPromoResourceProvider,
         broadcastChatExtra: String,
         broadcastChatUrl: String,
-        freeShippingEnabled: Boolean
-    ): PromoCreationListUiModel = with(context) {
+        freeShippingEnabled: Boolean,
+        isVoucherCashbackEligible: Boolean
+    ): PromoCreationListUiModel {
         val promoItems = mutableListOf(
             PromoCreationUiModel(
                 R.drawable.sh_ic_top_ads_color,
-                getString(R.string.centralized_promo_promo_creation_topads_title),
-                getString(R.string.centralized_promo_promo_creation_topads_description),
+                resourceProvider.getPromoCreationTitleTopAds(),
+                resourceProvider.getPromoCreationDescriptionTopAds(),
                 "",
                 ApplinkConst.CustomerApp.TOPADS_DASHBOARD
             ),
             PromoCreationUiModel(
                 R.drawable.ic_broadcast_chat,
-                getString(R.string.centralized_promo_promo_creation_broadcast_chat_title),
-                getString(R.string.centralized_promo_promo_creation_broadcast_chat_description),
+                resourceProvider.getPromoCreationTitleBroadcastChat(),
+                resourceProvider.getPromoCreationDescriptionBroadcastChat(),
                 broadcastChatExtra,
                 String.format("%s?url=%s", ApplinkConst.WEBVIEW, broadcastChatUrl)
             ),
             PromoCreationUiModel(
-                    R.drawable.ic_voucher_cashback,
-                    getString(R.string.centralized_promo_promo_creation_merchant_voucher_cashback_title),
-                    getString(R.string.centralized_promo_promo_creation_merchant_voucher_description),
-                    "",
+                R.drawable.ic_voucher_cashback,
+                resourceProvider.getPromoCreationTitleMerchantVoucher(),
+                resourceProvider.getPromoCreationDescriptionMerchantVoucher(),
+                "",
+                if (isVoucherCashbackEligible) {
                     ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
+                } else {
+                    ApplinkConstInternalSellerapp.ADMIN_RESTRICTION
+                }
             )
         )
 
-        if(freeShippingEnabled) {
-            val applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE)
+        if (freeShippingEnabled) {
+            val applink = String.format(
+                "%s?url=%s", ApplinkConst.WEBVIEW,
+                SellerMenuFreeShippingUrl.URL_FREE_SHIPPING_INTERIM_PAGE
+            )
 
-            promoItems.add(PromoCreationUiModel(
-                R.drawable.ic_sah_free_shipping,
-                getString(R.string.centralized_promo_promo_creation_free_shipping_title),
-                getString(R.string.centralized_promo_promo_creation_free_shipping_description),
-                "",
-                applink
-            ))
+            promoItems.add(
+                PromoCreationUiModel(
+                    R.drawable.ic_sah_free_shipping,
+                    resourceProvider.getPromoCreationTitleFreeShipping(),
+                    resourceProvider.getPromoCreationDescriptionFreeShipping(),
+                    "",
+                    applink
+                )
+            )
         }
 
-        PromoCreationListUiModel(
-                items = promoItems,
-                errorMessage = ""
+        return PromoCreationListUiModel(
+            items = promoItems,
+            errorMessage = ""
         )
     }
 }

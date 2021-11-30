@@ -25,6 +25,16 @@
         tools:src="@tools:sample/backgrounds/scenic"
         tools:visibility="visible" />
 
+    <com.tokopedia.topchat.chatroom.view.custom.BroadcastCampaignLabelView
+        android:id="@+id/broadcast_campaign_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/unify_space_8"
+        android:background="@color/Unify_R500"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/unify_space_12"
+        android:paddingVertical="@dimen/dp_topchat_5" />
+
     <com.tokopedia.topchat.chatroom.view.customview.TopchatMerchantVoucherView
         android:id="@+id/broadcast_merchant_voucher"
         android:layout_width="@dimen/dp_topchat_270"

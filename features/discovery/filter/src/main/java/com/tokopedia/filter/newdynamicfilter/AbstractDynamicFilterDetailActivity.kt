@@ -28,6 +28,7 @@ import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
+import kotlin.collections.ArrayList
 
 abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> : BaseActivity(), DynamicFilterDetailView {
 
@@ -83,15 +84,16 @@ abstract class AbstractDynamicFilterDetailActivity<T : RecyclerView.Adapter<*>> 
 
     protected open fun retrieveOptionListData(): Observable<Boolean> {
         return Observable.create { subscriber ->
-            optionList = intent.getParcelableArrayListExtra(EXTRA_OPTION_LIST)
+            val option :ArrayList<Option>? = intent.getParcelableArrayListExtra(EXTRA_OPTION_LIST)
+            optionList = option?.toList() ?: emptyList()
             subscriber.onNext(true)
         }
     }
 
     private fun fetchDataFromIntent() {
         isSearchable = intent.getBooleanExtra(EXTRA_IS_SEARCHABLE, false)
-        searchHint = intent.getStringExtra(EXTRA_SEARCH_HINT)
-        pageTitle = intent.getStringExtra(EXTRA_PAGE_TITLE)
+        searchHint = intent.getStringExtra(EXTRA_SEARCH_HINT) ?: ""
+        pageTitle = intent.getStringExtra(EXTRA_PAGE_TITLE) ?: ""
         isUsingTracking = intent.getBooleanExtra(EXTRA_IS_USING_TRACKING, false)
         trackingData = intent.getParcelableExtra(EXTRA_TRACKING_DATA)
     }

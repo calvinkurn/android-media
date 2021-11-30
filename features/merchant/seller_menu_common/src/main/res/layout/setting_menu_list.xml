@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/setting_menu_list_height"
-    android:background="?attr/selectableItemBackground"
-    tools:background="@color/Unify_N0">
+    android:background="?attr/selectableItemBackground">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/settingMenuIcon"
@@ -26,26 +25,24 @@
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/settingMenuCounterIcon"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/settingMenuIcon"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
-        tools:text="Kemasan Produk"/>
+        tools:text="Pengaturan" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/label_seller_menu_item"
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/settingMenuTag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@id/settingMenuTitle"
-        app:layout_constraintEnd_toStartOf="@id/settingMenuCounterIcon"
+        android:layout_marginStart="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/settingMenuTitle"
+        app:layout_constraintEnd_toStartOf="@+id/settingMenuCounterIcon"
         app:layout_constraintHorizontal_bias="0"
-        app:labelType="general_dark_red"
-        app:labelTitle="@string/setting_menu_new_label"/>
+        app:layout_constraintStart_toEndOf="@+id/settingMenuTitle"
+        app:layout_constraintTop_toTopOf="@+id/settingMenuTitle"
+        tools:text="baru" />
 
     <com.tokopedia.unifycomponents.NotificationUnify
         android:id="@+id/settingMenuCounterIcon"

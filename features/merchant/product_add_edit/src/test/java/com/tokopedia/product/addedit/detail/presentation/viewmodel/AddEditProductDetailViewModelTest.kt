@@ -4,12 +4,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
-import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
@@ -18,6 +19,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
@@ -34,21 +36,20 @@ import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
+import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
+import java.io.IOException
 import kotlin.reflect.KFunction0
 
 @FlowPreview
@@ -80,6 +81,9 @@ class AddEditProductDetailViewModelTest {
     lateinit var priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase
 
     @RelaxedMockK
+    lateinit var getProductTitleValidationUseCase: GetProductTitleValidationUseCase
+
+    @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
 
     @RelaxedMockK
@@ -102,8 +106,6 @@ class AddEditProductDetailViewModelTest {
     fun cleanUp() {
         mIsInputValid.removeObserver(mIsInputValidObserver)
     }
-
-    private val coroutineDispatcher = TestCoroutineDispatcher()
 
     @Suppress("UNCHECKED_CAST")
     private val mIsInputValid: MediatorLiveData<Boolean> by lazy {
@@ -140,10 +142,12 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase,
-                getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase,
-                annotationCategoryUseCase, productPriceSuggestionSuggestedPriceGetUseCase,
-                priceSuggestionSuggestedPriceGetByKeywordUseCase, userSession)
+        AddEditProductDetailViewModel(provider, CoroutineTestDispatchersProvider,
+                getNameRecommendationUseCase, getCategoryRecommendationUseCase,
+                validateProductUseCase, getShopEtalaseUseCase, annotationCategoryUseCase,
+                productPriceSuggestionSuggestedPriceGetUseCase,
+                priceSuggestionSuggestedPriceGetByKeywordUseCase, getProductTitleValidationUseCase,
+                userSession)
     }
 
     @Test
@@ -189,7 +193,6 @@ class AddEditProductDetailViewModelTest {
         } returns resultNameRecommendation
 
         viewModel.getProductNameRecommendation(query = "batik")
-        viewModel.isNameRecommendationSelected = true
         val resultViewmodel = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
@@ -197,7 +200,6 @@ class AddEditProductDetailViewModelTest {
         }
 
         Assert.assertTrue(resultViewmodel == Success(resultNameRecommendation))
-        Assert.assertTrue(viewModel.isNameRecommendationSelected)
     }
 
     @Test
@@ -207,7 +209,6 @@ class AddEditProductDetailViewModelTest {
         } throws MessageErrorException("")
 
         viewModel.getProductNameRecommendation(query = "baju")
-        viewModel.isNameRecommendationSelected = false
         val result = viewModel.productNameRecommendations.getOrAwaitValue()
 
         coVerify {
@@ -215,7 +216,6 @@ class AddEditProductDetailViewModelTest {
         }
 
         Assert.assertTrue(result is Fail)
-        Assert.assertFalse(viewModel.isNameRecommendationSelected)
     }
 
     @Test
@@ -359,52 +359,54 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
-    fun `validateProductNameInput should invalid when product name is exist`() = coroutineTestRule.runBlockingTest {
-        val resultMessage = listOf("error 1", "error 2")
+    fun `validateProductNameInput should invalid when product name is blacklisted`() = coroutineTestRule.runBlockingTest {
+        val productNameInput = "indodax"
+        val resultMessage = listOf("indodax")
+        val errorMessage = "error blacklist"
 
         coEvery {
-            validateProductUseCase.executeOnBackground()
-        } returns ValidateProductResponse(
-                ProductValidateV3(
-                        isSuccess = false,
-                        data = ProductValidateData(resultMessage)
-                )
+            getProductTitleValidationUseCase.getDataModelOnBackground()
+        } returns TitleValidationModel(
+                isBlacklistKeyword = true,
+                errorKeywords = resultMessage
         )
 
-        viewModel.isProductNameChanged = true
-        viewModel.validateProductNameInput( "batik cociks")
-        viewModel.isProductNameInputError.getOrAwaitValue()
+        coEvery {
+            provider.getTitleValidationErrorBlacklisted()
+        } returns errorMessage
 
-        coVerify(timeout = 300) {
-            validateProductUseCase.executeOnBackground()
+        viewModel.validateProductNameInput(productNameInput)
+
+        coVerify {
+            getProductTitleValidationUseCase.getDataModelOnBackground()
+            provider.getTitleValidationErrorBlacklisted()
         }
 
-        delay(200) // delay to receive latest result
-        Assert.assertEquals(resultMessage.joinToString("\n"), viewModel.productNameMessage)
+        Assert.assertEquals(errorMessage, viewModel.productNameMessage)
     }
 
     @Test
-    fun `validateProductNameInput should valid when product name is not exist`() = coroutineTestRule.runBlockingTest {
-        val resultMessage = listOf<String>()
+    fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runBlockingTest {
+        val productNameInput = "indomilk"
 
         coEvery {
-            validateProductUseCase.executeOnBackground()
-        } returns ValidateProductResponse(
-                ProductValidateV3(
-                        isSuccess = true,
-                        data = ProductValidateData(resultMessage)
-                )
-        )
+            getProductTitleValidationUseCase.getDataModelOnBackground()
+        } returns TitleValidationModel()
 
-        viewModel.isProductNameChanged = true
-        viewModel.validateProductNameInput( "batik cociks")
-        val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
+        viewModel.validateProductNameInput(productNameInput)
 
-        coVerify(timeout = 300) {
-            validateProductUseCase.executeOnBackground()
+        coVerify {
+            getProductTitleValidationUseCase.getDataModelOnBackground()
         }
 
-        Assert.assertFalse(resultViewmodel)
+        var isError = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertFalse(isError)
+
+        // test equal product name with the saved one
+        viewModel.productInputModel.detailInputModel.currentProductName = productNameInput
+        viewModel.validateProductNameInput(productNameInput)
+        isError = viewModel.isProductNameInputError.getOrAwaitValue()
+        Assert.assertFalse(isError)
     }
 
     @Test
@@ -832,6 +834,22 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `When validate product sku error, should log error to crashlytics`() {
+        coEvery { validateProductUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        mockkStatic(FirebaseCrashlytics::class)
+
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
+        viewModel.validateProductSkuInput("ESKU")
+
+        coVerify { validateProductUseCase.executeOnBackground() }
+
+        coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
+    }
+
+    @Test
     fun `updateProductPhotos should not change any image url's`() {
         val sampleProductPhotos = getSampleProductPhotos()
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
@@ -845,7 +863,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos)
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 2)
     }
 
     @Test
@@ -862,7 +880,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList == sampleProductPhotos &&
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == sampleProductPhotos.size &&
                 viewModel.productPhotoPaths.size == 3 &&
                 viewModel.productPhotoPaths[0] == sampleProductPhotos[0].urlThumbnail &&
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail &&
@@ -883,8 +901,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
-                viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
                 viewModel.productInputModel.detailInputModel.pictureList.first().picID == sampleProductPhotos[1].picID &&
                 viewModel.productPhotoPaths.size == 1 &&
                 viewModel.productPhotoPaths == imagePickerResult)
@@ -915,7 +932,7 @@ class AddEditProductDetailViewModelTest {
     fun `updateProductPhotos should update image list when user edit a photo`() {
         val sampleProductPhotos = getSampleProductPhotos()
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
-        val imagePickerResult = arrayListOf("local/path/to/editedImage1.jpg", "local/path/to/image2.jpg")
+        val imagePickerResult = arrayListOf("local/path/to/editedImage1.jpg", "local/path/to/image2.0")
         val originalImageUrl = viewModel.productInputModel.detailInputModel.pictureList.map { it.urlOriginal }
         val editedStatus = arrayListOf(true, false)
 
@@ -925,8 +942,7 @@ class AddEditProductDetailViewModelTest {
             imageUrlOrPathList = newUpdatedPhotos.imageUrlOrPathList
         }
 
-        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size != sampleProductPhotos.size &&
-                viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
+        Assert.assertTrue(viewModel.productInputModel.detailInputModel.pictureList.size == 1 &&
                 viewModel.productPhotoPaths.size == 2 &&
                 viewModel.productPhotoPaths[0] == imagePickerResult[0] &&
                 viewModel.productPhotoPaths[1] == sampleProductPhotos[1].urlThumbnail)
@@ -969,6 +985,21 @@ class AddEditProductDetailViewModelTest {
 
         assertEquals(expectedResponse, actualResponse)
 
+    }
+
+    @Test
+    fun `When get shop showcases error, should post error to observer`() = runBlocking {
+        coEvery {
+            getShopEtalaseUseCase.executeOnBackground()
+        } throws IOException()
+
+        viewModel.getShopShowCasesUseCase()
+
+        coVerify {
+            getShopEtalaseUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.shopShowCases.value is Fail)
     }
 
     @Test
@@ -1102,6 +1133,23 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `When get annotation category error, should post error to observer`() = runBlocking {
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.getAnnotationCategory("", "11090")
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        assertTrue(result is Fail)
+    }
+
+    @Test
     fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
         val annotationCategoryData = listOf(
                 AnnotationCategoryData(
@@ -1114,6 +1162,17 @@ class AddEditProductDetailViewModelTest {
         viewModel.updateSpecificationByAnnotationCategory(annotationCategoryData)
         val specificationText = viewModel.specificationText.getOrAwaitValue()
         Assert.assertTrue(specificationText.isEmpty())
+    }
+
+    @Test
+    fun `when getMaxProductPhotos, expect correct max product picture`() {
+        every { userSession.isShopOfficialStore } returns true
+        var maxPicture = viewModel.getMaxProductPhotos()
+        assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS_OS, maxPicture)
+
+        every { userSession.isShopOfficialStore } returns false
+        maxPicture = viewModel.getMaxProductPhotos()
+        assertEquals(AddEditProductDetailConstants.MAX_PRODUCT_PHOTOS, maxPicture)
     }
 
     @Test
@@ -1159,11 +1218,13 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
         every { userSession.isMultiLocationShop } returns true
-        every { provider.getEditProductMultiLocationMessage() } returns editMessage
+        every { provider.getEditProductPriceMultiLocationMessage() } returns editMessage
+        every { provider.getEditProductStockMultiLocationMessage() } returns editMessage
 
         viewModel.isEditing = true
         viewModel.setupMultiLocationShopValues()
 
+        assert(viewModel.productPriceMessage == editMessage)
         assert(stockAllocationDefaultMessage == editMessage)
         assert(viewModel.productStockMessage == editMessage)
     }
@@ -1174,12 +1235,14 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
         every { userSession.isMultiLocationShop } returns true
-        every { provider.getAddProductMultiLocationMessage() } returns addMessage
+        every { provider.getAddProductPriceMultiLocationMessage() } returns addMessage
+        every { provider.getAddProductStockMultiLocationMessage() } returns addMessage
 
         viewModel.isEditing = false
         viewModel.isAdding = true
         viewModel.setupMultiLocationShopValues()
 
+        assert(viewModel.productPriceMessage == addMessage)
         assert(stockAllocationDefaultMessage == addMessage)
         assert(viewModel.productStockMessage == addMessage)
     }
@@ -1210,6 +1273,52 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `getProductPriceRecommendation should return throwable if error happen`() = coroutineTestRule.runBlockingTest {
+        val expectedErrorMessage = "error happen"
+        coEvery {
+            productPriceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+                    .priceSuggestionSuggestedPriceGet
+        } throws MessageErrorException(expectedErrorMessage)
+
+        viewModel.getProductPriceRecommendation()
+        val resultErrorMessage = viewModel.productPriceRecommendationError.getOrAwaitValue()
+
+        assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
+    }
+
+    @Test
+    fun `getProductPriceRecommendationByKeyword should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+                    .priceSuggestionSuggestedPriceGet
+        } returns PriceSuggestionSuggestedPriceGet(suggestedPrice = 1000.0)
+
+        viewModel.getProductPriceRecommendationByKeyword("Batik")
+        val result = viewModel.productPriceRecommendation.getOrAwaitValue()
+
+        coVerify {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+        }
+
+        assertEquals(1000.0, result.suggestedPrice)
+    }
+
+    @Test
+    fun `When get all product drafts error, should post error to observer`() = runBlocking {
+        coEvery {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.getProductPriceRecommendationByKeyword("Batik")
+
+        coVerify {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.productPriceRecommendationError.value is Throwable)
+    }
+
+    @Test
     fun `updateProductShowCases should change productShowCases value`() {
         viewModel.updateProductShowCases(ArrayList())
         assert(viewModel.productShowCases.isEmpty())
@@ -1221,11 +1330,19 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `setProductNameInput should change productNameInputLiveData value`() {
         viewModel.setProductNameInput("A")
-        assert(viewModel.isProductNameChanged)
 
         val mProductNameInputLiveData = viewModel
                 .getPrivateProperty<AddEditProductDetailViewModel, MutableLiveData<String>>("mProductNameInputLiveData")
         assert(mProductNameInputLiveData?.value.orEmpty().isNotEmpty())
+    }
+
+    @Test
+    fun `when removeKeywords from product name input, should generate clean product name`() {
+        val blacklistedWords = listOf("shopee", "lazada")
+        val result = viewModel.removeKeywords("shopee lazada   samsung", blacklistedWords)
+        val result2 = viewModel.removeKeywords("shopee lazada   samsung", blacklistedWords)
+
+        assertEquals("samsung", result)
     }
 
     @Test
@@ -1248,20 +1365,16 @@ class AddEditProductDetailViewModelTest {
         viewModel.shouldUpdateVariant = true
         viewModel.isDrafting = true
         viewModel.isReloadingShowCase = true
-        viewModel.isProductNameChanged = true
         assert(viewModel.shouldUpdateVariant)
         assert(viewModel.isDrafting)
         assert(viewModel.isReloadingShowCase)
-        assert(viewModel.isProductNameChanged)
 
         viewModel.shouldUpdateVariant = false
         viewModel.isDrafting = false
         viewModel.isReloadingShowCase = false
-        viewModel.isProductNameChanged = false
         assertFalse(viewModel.shouldUpdateVariant)
         assertFalse(viewModel.isDrafting)
         assertFalse(viewModel.isReloadingShowCase)
-        assertFalse(viewModel.isProductNameChanged)
 
         viewModel.productPhotoPaths = mutableListOf("sss")
         assert(viewModel.productPhotoPaths[0] == "sss")
@@ -1379,12 +1492,12 @@ class AddEditProductDetailViewModelTest {
             viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_WEEK, "${AddEditProductDetailConstants.MAX_PREORDER_WEEKS + 1}")
         }
 
-        runValidationAndProvideMessage(provider::getEditProductMultiLocationMessage, null) {
+        runValidationAndProvideMessage(provider::getEditProductStockMultiLocationMessage, null) {
             viewModel.isEditing = true
             viewModel.isAdding = false
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
-        runValidationAndProvideMessage(provider::getAddProductMultiLocationMessage, null) {
+        runValidationAndProvideMessage(provider::getAddProductStockMultiLocationMessage, null) {
             viewModel.isEditing = false
             viewModel.isAdding = true
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
@@ -1394,8 +1507,8 @@ class AddEditProductDetailViewModelTest {
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {
         return listOf(
-                PictureInputModel(picID = "1", urlOriginal = "url 1", urlThumbnail = "thumb 1", url300 = "300 1"),
-                PictureInputModel(picID = "2", urlOriginal = "url 2", urlThumbnail = "thumb 2", url300 = "300 2")
+                PictureInputModel(picID = "1", urlOriginal = "local/path/to/image1.jpg", urlThumbnail = "thumb 1", url300 = "300 1"),
+                PictureInputModel(picID = "2", urlOriginal = "local/path/to/image2.jpg", urlThumbnail = "thumb 2", url300 = "300 2")
         )
     }
 

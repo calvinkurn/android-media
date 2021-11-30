@@ -1,48 +1,39 @@
 package com.tokopedia.topchat.stub.chatroom.view.activity
 
 import android.os.Bundle
-import androidx.test.espresso.idling.CountingIdlingResource
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.BaseChatFragment
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
-import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
+import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.stub.chatroom.view.fragment.TopChatRoomFragmentStub
 
 class TopChatRoomActivityStub : TopChatRoomActivity() {
 
-    lateinit var chatComponentStub: ChatComponentStub
-    lateinit var keyboardStateIdling: CountingIdlingResource
-
     override fun inflateFragment() {
-        // Don't inflate fragment immediately
+        super.inflateFragment()
+        supportFragmentManager.executePendingTransactions()
     }
 
     override fun initializeChatComponent(): ChatComponent {
-        return chatComponentStub
-    }
-
-    fun setupTestFragment(
-            chatComponentStub: ChatComponentStub,
-            keyboardStateIdling: CountingIdlingResource
-    ) {
-        this.chatComponentStub = chatComponentStub
-        this.keyboardStateIdling = keyboardStateIdling
-        supportFragmentManager.beginTransaction()
-                .replace(parentViewResourceID, newFragment, TAG)
-                .commit()
-    }
-
-    override fun getTagFragment(): String {
-        return TAG
+        return TopchatRoomTest.chatComponentStub!!
     }
 
     override fun createChatRoomFragment(bundle: Bundle): BaseChatFragment {
-        return TopChatRoomFragmentStub.createInstance(
-                bundle, keyboardStateIdling
-        )
+        return TopChatRoomFragmentStub.createInstance(bundle)
+    }
+
+    override fun getTagFragment(): String {
+        return TAG_STUB_FRAGMENT
+    }
+
+    fun getTotalItemInChat(): Int {
+        return findViewById<RecyclerView>(R.id.recycler_view_chatroom).layoutManager?.itemCount ?:
+            throw IllegalStateException("No recyclerview found")
     }
 
     companion object {
-        const val TAG = "chatroom-tag"
+        const val TAG_STUB_FRAGMENT = "TAG_STUB_FRAGMENT"
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import javax.inject.Inject
 
@@ -13,7 +13,7 @@ class GetDistrictMapper @Inject constructor() {
         val msg = response.keroPlacesGetDistrict.messageError.firstOrNull()
         val errorCode = response.keroPlacesGetDistrict.errorCode
         with(response.keroPlacesGetDistrict.data) {
-            return GetDistrictDataUiModel(
+                return GetDistrictDataUiModel(
                     title = this.title,
                     formattedAddress = this.formattedAddress,
                     latitude = this.latitude,

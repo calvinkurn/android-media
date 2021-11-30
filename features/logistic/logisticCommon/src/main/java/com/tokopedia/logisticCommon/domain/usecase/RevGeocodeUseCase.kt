@@ -8,6 +8,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticCommon.R
 import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
+import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -23,7 +24,7 @@ class RevGeocodeUseCase @Inject constructor(
                 PARAM_LATLNG to latlng,
                 PARAM_ERR to true
         )
-        val gqlQuery = GraphqlHelper.loadRawString(context.resources, R.raw.autofill)
+        val gqlQuery = KeroLogisticQuery.keroMapsAutofill
         val gqlRequest = GraphqlRequest(gqlQuery, AutoFillResponse::class.java, param)
 
         gql.clearRequest()
@@ -49,7 +50,7 @@ class RevGeocodeUseCase @Inject constructor(
     }
 
     companion object {
-        val PARAM_LATLNG = "latlng"
-        val PARAM_ERR = "err"
+        const val PARAM_LATLNG = "latlng"
+        const val PARAM_ERR = "err"
     }
 }

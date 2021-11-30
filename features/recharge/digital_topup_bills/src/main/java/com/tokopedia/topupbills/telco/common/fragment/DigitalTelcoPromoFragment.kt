@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -39,7 +38,7 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
-            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(it, viewModelFactory)
             viewModel = viewModelProvider.get(SharedTelcoViewModel::class.java)
         }
     }
@@ -61,22 +60,22 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.promos.observe(this, Observer {
+        viewModel.promos.observe(viewLifecycleOwner, Observer {
             promoListWidget.setPromoList(it)
         })
 
-        viewModel.titleMenu.observe(this, Observer {
+        viewModel.titleMenu.observe(viewLifecycleOwner, Observer {
             promoListWidget.toggleTitle(it)
         })
 
-        viewModel.promoImpression.observe(this, Observer {
+        viewModel.promoImpression.observe(viewLifecycleOwner, Observer {
             viewModel.promos.value?.let {
                 promoListWidget.getVisibleRecentItemsToUsersTracking(it)
             }
         })
 
         promoListWidget.setListener(object : TopupBillsPromoListWidget.ActionListener {
-            override fun onCopiedPromoCode(promoId: Int, voucherCode: String) {
+            override fun onCopiedPromoCode(promoId: String, voucherCode: String) {
                 clickCopyOnPromoCode(promoId)
                 viewModel.promos.value?.run {
                     topupAnalytics.eventClickCopyPromoCode(voucherCode, this.indexOfFirst {
@@ -85,15 +84,20 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
                 }
 
                 activity?.let {
-                    val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText(
+                    try {
+                        val clipboard = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText(
                             CLIP_DATA_VOUCHER_CODE_DIGITAL, voucherCode
-                    )
-                    clipboard.setPrimaryClip(clip)
-                    view?.run {
-                        Toaster.build(this,
+                        )
+
+                        clipboard.setPrimaryClip(clip)
+                        view?.run {
+                            Toaster.build(this,
                                 getString(com.tokopedia.common.topupbills.R.string.common_topup_voucher_code_already_copied),
                                 Snackbar.LENGTH_LONG).show()
+                        }
+                    } catch (e: SecurityException) {
+                        e.printStackTrace()
                     }
                 }
             }
@@ -111,7 +115,7 @@ class DigitalTelcoPromoFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun clickCopyOnPromoCode(promoId: Int) {
+    private fun clickCopyOnPromoCode(promoId: String) {
         promoListWidget.notifyPromoItemChanges(promoId)
     }
 

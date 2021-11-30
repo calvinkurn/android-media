@@ -20,7 +20,7 @@ class PaymentInfoViewHolder(val view: View) : AbstractViewHolder<PaymentInfo>(vi
     override fun bind(element: PaymentInfo?) {
         element?.let {
             view.findViewById<TextView>(R.id.tvTotalBillPaidValue)
-                    .text = getString(R.string.thankyou_rp_without_space, element.totalAmountPaidStr)
+                    .text = element.totalAmountPaidStr
             addPaymentMode(view.findViewById(R.id.llPaymentModeContainer), element)
         }
 

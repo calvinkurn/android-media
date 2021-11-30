@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
@@ -28,6 +29,8 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.util.LogisticCommonUtil
+import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
@@ -88,7 +91,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
-    private val toppers: String = "Toppers"
+    private val toppers: String = "Toppers-"
 
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
     private lateinit var localCacheHandler: LocalCacheHandler
@@ -213,6 +216,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         et_label_address.clearFocus()
         et_receiver_name.clearFocus()
         et_phone.clearFocus()
+        LogisticUserConsentHelper().displayUserConsent(activity as Context, user_consent, getString(R.string.add_new_address_save))
     }
 
     private fun setViewListener() {
@@ -577,7 +581,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length < 9 && s.isNotEmpty()) {
+                if (s.isNotEmpty() && s.length < 9) {
                     setWrapperError(wrapper, textWatcher)
                 } else {
                     setWrapperError(wrapper, null)
@@ -795,7 +799,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DiscomBottomSheetFragment.newInstance(isLogisticLabel)
+                DiscomBottomSheetFragment.newInstance(isLogisticLabel, false, null)
         districtRecommendationBottomSheetFragment.setActionListener(this)
         fragmentManager?.run {
             districtRecommendationBottomSheetFragment.show(this, "")
@@ -999,6 +1003,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEdit
         saveAddressDataModel?.longitude = ""
         saveAddressDataModel?.zipCodes = districtAddress.zipCodes
         presenter.getAutoComplete(districtName)
+    }
+
+    override fun onChooseZipcode(districtAddress: Address, zipCode: String, isPinpoint: Boolean) {
+        //no-op
     }
 
     override fun moveMap(latitude: Double, longitude: Double) {

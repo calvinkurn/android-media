@@ -4,9 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_EXP_TOP_NAV
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform.Companion.NAVIGATION_VARIANT_OLD
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -27,6 +24,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     private val requestParams by lazy { requestParamsSlot.captured }
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList by lazy { visitableListSlot.captured }
+    private val warehouseId = "2216"
     private val dummyChooseAddressData = LocalCacheModel(
             address_id = "123",
             city_id = "45",
@@ -34,6 +32,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
             lat = "10.2131",
             long = "12.01324",
             postal_code = "12345",
+            warehouse_id = warehouseId,
     )
 
     @Test
@@ -93,6 +92,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         parameters[SearchApiConst.USER_CITY_ID] shouldBe expectedChooseAddressData.city_id
         parameters[SearchApiConst.USER_DISTRICT_ID] shouldBe expectedChooseAddressData.district_id
         parameters[SearchApiConst.USER_POST_CODE] shouldBe expectedChooseAddressData.postal_code
+        parameters[SearchApiConst.USER_WAREHOUSE_ID] shouldBe expectedChooseAddressData.warehouse_id
     }
 
     private fun `Then verify top of visitable list is choose address widget`() {
@@ -119,6 +119,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
         parameters.shouldNotContain(SearchApiConst.USER_CITY_ID)
         parameters.shouldNotContain(SearchApiConst.USER_DISTRICT_ID)
         parameters.shouldNotContain(SearchApiConst.USER_POST_CODE)
+        parameters.shouldNotContain(SearchApiConst.USER_WAREHOUSE_ID)
     }
 
     @Test
@@ -136,7 +137,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
     @Test
     fun `Test choose address data with navigation revamp enabled`() {
         `Setup choose address`(dummyChooseAddressData)
-        `Given navigation revamp is enabled`()
         setUp()
 
         `Given search product API will return data`()
@@ -150,12 +150,6 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
 
     private fun `Then verify visitable list does not contain search product count`() {
         visitableList.any { it is SearchProductCountDataView } shouldBe false
-    }
-
-    private fun `Given navigation revamp is enabled`() {
-        every {
-            productListView.abTestRemoteConfig?.getString(NAVIGATION_EXP_TOP_NAV, NAVIGATION_VARIANT_OLD)
-        } answers { AbTestPlatform.NAVIGATION_VARIANT_REVAMP }
     }
 
     @Test
@@ -199,6 +193,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
                 lat = "19.2167",
                 long = "17.01374",
                 postal_code = "53241",
+                warehouse_id = warehouseId,
         )
 
         `Setup choose address`(dummyChooseAddressData)
@@ -245,6 +240,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
                 lat = "19.2167",
                 long = "17.01374",
                 postal_code = "53241",
+                warehouse_id = warehouseId,
         )
 
         `Setup choose address`(dummyChooseAddressData)
@@ -290,6 +286,7 @@ internal class SearchProductChooseAddressTest: ProductListPresenterTestFixtures(
                 lat = "19.2167",
                 long = "17.01374",
                 postal_code = "53241",
+                warehouse_id = warehouseId,
         )
 
         `Setup choose address`(dummyChooseAddressData)

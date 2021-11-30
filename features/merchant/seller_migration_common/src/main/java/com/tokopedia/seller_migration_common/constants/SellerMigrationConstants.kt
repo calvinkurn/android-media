@@ -1,9 +1,6 @@
 package com.tokopedia.seller_migration_common.constants
 
 object SellerMigrationConstants {
-    const val KEY_SHOULD_DISMISS_AFTER_RESTORE = "dismiss_after_restore"
-
-    const val ACCOUNT_SELLER_MIGRATION_IMAGE_LINK = "https://ecs7.tokopedia.net/other/seller_migration_account.png"
     const val SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK = "https://ecs7.tokopedia.net/android/merchant/seller_migrationv2/Frame@2x.png"
     const val SELLER_MIGRATION_FRAGMENT_BANNER_LINK = "https://ecs7.tokopedia.net/android/seller_migration_fragment_banner.png"
     const val SELLER_MIGRATION_POST_FEED_BANNER_LINK = "https://ecs7.tokopedia.net/android/merchant/seller_migration/seller_migration_post_feed.png"

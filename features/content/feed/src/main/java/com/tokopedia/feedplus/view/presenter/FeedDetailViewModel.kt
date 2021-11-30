@@ -36,7 +36,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         return feedDetailLiveData
     }
 
-    fun getFeedDetail(detailId: String, page: Int) {
+    fun getFeedDetail(detailId: String, page: Int, shopId: String, activityId: String) {
         viewModelScope.launchCatchError(block = {
             if (page == 1) {
                 feedDetailLiveData.value = FeedDetailViewState.LoadingState(isLoading = true, loadingMore = false)
@@ -45,7 +45,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
             }
             val feedQuery = feedDetailRepository.fetchFeedDetail(detailId, page, userSession.userId?.toIntOrNull()
                     ?: 0)
-            handleDataForFeedDetail(feedQuery, page)
+            handleDataForFeedDetail(feedQuery, page, shopId, activityId)
         }, onError =
         {
             it.printStackTrace()
@@ -53,7 +53,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         })
     }
 
-    private fun handleDataForFeedDetail(feedQuery: FeedQuery, page: Int) {
+    private fun handleDataForFeedDetail(feedQuery: FeedQuery, page: Int, shopId: String, activityId: String) {
         if (page == 1) {
             feedDetailLiveData.value = FeedDetailViewState.LoadingState(false, loadingMore = false)
             if (!hasFeed(feedQuery)) {
@@ -77,7 +77,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
                     it.content.statusActivity,
                     it.id)
             feedDetailLiveData.value = FeedDetailViewState.Success(headerViewModel,
-                    convertToFeedDetailModel(it),
+                    convertToFeedDetailModel(it, shopId, activityId),
                     checkHasNextPage(feedQuery))
         }
     }
@@ -95,17 +95,17 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         }
     }
 
-    private fun convertToFeedDetailModel(feedDetail: Feed): ArrayList<Visitable<*>> {
+    private fun convertToFeedDetailModel(feedDetail: Feed, shopId: String, activityId: String): ArrayList<Visitable<*>> {
         val listDetail = ArrayList<Visitable<*>>()
         if (feedDetail.content != null && feedDetail.content.products != null) {
             for (productFeed in feedDetail.content.products) {
-                listDetail.add(createFeedDetailItemModel(productFeed))
+                listDetail.add(createFeedDetailItemModel(productFeed, shopId, activityId))
             }
         }
         return listDetail
     }
 
-    private fun createFeedDetailItemModel(productFeed: ProductFeedType): FeedDetailItemModel {
+    private fun createFeedDetailItemModel(productFeed: ProductFeedType, shopId: String, activityId: String): FeedDetailItemModel {
         return FeedDetailItemModel(
                 productFeed.id,
                 productFeed.name,
@@ -117,7 +117,9 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
                 productFeed.wishlist,
                 productFeed.tags,
                 getRating(productFeed.rating),
-                productFeed.countReview
+                productFeed.countReview,
+                shopId = shopId,
+                activityId = activityId
         )
     }
 

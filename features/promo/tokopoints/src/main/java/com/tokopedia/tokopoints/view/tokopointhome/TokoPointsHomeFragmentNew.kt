@@ -40,6 +40,8 @@ import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonit
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener
 import com.tokopedia.tokopoints.view.intro.RewardIntroActivity
 import com.tokopedia.tokopoints.view.intro.RewardIntroFragment
+import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
+import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.section.SectionContent
@@ -58,6 +60,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVouch
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_item_dynamic_action.view.*
@@ -72,10 +75,11 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
 class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
-    private var persistentAdsData: PersistentAdsData? = null
 
     @Inject
     lateinit var viewFactory: ViewModelFactory
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
     private val mPresenter: TokoPointsHomeViewModel by lazy { ViewModelProviders.of(this, viewFactory).get(TokoPointsHomeViewModel::class.java) }
     private var mValueMembershipDescription: String? = null
     private var appBarCollapseListener: onAppBarCollapseListener? = null
@@ -98,7 +102,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         mUsersession = UserSession(context)
-        persistentAdsData = context?.let { PersistentAdsData(it) }
         super.onCreate(savedInstanceState)
     }
 
@@ -288,11 +291,14 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         RouteManager.route(context, item.cta?.appLink)
                         hideNotification(index, dynamicActionList)
 
-                        AnalyticsTrackerUtil.sendEvent(context,
-                                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
-                                item.cta?.text?.let { it1 -> AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM.replace(dynamicItem, it1) },
-                                "")
+                        AnalyticsTrackerUtil.sendEvent(
+                            AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                            AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                            AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_CLICK_DYNAMICITEM,
+                            item.cta?.text ?: "",
+                            AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                            AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+                        )
                     }
                 }
             }
@@ -305,7 +311,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         adapter?.notifyItemChanged(0)
     }
 
-    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent> , recommList : RewardsRecommendation?) {
+    override fun renderRewardUi(topSectionData: TopSectionResponse?, sections: List<SectionContent>, recommList : RewardsRecommendation?) {
 
         if (topSectionData?.tokopediaRewardTopSection?.dynamicActionList.isNullOrEmpty() &&
                 topSectionData?.tokopediaRewardTopSection?.tier != null && sections.isEmpty()) {
@@ -463,7 +469,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         }
 
         AnalyticsTrackerUtil.sendEvent(mUsersession.userId,
-                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT_IRIS,
+                AnalyticsTrackerUtil.EventKeys.VIEW_TOKOPOINT_IRIS,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                 AnalyticsTrackerUtil.ActionKeys.VIEW_HOMEPAGE,
                 "", AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
@@ -488,14 +494,16 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
                 AnalyticsTrackerUtil.impressionProductRecomItem(
                     productIdString,
-                    item.recommendationType,
                     position,
+                    item.recommendationType,
+                    item.isTopAds,
+                    item.isFreeOngkirActive,
                     "none / other",
                     item.categoryBreadcrumbs,
                     item.name,
                     "none / other",
                     item.price,
-                    item.isTopAds
+                    trackingQueue
                 )
             }
 
@@ -512,14 +520,15 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
                 AnalyticsTrackerUtil.clickProductRecomItem(
                     item.productId.toString(),
-                    item.recommendationType,
                     position[0],
+                    item.recommendationType,
+                    item.isTopAds,
+                    item.isFreeOngkirActive,
                     "none / other",
                     item.categoryBreadcrumbs,
                     item.name,
                     "none / other",
-                    item.price,
-                    item.isTopAds
+                    item.price
                 )
 
                 val intent = RouteManager.getIntent(
@@ -552,8 +561,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         mPagerPromos?.adapter = null
         mPagerPromos?.layoutManager = null
         adapter = null
-        persistentAdsData?.deletePreference()
-        persistentAdsData = null
     }
 
     override fun showLoading() {

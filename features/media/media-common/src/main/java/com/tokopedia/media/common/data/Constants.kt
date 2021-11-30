@@ -31,6 +31,9 @@ const val UNDEFINED = "4g"
 const val LOW_QUALITY_SETTINGS = 1 // 2g / 3g
 const val HIGH_QUALITY_SETTINGS = 2 // 4g / wifi
 
+// cache pref name
+const val MEDIA_QUALITY_PREF = "media_image_quality"
+
 // convert String to Uri
 fun String.toUri(): Uri? {
     return Uri.parse(this)

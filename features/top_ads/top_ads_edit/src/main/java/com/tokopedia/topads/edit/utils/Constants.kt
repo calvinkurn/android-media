@@ -30,6 +30,7 @@ object Constants {
     const val GROUP_NAME = "group_name"
     const val PRICE_BID = "price_bid"
     const val DAILY_BUDGET = "daily_budget"
+    const val BID_TYPE = "bidSettings"
     const val NAME_EDIT = "isNameEdit"
     const val MULTIPLIER = 40
     const val MAXIMUM_LIMIT = "10.000.000"
@@ -43,17 +44,9 @@ object Constants {
     const val REQUEST_OK = 1
     const val ADDED_PRODUCTS = "addedProducts"
     const val DELETED_PRODUCTS = "deletedProducts"
-    const val EDIT_SOURCE = "dashboard_edit_group_app"
-    const val ACTION_EDIT = "edit"
-    const val ACTION_ADD = "add"
-    const val ACTION_REMOVE = "remove"
-    const val ACTION_CREATE = "create"
-    const val ACTION_DELETE = "delete"
+
     const val PUBLISHED = "published"
-    const val POSITIVE_PHRASE = "positive_phrase"
-    const val POSITIVE_SPECIFIC = "positive_exact"
-    const val NEGATIVE_PHRASE = "negative_phrase"
-    const val NEGATIVE_SPECIFIC = "negative_exact"
+
     const val ACTIVE = "active"
     const val KEYWORD_SOURCE = "es"
     const val INPUT = "input"

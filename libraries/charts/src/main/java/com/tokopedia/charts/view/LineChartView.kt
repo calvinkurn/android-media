@@ -3,7 +3,7 @@ package com.tokopedia.charts.view
 import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import android.widget.LinearLayout
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.YAxis
@@ -14,13 +14,12 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.Utils
-import com.tokopedia.charts.R
 import com.tokopedia.charts.config.LineChartConfig
+import com.tokopedia.charts.databinding.ViewLineChartBinding
 import com.tokopedia.charts.model.LineChartConfigModel
 import com.tokopedia.charts.model.LineChartData
 import com.tokopedia.charts.model.LineChartEntry
 import com.tokopedia.charts.renderer.EllipsizedXAxisRenderer
-import kotlinx.android.synthetic.main.view_line_chart.view.*
 
 /**
  * Created By @ilhamsuaib on 24/06/20
@@ -33,12 +32,19 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         const val LINE_MODE_CURVE = 1
     }
 
+    private var binding: ViewLineChartBinding? = null
     var config: LineChartConfigModel = LineChartConfig.getDefaultConfig()
         private set
 
     init {
-        View.inflate(context, R.layout.view_line_chart, this).apply {
-            val xAxisRenderer = EllipsizedXAxisRenderer(lineChart.viewPortHandler, lineChart.xAxis, lineChart.getTransformer(YAxis.AxisDependency.LEFT))
+        binding = ViewLineChartBinding.inflate(
+            LayoutInflater.from(context), this, true
+        ).apply {
+            val xAxisRenderer = EllipsizedXAxisRenderer(
+                lineChart.viewPortHandler,
+                lineChart.xAxis,
+                lineChart.getTransformer(YAxis.AxisDependency.LEFT)
+            )
             lineChart.setXAxisRenderer(xAxisRenderer)
         }
     }
@@ -48,7 +54,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             this.config = it
         }
 
-        with(lineChart) {
+        binding?.lineChart?.run {
             axisRight.isEnabled = false
             legend.isEnabled = false
             description.isEnabled = false
@@ -65,7 +71,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
                 }
 
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
-                    this@with.setDrawMarkers(config.isTooltipEnabled)
+                    this@run.setDrawMarkers(config.isTooltipEnabled)
                 }
             })
         }
@@ -79,7 +85,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
             return@map getLineDataSet(data)
         }
 
-        lineChart.data = LineData(dateSets)
+        binding?.lineChart?.data = LineData(dateSets)
     }
 
     private fun getLineDataSet(data: LineChartData): LineDataSet {
@@ -126,11 +132,11 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
     }
 
     fun invalidateChart() {
-        lineChart.invalidate()
+        binding?.lineChart?.invalidate()
     }
 
     private fun setChartAnimation() {
-        with(lineChart) {
+        binding?.lineChart?.run {
             when {
                 (config.xAnimationDuration > 0 && config.yAnimationDuration > 0) -> {
                     animateXY(config.xAnimationDuration, config.yAnimationDuration)
@@ -147,33 +153,37 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
 
     private fun setChartTooltip() {
         if (config.isTooltipEnabled) {
-            config.tooltip?.markerView?.chartView = lineChart
-            lineChart.marker = config.tooltip?.markerView
+            binding?.run {
+                config.tooltip?.markerView?.chartView = lineChart
+                lineChart.marker = config.tooltip?.markerView
+            }
         }
     }
 
     private fun setXAxisLabelFormatter(entries: List<LineChartEntry>) {
         val xAxisConfig = config.xAxisConfig
         val labelsStr: List<String> = entries.map { it.xLabel }
-        lineChart.xAxis.valueFormatter = object : ValueFormatter() {
-            override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-                return xAxisConfig.labelFormatter.getAxisLabel(value)
+        binding?.run {
+            lineChart.xAxis?.valueFormatter = object : ValueFormatter() {
+                override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                    return xAxisConfig.labelFormatter.getAxisLabel(value)
+                }
             }
-        }
 
-        if (labelsStr.size > 7) {
-            lineChart.isScaleXEnabled = true
-        } else {
-            lineChart.xAxis.setLabelCount(labelsStr.size, true)
-            lineChart.isScaleXEnabled = config.isScaleXEnabled
-        }
+            if (labelsStr.size > 7) {
+                lineChart.isScaleXEnabled = true
+            } else {
+                lineChart.xAxis.setLabelCount(labelsStr.size, true)
+                lineChart.isScaleXEnabled = config.isScaleXEnabled
+            }
 
-        lineChart.xAxis.axisMinimum = xAxisConfig.axisMinimum
+            lineChart.xAxis.axisMinimum = xAxisConfig.axisMinimum
+        }
     }
 
     private fun setYAxisLabelFormatter() {
         val yAxisConfig = config.yAxisConfig
-        lineChart.axisLeft.run {
+        binding?.lineChart?.axisLeft?.run {
             axisMinimum = yAxisConfig.axisMinimum
             setLabelCount(yAxisConfig.labelCount, true)
             valueFormatter = object : ValueFormatter() {
@@ -190,7 +200,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         }
     }
 
-    private fun setupXAxis() = with(lineChart.xAxis) {
+    private fun setupXAxis() = binding?.lineChart?.xAxis?.run {
         val axisConfig = config.xAxisConfig
         axisConfig.typeface?.let { tf ->
             typeface = tf
@@ -201,7 +211,7 @@ class LineChartView(context: Context, attrs: AttributeSet?) : LinearLayout(conte
         position = axisConfig.getLabelPosition()
     }
 
-    private fun setupYAxis() = with(lineChart.axisLeft) {
+    private fun setupYAxis() = binding?.lineChart?.axisLeft?.run {
         val axisConfig = config.yAxisConfig
         axisConfig.typeface?.let { tf ->
             typeface = tf

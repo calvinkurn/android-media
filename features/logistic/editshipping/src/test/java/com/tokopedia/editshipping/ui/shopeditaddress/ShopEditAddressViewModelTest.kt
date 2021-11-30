@@ -68,14 +68,14 @@ class ShopEditAddressViewModelTest  {
 
     @Test
     fun `Get placeId from warehouse district success`() {
-        coEvery { keroRepo.getAutoComplete(any()) } returns AutoCompleteResponse()
+        coEvery { keroRepo.getAutoComplete(any(), any()) } returns AutoCompleteResponse()
         shopEditAddressViewModel.getAutoCompleteList("Jakarta")
         verify { autoCompleteListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get placeId from warehouse district failed`() {
-        coEvery { keroRepo.getAutoComplete(any()) } throws defaultThrowable
+        coEvery { keroRepo.getAutoComplete(any(), any()) } throws defaultThrowable
         shopEditAddressViewModel.getAutoCompleteList("Jakarta")
         verify { autoCompleteListObserver.onChanged(match { it is Fail }) }
     }

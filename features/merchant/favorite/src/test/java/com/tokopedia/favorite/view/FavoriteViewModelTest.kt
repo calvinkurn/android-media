@@ -17,7 +17,7 @@ import com.tokopedia.favorite.dummyTopAdsShopItemList
 import com.tokopedia.favorite.randomString
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopUiModel
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
-import com.tokopedia.favorite.view.viewmodel.TopAdsShopViewModel
+import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
@@ -176,10 +176,10 @@ class FavoriteViewModelTest {
             assertTrue(liveDataUpdates[0].size == 1)
 
             // That 1 item is a TopAdsShopViewModel
-            assertTrue(liveDataUpdates[0][0] is TopAdsShopViewModel)
+            assertTrue(liveDataUpdates[0][0] is TopAdsShopUiModel)
 
             // That 1 item has 2 TopAdsShopItem in it and the data are correct
-            val item = liveDataUpdates[0][0] as TopAdsShopViewModel
+            val item = liveDataUpdates[0][0] as TopAdsShopUiModel
             assertTrue(item.adsShopItems!!.size == numOfItems)
             for ((i, adsShopItem) in item.adsShopItems!!.withIndex()) {
                 val dummyItem = itemList[i]
@@ -613,9 +613,9 @@ class FavoriteViewModelTest {
 
             assertTrue(updates.size == 1)
             assertTrue(updates[0].size == 1)
-            assertTrue(updates[0][0] is TopAdsShopViewModel)
+            assertTrue(updates[0][0] is TopAdsShopUiModel)
 
-            val adsShopItems = (updates[0][0] as TopAdsShopViewModel).adsShopItems
+            val adsShopItems = (updates[0][0] as TopAdsShopUiModel).adsShopItems
             for ((index, item) in adsShopItems!!.withIndex()) {
                 val dummyItem = itemList[index]
                 assertEquals(item.shopId, dummyItem.shopId)
@@ -663,6 +663,14 @@ class FavoriteViewModelTest {
 
             viewModel.refreshData.removeObserver(observer)
         }
+    }
+
+    @Test
+    fun `when hasNextPage should return true`() {
+        val hasNext = true
+        every { pagingHandler.CheckNextPage() } returns hasNext
+        assertEquals(hasNext, viewModel.hasNextPage())
+        verify { pagingHandler.CheckNextPage() }
     }
 
     private fun initialDataPageUseCase_returnEmptyDataFavorite() {

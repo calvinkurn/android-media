@@ -23,13 +23,14 @@ class TopchatCacheManagerImpl @Inject constructor(
         return CommonUtil.fromJson(cacheString, type)
     }
 
-    override fun saveState(stateCacheKey: String, isSuccess: Boolean) {
+    override fun saveState(stateCacheKey: String, value: Boolean) {
         sharedPreferences.edit()
-                .putBoolean(stateCacheKey, isSuccess)
+                .putBoolean(stateCacheKey, value)
                 .apply()
     }
 
     override fun getPreviousState(stateCacheKey: String): Boolean {
         return sharedPreferences.getBoolean(stateCacheKey, false)
     }
+
 }

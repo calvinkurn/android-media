@@ -12,11 +12,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.analytics.container.GTMAnalytics.OPEN_SCREEN;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.BOTTOM;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.BOTTOM_NAV;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOMEPAGE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOME_PAGE;
-import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_NAVIGATION_DRAWER;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_NAVIGATION_MENU;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_ACTION;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_BUSINESSUNIT;
@@ -25,6 +27,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CATEGOR
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CURRENTSITE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CURRENTSITE_VALUE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_LABEL;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_PAGE_SOURCE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_USERID;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.HOME_PAGE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.INBOX;
@@ -34,6 +37,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.Analytics.PAGE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.SCREEN_NAME;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.SCREEN_NAME_CHAT;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.TOP_NAV;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.VALUE_PAGE_SOURCE_HOME;
 
 /**
  * Created by meta on 03/08/18.
@@ -58,13 +62,27 @@ public class GlobalNavAnalytics {
 
     public void eventBottomNavigationDrawer(String pageName, String buttonName, String userId) {
         Map<String, Object> map = new HashMap<>();
-        map.put(EVENT, CLICK_NAVIGATION_DRAWER);
-        map.put(EVENT_CATEGORY,String.format("%s %s - %s",BOTTOM, NAV, pageName));
+        map.put(EVENT, CLICK_NAVIGATION_MENU);
+        map.put(EVENT_CATEGORY,BOTTOM_NAV);
         map.put(EVENT_ACTION, String.format("%s %s %s", CLICK, buttonName.toLowerCase(), NAV));
         map.put(EVENT_LABEL, "");
         map.put(EVENT_CURRENTSITE, EVENT_CURRENTSITE_VALUE);
         map.put(EVENT_BUSINESSUNIT, EVENT_BUSINESSUNIT_VALUE);
         map.put(EVENT_USERID, userId);
+        map.put(EVENT_PAGE_SOURCE, String.format(VALUE_PAGE_SOURCE_HOME, pageName));
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
+    }
+    /**
+     * Analytics when user visits feed
+     */
+    public void userVisitsFeed(String isLoggedInStatus, String userID) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, OPEN_SCREEN);
+        map.put("isLoggedInStatus", isLoggedInStatus);
+        map.put(EVENT_BUSINESSUNIT, "content");
+        map.put(SCREEN_NAME, "/feed");
+        map.put(EVENT_CURRENTSITE, EVENT_CURRENTSITE_VALUE);
+        map.put(EVENT_USERID, userID);
         TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 

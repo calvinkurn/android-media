@@ -13,7 +13,10 @@ import kotlinx.coroutines.flow.map
 import java.util.concurrent.TimeUnit
 class HomeCachedDataSource(
         private val homeDao: HomeDao) {
-    private val timeout = TimeUnit.DAYS.toMillis(30)
+    companion object {
+        private const val ONE_MONTH_DAYS = 30L
+    }
+    private val timeout = TimeUnit.DAYS.toMillis(ONE_MONTH_DAYS)
 
     suspend fun saveCachedAtf(items: List<AtfCacheEntity>) {
         homeDao.deleteAtfTable()
@@ -45,5 +48,6 @@ class HomeCachedDataSource(
 
     fun deleteHomeData() {
         homeDao.deleteHomeData()
+        homeDao.deleteAtfTable()
     }
 }

@@ -3,33 +3,29 @@ package com.tokopedia.tkpd;
 import android.content.SharedPreferences;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.ProcessLifecycleOwner;
 import androidx.preference.PreferenceManager;
 
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.analytics.performance.util.AppStartPerformanceTracker;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.tkpd.BuildConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.utils.permission.SlicePermission;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
-import static com.tokopedia.utils.permission.SlicePermission.RECHARGE_SLICE_AUTHORITY;
-import static com.tokopedia.utils.permission.SlicePermission.TRAVEL_SLICE_AUTHORITY;
+import io.embrace.android.embracesdk.Embrace;
 
 /**
  * Created by ricoharisin on 11/11/16.
  */
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
-
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
-    private native byte[] bytesFromJNI();
 
     @Override
     public void initConfigValues() {
@@ -60,18 +56,13 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         generateConsumerAppNetworkKeys();
     }
 
-    public String getOriginalPackageApp(){
+    public String getOriginalPackageApp() {
         return new String(new char[]{
                 99, 111, 109, 46, 116, 111, 107, 111, 112, 101,
                 100, 105, 97, 46
         }) + new String(new char[]{
                 116, 107, 112, 100
         });
-    }
-
-    @Override
-    protected void loadSignatureLibrary() {
-        System.loadLibrary("native-lib");
     }
 
     @Override
@@ -85,11 +76,6 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     @Override
-    protected byte[] getJniBytes() {
-        return bytesFromJNI();
-    }
-
-    @Override
     public void generateConsumerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = ConsumerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
@@ -98,28 +84,44 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
 
     @Override
     public void onCreate() {
-        setupAppScreenMode();
+        CheckAndTraceAppStartIfEnabled();
+        Embrace.getInstance().start(this);
         super.onCreate();
-        setGrantPermissionSlice();
+        setupAppScreenMode();
     }
 
-    public void setGrantPermissionSlice(){
-        if(getSliceRemoteConfig()) {
-            SlicePermission slicePermission = new SlicePermission();
-            slicePermission.initPermission(this, RECHARGE_SLICE_AUTHORITY);
-            slicePermission.initPermission(this, TRAVEL_SLICE_AUTHORITY);
+    public void CheckAndTraceAppStartIfEnabled() {
+        if (BuildConfig.ENABLE_DEBUG_TRACE && BuildConfig.DEBUG_TRACE_NAME.contains(AppStartPerformanceTracker.APP_START_COLD)) {
+            initConfigValues();
+            AppStartPerformanceTracker.startMonitoring();
+
+            //track first launch of activity
+            ProcessLifecycleOwner.get().getLifecycle().addObserver(new LifecycleObserver() {
+                @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+                public void connectListener() {
+                    AppStartPerformanceTracker.stopMonitoring();
+                    ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
+                }
+            });
         }
     }
 
-    private Boolean getSliceRemoteConfig() {
-        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_SLICE_ACTION_RECHARGE, false);
+    private boolean checkForceLightMode() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.FORCE_LIGHT_MODE, false)) {
+            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+            sharedPreferences.edit().putBoolean(TkpdCache.Key.KEY_DARK_MODE, false).apply();
+            return true;
+        }
+        return false;
     }
 
     private void setupAppScreenMode() {
+        boolean isForceLightMode = checkForceLightMode();
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isDarkMode = sharedPreferences.getBoolean(TkpdCache.Key.KEY_DARK_MODE, false);
         int screenMode;
-        if (isDarkMode) {
+        if (isDarkMode && !isForceLightMode) {
             screenMode = AppCompatDelegate.MODE_NIGHT_YES;
         } else {
             screenMode = AppCompatDelegate.MODE_NIGHT_NO;

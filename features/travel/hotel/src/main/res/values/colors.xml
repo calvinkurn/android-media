@@ -30,6 +30,7 @@
 
     <color name="hotel_property_label_text_color">#9e9fa3</color>
     <color name="hotel_dms_property_label_background_color">#FFEAEF</color>
+    <color name="hotel_dms_icon_color">@color/Neutral_N400</color>
 
     <color name="search_subtitle">@color/Unify_N700_44</color>
 </resources>

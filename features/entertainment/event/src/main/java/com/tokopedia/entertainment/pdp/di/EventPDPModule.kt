@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.entertainment.pdp.analytic.EventPDPTracking
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
 import com.tokopedia.entertainment.pdp.network_api.GetWhiteListValidationUseCase
@@ -113,7 +114,16 @@ class EventPDPModule {
                             fingerprintInterceptor: FingerprintInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             chuckerInterceptor: ChuckerInterceptor): MutableList<Interceptor> {
-        return mutableListOf(tkpdAuthInterceptor, fingerprintInterceptor, httpLoggingInterceptor, chuckerInterceptor)
+        val listInterceptor = mutableListOf<Interceptor>()
+        listInterceptor.add(fingerprintInterceptor)
+        listInterceptor.add(tkpdAuthInterceptor)
+
+        if (GlobalConfig.isAllowDebuggingTools()){
+            listInterceptor.add(httpLoggingInterceptor)
+            listInterceptor.add(chuckerInterceptor)
+        }
+
+        return listInterceptor
     }
 
     @Provides

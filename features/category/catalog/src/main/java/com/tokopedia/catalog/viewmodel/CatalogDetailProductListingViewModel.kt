@@ -9,9 +9,10 @@ import com.tokopedia.catalog.model.raw.ProductListResponse
 import com.tokopedia.catalog.usecase.listing.CatalogDynamicFilterUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogGetProductListUseCase
 import com.tokopedia.catalog.usecase.listing.CatalogQuickFilterUseCase
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,27 +21,31 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class CatalogDetailProductListingViewModel
-@Inject constructor(var quickFilterUseCase: CatalogQuickFilterUseCase,
-                    var dynamicFilterUseCase: CatalogDynamicFilterUseCase,
-                    var getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
+@Inject constructor(private val quickFilterUseCase: CatalogQuickFilterUseCase,
+                    private val dynamicFilterUseCase: CatalogDynamicFilterUseCase,
+                    private val getProductListUseCase: CatalogGetProductListUseCase) : ViewModel() {
 
     val mProductList = MutableLiveData<Result<List<CatalogProductItem>>>()
     val mProductCount = MutableLiveData<String>()
-    var mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
-    var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
+    val mQuickFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
+    val mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
 
-    var sortFilterItems = MutableLiveData<List<SortFilterItem>>()
-    var selectedSortIndicatorCount = MutableLiveData<Int>()
-    var searchParametersMap = MutableLiveData<HashMap<String, String>>()
+    val selectedSortIndicatorCount = MutableLiveData<Int>()
+    val searchParametersMap = MutableLiveData<HashMap<String, String>>()
 
-    var quickFilterOptionList: List<Option> = ArrayList()
-    var dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
+    var quickFilterOptionList: MutableList<Option> = ArrayList()
+    val quickFilterModel = MutableLiveData<DynamicFilterModel>()
+    val quickFilterClicked = MutableLiveData<Boolean>()
+    val dynamicFilterModel = MutableLiveData<DynamicFilterModel>()
+
+    var filterController: FilterController? = FilterController()
+    var searchParameter: SearchParameter = SearchParameter()
 
     var pageCount = 0
     var isPagingAllowed: Boolean = true
     var catalogUrl = ""
 
-    var list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
+    val list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {

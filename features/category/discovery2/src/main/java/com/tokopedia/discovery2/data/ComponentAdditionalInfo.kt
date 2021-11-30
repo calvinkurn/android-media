@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class ComponentAdditionalInfo(
         @SerializedName("enabled")
         val enabled: Boolean,
+        @SerializedName("next_page")
+        var nextPage: String?,
         @SerializedName("total_product")
         val totalProductData: TotalProductData?,
 )

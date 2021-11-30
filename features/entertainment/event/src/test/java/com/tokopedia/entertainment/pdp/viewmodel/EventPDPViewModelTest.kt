@@ -88,7 +88,7 @@ class EventPDPViewModelTest {
         assertNotNull(eventPDPViewModel.eventHoliday.value)
         assertNull(eventPDPViewModel.isError.value)
 
-        assertEquals(eventPDPViewModel.eventProductDetail.value, pdpMock)
+        assertEquals(eventPDPViewModel.eventProductDetail.value, eventCombined)
     }
 
     @Test
@@ -116,7 +116,7 @@ class EventPDPViewModelTest {
         assertNotNull(eventPDPViewModel.isError.value)
 
         assertNotNull(eventPDPViewModel.eventHoliday.value)
-        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
+        assertEquals((eventPDPViewModel.isError.value as EventPDPErrorEntity).throwable.message, error.message)
     }
 
     @Test
@@ -167,7 +167,7 @@ class EventPDPViewModelTest {
         assertNull(eventPDPViewModel.eventProductDetail.value)
         assertNotNull(eventPDPViewModel.isError.value)
         assert(eventPDPViewModel.eventHoliday.value == arrayListOf<Legend>())
-        assertEquals(eventPDPViewModel.isError.value?.message, error.message)
+        assertEquals((eventPDPViewModel.isError.value as EventPDPErrorEntity).throwable.message, error.message)
     }
 
 
@@ -265,6 +265,27 @@ class EventPDPViewModelTest {
     }
 
     @Test
+    fun `PDPWhiteList_ShouldReturnWhiteListFalse_ShowThrowableResult`(){
+        //given
+        eventPDPViewModel.getIntialList()
+        val restResponse = RestResponse(Throwable(), 400, false)
+        val whiteListMapped = mapOf<Type, RestResponse>(
+            Throwable::class.java to restResponse
+        )
+
+        coEvery {
+            getEventWhiteListValidationUseCase.executeOnBackground()
+        } returns whiteListMapped
+
+        //when
+        eventPDPViewModel.getWhiteListUser(0,"", ProductDetailData(id="0"))
+
+        //then
+        assertNotNull(eventPDPViewModel.validateScanner.value)
+        assertEquals(eventPDPViewModel.validateScanner.value, false)
+    }
+
+    @Test
     fun `PDPandHolidayData_ShouldReturnPDPandHoliday_ShowNullResult`(){
         //given
         eventPDPViewModel.getIntialList()
@@ -292,7 +313,38 @@ class EventPDPViewModelTest {
         assertNotNull(eventPDPViewModel.eventHoliday.value)
         assertNull(eventPDPViewModel.isError.value)
 
-        assertEquals(eventPDPViewModel.eventProductDetail.value, pdpMock)
+        assertEquals(eventPDPViewModel.eventProductDetail.value, eventCombined)
+    }
+
+    @Test
+    fun `PDPandHolidayData_ShouldReturnPDPandHoliday_ContentNull`(){
+        //given
+        eventPDPViewModel.getIntialList()
+        val pdpMock = Gson().fromJson(getJson("pdp_null_facilities_mock.json"), EventProductDetailEntity::class.java)
+        val contentMock = Gson().fromJson(getJson("content_null_data_mock.json"), EventContentByIdEntity::class.java)
+
+        val eventCombined = EventPDPContentCombined(contentMock, pdpMock)
+
+        val travelHoliday = TravelCalendarHoliday(id = "123123", attribute = TravelCalendarHoliday.HolidayAttribute("2020-01-01", label = "LabelTest"))
+        val travelHolidayData = TravelCalendarHoliday.HolidayData(listOf(travelHoliday))
+
+        coEvery {
+            eventProductDetailUseCase.executeUseCase("", "", true, "")
+        } returns Success(eventCombined)
+
+        coEvery {
+            usecaseHoliday.execute()
+        } returns Success(travelHolidayData)
+
+        //when
+        eventPDPViewModel.getDataProductDetail("", "", "")
+
+        //then
+        assertNotNull(eventPDPViewModel.eventProductDetail.value)
+        assertNotNull(eventPDPViewModel.eventHoliday.value)
+        assertNull(eventPDPViewModel.isError.value)
+
+        assertEquals(eventPDPViewModel.eventProductDetail.value, eventCombined)
     }
 
     @Test
@@ -343,5 +395,53 @@ class EventPDPViewModelTest {
         eventPDPViewModel.getDataFacilities(eventPDPFacilitiesEntity)
         //then
         assertNull(eventPDPViewModel.eventProductDetailList.value)
+    }
+
+    @Test
+    fun `DynamicTabsTitle_ShouldReturnTabsTitleList_ShowResult`(){
+        //given
+        val pdpMock = Gson().fromJson(getJson("pdp_mock.json"), EventProductDetailEntity::class.java)
+        val contentMock = Gson().fromJson(getJson("content_mock.json"), EventContentByIdEntity::class.java)
+
+        val eventCombined = EventPDPContentCombined(contentMock, pdpMock)
+        val expectedTitle = listOf(EventPDPTabEntity(0, "Tentang Kegiatan Ini", true),
+                EventPDPTabEntity(1, "Fasilitas", true),
+                EventPDPTabEntity(2, "Lokasi", true)
+        )
+        //when
+        val tabsTitle = eventPDPViewModel.getTabsTitleData(eventCombined, "Tentang Kegiatan Ini", "Fasilitas", "Lokasi")
+        //then
+        assertNotNull(tabsTitle)
+        assertEquals(tabsTitle, expectedTitle)
+    }
+
+    @Test
+    fun `DynamicTabsTitle_ShouldReturnTabsTitleList_ShowResultNull`(){
+        //given
+        val pdpMock = Gson().fromJson(getJson("pdp_null_mock.json"), EventProductDetailEntity::class.java)
+        val contentMock = Gson().fromJson(getJson("content_null_mock.json"), EventContentByIdEntity::class.java)
+
+        val eventCombined = EventPDPContentCombined(contentMock, pdpMock)
+        val expectedTitle = listOf<EventPDPTabEntity>()
+        //when
+        val tabsTitle = eventPDPViewModel.getTabsTitleData(eventCombined, "Tentang Kegiatan Ini", "Fasilitas", "Lokasi")
+        //then
+        assertNotNull(tabsTitle)
+        assertEquals(tabsTitle, expectedTitle)
+    }
+
+    @Test
+    fun `DynamicTabsTitle_ShouldReturnTabsTitleList_ShowLocationNull`(){
+        //given
+        val pdpMock = Gson().fromJson(getJson("pdp_null_location_mock.json"), EventProductDetailEntity::class.java)
+        val contentMock = Gson().fromJson(getJson("content_null_mock.json"), EventContentByIdEntity::class.java)
+
+        val eventCombined = EventPDPContentCombined(contentMock, pdpMock)
+        val expectedTitle = listOf<EventPDPTabEntity>()
+        //when
+        val tabsTitle = eventPDPViewModel.getTabsTitleData(eventCombined, "Tentang Kegiatan Ini", "Fasilitas", "Lokasi")
+        //then
+        assertNotNull(tabsTitle)
+        assertEquals(tabsTitle, expectedTitle)
     }
 }

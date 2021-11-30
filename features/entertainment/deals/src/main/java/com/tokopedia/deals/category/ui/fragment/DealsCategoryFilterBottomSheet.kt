@@ -11,8 +11,8 @@ import com.tokopedia.deals.common.listener.DealsChipListener
 import com.tokopedia.deals.common.ui.adapter.DealsChipsAdapter
 import com.tokopedia.deals.common.ui.dataview.ChipDataView
 import com.tokopedia.deals.common.ui.dataview.DealsChipsDataView
+import com.tokopedia.deals.databinding.LayoutDealsCategoryFilterBottomSheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.layout_deals_category_filter_bottom_sheet.*
 
 class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBottomSheetListener) :
         BottomSheetUnify(), DealsChipListener {
@@ -25,15 +25,15 @@ class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBo
 
     private val chipsAdapter = DealsChipsAdapter(this)
     private var chips: DealsChipsDataView? = null
+    private lateinit var binding :  LayoutDealsCategoryFilterBottomSheetBinding
 
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val childView =
-                View.inflate(context, R.layout.layout_deals_category_filter_bottom_sheet, null)
-        setChild(childView)
+        binding = LayoutDealsCategoryFilterBottomSheetBinding.inflate(LayoutInflater.from(context))
+        setChild(binding.root)
         setTitle(getString(R.string.deals_category_filter_bottom_sheet_title))
         setAction(getString(R.string.deals_category_filter_bottom_sheet_action_label)) {
             chipsAdapter.chips = chipsAdapter.chips.map { it.copy(isSelected = false) }.toMutableList()
@@ -43,14 +43,14 @@ class DealsCategoryFilterBottomSheet(private val listener: DealsCategoryFilterBo
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lst_deals_category_filter.apply {
+        binding.lstDealsCategoryFilter.apply {
             adapter = chipsAdapter
             layoutManager = ChipsLayoutManager.newBuilder(context)
                     .setOrientation(ChipsLayoutManager.HORIZONTAL)
                     .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                     .build()
         }
-        btn_deals_category_filter_apply.setOnClickListener {
+        binding.btnDealsCategoryFilterApply.setOnClickListener {
             chips?.let { chips ->
                 listener.onFilterApplied(chips.copy(chipList = chipsAdapter.chips))
             }

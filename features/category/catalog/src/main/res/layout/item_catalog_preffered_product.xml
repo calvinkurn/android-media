@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/catalog_product_card"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     
@@ -125,7 +126,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/sales_tv"
-            android:layout_width="@dimen/dp_0"
+            android:layout_width="0dp"
             android:layout_height="@dimen/product_card_text_view_integrity_height"
             app:layout_constraintTop_toBottomOf="@id/shop_name"
             app:layout_constraintStart_toEndOf="@id/rating_line"
@@ -168,13 +169,13 @@
         <ImageView
             android:id="@+id/imageThreeDots"
             android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_8"
+            android:layout_height="16dp"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true"
-            app:layout_goneMarginBottom="@dimen/dp_0"
+            app:layout_goneMarginBottom="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_ic_three_dots"

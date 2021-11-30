@@ -1,7 +1,7 @@
 package com.tokopedia.mvcwidget.views
 
 import android.content.Context
-import android.content.res.Resources
+import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.View.OnClickListener
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
@@ -19,14 +18,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.mvcwidget.*
 import com.tokopedia.mvcwidget.di.components.DaggerMvcComponent
+import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.mvcwidget.trackers.MvcTracker
 import com.tokopedia.promoui.common.dpToPx
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.mvc_layout_bottomsheet_button.view.*
 import javax.inject.Inject
 
 class MvcDetailView @JvmOverloads constructor(
@@ -37,25 +37,34 @@ class MvcDetailView @JvmOverloads constructor(
     var viewFlipper: ViewFlipper
     var globalError: GlobalError
     var addBottomMarginOnToast = false
+    var userSession: UserSession? = null
 
     private val widgetImpression = WidgetImpression()
+    @FollowWidgetType var widgetType : String = FollowWidgetType.DEFAULT
 
     override fun getWidgetImpression(): WidgetImpression {
         return widgetImpression
     }
 
-    private val adapter = MvcDetailAdapter(arrayListOf(), this)
+    val adapter by lazy { MvcDetailAdapter(arrayListOf(), this) }
 
     private val CONTAINER_CONTENT = 0
     private val CONTAINER_SHIMMER = 1
     private val CONTAINER_ERROR = 2
     private var shopId = ""
+    var bundleForDataUpdate:Bundle? = null
     override fun getShopId(): String {
         return this.shopId
     }
 
     @MvcSource
     private var mvcSource: Int = MvcSource.DEFAULT
+
+    private var mvcTracker : MvcTracker? = null
+
+    override fun getMvcTracker(): MvcTracker? {
+        return mvcTracker
+    }
 
     override fun getMvcSource(): Int {
         return mvcSource
@@ -67,6 +76,7 @@ class MvcDetailView @JvmOverloads constructor(
 
 
     init {
+        userSession = UserSession(context)
         View.inflate(context, R.layout.mvc_detail_view, this)
         rv = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
@@ -74,8 +84,8 @@ class MvcDetailView @JvmOverloads constructor(
         rv.layoutManager = LinearLayoutManager(context)
         rv.adapter = adapter
 
-        DaggerMvcComponent.builder()
-                .build().inject(this)
+         DaggerMvcComponent.builder()
+            .build().inject(this)
 
         if (context is AppCompatActivity) {
             val viewModelProvider = ViewModelProviders.of(context, viewModelFactory)
@@ -112,6 +122,11 @@ class MvcDetailView @JvmOverloads constructor(
                 }
             }
         })
+        viewModel.mvcSummatLiveData.observe(context as AppCompatActivity, Observer {
+            if (it.status == LiveDataResult.STATUS.SUCCESS && it.data!=null) {
+                handleMvcDataChanged(it.data)
+            }
+        })
 
         viewModel.followLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
@@ -131,6 +146,11 @@ class MvcDetailView @JvmOverloads constructor(
         globalError.setActionClickListener {
             viewModel.getListData(shopId)
         }
+    }
+
+
+    private fun handleMvcDataChanged(data:TokopointsCatalogMVCSummaryResponse){
+        bundleForDataUpdate = IntentManger.prepareBundleForJadiMember(data, shopId)
     }
 
     private fun toggleLoading(showLoading: Boolean) {
@@ -157,7 +177,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, true)
+            mvcTracker?.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -168,7 +188,7 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleJadiMemberButtonClick()
             }).show()
-            Tracker.viewJadiMemberToast(shopId, UserSession(context).userId, mvcSource, false)
+            mvcTracker?.viewJadiMemberToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
@@ -176,7 +196,7 @@ class MvcDetailView @JvmOverloads constructor(
         if (!message.isNullOrEmpty()) {
             setToastBottomMargin()
             Toaster.build(rootView, message, Toast.LENGTH_SHORT).show()
-            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, true)
+            mvcTracker?.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, true)
         }
     }
 
@@ -187,12 +207,13 @@ class MvcDetailView @JvmOverloads constructor(
             Toaster.build(rootView, th!!.message!!, Toast.LENGTH_SHORT, Toaster.TYPE_ERROR, context.getString(R.string.mvc_coba_lagi), OnClickListener {
                 handleFollowButtonClick()
             }).show()
-            Tracker.viewFollowButtonToast(shopId, UserSession(context).userId, mvcSource, false)
+            mvcTracker?.viewFollowButtonToast(shopId, userSession?.userId, mvcSource, false)
         }
     }
 
-    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int) {
+    fun show(shopId: String, addBottomMarginOnToast: Boolean, @MvcSource mvcSource: Int, mvcTracker: MvcTracker?) {
         this.addBottomMarginOnToast = addBottomMarginOnToast
+        this.mvcTracker = mvcTracker
         this.shopId = shopId
         this.mvcSource = mvcSource
         viewModel.getListData(shopId)
@@ -247,9 +268,10 @@ class MvcDetailView @JvmOverloads constructor(
         adapter.updateList(tempList)
         if(!tempList.isNullOrEmpty()){
             if (response.data?.followWidget?.isShown == true && !response.data?.followWidget.type.isNullOrEmpty()) {
-                Tracker.viewCoupons(response.data.followWidget.type,this.shopId, UserSession(context).userId, this.mvcSource)
+                widgetType = response.data.followWidget.type
+                mvcTracker?.viewCoupons(widgetType,this.shopId, userSession?.userId, this.mvcSource)
             }else{
-                Tracker.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, UserSession(context).userId, this.mvcSource)
+                mvcTracker?.viewCoupons(FollowWidgetType.DEFAULT,this.shopId, userSession?.userId, this.mvcSource)
             }
         }
     }
@@ -258,6 +280,7 @@ class MvcDetailView @JvmOverloads constructor(
         super.onDetachedFromWindow()
         viewModel.listLiveData.removeObservers(context as AppCompatActivity)
         viewModel.membershipLiveData.removeObservers(context as AppCompatActivity)
+        viewModel.mvcSummatLiveData.removeObservers(context as AppCompatActivity)
     }
 
     override fun handleFollowButtonClick() {

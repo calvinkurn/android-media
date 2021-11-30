@@ -7,7 +7,7 @@ import android.view.View
 import com.tokopedia.otp.R
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 
-class GoogleAuthVerificationFragment : VerificationFragment() {
+open class GoogleAuthVerificationFragment : VerificationFragment() {
 
     override fun setFooterText(spannable: Spannable?) {
         context?.let {
@@ -24,7 +24,6 @@ class GoogleAuthVerificationFragment : VerificationFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         analytics.trackViewVerificationGoogleAuth(otpData.otpType.toString())
-        analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText)
     }
 
     override fun trackSuccess() {

@@ -1,10 +1,10 @@
 package com.tokopedia.flight.orderdetail.presentation.adapter.viewholder
 
 import android.graphics.Paint
-import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
+import com.tokopedia.flight.databinding.ItemFlightOrderDetailPassengerDetailBinding
 import com.tokopedia.flight.orderdetail.presentation.adapter.FlightOrderDetailPassengerCancelStatusAdapter
 import com.tokopedia.flight.orderdetail.presentation.adapter.FlightOrderDetailSimpleAdapter
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailAmenityEnum
@@ -12,17 +12,16 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPass
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimpleModel
 import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus
-import kotlinx.android.synthetic.main.item_flight_order_detail_passenger_detail.view.*
 
 /**
  * @author by furqan on 30/10/2020
  */
-class FlightOrderDetailPassengerViewHolder(view: View)
-    : RecyclerView.ViewHolder(view) {
+class FlightOrderDetailPassengerViewHolder(val binding: ItemFlightOrderDetailPassengerDetailBinding)
+    : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(passengerModel: FlightOrderDetailPassengerModel) {
-        with(itemView) {
-            tgFlightOrderPassengerNumber.text = context.getString(
+        with(binding) {
+            tgFlightOrderPassengerNumber.text = itemView.context.getString(
                     R.string.flight_order_detail_passenger_detail_number,
                     passengerModel.passengerNo)
 
@@ -41,9 +40,9 @@ class FlightOrderDetailPassengerViewHolder(view: View)
     }
 
     private fun setupPassengerCancelStatus(cancelStatusList: List<FlightOrderDetailPassengerCancelStatusModel>) {
-        with(itemView) {
+        with(binding) {
             val adapter = FlightOrderDetailPassengerCancelStatusAdapter(cancelStatusList)
-            rvFlightOrderPassengerCancelStatus.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            rvFlightOrderPassengerCancelStatus.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
             rvFlightOrderPassengerCancelStatus.setHasFixedSize(true)
             rvFlightOrderPassengerCancelStatus.adapter = adapter
         }
@@ -51,7 +50,7 @@ class FlightOrderDetailPassengerViewHolder(view: View)
     }
 
     private fun setupStrikeThroughPassenger(isFullCancelled: Boolean) {
-        with(itemView) {
+        with(binding) {
             if (isFullCancelled) {
                 tgFlightOrderPassengerNumber.paintFlags = tgFlightOrderPassengerNumber.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 tgFlightOrderPassengerName.paintFlags = tgFlightOrderPassengerName.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
@@ -63,7 +62,7 @@ class FlightOrderDetailPassengerViewHolder(view: View)
     }
 
     private fun renderAmenities(passengerModel: FlightOrderDetailPassengerModel) {
-        with(itemView) {
+        with(binding) {
             val isFullyCancelled = isPassengerFullyCancelled(passengerModel.cancelStatus)
             val luggageAmenities = ArrayList<FlightOrderDetailSimpleModel>()
             val mealAmenities = ArrayList<FlightOrderDetailSimpleModel>()
@@ -72,7 +71,7 @@ class FlightOrderDetailPassengerViewHolder(view: View)
                     FlightOrderDetailAmenityEnum.LUGGAGE.type -> {
                         luggageAmenities.add(
                                 FlightOrderDetailSimpleModel(
-                                        context.getString(
+                                        itemView.context.getString(
                                                 R.string.flight_order_detail_passenger_amenities_label,
                                                 FlightOrderDetailAmenityEnum.LUGGAGE.text,
                                                 it.departureId,
@@ -89,7 +88,7 @@ class FlightOrderDetailPassengerViewHolder(view: View)
                     FlightOrderDetailAmenityEnum.MEAL.type -> {
                         mealAmenities.add(
                                 FlightOrderDetailSimpleModel(
-                                        context.getString(
+                                        itemView.context.getString(
                                                 R.string.flight_order_detail_passenger_amenities_label,
                                                 FlightOrderDetailAmenityEnum.MEAL.text,
                                                 it.departureId,
@@ -113,7 +112,7 @@ class FlightOrderDetailPassengerViewHolder(view: View)
             amenityItems.addAll(mealAmenities)
 
             val adapter = FlightOrderDetailSimpleAdapter(amenityItems)
-            rvFlightOrderPassengerAmenity.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            rvFlightOrderPassengerAmenity.layoutManager = LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
             rvFlightOrderPassengerAmenity.setHasFixedSize(true)
             rvFlightOrderPassengerAmenity.adapter = adapter
         }

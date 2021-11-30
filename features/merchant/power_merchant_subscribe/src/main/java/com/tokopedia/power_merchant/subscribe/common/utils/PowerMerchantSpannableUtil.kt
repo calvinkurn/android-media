@@ -1,15 +1,18 @@
 package com.tokopedia.power_merchant.subscribe.common.utils
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
 import androidx.annotation.ColorInt
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
+import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifyprinciples.Typography
 import timber.log.Timber
 
 object PowerMerchantSpannableUtil {
@@ -72,5 +75,15 @@ object PowerMerchantSpannableUtil {
         }
 
         return spannableString
+    }
+
+    fun Typography.setTextMakeHyperlink(text: String, onClick: () -> Unit) {
+        val htmlString = HtmlLinkHelper(context, text)
+        this.movementMethod = LinkMovementMethod.getInstance()
+        this.highlightColor = Color.TRANSPARENT
+        this.text = htmlString.spannedString
+        htmlString.urlList.getOrNull(0)?.setOnClickListener {
+            onClick()
+        }
     }
 }

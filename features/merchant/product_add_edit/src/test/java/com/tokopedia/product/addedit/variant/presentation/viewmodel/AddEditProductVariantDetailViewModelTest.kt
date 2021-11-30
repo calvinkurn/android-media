@@ -383,4 +383,11 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
         assert(viewModel.productInputModel.value?.detailInputModel?.status == ProductStatus.STATUS_INACTIVE)
     }
 
+    @Test
+    fun `When editVariantDetailInputMap using invalid fieldPosition, expect inputLayoutModelMap unchanged`() {
+        viewModel.editVariantDetailInputMap(999, VariantDetailInputLayoutModel())
+        val result = viewModel.getVariantDetailHeaderData(999)
+        assert(result.isEmpty())
+    }
+
 }

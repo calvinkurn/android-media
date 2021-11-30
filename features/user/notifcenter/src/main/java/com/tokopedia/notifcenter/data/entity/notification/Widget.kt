@@ -22,4 +22,8 @@ data class Widget(
     val mobileButtonLink: String = "",
     @SerializedName("title")
     val title: String = ""
-)
+) {
+    fun hasCta(): Boolean {
+        return buttonText.isNotEmpty()
+    }
+}

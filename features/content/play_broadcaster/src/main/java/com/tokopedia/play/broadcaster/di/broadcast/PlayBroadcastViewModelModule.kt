@@ -26,7 +26,7 @@ abstract class PlayBroadcastViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(PlayBroadcastViewModel::class)
-    abstract fun getPlayBroadcastViewModel(viewModel: PlayBroadcastViewModel): ViewModel
+    internal abstract fun getPlayBroadcastViewModel(viewModel: PlayBroadcastViewModel): ViewModel
 
     @Binds
     @IntoMap

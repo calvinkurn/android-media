@@ -197,7 +197,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="@dimen/layout_lvl2"
-                        android:paddingTop="@dimen/dp_12"
+                        android:paddingTop="12dp"
                         android:paddingRight="@dimen/layout_lvl2">
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -212,14 +212,16 @@
                             app:typographyType="heading_2"
                             tools:text="Avissa Suites" />
 
-                        <androidx.appcompat.widget.AppCompatImageView
+                        <com.tokopedia.iconunify.IconUnify
                             android:id="@+id/hotel_share_button"
                             android:layout_width="@dimen/layout_lvl3"
                             android:layout_height="@dimen/layout_lvl3"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/ic_hotel_share" />
+                            app:icon_name="SHARE_MOBILE"
+                            app:icon_color_light_enable="@color/hotel_dms_icon_color"
+                            app:icon_color_night_enable="@color/hotel_dms_icon_color"/>
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
@@ -231,23 +233,6 @@
                         android:layout_marginRight="@dimen/layout_lvl2"
                         android:layout_marginBottom="@dimen/hotel_12dp"
                         android:orientation="horizontal">
-
-                        <com.tokopedia.unifyprinciples.Typography
-                            android:id="@+id/hotel_property_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/spacing_lvl2"
-                            android:layout_marginRight="@dimen/spacing_lvl2"
-                            android:background="@drawable/bg_search_destination_tag"
-                            android:paddingLeft="@dimen/hotel_6dp"
-                            android:paddingTop="@dimen/spacing_lvl1"
-                            android:paddingRight="@dimen/hotel_6dp"
-                            android:paddingBottom="@dimen/spacing_lvl1"
-                            android:textColor="@color/Unify_N200"
-                            app:typographyType="body_3"
-                            app:typographyWeight="bold"
-                            tools:text="Hotel" />
-
                     </LinearLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -410,11 +395,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/layout_lvl1">
 
-                            <androidx.appcompat.widget.AppCompatImageView
+                            <com.tokopedia.unifycomponents.ImageUnify
                                 android:id="@+id/iv_hotel_detail_location"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/hotel_100dp"
-                                android:scaleType="centerCrop" />
+                                android:scaleType="centerCrop"
+                                app:unify_image_type="rect"
+                                app:unify_image_corner_radius="8"/>
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -469,25 +456,41 @@
                                 tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Bandung, Jawa Barat, Indonesia, 40131" />
 
                         </RelativeLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_nearby_landmarks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:paddingTop="@dimen/layout_lvl1"/>
+
+                        <com.tokopedia.unifyprinciples.Typography
+                            android:id="@+id/tv_hotel_nearby_landmark_info"
+                            android:layout_marginTop="@dimen/layout_lvl2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:text="@string/hotel_important_info_title"
+                            android:textColor="@color/Unify_N700_68"
+                            app:typographyType="small" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/container_facilities"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/layout_lvl1"
                         android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/layout_lvl2"
-                            android:layout_marginTop="@dimen/layout_lvl2"
                             android:layout_marginRight="@dimen/layout_lvl2"
                             android:orientation="horizontal"
                             android:paddingTop="@dimen/layout_lvl1">
 
                             <com.tokopedia.unifyprinciples.Typography
-                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/hotel_facility_title"
@@ -531,7 +534,7 @@
                             android:paddingTop="@dimen/layout_lvl1">
 
                             <com.tokopedia.unifyprinciples.Typography
-                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:text="@string/hotel_policy_title"
@@ -737,7 +740,6 @@
                 android:id="@+id/container_shimmering_bottom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:background="@color/Unify_N0"
                 android:elevation="@dimen/spacing_lvl2"
                 android:orientation="horizontal"

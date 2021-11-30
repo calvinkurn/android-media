@@ -16,6 +16,7 @@ import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 
 /**
  * @author by jessica on 16/06/20
+ * this cannot be converted to view binding as layout located in above module
  */
 
 abstract class DealsBaseFragment: BaseDaggerFragment() {
@@ -33,9 +34,21 @@ abstract class DealsBaseFragment: BaseDaggerFragment() {
         adapter = createAdapterInstance()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return if (hasInitialSwipeRefresh()) inflater.inflate(getInitialSwipeLayout(), container, false)
-        else inflater.inflate(getInitialLayout(), container, false)
+    override fun onCreateView(inflater2: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return if (hasInitialSwipeRefresh()) {
+            inflate_tmp(inflater2, container, savedInstanceState) { a, b, c ->
+                    a.inflate(getInitialSwipeLayout(), b, false)
+            }
+        }
+        else {
+            inflate_tmp(inflater2, container, savedInstanceState) { a, b, c ->
+                a.inflate(getInitialLayout(), b, false)
+            }
+        }
+    }
+
+    open fun inflate_tmp(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?, x : (inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?)->View): View{
+        return x.invoke(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

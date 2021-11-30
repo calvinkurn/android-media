@@ -1,0 +1,40 @@
+[
+  {
+    "data": {
+      "mini_cart": {
+        "data": {
+          "available_section": {
+            "available_group": [
+              {
+                "cart_details": [],
+                "shipment_information": {
+                  "free_shipping": {
+                    "eligible": false
+                  },
+                  "free_shipping_extra": {
+                    "eligible": false
+                  }
+                },
+                "shop": {
+                  "shop_id": 11515028,
+                  "shop_name": "11515028tknw",
+                  "shop_type_info": {
+                    "title_fmt": "official_store"
+                  }
+                }
+              }
+            ]
+          },
+          "errors": [],
+          "total_product_count": 1,
+          "total_product_error": 0,
+          "total_product_price": 1000,
+          "unavailable_section": []
+        },
+        "error_message": [],
+        "status": "OK"
+      },
+      "status": "OK"
+    }
+  }
+]

@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recharge_pdp_emoney.R
+import com.tokopedia.recharge_pdp_emoney.databinding.WidgetEmoneyHeaderViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_emoney_header_view.view.*
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -17,44 +17,48 @@ class EmoneyPdpHeaderViewWidget @JvmOverloads constructor(@NotNull context: Cont
                                                           attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
+    private val binding: WidgetEmoneyHeaderViewBinding
+    
     init {
-        LayoutInflater.from(context).inflate(R.layout.widget_emoney_header_view, this, true)
+        binding = WidgetEmoneyHeaderViewBinding.inflate(LayoutInflater.from(context), this, true)
     }
 
+    
+    
     var titleText: String = ""
         set(title) {
             field = title
-            emoneyHeaderViewTitle.text = title
+            binding.emoneyHeaderViewTitle.text = title
         }
 
     var subtitleText: String = ""
         set(subtitle) {
             field = subtitle
-            emoneyHeaderViewSubtitle.text = subtitle
+            binding.emoneyHeaderViewSubtitle.text = subtitle
         }
 
     var buttonCtaText: String = ""
         set(buttonText) {
             field = buttonText
-            emoneyHeaderViewCtaButton.text = buttonText
+            binding.emoneyHeaderViewCtaButton.text = buttonText
         }
 
     var emoneyHeaderViewCardBalanceText: String = ""
         set(emoneyBalance) {
             field = emoneyBalance
-            emoneyHeaderViewCardBalance.text = emoneyBalance
+            binding.emoneyHeaderViewCardBalance.text = emoneyBalance
         }
 
     var emoneyHeaderViewCardNumberText: String = ""
         set(emoneyCardNum) {
             field = emoneyCardNum
-            emoneyHeaderViewCardNumber.text = emoneyCardNum
+            binding.emoneyHeaderViewCardNumber.text = emoneyCardNum
         }
 
     var actionListener: ActionListener? = null
 
     fun setEmoneyHeaderViewButtonListener(listener: () -> Unit) {
-        emoneyHeaderViewCtaButton.setOnClickListener { listener.invoke() }
+        binding.emoneyHeaderViewCtaButton.setOnClickListener { listener.invoke() }
     }
 
     fun configureCheckBalanceView() {
@@ -78,13 +82,13 @@ class EmoneyPdpHeaderViewWidget @JvmOverloads constructor(@NotNull context: Cont
     }
 
     private fun showEmoneyHeaderWoCardNum() {
-        emoneyHeaderViewWoCardNum.show()
-        emoneyHeaderViewWithCardNum.hide()
+        binding.emoneyHeaderViewWoCardNum.show()
+        binding.emoneyHeaderViewWithCardNum.hide()
     }
 
     private fun showEmoneyHeaderWithCardNum() {
-        emoneyHeaderViewWoCardNum.hide()
-        emoneyHeaderViewWithCardNum.show()
+        binding.emoneyHeaderViewWoCardNum.hide()
+        binding.emoneyHeaderViewWithCardNum.show()
     }
 
     interface ActionListener {

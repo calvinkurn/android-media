@@ -34,14 +34,13 @@ class CavPlayTrackingLiveTest {
             setup(intentsTestRule)
             setMockModel(PlayLiveMockModelConfig())
             launch("1")
-            setJsonAbsolutePath("tracker/content/play/play_live_analytic.json")
+            setJsonAbsolutePath("play_live_analytic.json")
         } test {
             fakeLogin()
             fakeLaunch()
             performShop()
             performWatchArea()
             performLike()
-            performPinnedMessage()
             performSendChatQuickReply()
             performClose()
             Thread.sleep(2000)
@@ -70,13 +69,9 @@ class CavPlayTrackingLiveTest {
 
     private fun performLike() {
         register(idlResLike)
-        Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // like
-        Espresso.onView(ViewMatchers.withId(R.id.v_like_click_area)).perform(ViewActions.click()) // unlike
+        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // like
+        Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // unlike
         unregister(idlResLike)
-    }
-
-    private fun performPinnedMessage() {
-        Espresso.onView(ViewMatchers.withId(R.id.tv_pinned_action)).perform(ViewActions.click())
     }
 
     private fun performSendChatQuickReply() {
@@ -122,7 +117,7 @@ class CavPlayTrackingLiveTest {
                     override fun getName(): String = "clickLike"
 
                     override fun idleState(): Boolean {
-                        val view = intentsTestRule.activity.findViewById<View>(R.id.v_like_click_area)
+                        val view = intentsTestRule.activity.findViewById<View>(R.id.animation_like)
                         return view.isClickable
                     }
                 }

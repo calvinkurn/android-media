@@ -1,16 +1,16 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.hotel.R
+import com.tokopedia.hotel.databinding.FragmentHotelDetailAllFacilityBinding
+import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailPagerAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
-import kotlinx.android.synthetic.main.fragment_hotel_detail_all_facility.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * @author by furqan on 06/05/19
@@ -19,11 +19,14 @@ class HotelDetailAllFacilityFragment : Fragment() {
 
     private var propertyName: String = ""
     private lateinit var propertyData: HotelDetailAllFacilityModel
+    private var binding by autoClearedNullable<FragmentHotelDetailAllFacilityBinding>()
 
     lateinit var hotelDetailPagerAdapter: HotelDetailPagerAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_hotel_detail_all_facility, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelDetailAllFacilityBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,15 +45,16 @@ class HotelDetailAllFacilityFragment : Fragment() {
     }
 
     private fun renderTabAndViewPager() {
-        tab_layout.setupWithViewPager(view_pager)
-        view_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
-        view_pager.adapter = getViewPagerAdapter()
+        binding?.let {
+            it.tabLayout.setupWithViewPager(it.viewPager)
+            it.viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(it.tabLayout))
+            it.viewPager.adapter = getViewPagerAdapter()
 
-
-        for (i in 0 until hotelDetailPagerAdapter.count) {
-            if (tab_layout.getTabAt(i)?.text == arguments?.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)) {
-                tab_layout.getTabAt(i)?.select()
-                break
+            for (i in 0 until hotelDetailPagerAdapter.count) {
+                if (it.tabLayout.getTabAt(i)?.text == arguments?.getString(EXTRA_TAB_TITLE, FACILITY_TITLE)) {
+                    it.tabLayout.getTabAt(i)?.select()
+                    break
+                }
             }
         }
     }

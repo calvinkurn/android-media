@@ -10,16 +10,19 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -34,7 +37,7 @@ class ShopHomeCarousellProductViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_shop_home_product_carousel
     }
-
+    private val viewBinding: ItemShopHomeProductCarouselBinding? by viewBinding()
     private var textViewTitle: TextView? = null
     private var textViewCta: TextView? = null
     private var ivBadge: ImageView? = null
@@ -43,15 +46,15 @@ class ShopHomeCarousellProductViewHolder(
     private var shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel? = null
 
     init {
-        initView(itemView)
+        initView()
     }
 
-    private fun initView(view: View) {
-        textViewTitle = view.findViewById(R.id.tv_title)
-        ivBadge = view.findViewById(R.id.image_view_etalase_badge)
-        textViewCta = view.findViewById(R.id.tvSeeAll)
-        etalaseHeaderContainer = view.findViewById(R.id.etalase_header_container)
-        recyclerView = view.findViewById(R.id.recyclerViewCarousel)
+    private fun initView() {
+        textViewTitle = viewBinding?.etalaseHeaderContainer?.tvTitle
+        ivBadge = viewBinding?.etalaseHeaderContainer?.imageViewEtalaseBadge
+        textViewCta = viewBinding?.etalaseHeaderContainer?.tvSeeAll
+        etalaseHeaderContainer = viewBinding?.etalaseHeaderContainer?.root
+        recyclerView = viewBinding?.recyclerViewCarousel
     }
 
     override fun bind(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
@@ -69,11 +72,21 @@ class ShopHomeCarousellProductViewHolder(
                 show()
                 text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
                 setOnClickListener {
-                    shopHomeCarouselProductListener.onCtaClicked(shopHomeCarousellProductUiModel)
+                    if(!isEtalaseCarousel())
+                        shopHomeCarouselProductListener.onCtaClicked(shopHomeCarousellProductUiModel)
+                    else
+                        shopHomeCarouselProductListener.onCarouselProductShowcaseCtaClicked(shopHomeCarousellProductUiModel)
                 }
             } else {
                 hide()
             }
+        }
+        setWidgetImpressionListener(shopHomeCarousellProductUiModel)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            shopHomeCarouselProductListener.onCarouselProductWidgetImpression(adapterPosition, model)
         }
     }
 
@@ -87,16 +100,25 @@ class ShopHomeCarousellProductViewHolder(
                             false
                     )
                 },
-                carouselProductCardOnItemAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener{
+                carouselProductCardOnItemAddToCartListener = object : CarouselProductCardListener.OnItemAddToCartListener {
                     override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
-                                adapterPosition,
-                                carouselProductCardPosition,
-                                shopHomeCarousellProductUiModel,
-                                shopProductViewModel
-                        )
+                        if (!isEtalaseCarousel()) {
+                            shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                            )
+                        } else {
+                            shopHomeCarouselProductListener.onCarouselProductShowcaseItemClickAddToCart(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                            )
+                        }
                     }
 
                 },
@@ -104,42 +126,54 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        shopHomeCarouselProductListener.onCarouselProductItemClicked(
-                                adapterPosition,
-                                carouselProductCardPosition,
-                                shopHomeCarousellProductUiModel,
-                                shopProductViewModel
-                        )
+                        if (!isEtalaseCarousel()) {
+                            shopHomeCarouselProductListener.onCarouselProductItemClicked(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                            )
+                        }else{
+                            shopHomeCarouselProductListener.onCarouselProductShowcaseItemClicked(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                            )
+                        }
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-
-                        shopHomeCarouselProductListener.onCarouselProductItemImpression(
-                                adapterPosition,
-                                carouselProductCardPosition,
-                                shopHomeCarousellProductUiModel,
-                                shopProductViewModel
-                        )
+                        if (!isEtalaseCarousel()) {
+                            shopHomeCarouselProductListener.onCarouselProductItemImpression(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                            )
+                        }else{
+                            shopHomeCarouselProductListener.onCarouselProductShowcaseItemImpression(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                            )
+                        }
                     }
 
                     override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
                         return shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                     }
-                },
-                carouselProductCardOnItemThreeDotsClickListener = object : CarouselProductCardListener.OnItemThreeDotsClickListener {
-                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
-                                ?: return
-                        shopHomeCarouselProductListener.onThreeDotsCarouselProductItemClicked(
-                                shopHomeCarousellProductUiModel,
-                                shopProductViewModel
-                        )
-                    }
                 }
         )
+    }
+
+    private fun isEtalaseCarousel() : Boolean {
+        val etalaseId = shopHomeCarousellProductUiModel?.header?.etalaseId
+        return etalaseId?.isNotEmpty() == true && etalaseId != "0"
     }
 
     private fun isHasAtc(): Boolean {

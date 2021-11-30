@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.requestpickup.presentation.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.common.presenter.activities.BaseSomActivity

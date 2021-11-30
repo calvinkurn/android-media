@@ -56,13 +56,13 @@ class OthersBalanceInfoUseCaseTest {
             )
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns successResponse
 
         val shopInfo = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertEquals(shopInfo,successShopInfo)
@@ -75,14 +75,14 @@ class OthersBalanceInfoUseCaseTest {
         val errorResponse = TestHelper.createErrorResponse<OtherBalanceResponse>()
 
         coEvery {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         } returns errorResponse
 
         expectedException.expect(MessageErrorException::class.java)
         val shopInfo = useCase.executeOnBackground()
 
         coVerify {
-            gqlRepository.getReseponse(any(), any())
+            gqlRepository.response(any(), any())
         }
 
         assertNull(shopInfo)

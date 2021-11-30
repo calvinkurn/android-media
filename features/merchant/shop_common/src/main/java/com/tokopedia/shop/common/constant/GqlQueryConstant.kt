@@ -3,7 +3,6 @@ package com.tokopedia.shop.common.constant
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.DEFAULT_SHOP_INFO_QUERY_NAME
 
 object GqlQueryConstant {
-
     const val SHOP_INFO_REQUEST_QUERY_STRING = "result {\n" +
             "            shopCore{\n" +
             "                shopID\n" +
@@ -148,6 +147,7 @@ object GqlQueryConstant {
             "                    location\n" +
             "                    isAllowManage\n" +
             "                    shopSnippetURL\n" +
+            "                    branchLinkDomain\n" +
             "                    statusInfo {\n" +
             "                        shopStatus\n" +
             "                        statusMessage\n" +

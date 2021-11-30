@@ -8,7 +8,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
-import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
+import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
 import io.mockk.MockKAnnotations
@@ -86,6 +86,13 @@ class CreateMerchantVoucherStepsViewModelTest {
         mViewModel.setNextStep()
 
         assert(mViewModel.stepPositionLiveData.value == initialStepPosition?.plus(1))
+    }
+
+    @Test
+    fun `setting next step with null max position will make step position value to 1`() {
+        mViewModel.setNextStep()
+
+        assert(mViewModel.stepPositionLiveData.value == 1)
     }
 
     @Test

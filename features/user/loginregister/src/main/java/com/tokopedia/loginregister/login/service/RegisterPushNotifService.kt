@@ -10,25 +10,36 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
 import com.tokopedia.loginregister.login.data.SignResult
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
-import com.tokopedia.loginregister.login.domain.RegisterPushNotifUseCase
+import com.tokopedia.loginregister.login.domain.RegisterPushNotificationParamsModel
+import com.tokopedia.loginregister.login.domain.RegisterPushNotificationUseCase
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import java.security.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by Ade Fulki on 28/09/20.
  */
 
-class RegisterPushNotifService : JobIntentService() {
+@Deprecated("move into workmanager")
+class RegisterPushNotifService : JobIntentService(), CoroutineScope {
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var registerPushNotifUseCase: RegisterPushNotifUseCase
+    lateinit var registerPushNotifUseCase: RegisterPushNotificationUseCase
+
+    private val job = SupervisorJob()
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + job
 
     private lateinit var keyPair: KeyPair
 
@@ -43,16 +54,13 @@ class RegisterPushNotifService : JobIntentService() {
                 generateKey()
                 if (::keyPair.isInitialized) {
                     signData(userSession.userId, userSession.deviceId).let {
-                        registerPushNotifUseCase.executeCoroutines(
-                                it.publicKey,
-                                it.signature,
-                                it.datetime,
-                                { registerPushNotifData ->
-                                    registerPushNotifData.success
-                                },
-                                { throwable ->
-                                    throwable.printStackTrace()
-                                })
+                        launch {
+                            registerPushNotifUseCase(RegisterPushNotificationParamsModel(
+                                publicKey = it.publicKey,
+                                signature = it.signature,
+                                datetime = it.datetime
+                            ))
+                        }
                     }
                 }
             }
@@ -123,19 +131,16 @@ class RegisterPushNotifService : JobIntentService() {
     }
 
     companion object {
-
-        private const val JOB_ID = 34578
-
         private const val ANDROID_KEY_STORE = "AndroidKeyStore"
         private const val PUSH_NOTIF_ALIAS = "PushNotif"
         private const val SHA_256_WITH_RSA = "SHA256withRSA"
         private const val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
         private const val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
 
-        fun startService(context: Context) {
+        fun startService(context: Context, jobId: Int) {
             try {
                 val intent = Intent(context, RegisterPushNotifService::class.java)
-                enqueueWork(context, RegisterPushNotifService::class.java, JOB_ID, intent)
+                enqueueWork(context, RegisterPushNotifService::class.java, jobId, intent)
             } catch (e: Exception) {
                 e.printStackTrace()
             }

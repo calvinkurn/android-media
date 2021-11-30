@@ -1,8 +1,13 @@
 package com.tokopedia.oneclickcheckout.order.analytics
 
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.set
+
 class OrderSummaryPageEnhanceECommerce {
 
-    var data: HashMap<String, Any> = HashMap()
+    var dataList: MutableList<HashMap<String, Any>> = ArrayList()
+    private var data: HashMap<String, Any> = HashMap()
 
     fun setName(name: String) {
         data[KEY_NAME] = name
@@ -52,8 +57,12 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_PRODUCT_WEIGHT] = productWeight
     }
 
-    fun setPromoCode(promoCodes: List<String>) {
-        data[KEY_PROMO_CODE] = promoCodes.joinToString("-")
+    fun setPromoCode(promoCodes: List<String>, data: HashMap<String, Any>? = null) {
+        if (data != null) {
+            data[KEY_PROMO_CODE] = promoCodes.joinToString("-")
+        } else {
+            this.data[KEY_PROMO_CODE] = promoCodes.joinToString("-")
+        }
     }
 
     fun setPromoDetails(promoDetails: String) {
@@ -116,6 +125,11 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_CAMPAIGN_ID] = campaignId
     }
 
+    fun saveData() {
+        dataList.add(data)
+        data = HashMap()
+    }
+
     fun build(step: Int, option: String): Map<String, Any> {
         return mapOf(
                 KEY_CHECKOUT to mapOf(
@@ -124,7 +138,7 @@ class OrderSummaryPageEnhanceECommerce {
                                 KEY_OPTION to option
                         ),
                         KEY_CURRENCY_CODE to "IDR",
-                        KEY_PRODUCTS to listOf(data)
+                        KEY_PRODUCTS to dataList
                 )
         )
     }
@@ -136,12 +150,16 @@ class OrderSummaryPageEnhanceECommerce {
                                 KEY_STEP to step,
                                 KEY_OPTION to option
                         ),
-                        KEY_PRODUCTS to listOf(mapDataForPP())
+                        KEY_PRODUCTS to mapDataListForPP()
                 )
         )
     }
 
-    private fun mapDataForPP(): HashMap<String, Any> {
+    private fun mapDataListForPP(): List<HashMap<String, Any>> {
+        return dataList.map { mapDataForPP(it) }
+    }
+
+    private fun mapDataForPP(data: HashMap<String, Any>): HashMap<String, Any> {
         val ppData = hashMapOf<String, Any>()
         data[KEY_BRAND]?.also { ppData[KEY_BRAND] = it }
         data[KEY_CATEGORY]?.also { ppData[KEY_CATEGORY] = it }

@@ -12,31 +12,32 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.utils.TextHtmlUtils
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.cancellation.data.HotelCancellationButtonEnum
+import com.tokopedia.hotel.cancellation.data.HotelCancellationError
 import com.tokopedia.hotel.cancellation.data.HotelCancellationModel
-import com.tokopedia.hotel.cancellation.data.HotelCancellationSubmitModel
 import com.tokopedia.hotel.cancellation.di.HotelCancellationComponent
 import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationActivity
-import com.tokopedia.hotel.cancellation.presentation.activity.HotelCancellationConfirmationActivity
 import com.tokopedia.hotel.cancellation.presentation.viewmodel.HotelCancellationViewModel
 import com.tokopedia.hotel.cancellation.presentation.widget.HotelCancellationRefundDetailWidget
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.common.util.HotelTextHyperlinkUtil
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.setMargin
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.hotel.databinding.FragmentHotelCancellationBinding
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_hotel_cancellation.*
-import kotlinx.android.synthetic.main.layout_hotel_cancellation_refund_detail.*
-import kotlinx.android.synthetic.main.layout_hotel_cancellation_summary.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 /**
@@ -48,6 +49,7 @@ class HotelCancellationFragment : HotelBaseFragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var cancellationViewModel: HotelCancellationViewModel
+    private var binding by autoClearedNullable<FragmentHotelCancellationBinding>()
 
     private val cancelInfoBottomSheet = BottomSheetUnify()
 
@@ -69,12 +71,15 @@ class HotelCancellationFragment : HotelBaseFragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_hotel_cancellation, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHotelCancellationBinding.inflate(inflater,container, false)
+        return binding?.root
     }
 
 
     override fun onErrorRetryClicked() {
+        hideErrorContainer()
+
         showLoadingState()
         getCancellationData()
     }
@@ -110,74 +115,95 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     hideLoadingState()
                 }
                 is Fail -> {
-                    when {
-                        ErrorHandlerHotel.isOrderNotFound(it.throwable) -> showErrorOrderNotFound()
-                        ErrorHandlerHotel.isOrderHasBeenCancelled(it.throwable) -> showErrorOrderHasBeenCancelled()
-                        else -> {
-                            hideLoadingState()
-                            showErrorState(it.throwable)
-                        }
-                    }
+                    convertDynamicError(it.throwable)
                 }
             }
         })
     }
 
-    private fun showErrorOrderNotFound() {
-        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderNotFoundModel(), true))
-        activity?.finish()
+    fun showErrorView(error: Throwable?){
+        context?.run {
+            binding?.containerError?.globalError?.let {
+                ErrorHandlerHotel.getErrorUnify(this, error,
+                    { onErrorRetryClicked() }, it
+                )
+            }
+        }
     }
 
-    private fun showErrorOrderHasBeenCancelled() {
-        startActivity(HotelCancellationConfirmationActivity.getCallingIntent(requireContext(), getErrorOrderHasBeenCancelled(), false))
-        activity?.finish()
+    private fun convertDynamicError(error: Throwable){
+        hideLoadingState()
+        showErrorContainer()
+        try {
+            val gson = Gson()
+            val itemType = object : TypeToken<HotelCancellationError>() {}.type
+            val errorData = gson.fromJson<HotelCancellationError>(error.message, itemType)
+            context?.run {
+                binding?.containerError?.globalError?.let {
+                    it.setType(GlobalError.SERVER_ERROR)
+                    it.errorTitle.text = errorData.content.title
+                    it.errorDescription.text = errorData.content.desc
+                    it.errorAction.text = errorData.content.actionButton.firstOrNull()?.label ?: ""
+                    (it.errorAction as UnifyButton).buttonType = HotelCancellationButtonEnum
+                        .getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonType
+                    (it.errorAction as UnifyButton).buttonVariant = HotelCancellationButtonEnum
+                        .getEnumFromValue(errorData.content.actionButton.firstOrNull()?.buttonType ?: "").buttonVariant
+                    it.setActionClickListener {
+                        RouteManager.route(this,errorData.content.actionButton.firstOrNull()?.uri)
+                    }
+                    if(errorData.content.actionButton.lastIndex == 1){
+                        it.errorSecondaryAction.show()
+                        it.errorSecondaryAction.text = errorData.content.actionButton.lastOrNull()?.label ?: ""
+                        (it.errorSecondaryAction as UnifyButton).buttonType = HotelCancellationButtonEnum
+                            .getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonType
+                        (it.errorSecondaryAction as UnifyButton).buttonVariant = HotelCancellationButtonEnum
+                            .getEnumFromValue(errorData.content.actionButton.lastOrNull()?.buttonType ?: "").buttonVariant
+                        it.setSecondaryActionClickListener {
+                            RouteManager.route(this,errorData.content.actionButton.lastOrNull()?.uri)
+                        }
+                    }else{
+                        it.errorSecondaryAction.gone()
+                    }
+                }
+            }
+        }catch (throwable: Throwable){
+            showErrorView(throwable)
+        }
     }
-
-    private fun getErrorOrderNotFoundModel(): HotelCancellationSubmitModel = HotelCancellationSubmitModel(false,
-            getString(R.string.hotel_cancellation_fail_order_not_found_title),
-            getString(R.string.hotel_cancellation_fail_order_not_found_description),
-            listOf(HotelCancellationSubmitModel.ActionButton(getString(R.string.hotel_cancellation_fail_order_not_found_cta),
-                    HotelCancellationButtonEnum.SECONDARY.value, getString(R.string.hotel_cancellation_order_list_applink),
-                    getString(R.string.hotel_cancellation_order_list_applink))))
-
-    private fun getErrorOrderHasBeenCancelled(): HotelCancellationSubmitModel = HotelCancellationSubmitModel(false,
-            getString(R.string.hotel_cancellation_fail_has_been_cancelled_title),
-            getString(R.string.hotel_cancellation_fail_has_been_cancelled_description),
-            listOf(HotelCancellationSubmitModel.ActionButton(getString(R.string.hotel_cancellation_fail_has_been_cancelled_cta),
-                    HotelCancellationButtonEnum.SECONDARY.value, getString(R.string.hotel_cancellation_order_list_applink),
-                    getString(R.string.hotel_cancellation_order_list_applink))))
 
     private fun initView(hotelCancellationModel: HotelCancellationModel) {
+        hideErrorContainer()
+
         hotelCancellationModel.property.let {
-            hotel_cancellation_property_name.text = it.name
-            hotel_cancellation_room_name.text = it.room.firstOrNull()?.roomName ?: ""
-            hotel_cancellation_room_guest_info.text = it.room.firstOrNull()?.roomContent ?: ""
+            binding?.layoutHotelCancellationSummary?.hotelCancellationPropertyName?.text = it.name
+            binding?.layoutHotelCancellationSummary?.hotelCancellationRoomName?.text = it.room.firstOrNull()?.roomName ?: ""
+            binding?.layoutHotelCancellationSummary?.hotelCancellationRoomGuestInfo?.text = it.room.firstOrNull()?.roomContent ?: ""
 
             val checkIn = it.checkInOut.firstOrNull()
                     ?: HotelCancellationModel.PropertyData.CheckInOut()
             val checkOut = if (it.checkInOut.size > 1) it.checkInOut[1] else HotelCancellationModel.PropertyData.CheckInOut()
-            hotel_cancellation_room_duration_view.setViewLabel(checkIn.title, checkOut.title)
-            hotel_cancellation_room_duration_view.setRoomDatesFormatted(checkIn.checkInOut.date, checkOut.checkInOut.date, it.stayLength)
-            hotel_cancellation_room_duration_view.setRoomCheckTimes("${checkIn.checkInOut.day}, ${checkIn.checkInOut.time}",
+            binding?.hotelCancellationRoomDurationView?.setViewLabel(checkIn.title, checkOut.title)
+            binding?.hotelCancellationRoomDurationView?.setRoomDatesFormatted(checkIn.checkInOut.date, checkOut.checkInOut.date, it.stayLength)
+            binding?.hotelCancellationRoomDurationView?.setRoomCheckTimes("${checkIn.checkInOut.day}, ${checkIn.checkInOut.time}",
                     "${checkIn.checkInOut.day}, ${checkOut.checkInOut.time}")
 
-            if (it.isDirectPayment) content_cancellation_pay_at_hotel.hide() else content_cancellation_pay_at_hotel.show()
+            if (it.isDirectPayment) binding?.layoutHotelCancellationSummary?.contentCancellationPayAtHotel?.hide() else binding?.layoutHotelCancellationSummary?.contentCancellationPayAtHotel?.show()
         }
 
         hotelCancellationModel.cancelPolicy.let {
-            hotel_cancellation_policy_widget.initView(it.title, it.policy)
+            binding?.hotelCancellationPolicyWidget?.initView(it.title, it.policy)
         }
 
         hotelCancellationModel.cancelInfo.let {
             if (it.desc.isEmpty()) {
-                hotel_cancellation_ticker_refund_info.hide()
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.hide()
             } else {
                 val description = it.desc.replace(getString(R.string.hotel_cancellation_hyperlink_open_tag), getString(R.string.hotel_cancellation_a_hyperlink_open_tag))
                         .replace(getString(R.string.hotel_cancellation_hyperlink_close_tag), getString(R.string.hotel_cancellation_a_hyperlink_close_tag))
-                hotel_cancellation_ticker_refund_info.setHtmlDescription(description)
-                hotel_cancellation_ticker_refund_info.isClickable = it.isClickable
-                hotel_cancellation_ticker_refund_info.tickerShape = Ticker.SHAPE_LOOSE
-                hotel_cancellation_ticker_refund_info.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setHtmlDescription(description)
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.isClickable = it.isClickable
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.tickerShape = Ticker.SHAPE_LOOSE
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.tickerType = Ticker.TYPE_ANNOUNCEMENT
 
                 if (it.isClickable) {
                     cancelInfoBottomSheet.setTitle(it.longDesc.title)
@@ -186,11 +212,11 @@ class HotelCancellationFragment : HotelBaseFragment() {
                     typography.text = TextHtmlUtils.getTextFromHtml(it.longDesc.desc)
                     typography.layoutParams = ViewGroup.MarginLayoutParams(ViewGroup.MarginLayoutParams.MATCH_PARENT, ViewGroup.MarginLayoutParams.WRAP_CONTENT)
                     typography.setMargin(0, 0, 0, resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2))
-                    typography.setLineSpacing(6f, 1f)
+                    typography.setLineSpacing(ADD_LINE_SPACING, MUL_LINE_SPACING)
                     typography.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     cancelInfoBottomSheet.setChild(typography)
 
-                    hotel_cancellation_ticker_refund_info.setDescriptionClickEvent(object : TickerCallback {
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
                         }
@@ -200,57 +226,59 @@ class HotelCancellationFragment : HotelBaseFragment() {
                         }
                     })
 
-                    hotel_cancellation_ticker_refund_info.setOnClickListener {
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTickerRefundInfo?.setOnClickListener {
                         fragmentManager?.let { fm -> cancelInfoBottomSheet.show(fm, "") }
                     }
+                }else{
+                    //do nothing
                 }
             }
         }
 
         hotelCancellationModel.payment.let {
-            hotel_cancellation_payment_title.text = it.title
-            if (it.title.isEmpty()) hotel_cancellation_payment_title.hide() else hotel_cancellation_payment_title.show()
+            binding?.layoutHotelCancellationRefundDetail?.hotelCancellationPaymentTitle?.text = it.title
+            if (it.title.isEmpty()) binding?.layoutHotelCancellationRefundDetail?.hotelCancellationPaymentTitle?.hide() else binding?.layoutHotelCancellationRefundDetail?.hotelCancellationPaymentTitle?.show()
 
-            hotel_cancellation_refund_price_detail.removeAllViews()
+            binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundPriceDetail?.removeAllViews()
             for (paymentDetail in it.detail) {
                 val widgetDetail = context?.let { HotelCancellationRefundDetailWidget(it) }
                 widgetDetail?.let { widget ->
                     widget.initView(paymentDetail.title, paymentDetail.amount)
-                    hotel_cancellation_refund_price_detail.addView(widget)
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundPriceDetail?.addView(widget)
                 }
             }
             if (it.detail.isEmpty()) {
-                hotel_cancellation_refund_price_detail.hide()
-                hotel_cancellation_refund_detail_seperator.hide()
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundPriceDetail?.hide()
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundDetailSeperator?.hide()
             }
 
-            hotel_cancellation_total_price_refund.removeAllViews()
+            binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTotalPriceRefund?.removeAllViews()
             for (paymentSummary in it.summary) {
                 val widgetDetail = context?.let { HotelCancellationRefundDetailWidget(it) }
                 widgetDetail?.let { widget ->
                     widget.initView(paymentSummary.title, paymentSummary.amount, true)
-                    hotel_cancellation_total_price_refund.addView(widget)
+                    binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTotalPriceRefund?.addView(widget)
                 }
             }
-            if (it.summary.isEmpty()) hotel_cancellation_total_price_refund.hide()
+            if (it.summary.isEmpty()) binding?.layoutHotelCancellationRefundDetail?.hotelCancellationTotalPriceRefund?.hide()
 
             if (it.footer.desc.isNotEmpty()) {
                 val spannable = HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
                         it.footer.desc, it.footer.links)
-                hotel_cancellation_refund_additional_text.highlightColor = Color.TRANSPARENT
-                hotel_cancellation_refund_additional_text.movementMethod = LinkMovementMethod.getInstance()
-                hotel_cancellation_refund_additional_text.setText(spannable, TextView.BufferType.SPANNABLE)
-            } else hotel_cancellation_refund_additional_text.hide()
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundAdditionalText?.highlightColor = Color.TRANSPARENT
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundAdditionalText?.movementMethod = LinkMovementMethod.getInstance()
+                binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundAdditionalText?.setText(spannable, TextView.BufferType.SPANNABLE)
+            } else binding?.layoutHotelCancellationRefundDetail?.hotelCancellationRefundAdditionalText?.hide()
         }
 
         if (hotelCancellationModel.footer.desc.isNotEmpty()) {
-            hotel_cancellation_page_footer.highlightColor = Color.TRANSPARENT
-            hotel_cancellation_page_footer.movementMethod = LinkMovementMethod.getInstance()
-            hotel_cancellation_page_footer.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
+            binding?.hotelCancellationPageFooter?.highlightColor = Color.TRANSPARENT
+            binding?.hotelCancellationPageFooter?.movementMethod = LinkMovementMethod.getInstance()
+            binding?.hotelCancellationPageFooter?.setText(HotelTextHyperlinkUtil.getSpannedFromHtmlString(requireContext(),
                     hotelCancellationModel.footer.desc, hotelCancellationModel.footer.links), TextView.BufferType.SPANNABLE)
-        } else hotel_cancellation_page_footer.hide()
+        } else binding?.hotelCancellationPageFooter?.hide()
 
-        hotel_cancellation_button_next.setOnClickListener {
+        binding?.hotelCancellationButtonNext?.setOnClickListener {
             trackingHotelUtil.clickNextOnCancellationPage(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_SCREEN_NAME)
             (activity as HotelCancellationActivity).showCancellationReasonFragment()
         }
@@ -258,8 +286,19 @@ class HotelCancellationFragment : HotelBaseFragment() {
         trackingHotelUtil.viewHotelCancellationPage(requireContext(), invoiceId, hotelCancellationModel, HOTEL_CANCELLATION_SCREEN_NAME)
     }
 
+    private fun showErrorContainer(){
+        binding?.hotelCancellationContainer?.gone()
+        binding?.containerError?.root?.visible()
+    }
+
+    private fun hideErrorContainer(){
+        binding?.hotelCancellationContainer?.visible()
+        binding?.containerError?.root?.gone()
+    }
     companion object {
         const val HOTEL_CANCELLATION_SCREEN_NAME = "/hotel/ordercancel"
+        const val ADD_LINE_SPACING = 6f
+        const val MUL_LINE_SPACING = 1f
 
         private const val EXTRA_INVOICE_ID = "extra_invoice_id"
         fun getInstance(invoiceId: String): HotelCancellationFragment =

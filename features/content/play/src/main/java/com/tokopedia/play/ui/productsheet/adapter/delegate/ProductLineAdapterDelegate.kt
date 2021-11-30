@@ -3,7 +3,6 @@ package com.tokopedia.play.ui.productsheet.adapter.delegate
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
-import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 

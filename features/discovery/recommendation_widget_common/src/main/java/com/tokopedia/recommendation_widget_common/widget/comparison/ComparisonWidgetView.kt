@@ -3,39 +3,38 @@ package com.tokopedia.recommendation_widget_common.widget.comparison
 import android.animation.LayoutTransition
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleInterface
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModel
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleModelList
-import com.tokopedia.recommendation_widget_common.widget.comparison.stickytitle.StickyTitleView
+import com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.ComparedItemAdapter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.view_comparison_widget.view.*
+import kotlinx.android.synthetic.main.view_comparison_widget.view.btn_see_more
+import kotlinx.android.synthetic.main.view_comparison_widget.view.comparison_widget_container
+import kotlinx.android.synthetic.main.view_comparison_widget.view.rv_compared_item
+import kotlinx.android.synthetic.main.view_comparison_widget.view.rv_comparison_widget
+import kotlinx.android.synthetic.main.view_comparison_widget.view.tv_header_title
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
-class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollInterface  {
+class ComparisonWidgetView: FrameLayout, CoroutineScope  {
 
     private var specOnScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
     private var comparisonListModel: ComparisonListModel? = null
-    private var stickyTitleViewBinded: StickyTitleView? = null
-    private var stickyTitleInterface: StickyTitleInterface? = null
-    private var adapter: ComparisonWidgetAdapter? = null
-    private var disableScrollTemp: Boolean = false
+    private var adapter: ComparedItemAdapter? = null
+    private var comparedAdapter: ComparisonWidgetAdapter? = null
 
     private var userSessionInterface = UserSession(context)
 
@@ -50,16 +49,15 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
         LayoutInflater.from(context).inflate(R.layout.view_comparison_widget, this)
         if (rootView.rv_comparison_widget.itemDecorationCount == 0) {
             rootView.rv_comparison_widget.addItemDecoration(ComparisonWidgetDecoration())
+            rootView.rv_compared_item.addItemDecoration(ComparisonWidgetDecoration())
         }
         switchToCollapsedState(resources.getDimensionPixelSize(R.dimen.comparison_widget_collapsed_height))
     }
 
     fun setComparisonWidgetData(
             recommendationWidget: RecommendationWidget,
-            stickyTitleView: StickyTitleView?,
             comparisonWidgetInterface: ComparisonWidgetInterface,
             recommendationTrackingModel: RecommendationTrackingModel,
-            stickyTitleInterface: StickyTitleInterface,
             trackingQueue: TrackingQueue?
     ) {
         launch {
@@ -68,20 +66,20 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
                         ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
                 if (this@ComparisonWidgetView.adapter == null) {
                     launch(Dispatchers.Main) {
-                        rootView.tv_header_title.text = comparisonListModel?.recommendationWidget?.title
-                        if (comparisonListModel?.recommendationWidget?.seeMoreAppLink?.isNotEmpty() == true) {
+                        rootView.tv_header_title.text = comparisonListModel.recommendationWidget?.title
+                        if (comparisonListModel.recommendationWidget.seeMoreAppLink.isNotEmpty()) {
                             rootView.btn_see_more.visible()
                         } else {
                             rootView.btn_see_more.gone()
                         }
 
                         this@ComparisonWidgetView.comparisonListModel = comparisonListModel
-                        this@ComparisonWidgetView.adapter = ComparisonWidgetAdapter(
+                        this@ComparisonWidgetView.adapter = ComparedItemAdapter(
                                 comparisonListModel = comparisonListModel,
                                 comparisonWidgetInterface = comparisonWidgetInterface,
                                 trackingQueue = trackingQueue,
                                 userSessionInterface = userSessionInterface,
-                                recommendationTrackingModel = recommendationTrackingModel
+                                recommendationTrackingModel = recommendationTrackingModel,
                         )
                         rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                         rootView.rv_comparison_widget.adapter = adapter
@@ -97,47 +95,25 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
                             onSpecDetailsClick(comparisonListModel)
                         }
                         rootView.comparison_widget_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
-                        stickyTitleView?.let {
-                            this@ComparisonWidgetView.stickyTitleViewBinded = stickyTitleView
-                            bindStickyTitleView(stickyTitleInterface)
-                        }
+                    }
+                }
+                if (this@ComparisonWidgetView.comparedAdapter == null) {
+                    launch(Dispatchers.Main) {
+
+                        this@ComparisonWidgetView.comparisonListModel = comparisonListModel
+                        this@ComparisonWidgetView.comparedAdapter = ComparisonWidgetAdapter(
+                            comparisonListModel = comparisonListModel,
+                            comparisonWidgetInterface = comparisonWidgetInterface,
+                            trackingQueue = trackingQueue,
+                            userSessionInterface = userSessionInterface,
+                            recommendationTrackingModel = recommendationTrackingModel
+                        )
+                        rootView.rv_compared_item.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                        rootView.rv_compared_item.adapter = comparedAdapter
                     }
                 }
             } catch (e: NullPointerException) {
                 this@ComparisonWidgetView.gone()
-            }
-        }
-    }
-
-    fun bindStickyTitleView(stickyTitleInterface: StickyTitleInterface) {
-        stickyTitleViewBinded?.let { stickyTitleView ->
-            comparisonListModel?.let { comparisonListModel ->
-                stickyTitleView.setStickyModelListData(
-                        StickyTitleModelList(
-                                comparisonListModel.comparisonData.map {
-                                    StickyTitleModel(
-                                            title = it.productCardModel.productName,
-                                            recommendationItem = it.recommendationItem
-                                    )
-                                }
-                        ),
-                        stickyTitleInterface,
-                        this
-                )
-
-                rv_comparison_widget.clearOnScrollListeners()
-                rv_comparison_widget.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                        super.onScrolled(recyclerView, dx, dy)
-                        if (dx != 0) {
-                            this@ComparisonWidgetView.disableScrollTemp = true
-                            stickyTitleView.scrollX(dx)
-                            this@ComparisonWidgetView.disableScrollTemp = false
-                        }
-                    }
-                })
-                this.stickyTitleViewBinded = stickyTitleView
-                this.stickyTitleInterface = stickyTitleInterface
             }
         }
     }
@@ -147,41 +123,7 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
             switchToCollapsedState(comparisonListModel.comparisonWidgetConfig.collapsedHeight)
         } else {
             switchToExpandState()
-            setStickyHeaderScrollListener()
         }
-    }
-
-    private fun setStickyHeaderScrollListener() {
-        comparisonListModel?.let {
-            val specOnScrollChangedListener = ViewTreeObserver.OnScrollChangedListener {
-                val location = IntArray(2)
-                this@ComparisonWidgetView.getLocationOnScreen(location)
-                val X = location[0]
-                val Y = location[1]
-                val elapsedProductCardHeight = -((it.comparisonWidgetConfig.productCardHeight)) + calculateActionBar()
-                if (Y < elapsedProductCardHeight) {
-                    stickyTitleViewBinded?.showStickyTitle()
-                    stickyTitleInterface?.onStickyTitleShow(true)
-                } else {
-                    stickyTitleViewBinded?.hideStickyTitle()
-                    stickyTitleInterface?.onStickyTitleShow(false)
-                }
-            }
-
-            if (this.specOnScrollChangedListener == null) {
-                this.specOnScrollChangedListener = specOnScrollChangedListener
-                rootView.viewTreeObserver.addOnScrollChangedListener(this.specOnScrollChangedListener)
-            }
-        }
-    }
-
-    private fun calculateActionBar(): Int {
-        // Calculate ActionBar height
-        val tv = TypedValue()
-        if (context.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            return TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-        }
-        return 0
     }
 
     private fun switchToCollapsedState(collapsedHeight: Int) {
@@ -190,17 +132,28 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
             layoutParams.height = collapsedHeight
             rootView.rv_comparison_widget.layoutParams = layoutParams
             adapter?.notifyDataSetChanged()
+
+            val layoutParamsComparedItem = rootView.rv_compared_item.layoutParams
+            layoutParamsComparedItem.height = collapsedHeight
+            rootView.rv_compared_item.layoutParams = layoutParamsComparedItem
+            comparedAdapter?.notifyDataSetChanged()
         }
     }
 
     private fun switchToExpandState() {
         if (!isExpandingState()) {
-            val layoutParams = LinearLayout.LayoutParams(
+            val layoutParams = ConstraintLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT)
             rootView.rv_comparison_widget.layoutParams = layoutParams
-            rootView.btn_container.visibility = View.GONE
             adapter?.notifyDataSetChanged()
+
+            val layoutParamsComparedItem = ConstraintLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT)
+            rootView.rv_compared_item.layoutParams = layoutParamsComparedItem
+            rootView.btn_collapse.visibility = View.GONE
+            comparedAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -209,23 +162,11 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope, ComparisonWidgetScrollI
                 rootView.rv_comparison_widget.layoutParams.height == LinearLayout.LayoutParams.WRAP_CONTENT
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        if (isExpandingState()) {
-            setStickyHeaderScrollListener()
-        }
-    }
-
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         if (isExpandingState()) {
             rootView.viewTreeObserver.removeOnScrollChangedListener(this.specOnScrollChangedListener)
             this.specOnScrollChangedListener = null
-            stickyTitleViewBinded?.hideStickyTitle()
         }
-    }
-
-    override fun scrollX(x: Int) {
-        if (!disableScrollTemp) rv_comparison_widget.scrollBy(x, 0)
     }
 }

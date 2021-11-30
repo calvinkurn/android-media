@@ -62,16 +62,13 @@
                     android:textColor="@color/Unify_N700_44"
                     android:textSize="@dimen/fontSize_lvl3" />
 
-                <androidx.appcompat.widget.SwitchCompat
+                <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
                     android:id="@+id/switch_chat_template"
-                    style="@style/SwitchCompatStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:checked="false"
-                    android:gravity="right"
                     tools:checked="true" />
 
             </RelativeLayout>

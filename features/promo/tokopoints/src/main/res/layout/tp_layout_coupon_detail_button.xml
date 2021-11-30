@@ -8,22 +8,22 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_4"
+        android:layout_height="4dp"
         android:background="@drawable/bg_tp_shadow" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_12">
+        android:paddingBottom="12dp">
 
         <include
             android:id="@+id/layout_coupon_swipe"
             layout="@layout/tp_layput_container_swipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="16dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,9 +31,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="16dp"
             android:orientation="vertical"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,12 +42,12 @@
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_continue"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_48"
+                android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
                 app:unifyButtonType="main"
                 app:unifyButtonSize="large"
                 app:unifyButtonVariant="filled"
-                android:textSize="@dimen/sp_14"
+                android:textSize="14sp"
                 android:textStyle="bold"/>
 
             <ProgressBar

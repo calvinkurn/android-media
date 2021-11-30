@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingEnd="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_12"
+    android:paddingEnd="12dp"
+    android:paddingRight="12dp"
     tools:ignore="RtlSymmetry">
 
     <com.tokopedia.variant_common.view.customview.VariantCircleColorView

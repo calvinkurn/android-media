@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.domain.model
 
+import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -14,7 +15,7 @@ data class ThanksPageResponse(
 @Parcelize
 data class ThanksPageData(
         @SerializedName("payment_id")
-        val paymentID: Long,
+        val paymentID: String,
         @SerializedName("profile_code")
         val profileCode: String,
         @SerializedName("payment_status")
@@ -29,6 +30,8 @@ data class ThanksPageData(
         val amount: Long,
         @SerializedName("amount_str")
         val amountStr: String,
+        @SerializedName("combine_amount")
+        val combinedAmount: Double,
         @SerializedName("order_list")
         val shopOrder: ArrayList<ShopOrder>,
         @SerializedName("additional_info")
@@ -53,6 +56,8 @@ data class ThanksPageData(
         val paymentDetails: ArrayList<PaymentDetail>?,
         @SerializedName("order_amount_str")
         val orderAmountStr: String,
+        @SerializedName("order_amount")
+        val orderAmount: Double,
         @SerializedName("current_site")
         val currentSite: String,
         @SerializedName("business_unit")
@@ -110,21 +115,29 @@ data class PaymentDetail(
         @SerializedName("gateway_name")
         val gatewayName: String,
         @SerializedName("amount")
-        val amount: Float,
+        val amount: Double,
         @SerializedName("amount_str")
-        val amountStr: String
+        val amountStr: String,
+        @SerializedName("amount_combine")
+        val amountCombine: Double,
+        @SerializedName("amount_combine_str")
+        val amountCombineStr: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat(),
-            parcel.readString() ?: "")
+            parcel.readDouble(),
+            parcel.readString() ?: "",
+            parcel.readDouble(),
+        parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(gatewayCode)
         parcel.writeString(gatewayName)
-        parcel.writeFloat(amount)
+        parcel.writeDouble(amount)
         parcel.writeString(amountStr)
+        parcel.writeDouble(amountCombine)
+        parcel.writeString(amountCombineStr)
     }
 
     override fun describeContents(): Int {
@@ -177,6 +190,8 @@ data class ShopOrder(
         val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
+        @SerializedName("bundle_group_data")
+        val bundleGroupList: ArrayList<BundleGroupItem>,
         @SerializedName("shipping_amount")
         val shippingAmount: Float,
         @SerializedName("shipping_amount_str")
@@ -258,8 +273,9 @@ data class PurchaseItem(
         val productName: String,
         @SerializedName("product_brand")
         val productBrand: String,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price")
-        val price: Float,
+        val price: Double,
         @SerializedName("price_str")
         val priceStr: String,
         @SerializedName("quantity")
@@ -285,13 +301,17 @@ data class PurchaseItem(
         @SerializedName("bebas_ongkir_dimension")
         val bebasOngkirDimension: String,
         @SerializedName("is_bbi")
-        val isBBIProduct: Boolean
+        val isBBIProduct: Boolean,
+        @SerializedName("category_id")
+        val categoryId: String,
+        @SerializedName("bundle_group_id")
+        val bundleGroupId: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readFloat(),
+            parcel.readDouble(),
             parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readFloat(),
@@ -304,13 +324,16 @@ data class PurchaseItem(
             parcel.readString() ?: "",
             parcel.readDouble(),
             parcel.readString() ?: "",
-            parcel.readByte() == 1.toByte())
+            parcel.readByte() == 1.toByte(),
+            parcel.readString() ?: "",
+        parcel.readString() ?: ""
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
         parcel.writeString(productName)
         parcel.writeString(productBrand)
-        parcel.writeFloat(price)
+        parcel.writeDouble(price)
         parcel.writeString(priceStr)
         parcel.writeInt(quantity)
         parcel.writeFloat(weight)
@@ -324,6 +347,8 @@ data class PurchaseItem(
         parcel.writeDouble(productPlanProtection)
         parcel.writeString(bebasOngkirDimension)
         parcel.writeByte(if (isBBIProduct) 1 else 0)
+        parcel.writeString(categoryId)
+        parcel.writeString(bundleGroupId)
     }
 
     override fun describeContents(): Int {
@@ -336,6 +361,49 @@ data class PurchaseItem(
         }
 
         override fun newArray(size: Int): Array<PurchaseItem?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
+
+data class BundleGroupItem(
+    @SerializedName("group_id")
+    val groupId: String,
+    @SerializedName("icon")
+    val bundleIcon: String,
+    @SerializedName("title")
+    val bundleTitle: String,
+    @SerializedName("total_price")
+    val totalPrice: Float,
+    @SerializedName("total_price_str")
+    val totalPriceStr: String
+): Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readString() ?: "",
+        parcel.readFloat(),
+        parcel.readString() ?: ""
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(groupId)
+        parcel.writeString(bundleIcon)
+        parcel.writeString(bundleTitle)
+        parcel.writeFloat(totalPrice)
+        parcel.writeString(totalPriceStr)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<BundleGroupItem> {
+        override fun createFromParcel(parcel: Parcel): BundleGroupItem {
+            return BundleGroupItem(parcel)
+        }
+
+        override fun newArray(size: Int): Array<BundleGroupItem?> {
             return arrayOfNulls(size)
         }
     }
@@ -412,5 +480,23 @@ data class ThankPageTopTickerData(
         @SerializedName("ticker_text")
         val tickerDescription : String?,
         @SerializedName("ticker_type")
-        val ticketType : String?
-)
+        val ticketType : String?,
+        @SerializedName("ticker_cta_url")
+        val tickerCTAUrl : String?,
+        @SerializedName("ticker_cta_title")
+        val tickerCTATitle: String?,
+        @SerializedName("ticker_cta_applink")
+        val tickerCTAApplink: String?
+) {
+    fun getURL(): String? {
+        return if (!tickerCTAApplink.isNullOrEmpty()) {
+            tickerCTAApplink
+        } else {
+            tickerCTAUrl
+        }
+    }
+
+    fun isAppLink() : Boolean{
+        return !tickerCTAApplink.isNullOrEmpty()
+    }
+}

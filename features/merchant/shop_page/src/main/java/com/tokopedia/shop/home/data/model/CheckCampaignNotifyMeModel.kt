@@ -12,7 +12,7 @@ data class CheckCampaignNotifyMeModel(
         @SerializedName("message")
         val message: String = "",
 
-        @SerializedName("errorMessage")
+        @SerializedName("error_message")
         val errorMessage: String = ""
 
 ) {

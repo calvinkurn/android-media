@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.listener.TopAdsAddToCartClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
 import com.tokopedia.topads.sdk.listener.TopAdsShopFollowBtnClickListener
@@ -24,7 +25,8 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
         ViewModelProvider(context as AppCompatActivity).get(TopAdsHeadlineViewModel::class.java)
     }
 
-    private var topadsBannerView: TopAdsBannerView
+    var topadsBannerView: TopAdsBannerView
+        private set
     private val shimmerView: LoaderUnify
 
     init {
@@ -65,4 +67,17 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     fun hideShimmerView() {
         shimmerView.hide()
     }
+
+    fun setHasAddToCartButton(hasAddToCartButton: Boolean) {
+        topadsBannerView.setHasAddToCartButton(hasAddToCartButton)
+    }
+
+    fun setAddToCartClickListener(topAdsAddToCartClickListener: TopAdsAddToCartClickListener) {
+        topadsBannerView.setAddToCartClickListener(topAdsAddToCartClickListener)
+    }
+
+    fun setShowCta(isShowCta: Boolean) {
+        topadsBannerView.setShowCta(isShowCta)
+    }
+
 }

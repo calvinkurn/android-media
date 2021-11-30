@@ -1,14 +1,17 @@
 package com.tokopedia.entertainment.search.fragment
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -23,6 +26,11 @@ import com.tokopedia.entertainment.search.di.EventSearchComponent
 import com.tokopedia.entertainment.search.viewmodel.EventDetailViewModel
 import com.tokopedia.entertainment.search.viewmodel.factory.EventDetailViewModelFactory
 import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_search_category_emptystate.*
 import kotlinx.android.synthetic.main.ent_search_category_text.*
@@ -30,6 +38,8 @@ import kotlinx.android.synthetic.main.ent_search_detail_activity.*
 import kotlinx.android.synthetic.main.ent_search_detail_shimmer.*
 import kotlinx.android.synthetic.main.ent_search_fragment.recycler_viewParent
 import kotlinx.android.synthetic.main.ent_search_fragment.swipe_refresh_layout
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -58,6 +68,8 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         fun newInstance() = EventCategoryFragment()
         val TAG = EventCategoryFragment::class.java.simpleName
         const val ENT_CATEGORY_PERFORMANCE = "et_event_category"
+
+        private const val DELAY_TIME = 200L
     }
 
 
@@ -97,7 +109,6 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         setupCategoryAdapter()
         setupGridAdapter()
         setupRefreshLayout()
-        setupResetFilterButton()
         performanceMonitoring.stopTrace()
     }
 
@@ -135,10 +146,6 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         }
     }
 
-    private fun setupResetFilterButton(){
-        activity?.resetFilterButton?.apply { setOnClickListener{ resetFilter() } }
-    }
-
     private fun getScrollListener(): EndlessRecyclerViewScrollListener{
         return object: EndlessRecyclerViewScrollListener(gridLayoutManager){
             override fun onLoadMore(page: Int, p1: Int) {
@@ -161,11 +168,14 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
 
     private fun observeErrorReport(){
         viewModel.errorReport.observe(viewLifecycleOwner, Observer {
-            NetworkErrorHelper.createSnackbarRedWithAction(activity, resources.getString(R.string.ent_search_error_message)) {
-                recycler_viewParent.addOnScrollListener(endlessScroll)
-                viewModel.page = "1"
-                viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
-            }.showRetrySnackbar()
+            lifecycleScope.launch {
+                delay(DELAY_TIME)
+                NetworkErrorHelper.createSnackbarRedWithAction(activity, ErrorHandler.getErrorMessage(context, it)) {
+                    recycler_viewParent.addOnScrollListener(endlessScroll)
+                    viewModel.page = "1"
+                    viewModel.getData(CacheType.ALWAYS_CLOUD,getQueryCategory())
+                }.showRetrySnackbar()
+            }
         })
     }
 
@@ -228,7 +238,21 @@ class EventCategoryFragment : BaseDaggerFragment(), EventGridAdapter.EventGridLi
         eventGridAdapter.notifyDataSetChanged()
     }
 
-    private fun showOrHideResetFilter(state: Boolean) { activity?.resetFilter?.visibility = if(state) View.VISIBLE else View.GONE }
+    private fun showOrHideResetFilter(state: Boolean) {
+        activity?.resetFilter?.visibility = if(state) View.VISIBLE else View.GONE
+        if (state){
+            activity?.globalerror_category_event?.let {
+                it.errorIllustration.loadImageDrawable(R.drawable.ent_ic_empty_item)
+                it.errorTitle.setText(resources.getString(R.string.ent_search_oops))
+                it.errorDescription.setText(resources.getString(R.string.ent_search_intip_kategori))
+                it.errorAction.setText(resources.getString(R.string.ent_search_reset_filter))
+                it.setActionClickListener {
+                    resetFilter()
+                }
+                it.errorSecondaryAction.hide()
+            }
+        }
+    }
 
     private fun showOrHideParentView(state: Boolean){ activity?.parent_view?.visibility = if(state) View.VISIBLE else View.GONE }
 

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:id="@+id/ticker_sbm_add_telco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerShapeType="full"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_sbm_product_type"
+        app:layout_constraintTop_toBottomOf="@id/ticker_sbm_add_telco"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_placeholder="@string/smart_bills_add_bills_product_placeholder_pulsa"
+        app:text_field_label="@string/smart_bills_add_bills_product_label"
+        app:text_field_label_static="true"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_sbm_product_number"
+        app:layout_constraintTop_toBottomOf="@id/text_field_sbm_product_type"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:text_field_label="@string/smart_bills_add_bills_product_number_label"
+        app:text_field_counter="20"
+        app:text_field_label_static="false"
+        app:text_field_input_type="phone"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/text_field_sbm_product_nominal"
+        app:layout_constraintTop_toBottomOf="@id/text_field_sbm_product_number"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        app:text_field_append_drawable_icon_1="@drawable/unify_chips_ic_chevron_disabled"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_sbm_add_telco"
+        app:layout_constraintTop_toBottomOf="@+id/text_field_sbm_product_nominal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl7"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:text="@string/smart_bills_add_bills_product_button_label"
+        />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_sbm_add_telco"
+        android:layout_width="@dimen/spacing_lvl6"
+        android:layout_height="@dimen/spacing_lvl6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <LinearLayout
+        android:id="@+id/container_error_sbm_add_telco"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/global_error_sbm_add_telco"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,52 @@
+{
+  "code": 103,
+  "data": {
+    "msg_id": 66961,
+    "from": "Seller Testing",
+    "from_uid": 17235411,
+    "from_user_name": "Seller Testing",
+    "from_role": "Shop Owner",
+    "thumbnail": "https://imagerouter.tokopedia.com/image/v1/u/143252780/user_thumbnail/desktop",
+    "is_opposite": true,
+    "to_uid": 143252780,
+    "message": {
+      "censored_reply": "<a rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/invoice.pl?id=785696850&amp;pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2\">https://www.tokopedia.com/invoice.pl?id=785696850&amp;pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2</a>",
+      "original_reply": "<a rel=\"nofollow\" target=\"_blank\" href=\"https://www.tokopedia.com/invoice.pl?id=785696850&amp;pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2\">https://www.tokopedia.com/invoice.pl?id=785696850&amp;pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2</a>",
+      "timestamp": "2021-06-16T10:41:39.427533045+07:00",
+      "timestamp_fmt": "16 June 2021, 10:41 WIB",
+      "timestamp_unix": 1623814899427,
+      "timestamp_unix_nano": 1623814899427533000
+    },
+    "start_time": "2021-06-16T03:41:39.001Z",
+    "attachment_id": 1,
+    "attachment": {
+      "attributes": {
+        "invoice_link": {
+          "attributes": {
+            "code": "INV/20210506/MPL/1227273793",
+            "create_time": " 6 May 2021",
+            "href_url": "https://www.tokopedia.com/invoice.pl?id=785696850&pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2",
+            "id": 785696850,
+            "image_url": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/11/5/adb0973e-48ce-484b-84f4-6653edc3cd6a.jpg",
+            "status": "Pesanan Selesai",
+            "status_id": 700,
+            "title": "Pr0duct T3st1n6 Out3r",
+            "total_amount": "Rp 100"
+          },
+          "type": "marketplace",
+          "type_id": 1
+        }
+      },
+      "fallback_attachment": {
+        "html": "<div>https://www.tokopedia.com/invoice.pl?id=785696850&pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2</div>",
+        "message": "https://www.tokopedia.com/invoice.pl?id=785696850&pdf=Invoice-143252780-6996572-20210506113328-YmJiYmJiYmI2"
+      },
+      "id": 1,
+      "type": 7
+    },
+    "show_rating": false,
+    "to_buyer": true,
+    "client_connect_time": "0001-01-01T00:00:00Z",
+    "source": "inbox"
+  }
+}

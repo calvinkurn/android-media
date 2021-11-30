@@ -1,27 +1,30 @@
 package com.tokopedia.shop.score.common
 
 object ShopScoreConstant {
-    const val SHOP_SCORE_LEVEL_ONE = 1
-    const val SHOP_SCORE_LEVEL_TWO = 2
-    const val SHOP_SCORE_LEVEL_THREE = 3
-    const val SHOP_SCORE_LEVEL_FOUR = 4
+    const val SHOP_SCORE_NULL = -1L
 
-    const val SHOP_SCORE_ZERO = 0
-    const val SHOP_SCORE_FORTY_NINE = 49
-    const val SHOP_SCORE_FIFTY = 50
-    const val SHOP_SCORE_FIFTY_NINE = 59
-    const val SHOP_SCORE_SIXTY = 60
-    const val SHOP_SCORE_SIXTY_NINE = 69
-    const val SHOP_SCORE_SEVENTY = 70
-    const val SHOP_SCORE_SEVENTY_NINE = 79
-    const val SHOP_SCORE_EIGHTY = 80
-    const val SHOP_SCORE_EIGHTY_NINE = 89
-    const val SHOP_SCORE_NINETY = 90
-    const val SHOP_SCORE_ONE_HUNDRED = 100
+    const val SHOP_SCORE_LEVEL_ONE = 1L
+    const val SHOP_SCORE_LEVEL_TWO = 2L
+    const val SHOP_SCORE_LEVEL_THREE = 3L
+    const val SHOP_SCORE_LEVEL_FOUR = 4L
 
-    const val SHOP_AGE_SIXTY = 60
+    const val SHOP_SCORE_ZERO = 0L
+    const val SHOP_SCORE_FORTY_NINE = 49L
+    const val SHOP_SCORE_FIFTY = 50L
+    const val SHOP_SCORE_FIFTY_NINE = 59L
+    const val SHOP_SCORE_SIXTY = 60L
+    const val SHOP_SCORE_SIXTY_NINE = 69L
+    const val SHOP_SCORE_SEVENTY = 70L
+    const val SHOP_SCORE_SEVENTY_NINE = 79L
+    const val SHOP_SCORE_EIGHTY = 80L
+    const val SHOP_SCORE_EIGHTY_NINE = 89L
+    const val SHOP_SCORE_NINETY = 90L
+    const val SHOP_SCORE_ONE_HUNDRED = 100L
 
-    const val COUNT_DAYS_NEW_SELLER = 90
+    const val SHOP_AGE_SIXTY = 60L
+    const val FOUR_WEEKS = 28
+
+    const val COUNT_DAYS_NEW_SELLER = 90L
     const val PATTERN_DATE_NEW_SELLER = "dd MMMM yyyy"
     const val ONE_HUNDRED_PERCENT = 100
 
@@ -33,25 +36,43 @@ object ShopScoreConstant {
     const val SPEED_SENDING_ORDERS_KEY = "median_verified_to_shipping_minute"
     const val PRODUCT_REVIEW_WITH_FOUR_STARS_KEY = "percent_good_rating"
 
-    const val READ_TIPS_MORE_INFO_URL = "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
+    const val READ_TIPS_MORE_INFO_URL =
+        "https://seller.tokopedia.com/edu/fitur-pengaturan-stok-produk-terbaru/"
     const val SET_OPERATIONAL_HOUR_SHOP_URL = "https://seller.tokopedia.com/edu/atur-jadwal-toko/"
-    const val SPEED_SENDING_ORDERS_URL = "https://www.tokopedia.com/help/article/batas-waktu-respon-pesanan-dan-konfirmasi-pengiriman"
+    const val SPEED_SENDING_ORDERS_URL =
+        "https://www.tokopedia.com/help/article/batas-waktu-respon-pesanan-dan-konfirmasi-pengiriman"
 
-    const val IC_PM_VISITED_URL = "https://images.tokopedia.net/img/android/shop_score/ic_visited_pm@3x.png"
-    const val IC_ORDER_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_order_pm@3x.png"
-    const val IC_INCOME_PM_URL = "https://images.tokopedia.net/img/android/shop_score/ic_income_pm@3x.png"
+    const val IC_FREE_SHIPPING_BENEFIT_URL =
+        "https://images.tokopedia.net/img/android/shop_score/ic_free_shipping_benefit.png"
+    const val IC_PROMOTION_BENEFIT_URL =
+        "https://images.tokopedia.net/img/android/shop_score/ic_promotion_benefit.png"
+    const val IC_PM_PRO_BADGE_BENEFIT_URL =
+        "https://images.tokopedia.net/img/android/shop_score/ic_pm_pro_badge_benefit.png"
 
-    const val IC_SELLER_ANNOUNCE = "https://images.tokopedia.net/img/android/shop_score/ic_seller_announce@3x.png"
-    const val BG_GREEN_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
-    const val BG_ORANGE_TIMER = "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
+    const val BG_GREEN_TIMER =
+        "https://images.tokopedia.net/img/android/shop_score/bg_green_timer@3x.png"
+    const val BG_ORANGE_TIMER =
+        "https://images.tokopedia.net/img/android/shop_score/bg_orange_timer@3x.png"
 
-    const val PM_PRO_BENEFIT_URL_1 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro1@3x.png"
-    const val PM_PRO_BENEFIT_URL_2 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro2@3x.png"
-    const val PM_PRO_BENEFIT_URL_3 = "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro3@3x.png"
+    const val PM_PRO_BENEFIT_URL_1 =
+        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_1@3x.png"
+    const val PM_PRO_BENEFIT_URL_2 =
+        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_PM_PRO_2@3x.png"
+    const val PM_PRO_BENEFIT_URL_3 =
+        "https://images.tokopedia.net/img/android/gold_merchant_common/il_benefit_pm_pro_3@3x.png"
 
-    const val IC_HAS_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_has_penalty.png"
-    const val IC_NO_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_no_penalty.png"
-    const val IC_SQUIRCLE_RECOMMENDATION_URL = "https://images.tokopedia.net/img/android/shop_score/ic_squircle_recommendation.webp"
+    const val IC_HAS_PENALTY_URL =
+        "https://images.tokopedia.net/img/android/shop_score/ic_has_penalty.png"
+    const val IC_NO_PENALTY_URL =
+        "https://images.tokopedia.net/img/android/shop_score/ic_no_penalty.png"
+    const val IC_SQUIRCLE_RECOMMENDATION_URL =
+        "https://images.tokopedia.net/img/android/shop_score/ic_squircle_recommendation.webp"
+
+    const val IL_NEW_SELLER_SHOP_SCORE_URL =
+        "https://images.tokopedia.net/img/android/shop_score/illustration_bottom_sheet_new_seller.png"
+
+    const val IMG_REACTIVATED_SELLER_COMEBACK =
+        "https://images.tokopedia.net/img/android/shop_score/img_reactivated_seller_comeback@2x.png"
 
     const val PENALTY_IDENTIFIER = "penalty"
 
@@ -89,12 +110,23 @@ object ShopScoreConstant {
     const val PATTERN_DATE_TEXT = "dd MMMM yyyy"
     const val PATTERN_PENALTY_DATE_TEXT = "dd MMM yyyy"
 
+    const val SELLER_EDU_PM_PRO_URL = "https://seller.tokopedia.com/edu/power-merchant-pro"
     const val SHOP_INFO_URL = "https://seller.tokopedia.com/edu/skor-toko"
-    const val EMPTY_STATE_PENALTY_URL = "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
+    const val EMPTY_STATE_PENALTY_URL =
+        "https://images.tokopedia.net/img/android/shop_score/ic_empty_state_penalty@2x.png"
 
     const val PATTERN_PENALTY_DATE_PARAM = "yyyy-MM-dd"
-    const val PATTERN_PERIOD_DATE = "yyyy-MM-dd HH:mm:ss"
 
     const val AND_SYMBOL = "&"
     const val AND_TEXT = "dan"
+
+    const val NULL_NUMBER = -1L
+
+    const val ZERO_NUMBER = 0
+    const val ONE_NUMBER = 1
+    const val TWO_NUMBER = 2
+    const val THREE_NUMBER = 3
+    const val FOUR_NUMBER = 4
+    const val FIVE_NUMBER = 5
+    const val SIX_NUMBER = 6
 }

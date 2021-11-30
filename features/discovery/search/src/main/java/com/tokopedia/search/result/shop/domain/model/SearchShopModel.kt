@@ -25,14 +25,22 @@ internal data class SearchShopModel(
 
     fun getQuickFilterList() = quickFilter.data.filter
 
+    fun getTreatmentType() = aceSearchShop.header.keywordProcess
+
+    fun getResponseCode() = aceSearchShop.header.responseCode
+
     data class AceSearchShop(
+            @SerializedName("header")
+            @Expose
+            val header: Header = Header(),
+
             @SerializedName("source")
             @Expose
             val source: String = "",
 
             @SerializedName("total_shop")
             @Expose
-            val totalShop: Int = 0,
+            val totalShop: Long = 0,
 
             @SerializedName("search_url")
             @Expose
@@ -58,6 +66,16 @@ internal data class SearchShopModel(
             @Expose
             val topShopList: List<ShopItem> = listOf(),
     ) {
+
+        data class Header(
+                @SerializedName("response_code")
+                @Expose
+                val responseCode: String = "0",
+
+                @SerializedName("keyword_process")
+                @Expose
+                val keywordProcess: String = "0",
+        )
 
         data class Paging(
                 @SerializedName("uri_next")

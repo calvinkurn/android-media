@@ -14,6 +14,7 @@
         layout="@layout/content_base_toolbar" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/baseDealsCoor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
@@ -34,6 +35,7 @@
 
                 <include
                     layout="@layout/content_base_deals_search_bar"
+                    android:id="@+id/contentBaseDealsSearchBar"
                     app:layout_collapseMode="none" />
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>

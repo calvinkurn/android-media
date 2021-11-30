@@ -15,7 +15,7 @@ data class EtalaseContentUiModel(
 
     companion object {
 
-        fun Empty(id: String = "-1", name: String = "") =
+        fun empty(id: String = "-1", name: String = "") =
                 EtalaseContentUiModel(id, name, mutableMapOf(), 0, false)
     }
 }

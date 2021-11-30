@@ -7,12 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
+import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.EmptyStateViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 
 class ProductManageAdapterFactoryImpl(
-    private val listener: ProductViewHolder.ProductViewHolderView
+    private val listener: ProductViewHolder.ProductViewHolderView,
+    private val campaignListener: ProductCampaignInfoListener
 ) : BaseAdapterTypeFactory(), ProductManageAdapterFactory {
 
     override fun type(uiModel: ProductUiModel): Int = ProductViewHolder.LAYOUT
@@ -23,7 +25,7 @@ class ProductManageAdapterFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ProductViewHolder.LAYOUT -> ProductViewHolder(view, listener)
+            ProductViewHolder.LAYOUT -> ProductViewHolder(view, listener, campaignListener)
             EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             else -> super.createViewHolder(view, type)

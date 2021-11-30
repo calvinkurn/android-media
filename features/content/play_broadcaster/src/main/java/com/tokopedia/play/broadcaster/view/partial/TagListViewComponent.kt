@@ -26,7 +26,7 @@ class TagListViewComponent(
     private val adapter = TagRecommendationListAdapter(this)
 
     init {
-        val layoutManager = FlexboxLayoutManager(rvTagsRecommendation.context);
+        val layoutManager = FlexboxLayoutManager(rvTagsRecommendation.context)
         layoutManager.flexDirection = FlexDirection.ROW
         layoutManager.justifyContent = JustifyContent.FLEX_START
         rvTagsRecommendation.layoutManager = layoutManager
@@ -35,7 +35,7 @@ class TagListViewComponent(
     }
 
     override fun onTagClicked(tag: PlayTagUiModel) {
-        listener.onTagClicked(this, tag.tag)
+        listener.onTagClicked(this, tag)
     }
 
     fun setTags(tags: List<PlayTagUiModel>) {
@@ -44,6 +44,6 @@ class TagListViewComponent(
 
     interface Listener {
 
-        fun onTagClicked(view: TagListViewComponent, tag: String)
+        fun onTagClicked(view: TagListViewComponent, tag: PlayTagUiModel)
     }
 }

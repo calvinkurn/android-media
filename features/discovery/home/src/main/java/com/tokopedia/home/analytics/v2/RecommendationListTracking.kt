@@ -255,7 +255,8 @@ object RecommendationListTracking: BaseTrackerConst(){
             ),
             list = String.format(
                     "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
-            )
+            ),
+            buildCustomList = null
     )
 
     )
@@ -296,7 +297,8 @@ object RecommendationListTracking: BaseTrackerConst(){
             ),
             list = String.format(
                     "/ - p%s - %s - product", "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT
-            )
+            ),
+            buildCustomList = null
     )
 
     )

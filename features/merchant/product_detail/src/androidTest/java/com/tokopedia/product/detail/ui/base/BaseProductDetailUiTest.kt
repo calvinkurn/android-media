@@ -5,8 +5,10 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.product.detail.ui.di.DaggerProductDetailTestComponent
 import com.tokopedia.product.detail.ui.di.ProductDetailTestComponent
+import com.tokopedia.product.detail.ui.interceptor.ProductDetailInterceptor
 import com.tokopedia.user.session.UserSessionInterface
 import org.junit.Before
 import org.junit.Rule
@@ -32,11 +34,16 @@ abstract class BaseProductDetailUiTest {
 
     protected var productDetailTestComponent: ProductDetailTestComponent? = null
 
+    var customInterceptor = ProductDetailInterceptor()
+
     abstract fun before()
 
     @Before
     fun doBeforeRun() {
         before()
+        GraphqlClient.reInitRetrofitWithInterceptors(
+                listOf(customInterceptor) ,context)
+
         productDetailTestComponent = DaggerProductDetailTestComponent
                 .builder()
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)

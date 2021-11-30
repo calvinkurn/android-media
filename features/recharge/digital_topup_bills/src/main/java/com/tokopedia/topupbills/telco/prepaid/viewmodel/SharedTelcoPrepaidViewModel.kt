@@ -3,12 +3,9 @@ package com.tokopedia.topupbills.telco.prepaid.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
@@ -19,6 +16,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,8 +27,8 @@ import javax.inject.Inject
  * Created by nabillasabbaha on 20/05/19.
  */
 class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                      private val dispatcher: CoroutineDispatcher)
-    : BaseViewModel(dispatcher) {
+                                                      private val dispatcher: CoroutineDispatchers)
+    : BaseViewModel(dispatcher.io) {
 
     private val _expandView = MutableLiveData<Boolean>()
     val expandView: LiveData<Boolean>
@@ -42,10 +41,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
     private val _productAutoCheckout = MutableLiveData<TelcoProduct>()
     val productAutoCheckout: LiveData<TelcoProduct>
         get() = _productAutoCheckout
-
-    private val _favNumberSelected = MutableLiveData<TopupBillsFavNumberItem>()
-    val favNumberSelected: LiveData<TopupBillsFavNumberItem>
-        get() = _favNumberSelected
 
     private val _showTotalPrice = MutableLiveData<Boolean>()
     val showTotalPrice: LiveData<Boolean>
@@ -68,8 +63,22 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         get() = _loadingProductList
 
     private val _positionScrollItem = MutableLiveData<Int>()
-    val positionScrollItem : LiveData<Int>
+    val positionScrollItem: LiveData<Int>
         get() = _positionScrollItem
+
+    private val _inputWidgetFocus = MutableLiveData<Boolean>()
+    val inputWidgetFocus: LiveData<Boolean>
+        get() = _inputWidgetFocus
+
+    private val _selectedProductById = MutableLiveData<String>()
+    val selectedProductById: LiveData<String>
+        get() = _selectedProductById
+
+    private val _resetSelectedProduct = MutableLiveData<Boolean>()
+    val resetSelectedProduct: LiveData<Boolean>
+        get() = _resetSelectedProduct
+
+    private var getCatalogProductListJob: Job? = null
 
     fun setProductCatalogSelected(productCatalogItem: TelcoProduct) {
         _productCatalogItem.postValue(productCatalogItem)
@@ -81,10 +90,6 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
 
     fun setPositionScrollToItem(position: Int) {
         _positionScrollItem.postValue(position)
-    }
-
-    fun setFavNumberSelected(favNumber: TopupBillsFavNumberItem) {
-        _favNumberSelected.postValue(favNumber)
     }
 
     fun setVisibilityTotalPrice(show: Boolean) {
@@ -99,36 +104,64 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         _selectedFilter.postValue(filter)
     }
 
-    // cache in 10 minutes
+    fun setInputWidgetFocus(isFocus: Boolean) {
+        _inputWidgetFocus.postValue(isFocus)
+    }
+
+    fun clearCatalogProductList() {
+        _productList.value = Success(emptyList())
+    }
+
+    fun setSelectedProductById(productId: String) {
+        _selectedProductById.postValue(productId)
+    }
+
+    fun resetSelectedProduct() {
+        _resetSelectedProduct.postValue(true)
+    }
+
     fun getCatalogProductList(rawQuery: String, menuId: Int, operatorId: String,
-                              filterData: ArrayList<HashMap<String, Any>>?, autoSelectProductId: Int = 0) {
-        launchCatchError(block = {
-            _loadingProductList.postValue(true)
-            val mapParam = HashMap<String, Any>()
-            mapParam[KEY_MENU_ID] = menuId
-            mapParam[KEY_OPERATOR_ID] = operatorId
-            if (filterData != null && filterData.size > 0) {
-                mapParam[KEY_FILTER_DATA] = filterData
-            }
+                              filterData: ArrayList<HashMap<String, Any>>?,
+                              autoSelectProductId: Int = 0, clientNumber: String,
+                              isDelayed: Boolean = false
+    ) {
+        getCatalogProductListJob?.cancel()
+        getCatalogProductListJob = CoroutineScope(coroutineContext).launch {
+            launchCatchError(block = {
+                if (isDelayed) {
+                    delay(PRODUCT_LIST_DELAY_TIME)
+                }
+                _loadingProductList.postValue(true)
+                val mapParam = HashMap<String, Any>()
+                mapParam[KEY_MENU_ID] = menuId
+                mapParam[KEY_OPERATOR_ID] = operatorId
+                mapParam[KEY_CLIENT_NUMBER] = arrayListOf(clientNumber)
+                if (filterData != null && filterData.size > 0) {
+                    mapParam[KEY_FILTER_DATA] = filterData
+                }
 
-            val data = withContext(dispatcher) {
-                val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
-                graphqlRepository.getReseponse(listOf(graphqlRequest),
-                        GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * EXP_TIME).build())
-            }.getSuccessData<TelcoCatalogProductInputMultiTab>()
+                val data = withContext(dispatcher.io) {
+                    val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogProductInputMultiTab::class.java, mapParam)
+                    graphqlRepository.response(listOf(graphqlRequest))
+                }.getSuccessData<TelcoCatalogProductInputMultiTab>()
 
-            _loadingProductList.postValue(false)
-            if (data.rechargeCatalogProductDataData.productInputList.isEmpty()) {
-                _productList.postValue(Fail(MessageErrorException()))
-            } else {
-                _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
-                setFavNumberSelected(TopupBillsFavNumberItem(productId = autoSelectProductId.toString()))
+                _loadingProductList.postValue(false)
+                if (data.rechargeCatalogProductDataData.productInputList.isEmpty()) {
+                    _productList.postValue(Fail(MessageErrorException()))
+                } else {
+                    _productList.postValue(Success(data.rechargeCatalogProductDataData.productInputList))
+                    setSelectedProductById(autoSelectProductId.toString())
+                }
+            }){
+                _loadingProductList.postValue(false)
+                _productList.postValue(Fail(it))
             }
-        }) {
-            _loadingProductList.postValue(false)
-            _productList.postValue(Fail(it))
         }
+    }
+
+    fun setProductListShimmer(isShow: Boolean) {
+        if (_loadingProductList.value != isShow)
+            _loadingProductList.postValue(isShow)
     }
 
     fun setExpandInputNumberView(expand: Boolean) {
@@ -142,8 +175,10 @@ class SharedTelcoPrepaidViewModel @Inject constructor(private val graphqlReposit
         const val KEY_MENU_ID = "menuID"
         const val KEY_OPERATOR_ID = "operatorID"
         const val KEY_FILTER_DATA = "filterData"
+        const val KEY_CLIENT_NUMBER = "clientNumber"
 
         const val EXP_TIME = 10
         const val DELAY_TIME: Long = 100
+        const val PRODUCT_LIST_DELAY_TIME: Long = 250
     }
 }

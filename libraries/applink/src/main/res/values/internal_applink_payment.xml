@@ -19,6 +19,9 @@
     <string name="host_pms">buyer</string>
     <string name="path_pms">/payment</string>
 
+    <!-- for gopay dashboard-->
+    <string name="path_gopay_kyc">/gopayKyc</string>
+
 <!--    // for how to pay-->
     <string name="host_how_to_pay">howtopay</string>
 

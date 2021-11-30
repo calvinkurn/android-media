@@ -28,7 +28,7 @@ class RefreshShopBasicDataUseCase @Inject constructor(private val gqlRepository:
     override suspend fun executeOnBackground(): ShopData {
         try {
             GraphqlRequest(QUERY, RefreshShopDataResponse::class.java, RequestParams.EMPTY.parameters).let { request ->
-                gqlRepository.getReseponse(listOf(request)).let { response ->
+                gqlRepository.response(listOf(request)).let { response ->
                     response.getError(RefreshShopDataResponse::class.java).let { errors ->
                         if (errors.isNullOrEmpty()) {
                             response.getData<RefreshShopDataResponse>(RefreshShopDataResponse::class.java).shopInfo.shopData.let {

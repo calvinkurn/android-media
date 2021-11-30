@@ -6,6 +6,7 @@ import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.quickFilter.FilterRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.repository.topads.TopAdsHeadlineRepository
 import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
@@ -17,4 +18,5 @@ interface RepositoryProvider {
     fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase
     fun provideEmptyStateRepository(): EmptyStateRepository
     fun provideFilterRepository(): FilterRepository
+    fun provideTopAdsHeadlineRepository(): TopAdsHeadlineRepository
 }

@@ -4,7 +4,7 @@
     android:id="@+id/bs_product_info_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_20"
+    android:paddingBottom="20dp"
     android:orientation="vertical">
 
     <androidx.recyclerview.widget.RecyclerView

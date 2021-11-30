@@ -9,14 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -28,16 +27,20 @@ import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_LAST_SEEN_AT_TOKONOW
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_PROFILE_PICTURE
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_TOKONOW
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_HOME
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_PDP
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP
+import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_TOKONOW
 import com.tokopedia.stickylogin.common.StickyLoginConstant.KEY_USER_NAME
 import com.tokopedia.stickylogin.common.helper.getPrefLoginReminder
 import com.tokopedia.stickylogin.common.helper.getPrefStickyLogin
+import com.tokopedia.stickylogin.databinding.LayoutWidgetStickyLoginBinding
 import com.tokopedia.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.stickylogin.domain.data.StickyLoginTickerDataModel
@@ -47,7 +50,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.view.DarkModeUtil
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -58,25 +60,22 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var viewModel: StickyLoginViewModel
+    private var viewModel: StickyLoginViewModel? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
-    private lateinit var remoteConfig: RemoteConfig
+    private var remoteConfig: RemoteConfig? = null
 
-    private lateinit var layoutContainer: ConstraintLayout
-    private lateinit var imageViewLeft: ImageUnify
-    private lateinit var imageViewRight: ImageUnify
-    private lateinit var textContent: EllipsizedTextView
+    private var viewBinding = LayoutWidgetStickyLoginBinding.inflate(LayoutInflater.from(context), this)
 
     private var leftImage: Drawable? = null
     private var content = ""
     private var highlight = ""
     private var highlightColor = -1
 
-    lateinit var page: StickyLoginConstant.Page
-    lateinit var lifecycleOwner: LifecycleOwner
-    lateinit var stickyLoginAction: StickyLoginAction
+    var page: StickyLoginConstant.Page? = null
+    var lifecycleOwner: LifecycleOwner? = null
+    var stickyLoginAction: StickyLoginAction? = null
 
     private val tracker: StickyLoginTracking
         get() = StickyLoginTracking()
@@ -90,12 +89,10 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         get() = Dispatchers.Main
 
     constructor(context: Context) : super(context) {
-        inflateLayout()
         initView()
     }
 
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
-        inflateLayout()
         launch {
             val result = initAttrsInBg(attributeSet)
             result.await()
@@ -104,7 +101,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     constructor(context: Context, attributeSet: AttributeSet, styleAttr: Int) : super(context, attributeSet, styleAttr) {
-        inflateLayout()
         launch {
             val result = initAttrsInBg(attributeSet)
             result.await()
@@ -114,16 +110,6 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     private fun initAttrsInBg(attributeSet: AttributeSet): Deferred<Unit> = async(Dispatchers.IO) {
         initAttributeSet(attributeSet)
-    }
-
-    private fun inflateLayout() {
-        val layout: LayoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = layout.inflate(R.layout.layout_widget_sticky_login, this, true)
-
-        layoutContainer = view.findViewById(R.id.layout_sticky_container)
-        textContent = view.findViewById(R.id.layout_sticky_content)
-        imageViewLeft = view.findViewById(R.id.layout_sticky_image_left)
-        imageViewRight = view.findViewById(R.id.layout_sticky_image_right)
     }
 
     private fun initAttributeSet(attributeSet: AttributeSet) {
@@ -151,33 +137,34 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         updateDarkMode()
 
         if (leftImage != null) {
-            imageViewLeft.setImageDrawable(leftImage)
+            viewBinding.layoutStickyImageLeft.setImageDrawable(leftImage)
         }
 
-        imageViewRight.setOnClickListener {
-            dismiss(page)
+        viewBinding.layoutStickyImageRight.setOnClickListener {
+            page?.let { _page -> dismiss(_page) }
         }
 
-        layoutContainer.setOnClickListener {
+        viewBinding.layoutStickyContainer.setOnClickListener {
             if (isLoginReminder()) {
-                trackerLoginReminder.clickOnLogin(page)
+                page?.let { _page -> trackerLoginReminder.clickOnLogin(_page) }
             } else {
-                tracker.clickOnLogin(page)
+                page?.let { _page -> tracker.clickOnLogin(_page) }
             }
 
-            stickyLoginAction.onClick()
+            stickyLoginAction?.onClick()
         }
 
-        layoutContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            stickyLoginAction.onViewChange(isShowing())
+        viewBinding.layoutStickyContainer.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+            stickyLoginAction?.onViewChange(isShowing())
         }
     }
 
     private fun initInjector() {
         context?.let {
             val component = DaggerStickyLoginComponent.builder()
-                    .stickyLoginModule(StickyLoginModule(it))
-                    .build()
+                .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                .stickyLoginModule(StickyLoginModule(it))
+                .build()
             component.inject(this)
 
             if (it is AppCompatActivity) {
@@ -188,15 +175,21 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     private fun initObserver(lifecycleOwner: LifecycleOwner) {
-        viewModel.stickyContent.observe(lifecycleOwner, Observer {
+        viewModel?.stickyContent?.observe(lifecycleOwner, {
             when (it) {
                 is Success -> {
-                    setContent(it.data.tickerDataModels[0])
-                    if (isOnDelay(page)) {
+                    if (it.data.tickerDataModels.isEmpty()) {
                         hide()
                     } else {
-                        tracker.viewOnPage(page)
-                        show()
+                        setContent(it.data.tickerDataModels.first())
+                        page?.let { _page ->
+                            if (isOnDelay(_page)) {
+                                hide()
+                            } else {
+                                tracker.viewOnPage(_page)
+                                show()
+                            }
+                        }
                     }
                 }
                 is Fail -> {
@@ -211,8 +204,10 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     fun loadContent() {
-        if (::page.isInitialized && ::lifecycleOwner.isInitialized) {
-            loadContent(page, lifecycleOwner)
+        page?.let { _page ->
+            lifecycleOwner?.let { _lifecycleOwner ->
+                loadContent(_page, _lifecycleOwner)
+            }
         }
     }
 
@@ -228,17 +223,17 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             return
         }
 
-        if (!::remoteConfig.isInitialized) {
+        if (remoteConfig == null) {
             remoteConfig = FirebaseRemoteConfigImpl(context)
         }
 
         if (isLoginReminder() && isCanShowLoginReminder(page) && !isOnDelay(page)) {
             showLoginReminder(page)
         } else if (isCanShowStickyLogin(page) && !isOnDelay(page)) {
-            if (!::viewModel.isInitialized) initInjector()
+            if (viewModel == null) initInjector()
 
             initObserver(lifecycleOwner)
-            viewModel.getStickyContent(page)
+            viewModel?.getStickyContent(page)
         } else {
             hide()
         }
@@ -255,7 +250,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     private fun setContent(content: String, highlight: String) {
-        textContent.setContent(content, highlight)
+        viewBinding.layoutStickyContent.setContent(content, highlight)
     }
 
     fun dismiss() {
@@ -301,6 +296,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             StickyLoginConstant.Page.SHOP -> {
                 sharedPref.getLong(KEY_LAST_SEEN_AT_SHOP, 0)
             }
+            StickyLoginConstant.Page.TOKONOW -> {
+                sharedPref.getLong(KEY_LAST_SEEN_AT_TOKONOW, 0)
+            }
         }
         return if (lastSeen > 0) lastSeen
         else 0
@@ -319,6 +317,9 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
             StickyLoginConstant.Page.SHOP -> {
                 sharedPref.edit().putLong(KEY_LAST_SEEN_AT_SHOP, inMinute).apply()
             }
+            StickyLoginConstant.Page.TOKONOW -> {
+                sharedPref.edit().putLong(KEY_LAST_SEEN_AT_TOKONOW, inMinute).apply()
+            }
         }
     }
 
@@ -334,13 +335,16 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     private fun isCanShowLoginReminder(page: StickyLoginConstant.Page): Boolean {
         return when (page) {
             StickyLoginConstant.Page.HOME -> {
-                remoteConfig.getBoolean(KEY_STICKY_LOGIN_REMINDER_HOME, true)
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_REMINDER_HOME, true).orFalse()
             }
             StickyLoginConstant.Page.PDP -> {
-                remoteConfig.getBoolean(KEY_STICKY_LOGIN_REMINDER_PDP, true)
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_REMINDER_PDP, true).orFalse()
             }
             StickyLoginConstant.Page.SHOP -> {
-                remoteConfig.getBoolean(KEY_STICKY_LOGIN_REMINDER_SHOP, true)
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_REMINDER_SHOP, true).orFalse()
+            }
+            StickyLoginConstant.Page.TOKONOW -> {
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_REMINDER_TOKONOW, true).orFalse()
             }
         }
     }
@@ -348,13 +352,16 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     private fun isCanShowStickyLogin(page: StickyLoginConstant.Page): Boolean {
         return when (page) {
             StickyLoginConstant.Page.HOME -> {
-                remoteConfig.getBoolean(KEY_STICKY_LOGIN_WIDGET_HOME, true)
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_WIDGET_HOME, true).orFalse()
             }
             StickyLoginConstant.Page.PDP -> {
-                remoteConfig.getBoolean(KEY_STICKY_LOGIN_WIDGET_PDP, true)
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_WIDGET_PDP, true).orFalse()
             }
             StickyLoginConstant.Page.SHOP -> {
-                remoteConfig.getBoolean(KEY_STICKY_LOGIN_WIDGET_SHOP, true)
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_WIDGET_SHOP, true).orFalse()
+            }
+            StickyLoginConstant.Page.TOKONOW -> {
+                remoteConfig?.getBoolean(KEY_STICKY_LOGIN_WIDGET_TOKONOW, true).orFalse()
             }
         }
     }
@@ -362,15 +369,15 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     fun show() {
         updateDarkMode()
         this.visibility = View.VISIBLE
-        layoutContainer.show()
-        if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(true)
+        viewBinding.layoutStickyContainer.show()
+        stickyLoginAction?.onViewChange(true)
     }
 
     fun hide() {
         if (isShowing()) {
             this.visibility = View.GONE
-            layoutContainer.hide()
-            if (::stickyLoginAction.isInitialized) stickyLoginAction.onViewChange(false)
+            viewBinding.layoutStickyContainer.hide()
+            stickyLoginAction?.onViewChange(false)
         }
     }
 
@@ -389,11 +396,11 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
         val name = getPrefLoginReminder(context).getString(KEY_USER_NAME, "")
         val profilePicture = getPrefLoginReminder(context).getString(KEY_PROFILE_PICTURE, "")
 
-        textContent.setContent("$TEXT_RE_LOGIN $name")
+        viewBinding.layoutStickyContent.setContent("$TEXT_RE_LOGIN $name")
 
         profilePicture?.let {
-            imageViewLeft.type = ImageUnify.TYPE_CIRCLE
-            imageViewLeft.setImageUrl(it)
+            viewBinding.layoutStickyImageLeft.type = ImageUnify.TYPE_CIRCLE
+            viewBinding.layoutStickyImageLeft.setImageUrl(it)
         }
 
         trackerLoginReminder.viewOnPage(page)
@@ -410,18 +417,18 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
 
     override fun onDarkMode() {
         if (isLoginReminder()) {
-            textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+            viewBinding.layoutStickyContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
 
-        layoutContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+        viewBinding.layoutStickyContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
     }
 
     override fun onLightMode() {
         if (isLoginReminder()) {
-            textContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+            viewBinding.layoutStickyContent.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         }
 
-        layoutContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
+        viewBinding.layoutStickyContainer.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
     }
 
     companion object {

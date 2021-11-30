@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -18,6 +19,7 @@ import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumber
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlMutation
@@ -29,7 +31,6 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
-import com.tokopedia.common_digital.cart.DigitalCheckoutUtil
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
@@ -43,7 +44,6 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -92,15 +92,18 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         }
     var isInstantCheckout = false
     var inputFields: Map<String, String> = mapOf()
+    var isSpecialProduct = false
 
     var categoryName = ""
     var operatorName = ""
     var productName = ""
 
+    protected fun isCheckoutPassDataInitialized() = ::checkoutPassData.isInitialized
+
     private fun subscribeUi() {
         addToCartViewModel.addToCartResult.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> navigateToCart()
+                is Success -> navigateToCart(it.data)
                 is Fail -> showErrorMessage(it.throwable)
             }
             onLoadingAtc(false)
@@ -149,6 +152,15 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             }
         })
 
+        topupBillsViewModel.seamlessFavNumberData.observe(viewLifecycleOwner, Observer {
+            it.run {
+                when (it) {
+                    is Success -> processSeamlessFavoriteNumbers(it.data.first, it.data.second)
+                    is Fail -> onSeamlessFavoriteNumbersError(it.throwable)
+                }
+            }
+        })
+
         topupBillsViewModel.checkVoucherData.observe(viewLifecycleOwner, Observer {
             it.run {
                 promoTicker?.toggleLoading(false)
@@ -174,12 +186,19 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                                     productName,
                                     price,
                                     isInstantCheckout,
-                                    promoCode.isNotEmpty()
+                                    promoCode.isNotEmpty(),
+                                    isSpecialProduct
                             )
                             navigateToPayment(it.data)
                         }
                     }
-                    is Fail -> onExpressCheckoutError(it.throwable)
+                    is Fail -> {
+                        var throwable = it.throwable
+                        if (it.throwable.message.isNullOrEmpty()) {
+                            throwable = MessageErrorException(getString(R.string.common_topup_enquiry_error))
+                        }
+                        onExpressCheckoutError(throwable)
+                    }
                 }
             }
         })
@@ -231,10 +250,8 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                     pendingPromoNavigation = ""
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
-                    data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { message ->
-                        view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
-                        }
+                    data?.getSerializableExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let { throwable ->
+                        showErrorMessage(throwable as Throwable)
                     }
                 }
                 REQUEST_CODE_PROMO_LIST, REQUEST_CODE_PROMO_DETAIL -> {
@@ -242,7 +259,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         if (it.hasExtra(EXTRA_PROMO_DATA)) {
                             // Stop check voucher job to prevent previous promo override
                             topupBillsViewModel.stopCheckVoucher()
-                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA)
+                            val promoData: PromoData = it.getParcelableExtra(EXTRA_PROMO_DATA) ?: PromoData()
                             setupPromoTicker(promoData)
                         }
                     }
@@ -388,6 +405,17 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
+    fun getSeamlessFavoriteNumbers(
+        categoryIds: List<String>,
+        shouldRefreshInputNumber: Boolean = true
+    ) {
+        topupBillsViewModel.getSeamlessFavoriteNumbers(
+                CommonTopupBillsGqlQuery.rechargeFavoriteNumber,
+                topupBillsViewModel.createSeamlessFavoriteNumberParams(categoryIds),
+                shouldRefreshInputNumber
+        )
+    }
+
     fun checkVoucher() {
         promoTicker?.toggleLoading(true)
         topupBillsViewModel.checkVoucher(promoCode,
@@ -395,12 +423,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         )
     }
 
-    private fun showErrorMessage(error: Throwable) {
-        view?.let { v ->
-            Toaster.build(v, error.message
-                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-        }
-    }
+    abstract fun showErrorMessage(error: Throwable)
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
         // Check if promo code is valid
@@ -438,11 +461,18 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)
 
+    abstract fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    )
+
     abstract fun onEnquiryError(error: Throwable)
 
     abstract fun onCatalogPluginDataError(error: Throwable)
 
     abstract fun onFavoriteNumbersError(error: Throwable)
+
+    abstract fun onSeamlessFavoriteNumbersError(error: Throwable)
 
     abstract fun onCheckVoucherError(error: Throwable)
 
@@ -475,10 +505,11 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun navigateToCart() {
+    private fun navigateToCart(categoryId: String) {
         context?.let { context ->
             if (::checkoutPassData.isInitialized) {
-                val intent = RouteManager.getIntent(context, DigitalCheckoutUtil.getApplinkCartDigital(context))
+                val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CHECKOUT_DIGITAL)
+                checkoutPassData.categoryId = categoryId
                 intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
                 startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
             }

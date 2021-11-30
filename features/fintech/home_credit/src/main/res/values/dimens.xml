@@ -3,4 +3,8 @@
     <dimen name="hc_oval_width">33dp</dimen>
     <dimen name="hc_oval_height">64dp</dimen>
     <dimen name="hc_ktp_height">93dp</dimen>
+    <dimen name="hc_icon_width">36dp</dimen>
+    <dimen name="hc_dp_340">340dp</dimen>
+    <dimen name="hc_dp_220">220dp</dimen>
+    <dimen name="hc_inset_distance">20dp</dimen>
 </resources>

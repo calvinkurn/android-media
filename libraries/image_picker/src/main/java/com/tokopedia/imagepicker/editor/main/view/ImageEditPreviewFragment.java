@@ -14,16 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
+import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 import com.yalantis.ucrop.callback.BitmapCropCallback;
 import com.yalantis.ucrop.view.CropImageView;
@@ -33,7 +31,12 @@ import com.yalantis.ucrop.view.TransformImageView;
 import com.yalantis.ucrop.view.UCropView;
 
 import java.io.File;
+import java.lang.reflect.Array;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 import kotlin.Pair;
 
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
@@ -74,6 +77,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private int imageIndex;
     private int[] widthHeight;
 
+    private UserSessionInterface userSession;
+
+    private Bitmap lastStateImage;
+
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
 
@@ -96,17 +103,24 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         boolean canRedo(int imageIndex);
 
         ImageRatioType getCurrentRatio();
+
+        void itemSelectionWidgetPreview(Bitmap[] bitmap);
     }
 
-    public static ImageEditPreviewFragment newInstance(int imageIndex,
-                                                       String imagePath, int minResolution,
-                                                       boolean isCirclePreview) {
+    public static ImageEditPreviewFragment newInstance(
+            int imageIndex,
+            String imagePath,
+            int minResolution,
+            boolean isCirclePreview,
+            UserSessionInterface userSession
+    ) {
         Bundle args = new Bundle();
         args.putInt(ARG_IMAGE_INDEX, imageIndex);
         args.putString(ARG_IMAGE_PATH, imagePath);
         args.putInt(ARG_MIN_RESOLUTION, minResolution);
         args.putBoolean(ARG_CIRCLE_PREVIEW, isCirclePreview);
         ImageEditPreviewFragment fragment = new ImageEditPreviewFragment();
+        fragment.userSession = userSession;
         fragment.setArguments(args);
         return fragment;
     }
@@ -250,6 +264,25 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         }
     }
 
+    public void saveLastStateBitmap() {
+        lastStateImage = gestureCropImageView.getViewBitmap();
+    }
+
+    public void setWatermark() {
+        cancelWatermark();
+
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        String userInfo;
+
+        try {
+            userInfo = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
+        } catch (Exception e) {
+            userInfo = "";
+        }
+
+        imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
+    }
+
     public int getImageIndex() {
         return imageIndex;
     }
@@ -327,6 +360,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         imageEditPreviewPresenter.saveContrastImage(bitmap, contrast / CONTRAST_PRECISION, ImageProcessingUtil.getCompressFormat(edittedImagePath));
     }
 
+    public void saveWatermarkImage() {
+        Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        imageEditPreviewPresenter.saveCurrentBitmapImage(bitmap, ImageProcessingUtil.getCompressFormat(edittedImagePath));
+    }
+
     @Override
     public void onErrorSaveBrightnessImage(Throwable e) {
         onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
@@ -350,6 +388,26 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
     }
 
+    @Override
+    public void onErrorWatermarkImage(Throwable e) {
+        onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
+    }
+
+    @Override
+    public void onSuccessSaveWatermarkImage(String filePath) {
+        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+    }
+
+    @Override
+    public void onSuccessGetWatermarkImage(Bitmap[] bitmap) {
+        gestureCropImageView.setImageBitmap(bitmap[0]);
+        onImageEditPreviewFragmentListener.itemSelectionWidgetPreview(bitmap);
+    }
+
+    void setPreviewImageWatermark(Bitmap bitmap) {
+        gestureCropImageView.setImageBitmap(bitmap);
+    }
+
     private void initProgressBar(View view) {
         progressBar = view.findViewById(R.id.progressbar);
     }
@@ -363,13 +421,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private void setImageData() {
         showLoadingAndHidePreview();
         processOptions();
-        try {
-            Uri inputUri = Uri.fromFile(new File(edittedImagePath));
-            gestureCropImageView.setImageUri(inputUri,
-                    Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString()));
-        } catch (Exception e) {
 
-        }
+        Uri inputUri = Uri.fromFile(new File(edittedImagePath));
+        Uri outputUri = Uri.parse(ImageProcessingUtil.getTokopediaPhotoPath(edittedImagePath).toString());
+
+        try {
+            gestureCropImageView.setImageUri(inputUri, outputUri);
+        } catch (Exception ignored) { }
     }
 
     private void processOptions() {
@@ -411,13 +469,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
 
         overlayView.setShowCropFrame(OverlayView.DEFAULT_SHOW_CROP_FRAME);
         overlayView.setCropFrameColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
-        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
+        overlayView.setCropFrameStrokeWidth(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_1));
 
         overlayView.setShowCropGrid(OverlayView.DEFAULT_SHOW_CROP_GRID);
         overlayView.setCropGridRowCount(OverlayView.DEFAULT_CROP_GRID_ROW_COUNT);
         overlayView.setCropGridColumnCount(OverlayView.DEFAULT_CROP_GRID_COLUMN_COUNT);
         overlayView.setCropGridColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0_68));
-        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(R.dimen.dp_1));
+        overlayView.setCropGridStrokeWidth(getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_1));
 
         setToInitialRatio();
 
@@ -505,6 +563,11 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         if (gestureCropImageView.getMinScale() > 0) {
             gestureCropImageView.zoomOutImage(gestureCropImageView.getMinScale() + 0.01f);
         }
+    }
+
+    public void cancelWatermark() {
+        if (lastStateImage == null) return;
+        gestureCropImageView.setImageBitmap(lastStateImage);
     }
 
     public void cancelBrightness() {

@@ -36,6 +36,28 @@ class SharedTelcoViewModelTest {
     }
 
     @Test
+    fun setPromoImpression(){
+        // given
+
+        // when
+        telcoViewModel.setPromoImpression()
+
+        // then
+        assert(telcoViewModel.promoImpression.value is Unit)
+    }
+
+    @Test
+    fun setRecentsImpression(){
+        // given
+
+        // when
+        telcoViewModel.setRecentsImpression()
+
+        // then
+        assert(telcoViewModel.recentsImpression.value is Unit)
+    }
+
+    @Test
     fun setRecommendationTelco_dataValid() {
         //given
         val listRecommendation = ArrayList<TopupBillsRecommendation>()
@@ -87,7 +109,7 @@ class SharedTelcoViewModelTest {
         val result = HashMap<Type, Any>()
         result[TelcoCatalogPrefixSelect::class.java] = catalogPrefixSelect
         val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         telcoViewModel.getPrefixOperator("", 2)
@@ -110,7 +132,7 @@ class SharedTelcoViewModelTest {
         val errors = HashMap<Type, List<GraphqlError>>()
         errors[TelcoCatalogPrefixSelect::class.java] = listOf(errorGql)
         val gqlResponse = GraphqlResponse(HashMap<Type, Any>(), errors, false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
+        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
         telcoViewModel.getPrefixOperator("", 2)

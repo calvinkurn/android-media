@@ -2,6 +2,8 @@ package com.tokopedia.product.addedit.specification.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_NULL_DATA
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
@@ -50,6 +52,12 @@ class AnnotationCategoryUseCase @Inject constructor(
     init {
         setGraphqlQuery(query)
         setTypeClass(AnnotationCategoryResponse::class.java)
+    }
+
+    override suspend fun executeOnBackground(): AnnotationCategoryResponse {
+        val categoryId = requestParams.getString(PARAM_CATEGORY_ID, "")
+        if (categoryId.isEmpty()) throw MessageErrorException(MESSAGE_ERROR_NULL_DATA)
+        return super.executeOnBackground()
     }
 
     fun setParamsCategoryId(categoryId: String) {

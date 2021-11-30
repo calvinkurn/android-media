@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/dp_30"
             android:layout_marginRight="@dimen/dp_30"
-            android:layout_marginTop="@dimen/dp_24"
+            android:layout_marginTop="24dp"
             android:gravity="center_horizontal">
 
             <LinearLayout
@@ -23,14 +23,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:id="@+id/cardid_holder"
-                android:layout_marginRight="@dimen/dp_20">
+                android:layout_marginRight="20dp">
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardid_container"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_100"
                     android:layout_alignParentLeft="true"
-                    app:cardCornerRadius="@dimen/dp_10">
+                    app:cardCornerRadius="10dp">
 
                     <ImageView
                         android:id="@+id/cardid_img"
@@ -48,7 +48,7 @@
                         android:gravity="center"
                         android:text="@string/ulng"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_14" />
+                        android:textSize="14sp" />
 
                 </androidx.cardview.widget.CardView>
 
@@ -61,7 +61,7 @@
                     android:lineSpacingExtra="@dimen/sp_4"
                     android:text="@string/phtid_crd"
                     android:textColor="@color/clr_2d263b"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -74,7 +74,7 @@
                 android:id="@+id/selfieid_container"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_100"
-                app:cardCornerRadius="@dimen/dp_10">
+                app:cardCornerRadius="10dp">
 
                 <ImageView
                     android:id="@+id/selfieid_img"
@@ -92,7 +92,7 @@
                     android:gravity="center"
                     android:text="@string/ulng"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="14sp" />
 
             </androidx.cardview.widget.CardView>
 
@@ -106,7 +106,7 @@
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:text="@string/slfeid_crd"
                 android:textColor="@color/clr_2d263b"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="14sp" />
             </LinearLayout>
 
         </RelativeLayout>
@@ -145,7 +145,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="16dp"
         android:layout_marginRight="@dimen/dp_30"
         android:layout_marginBottom="@dimen/dp_50"
         android:background="@drawable/btn_bg_rounded_corners"
@@ -153,7 +153,7 @@
         android:gravity="center"
         android:text="@string/procs"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_14" />
+        android:textSize="14sp" />
 
 
     <include
