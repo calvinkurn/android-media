@@ -49,12 +49,15 @@ object AffiliateAnalytics {
             const val HOME_PORTAL_B_S = "home portal - bottom sheet"
             const val PROMOSIKAN_SRP = "promosikan srp"
             const val HOME_PORTAL = "home portal"
+            const val PROMOSIKAN_BOTTOM_SHEET = "promosikan page - bottom sheet"
         }
     }
 
     interface ActionKeys {
         companion object {
             const val CLICK_SALIN_LINK = "click - salin link"
+            const val CLICK_SALIN_LINK_PERNAH_DIABEL = "click - salin link - pernah dibel"
+            const val CLICK_SALIN_LINK_PERNAH_DILIHAT = "click - salin link - pernah dilihat"
             const val IMPRESSION_LINK_GEN_ERROR = "impression - link generation error"
             const val IMPRESSION_NOT_LINK_ERROR = "impression - not link error"
             const val IMPRESSION_NOT_FOUND_ERROR = "impression - not found error"
