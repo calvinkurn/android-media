@@ -526,7 +526,13 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 //                    )
         } else {
             //call recom viewmodel
-            viewModel?.loadRecomBySelectedChips(widgetMetadata, annotationChip)
+                carouselData?.let {
+                    viewModel?.loadRecomBySelectedChips(
+                        widgetMetadata,
+                        it.filterData,
+                        annotationChip
+                    )
+                }
         }
         itemView.loadingRecom.show()
         recyclerView.invisible()
