@@ -57,16 +57,17 @@ internal fun BaseSuggestionDataView.assertBaseSuggestionDataView(
     this.subtitle shouldBe item.subtitle
     this.iconTitle shouldBe item.iconTitle
     this.iconSubtitle shouldBe item.iconSubtitle
-    this.shortcutUrl shouldBe item.shortcutUrl
     this.shortcutImage shouldBe item.shortcutImage
     this.imageUrl shouldBe item.imageUrl
     this.label shouldBe item.label
     this.labelType shouldBe item.labelType
     this.urlTracker shouldBe item.urlTracker
     this.trackingCode shouldBe item.tracking.code
-    this.dimension90 shouldBe dimension90
     this.trackingOption shouldBe item.trackingOption
     this.componentId shouldBe item.componentId
+    this.discountPercentage shouldBe item.discountPercentage
+    this.originalPrice shouldBe item.originalPrice
+    this.dimension90 shouldBe dimension90
     this.searchTerm shouldBe expectedKeyword
 }
 

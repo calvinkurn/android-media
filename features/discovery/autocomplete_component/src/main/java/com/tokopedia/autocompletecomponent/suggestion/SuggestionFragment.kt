@@ -98,8 +98,7 @@ class SuggestionFragment :
 
     override fun showSuggestionResult(list: List<Visitable<*>>) {
         stopTracePerformanceMonitoring()
-        suggestionAdapter.clearData()
-        suggestionAdapter.addAll(list)
+        suggestionAdapter.replaceData(list)
 
         suggestionViewUpdateListener?.showSuggestionView()
     }

@@ -36,10 +36,6 @@ data class SuggestionItem(
         @Expose
         val iconSubtitle: String = "",
 
-        @SerializedName("shortcut_url")
-        @Expose
-        val shortcutUrl: String = "",
-
         @SerializedName("shortcut_image")
         @Expose
         val shortcutImage: String = "",

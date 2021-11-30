@@ -1,61 +1,50 @@
-package com.tokopedia.autocompletecomponent.suggestion;
+package com.tokopedia.autocompletecomponent.suggestion
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
-import androidx.recyclerview.widget.RecyclerView;
+class SuggestionAdapter(
+    private val typeFactory: SuggestionTypeFactory,
+) : RecyclerView.Adapter<AbstractViewHolder<*>>() {
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+    private val list: MutableList<Visitable<*>> = mutableListOf()
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class SuggestionAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
-
-    private List<Visitable> list;
-    private final SuggestionTypeFactory typeFactory;
-
-    public SuggestionAdapter(SuggestionTypeFactory typeFactory) {
-        this.typeFactory = typeFactory;
-        this.list = new ArrayList<>();
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
+        val context = parent.context
+        val view = LayoutInflater.from(context).inflate(viewType, parent, false)
+        return typeFactory.createViewHolder(view, viewType)
     }
 
-    @NotNull
-    @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return typeFactory.createViewHolder(view, viewType);
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        (holder as AbstractViewHolder<Visitable<*>>).bind(list[position])
     }
 
-    @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(list.get(position));
+    override fun getItemViewType(position: Int): Int {
+        return (list[position] as Visitable<SuggestionTypeFactory>).type(typeFactory)
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return list.get(position).type(typeFactory);
+    override fun getItemCount(): Int {
+        return list.size
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    fun replaceData(list: List<Visitable<*>>) {
+        clearData()
+        addAll(list)
     }
 
-    public void addAll(List<Visitable> list) {
-        this.list.addAll(list);
-        notifyDataSetChanged();
+    private fun clearData() {
+        val size = this.itemCount
+        this.list.clear()
+        notifyItemRangeRemoved(0, size)
     }
 
-    public void clearData() {
-        int size = this.list.size();
-        this.list.clear();
-        notifyItemRangeRemoved(0, size);
+    private fun addAll(list: List<Visitable<*>>) {
+        val start = this.itemCount
+        this.list.addAll(list)
+        notifyItemRangeInserted(start, this.list.size)
     }
+
 }

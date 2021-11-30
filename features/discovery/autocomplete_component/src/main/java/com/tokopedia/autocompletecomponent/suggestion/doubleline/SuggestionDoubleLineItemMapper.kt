@@ -1,6 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion.doubleline
 
-import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
+import com.tokopedia.autocompletecomponent.suggestion.convertToBaseSuggestion
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
 
 fun SuggestionItem.convertToDoubleLineVisitableList(
@@ -9,27 +9,10 @@ fun SuggestionItem.convertToDoubleLineVisitableList(
     dimension90: String
 ): SuggestionDoubleLineDataDataView {
     return SuggestionDoubleLineDataDataView(
-        data = BaseSuggestionDataView(
-            template = template,
-            type = type,
-            applink = applink,
-            url = url,
-            title = title,
-            subtitle = subtitle,
-            iconTitle = iconTitle,
-            iconSubtitle = iconSubtitle,
-            shortcutUrl = shortcutUrl,
-            shortcutImage = shortcutImage,
-            imageUrl = imageUrl,
-            label = label,
-            labelType = labelType,
-            urlTracker = urlTracker,
-            searchTerm = searchTerm,
-            position = position,
-            dimension90 = dimension90,
-            trackingCode = tracking.code,
-            trackingOption = trackingOption,
-            componentId = componentId,
+        data = convertToBaseSuggestion(
+            searchTerm,
+            position,
+            dimension90,
         )
     )
 }

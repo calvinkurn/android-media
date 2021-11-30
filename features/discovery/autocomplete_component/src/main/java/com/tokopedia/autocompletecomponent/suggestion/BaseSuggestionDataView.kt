@@ -15,7 +15,6 @@ class BaseSuggestionDataView(
     val subtitle: String = "",
     val iconTitle: String = "",
     val iconSubtitle: String = "",
-    val shortcutUrl: String = "",
     val shortcutImage: String = "",
     val imageUrl: String = "",
     val label: String = "",
@@ -35,6 +34,7 @@ class BaseSuggestionDataView(
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = searchTerm,
+        valueId = "0",
         valueName = title,
         componentId = componentId,
         applink = applink,
