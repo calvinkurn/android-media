@@ -18,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CampaignListViewModel @Inject constructor(
@@ -36,13 +37,14 @@ class CampaignListViewModel @Inject constructor(
     private val getSellerMetaDataResultLiveData = MutableLiveData<Result<GetSellerCampaignSellerAppMetaResponse>>()
     val getSellerMetaDataResult: LiveData<Result<GetSellerCampaignSellerAppMetaResponse>> get() = getSellerMetaDataResultLiveData
 
-    fun getCampaignList(campaignName: String = "",
-                        campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
-                        listTypeId: Int = NPL_LIST_TYPE,
-                        statusId: List<Int> = GetCampaignListUseCase.statusId) {
+    private var campaignName = ""
+    private var campaignTypeId = NPL_CAMPAIGN_TYPE
+    private var campaignStatusId = GetCampaignListUseCase.statusId
+
+    fun getCampaignList() {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val params = GetCampaignListUseCase.createParams(campaignName, campaignTypeId, listTypeId, statusId)
+                val params = GetCampaignListUseCase.createParams(campaignName, campaignTypeId, NPL_LIST_TYPE, campaignStatusId)
                 getCampaignListUseCase.setRequestParams(params = params.parameters)
                 getCampaignListUseCase.executeOnBackground()
             }
@@ -50,6 +52,18 @@ class CampaignListViewModel @Inject constructor(
         }, onError = {
             getCampaignListResultLiveData.value = Fail(it)
         })
+    }
+
+    fun setSelectedCampaignName(campaignName: String) {
+        this.campaignName = campaignName
+    }
+
+    fun setSelectedCampaignTypeId(campaignTypeId: Int) {
+        this.campaignTypeId = campaignTypeId
+    }
+
+    fun setSelectedCampaignStatusId(campaignStatusId: List<Int>) {
+        this.campaignStatusId = campaignStatusId
     }
 
     fun getSellerBanner(campaignId: Int) {

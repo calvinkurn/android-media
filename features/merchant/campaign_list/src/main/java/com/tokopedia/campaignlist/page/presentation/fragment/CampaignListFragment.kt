@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -24,8 +25,10 @@ import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignVie
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class CampaignListFragment : BaseDaggerFragment(),
@@ -116,12 +119,14 @@ class CampaignListFragment : BaseDaggerFragment(),
             campaignTypeId = selectedCampaignType.campaignTypeId.toInt()
         } catch (e: java.lang.Exception) { } // TODO handle exception
 
-        viewModel.getCampaignList(campaignTypeId = campaignTypeId)
+        viewModel.setSelectedCampaignTypeId(campaignTypeId)
+        viewModel.getCampaignList()
     }
 
     override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
-        viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
+        viewModel.setSelectedCampaignStatusId(listOf(selectedCampaignStatus.statusId))
+        viewModel.getCampaignList()
     }
 
     private fun setupView(binding: FragmentCampaignListBinding?) {
@@ -134,7 +139,8 @@ class CampaignListFragment : BaseDaggerFragment(),
         binding?.sbuCampaignList?.searchBarTextField?.setOnEditorActionListener { textView, actionId, event ->
             if (actionId == IME_ACTION_SEARCH || event.keyCode == KEYCODE_ENTER) {
                 val query = textView.text.toString()
-                viewModel.getCampaignList(campaignName = query)
+                viewModel.setSelectedCampaignName(query)
+                viewModel.getCampaignList()
                 return@setOnEditorActionListener true
             } else return@setOnEditorActionListener false
         }
@@ -201,7 +207,11 @@ class CampaignListFragment : BaseDaggerFragment(),
                     adapter?.setActiveCampaignList(activeCampaignList)
                 }
                 is Fail -> {
-                    // TODO : log error
+                    if (result.throwable is UnknownHostException) {
+                        displayGetCampaignListError(R.string.no_internet_error_message)
+                        return@observe
+                    }
+                    displayGetCampaignListError(R.string.campaign_error_fetch_campaign_list)
                 }
             }
         })
@@ -230,9 +240,30 @@ class CampaignListFragment : BaseDaggerFragment(),
                     setupCampaignStatusBottomSheet(campaignStatusSelections)
                 }
                 is Fail -> {
-                    // TODO : log error
+                    displayGetCampaignMetadataError()
                 }
             }
         })
+    }
+
+    private fun displayGetCampaignListError(@StringRes stringResourceId : Int) {
+        Toaster.build(
+            view = binding?.root ?: return,
+            text = getString(stringResourceId),
+            actionText = getString(R.string.retry),
+            duration = Toaster.LENGTH_LONG,
+            type = Toaster.TYPE_ERROR,
+            clickListener = { viewModel.getCampaignList() }
+        ).show()
+    }
+
+    private fun displayGetCampaignMetadataError() {
+        Toaster.build(
+            view = binding?.root ?: return,
+            text = getString(R.string.campaign_error_fetch_metadata),
+            actionText = getString(R.string.ok),
+            duration = Toaster.LENGTH_LONG,
+            type = Toaster.TYPE_ERROR
+        ).show()
     }
 }
