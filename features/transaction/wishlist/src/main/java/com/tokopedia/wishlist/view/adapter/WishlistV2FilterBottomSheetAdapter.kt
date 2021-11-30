@@ -18,6 +18,7 @@ class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vie
     private var actionListener: WishlistV2FilterBottomSheet.BottomSheetListener? = null
     var filterItem = WishlistV2Response.Data.WishlistV2.SortFiltersItem()
     private val listFilterOffer = arrayListOf<WishlistV2Params.WishlistSortFilterParam>()
+    var isResetCheckbox = false
 
     companion object {
         const val LAYOUT_RADIO_BUTTON = 0
@@ -51,7 +52,7 @@ class WishlistV2FilterBottomSheetAdapter : RecyclerView.Adapter<RecyclerView.Vie
                         filterItem.options[holder.adapterPosition].text,
                         filterItem.options[holder.adapterPosition].description,
                         filterItem.options[holder.adapterPosition].optionId,
-                        filterItem.options[holder.adapterPosition].isSelected)
+                        filterItem.options[holder.adapterPosition].isSelected, isResetCheckbox)
             }
         }
     }

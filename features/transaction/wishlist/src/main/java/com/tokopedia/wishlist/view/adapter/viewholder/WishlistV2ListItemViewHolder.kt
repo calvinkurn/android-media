@@ -16,14 +16,28 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             binding.wishlistCheckbox.setOnCheckedChangeListener(null)
             binding.wishlistCheckbox.visible()
             binding.wishlistCheckbox.isChecked = item.isChecked
-            binding.wishlistCheckbox.setOnCheckedChangeListener(checkboxListener(item, position))
+            binding.wishlistCheckbox.setOnClickListener {
+                actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            }
 
             binding.wishlistItem.setSecondaryButtonVisibility(false)
             binding.wishlistItem.setPrimaryButtonVisibility(false)
+            binding.wishlistItem.setOnClickListener {
+                binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
+                actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            }
+            binding.root.setOnClickListener {
+                binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
+                actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            }
+
         } else {
             binding.wishlistCheckbox.gone()
             binding.wishlistItem.setSecondaryButtonVisibility(true)
             binding.wishlistItem.setPrimaryButtonVisibility(true)
+            binding.wishlistItem.setOnClickListener {
+                actionListener?.onProductItemClicked(item.wishlistItem, position)
+            }
         }
 
         if (item.dataObject.tambahKeranjangButton) {
@@ -38,10 +52,6 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
 
         binding.wishlistItem.setSecondaryButtonClickListener {
             actionListener?.onThreeDotsMenuClicked(item.wishlistItem)
-        }
-
-        binding.wishlistItem.setOnClickListener {
-            actionListener?.onProductItemClicked(item.wishlistItem, position)
         }
 
         actionListener?.onViewProductCard(item.wishlistItem, position)

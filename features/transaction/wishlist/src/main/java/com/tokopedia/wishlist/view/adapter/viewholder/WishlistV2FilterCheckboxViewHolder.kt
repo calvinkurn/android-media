@@ -7,16 +7,22 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 
 class WishlistV2FilterCheckboxViewHolder(private val binding: BottomsheetWishlistFilterCheckboxItemBinding,
                                          private val listener: WishlistV2FilterBottomSheet.BottomSheetListener?) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(parentFilterName: String, title: String, desc: String, optionId: String, selected: Boolean) {
+    fun bind(parentFilterName: String, title: String, desc: String, optionId: String, selected: Boolean, isResetCheckbox: Boolean) {
         binding.titleOption.text = title
         binding.descOption.text = desc
-        binding.cbOption.isChecked = selected
+
+        if (isResetCheckbox) {
+            binding.cbOption.isChecked = false
+        } else {
+            binding.cbOption.isChecked = selected
+        }
+
         binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
         binding.root.setOnClickListener {
-            checkboxListener(parentFilterName, optionId)
+            binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
         }
         binding.cbOption.setOnClickListener {
-            checkboxListener(parentFilterName, optionId)
+            binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
         }
     }
 

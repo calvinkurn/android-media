@@ -6,7 +6,7 @@
     <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
     <string name="wishlist_manage_label">Atur</string>
     <string name="wishlist_cancel_manage_label">Batal</string>
-    <string name="wishlist_count_label">%d barang</string>
+    <string name="wishlist_count_label"><b>%d</b> barang</string>
     <string name="wishlist_save_label">Simpan</string>
     <string name="wishlist_delete_label">Hapus</string>
     <string name="wishlist_tutup_label">Tutup</string>

@@ -120,7 +120,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     isRefreshing = false
                     holder.setManageLabel(holder.itemView.context.getString(R.string.wishlist_manage_label))
                 }
-                holder.bind(element)
+                holder.bind(element, isShowCheckbox)
             }
             is WishlistV2ListItemViewHolder-> {
                 holder.bind(element, position, isShowCheckbox)

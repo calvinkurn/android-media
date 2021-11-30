@@ -148,6 +148,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         private const val FILTER_OFFERS = "offers"
         private const val FILTER_STOCK = "stock"
         private const val FILTER_CATEGORIES = "categories"
+        private const val FILTER_SORT_LABEL = "Urutkan"
+        private const val FILTER_OFFERS_LABEL = "Penawaran"
+        private const val FILTER_STOCK_LABEL = "Stok"
+        private const val FILTER_CATEGORIES_LABEL = "Kategori"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -337,6 +341,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
             }
             wishlistNavtoolbar.setIcon(icons)
+            // setNonStickyCountManageLabel()
+            /*wishlistCountManageLayout.wishlistManageLabel.setOnClickListener {
+                onAturClicked(isBulkDeleteShow)
+            }*/
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -344,6 +352,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
         addEndlessScrollListener()
     }
+
+    /*private fun setStickyCountManageLabel() {
+        binding?.run {
+            appBarLayout.setExpanded(true, true)
+        }
+    }
+
+    private fun setNonStickyCountManageLabel() {
+        binding?.run {
+            appBarLayout.setExpanded(false, true)
+        }
+    }*/
 
     private fun addEndlessScrollListener() {
         val glm = GridLayoutManager(activity, 2)
@@ -550,8 +570,27 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
+    private fun setTitleBottomSheet(name: String): String {
+        var title = ""
+        when (name) {
+            FILTER_SORT -> {
+                title = FILTER_SORT_LABEL
+            }
+            FILTER_OFFERS -> {
+                title = FILTER_OFFERS_LABEL
+            }
+            FILTER_STOCK -> {
+                title = FILTER_STOCK_LABEL
+            }
+            FILTER_CATEGORIES -> {
+                title = FILTER_CATEGORIES_LABEL
+            }
+        }
+        return title
+    }
+
     private fun showBottomSheetFilterOption(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
-        val filterBottomSheet = WishlistV2FilterBottomSheet.newInstance(filterItem.text, filterItem.selectionType)
+        val filterBottomSheet = WishlistV2FilterBottomSheet.newInstance(setTitleBottomSheet(filterItem.name), filterItem.selectionType)
         if (filterBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
@@ -568,14 +607,11 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
         }
 
+
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
             override fun onRadioButtonSelected(name: String, optionId: String, label: String) {
                 filterBottomSheet.dismiss()
-                paramWishlistV2.sortFilters.forEach { itemFilter ->
-                    if (itemFilter.name == name) {
-                        paramWishlistV2.sortFilters.remove(itemFilter)
-                    }
-                }
+                paramWishlistV2.sortFilters.removeAll { it.name == name }
                 paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
                         name = filterItem.name, selected = arrayListOf(optionId)))
                 // refreshHandler?.startRefresh()
@@ -587,8 +623,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 if (isChecked) {
                     nameSelected = name
                     listOptionIdSelected.add(optionId)
+                } else {
+                    listOptionIdSelected.remove(optionId)
                 }
+
                 filterBottomSheet.showButtonSave()
+
+                if (!filterItem.isActive) {
+                    filterBottomSheet.setAction(CTA_RESET) {
+                        filterBottomSheetAdapter.isResetCheckbox = true
+                        filterBottomSheetAdapter.notifyDataSetChanged()
+                    }
+                }
             }
 
             override fun onSaveCheckboxSelection() {
@@ -596,9 +642,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 paramWishlistV2.sortFilters.forEach { itemFilter ->
                     if (itemFilter.name == nameSelected) {
                         listCheckboxSelected = itemFilter.selected
-                        paramWishlistV2.sortFilters.remove(itemFilter)
                     }
                 }
+                paramWishlistV2.sortFilters.removeAll { it.name == nameSelected }
 
                 listOptionIdSelected.forEach { optionId ->
                     listCheckboxSelected.add(optionId)
@@ -857,16 +903,29 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun removeFilter(filterItem: WishlistV2Response.Data.WishlistV2.SortFiltersItem) {
-        with(paramWishlistV2.sortFilters.iterator()) {
-            forEach { filterParam ->
-                if (filterParam.name == filterItem.name) {
-                    remove()
-                    // paramWishlistV2.sortFilters.remove(filterParam)
-                    return@forEach
-                }
-            }
-        }
+        paramWishlistV2.sortFilters.removeAll { it.name == filterItem.name }
         doRefresh()
+    }
+
+    private fun onAturClicked(showCheckbox: Boolean) {
+        if (showCheckbox) {
+            wishlistV2Adapter.showCheckbox()
+            binding?.run {
+                clWishlistHeader.gone()
+                containerDelete.visible()
+                deleteButton.isEnabled = false
+            }
+            // setStickyCountManageLabel()
+
+        } else {
+            wishlistV2Adapter.hideCheckbox()
+            binding?.run {
+                containerDelete.gone()
+                clWishlistHeader.visible()
+            }
+            // setNonStickyCountManageLabel()
+        }
+        WishlistV2Analytics.clickAturOnWishlist()
     }
 
     override fun onManageClicked(showCheckbox: Boolean) {
@@ -876,6 +935,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 clWishlistHeader.gone()
                 containerDelete.visible()
                 deleteButton.isEnabled = false
+                deleteButton.text = getString(R.string.wishlist_v2_delete_text)
             }
 
         } else {
@@ -916,10 +976,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
-    /*override fun onRefresh(view: View?) {
-
-    }*/
-
     private fun doRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
@@ -930,6 +986,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         currPage = 1
         currRecommendationListPage = 1
         loadWishlistV2()
+        showSortFilter()
+        wishlistV2Adapter.hideCheckbox()
+    }
+
+    private fun showSortFilter() {
+        wishlistV2Adapter.isRefreshing = true
+        binding?.run {
+            containerDelete.gone()
+            clWishlistHeader.visible()
+        }
     }
 
     private fun finishRefresh() {

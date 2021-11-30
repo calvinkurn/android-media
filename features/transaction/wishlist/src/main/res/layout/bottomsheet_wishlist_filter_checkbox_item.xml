@@ -33,9 +33,10 @@
         tools:text="Test Description"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_option"
+        android:layout_marginEnd="8dp"
         android:layout_marginTop="2dp"/>
 
-    <CheckBox
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/cb_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

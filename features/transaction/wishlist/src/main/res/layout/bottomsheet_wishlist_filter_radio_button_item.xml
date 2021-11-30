@@ -18,7 +18,7 @@
         android:layout_marginBottom="20dp"
         tools:text="Test Label"/>
 
-    <RadioButton
+    <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
         android:id="@+id/rb_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
