@@ -13,7 +13,6 @@ import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -30,7 +29,6 @@ class StickerViewModel @Inject constructor(
     private val cacheKey = ChatListStickerUseCase::class.java.simpleName
 
     fun loadStickers(stickerGroupUID: String, needUpdate: Boolean) {
-        launch(context = dispatcher.io) {}
         launchCatchError(context = dispatcher.io, block = {
             val isPreviousRequestSuccess = getPreviousRequestState(stickerGroupUID)
             val cache = getCacheStickerGroup(stickerGroupUID)?.also {
@@ -101,7 +99,11 @@ class StickerViewModel @Inject constructor(
     }
 
     private fun generateStateCacheKey(stickerUID: String): String {
-        return "state - $stickerUID"
+        return "$STATE_KEY - $stickerUID"
+    }
+
+    companion object {
+        private const val STATE_KEY = "state"
     }
 
 }
