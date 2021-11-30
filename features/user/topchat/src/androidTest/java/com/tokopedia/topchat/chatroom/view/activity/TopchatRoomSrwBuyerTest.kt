@@ -1252,7 +1252,27 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertComposedTextValue(typedMsg)
     }
 
-    // TODO: SRW preview should re-render question everytime user attach new preview product.
+    @Test
+    fun should_re_render_SRW_preview_question_everytime_user_attach_new_preview_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity()
+
+        // When
+        intendingAttachProduct(1)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
+        intendingAttachProduct(3)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(3)
+    }
 
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
