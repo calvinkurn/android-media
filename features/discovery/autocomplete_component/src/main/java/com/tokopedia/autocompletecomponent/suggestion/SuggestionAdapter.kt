@@ -42,9 +42,8 @@ class SuggestionAdapter(
     }
 
     private fun addAll(list: List<Visitable<*>>) {
-        val start = this.itemCount
         this.list.addAll(list)
-        notifyItemRangeInserted(start, this.list.size)
+        notifyDataSetChanged()
     }
 
 }
