@@ -16,7 +16,7 @@ object DateUtil {
         return returnDate
     }
 
-    fun calendarToStringFormat(dateParam: GregorianCalendar, format: String) : CharSequence {
+    fun calendarToStringFormat(dateParam: Calendar, format: String) : CharSequence {
         return DateFormat.format(format, dateParam.time)
     }
 
