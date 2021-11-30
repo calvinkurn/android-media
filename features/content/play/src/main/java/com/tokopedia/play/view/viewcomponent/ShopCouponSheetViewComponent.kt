@@ -10,11 +10,12 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
-import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherViewHolder
+import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
+import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -32,9 +33,7 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
     private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val clProductEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
 
-    private val voucherAdapter = MerchantVoucherAdapter(object : MerchantVoucherViewHolder.Listener {
-        override fun onCopyVoucherCode(voucher: MerchantVoucherUiModel) {
-        }
+    private val voucherAdapter = MerchantVoucherAdapter(object : MerchantVoucherNewViewHolder.Listener {
     })
 
     private val layoutManagerVoucherList = object : LinearLayoutManager(rvVoucherList.context, RecyclerView.VERTICAL, false) {
@@ -61,6 +60,7 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
         rvVoucherList.apply {
             layoutManager = layoutManagerVoucherList
             adapter = voucherAdapter
+            addItemDecoration(ProductLineItemDecoration(rvVoucherList.context))
         }
 
         tvSheetTitle.text = getString(R.string.play_title_coupon)
@@ -75,19 +75,10 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
     }
 
     fun setVoucherList(voucherList: List<MerchantVoucherUiModel>){
-        showContainer(voucherList.isNotEmpty(), voucherList)
-    }
-
-
-    private fun showContainer(shouldShow: Boolean, voucherList: List<MerchantVoucherUiModel> = listOf()){
-        if (shouldShow){
+        rvVoucherList.shouldShowWithAction(voucherList.isNotEmpty()){
             voucherAdapter.setItemsAndAnimateChanges(voucherList)
-            rvVoucherList.show()
-            clProductEmpty.hide()
-        }else{
-            rvVoucherList.hide()
-            clProductEmpty.show()
         }
+        clProductEmpty.showWithCondition(voucherList.isEmpty())
     }
 
     fun showWithHeight(height: Int) {

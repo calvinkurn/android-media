@@ -54,16 +54,17 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvExpiredDate"
-        android:maxLines="1"
-        android:ellipsize="end"
-        app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_68"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/Neutral_N700_68"
         app:layout_constraintStart_toStartOf="@+id/tvMinTrax"
         app:layout_constraintTop_toBottomOf="@+id/tvMinTrax"
-        tools:text="Berakhir dalam 10 hari •" />
+        app:typographyType="body_3"
+        tools:text="Berakhir dalam 10 hari •"
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCouponStock"
@@ -85,14 +86,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMinTrax"
-        android:maxLines="1"
-        android:ellipsize="end"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintStart_toStartOf="@+id/tvCouponTitle"
+        app:layout_constraintTop_toBottomOf="@+id/tvCouponTitle"
         app:typographyType="body_3"
         tools:text="Transaksi min. Rp1.000.000"
-        app:layout_constraintStart_toStartOf="@+id/tvCouponTitle"
-        app:layout_constraintTop_toBottomOf="@+id/tvCouponTitle" />
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
