@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -791,14 +792,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     private fun redirectToLinkAjaApp(url: String) {
-        val uri = Uri.parse(url)
-        val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
-        val activities = packageManager
+        try {
+            val uri = Uri.parse(url)
+            val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
+            val activities = packageManager
                 .queryIntentActivities(linkAjaIntent, 0)
-        val isIntentSafe: Boolean = activities.isNotEmpty()
-        if (isIntentSafe) {
-            startActivity(linkAjaIntent)
-        }
+            val isIntentSafe: Boolean = activities.isNotEmpty()
+            if (isIntentSafe) {
+                startActivity(linkAjaIntent)
+            }
+        } catch (e: ActivityNotFoundException) { }
     }
 
     companion object {
