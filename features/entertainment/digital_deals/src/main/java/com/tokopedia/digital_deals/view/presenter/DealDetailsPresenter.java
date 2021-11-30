@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetEventContentUseCase;
@@ -244,13 +245,11 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == com.tokopedia.digital_deals.R.id.action_menu_share) {
-//            Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getSeoUrl(),
-//                    getView().getActivity(), dealsDetailsResponse.getDisplayName(),
-//                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl());
             WeakReference<Activity> activityWeakReference = new WeakReference<Activity>(getView().getActivity());
             ShareDealsPDP shareDealsPDP = new ShareDealsPDP(activityWeakReference);
             shareDealsPDP.shareDealsPDP(dealsDetailsResponse.getSeoUrl(), dealsDetailsResponse.getDisplayName(),
-                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl(), "");
+                    dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl(),
+                    getView().getActivity().getResources().getString(R.string.share_link));
         } else {
             getView().getActivity().onBackPressed();
         }

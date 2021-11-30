@@ -59,7 +59,7 @@ class ShareDealsPDP (private val activity: WeakReference<Activity>) {
         }
     }
 
-    private fun openIntentShare(title: String, titleShare: String, url:String) {
+    private fun openIntentShare(title: String, url:String, titleShare: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = TYPE
