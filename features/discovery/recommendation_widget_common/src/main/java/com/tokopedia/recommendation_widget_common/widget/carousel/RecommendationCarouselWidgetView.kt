@@ -363,6 +363,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             launch {
                 try {
                     recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+                    recyclerView.visible()
+                    itemView.loadingRecom.gone()
                 } catch (throwable: Throwable) {
                     throwable.printStackTrace()
                 }
@@ -481,8 +483,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             setData(carouselData)
             scrollCarousel(0)
             impressChannel(carouselData)
-            recyclerView.visible()
-            itemView.loadingRecom.gone()
         }
     }
 
