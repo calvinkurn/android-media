@@ -128,6 +128,8 @@
     <string name="title_credit_card_setting">Kartu Kredit/Debit</string>
     <string name="title_debit_instant_setting">Debit Instan</string>
 
+    <string name="title_gopay_setting">GoPay</string>
+
     <string name="label_link_acc_unknown_error">Hubungi</string>
 
     <string name="link_account_layout_description">Atur akun yang tersambung ke Tokopedia</string>

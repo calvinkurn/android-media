@@ -42,6 +42,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 /**
  * Created by meta on 04/08/18.
  * <p>
@@ -50,6 +52,12 @@ import java.util.Map;
 public class AccountAnalytics {
     private final Context context;
     private UserSessionInterface userSessionInterface;
+
+    @Inject
+    public AccountAnalytics (Context context, UserSessionInterface userSessionInterface) {
+        this.context = context;
+        this.userSessionInterface = userSessionInterface;
+    }
 
     public AccountAnalytics(Context context) {
         this.context = context;

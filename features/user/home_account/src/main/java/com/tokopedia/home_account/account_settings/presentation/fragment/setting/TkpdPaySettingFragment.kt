@@ -1,165 +1,194 @@
-package com.tokopedia.home_account.account_settings.presentation.fragment.setting;
+package com.tokopedia.home_account.account_settings.presentation.fragment.setting
 
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.BALANCE;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CREDIT_CARD;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOCASH;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.home_account.R
+import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.BALANCE
+import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CREDIT_CARD
+import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOCASH
+import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics
+import com.tokopedia.home_account.account_settings.constant.SettingConstant
+import com.tokopedia.home_account.account_settings.di.component.DaggerTkpdPaySettingComponent
+import com.tokopedia.home_account.account_settings.di.module.TkpdPaySettingModule
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel
+import com.tokopedia.navigation_common.model.WalletPref
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSessionInterface
+import java.net.URLEncoder
+import java.util.*
+import javax.inject.Inject
 
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
-import com.tokopedia.home_account.R;
-import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics;
-import com.tokopedia.home_account.account_settings.constant.SettingConstant;
-import com.tokopedia.home_account.account_settings.di.component.DaggerTkpdPaySettingComponent;
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel;
-import com.tokopedia.navigation_common.model.WalletModel;
-import com.tokopedia.navigation_common.model.WalletPref;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.user.session.UserSession;
-
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
-
-    private static final int REQUEST_CHANGE_PASSWORD = 1234;
     @Inject
-    WalletPref walletPref;
+    lateinit var walletPref: WalletPref
 
-    private AccountAnalytics accountAnalytics;
-    private UserSession pvtUserSession;
+    @Inject
+    lateinit var accountAnalytics: AccountAnalytics
 
-    public static Fragment createInstance() {
-        return new TkpdPaySettingFragment();
+    @Inject
+    lateinit var pvtUserSession: UserSessionInterface
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        DaggerTkpdPaySettingComponent.builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .tkpdPaySettingModule(TkpdPaySettingModule())
+            .build().inject(this)
     }
 
-    private static final String TAG = TkpdPaySettingFragment.class.getSimpleName();
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        accountAnalytics = new AccountAnalytics(getActivity());
-        pvtUserSession = new UserSession(getContext());
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                activity
+            )
+        )
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        DaggerTkpdPaySettingComponent.builder().baseAppComponent(
-                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                .build().inject(this);
+    override fun getSettingItems(): List<SettingItemViewModel> {
+        val settingItems: MutableList<SettingItemViewModel> = ArrayList<SettingItemViewModel>()
+        val walletModel = walletPref.retrieveWallet()
 
-        return super.onCreateView(inflater, container, savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
-    }
-
-    @Override
-    protected List<SettingItemViewModel> getSettingItems() {
-        List<SettingItemViewModel> settingItems = new ArrayList<>();
-
-        WalletModel walletModel = walletPref.retrieveWallet();
-        if (walletModel != null) {
-            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID, walletModel.getText()));
+        if(walletModel != null) {
+            settingItems.add(
+                SettingItemViewModel(
+                    SettingConstant.SETTING_TOKOCASH_ID,
+                    walletModel.text
+                )
+            )
         }
 
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,
-                getString(R.string.title_saldo_setting)));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_CREDIT_CARD_ID,
-                getString(R.string.title_credit_card_setting)));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_DEBIT_INSTANT,
-                getString(R.string.title_debit_instant_setting)));
+        settingItems.add(
+            SettingItemViewModel(
+                SettingConstant.SETTING_SALDO_ID,
+                getString(R.string.title_saldo_setting)
+            )
+        )
+        settingItems.add(
+            SettingItemViewModel(
+                SettingConstant.SETTING_CREDIT_CARD_ID,
+                getString(R.string.title_credit_card_setting)
+            )
+        )
+        settingItems.add(
+            SettingItemViewModel(
+                SettingConstant.SETTING_DEBIT_INSTANT,
+                getString(R.string.title_debit_instant_setting)
+            )
+        )
 
-        return settingItems;
+        if(settingItems.isNotEmpty()) {
+            settingItems.add(0,
+                SettingItemViewModel(
+                    SettingConstant.SETTING_GOPAY,
+                    getString(R.string.title_gopay_setting)
+                )
+            )
+        }
+        return settingItems
     }
 
-    @Override
-    protected String getScreenName() {
-        return TAG;
+    override fun getScreenName(): String {
+        return TAG
     }
 
-    @Override
-    public void onItemClicked(int settingId) {
-        switch (settingId) {
-            case SettingConstant.SETTING_CREDIT_CARD_ID:
-                accountAnalytics.eventClickPaymentSetting(CREDIT_CARD);
-                RouteManager.route(getActivity(), ApplinkConstInternalPayment.PAYMENT_SETTING);
-                break;
-            case SettingConstant.SETTING_TOKOCASH_ID:
-                accountAnalytics.eventClickPaymentSetting(TOKOCASH);
-                WalletModel walletModel = walletPref.retrieveWallet();
-                if (walletModel != null) {
-                    if (walletModel.isLinked()) {
-                        RouteManager.route(getActivity(), walletModel.getApplink());
-                    } else {
-                        RouteManager.route(getActivity(), walletModel.getAction().getApplink());
-                    }
-                }
-                break;
-            case SettingConstant.SETTING_SALDO_ID:
-                accountAnalytics.eventClickPaymentSetting(BALANCE);
-                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-                if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-                    if (pvtUserSession.hasShownSaldoIntroScreen()) {
-                        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-                            RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-                        } else {
-                            RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
-                        }
-
-                        accountAnalytics.homepageSaldoClick(getContext(),
-                                "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
-                    } else {
-                        pvtUserSession.setSaldoIntroPageStatus(true);
-                        RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);
-                    }
+    override fun onItemClicked(settingId: Int) {
+        when (settingId) {
+            SettingConstant.SETTING_CREDIT_CARD_ID -> {
+                accountAnalytics.eventClickPaymentSetting(CREDIT_CARD)
+                RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING)
+            }
+            SettingConstant.SETTING_TOKOCASH_ID -> {
+                accountAnalytics.eventClickPaymentSetting(TOKOCASH)
+                val walletModel = walletPref.retrieveWallet()
+                if (walletModel?.isLinked == true) {
+                    RouteManager.route(activity, walletModel.applink)
                 } else {
-                    RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                            ApplinkConst.WebViewUrl.SALDO_DETAIL));
+                    RouteManager.route(activity, walletModel?.action?.applink)
                 }
-                break;
+            }
+            SettingConstant.SETTING_SALDO_ID -> {
+                accountAnalytics.eventClickPaymentSetting(BALANCE)
+                val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(
+                    context
+                )
+                if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT, false)) {
+                    if (pvtUserSession.hasShownSaldoIntroScreen()) {
+                        if (remoteConfig.getBoolean(
+                                RemoteConfigKey.APP_ENABLE_SALDO_SPLIT,
+                                false
+                            )
+                        ) {
+                            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+                        } else {
+                            RouteManager.route(
+                                context, String.format(
+                                    "%s?url=%s", ApplinkConst.WEBVIEW,
+                                    ApplinkConst.WebViewUrl.SALDO_DETAIL
+                                )
+                            )
+                        }
+                        accountAnalytics.homepageSaldoClick(
+                            context,
+                            "com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+                        )
+                    } else {
+                        pvtUserSession.setSaldoIntroPageStatus(true)
+                        RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_INTRO)
+                    }
+                }
+                else {
+                    RouteManager.route(
+                        activity, String.format(
+                            "%s?url=%s", ApplinkConst.WEBVIEW,
+                            ApplinkConst.WebViewUrl.SALDO_DETAIL
+                        )
+                    )
+                }
+            }
+            SettingConstant.SETTING_DEBIT_INSTANT -> {
+                val debitInstantUrl = walletPref.retrieveDebitInstantUrl()
+                if(debitInstantUrl?.isNotEmpty() == true) {
+                    RouteManager.route(
+                        activity,
+                        SettingConstant.Url.BASE_WEBVIEW_APPLINK + encodeUrl(debitInstantUrl)
+                    )
+                }
+            }
 
-            case SettingConstant.SETTING_DEBIT_INSTANT:
-                String debitInstantUrl = walletPref.retrieveDebitInstantUrl();
-                if (!TextUtils.isEmpty(debitInstantUrl)) {
-                    RouteManager.route(getActivity(), SettingConstant.Url.BASE_WEBVIEW_APPLINK + encodeUrl(debitInstantUrl));
-                }
-                break;
-            default:
-                break;
+            SettingConstant.SETTING_GOPAY -> {
+                RouteManager.route(
+                    activity,
+                    SettingConstant.Url.BASE_WEBVIEW_APPLINK + GOPAY_URL
+                )
+            }
         }
-
     }
 
-    private String encodeUrl(String url) {
-        try {
-            return URLEncoder.encode(url, "UTF-8");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
+    private fun encodeUrl(url: String): String {
+        return try {
+            URLEncoder.encode(url, "UTF-8")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
         }
+    }
+
+    companion object {
+        const val GOPAY_URL = "https://www.tokopedia.com/user/settings/payment/gopay"
+        fun createInstance(): Fragment {
+            return TkpdPaySettingFragment()
+        }
+        private val TAG = TkpdPaySettingFragment::class.java.simpleName
     }
 }
