@@ -4,9 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.model.pojo.AffiliateDatePickerData
 import com.tokopedia.affiliate.model.response.AffiliateBalance
 import com.tokopedia.affiliate.model.response.AffiliateTransactionHistoryData
 import com.tokopedia.affiliate.repository.AffiliateRepository
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
 import com.tokopedia.affiliate.usecase.AffiliateBalanceDataUseCase
 import com.tokopedia.affiliate.usecase.AffiliateTransactionHistoryUseCase
@@ -20,6 +22,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var errorMessage = MutableLiveData<String>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
+    private var rangeChanged = MutableLiveData<Boolean>()
     var hasNext = true
 
     private val affiliateBalanceDataUseCase = AffiliateBalanceDataUseCase(AffiliateRepository())
@@ -34,10 +37,10 @@ class AffiliateIncomeViewModel : BaseViewModel(){
         })
     }
 
-    fun getAffiliateTransactionHistory(startData: String, endData:String, page: Int) {
+    fun getAffiliateTransactionHistory(page: Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(startData, endData, page).getAffiliateTransactionHistory.data.let {
+            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt() ?: 0, page).getAffiliateTransactionHistory.data.let {
                 hasNext = it.hasNext
                 convertDataToVisitables(it)?.let { visitables ->
                     affiliateDataList.value = visitables
@@ -62,9 +65,22 @@ class AffiliateIncomeViewModel : BaseViewModel(){
         }
         return null
     }
+    private var selectedDateRange = AffiliateBottomDatePicker.SEVEN_DAYS
+    private var selectedDateValue = "7"
+    fun getSelectedDate(): String {
+        return selectedDateRange
+    }
 
+    fun onRangeChanged(range: AffiliateDatePickerData) {
+        if (selectedDateRange != range.text) {
+            selectedDateRange = range.text
+            selectedDateValue = range.value
+            rangeChanged.value = true
+        }
+    }
     fun getAffiliateBalanceData(): LiveData<AffiliateBalance.AffiliateBalance.Data> = affiliateBalanceData
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
     fun getErrorMessage(): LiveData<String> = errorMessage
+    fun getRangeChange() :LiveData<Boolean> = rangeChanged
 }

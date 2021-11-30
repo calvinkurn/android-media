@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.model.raw
 
-val GQL_Affiliate_Transaction_History: String = """{ getAffiliateTransactionHistory(Filter: {StartDate: "", EndDate: "", Page: 0, Limit: 20}) {
+val GQL_Affiliate_Transaction_History: String = """query getAffiliateTransactionHistory(${"$"}Filter: FilterRequest!) {
+     getAffiliateTransactionHistory(Filter: ${"$"}Filter) {
     Data {
         Status
         Error {
