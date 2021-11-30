@@ -41,6 +41,7 @@ import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandle
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.databinding.FragmentAddEditProductVariantBinding
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.*
@@ -79,12 +80,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.add_edit_product_variant_photo_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_sizechart_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_type_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_value_level1_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_value_level2_layout.*
-import kotlinx.android.synthetic.main.fragment_add_edit_product_variant.*
+import com.tokopedia.utils.lifecycle.autoCleared
+import kotlinx.android.synthetic.main.add_edit_product_variant_photo_layout.view.*
+import kotlinx.android.synthetic.main.add_edit_product_variant_sizechart_layout.view.*
+import kotlinx.android.synthetic.main.add_edit_product_variant_type_layout.view.*
+import kotlinx.android.synthetic.main.add_edit_product_variant_value_level1_layout.view.*
+import kotlinx.android.synthetic.main.add_edit_product_variant_value_level2_layout.view.*
+import kotlinx.android.synthetic.main.fragment_add_edit_product_variant.view.*
 import javax.inject.Inject
 
 class AddEditProductVariantFragment :
@@ -116,6 +118,9 @@ class AddEditProductVariantFragment :
 
     @Inject
     lateinit var viewModel: AddEditProductVariantViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var variantTypeAdapter: VariantTypeAdapter? = null
     private var variantValueAdapterLevel1: VariantValueAdapter? = null
     private var variantValueAdapterLevel2: VariantValueAdapter? = null
@@ -126,10 +131,32 @@ class AddEditProductVariantFragment :
     private var cancellationDialog: DialogUnify? = null
     private var tvDeleteAll: TextView? = null
 
-    private var userSession: UserSessionInterface? = null
-    private var isLoggedin = ""
-    private var userId = ""
-    private var shopId = ""
+    private val isLoggedin by lazy { userSession.isLoggedIn.toString() }
+    private val userId by lazy { userSession.userId }
+    private val shopId by lazy { userSession.shopId }
+
+    private var binding by autoCleared<FragmentAddEditProductVariantBinding>()
+    private val scrollViewContent by lazy { binding.scrollViewContent }
+    private val variantValueLevel1Layout by lazy { binding.variantValueLevel1Layout.root }
+    private val variantValueLevel2Layout by lazy { binding.variantValueLevel2Layout.root }
+    private val linkAddVariantValueLevel1 by lazy { binding.variantValueLevel1Layout.linkAddVariantValueLevel1 }
+    private val linkAddVariantValueLevel2 by lazy { binding.variantValueLevel2Layout.linkAddVariantValueLevel2 }
+    private val typographyVariantValueLevel1Title by lazy { binding.variantValueLevel1Layout.typographyVariantValueLevel1Title }
+    private val typographyVariantValueLevel2Title by lazy { binding.variantValueLevel2Layout.typographyVariantValueLevel2Title }
+    private val recyclerViewVariantValueLevel1 by lazy { binding.variantValueLevel1Layout.recyclerViewVariantValueLevel1 }
+    private val recyclerViewVariantValueLevel2 by lazy { binding.variantValueLevel2Layout.recyclerViewVariantValueLevel2 }
+    private val variantPhotoLayout by lazy { binding.variantPhotoLayout.root }
+    private val recyclerViewVariantPhoto by lazy { binding.variantPhotoLayout.recyclerViewVariantPhoto }
+    private val titleLayoutVariantType by lazy { binding.scrollViewContent.titleLayoutVariantType }
+    private val buttonAddVariantType by lazy { binding.scrollViewContent.buttonAddVariantType }
+    private val recyclerViewVariantType by lazy { binding.scrollViewContent.recyclerViewVariantType }
+    private val layoutSizechart by lazy { binding.scrollViewContent.layoutSizechart }
+    private val cardSizechart by lazy { binding.scrollViewContent.cardSizechart }
+    private val ivSizechartAddSign by lazy { binding.scrollViewContent.ivSizechartAddSign }
+    private val ivSizechartEditSign by lazy { binding.scrollViewContent.ivSizechartEditSign }
+    private val ivSizechart by lazy { binding.scrollViewContent.ivSizechart }
+    private val typographySizechartDescription by lazy { binding.scrollViewContent.typographySizechartDescription }
+    private val buttonSave by lazy { binding.buttonSave }
 
     // start PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -154,19 +181,12 @@ class AddEditProductVariantFragment :
             viewModel.productInputModel.value = saveInstanceCacheManager.get(EXTRA_PRODUCT_INPUT_MODEL,
                     ProductInputModel::class.java) ?: ProductInputModel()
         }
-
-        // get user Id and shop Id
-        userSession = UserSession(requireContext())
-        userSession?.let { session ->
-            this.isLoggedin = session.isLoggedIn.toString()
-            this.userId = session.userId
-            this.shopId = session.shopId
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_add_edit_product_variant, container, false)
+        binding = FragmentAddEditProductVariantBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
