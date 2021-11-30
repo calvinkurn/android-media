@@ -145,7 +145,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
             )
         })
 
-        if (item.questUser?.status == QuestUserStatus.CLAIMED) {
+        if (item.questUser?.status == QuestUserStatus.CLAIMED || progress == 100F) {
             tvBannerDesc.text = "Cek hadiah kamu, yuk!"
         } else {
             tvBannerDesc.text =
