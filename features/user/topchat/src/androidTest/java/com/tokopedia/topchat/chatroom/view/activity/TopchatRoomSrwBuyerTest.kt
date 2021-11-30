@@ -1252,10 +1252,11 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertComposedTextValue(typedMsg)
     }
 
+    // TODO: SRW preview should re-render question everytime user attach new preview product.
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user receive voucher event from ws.
-
 
     private fun getAttachInvoiceResult(): Instrumentation.ActivityResult {
         val intent = Intent().apply {
@@ -1286,7 +1287,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         )
     }
 
-    // TODO: identify why not pointing to `Hari Ini`
     private fun today(): Long {
         val stringDate = SendableUiModel.generateStartTime()
         return RfcDateTimeParser.parseDateString(

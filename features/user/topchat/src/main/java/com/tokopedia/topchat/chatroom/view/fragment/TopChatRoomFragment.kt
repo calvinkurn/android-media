@@ -142,6 +142,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 
 
@@ -739,10 +740,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun reloadSrw() {
         if (!isSeller() && topchatViewState?.hasProductPreviewShown() == true) {
-            val productIds = presenter.getProductIdPreview()
-            val productIdCommaSeparated = productIds.joinToString(separator = ", ")
+            val productIdCommaSeparated = if (isProductLevelSrw()) {
+                presenter.getProductIdPreview().joinToString(separator = ", ")
+            } else {
+                ""
+            }
             presenter.getSmartReplyWidget(messageId, productIdCommaSeparated)
         }
+    }
+
+    private fun isProductLevelSrw(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            AB_PRODUCT_LEVEL, ""
+        ) == AB_PRODUCT_LEVEL
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -2583,6 +2593,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val SECOND_DIVIDER = 1000
+
+        private const val AB_PRODUCT_LEVEL = "srw_productlevel"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
