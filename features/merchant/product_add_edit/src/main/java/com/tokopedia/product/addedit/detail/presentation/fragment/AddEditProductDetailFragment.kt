@@ -289,7 +289,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        setFragmentToUnifyBgColor()
 
         // set navigation highlight
         highlightNavigationButton(PageIndicator.INDICATOR_DETAIL_PAGE)

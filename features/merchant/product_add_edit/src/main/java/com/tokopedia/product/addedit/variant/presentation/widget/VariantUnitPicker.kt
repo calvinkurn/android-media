@@ -6,10 +6,14 @@ import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.Unit
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import kotlinx.android.synthetic.main.add_edit_product_variant_unit_picker_layout.view.*
+import com.tokopedia.unifycomponents.list.ListUnify
 
 class VariantUnitPicker(context: Context?) : LinearLayout(context) {
+
+    private var listUnifyVariantUnits: ListUnify? = null
+    private var buttonSave: UnifyButton? = null
 
     private var onVariantUnitPickListener: OnVariantUnitPickListener? = null
 
@@ -49,9 +53,15 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
     }
 
     fun setupVariantUnitPicker(variantUnits: List<Unit>) {
+        setupViews()
         setDefaultSelection(selectedVariantUnit)
         setupPicker(variantUnits)
         setupSaveButton()
+    }
+
+    private fun setupViews() {
+        listUnifyVariantUnits = findViewById(R.id.listUnifyVariantUnits)
+        buttonSave = findViewById(R.id.buttonSave)
     }
 
     private fun setDefaultSelection(selectedVariantUnit: Unit) {
@@ -66,8 +76,8 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
             variantUnitData.add(data)
         }
 
-        listUnifyVariantUnits.setData(variantUnitData)
-        listUnifyVariantUnits.onLoadFinish {
+        listUnifyVariantUnits?.setData(variantUnitData)
+        listUnifyVariantUnits?.onLoadFinish {
 
             val unitName = selectedVariantUnit.unitName
             if (unitName.isNotBlank()) {
@@ -79,7 +89,7 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
                 variantUnitData.firstOrNull()?.listRightRadiobtn?.isChecked = true
             }
 
-            listUnifyVariantUnits.setOnItemClickListener { _, _, position, _ ->
+            listUnifyVariantUnits?.setOnItemClickListener { _, _, position, _ ->
                 val selectedItem = variantUnitData[position]
                 selectedItem.listRightRadiobtn?.performClick()
             }
@@ -101,7 +111,7 @@ class VariantUnitPicker(context: Context?) : LinearLayout(context) {
     }
 
     private fun setupSaveButton() {
-        buttonSave.setOnClickListener {
+        buttonSave?.setOnClickListener {
             if (selectedVariantUnit.unitName.isNotBlank() && currentVariantUnit.unitName.isNotBlank()) {
                 layoutPosition?.run {
                     onVariantUnitPickListener?.onVariantUnitPicked(selectedVariantUnit, currentVariantUnit, this, hasSelectedValues)
