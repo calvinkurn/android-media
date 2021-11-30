@@ -147,10 +147,10 @@ object ReviewImagePreviewTracking {
                 ReadReviewTrackingConstants.EVENT_PROMO_VIEW, DataLayer.mapOf(
                     ReadReviewTrackingConstants.KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                            ReadReviewTrackingConstants.KEY_ID to attachmentId,
-                            ReadReviewTrackingConstants.KEY_CREATIVE to "",
-                            ReadReviewTrackingConstants.KEY_NAME to "",
-                            ReadReviewTrackingConstants.KEY_POSITION to position.toString()
+                            ReadReviewTrackingConstants.KEY_ID, attachmentId,
+                            ReadReviewTrackingConstants.KEY_CREATIVE, "",
+                            ReadReviewTrackingConstants.KEY_NAME, "",
+                            ReadReviewTrackingConstants.KEY_POSITION, position.toString()
                         )
                     )
                 )
