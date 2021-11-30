@@ -138,8 +138,21 @@ class ProductSheetViewComponent(
         tvSheetTitle.text = model.basicInfo.bottomSheetTitle
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
 
-        if (model.voucherList.isEmpty()) rvVoucherList.hide()
-        else rvVoucherList.show()
+        if (model.voucherList.isEmpty()) {
+            clProductVoucher.hide()
+        } else {
+            val vouchers = model.voucherList.filterIsInstance<MerchantVoucherUiModel>()
+
+            clProductVoucher.setOnClickListener {
+                listener.onInfoVoucherClicked(this@ProductSheetViewComponent, vouchers)
+            }
+
+            vouchers.let {
+                tvVoucherHeaderTitle.text = it.getOrNull(0)?.title ?: ""
+                tvVoucherHeaderDesc.text = getString(R.string.play_product_voucher_header_desc, it.size.toString())
+            }
+            clProductVoucher.show()
+        }
     }
 
     fun showPlaceholder() {
@@ -254,5 +267,6 @@ class ProductSheetViewComponent(
         fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
         fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>)
         fun onProductCountChanged(view: ProductSheetViewComponent)
+        fun onInfoVoucherClicked(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
     }
 }

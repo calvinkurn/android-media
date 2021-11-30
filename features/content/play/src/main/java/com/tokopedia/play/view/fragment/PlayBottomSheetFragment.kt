@@ -64,7 +64,8 @@ class PlayBottomSheetFragment @Inject constructor(
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
-        PlayInteractiveLeaderboardViewComponent.Listener
+        PlayInteractiveLeaderboardViewComponent.Listener,
+        ShopCouponSheetViewComponent.Listener
 {
 
     companion object {
@@ -76,6 +77,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
+    private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -191,6 +193,14 @@ class PlayBottomSheetFragment @Inject constructor(
         )
     }
 
+    override fun onInfoVoucherClicked(
+        view: ProductSheetViewComponent,
+        vouchers: List<MerchantVoucherUiModel>
+    ) {
+        playViewModel.showCouponSheet(variantSheetMaxHeight)
+        couponSheetView.setVoucherList(vouchers)
+    }
+
     /**
      * VariantSheet View Component Listener
      */
@@ -231,6 +241,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun setupView(view: View) {
         productSheetView.hide()
         variantSheetView.hide()
+        couponSheetView.hide()
         leaderboardSheetView.hide()
     }
 
@@ -454,6 +465,10 @@ class PlayBottomSheetFragment @Inject constructor(
             it[BottomInsetsType.VariantSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) variantSheetView.showWithHeight(state.estimatedInsetsHeight)
                 else variantSheetView.hide()
+            }
+            it[BottomInsetsType.CouponSheet]?.let { state ->
+                if (state is BottomInsetsState.Shown) couponSheetView.showWithHeight(state.estimatedInsetsHeight)
+                else couponSheetView.hide()
             }
 
             it[BottomInsetsType.LeaderboardSheet]?.let { state ->
