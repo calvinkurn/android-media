@@ -5,14 +5,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.data_explorer.R
-import com.tokopedia.data_explorer.di.DaggerDbInspectorComponent
-import com.tokopedia.data_explorer.di.DbInspectorComponent
+import com.tokopedia.data_explorer.di.DaggerDataExplorerComponent
+import com.tokopedia.data_explorer.di.DataExplorerComponent
 import com.tokopedia.data_explorer.presentation.Constants
 import kotlinx.android.synthetic.main.activity_database_list.*
 
-class SchemaActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> {
+class SchemaActivity : BaseSimpleActivity(), HasComponent<DataExplorerComponent> {
 
-    private val dbInspectorComponent: DbInspectorComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
+    private val dataExplorerComponent: DataExplorerComponent by lazy(LazyThreadSafetyMode.NONE) { initInjector() }
     private val databaseName: String by lazy(LazyThreadSafetyMode.NONE) {
         intent.getStringExtra(Constants.Keys.DATABASE_NAME).orEmpty()
     }
@@ -22,7 +22,7 @@ class SchemaActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> 
     }
 
     private fun initInjector() =
-        DaggerDbInspectorComponent.builder()
+        DaggerDataExplorerComponent.builder()
             .baseAppComponent(
                 (applicationContext as BaseMainApplication)
                     .baseAppComponent
@@ -47,7 +47,7 @@ class SchemaActivity : BaseSimpleActivity(), HasComponent<DbInspectorComponent> 
 
     override fun getNewFragment() = SchemaFragment.newInstance(databaseName, databasePath)
     override fun getScreenName() = null
-    override fun getComponent() = dbInspectorComponent
+    override fun getComponent() = dataExplorerComponent
     override fun getLayoutRes() = R.layout.activity_database_list
     override fun getParentViewResourceID(): Int = R.id.dbInspectorFrame
 

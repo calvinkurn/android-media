@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.data_explorer.presentation.databases.DbInspectorActivity"
+            android:name="com.tokopedia.data_explorer.presentation.databases.DataExplorerActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
             android:label="@string/title_app_db_inspector"

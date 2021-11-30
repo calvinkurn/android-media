@@ -7,7 +7,7 @@ import com.tokopedia.data_explorer.presentation.databases.DatabaseListFragment
 import com.tokopedia.data_explorer.presentation.schema.SchemaFragment
 import dagger.Component
 
-@DbScope
+@DataExplorerScope
 @Component(
     modules = [
         DatabaseModule::class,
@@ -17,7 +17,7 @@ import dagger.Component
         ViewModelModule::class],
     dependencies = [BaseAppComponent::class]
 )
-interface DbInspectorComponent {
+interface DataExplorerComponent {
     fun inject(databaseListFragment: DatabaseListFragment)
     fun inject(schemaFragment: SchemaFragment)
     fun inject(contentFragment: ContentFragment)

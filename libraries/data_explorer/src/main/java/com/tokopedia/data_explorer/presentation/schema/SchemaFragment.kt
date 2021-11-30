@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
-import com.tokopedia.data_explorer.di.DbInspectorComponent
+import com.tokopedia.data_explorer.di.DataExplorerComponent
 import com.tokopedia.data_explorer.presentation.Constants
 import com.tokopedia.data_explorer.presentation.content.ContentActivity
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
@@ -78,7 +78,7 @@ class SchemaFragment: BaseDaggerFragment() {
 
 
     override fun getScreenName() = ""
-    override fun initInjector() = getComponent(DbInspectorComponent::class.java).inject(this)
+    override fun initInjector() = getComponent(DataExplorerComponent::class.java).inject(this)
 
     companion object {
         fun newInstance(databaseName: String, databasePath: String) : SchemaFragment {
