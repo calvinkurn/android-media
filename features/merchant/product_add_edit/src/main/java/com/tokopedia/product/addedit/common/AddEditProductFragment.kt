@@ -43,6 +43,7 @@ abstract class AddEditProductFragment : BaseDaggerFragment() {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
             actionTextView?.text = getString(R.string.action_save)
+            doneButton?.contentDescription = getString(R.string.content_desc_tv_done)
             doneButton = actionTextView
         }
     }

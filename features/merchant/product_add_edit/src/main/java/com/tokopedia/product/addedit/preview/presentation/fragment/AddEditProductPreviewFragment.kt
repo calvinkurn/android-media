@@ -14,7 +14,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -359,7 +358,6 @@ class AddEditProductPreviewFragment :
         productLimitationTicker = view.findViewById(R.id.ticker_add_edit_product_limitation)
 
         addEditProductPhotoButton?.setOnClickListener {
-            val ctx = context ?: return@setOnClickListener
             // tracking
             val buttonTextStart: String = getString(R.string.action_start)
             if (isEditing()) {
@@ -383,6 +381,7 @@ class AddEditProductPreviewFragment :
             val isChecked = productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
             viewModel.setIsDataChanged(true)
+
             // track switch status on click
             if (isChecked && isEditing()) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
@@ -424,12 +423,6 @@ class AddEditProductPreviewFragment :
                 ProductEditStepperTracking.trackChangeProductDetail(shopId)
             }
             val productInputModel = viewModel.productInputModel.value ?: ProductInputModel()
-            // there is 3 case where we come here
-            // 1. edit product
-            // 2. open draft (edit product or add product mode)
-            // 3. add product then press back
-            // to prevent edit tracker always fired when we came here from add product mode
-            // we need a flag isAdding which will be true only if we come to this fragment from product manage
             moveToDetailFragment(productInputModel, false)
         }
 
@@ -891,6 +884,7 @@ class AddEditProductPreviewFragment :
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
         doneButton?.show()
+        enablePhotoEdit()
         enableDetailEdit()
         showProductDetailPreview(productInputModel)
     }
@@ -966,6 +960,7 @@ class AddEditProductPreviewFragment :
             if (it) {
                 toolbar?.headerTitle = getString(R.string.label_title_edit_product)
                 doneButton?.show()
+                enablePhotoEdit()
             } else {
                 stopPerformanceMonitoring()
             }
@@ -1181,12 +1176,10 @@ class AddEditProductPreviewFragment :
                     showGetProductErrorToast(viewModel.getProductId())
                 }
             }
-
         }
     }
 
     private fun observeProductLimitationData() {
-        if (!RollenceUtil.getProductLimitationRollence()) return
         if (isAdding() || viewModel.isDuplicate) {
             if (isFragmentFirstTimeLoaded && !isDrafting()) viewModel.getProductLimitation()
             viewModel.productLimitationData.observe(viewLifecycleOwner) {
