@@ -1,6 +1,6 @@
 package com.tokopedia.broadcaster.bitrate
 
-import com.tokopedia.broadcaster.LibStreamerGL
+import com.tokopedia.broadcaster.lib.LarixStreamer
 import com.tokopedia.broadcaster.data.BitrateMode
 import com.wmspanel.libstream.Streamer.FpsRange
 import java.util.*
@@ -21,7 +21,7 @@ abstract class BitrateAdapter {
     private var mCurrentFps = 0.0
     private var mCurrentRange: FpsRange = FpsRange(30, 30)
     private var mFpsRanges: Array<FpsRange?> = emptyArray()
-    private var mStreamer: LibStreamerGL? = null
+    private var mStreamer: LarixStreamer? = null
     private var mCheckTimer: Timer? = null
     private var mListener: Listener? = null
 
@@ -40,11 +40,11 @@ abstract class BitrateAdapter {
         mFpsRanges = fpsRanges
     }
 
-    open fun start(streamer: LibStreamerGL, connectionId: Int) {
+    open fun start(streamer: LarixStreamer, connectionId: Int) {
         start(streamer, mSettingsBitrate, connectionId)
     }
 
-    open fun start(streamer: LibStreamerGL, bitrate: Long, connectionId: Int) {
+    open fun start(streamer: LarixStreamer, bitrate: Long, connectionId: Int) {
         mStreamer = streamer
         mConnectionId = connectionId
         mLossHistory.clear()

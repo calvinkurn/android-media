@@ -11,7 +11,7 @@ import kotlin.coroutines.CoroutineContext
 interface BroadcasterTracker {
     fun priority(): Priority
     fun tag(): String
-    fun track(data: LoggerUIModel)
+    fun track(interval: Int, data: LoggerUIModel)
     fun stopTrack()
 }
 
@@ -27,7 +27,7 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
 
     override fun tag() = TAG
 
-    override fun track(data: LoggerUIModel) {
+    override fun track(interval: Int, data: LoggerUIModel) {
         if (data.url.isEmpty()) return
 
         mTrackerData.add(data)
@@ -44,7 +44,7 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
                 }
             }
 
-        }, DELAYED_TIME, PERIOD_TIME)
+        }, DELAYED_TIME, interval.toLong())
     }
 
     override fun stopTrack() {
@@ -93,7 +93,6 @@ class BroadcasterTrackerImpl : BroadcasterTracker, CoroutineScope {
         private const val TAG = "LIVE_BROADCASTER"
 
         const val DELAYED_TIME = 1000L
-        const val PERIOD_TIME = 5000L
     }
 
 }

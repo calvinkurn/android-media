@@ -19,6 +19,7 @@ data class PlayLivePusherConfig(
     override var audioRate: Int = 44100,
     override var audioChannelCount: Int = 1,
     override var audioSource: Int = 5,
+    override var netTrackerInterval: Int = 5000,
     override val audioBitrate: Int = AudioConfig.calcBitRate(audioRate, audioChannelCount, AudioConfig.AAC_PROFILE),
 ): LivePusherConfig {
 

@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.data.BroadcasterConfig
-import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.lib.BroadcasterConnection
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.DeviceInfoTest.Companion.ARM_64

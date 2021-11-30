@@ -1,7 +1,7 @@
 package com.tokopedia.broadcaster.tracker
 
 import android.content.Context
-import com.tokopedia.broadcaster.LibStreamerGL
+import com.tokopedia.broadcaster.lib.LarixStreamer
 import com.tokopedia.broadcaster.statsnerd.data.StatsNerdDataSource
 import com.tokopedia.broadcaster.statsnerd.data.mapper.mapToData
 import com.tokopedia.broadcaster.uimodel.LoggerUIModel
@@ -11,11 +11,9 @@ import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
 
-class LiveBroadcasterLogger constructor(
-    val tracker: BroadcasterTracker = BroadcasterTrackerImpl()
-) : LivePusherStatistic {
+class LiveBroadcasterLogger : LivePusherStatistic {
 
-    private var mStreamer: LibStreamerGL? = null
+    private var mStreamer: LarixStreamer? = null
     private var mConnectionId: Int? = null
     private var mStartTime: Long = 0
     private var mPrevTime: Long = 0
@@ -29,6 +27,10 @@ class LiveBroadcasterLogger constructor(
 
     private val mLocale = Locale.getDefault()
 
+    val tracker: BroadcasterTracker by lazy {
+        BroadcasterTrackerImpl()
+    }
+
     private fun Int?.orZero(): Int {
         if (this == null) return 0
         return this
@@ -39,7 +41,7 @@ class LiveBroadcasterLogger constructor(
         return this
     }
 
-    fun init(streamer: LibStreamerGL?, connectionId: Int?) {
+    fun init(streamer: LarixStreamer?, connectionId: Int?) {
         mStreamer = streamer
         mConnectionId = connectionId
 
@@ -119,12 +121,15 @@ class LiveBroadcasterLogger constructor(
 
         if (GlobalConfig.DEBUG) {
             StatsNerdDataSource
-                .instance(context)
+                .instance(context.applicationContext)
                 .logChucker(dataUIModel.mapToData())
         }
 
-        // track data
-        tracker.track(dataUIModel)
+        // track data to new relic
+        tracker.track(
+            config.netTrackerInterval,
+            dataUIModel
+        )
     }
 
 }

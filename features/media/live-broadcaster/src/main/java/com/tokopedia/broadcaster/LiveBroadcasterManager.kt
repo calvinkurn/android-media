@@ -10,8 +10,10 @@ import com.tokopedia.broadcaster.bitrate.BitrateAdapter.Companion.instance
 import com.tokopedia.broadcaster.camera.CameraInfo
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
-import com.tokopedia.broadcaster.data.BroadcasterConnection
+import com.tokopedia.broadcaster.lib.BroadcasterConnection
 import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.lib.LarixStreamer
+import com.tokopedia.broadcaster.lib.LarixStreamerFactory
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
@@ -24,6 +26,7 @@ import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.wmspanel.libstream.Streamer
+import com.wmspanel.libstream.StreamerGL
 import com.wmspanel.libstream.StreamerGLBuilder
 import kotlinx.coroutines.*
 import org.json.JSONObject
@@ -31,7 +34,7 @@ import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 class LiveBroadcasterManager constructor(
-    var streamer: LibStreamerGL? = null,
+    var streamer: LarixStreamer? = null,
     var mConfig: BroadcasterConfig = BroadcasterConfig(),
     var mConnection: BroadcasterConnection = BroadcasterConnection(),
     val logger: LiveBroadcasterLogger = LiveBroadcasterLogger(),
@@ -200,8 +203,7 @@ class LiveBroadcasterManager constructor(
                     broadcastState(
                         BroadcasterState.Error("network: reason ${info?.toString()}")
                     )
-                }
-                else {
+                } else {
                     broadcastState(
                         BroadcasterState.Error("network: unknown network fail")
                     )
@@ -300,10 +302,7 @@ class LiveBroadcasterManager constructor(
             builder.addCamera(getCameraConfig(it, cameraSize))
         }
 
-        streamer?.portrait?.let {
-            builder.setVideoOrientation(it)
-        }
-
+        builder.setVideoOrientation(StreamerGL.ORIENTATIONS.PORTRAIT)
         builder.setDisplayRotation(0)
         builder.setFullView(true)
 
@@ -313,7 +312,7 @@ class LiveBroadcasterManager constructor(
             fpsRanges = activeCamera.fpsRanges
         )
 
-        streamer = LibStreamerGLFactory(builder.build())
+        streamer = LarixStreamerFactory(builder.build())
     }
 
     private fun safeStartPreview(

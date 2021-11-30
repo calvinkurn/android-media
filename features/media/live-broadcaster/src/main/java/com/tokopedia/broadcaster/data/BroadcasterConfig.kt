@@ -4,16 +4,6 @@ import com.tokopedia.broadcaster.mediator.LivePusherConfig
 import com.wmspanel.libstream.AudioConfig
 import com.wmspanel.libstream.Streamer
 
-enum class AudioType(val status: String) {
-    MIC("MIC"),
-    PCM("PCM"),
-}
-
-enum class BitrateMode(val status: String) {
-    LadderAscend("LadderAscend"),
-    LogarithmicDescend("LogarithmicDescend"),
-}
-
 data class BroadcasterConfig(
     override var videoWidth: Int = 1280,
     override var videoHeight: Int = 720,
@@ -25,7 +15,8 @@ data class BroadcasterConfig(
     override var audioType: AudioType = AudioType.MIC, // we have MIC and PCM
     override var maxRetry: Int = 3,
     override var reconnectDelay: Int = 3000,
-    override var bitrateMode: BitrateMode = BitrateMode.LadderAscend
+    override var bitrateMode: BitrateMode = BitrateMode.LadderAscend,
+    override var netTrackerInterval: Int = 5000
 ) : LivePusherConfig {
 
     override val audioBitrate: Int = AudioConfig.calcBitRate(

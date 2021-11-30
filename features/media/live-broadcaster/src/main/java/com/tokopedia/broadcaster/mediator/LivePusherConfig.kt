@@ -15,5 +15,6 @@ interface LivePusherConfig {
     var maxRetry: Int
     var reconnectDelay: Int
     var bitrateMode: BitrateMode
+    var netTrackerInterval: Int
     val audioBitrate: Int
 }
