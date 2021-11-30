@@ -43,11 +43,4 @@ object ClickShareAction : PlayViewerNewAction()
  */
 object SetChannelActiveAction : PlayViewerNewAction()
 
-/**
- * Upcoming Page
- */
-object ImpressUpcomingChannel: PlayViewerNewAction()
-object ClickRemindMeUpcomingChannel: PlayViewerNewAction()
-object ClickWatchNowUpcomingChannel: PlayViewerNewAction()
-
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

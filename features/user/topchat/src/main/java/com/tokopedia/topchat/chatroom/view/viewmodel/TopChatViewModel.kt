@@ -14,15 +14,19 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
 import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -37,6 +41,8 @@ class TopChatViewModel @Inject constructor(
     private var seamlessLoginUsecase: SeamlessLoginUsecase,
     private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
     private var orderProgressUseCase: OrderProgressUseCase,
+    private var reminderTickerUseCase: GetReminderTickerUseCase,
+    private var closeReminderTicker: CloseReminderTicker,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.main) {
@@ -69,6 +75,10 @@ class TopChatViewModel @Inject constructor(
     private val _orderProgress = MutableLiveData<Result<OrderProgressResponse>>()
     val orderProgress: LiveData<Result<OrderProgressResponse>>
         get() = _orderProgress
+
+    private val _srwTickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
+    val srwTickerReminder: LiveData<Result<ReminderTickerUiModel>>
+        get() = _srwTickerReminder
 
     fun getMessageId(
         toUserId: String,
@@ -179,4 +189,35 @@ class TopChatViewModel @Inject constructor(
             _orderProgress.value = Fail(it)
         })
     }
+
+    fun getTickerReminder() {
+        launchCatchError(
+            block = {
+                val existingMessageIdParam = GetReminderTickerUseCase.Param(
+                    featureId = SRW_TICKER
+                )
+                val result = reminderTickerUseCase(existingMessageIdParam)
+                _srwTickerReminder.value = Success(result.getReminderTicker)
+            },
+            onError = { }
+        )
+    }
+
+    fun removeTicker() {
+        _srwTickerReminder.value = null
+    }
+
+    fun closeTickerReminder(element: ReminderTickerUiModel) {
+        launchCatchError(
+            block = {
+                val existingMessageIdParam = GetReminderTickerUseCase.Param(
+                    featureId = element.featureId
+                )
+                closeReminderTicker(existingMessageIdParam)
+            },
+            onError = { }
+        )
+
+    }
+
 }

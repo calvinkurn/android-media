@@ -3,9 +3,11 @@
     package="com.tokopedia.telephony_masking">
 
     <application>
-        <activity android:name=".view.TelephonyActivity"
+        <activity
+            android:name=".view.TelephonyActivity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar.Fingerprint"
-            android:label="@string/applink_telephony">
+            android:label="@string/applink_telephony"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -19,5 +21,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

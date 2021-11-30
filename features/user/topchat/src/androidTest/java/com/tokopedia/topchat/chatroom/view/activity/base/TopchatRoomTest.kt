@@ -15,7 +15,9 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
@@ -36,6 +38,7 @@ import com.tokopedia.imagepicker.common.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.topchat.AndroidFileUtil
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.action.ClickChildViewWithIdAction
+import com.tokopedia.topchat.action.RecyclerViewAction
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.domain.pojo.FavoriteData.Companion.IS_FOLLOW
 import com.tokopedia.topchat.chatroom.domain.pojo.GetExistingMessageIdPojo
@@ -96,6 +99,12 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var getChatUseCase: GetChatUseCaseStub
+
+    @Inject
+    protected lateinit var reminderTickerUseCase: GetReminderTickerUseCaseStub
+
+    @Inject
+    protected lateinit var closeReminderTicker: CloseReminderTickerStub
 
     @Inject
     protected lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseStub
@@ -816,8 +825,14 @@ abstract class TopchatRoomTest {
         )
     }
 
+    protected fun smoothScrollChatToPosition(position: Int) {
+        onView(withId(R.id.recycler_view_chatroom)).perform(
+            RecyclerViewAction.smoothScrollTo(position)
+        )
+    }
+
     protected fun intendingAttachProduct(totalProductAttached: Int) {
-        Intents.intending(
+        intending(
             IntentMatchers.hasExtra(
                 ApplinkConst.AttachProduct.TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY,
                 TopChatInternalRouter.Companion.SOURCE_TOPCHAT
@@ -889,6 +904,33 @@ abstract class TopchatRoomTest {
 
     protected fun clickBroadcastHandlerFollowShop() {
         onView(withId(R.id.btn_follow_shop)).perform(click())
+    }
+
+    protected fun preventOpenOtherActivity() {
+        intending(anyIntent()).respondWith(
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        )
+    }
+
+    protected fun getDefaultProductPreview(): ProductPreview {
+        return ProductPreview(
+            "1111",
+            ProductPreviewAttribute.productThumbnail,
+            ProductPreviewAttribute.productName,
+            "Rp 23.000.000",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "tokopedia://product/1111",
+            false,
+            "",
+            "Rp 50.000.000",
+            500000.0,
+            "50%",
+            false
+        )
     }
 }
 

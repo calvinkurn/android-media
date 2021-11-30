@@ -102,7 +102,7 @@ class AddressRevampRobot {
     }
 
     infix fun submit(func: ResultRobot.() -> Unit): ResultRobot {
-        onView(withId(R.id.btn_save_address_new)).perform(click())
+        onView(withId(R.id.btn_save_address_new)).perform(scrollTo(), click())
         return ResultRobot().apply(func)
     }
 
