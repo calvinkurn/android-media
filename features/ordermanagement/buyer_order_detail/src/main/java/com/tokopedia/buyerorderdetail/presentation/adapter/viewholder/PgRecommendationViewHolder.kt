@@ -19,19 +19,23 @@ open class PgRecommendationViewHolder(
         val LAYOUT = R.layout.buyer_order_detail_pg_recommendation_layout
     }
 
-    private val recomWidget: RecommendationCarouselWidgetView =
-        itemView as RecommendationCarouselWidgetView
+    private val recomWidget: RecommendationCarouselWidgetView? =
+        itemView as? RecommendationCarouselWidgetView
 
     override fun bind(element: PGRecommendationWidgetUiModel) {
         recomWidget.run {
-            buyerOrderDetailBindRecomWidgetListener.setViewToLifecycleOwner(this)
-            this.bind(
-                pageName = element.pageName,
-                productIds = element.productIdList,
-                adapterPosition = adapterPosition,
-                basicListener = this@PgRecommendationViewHolder,
-                tokonowPageNameListener = null
-            )
+            if (this == null) {
+                buyerOrderDetailBindRecomWidgetListener.hidePgRecommendation()
+            } else {
+                buyerOrderDetailBindRecomWidgetListener.setViewToLifecycleOwner(this)
+                this.bind(
+                    pageName = element.pageName,
+                    productIds = element.productIdList,
+                    adapterPosition = adapterPosition,
+                    basicListener = this@PgRecommendationViewHolder,
+                    tokonowPageNameListener = null
+                )
+            }
         }
     }
 
