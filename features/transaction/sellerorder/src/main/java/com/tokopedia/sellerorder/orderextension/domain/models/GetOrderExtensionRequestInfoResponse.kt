@@ -36,6 +36,15 @@ data class GetOrderExtensionRequestInfoResponse(
                 @Expose
                 val text: String? = ""
             ) {
+
+                companion object {
+                    const val MESSAGE_CODE_SUCCESS = 1
+                }
+
+                fun isSuccess(): Boolean {
+                    return messageCode == MESSAGE_CODE_SUCCESS
+                }
+
                 data class Reason(
                     @SerializedName("reason_title")
                     @Expose

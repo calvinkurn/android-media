@@ -42,8 +42,8 @@ class GetOrderExtensionRequestInfoResponseMapper @Inject constructor(
             }
         } else emptyList(),
         processing = false,
-        success = response.messageCode == 1,
-        completed = response.messageCode != 1,
+        success = response.isSuccess(),
+        completed = response.isSuccess().not(),
         refreshOnDismiss = false,
         message = response.message.orEmpty()
     )
