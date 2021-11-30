@@ -88,5 +88,7 @@
 
     <!--Pinned Product-->
     <string name="play_zero">0</string>
+    <string name="play_product_voucher_header_desc">Masih ada %1$s Kupon Toko lainnya!</string>
+    <string name="play_title_coupon">Daftar Kupon Toko</string>
 
 </resources>

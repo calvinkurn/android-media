@@ -18,37 +18,31 @@
 
         <include layout="@layout/bottom_sheet_header" />
 
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_voucher_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/play_voucher_sheet_title_margin"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <include layout="@layout/bottom_sheet_bottom_overlay" />
-
-        <com.tokopedia.globalerror.GlobalError
-            android:id="@+id/global_error_product"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_coupon_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
-            android:clickable="true"
-            android:elevation="@dimen/play_product_variant_elevation"
-            android:focusable="true"
-            android:gravity="center"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_header"
-            tools:visibility="visible" />
+            app:layout_constraintTop_toBottomOf="@id/ll_header">
 
-        <include layout="@layout/bottom_sheet_product_empty" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_voucher_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/play_voucher_sheet_title_margin"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include layout="@layout/bottom_sheet_bottom_overlay"/>
+
+            <include layout="@layout/bottom_sheet_product_empty" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

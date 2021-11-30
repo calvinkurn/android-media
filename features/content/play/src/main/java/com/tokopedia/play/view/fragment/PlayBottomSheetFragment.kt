@@ -37,6 +37,7 @@ import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -178,7 +179,6 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
-        trackImpressedVoucher(vouchers)
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -215,6 +215,14 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onRefreshButtonClicked(view: PlayInteractiveLeaderboardViewComponent) {
         playViewModel.submitAction(RefreshLeaderboard)
+    }
+
+
+    /**
+     * CouponSheet View Component Listener
+     */
+    override fun onCloseButtonClicked(view: ShopCouponSheetViewComponent) {
+        playViewModel.hideCouponSheet()
     }
 
     /**
@@ -388,7 +396,6 @@ class PlayBottomSheetFragment @Inject constructor(
                     productSheetView.setProductSheet(it.productTags)
 
                     trackImpressedProduct()
-                    trackImpressedVoucher()
                     return@observe
                 }
             }
@@ -529,9 +536,5 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun trackImpressedProduct(products: List<Pair<PlayProductUiModel.Product, Int>> = productSheetView.getVisibleProducts()) {
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
-    }
-
-    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = productSheetView.getVisibleVouchers()) {
-        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 }

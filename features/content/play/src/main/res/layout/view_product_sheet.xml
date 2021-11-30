@@ -29,17 +29,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             >
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_voucher_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl4"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginTop="@dimen/play_voucher_sheet_title_margin"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+            <include layout="@layout/view_product_voucher_info" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_product_list"
@@ -48,7 +38,7 @@
                 android:layout_marginTop="@dimen/play_product_voucher_margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/rv_voucher_list"
+                app:layout_constraintTop_toBottomOf="@id/cl_product_voucher_info"
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 

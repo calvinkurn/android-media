@@ -918,6 +918,7 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.ProductSheet -> onHideProductSheet()
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
             BottomInsetsType.LeaderboardSheet -> hideLeaderboardSheet()
+            BottomInsetsType.CouponSheet -> hideCouponSheet()
         }
         return shownBottomSheets.isNotEmpty()
     }
