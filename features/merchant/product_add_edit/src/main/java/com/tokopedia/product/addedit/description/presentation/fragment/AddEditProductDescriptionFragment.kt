@@ -227,6 +227,7 @@ class AddEditProductDescriptionFragment:
 
         // set bg color programatically, to reduce overdraw
         setFragmentToUnifyBgColor()
+        highlightNavigationButton()
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
