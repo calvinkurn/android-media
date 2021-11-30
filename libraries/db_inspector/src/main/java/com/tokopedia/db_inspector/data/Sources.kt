@@ -27,7 +27,7 @@ internal interface Sources {
 
     interface Pragma {
         suspend fun getUserVersion(query: Query): QueryResult
-
+        suspend fun getTableInfo(query: Query): QueryResult
     }
 
 }

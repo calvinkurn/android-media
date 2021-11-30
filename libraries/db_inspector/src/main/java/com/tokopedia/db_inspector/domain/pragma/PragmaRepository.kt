@@ -16,6 +16,12 @@ internal class PragmaRepository @Inject constructor(
         val queryResult = sources.getUserVersion(query)
         return control.mapper(queryResult)
     }
-         //control.mapper(userVersion(control.converter version input) )
+
+    override suspend fun getTableInfo(input: PragmaParameters.Pragma): Page {
+        val query = control.converter pragma input
+        val queryResult = sources.getTableInfo(query)
+        return control.mapper(queryResult)
+    }
+
 
 }

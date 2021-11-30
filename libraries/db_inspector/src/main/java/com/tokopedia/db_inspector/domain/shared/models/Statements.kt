@@ -10,6 +10,11 @@ internal object Statements {
             pragma {
                 name("user_version")
             }
+        fun tableInfo(name: String) =
+            pragma {
+                name("table_info")
+                value(name)
+            }
     }
 
     object Schema {

@@ -33,4 +33,8 @@ internal class PragmaSource : Sources.Pragma, CursorSource() {
         } else throw IllegalStateException("Cannot perform a query using a closed database connection.")
     }
 
+    override suspend fun getTableInfo(query: Query) : QueryResult {
+        return collectRows(query)
+    }
+
 }

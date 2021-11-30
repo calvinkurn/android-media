@@ -46,7 +46,7 @@ class ContentFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         search_input_view.gone()
-        //viewModel.getTables(databasePath)
+        viewModel.getTableInfo(databasePath, schemaName)
         observeViewModels()
         //rvDatabaseList.adapter = schemaAdapter
         //rvDatabaseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
