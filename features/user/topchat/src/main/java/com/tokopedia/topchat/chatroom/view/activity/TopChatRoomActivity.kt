@@ -483,7 +483,7 @@ open class TopChatRoomActivity : BaseChatToolbarActivity(), HasComponent<ChatCom
                 ColorDrawable(
                     MethodChecker.getColor(
                         this@TopChatRoomActivity,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                        com.tokopedia.unifyprinciples.R.color.Unify_Background)
                 )
             )
             setDisplayHomeAsUpEnabled(true)
