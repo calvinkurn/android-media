@@ -17,7 +17,6 @@ import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMa
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
@@ -95,11 +94,10 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideStickerListUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<StickerResponse>,
-            cacheManager: TopchatCacheManager,
-            dispatchers: CoroutineDispatchers
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
     ): ChatListStickerUseCaseStub {
-        return ChatListStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
+        return ChatListStickerUseCaseStub(repository, dispatchers)
     }
 
     // -- separator -- //

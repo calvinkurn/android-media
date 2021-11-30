@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCase
 import com.tokopedia.topchat.chatroom.view.viewmodel.StickerViewModel
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -24,7 +24,7 @@ class StickerViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @RelaxedMockK
-    lateinit var chatListStickerUseCase: ChatListStickerUseCaseNew
+    lateinit var chatListStickerUseCase: ChatListStickerUseCase
 
     @RelaxedMockK
     lateinit var cacheManager: TopchatCacheManager

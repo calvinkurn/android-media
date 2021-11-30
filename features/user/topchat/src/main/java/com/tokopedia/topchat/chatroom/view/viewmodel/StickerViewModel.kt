@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatroom.domain.pojo.param.StickerParam
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCaseNew
+import com.tokopedia.topchat.chatroom.domain.usecase.ChatListStickerUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class StickerViewModel @Inject constructor(
-    private val chatListStickerUseCase: ChatListStickerUseCaseNew,
+    private val chatListStickerUseCase: ChatListStickerUseCase,
     private val cacheManager: TopchatCacheManager,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -27,7 +27,7 @@ class StickerViewModel @Inject constructor(
     val stickers: LiveData<Result<List<Sticker>>>
         get() = _stickers
 
-    private val cacheKey = ChatListStickerUseCaseNew::class.java.simpleName
+    private val cacheKey = ChatListStickerUseCase::class.java.simpleName
 
     fun loadStickers(stickerGroupUID: String, needUpdate: Boolean) {
         launch(context = dispatcher.io) {}
