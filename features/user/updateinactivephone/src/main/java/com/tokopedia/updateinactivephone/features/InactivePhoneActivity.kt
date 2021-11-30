@@ -220,6 +220,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         viewBinding?.containerInactivePhone?.let {
             Toaster.build(it, message, Toaster.LENGTH_LONG).show()
         }
+        finish()
     }
 
     private fun getAppPackageName(): String {
