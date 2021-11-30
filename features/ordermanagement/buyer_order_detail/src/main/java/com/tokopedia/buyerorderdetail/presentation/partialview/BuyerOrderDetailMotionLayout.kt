@@ -49,13 +49,13 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
 
     private fun startTransitionFromInitialToLoadingState(onTransitionEnd: () -> Unit) {
         startTransition(R.id.initial, R.id.loading, {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).show()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
         }, onTransitionEnd)
     }
 
     private fun startTransitionFromErrorStateToLoadingState(onTransitionEnd: () -> Unit) {
         startTransition(R.id.error_state, R.id.error_state_loading_intermediary, {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).show()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
         }, {
             startTransition(R.id.error_state_loading_intermediary, R.id.loading, onTransitionEnd = onTransitionEnd)
         })
@@ -63,7 +63,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
 
     private fun startTransitionFromEmptyStateErrorToLoadingState(onTransitionEnd: () -> Unit) {
         startTransition(R.id.empty_state_error, R.id.empty_state_error_loading_intermediary, {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).show()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
         }, {
             startTransition(R.id.empty_state_error_loading_intermediary, R.id.loading, onTransitionEnd = onTransitionEnd)
         })
@@ -71,7 +71,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
 
     private fun startTransitionFromLoadingToShowContentWithStickyButton() {
         startTransition(R.id.loading, R.id.show_content_with_sticky_button, onTransitionEnd = {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
         })
     }
 
@@ -84,7 +84,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
 
     private fun startTransitionFromLoadingToShowContentWithoutStickyButton() {
         startTransition(R.id.loading, R.id.show_content_without_sticky_button, onTransitionEnd = {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
         })
     }
 
@@ -97,7 +97,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
 
     private fun startTransitionFromLoadingToErrorState() {
         startTransition(R.id.loading, R.id.error_state, onTransitionEnd = {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
         })
     }
 
@@ -117,7 +117,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
 
     private fun startTransitionFromLoadingToEmptyStateError() {
         startTransition(R.id.loading, R.id.empty_state_error, onTransitionEnd = {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
         })
     }
 
@@ -141,7 +141,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.error_state -> startTransitionFromErrorStateToLoadingState(onTransitionEnd)
             R.id.empty_state_error -> startTransitionFromEmptyStateErrorToLoadingState(onTransitionEnd)
             else -> {
-                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).show()
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.show()
                 onTransitionStarted = null
                 onTransitionCompleted = onTransitionEnd
                 transitionToState(R.id.loading)
@@ -154,7 +154,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.loading -> startTransitionFromLoadingToShowContentWithStickyButton()
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToShowContentWithStickyButton()
             else -> {
-                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = null
                 transitionToState(R.id.show_content_with_sticky_button)
@@ -167,7 +167,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.loading -> startTransitionFromLoadingToShowContentWithoutStickyButton()
             R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton()
             else -> {
-                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = null
                 transitionToState(R.id.show_content_without_sticky_button)
@@ -181,7 +181,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToErrorState()
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToErrorState()
             else -> {
-                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = null
                 transitionToState(R.id.error_state)
@@ -195,7 +195,7 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
             R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToEmptyStateError()
             R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToEmptyStateError()
             else -> {
-                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+                findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
                 onTransitionCompleted = null
                 transitionToState(R.id.empty_state_error)
