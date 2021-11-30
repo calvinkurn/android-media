@@ -115,10 +115,20 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     fun showAffiliatePortal() {
+        pushOpenScreenEvent()
         clearBackStack()
         affiliate_background_image.show()
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
+    }
+
+    private fun pushOpenScreenEvent() {
+        AffiliateAnalytics.sendOpenScreenEvent(
+            AffiliateAnalytics.EventKeys.OPEN_SCREEN,
+            AffiliateAnalytics.ScreenKeys.AFFILIATE_HOME_SCREEN_NAME,
+            userSessionInterface.isLoggedIn,
+            userSessionInterface.userId
+        )
     }
 
     private fun clearBackStack() {

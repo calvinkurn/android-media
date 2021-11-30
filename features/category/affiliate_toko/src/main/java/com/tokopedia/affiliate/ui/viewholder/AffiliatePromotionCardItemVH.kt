@@ -36,7 +36,8 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
                         element?.promotionItem?.title ?: "",
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",
-                        "")
+                        "",
+                         adapterPosition)
             }
             if(element?.promotionItem?.status?.isLinkGenerationAllowed == false){
                 buttonType = UnifyButton.Type.ALTERNATE

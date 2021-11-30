@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.affiliate.AFFILIATE_LIHAT_KATEGORI
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -256,12 +257,36 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     }
 
-    override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String) {
+    override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int) {
+        pushPromosikanEvent(productId,productImage,position)
         var origin = if(identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null,null,
                 productId, productName, productImage, productUrl,
                 productIdentifier,origin).show(childFragmentManager, "")
+    }
+
+    private fun pushPromosikanEvent(productId: String, productImage: String, position: Int) {
+        var itemName = ""
+        var actionName = ""
+        if(identifier == BOUGHT_IDENTIFIER) {
+            itemName = AffiliateAnalytics.ItemKeys.AFFILIATE_PERNAH_DIBEL
+            actionName = AffiliateAnalytics.ActionKeys.CLICK_PROMOSIKAN_PERNAH_DIABEL
+        }
+        else {
+           itemName = AffiliateAnalytics.ItemKeys.AFFILIATE_PERNAH_DILIHAT
+           actionName = AffiliateAnalytics.ActionKeys.CLICK_PROMOSIKAN_PERNAH_DILIHAT
+        }
+        AffiliateAnalytics.trackEventImpression(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            actionName,
+            AffiliateAnalytics.CategoryKeys.PROMOSIKAN_PAGE,
+            userSessionInterface.userId,
+            productId,
+            productImage,
+            position,
+            itemName
+        )
     }
 
     override fun onButtonClick(errorCta: AffiliateSearchData.SearchAffiliate.Data.Error.ErrorCta?) {

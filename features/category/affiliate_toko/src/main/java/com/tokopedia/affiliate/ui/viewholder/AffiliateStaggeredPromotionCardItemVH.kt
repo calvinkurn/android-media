@@ -36,7 +36,9 @@ class AffiliateStaggeredPromotionCardItemVH(itemView: View, private val promotio
                         element?.product?.title ?: "",
                         element?.product?.image?.androidURL ?:"",
                         element?.product?.cardUrl?.desktopURL ?: "",
-                        "")
+                        "",
+                         adapterPosition
+                )
             }
             if(element?.product?.isLinkGenerationAllowed == false){
                 buttonType = UnifyButton.Type.ALTERNATE
