@@ -138,7 +138,9 @@ class InboxReputationFragment : BaseDaggerFragment(), InboxReputation.View,
     }
 
     private fun prepareView() {
-        mainList?.layoutManager = layoutManager
+        if (mainList?.layoutManager == null ) {
+            mainList?.layoutManager = layoutManager
+        }
         mainList?.adapter = adapter
         mainList?.addOnScrollListener(onScroll())
         swipeToRefresh?.setOnRefreshListener { refreshPage() }
