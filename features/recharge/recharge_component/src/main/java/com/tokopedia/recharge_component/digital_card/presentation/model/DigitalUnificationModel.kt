@@ -1,14 +1,19 @@
 package com.tokopedia.recharge_component.digital_card.presentation.model
 
 import android.os.Parcelable
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnificationCardTypeFactory
+import com.tokopedia.unifycomponents.Label
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class DigitalCardModel(
+data class DigitalUnificationModel(
     val mediaUrl: String,
     val mediaType: MediaType,
     val mediaTitle: String,
     val iconUrl: String,
+    val iconBackgroundColor: String,
     val campaign: DigitalCardCampaignModel,
     val productInfoLeft: DigitalCardInfoModel,
     val productInfoRight: DigitalCardInfoModel,
@@ -19,7 +24,10 @@ data class DigitalCardModel(
     val subtitle: String,
     val soldPercentage: DigitalCardSoldPercentageModel,
     val actionButton: DigitalCardActionModel
-) : Parcelable
+) : Parcelable, Visitable<DigitalUnificationCardTypeFactory> {
+    override fun type(typeFactory: DigitalUnificationCardTypeFactory?): Int =
+        typeFactory?.type(this).orZero()
+}
 
 @Parcelize
 data class DigitalCardCampaignModel(
@@ -36,7 +44,7 @@ data class DigitalCardInfoModel(
 
 @Parcelize
 data class DigitalCardRatingModel(
-    val ratingType: RatingType,
+    val ratingType: RatingType?,
     val rating: Double,
     val review: String
 ) : Parcelable
@@ -44,7 +52,8 @@ data class DigitalCardRatingModel(
 @Parcelize
 data class DigitalCardPriceModel(
     val price: String,
-    val discount: String,
+    val discountLabel: String,
+    val discountLabelType: Int,
     val slashedPrice: String
 ) : Parcelable
 
