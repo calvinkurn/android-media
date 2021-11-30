@@ -13,7 +13,9 @@ import com.tokopedia.filter.common.helper.addItemDecorationIfNotExists
 import com.tokopedia.filter.common.helper.configureBottomSheetHeight
 import com.tokopedia.filter.common.helper.copyParcelable
 import com.tokopedia.filter.common.helper.createFilterDividerItemDecoration
+import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.common.helper.setMargin
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.filter_category_detail_bottom_sheet.view.*
@@ -107,7 +109,7 @@ internal class FilterCategoryDetailBottomSheet :
 
         bottomSheetWrapper.setPadding(0, bottomSheetWrapper.paddingTop, 0, bottomSheetWrapper.paddingBottom)
 
-        bottomSheetAction.setMargin(marginRight = 16.toPx())
+        initButtonReset()
 
         bottomSheetClose.setMargin(marginLeft = 16.toPx(), marginTop = 4.toPx(), marginRight = 12.toPx())
 
@@ -116,6 +118,12 @@ internal class FilterCategoryDetailBottomSheet :
         observeViewModel()
 
         filterCategoryDetailViewModel?.onViewCreated()
+    }
+
+    private fun initButtonReset() {
+        bottomSheetAction.setMargin(marginRight = 16.toPx())
+        setAction(getString(R.string.filter_button_reset_text)) { filterCategoryDetailViewModel?.resetCategoryFilter() }
+        setBottomSheetActionBold()
     }
 
     private fun observeViewModel() {
@@ -135,8 +143,12 @@ internal class FilterCategoryDetailBottomSheet :
             filterCategoryLevelTwoAdapter.notifyItemChanged(it)
         })
 
+        filterCategoryDetailViewModel?.isButtonResetVisibleLiveData?.observe(viewLifecycleOwner, Observer {
+            setActionResetVisibility(it)
+        })
+
         filterCategoryDetailViewModel?.isButtonSaveVisibleLiveData?.observe(viewLifecycleOwner, Observer {
-            filterCategoryDetailBottomSheetView?.buttonApplyFilterCategoryDetailContainer?.visibility = View.VISIBLE
+            filterCategoryDetailBottomSheetView?.buttonApplyFilterCategoryDetailContainer?.showWithCondition(it)
         })
     }
 
@@ -155,6 +167,12 @@ internal class FilterCategoryDetailBottomSheet :
                 filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView,
                 position
         )
+    }
+
+    private fun setActionResetVisibility(isVisible: Boolean) {
+        bottomSheetAction.post {
+            bottomSheetAction.showWithCondition(isVisible)
+        }
     }
 
     private fun processContentViewModelList(filterCategoryLevelTwoViewModelList: List<FilterCategoryLevelTwoViewModel>) {
