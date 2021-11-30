@@ -15,7 +15,7 @@ import java.io.IOException
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response  {
-        val response = chain.proceed(chain.request)
+        val response = chain.proceed(chain.request())
         if (response.code == ERROR_CODE && response.header(HEADER_AKAMAI_KEY)?.contains(HEADER_AKAMAI_VALUE, true) == true) {
             logError(response)
             throw AkamaiErrorException(ERROR_MESSAGE_AKAMAI)
