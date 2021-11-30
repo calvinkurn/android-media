@@ -19,14 +19,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/img_back"
-        android:layout_margin="@dimen/spacing_lvl4"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:icon_color_light_enable="@color/Unify_Static_White"
+        app:icon_color_night_enable="@color/Unify_Static_White"
+        app:icon_name="CLOSE"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play_close_white"
         />
 
     <com.tokopedia.unifyprinciples.Typography

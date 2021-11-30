@@ -44,7 +44,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private val pvVideo: PlayerView
     private val reminderBadge: View
     private val ivReminder: IconUnify
-    private val ivAction: AppCompatImageView
+    private val ivAction: IconUnify
     private val liveBadge: View
     private val totalViewBadge: View
     private val tvOnlyLive: TextView
