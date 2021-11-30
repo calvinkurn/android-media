@@ -209,8 +209,8 @@ class MiniCartChatListBottomSheet @Inject constructor(
     private fun setButton(viewBinding: LayoutBottomsheetMiniCartChatListBinding) {
         mContext?.apply {
             viewBinding.cardView.show()
-            viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, R.color.tokopedianow_dms_chat_icon)))
-            viewBinding.btnChat.text = getString(com.tokopedia.minicart.R.string.mini_cart_chat_btn_label)
+            viewBinding.btnChat.setDrawable(getIconUnifyDrawable(this, IconUnify.CHAT, ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)))
+            viewBinding.btnChat.text = getString(R.string.mini_cart_chat_btn_label)
             viewBinding.btnChat.setOnClickListener {
                 val shopId = viewModel?.currentShopIds?.value?.firstOrNull().orEmpty()
                 if (elements.isNullOrEmpty()) {
