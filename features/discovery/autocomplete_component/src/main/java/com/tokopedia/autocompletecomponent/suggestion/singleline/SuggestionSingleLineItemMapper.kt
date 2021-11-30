@@ -1,26 +1,33 @@
 package com.tokopedia.autocompletecomponent.suggestion.singleline
 
+import com.tokopedia.autocompletecomponent.suggestion.BaseSuggestionDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionItem
 
-fun SuggestionItem.convertToSingleLineVisitableList(searchTerm: String, position: Int, dimension90: String): SuggestionSingleLineDataDataView {
-    val item = SuggestionSingleLineDataDataView()
-    item.template = this.template
-    item.type = this.type
-    item.applink = this.applink
-    item.url = this.url
-    item.title = this.title
-    item.subtitle = this.subtitle
-    item.iconTitle = this.iconTitle
-    item.iconSubtitle = this.iconSubtitle
-    item.shortcutUrl = this.shortcutUrl
-    item.shortcutImage = this.shortcutImage
-    item.imageUrl = this.imageUrl
-    item.urlTracker = this.urlTracker
-    item.searchTerm = searchTerm
-    item.position = position
-    item.trackingCode = this.tracking.code
-    item.dimension90 = dimension90
-    item.trackingOption = this.trackingOption
-    item.componentId = this.componentId
-    return item
+fun SuggestionItem.convertToSingleLineVisitableList(
+    searchTerm: String,
+    position: Int,
+    dimension90: String,
+): SuggestionSingleLineDataDataView {
+    return SuggestionSingleLineDataDataView(
+        data = BaseSuggestionDataView(
+            template = template,
+            type = type,
+            applink = applink,
+            url = url,
+            title = title,
+            subtitle = subtitle,
+            iconTitle = iconTitle,
+            iconSubtitle = iconSubtitle,
+            shortcutUrl = shortcutUrl,
+            shortcutImage = shortcutImage,
+            imageUrl = imageUrl,
+            urlTracker = urlTracker,
+            searchTerm = searchTerm,
+            position = position,
+            trackingCode = tracking.code,
+            dimension90 = dimension90,
+            trackingOption = trackingOption,
+            componentId = componentId,
+        ),
+    )
 }

@@ -154,7 +154,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     expectedPosition++
                 }
                 is SuggestionSingleLineDataDataView -> {
-                    visitable.assertBaseSuggestionDataView(
+                    visitable.data.assertBaseSuggestionDataView(
                         SUGGESTION_SINGLE_LINE,
                         expectedItem,
                         dimension90,
@@ -163,7 +163,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     expectedPosition++
                 }
                 is SuggestionDoubleLineDataDataView -> {
-                    visitable.assertBaseSuggestionDataView(
+                    visitable.data.assertBaseSuggestionDataView(
                         SUGGESTION_DOUBLE_LINE,
                         expectedItem,
                         dimension90,
@@ -172,7 +172,7 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     expectedPosition++
                 }
                 is SuggestionChipWidgetDataView -> {
-                    visitable.assertBaseSuggestionDataView(
+                    visitable.data.assertBaseSuggestionDataView(
                         SUGGESTION_CHIP_WIDGET,
                         expectedItem,
                         dimension90,

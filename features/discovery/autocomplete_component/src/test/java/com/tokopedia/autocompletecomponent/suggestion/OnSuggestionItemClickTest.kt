@@ -30,11 +30,11 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_SHOP)
+        val item = visitableList.findDoubleLine(TYPE_SHOP)
 
-        `when suggestion item clicked` (item)
-        `then verify view interaction is correct`(item)
-        `then verify url tracker is hit`(item)
+        `when suggestion item clicked` (item.data)
+        `then verify view interaction is correct`(item.data)
+        `then verify url tracker is hit`(item.data)
     }
 
     private fun `given suggestion tracker use case capture request params`() {
@@ -66,10 +66,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_KEYWORD)
+        val item = visitableList.findSingleLine(TYPE_KEYWORD)
 
-        `when suggestion item clicked` (item)
-        `then verify view interaction is correct`(item)
+        `when suggestion item clicked` (item.data)
+        `then verify view interaction is correct`(item.data)
         `then verify url tracker is not hit`()
     }
 
@@ -82,10 +82,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_KEYWORD)
+        val item = visitableList.findSingleLine(TYPE_KEYWORD)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item keyword is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item keyword is correct`(item.data)
     }
 
     private fun `then verify view tracking click item keyword is correct`(item: BaseSuggestionDataView) {
@@ -107,10 +107,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_CURATED)
+        val item = visitableList.findSingleLine(TYPE_CURATED)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item curated is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item curated is correct`(item.data)
     }
 
     private fun `then verify view tracking click item curated is correct`(item: BaseSuggestionDataView) {
@@ -137,10 +137,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_SHOP)
+        val item = visitableList.findDoubleLine(TYPE_SHOP)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item shop is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item shop is correct`(item.data)
     }
 
     private fun `then verify view tracking click item shop is correct`(item: BaseSuggestionDataView) {
@@ -204,10 +204,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter as HashMap<String, String>)
 
-        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_RECENT_KEYWORD)
+        val item = visitableList.findSingleLine(TYPE_RECENT_KEYWORD)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item recent keyword is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item recent keyword is correct`(item.data)
     }
 
     private fun `then verify view tracking click item recent keyword is correct`(item: BaseSuggestionDataView) {
@@ -227,10 +227,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter)
 
-        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_KEYWORD)
+        val item = visitableList.findSingleLine(TYPE_KEYWORD)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item tokonow keyword is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item tokonow keyword is correct`(item.data)
     }
 
     private fun `then verify view tracking click item tokonow keyword is correct`(item: BaseSuggestionDataView) {
@@ -257,10 +257,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter)
 
-        val item = findDataView<SuggestionSingleLineDataDataView>(TYPE_CURATED)
+        val item = visitableList.findSingleLine(TYPE_CURATED)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item tokonow curated is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item tokonow curated is correct`(item.data)
     }
 
     private fun `then verify view tracking click item tokonow curated is correct`(item: BaseSuggestionDataView) {
@@ -282,7 +282,7 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter)
 
-        val item = findDataView<SuggestionChipWidgetDataView>().childItems[0]
+        val item = visitableList.findChip().data.childItems[0]
 
         `when suggestion chip clicked`(item)
         `then verify view tracking click chip widget`(item)
@@ -312,10 +312,10 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter)
 
-        val item = findDataView<SuggestionDoubleLineDataDataView>(TYPE_LIGHT)
+        val item = visitableList.findDoubleLine(TYPE_LIGHT)
 
-        `when suggestion item clicked`(item)
-        `then verify view tracking click item light is correct`(item)
+        `when suggestion item clicked`(item.data)
+        `then verify view tracking click item light is correct`(item.data)
     }
 
     private fun `then verify view tracking click item light is correct`(item: BaseSuggestionDataView) {

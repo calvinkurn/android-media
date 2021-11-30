@@ -91,12 +91,14 @@ internal fun Visitable<*>.shouldBeSuggestionChipWidgetDataView() {
     shouldBeInstanceOf<SuggestionChipWidgetDataView>()
 }
 
-internal fun SuggestionChipWidgetDataView.assertSuggestionChipWidgetDataView(expectedList: List<SuggestionChildItem>) {
+internal fun SuggestionChipWidgetDataView.assertSuggestionChipWidgetDataView(
+    expectedList: List<SuggestionChildItem>
+) {
     expectedList.forEachIndexed { index, expectedChildItem ->
-        childItems[index].template shouldBe expectedChildItem.template
-        childItems[index].type shouldBe expectedChildItem.type
-        childItems[index].applink shouldBe expectedChildItem.applink
-        childItems[index].url shouldBe expectedChildItem.url
-        childItems[index].title shouldBe expectedChildItem.title
+        data.childItems[index].template shouldBe expectedChildItem.template
+        data.childItems[index].type shouldBe expectedChildItem.type
+        data.childItems[index].applink shouldBe expectedChildItem.applink
+        data.childItems[index].url shouldBe expectedChildItem.url
+        data.childItems[index].title shouldBe expectedChildItem.title
     }
 }

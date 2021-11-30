@@ -22,17 +22,17 @@ class SuggestionChipWidgetViewHolder(
 
     override fun bind(element: SuggestionChipWidgetDataView) {
         itemView.autocompleteChipWidgetView?.bindChipWidgetView(
-            data = element.toListAutocompleteChipDataView(),
+            data = element.data.toListAutocompleteChipDataView(),
             listener = object : AutocompleteChipWidgetViewListener {
                 override fun onChipClicked(item: AutocompleteChipDataView, position: Int) {
-                    val baseSuggestionDataView = element.childItems.getOrNull(position) ?: return
+                    val baseSuggestionDataView = element.data.childItems.getOrNull(position) ?: return
                     clickListener.onChipClicked(baseSuggestionDataView)
                 }
             }
         )
     }
 
-    private fun SuggestionChipWidgetDataView.toListAutocompleteChipDataView(): List<AutocompleteChipDataView> {
+    private fun BaseSuggestionDataView.toListAutocompleteChipDataView(): List<AutocompleteChipDataView> {
         return this.childItems.map {
             AutocompleteChipDataView(
                     template = it.template,
