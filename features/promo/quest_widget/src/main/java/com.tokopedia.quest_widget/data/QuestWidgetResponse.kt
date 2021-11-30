@@ -136,7 +136,7 @@ data class CtaActionButton(
     @SerializedName("url")
     val url: String? = null,
 
-    @SerializedName("appLink")
+    @SerializedName("applink")
     val applink: String? = null
 
 )

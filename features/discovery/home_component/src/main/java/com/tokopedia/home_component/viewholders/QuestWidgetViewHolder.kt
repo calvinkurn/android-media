@@ -2,14 +2,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.app.ActivityCompat.startActivityForResult
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.QuestWidgetModel
-import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment
+import com.tokopedia.home_component.R
+import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.quest_widget.constants.QuestWidgetLocations
+import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.listeners.QuestWidgetLoginClickListener
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.view.QuestWidgetView

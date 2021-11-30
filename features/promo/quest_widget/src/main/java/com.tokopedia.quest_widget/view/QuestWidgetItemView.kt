@@ -81,7 +81,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         this.questTracker = questTracker
         this.source = source
-        this.questId = item.questUser?.id.toString()
+        this.questId = item.id.toString()
 
         var appLink = ""
 

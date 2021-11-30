@@ -188,7 +188,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createBannerChannel(channel, position)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    createQuestChannel(channel, position , isCache, questData = QuestData())
+                    createQuestChannel(channel, position , questData = QuestData())
                 }
             }
         }
@@ -483,11 +483,10 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun mappingQuestWidgetComponent(channel: DynamicHomeChannel.Channels,
-                                                 isCache: Boolean,
                                                  verticalPosition: Int, questData: QuestData): Visitable<*> {
         return QuestWidgetModel(
             channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
-            isCache = isCache, questData = questData)
+            questData = null)
     }
 
     private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
@@ -586,7 +585,6 @@ class HomeDynamicChannelVisitableFactoryImpl(
     private fun createQuestChannel(
         channel: DynamicHomeChannel.Channels,
         position: Int,
-        isCache: Boolean,
         questData: QuestData
     ) {
         visitableList.add(mappingQuestWidgetComponent(
