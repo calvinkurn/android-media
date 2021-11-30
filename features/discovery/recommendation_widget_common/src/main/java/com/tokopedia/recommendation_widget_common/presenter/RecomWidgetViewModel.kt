@@ -26,6 +26,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.*
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TEXT_ERROR
 import com.tokopedia.recommendation_widget_common.viewutil.asSuccess
 import com.tokopedia.recommendation_widget_common.viewutil.isRecomPageNameEligibleForChips
+import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
@@ -87,6 +88,9 @@ open class RecomWidgetViewModel @Inject constructor(
     private val _refreshUIMiniCartData = MutableLiveData<RecomMinicartWrapperData>()
     val refreshUIMiniCartData: LiveData<RecomMinicartWrapperData> get() = _refreshUIMiniCartData
 
+    private val _recomFilterResultData = MutableLiveData<RecomFilterResult>()
+    val recomFilterResultData: LiveData<RecomFilterResult> get() = _recomFilterResultData
+
     fun loadRecommendationCarousel(
         pageNumber: Int = 1,
         productIds: List<String> = listOf(),
@@ -142,6 +146,57 @@ open class RecomWidgetViewModel @Inject constructor(
         }
     }
 
+    fun loadRecomBySelectedChips(recomWidgetMetadata: RecommendationCarouselWidgetView.RecomWidgetMetadata,
+                                 oldFilterList: List<AnnotationChip>,
+                                 selectedChip: AnnotationChip) {
+        if (isJobAvailable(getRecommendationJob) && isActive) {
+            val newQueryParam = getQueryParamBasedOnChips(recomWidgetMetadata.queryParam, selectedChip)
+
+            getRecommendationJob = viewModelScope.launchCatchError(block = {
+                val recomData = getRecommendationUseCase.get().getData(
+                    GetRecommendationRequestParam(
+                        pageName = recomWidgetMetadata.pageName,
+                        queryParam = newQueryParam,
+                        productIds = recomWidgetMetadata.productIds,
+                        categoryIds = recomWidgetMetadata.categoryIds,
+                        keywords = listOf(recomWidgetMetadata.keyword),
+                        isTokonow = recomWidgetMetadata.isTokonow,
+                ))
+                if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
+                    val newRecommendation = recomData.first()
+                    _recomFilterResultData.postValue(RecomFilterResult(
+                        pageName = recomWidgetMetadata.pageName,
+                        recomWidgetData = newRecommendation,
+                        filterList = selectOrDeselectAnnotationChip(
+                            oldFilterList,
+                            selectedChip.recommendationFilterChip.name,
+                            selectedChip.recommendationFilterChip.isActivated),
+                        isSuccess = true
+                    ))
+                } else {
+                    _recomFilterResultData.postValue(RecomFilterResult(
+                        pageName = recomWidgetMetadata.pageName,
+                        filterList = selectOrDeselectAnnotationChip(
+                            oldFilterList,
+                            selectedChip.recommendationFilterChip.name,
+                            selectedChip.recommendationFilterChip.isActivated),
+                        isSuccess = true
+                    ))
+                }
+            }) {
+                _recomFilterResultData.postValue(RecomFilterResult(
+                    pageName = recomWidgetMetadata.pageName,
+                    filterList = selectOrDeselectAnnotationChip(
+                        oldFilterList,
+                        selectedChip.recommendationFilterChip.name,
+                        selectedChip.recommendationFilterChip.isActivated),
+                    isSuccess = false,
+                    throwable = it
+                ))
+            }
+        }
+    }
+
     fun updateMiniCartWithPageData(miniCartSimplifiedData: MiniCartSimplifiedData) {
         val data = miniCartSimplifiedData.miniCartItems.convertMiniCartToProductIdMap()
         _miniCartData.postValue(data.toMutableMap())
@@ -172,6 +227,32 @@ open class RecomWidgetViewModel @Inject constructor(
                 updateRecomCartNonVariant(recomItem, quantity)
             }
         }
+    }
+
+
+
+    private fun getQueryParamBasedOnChips(queryParams: String, annotationChip: AnnotationChip): String {
+        var newQueryParams = ""
+        if (queryParams.isNotEmpty()) {
+            newQueryParams = queryParams
+        }
+        if (annotationChip.recommendationFilterChip.isActivated) {
+            if (newQueryParams.isNotEmpty()) newQueryParams += "&"
+            newQueryParams = annotationChip.recommendationFilterChip.value
+        }
+        return newQueryParams
+    }
+
+    private fun selectOrDeselectAnnotationChip(filterData: List<AnnotationChip>?, name: String, isActivated: Boolean): List<AnnotationChip> {
+        return filterData?.map {
+            it.copy(
+                recommendationFilterChip = it.recommendationFilterChip.copy(
+                    isActivated =
+                    name == it.recommendationFilterChip.name
+                            && isActivated
+                )
+            )
+        } ?: listOf()
     }
 
     private fun deleteRecomItemFromCart(recomItem: RecommendationItem) {

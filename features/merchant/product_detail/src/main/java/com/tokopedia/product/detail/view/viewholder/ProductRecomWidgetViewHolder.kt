@@ -130,6 +130,9 @@ class ProductRecomWidgetViewHolder(
     override fun onWidgetFail(pageName: String, e: Throwable) {
     }
 
+    override fun onShowError(pageName: String, e: Throwable) {
+    }
+
     private fun getComponentTrackData(element: ProductRecomWidgetDataModel?) = ComponentTrackDataModel(element?.type
             ?: "", element?.name ?: "", adapterPosition + 1)
 }

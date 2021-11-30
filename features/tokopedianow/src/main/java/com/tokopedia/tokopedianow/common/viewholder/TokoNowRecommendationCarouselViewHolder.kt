@@ -210,6 +210,9 @@ class TokoNowRecommendationCarouselViewHolder(
         binding?.tokoNowSearchCategoryRecomCarousel?.gone()
     }
 
+    override fun onShowError(pageName: String, e: Throwable) {
+    }
+
     override fun onViewRecycled() {
         saveCarouselScrollPosition()
         super.onViewRecycled()

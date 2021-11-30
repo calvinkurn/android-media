@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
@@ -159,7 +160,10 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 scrollToPosition = scrollToPosition,
                 pageName = pageName,
                 isForceRefresh = isForceRefresh,
-                isRecomBindWithPageName = true
+                isRecomBindWithPageName = true,
+                productIds = productIds,
+                categoryIds = categoryIds,
+                keyword = keyword
             )
             this.basicListener = basicListener
             this.tokonowPageNameListener = tokonowPageNameListener
@@ -471,6 +475,15 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         )
     }
 
+    private fun rebindWidgetWithNewFilterData(carouselData: RecommendationCarouselData?) {
+        carouselData?.let {
+            this.carouselData = carouselData
+            setData(carouselData)
+            scrollCarousel(0)
+            impressChannel(carouselData)
+        }
+    }
+
     private fun initChips() {
         if (chipsAdapter == null && carouselData?.filterData?.isNotEmpty() == true) {
             chipsAdapter = RecomChipsAdapter(object : RecomChipsAdapter.RecomChipsListener {
@@ -478,26 +491,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                     annotationChip: AnnotationChip,
                     position: Int
                 ) {
-                    chipsAdapter?.submitList(
-                        carouselData?.filterData?.map {
-                            it.copy(
-                                recommendationFilterChip = it.recommendationFilterChip.copy(
-                                    isActivated =
-                                    annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
-                                            && !annotationChip.recommendationFilterChip.isActivated
-                                )
-                            )
-                        } ?: listOf()
-                    )
-//                    listener.onChipFilterClicked(
-//                        element, annotationChip.copy(
-//                            recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
-//                                isActivated = !annotationChip.recommendationFilterChip.isActivated
-//                            )
-//                        ), adapterPosition, position
-//                    )
-                    itemView.loadingRecom.show()
-                    recyclerView.invisible()
+                    handleChipsClick(annotationChip, position)
                 }
             })
             rvChips.adapter = chipsAdapter
@@ -506,6 +500,36 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         } else {
             rvChips.hide()
         }
+    }
+
+    private fun handleChipsClick(annotationChip: AnnotationChip,
+                                 position: Int) {
+        chipsAdapter?.submitList(
+            carouselData?.filterData?.map {
+                it.copy(
+                    recommendationFilterChip = it.recommendationFilterChip.copy(
+                        isActivated =
+                        annotationChip.recommendationFilterChip.name == it.recommendationFilterChip.name
+                                && !annotationChip.recommendationFilterChip.isActivated
+                    )
+                )
+            } ?: listOf()
+        )
+        if (widgetMetadata.pageName.isEmpty()) {
+            //throw to outer listener
+//                    listener.onChipFilterClicked(
+//                        element, annotationChip.copy(
+//                            recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+//                                isActivated = !annotationChip.recommendationFilterChip.isActivated
+//                            )
+//                        ), adapterPosition, position
+//                    )
+        } else {
+            //call recom viewmodel
+            viewModel?.loadRecomBySelectedChips(widgetMetadata, annotationChip)
+        }
+        itemView.loadingRecom.show()
+        recyclerView.invisible()
     }
 
     private fun doActionBasedOnRecomState(
@@ -638,6 +662,24 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             })
             viewModel?.minicartError?.observe(owner, Observer {
             })
+            viewModel?.recomFilterResultData?.observe(owner, Observer { result ->
+                if (result.pageName == widgetMetadata.pageName) {
+                    if (result.isSuccess) {
+                        result.recomWidgetData?.let {
+                            rebindWidgetWithNewFilterData(
+                                carouselData?.copy(
+                                    recommendationData = it,
+                                    filterData = result.filterList
+                                )
+                            )
+                        }
+                    } else {
+                        basicListener?.onShowError(
+                            pageName = result.pageName,
+                            e = result.throwable ?: MessageErrorException(context?.getString(R.string.failed_to_load)))
+                    }
+                }
+            })
         }
     }
 
@@ -669,7 +711,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         val adapterPosition: Int = 0,
         var isInitialized: Boolean = false,
         var isForceRefresh: Boolean = false,
-        val isRecomBindWithPageName: Boolean = false
+        val isRecomBindWithPageName: Boolean = false,
+        val productIds: List<String> = listOf(),
+        val categoryIds: List<String> = listOf(),
+        val keyword: String = "",
+        val isTokonow: Boolean = false,
+        val queryParam: String = ""
     ) {
     }
 }
