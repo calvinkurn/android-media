@@ -9,7 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.cardview.widget.CardView
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -235,8 +240,6 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     override fun onRecomProductCardAddToCartNonVariant(data: RecommendationWidget, recomItem: RecommendationItem, adapterPosition: Int, quantity: Int) {
         carouselData?.let {
-            TokonowQuantityUpdater.resetFailedRecomTokonowCard(it, recomItem)
-            setData(it)
             if (widgetMetadata.isRecomBindWithPageName) {
                 viewModel?.onAtcRecomNonVariantQuantityChanged(recomItem, quantity)
             } else
