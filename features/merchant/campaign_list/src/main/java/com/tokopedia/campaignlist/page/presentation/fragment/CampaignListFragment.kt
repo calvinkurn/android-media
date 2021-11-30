@@ -1,0 +1,238 @@
+package com.tokopedia.campaignlist.page.presentation.fragment
+
+import android.os.Bundle
+import android.view.KeyEvent.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaignlist.R
+import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
+import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
+import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
+import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBottomSheet
+import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignTypeBottomSheet
+import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
+import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
+import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
+import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder
+import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
+
+class CampaignListFragment : BaseDaggerFragment(),
+        CampaignStatusBottomSheet.OnApplyButtonClickListener,
+        CampaignTypeBottomSheet.OnApplyButtonClickListener,
+        ActiveCampaignViewHolder.OnShareButtonClickListener {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+
+    private val viewModel by lazy {
+        viewModelProvider.get(CampaignListViewModel::class.java)
+    }
+
+    private var campaignTypeBottomSheet: CampaignTypeBottomSheet? = null
+    private var campaignStatusBottomSheet: CampaignStatusBottomSheet? = null
+    private var adapter: ActiveCampaignListAdapter? = null
+    private var binding: FragmentCampaignListBinding? = null
+
+    private var campaignTypeFilter: SortFilterItem? = null
+    private var campaignStatusFilter: SortFilterItem? = null
+
+    companion object {
+        @JvmStatic
+        fun createInstance() =
+                CampaignListFragment().apply {
+                    arguments = Bundle().apply {
+
+                    }
+                }
+    }
+
+    override fun getScreenName(): String {
+        return getString(R.string.active_campaign_list)
+    }
+
+    override fun initInjector() {
+        DaggerCampaignListComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View {
+        val viewBinding = FragmentCampaignListBinding.inflate(inflater, container, false)
+        binding = viewBinding
+        return viewBinding.root
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupView(binding)
+        observeLiveData()
+        viewModel.getSellerMetaData()
+        viewModel.getCampaignList()
+    }
+
+    override fun onShareButtonClicked(activeCampaign: ActiveCampaign) {
+        try {
+            val campaignId = activeCampaign.campaignId.toInt()
+            viewModel.getSellerBanner(campaignId)
+        } catch (e: Exception) {
+            // TODO log invalid campaign id
+        }
+    }
+
+    override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
+        campaignTypeFilter?.title = selectedCampaignType.campaignTypeName
+        var campaignTypeId = 0
+        try {
+            campaignTypeId = selectedCampaignType.campaignTypeId.toInt()
+        } catch (e: java.lang.Exception) { } // TODO handle exception
+
+        viewModel.getCampaignList(campaignTypeId = campaignTypeId)
+    }
+
+    override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
+        campaignStatusFilter?.title = selectedCampaignStatus.statusText
+        viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
+    }
+
+    private fun setupView(binding: FragmentCampaignListBinding?) {
+        setupSearchBar(binding)
+        setupCampaignListFilter(binding)
+        setupActiveCampaignListView(binding)
+    }
+
+    private fun setupSearchBar(binding: FragmentCampaignListBinding?) {
+        binding?.sbuCampaignList?.searchBarTextField?.setOnEditorActionListener { textView, actionId, event ->
+            if (actionId == IME_ACTION_SEARCH || event.keyCode == KEYCODE_ENTER) {
+                val query = textView.text.toString()
+                viewModel.getCampaignList(campaignName = query)
+                return@setOnEditorActionListener true
+            } else return@setOnEditorActionListener false
+        }
+    }
+
+    private fun setupCampaignListFilter(binding: FragmentCampaignListBinding?) {
+        binding?.sfCampaignList?.apply {
+
+            // setup campaign status filter
+            campaignStatusFilter = SortFilterItem("Status")
+            campaignStatusFilter?.listener = {
+                campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
+                    ChipsUnify.TYPE_SELECTED
+                } else {
+                    ChipsUnify.TYPE_NORMAL
+                }
+                campaignStatusBottomSheet?.show(childFragmentManager)
+            }
+
+            // setup campaign type filter
+            campaignTypeFilter = SortFilterItem("Rilisan Spesial")
+            campaignTypeFilter?.listener = {
+                campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
+                    ChipsUnify.TYPE_SELECTED
+                } else {
+                    ChipsUnify.TYPE_NORMAL
+                }
+                campaignTypeBottomSheet?.show(childFragmentManager)
+            }
+
+
+            val sortFilterItemList = ArrayList<SortFilterItem>()
+            campaignStatusFilter?.run { sortFilterItemList.add(this) }
+            campaignTypeFilter?.run { sortFilterItemList.add(this) }
+
+            addItem(sortFilterItemList)
+
+            campaignStatusFilter?.refChipUnify?.setChevronClickListener { campaignStatusBottomSheet?.show(childFragmentManager) }
+            campaignTypeFilter?.refChipUnify?.setChevronClickListener { campaignTypeBottomSheet?.show(childFragmentManager) }
+        }
+    }
+
+    private fun setupActiveCampaignListView(binding: FragmentCampaignListBinding?) {
+        adapter = ActiveCampaignListAdapter(this)
+        binding?.rvCampaignList?.let {
+            it.adapter = adapter
+            it.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    private fun setupCampaignTypeBottomSheet(campaignTypeSelections: List<CampaignTypeSelection>) {
+        campaignTypeBottomSheet = CampaignTypeBottomSheet.createInstance(campaignTypeSelections, this)
+    }
+
+    private fun setupCampaignStatusBottomSheet(campaignStatusSelections: List<CampaignStatusSelection>) {
+        campaignStatusBottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, this)
+    }
+
+    private fun observeLiveData() {
+        viewModel.getCampaignListResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    val activeCampaignList = viewModel.mapCampaignListDataToActiveCampaignList(result.data.getCampaignListV2.campaignList)
+                    adapter?.setActiveCampaignList(activeCampaignList)
+                }
+                is Fail -> {
+                    // TODO : log error
+                }
+            }
+        })
+
+        viewModel.getMerchantBannerResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+
+                }
+                is Fail -> {
+                    // TODO : log error
+                }
+            }
+        })
+
+        viewModel.getSellerMetaDataResult.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    // setup campaign type bottom sheet
+                    val campaignTypeData = result.data.getSellerCampaignSellerAppMeta.campaignTypeData
+                    val campaignTypeSelections = viewModel.mapCampaignTypeDataToCampaignTypeSelections(campaignTypeData)
+                    setupCampaignTypeBottomSheet(campaignTypeSelections)
+                    // setup campaign status bottom sheet
+                    val campaignStatus = result.data.getSellerCampaignSellerAppMeta.campaignStatus
+                    val campaignStatusSelections = viewModel.mapCampaignStatusToCampaignStatusSelections(campaignStatus)
+                    setupCampaignStatusBottomSheet(campaignStatusSelections)
+                }
+                is Fail -> {
+                    // TODO : log error
+                }
+            }
+        })
+    }
+}

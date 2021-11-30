@@ -1,0 +1,68 @@
+package com.tokopedia.campaignlist.page.presentation.viewholder
+
+import android.content.Context
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.campaignlist.R
+import com.tokopedia.campaignlist.databinding.CampaignListItemLayoutBinding
+import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
+import com.tokopedia.unifycomponents.Label
+
+class ActiveCampaignViewHolder(
+        private val binding: CampaignListItemLayoutBinding,
+        private val clickListener: OnShareButtonClickListener
+) : RecyclerView.ViewHolder(binding.root) {
+
+    interface OnShareButtonClickListener {
+        fun onShareButtonClicked(activeCampaign: ActiveCampaign)
+    }
+
+    companion object {
+        private const val ONGOING = "5"
+        private const val COMING_SOON_STATUS_ID = "6"
+        private const val ENDED_STATUS_ID = "7"
+    }
+
+    private var context: Context? = null
+
+    init {
+        context = binding.root.context
+        binding.tpgShareButton.setOnClickListener {
+            val activeCampaign = binding.root.getTag(R.id.active_campaign) as ActiveCampaign
+            clickListener.onShareButtonClicked(activeCampaign)
+        }
+    }
+
+    fun bindData(activeCampaign: ActiveCampaign) {
+        // tag active campaign data to item view
+        binding.root.setTag(R.id.active_campaign, activeCampaign)
+        // render campaign type name
+        binding.tpgCampaignType.text = activeCampaign.campaignType
+        // render campaign status
+        binding.labelCampaignStatus.text = activeCampaign.campaignStatus
+        when (activeCampaign.campaignStatusId) {
+            ONGOING -> binding.labelCampaignStatus.setLabelType(Label.GENERAL_LIGHT_GREEN)
+            COMING_SOON_STATUS_ID -> binding.labelCampaignStatus.setLabelType(Label.GENERAL_ORANGE)
+            ENDED_STATUS_ID -> binding.labelCampaignStatus.setLabelType(Label.GENERAL_GREY)
+            else -> binding.labelCampaignStatus.setLabelType(Label.GENERAL_LIGHT_GREEN)
+        }
+        // render campaign image
+        binding.iuCampaignPicture.setImageUrl(activeCampaign.campaignPictureUrl)
+        //render campaign name
+        binding.tpgCampaignName.text = activeCampaign.campaignName
+        // render product quantity
+        context?.let {
+            val productQuantity = it.getString(R.string.campaign_list_product_quantity_label, activeCampaign.productQty)
+            binding.tpgProductQty.text = productQuantity
+        }
+        // render campaign start date, end date
+        binding.tpgCampaignStartDate.text = activeCampaign.startDate
+        binding.tpgCampaignEndDate.text = activeCampaign.endDate
+        // render campaign start time, end time
+        context?.let {
+            val campaignStartTime = it.getString(R.string.campaign_time_template, activeCampaign.startTime)
+            binding.tpgCampaignStartTime.text = campaignStartTime
+            val campaignEndTime = it.getString(R.string.campaign_time_template, activeCampaign.endDate)
+            binding.tpgCampaignEndTime.text = campaignEndTime
+        }
+    }
+}

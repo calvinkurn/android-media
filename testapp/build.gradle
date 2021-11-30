@@ -58,7 +58,7 @@ android {
         versionName "3.150"
         vectorDrawables.useSupportLibrary = true
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a"
         }
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -124,4 +124,7 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.libraries.universal_sharing)
+	implementation project(rootProject.ext.features.campaignList)
+	implementation project(rootProject.ext.features.medialoader)
 }
