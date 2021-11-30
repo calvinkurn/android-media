@@ -28,6 +28,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.draft.di.AddEditProductDraftComponent
 import com.tokopedia.product.addedit.draft.presentation.adapter.ProductDraftListAdapter
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener
@@ -190,8 +191,7 @@ open class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListL
     }
 
     private fun setup(view: View) {
-        requireActivity().window.decorView.setBackgroundColor(
-                ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setFragmentToUnifyBgColor()
 
         tvEmptyTitle = view.findViewById(com.tokopedia.baselist.R.id.text_view_empty_title_text)
         tvEmptyContent = view.findViewById(com.tokopedia.baselist.R.id.text_view_empty_content_text)

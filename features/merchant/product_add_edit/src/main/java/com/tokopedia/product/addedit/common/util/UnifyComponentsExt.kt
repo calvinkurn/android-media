@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getResColor
@@ -152,5 +153,12 @@ fun TextFieldUnify2?.updateText(text: String) {
         if (focused) {
             requestFocus()
         }
+    }
+}
+
+fun Fragment.setFragmentToUnifyBgColor() {
+    if (activity != null && context != null) {
+        activity!!.window.decorView.setBackgroundColor(ContextCompat.getColor(
+                context!!, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 }

@@ -23,6 +23,7 @@ import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.common.util.SharedPreferencesUtil
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.di.DaggerAddEditProductSpecificationComponent
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
@@ -87,10 +88,7 @@ class AddEditProductSpecificationFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        requireActivity().window.decorView.setBackgroundColor(getColor(
-            requireContext(),
-            com.tokopedia.unifyprinciples.R.color.Unify_N0
-        ))
+        setFragmentToUnifyBgColor()
 
         // setup UI
         setupViews(view)
