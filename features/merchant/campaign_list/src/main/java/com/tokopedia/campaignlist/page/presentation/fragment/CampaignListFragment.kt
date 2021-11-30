@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
@@ -24,17 +25,24 @@ import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignVie
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class CampaignListFragment : BaseDaggerFragment(),
         CampaignStatusBottomSheet.OnApplyButtonClickListener,
         CampaignTypeBottomSheet.OnApplyButtonClickListener,
-        ActiveCampaignViewHolder.OnShareButtonClickListener {
+        ActiveCampaignViewHolder.OnShareButtonClickListener, ShareBottomsheetListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -46,6 +54,7 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     private var campaignTypeBottomSheet: CampaignTypeBottomSheet? = null
     private var campaignStatusBottomSheet: CampaignStatusBottomSheet? = null
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var adapter: ActiveCampaignListAdapter? = null
     private var binding: FragmentCampaignListBinding? = null
 
@@ -54,12 +63,8 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     companion object {
         @JvmStatic
-        fun createInstance() =
-                CampaignListFragment().apply {
-                    arguments = Bundle().apply {
-
-                    }
-                }
+        fun createInstance() = CampaignListFragment()
+        private const val SHARE = "Share"
     }
 
     override fun getScreenName(): String {
@@ -75,9 +80,7 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
 
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -114,7 +117,8 @@ class CampaignListFragment : BaseDaggerFragment(),
         var campaignTypeId = 0
         try {
             campaignTypeId = selectedCampaignType.campaignTypeId.toInt()
-        } catch (e: java.lang.Exception) { } // TODO handle exception
+        } catch (e: java.lang.Exception) {
+        } // TODO handle exception
 
         viewModel.getCampaignList(campaignTypeId = campaignTypeId)
     }
@@ -193,6 +197,18 @@ class CampaignListFragment : BaseDaggerFragment(),
         campaignStatusBottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, this)
     }
 
+    private fun setupUniversalShareBottomSheet(data: GetMerchantCampaignBannerGeneratorDataResponse) {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(this@CampaignListFragment)
+            setUtmCampaignData(
+                    pageName = getString(R.string.active_campaign_list),
+                    userId = userSession.userId,
+                    pageId = userSession.shopId,
+                    feature = SHARE
+            )
+        }
+    }
+
     private fun observeLiveData() {
         viewModel.getCampaignListResult.observe(viewLifecycleOwner, { result ->
             when (result) {
@@ -209,7 +225,10 @@ class CampaignListFragment : BaseDaggerFragment(),
         viewModel.getMerchantBannerResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-
+                    if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+                        setupUniversalShareBottomSheet(result.data)
+                        universalShareBottomSheet?.show(childFragmentManager, this)
+                    }
                 }
                 is Fail -> {
                     // TODO : log error
@@ -234,5 +253,13 @@ class CampaignListFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    override fun onShareOptionClicked(shareModel: ShareModel) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onCloseOptionClicked() {
+
     }
 }
