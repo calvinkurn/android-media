@@ -37,6 +37,7 @@ import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareData;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.share.DataMapper;
 
@@ -271,8 +272,11 @@ public class Utils {
                 .setImgUri(imageUrl)
                 .build();
 
+        LinkerShareData linkerShareData = new LinkerShareData();
+        linkerShareData.setLinkerData(shareData);
+
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
+                linkerShareData, new ShareCallback() {
                     @Override
                     public void urlCreated(LinkerShareResult linkerShareData) {
                         Intent share = new Intent(android.content.Intent.ACTION_SEND);
