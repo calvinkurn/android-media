@@ -4,6 +4,7 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -36,17 +37,17 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
     private val layoutMvc: ConstraintLayout = itemView.findViewById(R.id.layout_mvc)
     private val flDisableContainer: FrameLayout = itemView.findViewById(R.id.fl_container)
     private val dynamicPriceLabel: Label = itemView.findViewById(R.id.lbl_dynamic_pricing)
+    private val itemCourierLayout: RelativeLayout = itemView.findViewById(R.id.item_courier_layout)
 
     fun bindData(shippingCourierUiModel: ShippingCourierUiModel,
                  shippingCourierAdapterListener: ShippingCourierAdapterListener?,
                  isLastItem: Boolean) {
-        if (isLastItem) {
-            separator.visibility = View.GONE
-        } else {
-            separator.visibility = View.VISIBLE
-        }
-
         if (!shippingCourierUiModel.productData.isUiRatesHidden) {
+            if (isLastItem) {
+                separator.visibility = View.GONE
+            } else {
+                separator.visibility = View.VISIBLE
+            }
             if (shippingCourierAdapterListener?.isToogleYearEndPromotionOn() == true &&
                 !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)
             ) {
@@ -212,10 +213,10 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                     )
                 }
             }
-
+            imgCheck.visibility = if (shippingCourierUiModel.isSelected) View.VISIBLE else View.GONE
+        } else {
+            itemCourierLayout.visibility = View.INVISIBLE
         }
-
-        imgCheck.visibility = if (shippingCourierUiModel.isSelected) View.VISIBLE else View.GONE
     }
 
     companion object {
