@@ -21,7 +21,7 @@ class ShopOperationalHoursListBottomsheetAdapter(
     companion object {
         @LayoutRes
         private val ITEM_LAYOUT = R.layout.item_shop_operational_hours
-
+        private const val VALUE_ZERO = 0
         // Days Name List
         const val MONDAY_LABEL = "Senin"
         const val TUESDAY_LABEL = "Selasa"
@@ -50,7 +50,7 @@ class ShopOperationalHoursListBottomsheetAdapter(
 
     fun addOperationalHourListData(operationalHoursList: MutableList<ShopOperationalHour>){
         this.operationalHoursList = operationalHoursList
-        notifyItemRangeChanged(0, this.operationalHoursList.size)
+        notifyItemRangeChanged(VALUE_ZERO, this.operationalHoursList.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -5,7 +5,8 @@
     <application>
         <activity
             android:name="com.tokopedia.shop_widget.operationalhour.view.activity.ShopOperationalHourBottomSheetActivity"
-            android:theme="@style/Theme.TransparentNoAnimation">
+            android:theme="@style/Theme.TransparentNoAnimation"
+            android:exported="false">
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
