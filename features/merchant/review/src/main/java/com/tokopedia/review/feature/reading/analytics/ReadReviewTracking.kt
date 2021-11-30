@@ -46,33 +46,51 @@ object ReadReviewTracking {
         trackingQueue: TrackingQueue
     ) {
         val trackingMap = DataLayer.mapOf(
-            ReviewTrackingConstant.EVENT, ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
-            ReviewTrackingConstant.EVENT_ACTION, ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
-            ReviewTrackingConstant.EVENT_LABEL, String.format(
+            ReviewTrackingConstant.EVENT,
+            ReadReviewTrackingConstants.EVENT_PROMO_VIEW,
+            ReviewTrackingConstant.EVENT_ACTION,
+            ReadReviewTrackingConstants.EVENT_ACTION_IMPRESS_ITEM,
+            ReviewTrackingConstant.EVENT_LABEL,
+            String.format(
                 ReadReviewTrackingConstants.EVENT_LABEL_IMPRESSION,
                 countRating,
                 countReview
             ),
-            ReadReviewTrackingConstants.KEY_PRODUCT_ID, productId,
-            ReviewTrackingConstant.EVENT_CATEGORY, ReadReviewTrackingConstants.EVENT_CATEGORY,
-            ReadReviewTrackingConstants.KEY_USER_ID, userId,
-            ReadReviewTrackingConstants.KEY_BUSINESS_UNIT, ReadReviewTrackingConstants.BUSINESS_UNIT,
-            ReadReviewTrackingConstants.KEY_CURRENT_SITE, ReadReviewTrackingConstants.CURRENT_SITE,
-            ReadReviewTrackingConstants.KEY_ECOMMERCE, DataLayer.mapOf(
+            ReadReviewTrackingConstants.KEY_PRODUCT_ID,
+            productId,
+            ReviewTrackingConstant.EVENT_CATEGORY,
+            ReadReviewTrackingConstants.EVENT_CATEGORY,
+            ReadReviewTrackingConstants.KEY_USER_ID,
+            userId,
+            ReadReviewTrackingConstants.KEY_BUSINESS_UNIT,
+            ReadReviewTrackingConstants.BUSINESS_UNIT,
+            ReadReviewTrackingConstants.KEY_CURRENT_SITE,
+            ReadReviewTrackingConstants.CURRENT_SITE,
+            ReadReviewTrackingConstants.KEY_ECOMMERCE,
+            DataLayer.mapOf(
                 ReadReviewTrackingConstants.EVENT_PROMO_VIEW, DataLayer.mapOf(
                     ReadReviewTrackingConstants.KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                            ReadReviewTrackingConstants.KEY_ID, feedbackId,
-                            ReadReviewTrackingConstants.KEY_CREATIVE, ReadReviewTrackingConstants.EVENT_CATEGORY,
-                            ReadReviewTrackingConstants.KEY_NAME, String.format(ReadReviewTrackingConstants.EE_NAME, characterCount, imageCount),
-                            ReadReviewTrackingConstants.KEY_POSITION, position.toString(),
-                            ReadReviewTrackingConstants.KEY_PRODUCT_ID, productId
+                            ReadReviewTrackingConstants.KEY_ID,
+                            feedbackId,
+                            ReadReviewTrackingConstants.KEY_CREATIVE,
+                            ReadReviewTrackingConstants.EVENT_CATEGORY,
+                            ReadReviewTrackingConstants.KEY_NAME,
+                            String.format(
+                                ReadReviewTrackingConstants.EE_NAME,
+                                characterCount,
+                                imageCount
+                            ),
+                            ReadReviewTrackingConstants.KEY_POSITION,
+                            position.toString(),
+                            ReadReviewTrackingConstants.KEY_PRODUCT_ID,
+                            productId
                         )
                     )
                 )
             )
         )
-        trackingQueue.putEETracking(trackingMap  as HashMap<String, Any>?)
+        trackingQueue.putEETracking(trackingMap as HashMap<String, Any>?)
     }
 
     fun trackOnFilterClicked(filterName: String, isActive: Boolean, productId: String) {
