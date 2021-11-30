@@ -5,10 +5,22 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.buyerorderdetail.presentation.adapter.diffutil.BuyerOrderDetailDiffUtilCallback
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
-import com.tokopedia.buyerorderdetail.presentation.model.*
+import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ThinDashedDividerUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 
 @Suppress("UNCHECKED_CAST")
-class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
+open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFactory) :
         BaseAdapter<BuyerOrderDetailTypeFactory>(typeFactory) {
 
     private fun setupNewItems(
@@ -23,10 +35,6 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
             setUpPhysicalRecommendationSection(newData.pgRecommendationWidgetUiModel)
             setupDigitalRecommendationSection()
         }
-    }
-
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel) {
-        add(pgRecommendationWidgetUiModel)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderStatusSection(
@@ -76,7 +84,11 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addTickerSection(paymentInfoUiModel.ticker)
     }
 
-    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {
+    protected open fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setUpPhysicalRecommendationSection(pgRecommendationWidgetUiModel: PGRecommendationWidgetUiModel) {
+        add(pgRecommendationWidgetUiModel)
+    }
+
+    protected open fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupDigitalRecommendationSection() {
         add(DigitalRecommendationUiModel())
     }
 
