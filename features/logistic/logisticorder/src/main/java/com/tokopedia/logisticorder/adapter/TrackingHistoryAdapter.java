@@ -78,8 +78,10 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
 
-        if (isKurirRekomendasi) {
+        if (isKurirRekomendasi && (!trackingHistoryData.get(position).getPartnerName().isEmpty())) {
             holder.courierName.setText(holder.context.getString(R.string.label_kurir_rekomendasi, trackingHistoryData.get(position).getPartnerName()));
+        } else {
+            holder.courierName.setVisibility(View.GONE);
         }
 
         if (position == 0) {
