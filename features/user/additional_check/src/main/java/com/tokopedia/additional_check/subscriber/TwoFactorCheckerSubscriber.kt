@@ -64,8 +64,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
                     .build()
                     .inject(this)
 
-            gotoLinkAccountReminder(activity)
-//            doChecking(activity)
+            doChecking(activity)
         }
     }
 
@@ -132,7 +131,7 @@ class TwoFactorCheckerSubscriber: Application.ActivityLifecycleCallbacks {
 
     private fun gotoLinkAccountReminder(mActivity: Activity?) {
         if(whiteListedPageAccountLinkReminder.contains(mActivity?.javaClass?.simpleName)) {
-            val intent = Intent(mActivity, LinkAccountReminderActivity::class.java)
+            val intent = RouteManager.getIntent(mActivity, ApplinkConstInternalGlobal.LINK_ACC_REMINDER)
             mActivity?.startActivity(intent)
         }
     }
