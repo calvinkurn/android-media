@@ -32,6 +32,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.affiliate.PAGE_ZERO
 
 class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeChangeInterface{
 
@@ -42,7 +43,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
     private var listSize = 0
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
-    private var selectedRange = AffiliateBottomDatePicker.TODAY
 
     companion object {
         fun getFragmentInstance(userNameParam : String, profilePictureParam : String): Fragment {
@@ -82,13 +82,13 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
         affiliateIncomeViewModel.getAffiliateDataItems().observe(this, {
             adapter.removeShimmer(listSize)
-            if(it.isEmpty()){
+            if(it.isEmpty() && listSize == 0){
                 showGlobalErrorEmptyState()
             } else {
+                hideGlobalErrorEmptyState()
                 listSize += it.size
                 adapter.addMoreData(it)
                 loadMoreTriggerListener?.updateStateAfterGetData()
-
             }
         })
         affiliateIncomeViewModel.getShimmerVisibility().observe(this, { visibility ->
@@ -102,6 +102,24 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         affiliateIncomeViewModel.getErrorMessage().observe(this, { error ->
             setErrorState(error.toString())
         })
+        affiliateIncomeViewModel.getRangeChange().observe(this,{changed ->
+            if(changed) {
+                resetItems()
+                view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
+            }
+        })
+    }
+
+    private fun hideGlobalErrorEmptyState() {
+        view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.hide()
+    }
+
+    private fun resetItems() {
+        loadMoreTriggerListener?.resetState()
+        listSize = 0
+        adapter.resetList()
+        hideGlobalErrorEmptyState()
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
     }
 
     private fun showGlobalErrorEmptyState() {
@@ -143,10 +161,10 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun afterViewCreated() {
-        affiliateIncomeViewModel.getAffiliateTransactionHistory(getStartFromDate(selectedRange), getEndFromDate(AffiliateBottomDatePicker.TODAY), 0)
+        affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
         view?.findViewById<Typography>(R.id.withdrawal_user_name)?.text = userName
         ImageHandler.loadImageCircle2(context, view?.findViewById<ImageUnify>(R.id.withdrawal_user_image), profilePicture)
-        view?.findViewById<Typography>(R.id.date_range_text)?.text = AffiliateBottomDatePicker.TODAY
+        view?.findViewById<Typography>(R.id.date_range_text)?.text = affiliateIncomeViewModel.getSelectedDate()
         view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
             AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY,this).show(childFragmentManager, "")
         }
@@ -170,14 +188,21 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             )
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = getString(R.string.affiliate_withdrawal)
         }
+        initDateRangeClickListener()
         affiliateIncomeViewModel.getAffiliateBalance()
+    }
+
+    private fun initDateRangeClickListener() {
+        view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
+            AffiliateBottomDatePicker.newInstance(affiliateIncomeViewModel.getSelectedDate(),this).show(childFragmentManager, "")
+        }
     }
 
     private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 if(affiliateIncomeViewModel.hasNext)
-                    affiliateIncomeViewModel.getAffiliateTransactionHistory(getStartFromDate(selectedRange), getEndFromDate(selectedRange),page - 1)
+                    affiliateIncomeViewModel.getAffiliateTransactionHistory(page - 1)
             }
         }
     }
@@ -213,14 +238,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
 
 
     override fun rangeChanged(range: AffiliateDatePickerData) {
-        selectedRange = range.text
-        loadMoreTriggerListener?.resetState()
-        listSize = 0
-        adapter.resetList()
-        view?.findViewById<Typography>(R.id.date_range_text)?.text = range.text
-        view?.findViewById<ConstraintLayout>(R.id.date_range)?.setOnClickListener {
-            AffiliateBottomDatePicker.newInstance(range.text,this).show(childFragmentManager, "")
-        }
+        affiliateIncomeViewModel.onRangeChanged(range)
     }
 
     override fun onRangeSelectionButtonClicked() {

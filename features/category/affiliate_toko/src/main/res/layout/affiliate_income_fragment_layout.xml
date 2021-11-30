@@ -29,6 +29,7 @@
         app:layout_constraintTop_toBottomOf="@id/withdrawal_navToolbar">
 
         <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
@@ -191,15 +192,17 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
+            android:layout_below="@id/appbar"
             android:layout_width="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_height="match_parent"
-            android:paddingBottom="@dimen/dp_52">
+            android:paddingBottom="@dimen/unify_space_48"
+            android:layout_marginBottom="@dimen/unify_space_48">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/withdrawal_transactions_rv"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 tools:itemCount="4"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/affiliate_transaction_history_item_layout"
