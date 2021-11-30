@@ -79,12 +79,16 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         viewModel.phoneValidation.observe(this, {
             when (it) {
                 is Success -> {
-                    if (it.data.validation.status == InactivePhoneConstant.STATUS_SUCCESS) {
-                        isHasEmailAndPin()
-                    } else if (it.data.validation.status == InactivePhoneConstant.STATUS_MULTIPLE_ACCOUNT) {
-                        gotoChoseAccount(inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty())
-                    } else if (it.data.validation.status == InactivePhoneConstant.STATUS_FAIL) {
-                        onError(Throwable(it.data.validation.error))
+                    when (it.data.validation.status) {
+                        InactivePhoneConstant.STATUS_SUCCESS -> {
+                            isHasEmailAndPin()
+                        }
+                        InactivePhoneConstant.STATUS_MULTIPLE_ACCOUNT -> {
+                            gotoChoseAccount(inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty())
+                        }
+                        InactivePhoneConstant.STATUS_FAIL -> {
+                            onError(Throwable(it.data.validation.error))
+                        }
                     }
                 }
                 is Fail -> {
