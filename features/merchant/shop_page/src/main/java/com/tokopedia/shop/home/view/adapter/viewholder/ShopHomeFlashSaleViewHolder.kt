@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
@@ -43,6 +44,7 @@ class ShopHomeFlashSaleViewHolder(
     private val reminderCountView: Typography? = itemView.findViewById(R.id.tgp_remind_me)
     private val productCarouselView: RecyclerView? = itemView.findViewById(R.id.rv_flash_sale_product_carousel)
     private val productCarouselAdapter: ShopCampaignFlashSaleProductCarouselAdapter = ShopCampaignFlashSaleProductCarouselAdapter(listener)
+    private val handler = Handler()
 
     companion object {
         @LayoutRes
@@ -54,6 +56,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val FORMAT_HEX_COLOR = 0xffffff
         private const val FORMAT_PREFIX_HEX_COLOR = "#"
         private const val VALUE_INT_HUNDREDS = 100
+        private const val DELAY_IN_THREE_SECONDS = 3000L
     }
 
     init {
@@ -196,6 +199,11 @@ class ShopHomeFlashSaleViewHolder(
         // set reminder bell icon
         val isRemindMe = flashSaleItem?.isRemindMe ?: false
         setupReminderIconAndWording(isRemindMe)
+
+        // set text wording ingatkan into number of users after 3 seconds
+        handler.postDelayed({
+            reminderCountView?.text = reminderWording
+        }, DELAY_IN_THREE_SECONDS)
     }
 
     private fun getTotalNotifyWording(totalNotify: Int): String {
