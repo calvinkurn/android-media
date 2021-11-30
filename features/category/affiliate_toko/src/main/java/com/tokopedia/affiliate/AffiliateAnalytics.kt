@@ -65,6 +65,9 @@ object AffiliateAnalytics {
             const val IMPRESSION_HOME_PORTAL = "impression - home portal"
             const val IMPRESSION_HOME_PORTAL_B_S = "impression - home portal - bottom sheet"
             const val CLICK_SEARCH = "click - search"
+            const val HOME_NAV_BAR_CLICK = "click - home - navbar"
+            const val PROMOSIKAN_NAV_BAR_CLICK = "click - promosikan - navbar"
+            const val BANUTAN_NAV_BAR_CLICK = "click - bantuan - navbar"
         }
     }
 }
