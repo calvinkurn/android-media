@@ -17,16 +17,8 @@ class SubmitDVTokenUseCase @Inject constructor(val repository: dagger.Lazy<Graph
         private const val PARAM_CHECK_FORCE = "check_force_initialize"
         private const val ANDROID = "android"
         private val query = """
-            mutation subDvcIntlEvent(${'$'}key: String!, 
-                ${'$'}retry_count: Int!, 
-                ${'$'}error_message: String!, 
-                ${'$'}device_type: String!,
-                ${'$'}check_force_initialize: Boolean){
-              subDvcIntlEvent(input: {key: ${'$'}key, 
-                retry_count: ${'$'}retry_count, 
-                error_message: ${'$'}error_message, 
-                device_type: ${'$'}device_type},
-                check_force_initialize: ${'$'}check_force_initialize) {
+            mutation subDvcIntlEvent(${'$'}input: SubDvcIntlEventRequest!){
+              subDvcIntlEvent(input: ${'$'}input) {
                 is_error
                 data {
                   is_expire
@@ -53,7 +45,7 @@ class SubmitDVTokenUseCase @Inject constructor(val repository: dagger.Lazy<Graph
                         deviceType: String = ANDROID,
                         checkForce: Boolean = false): SubmitDeviceInitResponse {
         val useCase = getOrCreateUseCase()
-        val params: Map<String, Any?> = mutableMapOf(
+        val params = mapOf(
                 PARAM_KEY to key,
                 PARAM_RETRY_COUNT to retryCount,
                 PARAM_ERROR_MESSAGE to errorMessage,
