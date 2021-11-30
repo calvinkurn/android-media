@@ -39,6 +39,8 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
             return Result.failure()
         }
+        // force in backend definition is force from opening app, not force worker.
+        val forceOpenApp = !inputData.getBoolean(PARAM_FORCE, false)
         return withContext(Dispatchers.IO) {
             val result: Result
             var resultInit: Pair<String, String>?
@@ -76,7 +78,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             result = if (token.isNotEmpty()) {
                 try {
                     val resultServer =
-                        sendDataVisorToServer(token, runAttemptCount, "", isTokenExpired)
+                        sendDataVisorToServer(token, runAttemptCount, "", forceOpenApp)
                     if (!resultServer.subDvcIntlEvent.isError) {
                         setToken(applicationContext, token)
                         if (resultServer.subDvcIntlEvent.dvData.isExpire) {
@@ -97,7 +99,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             } else {
                 val error = resultInit?.second ?: ""
                 sendLog(token, false, error)
-                sendErrorDataVisorToServer(runAttemptCount, error, isTokenExpired)
+                sendErrorDataVisorToServer(runAttemptCount, error, forceOpenApp)
                 Result.retry()
             }
             result
@@ -142,6 +144,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         const val KEY_TOKEN = "tk"
         const val KEY_EXPIRED = "is_exp"
         const val KEY_TS_WORKER = "ts_worker"
+        const val PARAM_FORCE = "force"
         const val LOG_TAG = "GQL_ERROR_RISK"
         val THRES_WORKER = TimeUnit.DAYS.toMillis(1)
         var lastToken = ""
@@ -157,7 +160,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                         return@launch
                     }
                     if (forceWorker || needToRun(appContext)) {
-                        runWorker(appContext)
+                        runWorker(appContext, forceWorker)
                     }
                 } catch (ignored: Exception) {
                 }
@@ -173,7 +176,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             }
         }
 
-        fun setTsWorker(context: Context) {
+        private fun setTsWorker(context: Context) {
             val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
             val now = System.currentTimeMillis()
             sp.edit().putLong(KEY_TS_WORKER, now)
@@ -189,7 +192,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             }
         }
 
-        fun needToRun(context: Context): Boolean {
+        private fun needToRun(context: Context): Boolean {
             if (lastToken.isEmpty()) {
                 val sp = context.getSharedPreferences(DV_SHARED_PREF_NAME, Context.MODE_PRIVATE)
                 lastToken = sp.getString(KEY_TOKEN, DEFAULT_VALUE_DATAVISOR)
@@ -214,7 +217,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             return userSession!!
         }
 
-        fun runWorker(context: Context) {
+        fun runWorker(context: Context, forceWorker: Boolean) {
             try {
                 setTsWorker(context)
                 WorkManager.getInstance(context).enqueueUniqueWork(
@@ -227,6 +230,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                                 .setRequiredNetworkType(NetworkType.CONNECTED)
                                 .build()
                         )
+                        .setInputData(Data.Builder().putBoolean(PARAM_FORCE, forceWorker).build())
                         .build()
                 )
             } catch (ex: Exception) {
