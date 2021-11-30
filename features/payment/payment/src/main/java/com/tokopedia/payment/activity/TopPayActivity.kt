@@ -420,8 +420,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
-            if (imagePath != null) {
+            if (!imagePath.isNullOrEmpty()) {
                 val base64 = encodeToBase64(imagePath)
+                if (base64.isEmpty()) return
                 val jsCallbackBuilder = StringBuilder()
                 jsCallbackBuilder.append("javascript:")
                         .append(mJsHciCallbackFuncName)
@@ -470,7 +471,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private fun encodeToBase64(imagePath: String?): String {
         val bm = BitmapFactory.decodeFile(imagePath)
         val baos = ByteArrayOutputStream()
-        bm.compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESS_QUALITY, baos)
+        bm?.compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESS_QUALITY, baos) ?: return ""
         val b = baos.toByteArray()
         return Base64.encodeToString(b, Base64.DEFAULT)
     }
