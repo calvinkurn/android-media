@@ -420,21 +420,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             webChromeWebviewClient?.onActivityResult(requestCode, resultCode, intent)
         } else if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val imagePath = intent?.getStringExtra(HCI_KTP_IMAGE_PATH)
-            if (!imagePath.isNullOrEmpty()) {
-                val base64 = encodeToBase64(imagePath)
-                if (base64.isEmpty()) return
-                val jsCallbackBuilder = StringBuilder()
-                jsCallbackBuilder.append("javascript:")
-                        .append(mJsHciCallbackFuncName)
-                        .append("('")
-                        .append(imagePath)
-                        .append("'")
-                        .append(", ")
-                        .append("'")
-                        .append(base64)
-                        .append("')")
-                scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
-            }
+            sendKycImagePathToLite(imagePath)
         } else if(requestCode == REQUEST_CODE_LINK_ACCOUNT) {
             hideProgressDialog()
             if(resultCode == Activity.RESULT_OK) {
@@ -445,6 +431,25 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 reloadPayment()
             } else {
                 hideFullLoading()
+            }
+        }
+    }
+
+    private fun sendKycImagePathToLite(imagePath: String?) {
+        if (!imagePath.isNullOrEmpty()) {
+            val base64 = encodeToBase64(imagePath)
+            base64?.let {
+                val jsCallbackBuilder = StringBuilder()
+                jsCallbackBuilder.append("javascript:")
+                    .append(mJsHciCallbackFuncName)
+                    .append("('")
+                    .append(imagePath)
+                    .append("'")
+                    .append(", ")
+                    .append("'")
+                    .append(it)
+                    .append("')")
+                scroogeWebView?.loadUrl(jsCallbackBuilder.toString())
             }
         }
     }
@@ -468,12 +473,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         scroogeWebView?.loadUrl(reloadUrl)
     }
 
-    private fun encodeToBase64(imagePath: String?): String {
-        val bm = BitmapFactory.decodeFile(imagePath)
-        val baos = ByteArrayOutputStream()
-        bm?.compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESS_QUALITY, baos) ?: return ""
-        val b = baos.toByteArray()
-        return Base64.encodeToString(b, Base64.DEFAULT)
+    private fun encodeToBase64(imagePath: String?): String? {
+        return try {
+            val bm = BitmapFactory.decodeFile(imagePath)
+            val baos = ByteArrayOutputStream()
+            bm.compress(Bitmap.CompressFormat.JPEG, IMAGE_COMPRESS_QUALITY, baos)
+            val b = baos.toByteArray()
+            Base64.encodeToString(b, Base64.DEFAULT)
+        } catch (e: Exception) {
+            null
+        }
     }
 
     private fun showFullLoading() {
