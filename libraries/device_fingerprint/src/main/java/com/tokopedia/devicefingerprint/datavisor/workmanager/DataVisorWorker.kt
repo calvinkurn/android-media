@@ -39,8 +39,9 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         if (runAttemptCount > MAX_RUN_ATTEMPT) {
             return Result.failure()
         }
-        // force in backend definition is force from opening app, not force worker.
-        val forceOpenApp = !inputData.getBoolean(PARAM_FORCE, false)
+        val isLoginRegister = inputData.getBoolean(PARAM_IS_LOGIN_REGISTER, false)
+        val reinitDataVisor = isLoginRegister || lastToken == DEFAULT_VALUE_DATAVISOR || isTokenExpired
+        val needCheckExpired = !reinitDataVisor
         return withContext(Dispatchers.IO) {
             val result: Result
             var resultInit: Pair<String, String>?
@@ -51,7 +52,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             try {
                 resultInit = suspendCancellableCoroutine { continuation ->
                     try {
-                        if (lastToken == DEFAULT_VALUE_DATAVISOR || isTokenExpired) {
+                        if (reinitDataVisor) {
                             VisorFingerprintInstance.initToken(applicationContext,
                                 userSession.userId,
                                 listener = object : VisorFingerprintInstance.onVisorInitListener {
@@ -78,7 +79,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             result = if (token.isNotEmpty()) {
                 try {
                     val resultServer =
-                        sendDataVisorToServer(token, runAttemptCount, "", forceOpenApp)
+                        sendDataVisorToServer(token, runAttemptCount, "", needCheckExpired)
                     if (!resultServer.subDvcIntlEvent.isError) {
                         setToken(applicationContext, token)
                         if (resultServer.subDvcIntlEvent.dvData.isExpire) {
@@ -99,7 +100,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             } else {
                 val error = resultInit?.second ?: ""
                 sendLog(token, false, error)
-                sendErrorDataVisorToServer(runAttemptCount, error, forceOpenApp)
+                sendErrorDataVisorToServer(runAttemptCount, error, false)
                 Result.retry()
             }
             result
@@ -120,9 +121,9 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
     suspend fun sendErrorDataVisorToServer(
         runAttemptCount: Int,
         errorMessage: String,
-        checkForce: Boolean
+        checkForceInit: Boolean
     ) {
-        sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage, checkForce)
+        sendDataVisorToServer(DEFAULT_VALUE_DATAVISOR, runAttemptCount, errorMessage, checkForceInit)
     }
 
     private suspend fun sendDataVisorToServer(
@@ -144,7 +145,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
         const val KEY_TOKEN = "tk"
         const val KEY_EXPIRED = "is_exp"
         const val KEY_TS_WORKER = "ts_worker"
-        const val PARAM_FORCE = "force"
+        const val PARAM_IS_LOGIN_REGISTER = "isloginRegister"
         const val LOG_TAG = "GQL_ERROR_RISK"
         val THRES_WORKER = TimeUnit.DAYS.toMillis(1)
         var lastToken = ""
@@ -217,7 +218,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
             return userSession!!
         }
 
-        fun runWorker(context: Context, forceWorker: Boolean) {
+        fun runWorker(context: Context, isLoginRegister: Boolean) {
             try {
                 setTsWorker(context)
                 WorkManager.getInstance(context).enqueueUniqueWork(
@@ -230,7 +231,7 @@ class DataVisorWorker(appContext: Context, params: WorkerParameters) :
                                 .setRequiredNetworkType(NetworkType.CONNECTED)
                                 .build()
                         )
-                        .setInputData(Data.Builder().putBoolean(PARAM_FORCE, forceWorker).build())
+                        .setInputData(Data.Builder().putBoolean(PARAM_IS_LOGIN_REGISTER, isLoginRegister).build())
                         .build()
                 )
             } catch (ex: Exception) {
