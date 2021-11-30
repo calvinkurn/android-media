@@ -1,44 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.airbnb.lottie.LottieAnimationView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cl_like"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    tools:background="@color/play_dms_N700"
-    tools:layout_height="match_parent"
-    tools:layout_width="match_parent"
-    >
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_like"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:lottie_rawRes="@raw/anim_outline_spam_like"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/tv_total_likes"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_total_likes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:includeFontPadding="false"
-        android:inputType="textNoSuggestions"
-        android:textAlignment="center"
-        android:textColor="@color/Unify_Static_White"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/animation_like"
-        app:layout_constraintStart_toStartOf="@id/animation_like"
-        app:layout_constraintTop_toBottomOf="@id/animation_like"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:typographyType="body_3"
-        tools:text="123"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:id="@+id/animation_like"
+    android:layout_width="@dimen/layout_lvl3"
+    android:layout_height="@dimen/layout_lvl3"
+    app:lottie_rawRes="@raw/anim_outline_spam_like"
+    />

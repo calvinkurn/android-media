@@ -309,6 +309,8 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                         description
                         attributeName
                         badgeURL
+                        buttonLink
+                        buttonText
                     }
                 }
             }

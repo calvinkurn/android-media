@@ -144,7 +144,7 @@ class PlayViewModelWebSocketTest {
 
         val mockResponse = pinnedMessageModelBuilder.buildPinnedMessage(
             id = PlayPinnedMessageSocketResponse.pinnedMessageId.toString(),
-            applink = PlayPinnedMessageSocketResponse.redirectUrl,
+            appLink = PlayPinnedMessageSocketResponse.redirectUrl,
             title = PlayPinnedMessageSocketResponse.title
         )
 

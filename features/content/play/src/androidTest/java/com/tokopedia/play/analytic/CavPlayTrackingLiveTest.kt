@@ -41,7 +41,6 @@ class CavPlayTrackingLiveTest {
             performShop()
             performWatchArea()
             performLike()
-            performPinnedMessage()
             performSendChatQuickReply()
             performClose()
             Thread.sleep(2000)
@@ -73,10 +72,6 @@ class CavPlayTrackingLiveTest {
         Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // like
         Espresso.onView(ViewMatchers.withId(R.id.animation_like)).perform(ViewActions.click()) // unlike
         unregister(idlResLike)
-    }
-
-    private fun performPinnedMessage() {
-        Espresso.onView(ViewMatchers.withId(R.id.tv_pinned_action)).perform(ViewActions.click())
     }
 
     private fun performSendChatQuickReply() {
