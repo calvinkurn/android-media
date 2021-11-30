@@ -241,7 +241,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == com.tokopedia.digital_deals.R.id.action_menu_share) {
-            Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getId(), dealsDetailsResponse.getSeoUrl(),
+            Utils.getSingletonInstance().shareDeal(dealsDetailsResponse.getSeoUrl(),
                     getView().getActivity(), dealsDetailsResponse.getDisplayName(),
                     dealsDetailsResponse.getImageWeb(), dealsDetailsResponse.getWebUrl());
         } else {

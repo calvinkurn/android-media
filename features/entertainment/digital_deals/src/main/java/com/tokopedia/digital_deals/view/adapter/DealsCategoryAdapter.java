@@ -574,7 +574,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SHARE,
                         getShareLabel(position));
 
-                Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getId(), categoryItems.get(getIndex()).getSeoUrl(),
+                Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
                         context, categoryItems.get(getIndex()).getDisplayName(),
                         categoryItems.get(getIndex()).getImageWeb(), categoryItems.get(getIndex()).getWebUrl());
             } else if (v.getId() == com.tokopedia.digital_deals.R.id.iv_wish_list) {

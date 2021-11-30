@@ -37,9 +37,7 @@ import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.linker.model.LinkerShareData;
 import com.tokopedia.linker.model.LinkerShareResult;
-import com.tokopedia.linker.share.DataMapper;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -233,9 +231,9 @@ public class Utils {
         return spannableString;
     }
 
-    public void shareDeal(int id, String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {
+    public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {
         String uri = DealsUrl.AppLink.DIGITAL_DEALS + "/" + deeplinkSlug;
-        shareDeal(context, Integer.toString(id), uri, name, imageUrl, desktopUrl);
+        shareDeal(context, uri, name, imageUrl, desktopUrl);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -259,24 +257,17 @@ public class Utils {
         }
     }
 
-    private void shareDeal(Context context, String id, String uri, String name, String imageUrl, String desktopUrl) {
+    private void shareDeal(Context context, String uri, String name, String imageUrl, String desktopUrl) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setId(id)
-                .setDescription("")
-                .setOgUrl(null)
-                .setType(LinkerData.ENTERTAINMENT_TYPE)
+                .setType("")
                 .setName(name)
                 .setUri(uri)
-                .setDeepLink(uri)
                 .setDesktopUrl(desktopUrl)
                 .setImgUri(imageUrl)
                 .build();
 
-        LinkerShareData linkerShareData = new LinkerShareData();
-        linkerShareData.setLinkerData(shareData);
-
         LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                linkerShareData, new ShareCallback() {
+                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
                     @Override
                     public void urlCreated(LinkerShareResult linkerShareData) {
                         Intent share = new Intent(android.content.Intent.ACTION_SEND);
