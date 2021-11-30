@@ -71,7 +71,9 @@ class SomBottomSheetOrderExtensionRequest(
     }
 
     override fun show() {
-        if (!data.completed) {
+        if (data.completed) {
+            super.dismiss()
+        } else {
             (bottomSheetLayout?.findViewById<View>(com.tokopedia.unifycomponents.R.id.bottom_sheet_header)?.layoutParams as? LinearLayout.LayoutParams)?.setMargins(
                 BOTTOM_SHEET_GAP_DEFAULT.toPx(),
                 Int.ZERO,
@@ -79,8 +81,6 @@ class SomBottomSheetOrderExtensionRequest(
                 BOTTOM_SHEET_GAP_DEFAULT.toPx()
             )
             super.show()
-        } else {
-            super.dismiss()
         }
     }
 
