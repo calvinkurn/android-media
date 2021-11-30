@@ -288,6 +288,45 @@
             app:typographyWeight="reguler"
             tools:text="Terjual 1111" />
 
+        <com.tokopedia.unifycomponents.ProgressBarUnify
+            android:id="@+id/dgu_sold_percentage_bar"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/product_card_flashsale_progressbar_height"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dgu_subtitle" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/dgu_sold_percentage_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_2"
+            android:layout_marginRight="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_4"
+            android:textColor="@color/Unify_RN500"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dgu_sold_percentage_bar"
+            app:typographyType="small"
+            tools:text="Segera Habis" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/dgu_action_button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/unify_space_8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dgu_sold_percentage_label"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="ghost"
+            tools:text="CTA" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>
