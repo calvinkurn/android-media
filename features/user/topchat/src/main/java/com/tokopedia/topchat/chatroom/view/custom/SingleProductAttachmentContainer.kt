@@ -422,7 +422,8 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindShippingLocation(product: ProductAttachmentUiModel) {
         if (commonListener?.isSeller() == true &&
-            product.locationStock.districtFullName.isNotEmpty()
+            product.locationStock.districtFullName.isNotEmpty() &&
+            !product.isFulfillment
         ) {
             shippingLocation?.show()
             shippingLocation?.text = product.locationStock.districtFullName

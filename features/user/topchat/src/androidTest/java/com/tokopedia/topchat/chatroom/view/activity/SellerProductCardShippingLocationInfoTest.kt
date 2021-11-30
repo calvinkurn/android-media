@@ -47,4 +47,5 @@ class SellerProductCardShippingLocationInfoTest : TopchatRoomTest() {
         hasNoVisibleShippingLocationOn(position = 1)
     }
 
+    // TODO: should hide shipping location info if tokocabang is true
 }
