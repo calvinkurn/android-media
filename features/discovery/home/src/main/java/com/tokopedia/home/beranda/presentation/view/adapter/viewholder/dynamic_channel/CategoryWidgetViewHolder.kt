@@ -55,7 +55,7 @@ class CategoryWidgetViewHolder(val view: View, private val categoryListener: Hom
             val dimens = R.dimen.dp_0
             recyclerView.addItemDecoration(CategoryWidgetSpacingItemDecoration(
                     CATEGORY_WIDGET_SPAN_COUNT,
-                    itemView.context.resources.getDimensionPixelOffset(dimens)
+                    dimens
             ))
         }
         setChannelDivider(channel)
