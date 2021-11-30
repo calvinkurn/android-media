@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.category.presentation.adapter.AddEditProduc
 import com.tokopedia.product.addedit.category.presentation.model.CategoryUiModel
 import com.tokopedia.product.addedit.category.presentation.viewholder.AddEditProductCategoryViewHolder
 import com.tokopedia.product.addedit.category.presentation.viewmodel.AddEditProductCategoryViewModel
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -126,8 +127,7 @@ class AddEditProductCategoryFragment : BaseDaggerFragment(), AddEditProductCateg
         rvCategory?.layoutManager = LinearLayoutManager(context)
 
         // set bg color programatically, to reduce overdraw
-        requireActivity().window.decorView.setBackgroundColor(ContextCompat.getColor(
-            requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setFragmentToUnifyBgColor()
     }
 
     private fun observer() {
