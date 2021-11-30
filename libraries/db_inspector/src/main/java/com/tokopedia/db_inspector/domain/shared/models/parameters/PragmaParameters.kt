@@ -11,5 +11,12 @@ internal sealed class PragmaParameters : BaseParameters {
         val statement: String
     ): PragmaParameters()
 
+    data class Pragma(
+        val databasePath: String,
+        val connection: DatabaseConnection? = null,
+        val statement: String,
+        var page: Int? = 1,
+        val pageSize: Int = 100
+    ) : PragmaParameters()
 
 }

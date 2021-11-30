@@ -23,6 +23,7 @@ internal interface Converters {
     interface Pragma : BaseConverter<PragmaParameters, DbQuery> {
 
         suspend infix fun version(parameters: PragmaParameters.Version): DbQuery
+        suspend infix fun pragma(parameters: PragmaParameters.Pragma): DbQuery
 
     }
 

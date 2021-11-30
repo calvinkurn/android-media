@@ -16,4 +16,14 @@ internal class PragmaConverter: Converters.Pragma {
             database = parameters.connection?.database,
             statement = parameters.statement
         )
+
+    override suspend fun pragma(parameters: PragmaParameters.Pragma): Query =
+        Query(
+            databasePath = parameters.databasePath,
+            database = parameters.connection?.database,
+            statement = parameters.statement,
+            pageSize = parameters.pageSize,
+            page = parameters.page
+        )
+
 }

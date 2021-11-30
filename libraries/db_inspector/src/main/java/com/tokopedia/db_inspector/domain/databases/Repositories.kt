@@ -22,6 +22,7 @@ internal interface Repositories {
 
     interface Pragma {
         suspend fun getUserVersion(input: PragmaParameters.Version): Page
+        suspend fun getTableInfo(input: PragmaParameters.Pragma): Page
     }
 
     interface Schema: BaseRepository<ContentParameters, Page> {
