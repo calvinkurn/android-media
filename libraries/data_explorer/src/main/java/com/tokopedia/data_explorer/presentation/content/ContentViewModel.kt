@@ -13,7 +13,7 @@ import javax.inject.Inject
 internal class ContentViewModel @Inject constructor(
     private val getTableInfoUseCase: GetTableInfoUseCase
 ) : BaseViewModel(Dispatchers.Main) {
-    val tableListLiveData = MutableLiveData<List<Cell>>()
+    val columnHeaderLiveData = MutableLiveData<List<Cell>>()
     val errorLiveData = MutableLiveData<Throwable>()
 
     fun getTableInfo(
@@ -21,7 +21,7 @@ internal class ContentViewModel @Inject constructor(
         schemaName: String
     ) {
         getTableInfoUseCase.getTableInfo(
-            ::onTablesFetched,
+            ::onColumnHeaderFetched,
             ::onTablesError,
             PragmaParameters.Pragma(
                 databasePath = databasePath,
@@ -30,8 +30,8 @@ internal class ContentViewModel @Inject constructor(
         )
     }
 
-    private fun onTablesFetched(page: Page) {
-        tableListLiveData.postValue(page.cells)
+    private fun onColumnHeaderFetched(page: Page) {
+        columnHeaderLiveData.postValue(page.cells)
     }
 
     private fun onTablesError(throwable: Throwable) {

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.domain.shared.models.Cell
-import kotlinx.android.synthetic.main.db_inspector_table_item_layout.view.*
+import kotlinx.android.synthetic.main.data_explorer_table_item_layout.view.*
 
 internal class SchemaViewHolder(itemView: View, val onClick: (String) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
@@ -27,6 +27,6 @@ internal class SchemaViewHolder(itemView: View, val onClick: (String) -> Unit) :
             inflater.inflate(LAYOUT_ID, parent, false), onClick
         )
 
-        private val LAYOUT_ID = R.layout.db_inspector_table_item_layout
+        private val LAYOUT_ID = R.layout.data_explorer_table_item_layout
     }
 }

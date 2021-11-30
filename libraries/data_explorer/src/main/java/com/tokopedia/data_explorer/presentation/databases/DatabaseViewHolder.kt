@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.domain.databases.models.DatabaseDescriptor
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.db_inspector_database_item_layout.view.*
+import kotlinx.android.synthetic.main.data_explorer_database_item_layout.view.*
 
 internal class DatabaseViewHolder(itemView: View, val onClick: (DatabaseDescriptor) -> Unit) : RecyclerView.ViewHolder(itemView) {
 
@@ -25,7 +25,7 @@ internal class DatabaseViewHolder(itemView: View, val onClick: (DatabaseDescript
     }
 
     companion object {
-        private val LAYOUT_ID = R.layout.db_inspector_database_item_layout
+        private val LAYOUT_ID = R.layout.data_explorer_database_item_layout
         fun getViewHolder(
             inflater: LayoutInflater,
             parent: ViewGroup,

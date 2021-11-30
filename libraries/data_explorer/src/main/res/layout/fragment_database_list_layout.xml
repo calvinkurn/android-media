@@ -23,7 +23,7 @@
        android:layout_marginTop="@dimen/unify_space_8"
        android:layout_marginStart="@dimen/unify_space_8"
        android:layout_marginEnd="@dimen/unify_space_8"
-       tools:listitem="@layout/db_inspector_database_item_layout"
+       tools:listitem="@layout/data_explorer_database_item_layout"
        tools:itemCount="5" />
 
 </LinearLayout>

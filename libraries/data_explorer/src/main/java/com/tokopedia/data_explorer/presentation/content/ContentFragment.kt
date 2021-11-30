@@ -1,16 +1,21 @@
 package com.tokopedia.data_explorer.presentation.content
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.di.DataExplorerComponent
+import com.tokopedia.data_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.presentation.Constants
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.data_explorer_fragment_content_layout.*
 import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
@@ -18,6 +23,8 @@ class ContentFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
+    private val headerAdapter: HeaderAdapter = HeaderAdapter()
+
     private val viewModel: ContentViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(ContentViewModel::class.java)
@@ -40,20 +47,31 @@ class ContentFragment: BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_database_list_layout, container, false)
+        return inflater.inflate(R.layout.data_explorer_fragment_content_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        search_input_view.gone()
         viewModel.getTableInfo(databasePath, schemaName)
         observeViewModels()
-        //rvDatabaseList.adapter = schemaAdapter
-        //rvDatabaseList.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun observeViewModels() {
-
+        viewModel.columnHeaderLiveData.observe(viewLifecycleOwner, { cells ->
+            headerAdapter.setItems(cells)
+            rvContent.setupGrid()
+            rvContent.adapter = headerAdapter
+            rvContent.layoutManager = GridLayoutManager(
+                context,
+                cells.size,
+                RecyclerView.VERTICAL,
+                false
+            )
+            Log.d("DATAEXPLORER", cells.map { it.text }.joinToString())
+        })
+        viewModel.errorLiveData.observe(viewLifecycleOwner, {
+            Toaster.build(rvDatabaseList, "Error", Toaster.TYPE_NORMAL, Toaster.LENGTH_LONG).show()
+        })
     }
 
 
