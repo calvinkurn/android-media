@@ -410,14 +410,12 @@ class PlayBeforeLiveFragment @Inject constructor(
             PlayLivePusherErrorType.NetworkPoor -> showErrorToaster(
                 err = state.error,
                 customErrMessage = getString(R.string.play_bro_error_network_problem),
-                actionLabel = getString(R.string.play_ok),
-                actionListener = {  }
+                actionLabel = getString(R.string.play_ok)
             )
             else -> showErrorToaster(
                 err = state.error,
                 customErrMessage = getString(R.string.play_broadcaster_default_error),
-                actionLabel = getString(R.string.play_ok),
-                actionListener = {  }
+                actionLabel = getString(R.string.play_ok)
             )
         }
         analytic.viewErrorOnFinalSetupPage(state.error.reason)
