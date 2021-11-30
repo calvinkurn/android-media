@@ -398,7 +398,10 @@ class PlayBeforeLiveFragment @Inject constructor(
                 err = state.error,
                 customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
                 actionLabel = getString(R.string.play_broadcast_try_again),
-                actionListener = { parentViewModel.reconnectLiveStream() }
+                actionListener = {
+                    showCountdown(true)
+                    parentViewModel.reconnectLiveStream()
+                }
             )
             PlayLivePusherErrorType.SystemError -> showErrorToaster(
                 err = state.error,
