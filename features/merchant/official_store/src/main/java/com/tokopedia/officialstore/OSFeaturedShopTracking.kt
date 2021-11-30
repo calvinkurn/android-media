@@ -18,7 +18,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
     private val SHOP_ID = "%s_%s"
 
     //official-store/{category name} - dynamic channel shop - {destination_applink} - {header_name}
-    private val SHOP_NAME = "official-store/%s - dynamic channel shop - %s - %s"
+    private val SHOP_NAME = "/official-store/%s - dynamic channel shop - %s - %s"
 
     fun getEventClickShopWidget(channel: ChannelModel, grid: ChannelGrid, categoryName: String, bannerPosition: Int, userId: String) =
             BaseTrackerBuilder()
@@ -30,7 +30,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                             promotions = listOf(createFeaturedShopPromotion(
                                     channel = channel,
                                     channelGrid = grid,
-                                    position = bannerPosition,
+                                    position = (bannerPosition+1),
                                     categoryName = categoryName
                             )))
                     .appendBusinessUnit(BusinessUnit.DEFAULT)
@@ -48,7 +48,7 @@ object OSFeaturedShopTracking: BaseTrackerConst() {
                             promotions = listOf(createFeaturedShopPromotion(
                                     channel = channel,
                                     channelGrid = grid,
-                                    position = bannerPosition,
+                                    position = (bannerPosition+1),
                                     categoryName = categoryName
                             )))
                     .appendBusinessUnit(BusinessUnit.DEFAULT)
