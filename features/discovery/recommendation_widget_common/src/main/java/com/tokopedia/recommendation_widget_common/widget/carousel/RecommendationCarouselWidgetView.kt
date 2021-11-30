@@ -481,6 +481,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             setData(carouselData)
             scrollCarousel(0)
             impressChannel(carouselData)
+            recyclerView.visible()
+            itemView.loadingRecom.gone()
         }
     }
 
@@ -683,6 +685,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                         basicListener?.onShowError(
                             pageName = result.pageName,
                             e = result.throwable ?: MessageErrorException(context?.getString(R.string.failed_to_load)))
+                        recyclerView.visible()
+                        itemView.loadingRecom.gone()
                     }
                 }
             })
