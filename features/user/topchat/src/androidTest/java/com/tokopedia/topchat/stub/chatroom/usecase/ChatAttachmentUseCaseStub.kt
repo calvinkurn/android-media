@@ -98,6 +98,19 @@ class ChatAttachmentUseCaseStub @Inject constructor(
             )
         }
 
+    val withShippingInfoAndTokocabang: ChatAttachmentResponse
+        get() = alterResponseOf(shippingLocationPath) { response ->
+            alterAttachmentAttributesAt(
+                position = 0,
+                responseObj = response,
+                attachmentAltercation = { },
+                attributesAltercation = { attr ->
+                    attr.getAsJsonObject(product_profile)
+                        .addProperty(is_fulfillment, true)
+                }
+            )
+        }
+
     fun getShippingText(position: Int, response: ChatAttachmentResponse): String {
         val attr = response.chatAttachments.list[position].attributes
         val obj = CommonUtil.fromJson<JsonObject>(attr, JsonObject::class.java)
@@ -239,6 +252,7 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val district_name_full_text = "district_name_full_text"
     private val is_upcoming_campaign_product = "is_upcoming_campaign_product"
     private val status = "status"
+    private val is_fulfillment = "is_fulfillment"
 
     // broadcast attributes
     private val start_date = "start_date"
