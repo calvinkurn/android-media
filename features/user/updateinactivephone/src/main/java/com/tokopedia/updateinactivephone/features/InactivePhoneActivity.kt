@@ -83,6 +83,8 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
                         isHasEmailAndPin()
                     } else if (it.data.validation.status == InactivePhoneConstant.STATUS_MULTIPLE_ACCOUNT) {
                         gotoChoseAccount(inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty())
+                    } else if (it.data.validation.status == InactivePhoneConstant.STATUS_FAIL) {
+                        onError(Throwable(it.data.validation.error))
                     }
                 }
                 is Fail -> {
