@@ -371,7 +371,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
     }
 
     private fun goToLiveTrackingPage(model: TrackOrderModel) {
-        mAnalytics.eventClickOrderTrackingClickButtonLiveTracking()
         var trackingUrl = mTrackingUrl
         if (trackingUrl.isNullOrEmpty()) {
             trackingUrl = model.detail.trackingUrl
