@@ -419,13 +419,13 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     fun updateMultiActionButton(type: Int, count: Int) {
         multiActionBtn.text = when (type) {
             TopAdsInsightConstants.BID_KEYWORD -> {
-                String.format(resources.getString(R.string.apply_fee), count)
+                String.format(resources.getString(R.string.bid_keyword_btn_text), count)
             }
             TopAdsInsightConstants.NEW_KEYWORD -> {
-                String.format(resources.getString(R.string.add_keyword), count)
+                String.format(resources.getString(R.string.new_keyword_btn_text), count)
             }
             TopAdsInsightConstants.NEGATIVE_KEYWORD -> {
-                String.format(resources.getString(R.string.add_neg_keywords), count)
+                String.format(resources.getString(R.string.neg_keyword_btn_text), count)
             }
             else -> ""
         }

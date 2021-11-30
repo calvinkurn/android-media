@@ -24,7 +24,7 @@ data class RecommendedKeywordData(
     val recommendedKeywordCount: Int = 0,
     val groupCount: Int = 0,
     val totalImpressionCount: String? = null,
-    val recommendedKeywordDetails: List<RecommendedKeywordDetail>? = listOf(),
+    val recommendedKeywordDetails: List<RecommendedKeywordDetail>? = null,
     val topadsHeadlineKeywordSuggestion: TopadsHeadlineKeywordSuggestion? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

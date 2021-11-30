@@ -326,16 +326,24 @@
 
     <!-- TOPADS INSIGHT KEYWORDS LAYOUT -->
     <string name="label_select_all">Pilih Semua</string>
+    <string name="bid_keyword_btn_text">Terapkan Biaya (%d)</string>
+    <string name="new_keyword_btn_text">Tambah Kata Kunci (%d)</string>
+    <string name="neg_keyword_btn_text">Tambah Kata Kunci Negatif (%d)</string>
+
+    <!-- TOPADS INSIGHT KEYWORDS ADAPTER -->
     <string name="label_group">Grup:</string>
+    <string name="no_of_searches">Jumlah pencarian <![CDATA["<font color='#000000'><b>+%drb</b></font>]]>/bulan</string>
     <string name="per_click_value">%d/klik</string>
-    <string name="per_click_bold_value"><![CDATA["<font color='#000000'><b>+%d</b></font>]]>/klik</string>
+    <string name="per_click_bold_value"><![CDATA["<font color='#000000'><b>%2f</b></font>]]>/klik</string>
+    <string name="keyword_recommended_budget">•Rekomendasi Rp%2f</string>
+    <string name="biaya_optimal">Biaya optimal ✔️</string>
     <string name="max_times_month">Potensi tampil maks. <![CDATA["<font color='#000000'><b>+%d</b></font>]]> kali/bulan</string>
+
+    <string name="new_keyword_subtitle2">Biaya kata kunci</string>
+
     <string name="title_current_cost">Biaya saat ini</string>
     <string name="title_new_fee">Biaya baru</string>
-    <string name="no_of_searches">Jumlah pencarian <![CDATA["<font color='#000000'><b>+%drb</b></font>]]>/bulan</string>
-    <string name="apply_fee">Terapkan Biaya (%d)</string>
-    <string name="add_keyword">Tambah Kata Kunci (%d)</string>
-    <string name="add_neg_keywords">Tambah Kata Kunci Negatif (%d)</string>
+
 
 
     <!--RECOMMENDATION DAILY BUDGET & PRODUCT -->

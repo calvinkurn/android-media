@@ -20,6 +20,7 @@ import kotlin.IllegalStateException
 class TopAdsInsightShopKeywordFragment : BaseDaggerFragment() {
 
     private val itemsCountMap = mutableMapOf<Int, Int>()
+    private val typeToPosiMap = mutableMapOf<Int, Int>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,7 +56,8 @@ class TopAdsInsightShopKeywordFragment : BaseDaggerFragment() {
                 isExpanded = false
             )
         )
-        itemsCountMap[type] = instance.selectedItemCount
+        itemsCountMap[type] = recommendedKeywordData.recommendedKeywordCount
+        typeToPosiMap[accordionUnify.accordionData.size - 1] = type
     }
 
     private fun onKeywordSelected(type: Int, count: Int) {
@@ -64,12 +66,7 @@ class TopAdsInsightShopKeywordFragment : BaseDaggerFragment() {
     }
 
     private fun getTypeOfPosi(position: Int): Int {
-        return when(position) {
-            0 -> NEW_KEYWORD
-            1 -> NEGATIVE_KEYWORD
-            2 -> BID_KEYWORD
-            else -> throw IllegalStateException("not a posi")
-        }
+        return typeToPosiMap[position] ?: throw IllegalStateException("not a position")
     }
 
     private fun getAccordionTitle(type: Int, count: Int): String {

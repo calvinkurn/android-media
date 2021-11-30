@@ -33,7 +33,7 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
-        android:layout_width="2dp"
+        android:layout_width="@dimen/spacing_lvl1"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="@id/txtTitle"
@@ -86,13 +86,6 @@
         app:typographyType="body_2"
         tools:text="Hii ther" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/subtitle_top_barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="searchIcon" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtSubTitle1"
         android:layout_width="wrap_content"
@@ -102,7 +95,7 @@
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintStart_toStartOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/subtitle_top_barrier"
+        app:layout_constraintTop_toBottomOf="@id/searchIcon"
         app:typographyType="body_3"
         tools:text="Biaya saat ini" />
 
@@ -143,7 +136,7 @@
         android:textColor="@color/Unify_N700_68"
         android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintStart_toEndOf="@id/subtitle2_left_guideline"
-        app:layout_constraintTop_toTopOf="@id/subtitle_top_barrier"
+        app:layout_constraintTop_toBottomOf="@id/searchIcon"
         app:typographyType="body_3"
         tools:text="Biya baru" />
 
@@ -169,16 +162,23 @@
         app:typographyType="body_2"
         tools:text="../klik" />
 
+    <View
+        android:id="@+id/barrier_recomm_text"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/spacing_lvl5"
+        app:layout_constraintTop_toBottomOf="@id/txtSubTitle2" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtRecommendedBudget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="•Rekomendasi Rp350"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:textSize="@dimen/fontSize_lvl3"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/txtSubTitle2Value"
-        app:layout_constraintTop_toBottomOf="@id/txtSubTitle2Value"
+        app:layout_constraintStart_toStartOf="@id/txtSubTitle2"
+        app:layout_constraintTop_toBottomOf="@id/barrier_recomm_text"
         app:typographyType="body_3" />
 
     <com.tokopedia.unifycomponents.TextFieldUnify
@@ -194,6 +194,13 @@
         app:text_field_input_type="number"
         app:text_field_prepend_text="Rp"
         app:unify_text_field_message="Rekomendasi Rp350" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/centerVerticalGuideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".5" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtFooter"
@@ -218,7 +225,6 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="txtSubTitle2Value,edtBid" />
 
-
     <androidx.constraintlayout.widget.Group
         android:id="@+id/newKeywordGroup"
         android:layout_width="wrap_content"
@@ -231,6 +237,5 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:constraint_referenced_ids="searchIcon,txtNoOfSearches" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

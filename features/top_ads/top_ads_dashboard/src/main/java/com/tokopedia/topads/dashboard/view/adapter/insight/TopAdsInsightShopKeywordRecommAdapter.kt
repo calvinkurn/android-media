@@ -15,8 +15,10 @@ import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 class TopAdsInsightShopKeywordRecommAdapter(
     private val list: List<RecommendedKeywordDetail>,
     private val type: Int,
-    private val lstnr: (Boolean) -> Unit
+    private val lstnr: (Int) -> Unit
 ) : RecyclerView.Adapter<TopAdsInsightShopKeywordViewHolder>() {
+
+    private var selectedItemsCount = list.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsInsightShopKeywordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -24,21 +26,16 @@ class TopAdsInsightShopKeywordRecommAdapter(
     }
 
     override fun onBindViewHolder(holder: TopAdsInsightShopKeywordViewHolder, position: Int) {
-        holder.initView(type)
         val item = list[holder.adapterPosition]
+        holder.initView(type,item)
 
-        holder.bindData(item)
+        holder.bindData(type)
 
-        with(holder.view) {
-            btnEditFee.setOnClickListener {
-                openEditTextFee()
-            }
-            setOnClickListener {
-                closeEditTextFee()
-            }
+        holder.addListeners { checkBox ->
             checkBox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) selectedItemsCount++ else selectedItemsCount--
                 item.isChecked = isChecked
-                lstnr.invoke(isChecked)
+                lstnr.invoke(selectedItemsCount)
             }
         }
     }
@@ -53,18 +50,6 @@ class TopAdsInsightShopKeywordRecommAdapter(
         notifyDataSetChanged()
     }
 
-    private fun View.closeEditTextFee() {
-        txtSubTitle2Value.show()
-        btnEditFee.show()
-        edtBid.hide()
-    }
-
-    private fun View.openEditTextFee() {
-        txtSubTitle2Value.invisible()
-        btnEditFee.invisible()
-        edtBid.show()
-    }
-
     override fun getItemCount(): Int {
         return list.size
     }
@@ -75,7 +60,7 @@ class TopAdsInsightShopKeywordRecommAdapter(
         fun createInstance(
             list: List<RecommendedKeywordDetail>,
             type: Int,
-            lstnr: (Boolean) -> Unit
+            lstnr: (Int) -> Unit
         ) = TopAdsInsightShopKeywordRecommAdapter(list, type, lstnr)
     }
 

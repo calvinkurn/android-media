@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view
 
 import android.content.Context
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,6 @@ class TopAdsInsightShopKeywordRecommView(
     private val lstnr: (Int, Int) -> Unit
 ) : ConstraintLayout(context) {
 
-    var selectedItemCount = recommendedKeywordData.recommendedKeywordDetails!!.size
     private val mAdapter by lazy {
         TopAdsInsightShopKeywordRecommAdapter.createInstance(
             recommendedKeywordData.recommendedKeywordDetails!!, type, ::onKeywordSelected
@@ -77,6 +77,8 @@ class TopAdsInsightShopKeywordRecommView(
                 )
             }
         }
+        //todo checkbox dash icon
+        checkBox.isChecked = true
     }
 
     private fun initListeners() {
@@ -86,17 +88,16 @@ class TopAdsInsightShopKeywordRecommView(
     }
 
     private fun onCheckBoxSelected(checked: Boolean) {
-        if(checked) {
+        if (checked) {
             mAdapter.checkAllItems()
         } else {
             mAdapter.unCheckAllItems()
         }
-        lstnr.invoke(type,selectedItemCount)
     }
 
-    private fun onKeywordSelected(isChecked: Boolean) {
-        if (isChecked) selectedItemCount++ else selectedItemCount--
-        lstnr.invoke(type, selectedItemCount)
+    private fun onKeywordSelected(selectedItems: Int) {
+        checkBox.isChecked = selectedItems == mAdapter.itemCount
+        lstnr.invoke(type, selectedItems)
     }
 
     companion object {
