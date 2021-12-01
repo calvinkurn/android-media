@@ -290,7 +290,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initUserLocation() {
         context?.let {
             val userLocation = ChooseAddressUtils.getLocalizingAddressData(it) ?: return@let
-            presenter.initUserLocation(userLocation)
+            viewModel.initUserLocation(userLocation)
         }
     }
 
@@ -518,7 +518,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         renderList(chatRoom.listChat)
         updateHasNextState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
+        viewModel.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
         renderTickerReminderIfNotYet()
     }
 
@@ -545,7 +545,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateNewUnreadMessageState(chat)
         renderBottomList(chatRoom.listChat)
         updateHasNextAfterState(chat)
-        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
+        viewModel.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun updateNewUnreadMessageState(chat: ChatReplies) {
@@ -749,7 +749,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         updateHasNextState(chat)
         updateHasNextAfterState(chat)
         loadChatRoomSettings(chatRoom)
-        presenter.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
+        viewModel.loadAttachmentData(messageId.toLongOrZero(), chatRoom)
     }
 
     private fun checkReplyBubbleOnBoardingFirstRender() {
@@ -1937,7 +1937,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun getLoadedChatAttachments(): ArrayMap<String, Attachment> {
-        return presenter.attachments
+        return viewModel.attachments
     }
 
     override fun isSeller(): Boolean {
