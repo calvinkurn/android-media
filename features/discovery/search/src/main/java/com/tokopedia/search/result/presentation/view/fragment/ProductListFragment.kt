@@ -1302,6 +1302,10 @@ class ProductListFragment: BaseDaggerFragment(),
         TopAdsGtmTracker.eventTopAdsHeadlineShopView(position, data, queryKey, getUserId())
     }
 
+    override fun onTopAdsCarouselItemImpressionListener(position: Int, data: CpmData?) {
+        presenter?.shopAdsImpressionCount(position + 1)
+    }
+
     override fun getRegistrationId() = presenter?.deviceId ?: ""
 
     override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {

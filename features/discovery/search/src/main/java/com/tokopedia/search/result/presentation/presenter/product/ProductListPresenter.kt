@@ -8,8 +8,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
-import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_FIRST_PAGE
-import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_LOAD_MORE
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_6
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
 import com.tokopedia.discovery.common.constants.SearchConstant.SaveLastFilter.INPUT_PARAMS
@@ -110,6 +109,8 @@ import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 import kotlin.math.max
 
 class ProductListPresenter @Inject constructor(
@@ -169,6 +170,7 @@ class ProductListPresenter @Inject constructor(
         private const val EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11"
     }
 
+    private var seenAds: Int = 0
     private var compositeSubscription: CompositeSubscription? = CompositeSubscription()
 
     private var enableGlobalNavWidget = true
@@ -402,6 +404,7 @@ class ProductListPresenter @Inject constructor(
             putBoolean(SEARCH_PRODUCT_SKIP_INSPIRATION_WIDGET, isLocalSearch)
             putBoolean(SEARCH_PRODUCT_SKIP_GLOBAL_NAV, isSkipGlobalNavWidget)
             putBoolean(SEARCH_PRODUCT_SKIP_GET_LAST_FILTER_WIDGET, isSkipGetLastFilterWidget)
+            putString(SearchConstant.HeadlineAds.SEEN_ADS, seenAds.toString())
         }
     }
 
@@ -608,7 +611,7 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel, HEADLINE_ITEM_VALUE_LOAD_MORE) { _, cpmDataView ->
+        processHeadlineAds(searchProductModel) { _, cpmDataView ->
             processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
         }
     }
@@ -1137,7 +1140,7 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel, HEADLINE_ITEM_VALUE_FIRST_PAGE) { index, cpmDataView ->
+        processHeadlineAds(searchProductModel) { index, cpmDataView ->
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
@@ -1146,20 +1149,27 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processHeadlineAds(
-        searchProductModel: SearchProductModel,
-        headlineAdsCount: Int,
-        process: (Int, CpmDataView) -> Unit,
+            searchProductModel: SearchProductModel,
+            process: (Int, CpmDataView) -> Unit,
     ) {
         if (!isHeadlineAdsAllowed()) return
 
         val cpmModel = searchProductModel.cpmModel
-
+        val listLayoutSix = arrayListOf<CpmData>()
         cpmModel.data?.forEachIndexed { index, cpmData ->
-            if (index >= headlineAdsCount) return
             if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
 
-            val cpmDataView = createCpmDataView(cpmModel, cpmData)
-            process(index, cpmDataView)
+            if (cpmData.cpm.layout == LAYOUT_6) {
+                listLayoutSix.add(cpmData)
+                if (cpmModel.data.size - 1 != index) return@forEachIndexed
+                val cpmDataView = createCpmDataView(cpmModel, listLayoutSix)
+                process(index, cpmDataView)
+            } else {
+                val list = arrayListOf<CpmData>()
+                list.add(cpmData)
+                val cpmDataView = createCpmDataView(cpmModel, list)
+                process(index, cpmDataView)
+            }
         }
     }
 
@@ -1184,17 +1194,17 @@ class ProductListPresenter @Inject constructor(
 
     private fun isViewWillRenderCpmDigital(cpm: Cpm) = cpm.templateId == SearchConstant.CPM_TEMPLATE_ID
 
-    private fun createCpmDataView(cpmModel: CpmModel, cpmData: CpmData): CpmDataView {
+    private fun createCpmDataView(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmDataView {
         val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
         return CpmDataView(cpmForViewModel)
     }
 
-    private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: CpmData): CpmModel {
+    private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmModel {
         return CpmModel().apply {
             header = cpmModel.header
             status = cpmModel.status
             error = cpmModel.error
-            data = listOf(cpmData)
+            data = cpmData
         }
     }
 
@@ -2320,6 +2330,10 @@ class ProductListPresenter @Inject constructor(
 
     override fun closeLastFilter(searchParameter: Map<String, Any>) {
         updateLastFilter(searchParameter, listOf())
+    }
+
+    override fun shopAdsImpressionCount(count: Int) {
+         seenAds = count
     }
 
     override fun detachView() {

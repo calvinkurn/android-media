@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.domain.usecase.searchproduct
 
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.HEADLINE_ITEM_VALUE_LOAD_MORE
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_PARAMS
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -19,7 +20,8 @@ class SearchProductLoadMoreGqlUseCase(
     override fun createObservable(requestParams: RequestParams): Observable<SearchProductModel> {
         val searchProductParams = requestParams.parameters[SEARCH_PRODUCT_PARAMS] as Map<String?, Any?>
         val params = UrlParamUtils.generateUrlParamString(searchProductParams)
-        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_LOAD_MORE)
+        val headlineAdsParams = createHeadlineParams(searchProductParams, HEADLINE_ITEM_VALUE_LOAD_MORE,
+                requestParams.parameters[SearchConstant.HeadlineAds.SEEN_ADS] as String)
 
         val graphqlRequestList = graphqlRequests {
             addAceSearchProductRequest(params)

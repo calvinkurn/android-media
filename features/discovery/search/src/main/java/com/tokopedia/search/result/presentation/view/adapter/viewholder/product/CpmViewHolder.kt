@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_6
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
 import com.tokopedia.search.result.presentation.model.CpmDataView
@@ -33,11 +34,11 @@ class CpmViewHolder(
             it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
                 override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
                     bannerAdsListener?.onBannerAdsImpressionListener(position, data)
+                    if (data?.cpm?.layout == LAYOUT_6) bannerAdsListener?.onTopAdsCarouselItemImpressionListener(position, data)
                 }
             })
         }
     }
-
     override fun bind(element: CpmDataView) {
         binding?.adsBanner?.displayAds(element.cpmModel)
     }

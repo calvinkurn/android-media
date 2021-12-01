@@ -52,8 +52,9 @@ internal fun MutableList<GraphqlRequest>.addHeadlineAdsRequest(
 }
 
 internal fun createHeadlineParams(
-    parameters: Map<String?, Any?>,
-    itemCount: Int,
+        parameters: Map<String?, Any?>,
+        itemCount: Int,
+        seenAds: String,
 ): String {
     val headlineParams = HashMap(parameters)
 
@@ -62,6 +63,7 @@ internal fun createHeadlineParams(
     headlineParams[TopAdsParams.KEY_ITEM] = itemCount
     headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.HeadlineAds.HEADLINE_PRODUCT_COUNT
     headlineParams[SearchConstant.HeadlineAds.INFINITESEARCH] = true
+    if (seenAds != "0") headlineParams[SearchConstant.HeadlineAds.SEEN_ADS] = seenAds
 
     return UrlParamUtils.generateUrlParamString(headlineParams)
 }
