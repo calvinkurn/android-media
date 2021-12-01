@@ -1,9 +1,6 @@
 package com.tokopedia.autocompletecomponent.suggestion
 
-import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.suggestiontracker.SuggestionTrackerUseCase
-import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
-import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
@@ -282,27 +279,38 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter)
 
-        val item = visitableList.findChip().data.childItems[0]
+        val baseSuggestionDataView = visitableList.findChip().data
+        val item = baseSuggestionDataView.childItems[0]
 
-        `when suggestion chip clicked`(item)
-        `then verify view tracking click chip widget`(item)
+        `when suggestion chip clicked`(baseSuggestionDataView, item)
+        `then verify view tracking click chip widget`(baseSuggestionDataView, item)
     }
 
-    private fun `when suggestion chip clicked`(item: BaseSuggestionDataView.ChildItem) {
-        suggestionPresenter.onSuggestionChipClicked(item)
+    private fun `when suggestion chip clicked`(
+        baseSuggestionDataView: BaseSuggestionDataView,
+        item: BaseSuggestionDataView.ChildItem,
+    ) {
+        suggestionPresenter.onSuggestionChipClicked(baseSuggestionDataView, item)
     }
 
-    private fun `then verify view tracking click chip widget`(item: BaseSuggestionDataView.ChildItem) {
+    private fun `then verify view tracking click chip widget`(
+        baseSuggestionDataView: BaseSuggestionDataView,
+        childItem: BaseSuggestionDataView.ChildItem,
+    ) {
         val expectedEventLabel =
-                "keyword: ${item.title} " +
+                "keyword: ${childItem.title} " +
                         "- value: $keywordTypedByUser " +
-                        "- po: ${item.position} " +
-                        "- page: ${item.applink}"
+                        "- po: ${childItem.position} " +
+                        "- page: ${childItem.applink}"
 
         verify {
-            suggestionView.trackClickChip(expectedEventLabel, item.dimension90)
+            suggestionView.trackClickChip(
+                expectedEventLabel,
+                childItem.dimension90,
+                baseSuggestionDataView,
+            )
             suggestionView.dropKeyBoard()
-            suggestionView.route(item.applink, suggestionPresenter.getSearchParameter())
+            suggestionView.route(childItem.applink, suggestionPresenter.getSearchParameter())
             suggestionView.finish()
         }
     }

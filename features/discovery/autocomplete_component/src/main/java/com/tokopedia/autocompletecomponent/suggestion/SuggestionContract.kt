@@ -70,7 +70,11 @@ interface SuggestionContract {
             baseSuggestionDataView: BaseSuggestionDataView,
         )
 
-        fun trackClickChip(eventLabel: String, dimension90: String)
+        fun trackClickChip(
+            eventLabel: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
         fun trackEventImpressCurated(
             label: String,
@@ -103,6 +107,9 @@ interface SuggestionContract {
 
         fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView)
 
-        fun onSuggestionChipClicked(item: BaseSuggestionDataView.ChildItem)
+        fun onSuggestionChipClicked(
+            baseSuggestionDataView: BaseSuggestionDataView,
+            item: BaseSuggestionDataView.ChildItem,
+        )
     }
 }

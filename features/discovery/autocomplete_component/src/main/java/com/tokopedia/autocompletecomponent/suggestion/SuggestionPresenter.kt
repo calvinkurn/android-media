@@ -506,13 +506,16 @@ class SuggestionPresenter @Inject constructor(
         return "keyword: ${getQueryKey()}"
     }
 
-    override fun onSuggestionChipClicked(item: BaseSuggestionDataView.ChildItem) {
+    override fun onSuggestionChipClicked(
+        baseSuggestionDataView: BaseSuggestionDataView,
+        item: BaseSuggestionDataView.ChildItem,
+    ) {
         val label = "keyword: ${item.title} " +
             "- value: ${item.searchTerm} " +
             "- po: ${item.position} " +
             "- page: ${item.applink}"
 
-        view?.trackClickChip(label, item.dimension90)
+        view?.trackClickChip(label, item.dimension90, baseSuggestionDataView)
 
         view?.dropKeyBoard()
         view?.route(item.applink, searchParameter)
