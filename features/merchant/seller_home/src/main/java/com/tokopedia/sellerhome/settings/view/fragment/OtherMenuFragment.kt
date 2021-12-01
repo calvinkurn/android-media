@@ -121,6 +121,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
 
+    private val kreditTopadsClickedBundle by lazy {
+        Bundle().also {
+            it.putBoolean(OtherMenuFragment.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+        }
+    }
+
     private val topAdsBottomSheet by lazy {
         BottomSheetUnify().apply {
             setCloseClickListener {
@@ -281,7 +287,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             bottomSheet.dismiss()
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
         } else {
-            RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_CREDIT)
+            RouteManager.route(context,kreditTopadsClickedBundle, ApplinkConst.SellerApp.TOPADS_CREDIT)
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
     }
