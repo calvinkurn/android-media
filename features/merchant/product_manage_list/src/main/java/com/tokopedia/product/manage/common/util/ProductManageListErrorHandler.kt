@@ -19,8 +19,8 @@ object ProductManageListErrorHandler {
             if (!BuildConfig.DEBUG) {
                 val exceptionMessage = "$message - ${throwable.localizedMessage}"
                 FirebaseCrashlytics.getInstance().recordException(RuntimeException(
-                    message = exceptionMessage,
-                    cause = throwable
+                    exceptionMessage,
+                    throwable
                 ))
             } else {
                 throwable.printStackTrace()
