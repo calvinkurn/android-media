@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.otp.R
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Label.LABEL_SUCCESS
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.databinding.FragmentSilentVerificationBinding
 import com.tokopedia.otp.silentverification.di.SilentVerificationComponent
@@ -102,7 +103,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     }
 
     private fun onSilentVerificationNotPossible() {
-        Toaster.build(requireView(), "Tidak ada koneksi internet", Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR).show()
+        Toaster.build(requireView(), NO_INTERNET_CONNECTION, Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR).show()
         binding?.fragmentSilentVerifTitle?.text = getString(R.string.fragment_silent_verif_title_fail)
         binding?.fragmentSilentVerifSubtitle?.text = getString(R.string.fragment_silent_verif_subtitle_fail_change_method)
 
@@ -172,10 +173,10 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     private fun onRequestFailed(throwable: Throwable) {
         if(isFirstTry) {
-            analytics.trackSilentVerificationRequestFailed(throwable.message ?: "OTP Request Failed", otpData?.otpType
+            analytics.trackSilentVerificationRequestFailed(throwable.message ?: OTP_REQ_FAILED, otpData?.otpType
                     ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
         } else {
-            analytics.trackSilentVerifTryAgainFailed(throwable.message ?: "OTP Request Failed", otpData?.otpType
+            analytics.trackSilentVerifTryAgainFailed(throwable.message ?: OTP_REQ_FAILED, otpData?.otpType
                     ?: OTP_TYPE_SILENT_VERIF, modeListData?.modeText ?: "")
         }
         showErrorState()
@@ -311,7 +312,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             if(otpData != null && modeListData != null) {
                 analytics.trackAutoSubmitVerification(otpData!!, modeListData!!, false)
             }
-            onValidateFailed(Throwable(message = "success = false"))
+            onValidateFailed(Throwable(message = "$LABEL_SUCCESS - ${data.success}"))
         }
     }
 
@@ -388,7 +389,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             }
             return queriesMap
         }catch (e: Exception) {
-            onVerificationError(Throwable(message = "Invalid Response"))
+            onVerificationError(Throwable())
         }
         return mapOf()
     }
@@ -396,7 +397,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
     private fun handleBokuResult(resultCode: String) {
         try {
             val result = mapBokuResult(resultCode)
-            if (result[KEY_ERROR_CODE] == "0" &&
+            if (result[KEY_ERROR_CODE] == ERROR_CODE_ZERO &&
                 result[KEY_ERROR_DESC].equals(VALUE_SUCCESS, true)
             ) {
                 onSuccessBokuVerification()
@@ -486,6 +487,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         private const val KEY_CARRIER = "Carrier"
 
         private const val VALUE_SUCCESS = "Success"
+        private const val ERROR_CODE_ZERO = "0"
 
         private const val ERROR_LIMIT_CODE = "110001"
         private const val ERROR_GENERAL = "110002"
@@ -497,6 +499,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
         const val RESULT_DELETE_METHOD = 100
         const val OTP_TYPE_SILENT_VERIF = 112
+
+        const val OTP_REQ_FAILED = "OTP Request Failed"
+        const val NO_INTERNET_CONNECTION = "Tidak ada koneksi internet"
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = SilentVerificationFragment()
