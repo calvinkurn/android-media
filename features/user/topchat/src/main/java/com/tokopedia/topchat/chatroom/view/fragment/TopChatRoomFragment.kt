@@ -741,7 +741,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun reloadSrw() {
         if (!isSeller() && topchatViewState?.hasProductPreviewShown() == true) {
             val productIdCommaSeparated = if (isProductLevelSrw()) {
-                presenter.getProductIdPreview().joinToString(separator = ", ")
+                presenter.getProductIdPreview().joinToString(separator = ",")
             } else {
                 ""
             }
