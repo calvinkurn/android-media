@@ -151,7 +151,6 @@ class AffiliateHomeViewModel @Inject constructor(
             userData.metrics.forEach { metrics ->
                 if (metrics?.order == 0) {
                     totalItemsCount.value = metrics.metricValue?.toInt()
-                    showProductCount = metrics.metricValue != "0"
                 } else {
                     performaTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
