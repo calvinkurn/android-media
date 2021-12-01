@@ -191,7 +191,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
     private fun populateTipping(data: TrackingDataModel) {
         val tippingData = data.tipping
-        if (tippingData.status == 100 || tippingData.status == 150 || tippingData.status == 200 || tippingData.status ==  210 || tippingData.status == 300) {
+        if (tippingData.status == OPEN || tippingData.status == WAITING_PAYMENT || tippingData.status == SUCCESS_PAYMENT || tippingData.status ==  SUCCESS_TO_GOJEK || tippingData.status == REFUND_TIP) {
             setTippingData(data)
             binding?.tippingGojekLayout?.root?.visibility = View.VISIBLE
             binding?.dividerTippingGojek?.visibility = View.VISIBLE
