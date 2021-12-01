@@ -63,7 +63,8 @@ class PlayBroadcastModule(private val mContext: Context) {
         return PlayWebSocketImpl(
             OkHttpClient.Builder(),
             userSession,
-            dispatchers
+            dispatchers,
+            mContext,
         )
     }
 

@@ -151,7 +151,8 @@ class PlayModule(val mContext: Context) {
         return PlayWebSocketImpl(
                 OkHttpClient.Builder(),
                 userSession,
-                dispatchers
+                dispatchers,
+                mContext,
         )
     }
 

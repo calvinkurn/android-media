@@ -24,7 +24,7 @@ class FakePlayWebSocket(
     override fun send(message: String) {
     }
 
-    override fun connect(url: String) {
+    override fun connect(url: String, channelId: String, gcToken: String) {
         isOpen = true
     }
 

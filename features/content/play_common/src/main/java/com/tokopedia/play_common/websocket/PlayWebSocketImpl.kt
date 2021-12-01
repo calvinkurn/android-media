@@ -1,7 +1,9 @@
 package com.tokopedia.play_common.websocket
 
+import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.analyticsdebugger.debugger.WebSocketLogger
 import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
@@ -18,6 +20,7 @@ class PlayWebSocketImpl(
         clientBuilder: OkHttpClient.Builder,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatchers,
+        private val context: Context,
 ) : PlayWebSocket {
 
     private val client: OkHttpClient
@@ -38,6 +41,7 @@ class PlayWebSocketImpl(
     private val webSocketListener = object : WebSocketListener() {
         override fun onOpen(webSocket: WebSocket, response: Response) {
             mWebSocket = webSocket
+            WebSocketLogger.getInstance(context).send("Web Socket Open")
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
@@ -54,17 +58,20 @@ class PlayWebSocketImpl(
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             mWebSocket = null
             webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Intended))
+            WebSocketLogger.getInstance(context).send("Web Socket Close (Intended)")
         }
 
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             mWebSocket = null
             webSocketFlow.tryEmit(WebSocketAction.Closed(WebSocketClosedReason.Error(t)))
+            WebSocketLogger.getInstance(context).send("Web Socket Close (Error)")
         }
     }
 
-    override fun connect(url: String) {
+    override fun connect(url: String, channelId: String, gcToken: String) {
         close()
         mWebSocket = client.newWebSocket(getRequest(url, userSession.accessToken), webSocketListener)
+        WebSocketLogger.getInstance(context).init(buildGeneralInfo(channelId, gcToken).toString())
     }
 
     override fun close() {
@@ -88,5 +95,12 @@ class PlayWebSocketImpl(
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
                 .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
+    }
+
+    private fun buildGeneralInfo(channelId: String, gcToken: String): Map<String, String> {
+        return mapOf(
+            "channelId" to if(channelId.isEmpty()) "\"\"" else channelId,
+            "gcToken" to if(gcToken.isEmpty()) "\"\"" else gcToken,
+        )
     }
 }

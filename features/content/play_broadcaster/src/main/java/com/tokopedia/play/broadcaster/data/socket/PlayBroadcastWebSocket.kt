@@ -24,7 +24,7 @@ class PlayBroadcastWebSocket @Inject constructor(
             if (gcToken.isNotEmpty()) append("&token=$gcToken")
         }
 
-        playWebSocket.connect(wsFullUrl)
+        playWebSocket.connect(wsFullUrl, channelId, gcToken)
     }
 
     companion object {
