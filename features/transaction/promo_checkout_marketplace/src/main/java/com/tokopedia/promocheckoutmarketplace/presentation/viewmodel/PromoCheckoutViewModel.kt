@@ -159,7 +159,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Get Promo List */
     //---------------------------------------//
 
-    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context) {
+    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context? = null) {
         launchCatchError(block = {
             doGetPromoList(mutation, promoRequest, promoCode, chosenAddress, tmpContext)
         }) { throwable ->
@@ -167,7 +167,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String, chosenAddress: ChosenAddress?, tmpContext: Context) {
+    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String, chosenAddress: ChosenAddress?, tmpContext: Context? = null) {
         // Set request data
         val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest, chosenAddress)
 
@@ -180,7 +180,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 //        }
 
         // Todo : remove dummy
-        val responseText = GraphqlHelper.loadRawString(tmpContext.resources, R.raw.dummy_promo_list_response)
+        val responseText = GraphqlHelper.loadRawString(tmpContext?.resources, R.raw.dummy_promo_list_response)
         val response = Gson().fromJson(responseText, CouponListRecommendationResponse::class.java)
 
         PromoCheckoutIdlingResource.decrement()
