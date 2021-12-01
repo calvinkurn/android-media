@@ -1,4 +1,4 @@
-package com.tokopedia.topchat.chatroom.view.activity
+package com.tokopedia.topchat.chatroom.view.activity.cassava
 
 import android.app.Activity
 import android.app.Instrumentation
