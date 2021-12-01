@@ -27,11 +27,12 @@ class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
     }
 
     fun getTypeLayout(): String {
-        val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_TYPE, 0)
+        return TYPE_LIST
+        /*val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_TYPE, 0)
         return if (typeLayout == 0) {
             TYPE_LIST
         } else {
             TYPE_GRID
-        }
+        }*/
     }
 }

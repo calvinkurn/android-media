@@ -245,6 +245,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     finishRefresh()
                     // refreshHandler?.finishRefresh()
                     showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                    loadWishlistV2()
                 }
             }
         })
