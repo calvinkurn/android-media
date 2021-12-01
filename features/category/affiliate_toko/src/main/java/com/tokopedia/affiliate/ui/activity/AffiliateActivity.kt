@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.Group
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -35,16 +36,14 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSessionWebViewFragment
-import kotlinx.android.synthetic.main.affiliate_background_layout.*
-import kotlinx.android.synthetic.main.affiliate_layout.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
 class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomClickListener,
@@ -119,7 +118,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     fun showAffiliatePortal() {
         clearBackStack()
-        affiliate_background_image.show()
+        findViewById<ImageUnify>(R.id.affiliate_background_image).show()
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
     }
@@ -189,9 +188,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showSplashScreen() {
-        splash_group.show()
+        findViewById<Group>(R.id.splash_group).show()
         Handler().postDelayed({
-            splash_group.hide()
+            findViewById<Group>(R.id.splash_group).hide()
             showAffiliatePortal()
         }, AFFILIATE_SPLASH_TIME)
     }
