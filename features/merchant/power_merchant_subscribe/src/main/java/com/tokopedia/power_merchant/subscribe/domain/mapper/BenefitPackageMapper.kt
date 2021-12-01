@@ -81,17 +81,10 @@ class BenefitPackageMapper @Inject constructor(@ApplicationContext val context: 
         BenefitPackageResponse.NextBenefitPackageList,
         pmStatusText: String
     ): Pair<String, String> {
-        val blackColor = if (context?.isDarkMode() == true) {
-            PowerMerchantSpannableUtil.getColorHexString(
-                context,
-                R.color.pm_static_nn950_night_dms
-            )
-        } else {
-            PowerMerchantSpannableUtil.getColorHexString(
-                context,
-                R.color.pm_static_nn950_light_dms
-            )
-        }
+        val blackColor = PowerMerchantSpannableUtil.getColorHexString(
+            context,
+            R.color.pm_static_nn950_light_dms
+        )
 
         return when (item.pmGradeName.asCamelCase()) {
             Constant.PM_PRO_ADVANCED -> {
