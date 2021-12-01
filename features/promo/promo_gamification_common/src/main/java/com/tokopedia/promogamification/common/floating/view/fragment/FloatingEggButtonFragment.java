@@ -69,10 +69,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private static final String COORD_X = "x";
     private static final String COORD_Y = "y";
-    private static final String TIME = "time";
+    private static final String PID = "pid";
     private static final String ISRIGHT = "isright";
     public static final String COORD_EGG_PREF = "_egg.pref";
-    public static final String TIME_EGG_PREF = "_eggTime.pref";
+    public static final String PID_EGG_PREF = "_eggPid.pref";
     public static final float SCALE_ON_DOWN = 0.95f;
     public static final float SCALE_NORMAL = 1f;
     public static final int SHORT_ANIMATION_DURATION = 300;
@@ -328,8 +328,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private void initEggCoordinate() {
         if (isDraggable && hasCoordPreference()) {
             int coordPref[] = getCoordPreference();
-            boolean isRight  = getSharedPrefTime().getBoolean(ISRIGHT,false);
-            if (!checkMinimumTimeWindow()) {
+            boolean isRight  = getSharedPrefPid().getBoolean(ISRIGHT,false);
+            if (checkPid()) {
                 setCoordFloatingEgg(coordPref[0], coordPref[1]);
             } else {
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
@@ -387,9 +387,9 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     }
 
     private void saveTimePreference() {
-        Date date = new Date(System.currentTimeMillis());
-        SharedPreferences.Editor editor = getSharedPrefTime().edit();
-        editor.putLong(TIME, date.getTime());
+        int id = android.os.Process.myPid();
+        SharedPreferences.Editor editor = getSharedPrefPid().edit();
+        editor.putInt(PID, id);
         editor.apply();
     }
 
@@ -399,16 +399,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 , MODE_PRIVATE);
     }
 
-    private SharedPreferences getSharedPrefTime() {
+    private SharedPreferences getSharedPrefPid() {
         return getContext().getSharedPreferences(
-                getActivity().getClass().getSimpleName() + TIME_EGG_PREF
+                getActivity().getClass().getSimpleName() + PID_EGG_PREF
                 , MODE_PRIVATE);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadEggData();
+        loadEggData(false);
     }
 
     @Override
@@ -428,10 +428,13 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    public void loadEggData() {
+    public void loadEggData(Boolean isPageRefresh) {
         removeShowAnimationCallback();
         floatingEggPresenter.get().attachView(this);
         floatingEggPresenter.get().getGetTokenTokopoints();
+        if (isPageRefresh &&(vgFloatingEgg.getX() > rootWidth - vgFloatingEgg.getWidth() || vgFloatingEgg.getX()<0)) {
+            hideShowClickListener();
+        }
     }
 
     @Override
@@ -606,7 +609,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
                 ms--;
                 if (ms <= 0) {
                     vgFloatingEgg.setVisibility(View.GONE);
-                    loadEggData();
+                    loadEggData(false);
                 } else {
                     setUIFloatingTimer(ms);
                 }
@@ -696,7 +699,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             }
             saveCoordPreference(target, yEgg);
         }
-        getSharedPrefTime().edit().putBoolean(ISRIGHT, isRight).apply();
+        getSharedPrefPid().edit().putBoolean(ISRIGHT, isRight).apply();
     }
 
     private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX) {
@@ -759,11 +762,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         return finalY;
     }
 
-    private boolean checkMinimumTimeWindow() {
-        SharedPreferences sharedPreferences = getSharedPrefTime();
-        long savedTime = sharedPreferences.getLong(TIME, -1L);
-        Date date = new Date(System.currentTimeMillis());
-        long currentTime = date.getTime();
-        return currentTime - savedTime > 6L;
+    private boolean checkPid() {
+        int id = android.os.Process.myPid();
+        SharedPreferences sharedPreferences = getSharedPrefPid();
+        int savedPid = sharedPreferences.getInt(PID, -1);
+        return id == savedPid ;
     }
 }
