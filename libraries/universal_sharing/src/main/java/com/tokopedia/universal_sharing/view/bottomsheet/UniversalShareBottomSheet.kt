@@ -81,6 +81,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         //add remote config handling
         private const val GLOBAL_CUSTOM_SHARING_FEATURE_FLAG = "android_enable_custom_sharing"
         private const val GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG = "android_enable_screenshot_sharing"
+        private const val GLOBAL_AFFILIATE_FEATURE_FLAG = "android_enable_affiliate_universal_sharing"
         private var featureFlagRemoteConfigKey: String = ""
         //Optons Flag
         private var isImageOnlySharing: Boolean = false
@@ -283,7 +284,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     //call this method if the request data is received
     fun affiliateRequestDataReceived(validRequest: Boolean) {
         val userSession = UserSession(LinkerManager.getInstance().context)
-        if(userSession.isLoggedIn && validRequest){
+        if(userSession.isLoggedIn && validRequest && isAffiliateEnabled()){
             executeAffiliateEligibilityUseCase()
             showLoader = true
             loaderUnify?.visibility = View.VISIBLE
@@ -291,6 +292,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         else {
             clearLoader()
             affiliateQueryData = null
+        }
+    }
+
+    private fun isAffiliateEnabled(): Boolean{
+        if(context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            return remoteConfig.getBoolean(GLOBAL_AFFILIATE_FEATURE_FLAG, true)
+        }else{
+            return false
         }
     }
 
@@ -326,7 +336,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
         clearLoader()
-        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true) {
+        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
+            && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
+            && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true) {
             val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
             if (!TextUtils.isEmpty(commissionMessage)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
