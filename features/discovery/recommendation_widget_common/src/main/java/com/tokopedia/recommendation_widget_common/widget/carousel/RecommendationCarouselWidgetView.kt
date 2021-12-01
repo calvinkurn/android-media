@@ -71,6 +71,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private var basicListener: RecomCarouselWidgetBasicListener? = null
     private var tokonowListener: RecommendationCarouselTokonowListener? = null
     private var tokonowPageNameListener: RecommendationCarouselTokonowPageNameListener? = null
+    private var basicChipListener: RecomCarouselChipListener? = null
     private var carouselData: RecommendationCarouselData? = null
     private lateinit var typeFactory: CommonRecomCarouselCardTypeFactory
     private lateinit var recyclerView: RecyclerView
@@ -112,6 +113,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         adapterPosition: Int = 0,
         basicListener: RecomCarouselWidgetBasicListener?,
         tokonowListener: RecommendationCarouselTokonowListener?,
+        chipListener: RecomCarouselChipListener?,
         scrollToPosition: Int = 0
     ) {
         try {
@@ -121,6 +123,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             )
             this.basicListener = basicListener
             this.tokonowListener = tokonowListener
+            this.basicChipListener = chipListener
             if (carouselData.recommendationData.recommendationItemList.isNotEmpty()) {
                 bindWidgetWithData(carouselData)
             } else this.basicListener?.onWidgetFail(
@@ -519,13 +522,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         )
         if (widgetMetadata.pageName.isEmpty()) {
             //throw to outer listener
-//                    listener.onChipFilterClicked(
-//                        element, annotationChip.copy(
-//                            recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
-//                                isActivated = !annotationChip.recommendationFilterChip.isActivated
-//                            )
-//                        ), adapterPosition, position
-//                    )
+                    basicChipListener?.onChipClicked(
+                        annotationChip.copy(
+                            recommendationFilterChip = annotationChip.recommendationFilterChip.copy(
+                                isActivated = !annotationChip.recommendationFilterChip.isActivated)),
+                        position
+                    )
         } else {
             //call recom viewmodel
                 carouselData?.let {
