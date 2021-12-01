@@ -989,7 +989,7 @@ class NewShopPageFragment :
     private fun getShopPageP1Data() {
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
         shopViewModel?.getShopPageTabData(
-                shopId.toIntOrZero(),
+                shopId,
                 shopDomain.orEmpty(),
                 START_PAGE,
                 ShopUtil.getProductPerPage(context),

@@ -134,7 +134,7 @@ class NewShopPageViewModel @Inject constructor(
         get() = _shopPageShopShareData
 
     fun getShopPageTabData(
-            shopId: Int,
+            shopId: String,
             shopDomain: String,
             page: Int,
             itemPerPage: Int,
@@ -210,9 +210,9 @@ class NewShopPageViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopPageHeaderData(shopId: Int, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
+    private suspend fun getShopPageHeaderData(shopId: String, isRefresh: Boolean): ShopPageHeaderLayoutResponse {
         val useCase = getShopPageHeaderLayoutUseCase.get()
-        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId.toString())
+        useCase.params = GetShopPageHeaderLayoutUseCase.createParams(shopId)
         useCase.isFromCloud = isRefresh
         return useCase.executeOnBackground()
     }
@@ -249,7 +249,7 @@ class NewShopPageViewModel @Inject constructor(
     }
 
     private suspend fun getShopP1Data(
-            shopId: Int,
+            shopId: String,
             shopDomain: String,
             isRefresh: Boolean
     ): ShopPageHeaderP1 {
