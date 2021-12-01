@@ -45,7 +45,9 @@ class PlayWebSocketImpl(
         }
 
         override fun onMessage(webSocket: WebSocket, text: String) {
-            webSocketFlow.tryEmit(WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java)))
+            val newMessage = WebSocketAction.NewMessage(gson.fromJson(text, WebSocketResponse::class.java))
+            webSocketFlow.tryEmit(newMessage)
+            WebSocketLogger.getInstance(context).send(newMessage.message.type, newMessage.message.jsonElement.toString())
         }
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
