@@ -330,7 +330,7 @@ class SilentVerificationFragment: BaseDaggerFragment() {
             } else if(data.errorCode.isNotEmpty()) {
                 when(data.errorCode) {
                     ERROR_LIMIT_CODE -> {
-                        analytics.trackErrorLimitOtpSilentVerif(otpData?.otpType ?: 0, modeListData?.modeText ?: "", data.errorCode)
+                        analytics.trackErrorLimitOtpSilentVerif(otpData?.otpType ?: 0, modeListData?.modeText ?: "", data.errorMessage)
                         onErrorLimit()
                     }
                     ERROR_GENERAL -> {
