@@ -35,7 +35,7 @@ class BaseSuggestionDataView(
         trackingOption = trackingOption,
         keyword = searchTerm,
         valueId = "0",
-        valueName = title,
+        valueName = title + (if (subtitle.isNotEmpty()) "|$subtitle" else ""),
         componentId = componentId,
         applink = applink,
         dimension90 = dimension90,
