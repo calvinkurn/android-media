@@ -114,7 +114,7 @@ class HomeAccountUserViewModel @Inject constructor(
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, profileSettingResponse.safeMode)
                 _safeModeStatus.value = profileSettingResponse.safeMode
             },
-            {}
+            { it.printStackTrace() }
         )
     }
 
