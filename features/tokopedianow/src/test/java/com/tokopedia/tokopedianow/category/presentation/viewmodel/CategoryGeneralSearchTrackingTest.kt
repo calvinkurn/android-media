@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
+import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.PAGESOURCE
@@ -22,6 +23,8 @@ import com.tokopedia.track.TrackAppUtils.EVENT
 import com.tokopedia.track.TrackAppUtils.EVENT_ACTION
 import com.tokopedia.track.TrackAppUtils.EVENT_CATEGORY
 import com.tokopedia.track.TrackAppUtils.EVENT_LABEL
+import junit.framework.Assert.assertNull
+import org.junit.Assert
 import org.junit.Assert.assertThat
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -94,5 +97,25 @@ class CategoryGeneralSearchTrackingTest: CategoryTestFixtures() {
             expectedPreviousKeyword = previousKeyword,
             expectedCategoryId = defaultCategoryL1
         )
+    }
+
+    @Test
+    fun `test general search tracking with empty keyword`() {
+        val categoryModel = "category/first-page-8-products.json".jsonToObject<CategoryModel>()
+
+        val keyword = ""
+
+        `Given category view model`(
+            defaultCategoryL1,
+            defaultCategoryL2,
+            mapOf(
+                SearchApiConst.Q to keyword
+            )
+        )
+        `Given get category first page use case will be successful`(categoryModel)
+
+        `When view created`()
+
+         assertNull(tokoNowCategoryViewModel.generalSearchEventLiveData.value)
     }
 }

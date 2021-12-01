@@ -104,7 +104,7 @@ class SearchGeneralSearchTrackingTest: SearchTestFixtures() {
 
     @Test
     fun `test general search tracking with empty keyword`() {
-        val searchModel = "search/first-page-empty-product.json".jsonToObject<SearchModel>()
+        val searchModel = "search/first-page-8-products.json".jsonToObject<SearchModel>()
 
         val keyword = ""
 
