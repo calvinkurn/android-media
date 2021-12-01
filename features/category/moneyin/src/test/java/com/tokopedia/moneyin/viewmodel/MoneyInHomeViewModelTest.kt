@@ -311,7 +311,7 @@ class MoneyInHomeViewModelTest {
     fun getMaxPrice() {
         tradeInHomeViewModel.getMaxPrice(laku6TradeIn)
 
-        verify { laku6TradeIn.getMinMaxPrice(any()) }
+        verify { laku6TradeIn.getMinMaxPrice(any(), any()) }
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, true)
     }
 
