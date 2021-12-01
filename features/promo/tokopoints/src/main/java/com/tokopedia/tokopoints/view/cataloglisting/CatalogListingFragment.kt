@@ -293,8 +293,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         } else if (source.id == R.id.text_failed_action) {
             requestHomePageData()
             mViewModel!!.getPointData()
-        } else if (source.id == R.id.text_membership_label
-                || source.id == R.id.bottom_view_membership) {
+        } else if (source.id == R.id.bottom_view_membership) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership))
             AnalyticsTrackerUtil.sendEvent(source.context,
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,

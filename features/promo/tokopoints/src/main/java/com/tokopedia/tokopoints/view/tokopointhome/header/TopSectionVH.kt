@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.tokopointhome.header
 
 import android.animation.ValueAnimator
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -15,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -28,10 +30,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.text.RangeInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.view.customview.DigitTextView
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.BBO
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.KUPON
@@ -49,6 +53,7 @@ import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
 import com.tokopedia.tokopoints.view.util.isDarkMode
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.NotificationUnify
+import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
@@ -80,6 +85,8 @@ class TopSectionVH(
     private var statusMatchingTimer: TimerUnifySingle? = null
     private var parentStatusMatching : ConstraintLayout ? =null
     private var ivStatusBackground: AppCompatImageView? = null
+    private var progressBar: ProgressBarUnify? = null
+    private var digittextView: DigitTextView? = null
     private val MEMBER_STATUS_BG_RADII = 16F
     private val TP_CONFETTI_STATUS_MATCHING = "tp_confetti_entry_point.zip"
 
@@ -89,7 +96,6 @@ class TopSectionVH(
         dynamicAction = itemView.findViewById(R.id.dynamic_widget)
         mTextMembershipValue = itemView.findViewById(R.id.text_membership_value)
         mTargetText = itemView.findViewById(R.id.tv_targetText)
-        mTextMembershipLabel = itemView.findViewById(R.id.text_membership_label)
         mImgEgg = itemView.findViewById(R.id.img_egg)
         mImgBackground = itemView.findViewById(R.id.img_bg_header)
         title = itemView.findViewById(R.id.tv_saving_title)
@@ -103,6 +109,8 @@ class TopSectionVH(
         timerTextView = itemView.findViewById(R.id.timer_text_view)
         statusMatchingTimer = itemView.findViewById(R.id.countdown_status)
         ivStatusBackground = itemView.findViewById(R.id.iv_gojek)
+        progressBar = itemView.findViewById(R.id.progressbar_membership)
+        digittextView = itemView?.findViewById(R.id.digittextView)
 
         renderToolbarWithHeader(model.tokopediaRewardTopSection)
         model.userSavingResponse?.userSaving?.let {
@@ -123,6 +131,22 @@ class TopSectionVH(
             cardRuntimeHeightListener.setCardLayoutHeight(it.height)
         }
         mTextMembershipLabel?.text = data?.introductionText
+
+        digittextView?.setValue(5)
+        progressBar?.apply {
+            setProgressIcon(resources.getDrawable(R.drawable.ic_tp_green_clock))
+            onValueChangeListener = { oldValue: Int, newValue: Int ->
+                if (newValue == 100) {
+                    showBottomSheetMembership(this.context)
+                    this.postDelayed( {
+                        this.setValue(0)
+                        this.setValue(10, true)
+                    },1000L)
+                }
+            }
+            setValue(100,true)
+            progressBarColorType = ProgressBarUnify.COLOR_GREEN
+        }
 
         data?.target?.let {
             if (!it.textColor.isNullOrEmpty()) {
@@ -157,6 +181,10 @@ class TopSectionVH(
         }
 
         renderDynamicActionList(data?.dynamicActionList)
+    }
+
+    private fun showBottomSheetMembership(context: Context){
+        Toast.makeText(context,"sdvvv",Toast.LENGTH_SHORT).show()
     }
 
     private fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
