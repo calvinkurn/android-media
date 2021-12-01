@@ -5,7 +5,6 @@
         <activity
             android:name=".view.activity.TwitterWebViewActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White" />
     </application>
-
 </manifest>

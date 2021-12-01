@@ -22,8 +22,6 @@ open class PinVerificationFragment : VerificationFragment() {
 
         if (otpData.otpType == OtpConstant.OtpType.AFTER_LOGIN_PHONE) {
             analytics.trackGenerateOtp(otpData, modeListData, true)
-        } else {
-            analytics.trackClickMethodOtpButton(otpData.otpType, modeListData.modeText)
         }
     }
 
