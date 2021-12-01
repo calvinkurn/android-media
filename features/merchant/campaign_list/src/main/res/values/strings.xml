@@ -12,6 +12,7 @@
     <string name="label_coming_soon">Segera Hadir</string>
     <string name="campaign_list_product_quantity_label">%s Produk</string>
     <string name="campaign_time_template" tools:ignore="ExtraTranslation">%s WIB</string>
+    <string name="campaign_list_label_status">Status</string>
     <item name="active_campaign" type="id"/>
     <string name="campaign_error_fetch_campaign_list">Ada gangguan dirumah Toped. Coba lagi atau kembali nanti</string>
     <string name="no_internet_error_message">Tidak ada koneksi internet</string>

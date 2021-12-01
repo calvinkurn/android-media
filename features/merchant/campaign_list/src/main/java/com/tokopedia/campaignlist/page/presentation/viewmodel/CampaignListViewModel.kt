@@ -27,6 +27,8 @@ class CampaignListViewModel @Inject constructor(
         private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    private var selectedCampaignTypeSelection: CampaignTypeSelection? = null
+
     private val getCampaignListResultLiveData = MutableLiveData<Result<GetCampaignListV2Response>>()
     val getCampaignListResult: LiveData<Result<GetCampaignListV2Response>> get() = getCampaignListResultLiveData
 
@@ -36,21 +38,23 @@ class CampaignListViewModel @Inject constructor(
     private val getSellerMetaDataResultLiveData = MutableLiveData<Result<GetSellerCampaignSellerAppMetaResponse>>()
     val getSellerMetaDataResult: LiveData<Result<GetSellerCampaignSellerAppMetaResponse>> get() = getSellerMetaDataResultLiveData
 
+    fun setDefaultCampaignTypeSelection(campaignTypeSelections: List<CampaignTypeSelection>) {
+        selectedCampaignTypeSelection = campaignTypeSelections.find { campaignTypeSelection ->
+            campaignTypeSelection.isSelected
+        }
+    }
 
-    fun getCampaignList(
-        campaignName: String = "",
-        campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
-        listTypeId: Int = NPL_LIST_TYPE,
-        statusId: List<Int> = GetCampaignListUseCase.statusId
-    ) {
+    fun getSelectedCampaignTypeSelection(): CampaignTypeSelection? {
+        return selectedCampaignTypeSelection
+    }
+
+    fun getCampaignList(campaignName: String = "",
+                        campaignTypeId: Int = NPL_CAMPAIGN_TYPE,
+                        listTypeId: Int = NPL_LIST_TYPE,
+                        statusId: List<Int> = GetCampaignListUseCase.statusId) {
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val params = GetCampaignListUseCase.createParams(
-                    campaignName,
-                    campaignTypeId,
-                    listTypeId,
-                    statusId
-                )
+                val params = GetCampaignListUseCase.createParams(campaignName, campaignTypeId, listTypeId, statusId)
                 getCampaignListUseCase.setRequestParams(params = params.parameters)
                 getCampaignListUseCase.executeOnBackground()
             }

@@ -30,8 +30,8 @@ class CampaignTypeViewHolder(
     }
 
     fun bindData(campaignTypeSelection: CampaignTypeSelection) {
-        // reset list item state
-        binding.root.isEnabled = true
+        // disable the click listener until there are more than one selection
+        binding.root.isEnabled = false
         // bind campaign type name
         binding.tpgCampaignTypeName.text = campaignTypeSelection.campaignTypeName
         // bind campaign status
@@ -41,7 +41,6 @@ class CampaignTypeViewHolder(
             // disable selecting future selection
             binding.root.context?.run {
                 binding.tpgCampaignTypeName.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-                binding.root.isEnabled = false
             }
 
         } else binding.labelStatusText.hide()
