@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.AccountConstants.TDNBanner.TDN_INDEX
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
@@ -26,7 +27,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -46,6 +46,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getCoBrandCCBalanceAndPointUseCase: GetCoBrandCCBalanceAndPointUseCase,
     private val getLinkStatusUseCase: GetLinkStatusUseCase,
     private val getPhoneUseCase: GetUserProfile,
+    private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
     private val walletPref: WalletPref,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -89,6 +90,9 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _phoneNo = MutableLiveData<String>()
     val phoneNo: LiveData<String> get() = _phoneNo
 
+    private val _safeModeStatus = MutableLiveData<Boolean>()
+    val safeModeStatus: LiveData<Boolean> get() = _safeModeStatus
+
     var internalBuyerData: UserAccountDataModel? = null
 
     fun refreshPhoneNo() {
@@ -104,14 +108,19 @@ class HomeAccountUserViewModel @Inject constructor(
         })
     }
 
+    fun getSafeModeValue() {
+        userProfileSafeModeUseCase.executeQuerySafeMode(
+            { (profileSettingResponse) ->
+                accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, profileSettingResponse.safeMode)
+                _safeModeStatus.value = profileSettingResponse.safeMode
+            },
+            {}
+        )
+    }
+
     fun setSafeMode(isActive: Boolean) {
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
-                { (userProfileSettingUpdate) ->
-                    if (userProfileSettingUpdate.isSuccess) {
-                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
-                        accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
-                    }
-                },
+                { getSafeModeValue() },
                 { throwable ->
                     throwable.printStackTrace()
                 }, isActive)
