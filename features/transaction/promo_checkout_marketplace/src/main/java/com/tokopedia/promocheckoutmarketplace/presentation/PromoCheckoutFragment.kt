@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -504,7 +505,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             } else {
                 addOrModify(it)
                 clearSelectionActionFlagJob?.cancel()
-                clearSelectionActionFlagJob = GlobalScope.launch(Dispatchers.Main) {
+                clearSelectionActionFlagJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                     delay(DELAY_DEFAULT_IN_MILIS)
                     it.uiState.isSelectionAction = false
                 }
@@ -653,7 +654,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         activity?.let {
             snapToPromoInput()
             showBottomsheetJob?.cancel()
-            showBottomsheetJob = GlobalScope.launch(Dispatchers.Main) {
+            showBottomsheetJob = viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
                 delay(DELAY_SHOW_BOTTOMSHEET_IN_MILIS)
                 initializePromoLastSeenRecyclerView(data.uiData.promoLastSeenItemUiModelList)
 
