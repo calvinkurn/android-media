@@ -572,6 +572,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     paramWishlistV2 = WishlistV2Params()
                     // refreshHandler?.startRefresh()
                     doRefresh()
+                    WishlistV2Analytics.clickXChipsToClearFilter()
                 }
             }
         }
@@ -921,7 +922,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 paramWishlistV2 = WishlistV2Params()
                 wishlistNavtoolbar.clearSearchbarText()
                 doRefresh()
-                WishlistV2Analytics.clickXChipsToClearFilter()
             }
         }
     }

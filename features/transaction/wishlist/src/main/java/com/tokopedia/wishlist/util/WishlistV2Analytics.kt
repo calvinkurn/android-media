@@ -57,6 +57,7 @@ object WishlistV2Analytics {
     private const val CLICK_KATEGORI_FILTER_CHIPS = "click kategori filter chips"
     private const val CLICK_OPTION_ON_KATEGORI_FILTER_CHIPS = "click option on kategori filter chips"
     private const val CLICK_PENAWARAN_FILTER_CHIPS = "click penawaran filter chips"
+    private const val CLICK_SIMPAN_ON_PENAWARAN_FILTER_CHIPS = "click simpan on penawaran filter chips"
     private const val CLICK_STOK_FILTER_CHIPS = "click stok filter chips"
     private const val CLICK_OPTION_ON_STOK_FILTER_CHIPS = "click option on stok filter chips"
     private const val CLICK_X_CHIPS_TO_CLEAR_FILTER = "click x chips to clear filter"
@@ -66,7 +67,7 @@ object WishlistV2Analytics {
     private const val CLICK_BATAL_ON_POP_UP_MULTIPLE_WISHLIST_PRODUCT = "click batal on pop up multiple wishlist product"
     private const val CLICK_PRODUCT_CARD_ON_WISHLIST_PAGE = "click product card on wishlist page"
     private const val CLICK_ATC_ON_WISHLIST_PAGE = "click add to cart on wishlist page"
-    private const val CLICK_LIHAT_ON_ATC_SUCCESS_TOASTER = "click lihat on atc success toaster"
+    private const val CLICK_LIHAT_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster"
     private const val CLICK_LIHAT_BARANG_SERUPA_ON_PRODUCT_CARD = "click lihat barang serupa on product card"
     private const val CLICK_THREE_DOTS_ON_PRODUCT_CARD = "click three dots on product card"
     private const val CLICK_OPTION_ON_THREE_DOT_MENU = "click option on three dot menu"
@@ -137,7 +138,7 @@ object WishlistV2Analytics {
     fun clickSimpanOnPenawaranFilterChips(optionChosen: String) {
         val event = TrackAppUtils.gtmData(
                 CLICK_WISHLIST,
-                WISHLIST_PAGE, CLICK_OPTION_ON_KATEGORI_FILTER_CHIPS, optionChosen)
+                WISHLIST_PAGE, CLICK_SIMPAN_ON_PENAWARAN_FILTER_CHIPS, optionChosen)
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
