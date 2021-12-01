@@ -26,7 +26,7 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
         const val TRANSACTION_TYPE_WITHDRAWAL = "TRANSACTION_TYPE_WITHDRAWAL"
         const val DANGER = "DANGER"
         const val SUCCESS = "SUCCESS"
-        const val WARNING = "WARNING"
+        const val WARN = "WARN"
         const val GRAY = "GRAY"
     }
 
@@ -61,7 +61,7 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
                     when (it.labelType) {
                         DANGER -> setLabelType(Label.HIGHLIGHT_LIGHT_RED)
                         SUCCESS -> setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
-                        WARNING -> setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
+                        WARN -> setLabelType(Label.HIGHLIGHT_LIGHT_ORANGE)
                         GRAY -> setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
                     }
                 }
