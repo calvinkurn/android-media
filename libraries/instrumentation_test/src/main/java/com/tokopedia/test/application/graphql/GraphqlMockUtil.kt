@@ -6,13 +6,12 @@ import java.lang.reflect.Type
 
 object GraphqlMockUtil {
 
-    inline fun <reified T : Any> createSuccessResponse(obj: T): GraphqlResponse {
+    inline fun <reified T : Any> createSuccessResponse(vararg obj: T): GraphqlResponse {
         val success = hashMapOf<Type, Any>(T::class.java to obj)
-        return GraphqlResponse(success, HashMap<Type, List<GraphqlError>>(), false)
+        return success.toSuccessGqlResponse()
     }
 
 }
-
 
 fun HashMap<Type, Any>.toSuccessGqlResponse(): GraphqlResponse {
     return GraphqlResponse(this, HashMap<Type, List<GraphqlError>>(), false)
