@@ -1274,6 +1274,26 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwTotalQuestion(3)
     }
 
+    @Test
+    fun should_re_render_SRW_preview_question_when_user_remove_one_of_the_preview_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity()
+
+        // When
+        intendingAttachProduct(3)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
+        clickCloseAttachmentPreview(0)
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(3)
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user receive voucher event from ws.
