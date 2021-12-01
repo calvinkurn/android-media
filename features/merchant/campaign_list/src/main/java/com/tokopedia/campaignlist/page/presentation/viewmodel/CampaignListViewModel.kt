@@ -38,6 +38,10 @@ class CampaignListViewModel @Inject constructor(
     private val getSellerMetaDataResultLiveData = MutableLiveData<Result<GetSellerCampaignSellerAppMetaResponse>>()
     val getSellerMetaDataResult: LiveData<Result<GetSellerCampaignSellerAppMetaResponse>> get() = getSellerMetaDataResultLiveData
 
+    private var campaignName = ""
+    private var campaignTypeId = NPL_CAMPAIGN_TYPE
+    private var campaignStatusId = GetCampaignListUseCase.statusId
+
     fun setDefaultCampaignTypeSelection(campaignTypeSelections: List<CampaignTypeSelection>) {
         selectedCampaignTypeSelection = campaignTypeSelections.find { campaignTypeSelection ->
             campaignTypeSelection.isSelected
@@ -130,5 +134,30 @@ class CampaignListViewModel @Inject constructor(
                     isSelected = false
             )
         }
+    }
+
+
+    fun setCampaignName(campaignName : String) {
+        this.campaignName = campaignName
+    }
+
+    fun setCampaignTypeId(campaignTypeId : Int) {
+        this.campaignTypeId = campaignTypeId
+    }
+
+    fun setCampaignStatusId(campaignStatusId : List<Int>) {
+        this.campaignStatusId = campaignStatusId
+    }
+
+    fun getCampaignName(): String {
+        return campaignName
+    }
+
+    fun getCampaignTypeId(): Int {
+        return campaignTypeId
+    }
+
+    fun getCampaignStatusId(): List<Int> {
+        return campaignStatusId
     }
 }
