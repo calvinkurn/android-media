@@ -28,7 +28,8 @@ class ItemTimerNewSellerViewHolder(
     override fun bind(element: ItemTimerNewSellerUiModel?) {
         binding?.run {
             containerTimerNewSeller.loadImage(
-                if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER)
+                if (element?.isTenureDate == true) BG_ORANGE_TIMER else BG_GREEN_TIMER
+            )
             timerNewSeller.targetDate = element?.effectiveDate
 
             tvShopPerformanceNewSeller.text = if (element?.shopScore.isLessThanZero()) {
