@@ -84,7 +84,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     subTitle = couponSubSection.subTitle
                     iconUrl = couponSubSection.iconUrl
                     identifierId = headerIdentifierId
-                    tmpPromoItemList = emptyList()
                     tabId = if(isHeaderEnabled) {
                         couponSubSection.id
                     } else {
@@ -101,7 +100,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    isCollapsed = false
                 }
         )
     }

@@ -40,9 +40,6 @@ class PromoListHeaderEnabledViewHolder(private val viewBinding: PromoCheckoutMar
 
             setImageFilterNormal(imagePromoListHeader)
             labelPromoListHeaderSubTitle.show()
-            itemView.setOnClickListener {
-                if (adapterPosition != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(element)
-            }
         }
     }
 

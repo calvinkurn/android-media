@@ -17,7 +17,6 @@ class PromoListHeaderUiModel(
             var subTitle: String = "",
             var iconUrl: String = "",
             var identifierId: Int = 0,
-            var tmpPromoItemList: List<PromoListItemUiModel> = emptyList(),
             var tabId: String = ""
     ) {
         companion object {
@@ -29,7 +28,6 @@ class PromoListHeaderUiModel(
 
     data class UiState(
             var isEnabled: Boolean = false,
-            var isCollapsed: Boolean = false,
             var hasSelectedPromoItem: Boolean = false
     )
 

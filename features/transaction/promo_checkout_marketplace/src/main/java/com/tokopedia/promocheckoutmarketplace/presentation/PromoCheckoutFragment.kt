@@ -1055,10 +1055,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         analytics.eventClickRemovePromoCode(viewModel.getPageSource())
     }
 
-    override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {
-//        viewModel.updatePromoListAfterClickPromoHeader(element)
-    }
-
     override fun onClickPromoListItem(element: PromoListItemUiModel, position: Int) {
         viewModel.updatePromoListAfterClickPromoItem(element)
 
