@@ -60,7 +60,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
         component.inject(this)
         initObserver()
-        remoteConfig = FirebaseRemoteConfigImpl(this)
+        remoteConfig = FirebaseRemoteConfigImpl(applicationContext)
 
         intent?.extras?.let {
             inactivePhoneUserDataModel = InactivePhoneUserDataModel(
@@ -156,18 +156,18 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     private fun gotoChoseAccount(phone: String) {
-        startActivityForResult(InactivePhoneAccountListActivity.createIntent(this, phone), REQUEST_CODE_CHOOSE_ACCOUNT)
+        startActivityForResult(InactivePhoneAccountListActivity.createIntent(applicationContext, phone), REQUEST_CODE_CHOOSE_ACCOUNT)
     }
 
     private fun gotoRegularRegularFlow() {
         startActivity(inactivePhoneUserDataModel?.let {
-            InactivePhoneRegularActivity.createIntent(this, it)
+            InactivePhoneRegularActivity.createIntent(applicationContext, it)
         })
         finish()
     }
 
     private fun gotoWithPinFlow(inactivePhoneUserDataModel: InactivePhoneUserDataModel) {
-        startActivity(InactivePhoneWithPinActivity.createIntent(this, inactivePhoneUserDataModel))
+        startActivity(InactivePhoneWithPinActivity.createIntent(applicationContext, inactivePhoneUserDataModel))
         finish()
     }
 
@@ -190,7 +190,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     private fun showDialogChecker() {
-        DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+        DialogUnify(applicationContext, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.text_update_dialog_title))
             setDescription(getString(R.string.text_update_dialog_description))
             setPrimaryCTAText(getString(R.string.text_update_cta_primary))
@@ -217,11 +217,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
     }
 
     private fun onError(throwable: Throwable) {
-        val message = ErrorHandler.getErrorMessage(this, throwable)
-        viewBinding?.containerInactivePhone?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG).show()
-        }
-
+        val message = ErrorHandler.getErrorMessage(applicationContext, throwable)
         setResult(Activity.RESULT_CANCELED, Intent().apply {
             putExtras(Bundle().apply {
                 putString(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, message)

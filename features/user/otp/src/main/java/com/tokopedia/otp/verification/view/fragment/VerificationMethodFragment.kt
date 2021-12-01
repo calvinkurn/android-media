@@ -293,8 +293,10 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
             INACTIVE_PHONE_CODE -> {
                 if (resultCode == Activity.RESULT_CANCELED) {
                     val message = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY).orEmpty()
-                    view?.let {
-                        Toaster.build(it, message, Toaster.LENGTH_LONG).show()
+                    if (message.isNotEmpty()) {
+                        view?.let {
+                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        }
                     }
                 }
             }
