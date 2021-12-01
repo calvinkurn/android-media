@@ -603,15 +603,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
         filterBottomSheetAdapter.filterItem = filterItem
-        var listOptionIdSelected = arrayListOf<String>()
+        var listOptionIdSelected = mutableListOf<String>()
         var nameSelected = ""
 
         filterBottomSheet.setAdapter(filterBottomSheetAdapter)
 
         if (filterItem.isActive) {
             if (filterItem.name == FILTER_OFFERS) {
-                filterBottomSheetAdapter.isResetCheckbox = true
-                filterBottomSheetAdapter.notifyDataSetChanged()
+                filterBottomSheet.setAction(CTA_RESET) {
+                    filterBottomSheetAdapter.isResetCheckbox = true
+                    filterBottomSheetAdapter.notifyDataSetChanged()
+                }
             } else {
                 filterBottomSheet.setAction(CTA_RESET) {
                     filterBottomSheet.dismiss()
@@ -669,9 +671,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
                 paramWishlistV2.sortFilters.clear()
 
-                listOptionIdSelected.forEach { optionId ->
-                    listCheckboxSelected.add(optionId)
-                }
+                listCheckboxSelected.addAll(listOptionIdSelected)
 
                 if (listCheckboxSelected.isNotEmpty()) {
                     paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(

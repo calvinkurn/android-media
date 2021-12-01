@@ -211,8 +211,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
                 if (wishlistV2Response.totalData >= topAdsPositionInPage && wishlistV2Response.page % 2 == 0) {
                     val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
-                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
-                    listData.add(topAdsPositionInPage+1, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
+                    listData.add(topAdsPositionInPage+1, WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
+                    listData.add(topAdsPositionInPage+2, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
                 } else {
                     val topadsData = getTopAdsData("")
                     if (topadsData != null) {
