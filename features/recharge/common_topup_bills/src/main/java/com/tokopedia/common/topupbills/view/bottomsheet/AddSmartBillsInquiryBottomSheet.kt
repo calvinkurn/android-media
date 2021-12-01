@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.topupbills.R
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryAttribute
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.view.adapter.AddSmartBillsInquiryAdapter
 import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsInquiryCallBack
@@ -52,7 +53,13 @@ class AddSmartBillsInquiryBottomSheet (private val getInquiryCallback: AddSmartB
         super.dismiss()
     }
 
-    fun addSBMInquiry(sbmInquiryList: List<TopupBillsEnquiryMainInfo>){
-        smartBillsInquiryAdapter.listInquiry = sbmInquiryList
+    fun addSBMInquiry(attribute: TopupBillsEnquiryAttribute){
+        val listInquiry = attribute.mainInfoList.toMutableList()
+        attribute.additionalMainInfo.firstOrNull()?.detail?.let {
+            listInquiry.addAll(it.map {
+                TopupBillsEnquiryMainInfo(it.label, it.value)
+            })
+        }
+        smartBillsInquiryAdapter.listInquiry = listInquiry
     }
 }

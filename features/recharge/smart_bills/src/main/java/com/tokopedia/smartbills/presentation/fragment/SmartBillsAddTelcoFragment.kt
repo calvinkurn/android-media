@@ -415,7 +415,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 commonTopUpBillsAnalytic.clickOnCloseInquiry(CategoryTelcoType.getCategoryString(categoryId))
             }
         })
-        inquiryBottomSheet.addSBMInquiry(attribute.mainInfoList)
+        inquiryBottomSheet.addSBMInquiry(attribute)
         inquiryBottomSheet.show(requireFragmentManager(), "")
     }
 
@@ -437,6 +437,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     private fun showNominal(isShow: Boolean){
         if (isShow && isPrepaid()){
             text_field_sbm_product_nominal.apply {
+                text_field_sbm_product_nominal.textFieldInput.setText("")
+                selectedProduct = null
                 show()
                 textFieldWrapper.hint = if (CategoryTelcoType.isCategoryPacketData(categoryId)){
                     resources.getString(R.string.smart_bills_add_bills_packet_data)

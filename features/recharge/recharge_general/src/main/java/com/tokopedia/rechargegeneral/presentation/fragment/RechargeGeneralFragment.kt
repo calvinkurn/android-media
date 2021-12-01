@@ -1127,7 +1127,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 commonTopupBillsAnalytics.clickOnCloseInquiry(categoryName)
             }
         })
-        inquiryBottomSheet.addSBMInquiry(data.attributes.mainInfoList)
+        inquiryBottomSheet.addSBMInquiry(data.attributes)
         fragmentManager?.let { fm ->
             inquiryBottomSheet.show(fm, "")
         }
