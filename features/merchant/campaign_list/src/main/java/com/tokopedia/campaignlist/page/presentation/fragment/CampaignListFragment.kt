@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
-import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBottomSheet
@@ -27,10 +26,10 @@ import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignVie
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,9 +63,6 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     private var campaignTypeFilter: SortFilterItem? = null
     private var campaignStatusFilter: SortFilterItem? = null
-    private var campaignName = ""
-    private var campaignTypeId = GetCampaignListUseCase.NPL_CAMPAIGN_TYPE
-    private var campaignStatusId = GetCampaignListUseCase.statusId
 
     companion object {
         @JvmStatic
@@ -122,13 +118,13 @@ class CampaignListFragment : BaseDaggerFragment(),
         } catch (e: java.lang.Exception) {
         } // TODO handle exception
 
-        this.campaignTypeId = campaignTypeId
+        viewModel.setCampaignTypeId(campaignTypeId)
         viewModel.getCampaignList(campaignTypeId = campaignTypeId)
     }
 
     override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
-        this.campaignStatusId = listOf(selectedCampaignStatus.statusId)
+        viewModel.setCampaignStatusId(listOf(selectedCampaignStatus.statusId))
         viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
     }
 
@@ -141,7 +137,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         binding?.sbuCampaignList?.searchBarTextField?.setOnEditorActionListener { textView, actionId, event ->
             if (actionId == IME_ACTION_SEARCH || event.keyCode == KEYCODE_ENTER) {
                 val query = textView.text.toString()
-                campaignName = query
+                viewModel.setCampaignName(query)
                 viewModel.getCampaignList(campaignName = query)
                 return@setOnEditorActionListener true
             } else return@setOnEditorActionListener false
@@ -285,9 +281,9 @@ class CampaignListFragment : BaseDaggerFragment(),
             clickListener = {
                 //Retry to get campaign list data with currently selected filter and search bar query
                 viewModel.getCampaignList(
-                    campaignName = campaignName,
-                    campaignTypeId = campaignTypeId,
-                    statusId = campaignStatusId
+                    campaignName = viewModel.getCampaignName(),
+                    campaignTypeId = viewModel.getCampaignTypeId(),
+                    statusId = viewModel.getCampaignStatusId()
                 )
             }
         ).show()
