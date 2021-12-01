@@ -65,6 +65,7 @@ import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel;
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils;
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
@@ -101,7 +102,6 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.helpticket.domain.model.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
@@ -530,7 +530,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
                 String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
                 String digitalProductId = crossSellModel.getId();
-                String eventLabel = digitalCategoryName + " " + digitalProductId;
+                String eventLabel = digitalCategoryName + " - " + digitalProductId;
                 String digitalProductName = crossSellModel.getInfo().getTitle();
 
                 checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
@@ -582,7 +582,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ArrayList<Long> childCategoryIds = new ArrayList<>();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
             for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
-                childCategoryIds.add(cartItemModel.getProductId());
+                childCategoryIds.add(cartItemModel.getProductCatId());
             }
         }
         return childCategoryIds;
@@ -878,28 +878,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
-        DialogUnify createTicketDialog = new DialogUnify(getActivityContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
-        createTicketDialog.setTitle(checkoutData.getErrorReporter().getTexts().getSubmitTitle());
-        createTicketDialog.setDescription(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
-        createTicketDialog.setSecondaryCTAText(checkoutData.getErrorReporter().getTexts().getCancelButton());
-        createTicketDialog.setSecondaryCTAClickListener(() -> {
-            checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
-            createTicketDialog.dismiss();
-            return Unit.INSTANCE;
-        });
-        createTicketDialog.setPrimaryCTAText(checkoutData.getErrorReporter().getTexts().getSubmitButton());
-        createTicketDialog.setPrimaryCTAClickListener(() -> {
-            checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
-            createTicketDialog.dismiss();
-            shipmentPresenter.processSubmitHelpTicket(checkoutData);
-            return Unit.INSTANCE;
-        });
-        createTicketDialog.show();
-        checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
-    }
-
-    @Override
     public void renderCheckoutPriceUpdated(PriceValidationData priceValidationData) {
         if (getActivity() != null) {
             com.tokopedia.checkout.bundle.domain.model.checkout.MessageData messageData =
@@ -929,19 +907,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             checkoutAnalyticsCourierSelection.eventViewPopupPriceIncrease(eventLabelBuilder.toString());
         }
-    }
-
-    @Override
-    public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
-        DialogUnify successTicketDialog = new DialogUnify(getActivity(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE);
-        successTicketDialog.setTitle(submitTicketResult.getTexts().getSubmitTitle());
-        successTicketDialog.setDescription(submitTicketResult.getTexts().getSubmitDescription());
-        successTicketDialog.setPrimaryCTAText(submitTicketResult.getTexts().getSuccessButton());
-        successTicketDialog.setPrimaryCTAClickListener(() -> {
-            getActivity().finish();
-            return Unit.INSTANCE;
-        });
-        successTicketDialog.show();
     }
 
     @Override
@@ -1339,7 +1304,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
                 if (trackingDetailsItemUiModels.size() > 0) {
                     for (TrackingDetailsItemUiModel trackingDetailsItemUiModel : trackingDetailsItemUiModels) {
-                        if (trackingDetailsItemUiModel.getProductId() != null && trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
+                        if (trackingDetailsItemUiModel.getProductId() == cartItemModel.getProductId() &&
                                 cartItemModel.getAnalyticsProductCheckoutData() != null) {
                             cartItemModel.getAnalyticsProductCheckoutData().setPromoCode(trackingDetailsItemUiModel.getPromoCodesTracking());
                             cartItemModel.getAnalyticsProductCheckoutData().setPromoDetails(trackingDetailsItemUiModel.getPromoDetailsTracking());
@@ -1893,7 +1858,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
         String digitalProductId = crossSellModel.getId();
-        String eventLabel = digitalCategoryName + " " + digitalProductId;
+        String eventLabel = digitalCategoryName + " - " + digitalProductId;
         String digitalProductName = crossSellModel.getInfo().getTitle();
 
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();
@@ -3245,18 +3210,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void updateLocalCacheAddressData(UserAddress userAddress) {
         Activity activity = getActivity();
         if (activity != null) {
-            ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
-                    activity,
-                    userAddress.getAddressId(),
-                    userAddress.getCityId(),
-                    userAddress.getDistrictId(),
-                    userAddress.getLatitude(),
-                    userAddress.getLongitude(),
-                    String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
-                    userAddress.getPostalCode(),
-                    userAddress.getShopId(),
-                    userAddress.getWarehouseId()
-            );
+            LocalCacheModel localCache = ChooseAddressUtils.INSTANCE.getLocalizingAddressData(activity);
+            if (userAddress.getState() == UserAddress.STATE_ADDRESS_ID_NOT_MATCH
+                    || localCache == null || localCache.getAddress_id().isEmpty() || localCache.getAddress_id().equals("0")) {
+                ChooseAddressUtils.INSTANCE.updateLocalizingAddressDataFromOther(
+                        activity,
+                        userAddress.getAddressId(),
+                        userAddress.getCityId(),
+                        userAddress.getDistrictId(),
+                        userAddress.getLatitude(),
+                        userAddress.getLongitude(),
+                        String.format("%s %s", userAddress.getAddressName(), userAddress.getReceiverName()),
+                        userAddress.getPostalCode(),
+                        userAddress.getShopId(),
+                        userAddress.getWarehouseId()
+                );
+            }
         }
     }
 

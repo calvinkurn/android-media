@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import kotlin.collections.ArrayList
 
 @Parcelize

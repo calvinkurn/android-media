@@ -62,6 +62,7 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
+import com.tokopedia.notifications.worker.PushWorker;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -185,7 +186,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initCMDependencies(){
-        GratifCmInitializer.INSTANCE.start(this);
+        WeaveInterface gratiWeave = () -> {
+            GratifCmInitializer.INSTANCE.start(ConsumerRouterApplication.this);
+            return true;
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(gratiWeave, RemoteConfigKey.ENABLE_ASYNC_GRATIFICATION_INIT, getApplicationContext(), false);
+
+
     }
 
     private void initialiseHansel() {
@@ -512,6 +519,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_HANDLER_ACTIVITY);
         CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
+        PushWorker.Companion.schedulePeriodicWorker(this);
     }
 
     @Override

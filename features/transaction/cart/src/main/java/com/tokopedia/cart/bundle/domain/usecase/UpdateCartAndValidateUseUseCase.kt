@@ -4,7 +4,7 @@ import com.tokopedia.cart.bundle.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.bundle.domain.model.updatecart.UpdateAndValidateUseData
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
@@ -14,7 +14,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 2020-03-04.
  */
 class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCartUseCase: UpdateCartUseCase,
-                                                          private val validateUseUseCase: ValidateUsePromoRevampUseCase,
+                                                          private val validateUseUseCase: OldValidateUsePromoRevampUseCase,
                                                           private val schedulers: ExecutorSchedulers) : com.tokopedia.usecase.UseCase<UpdateAndValidateUseData>() {
 
     companion object {
@@ -32,9 +32,9 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
         requestParamUpdateCart.putObject(PARAM_UPDATE_CART_REQUEST, paramUpdateList)
         requestParamUpdateCart.putString(PARAM_KEY_SOURCE, paramUpdateSource)
 
-        val paramValidateUse = requestParams.getObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE) as ValidateUsePromoRequest
+        val paramValidateUse = requestParams.getObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE) as ValidateUsePromoRequest
         val requestParamValidateUse = RequestParams.create()
-        requestParamValidateUse.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, paramValidateUse)
+        requestParamValidateUse.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, paramValidateUse)
 
         return Observable.just(UpdateAndValidateUseData())
                 .flatMap { updateAndValidateUseData ->

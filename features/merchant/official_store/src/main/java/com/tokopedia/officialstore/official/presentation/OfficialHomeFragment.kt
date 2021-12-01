@@ -914,6 +914,7 @@ class OfficialHomeFragment :
         swipeRefreshLayout?.setOnRefreshListener {
             counterTitleShouldBeRendered = 0
             officialHomeMapper.removeRecommendation(adapter)
+            officialHomeMapper.removeRecomWidget(adapter)
             loadData(true)
         }
 

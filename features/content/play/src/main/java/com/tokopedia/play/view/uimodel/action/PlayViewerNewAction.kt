@@ -39,20 +39,8 @@ object ClickLikeAction : PlayViewerNewAction()
 object ClickShareAction : PlayViewerNewAction()
 
 /**
- * Cart
- */
-object ClickCartAction : PlayViewerNewAction()
-
-/**
  * Swipe
  */
 object SetChannelActiveAction : PlayViewerNewAction()
-
-/**
- * Upcoming Page
- */
-object ImpressUpcomingChannel: PlayViewerNewAction()
-object ClickRemindMeUpcomingChannel: PlayViewerNewAction()
-object ClickWatchNowUpcomingChannel: PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()

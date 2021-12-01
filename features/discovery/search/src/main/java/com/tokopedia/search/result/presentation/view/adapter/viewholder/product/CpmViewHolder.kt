@@ -4,11 +4,12 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultProductTopAdsBannerLayoutBinding
 import com.tokopedia.search.result.presentation.model.CpmDataView
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener
-import com.tokopedia.topads.sdk.widget.TopAdsBannerView
+import com.tokopedia.utils.view.binding.viewBinding
 
 class CpmViewHolder(
         itemView: View,
@@ -21,21 +22,23 @@ class CpmViewHolder(
         val LAYOUT = R.layout.search_result_product_top_ads_banner_layout
     }
 
-    private val adsBannerView: TopAdsBannerView = itemView.findViewById(R.id.ads_banner)
+    private var binding: SearchResultProductTopAdsBannerLayoutBinding? by viewBinding()
 
     init {
-        adsBannerView.setTopAdsBannerClickListener { position, applink: String?, data: CpmData? ->
-            bannerAdsListener?.onBannerAdsClicked(position, applink, data)
-        }
-
-        adsBannerView.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
-            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
-                bannerAdsListener?.onBannerAdsImpressionListener(position, data)
+        binding?.adsBanner?.let {
+            it.setTopAdsBannerClickListener { position, applink: String?, data: CpmData? ->
+                bannerAdsListener?.onBannerAdsClicked(position, applink, data)
             }
-        })
+
+            it.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
+                override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
+                    bannerAdsListener?.onBannerAdsImpressionListener(position, data)
+                }
+            })
+        }
     }
 
     override fun bind(element: CpmDataView) {
-        adsBannerView.displayAds(element.cpmModel)
+        binding?.adsBanner?.displayAds(element.cpmModel)
     }
 }

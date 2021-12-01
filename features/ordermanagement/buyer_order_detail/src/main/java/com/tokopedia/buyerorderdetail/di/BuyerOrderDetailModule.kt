@@ -21,14 +21,20 @@ class BuyerOrderDetailModule {
 
     @BuyerOrderDetailScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
+        UserSession(context)
 
     @BuyerOrderDetailScope
     @Provides
     @Named(BuyerOrderDetailMiscConstant.DAGGER_ATC_QUERY_NAME)
-    fun provideAtcMultiQuery(@ApplicationContext context: Context): String = GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi)
+    fun provideAtcMultiQuery(@ApplicationContext context: Context): String =
+        GraphqlHelper.loadRawString(
+            context.resources,
+            com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi
+        )
 
+    @BuyerOrderDetailScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
-            MultiRequestGraphqlUseCase(graphqlRepository)
+        MultiRequestGraphqlUseCase(graphqlRepository)
 }

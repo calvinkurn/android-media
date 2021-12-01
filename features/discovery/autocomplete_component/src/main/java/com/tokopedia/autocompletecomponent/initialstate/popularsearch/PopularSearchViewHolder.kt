@@ -10,17 +10,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.autocompletecomponent.R
+import com.tokopedia.autocompletecomponent.databinding.LayoutDynamicItemInitialStateBinding
+import com.tokopedia.autocompletecomponent.databinding.LayoutPopularAutocompleteBinding
 import com.tokopedia.autocompletecomponent.initialstate.BaseItemInitialStateSearch
-import com.tokopedia.autocompletecomponent.initialstate.InitialStateItemClickListener
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.unifycomponents.toDp
-import kotlinx.android.synthetic.main.layout_dynamic_item_initial_state.view.*
-import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class PopularSearchViewHolder(
-        itemView: View,
-        private val listener: InitialStateItemClickListener
+    itemView: View,
+    private val listener: PopularSearchListener
 ) : AbstractViewHolder<PopularSearchDataView>(itemView) {
 
     companion object {
@@ -28,12 +27,14 @@ class PopularSearchViewHolder(
         val LAYOUT = R.layout.layout_popular_autocomplete
     }
 
+    private var binding: LayoutPopularAutocompleteBinding? by viewBinding()
+
     override fun bind(element: PopularSearchDataView) {
         bindContent(element)
     }
 
     private fun bindContent(element: PopularSearchDataView) {
-        itemView.recyclerView?.let {
+        binding?.recyclerViewPopularSearch?.let {
             it.layoutManager = createLayoutManager()
             it.adapter = createAdapter(element.list)
         }
@@ -51,7 +52,9 @@ class PopularSearchViewHolder(
         return adapter
     }
 
-    private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    private inner class ItemAdapter(
+        private val clickListener: PopularSearchListener,
+    ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
         private var data: List<BaseItemInitialStateSearch> = ArrayList()
 
         fun setData(data: List<BaseItemInitialStateSearch>) {
@@ -60,8 +63,13 @@ class PopularSearchViewHolder(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-            val itemView = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.layout_dynamic_item_initial_state, parent, false)
+            val itemView = LayoutInflater
+                .from(parent.context)
+                .inflate(
+                    R.layout.layout_dynamic_item_initial_state,
+                    parent,
+                    false
+                )
             return ItemViewHolder(itemView, clickListener)
         }
 
@@ -73,7 +81,12 @@ class PopularSearchViewHolder(
             return data.size
         }
 
-        inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
+        inner class ItemViewHolder(
+            itemView: View,
+            private val listener: PopularSearchListener,
+        ) : RecyclerView.ViewHolder(itemView) {
+
+            private var binding: LayoutDynamicItemInitialStateBinding? by viewBinding()
 
             fun bind(item: BaseItemInitialStateSearch) {
                 bindIcon(item)
@@ -83,26 +96,37 @@ class PopularSearchViewHolder(
             }
 
             private fun bindIcon(item: BaseItemInitialStateSearch) {
-                itemView.initialStateDynamicIcon?.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
-                    ImageHandler.loadImageRounded(itemView.context, itemView.initialStateDynamicIcon, item.imageUrl, 6.toDp().toFloat())
+                val icon = binding?.initialStateDynamicIcon ?: return
+
+                icon.shouldShowWithAction(item.imageUrl.isNotEmpty()) {
+                    ImageHandler.loadImageRounded(
+                        itemView.context,
+                        icon,
+                        item.imageUrl,
+                        6.toDp().toFloat()
+                    )
                 }
             }
 
             private fun bindTitle(item: BaseItemInitialStateSearch) {
-                itemView.initialStateDynamicItemTitle?.shouldShowWithAction(item.title.isNotEmpty()) {
-                    itemView.initialStateDynamicItemTitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.title).toString())
+                val title = binding?.initialStateDynamicItemTitle ?: return
+
+                title.shouldShowWithAction(item.title.isNotEmpty()) {
+                    title.text = MethodChecker.fromHtml(item.title).toString()
                 }
             }
 
             private fun bindSubtitle(item: BaseItemInitialStateSearch) {
-                itemView.initialStateDynamicItemSubtitle?.shouldShowWithAction(item.subtitle.isNotEmpty()) {
-                    itemView.initialStateDynamicItemSubtitle?.setTextAndCheckShow(MethodChecker.fromHtml(item.subtitle).toString())
+                val subtitle = binding?.initialStateDynamicItemSubtitle ?: return
+
+                subtitle.shouldShowWithAction(item.subtitle.isNotEmpty()) {
+                    subtitle.text = MethodChecker.fromHtml(item.subtitle).toString()
                 }
             }
 
             private fun bindListener(item: BaseItemInitialStateSearch) {
-                itemView.initialStateDynamicItem?.setOnClickListener {
-                    clickListener.onDynamicSectionItemClicked(item)
+                binding?.initialStateDynamicItem?.setOnClickListener {
+                    listener.onDynamicSectionItemClicked(item)
                 }
             }
         }

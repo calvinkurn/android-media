@@ -2,6 +2,7 @@ package com.tokopedia.topchat.stub.chatroom.usecase
 
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.SmartReplyQuestionUseCase
+import com.tokopedia.topchat.common.alterResponseOf
 import com.tokopedia.topchat.stub.common.GraphqlUseCaseStub
 
 class SmartReplyQuestionUseCaseStub(
@@ -30,5 +31,10 @@ class SmartReplyQuestionUseCaseStub(
     init {
         gqlUseCase.response = response
     }
+
+    private val replyBubbleResponsePath = "buyer/success_get_srw_questions.json"
+
+    val defaultResponse: ChatSmartReplyQuestionResponse
+        get() = alterResponseOf(replyBubbleResponsePath) { }
 
 }

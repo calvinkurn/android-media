@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
@@ -50,7 +51,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.Shipping
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
@@ -673,9 +673,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 showLayoutNoAddress()
             }
             else -> {
-                if (addressState.address.addressId > 0) {
-                    updateLocalCacheAddressData(addressState.address)
-                }
+                updateLocalCacheAddressData(addressState.address)
             }
         }
     }
@@ -713,18 +711,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun updateLocalCacheAddressData(addressModel: OrderProfileAddress) {
-        activity?.let {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = it,
-                    addressId = addressModel.addressId.toString(),
-                    cityId = addressModel.cityId.toString(),
-                    districtId = addressModel.districtId.toString(),
-                    lat = addressModel.latitude,
-                    long = addressModel.longitude,
-                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                    postalCode = addressModel.postalCode,
-                    shopId = addressModel.tokoNowShopId,
-                    warehouseId = addressModel.tokoNowWarehouseId)
+        if (addressModel.addressId > 0) {
+            activity?.let {
+                val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
+                if (addressModel.state == OrderProfileAddress.STATE_OCC_ADDRESS_ID_NOT_MATCH
+                        || localCache?.address_id.isNullOrEmpty() || localCache?.address_id == "0") {
+                    ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            context = it,
+                            addressId = addressModel.addressId.toString(),
+                            cityId = addressModel.cityId.toString(),
+                            districtId = addressModel.districtId.toString(),
+                            lat = addressModel.latitude,
+                            long = addressModel.longitude,
+                            label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
+                            postalCode = addressModel.postalCode,
+                            shopId = addressModel.tokoNowShopId,
+                            warehouseId = addressModel.tokoNowWarehouseId)
+                }
+            }
         }
     }
 
@@ -1360,13 +1364,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     val codes = validateUsePromoRequest.codes
                     val promoCodes = ArrayList<String>()
                     for (code in codes) {
-                        if (code != null) {
-                            promoCodes.add(code)
-                        }
+                        promoCodes.add(code)
                     }
                     if (validateUsePromoRequest.orders.isNotEmpty()) {
-                        val orderCodes = validateUsePromoRequest.orders[0]?.codes
-                                ?: mutableListOf()
+                        val orderCodes = validateUsePromoRequest.orders[0].codes
                         for (code in orderCodes) {
                             promoCodes.add(code)
                         }

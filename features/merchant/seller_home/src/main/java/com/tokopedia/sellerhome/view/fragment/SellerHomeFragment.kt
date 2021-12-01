@@ -426,11 +426,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun showRecommendationWidgetCoachMark(view: View) {
         recommendationWidgetView = view
-        val coachMarkItems by getCoachMarkItems()
+        showCoachMarkShopScore()
+    }
 
-        if (coachMarkItems.isNotEmpty()) {
-            pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
-            coachMark?.showCoachMark(coachMarkItems)
+    private fun showCoachMarkShopScore() {
+        val coachMarkItems by getCoachMarkItems()
+        val isEligibleShowRecommendationCoachMark =
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleShowRecommendationCoachMark) {
+            if (coachMarkItems.isNotEmpty()) {
+                pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                coachMark?.showCoachMark(coachMarkItems)
+            }
         }
     }
 
@@ -988,20 +995,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
-            recyclerView?.post {
-                when (result) {
-                    is Success -> {
-                        stopLayoutCustomMetric(result.data)
-                        setOnSuccessGetLayout(result.data)
-                        setRecommendationCoachMarkEligibility()
-                    }
-                    is Fail -> {
-                        stopCustomMetric(
-                            SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE,
-                            true
-                        )
-                        setOnErrorGetLayout(result.throwable)
-                    }
+            when (result) {
+                is Success -> {
+                    stopLayoutCustomMetric(result.data)
+                    setOnSuccessGetLayout(result.data)
+                    setRecommendationCoachMarkEligibility()
+                }
+                is Fail -> {
+                    stopCustomMetric(
+                        SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE,
+                        true
+                    )
+                    setOnErrorGetLayout(result.throwable)
                 }
             }
         })
@@ -1113,7 +1118,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        recyclerView?.post {
+            updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
 
         val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
         if (!isAnyWidgetFromCache) {
@@ -1366,18 +1373,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         type: String
     ) {
         liveData.observe(viewLifecycleOwner, { result ->
-            recyclerView?.post {
-                startHomeLayoutRenderMonitoring()
-                when (result) {
-                    is Success -> result.data.setOnSuccessWidgetState(type)
-                    is Fail -> {
-                        stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
-                        stopPltMonitoringIfNotCompleted(fromCache = false)
-                        result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
-                    }
+            startHomeLayoutRenderMonitoring()
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> {
+                    stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
+                    stopPltMonitoringIfNotCompleted(fromCache = false)
+                    result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                 }
-                loadNextUnloadedWidget()
             }
+            loadNextUnloadedWidget()
         })
     }
 
@@ -1740,11 +1745,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 if ((lastVisibleIndex != RecyclerView.NO_POSITION && lastVisibleIndex == firstRecommendationWidget)
                     || firstVisibleIndex >= firstRecommendationWidget
                 ) {
-                    val coachMarkItems by getCoachMarkItems()
-                    if (coachMarkItems.isNotEmpty()) {
-                        coachMark?.isDismissed = false
-                        coachMark?.showCoachMark(coachMarkItems)
-                    }
+                    showCoachMarkShopScore()
                 }
             } else {
                 val firstRecommendationWidget =
