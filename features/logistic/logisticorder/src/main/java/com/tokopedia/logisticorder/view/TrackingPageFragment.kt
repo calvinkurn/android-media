@@ -174,7 +174,6 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
         setEmptyHistoryView(model)
         setLiveTrackingButton(model)
         setTicketInfoCourier(trackingDataModel.page)
-        mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking()
 
     }
 
