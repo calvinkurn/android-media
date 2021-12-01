@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -220,7 +221,10 @@ class DynamicProductDetailAdapterFactoryImpl(
             TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
             ContentWidgetViewHolder.LAYOUT -> ContentWidgetViewHolder(
-                PlayWidgetViewHolder(itemView = view, coordinator = playWidgetCoordinator)
+                view, listener, PlayWidgetViewHolder(
+                    itemView = view.findViewById(R.id.pdp_play_widget_view),
+                    coordinator = playWidgetCoordinator
+                )
             )
             else -> super.createViewHolder(view, type)
         }
