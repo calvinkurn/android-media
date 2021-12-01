@@ -37,7 +37,7 @@
                 android:layout_marginStart="@dimen/prefix_miscall_margin_left"
                 android:layout_marginTop="@dimen/prefix_miscall_margin_top"
                 android:text="@string/cotp_miscall_verification_phone_code"
-                android:textColor="@color/Unify_N0"
+                android:textColor="@color/Unify_Background"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/method_icon"
                 app:layout_constraintTop_toTopOf="@+id/method_icon"

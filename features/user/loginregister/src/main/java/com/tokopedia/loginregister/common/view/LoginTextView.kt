@@ -70,7 +70,7 @@ class LoginTextView : LinearLayout {
         val resourceId: Int
         try {
             customText = a.getString(R.styleable.LoginTextView_customText)
-            textColor = a.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            textColor = a.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             borderColorCustom = a.getInt(R.styleable.LoginTextView_borderColor, 0)
             cornerSize = a.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, CORNER_SIZE)
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, BORDER_SIZE)
@@ -104,7 +104,7 @@ class LoginTextView : LinearLayout {
         shape?.shape = GradientDrawable.RECTANGLE
         shape?.cornerRadii = floatArrayOf(CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII, CORNER_RADII)
         shape?.setColor(backgroundColorCustom)
-        if (backgroundColorCustom == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) shape?.setStroke(1,
+        if (backgroundColorCustom == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)) shape?.setStroke(1,
                 MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
     }
 
