@@ -53,19 +53,19 @@ class AffiliatePerformaSharedProductCardsItemVH(
     }
 
     private fun setCommisionData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
-        itemView.findViewById<Typography>(R.id.pendapatan_value)?.text = data.metricDifferenceValueFmt
+        itemView.findViewById<Typography>(R.id.pendapatan_value)?.text = data.metricValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
         setTrend(itemView.findViewById(R.id.pendapatan_icon), metricIntValue)
     }
 
     private fun setSoldData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
-        itemView.findViewById<Typography>(R.id.terjual_value)?.text = data.metricDifferenceValueFmt
+        itemView.findViewById<Typography>(R.id.terjual_value)?.text = data.metricValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
         setTrend(itemView.findViewById(R.id.terjual_icon), metricIntValue)
     }
 
     private fun setClickData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
-        itemView.findViewById<Typography>(R.id.klik_value)?.text = data.metricDifferenceValueFmt
+        itemView.findViewById<Typography>(R.id.klik_value)?.text = data.metricValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
         setTrend(itemView.findViewById(R.id.klik_icon), metricIntValue)
     }
