@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
@@ -11,7 +10,8 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedPr
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
-import kotlinx.android.synthetic.main.affiliate_performa_vertical_product_card_item_layout.view.*
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class AffiliatePerformaSharedProductCardsItemVH(
     itemView: View,
@@ -53,21 +53,21 @@ class AffiliatePerformaSharedProductCardsItemVH(
     }
 
     private fun setCommisionData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
-        itemView.pendapatan_value.text = data.metricDifferenceValueFmt
+        itemView.findViewById<Typography>(R.id.pendapatan_value)?.text = data.metricDifferenceValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
-        setTrend(itemView.pendapatan_icon, metricIntValue)
+        setTrend(itemView.findViewById(R.id.pendapatan_icon), metricIntValue)
     }
 
     private fun setSoldData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
-        itemView.terjual_value.text = data.metricDifferenceValueFmt
+        itemView.findViewById<Typography>(R.id.terjual_value)?.text = data.metricDifferenceValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
-        setTrend(itemView.terjual_icon, metricIntValue)
+        setTrend(itemView.findViewById(R.id.terjual_icon), metricIntValue)
     }
 
     private fun setClickData(data: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric) {
-        itemView.klik_value.text = data.metricDifferenceValueFmt
+        itemView.findViewById<Typography>(R.id.klik_value)?.text = data.metricDifferenceValueFmt
         val metricIntValue: Double? = data.metricDifferenceValue?.toDouble()
-        setTrend(itemView.klik_icon, metricIntValue)
+        setTrend(itemView.findViewById(R.id.klik_icon), metricIntValue)
     }
 
     private fun setTrend(view: IconUnify?, metricIntValue: Double?) {
@@ -104,36 +104,36 @@ class AffiliatePerformaSharedProductCardsItemVH(
 
     private fun setItemData(element: AffiliatePerformaSharedProductCardsModel?) {
         element?.product?.let { product ->
-            itemView.product_image.setImageUrl(product.image?.androidURL ?: "")
-            itemView.product_name.text = product.itemTitle
+            itemView.findViewById<ImageUnify>(R.id.product_image)?.setImageUrl(product.image?.androidURL ?: "")
+            itemView.findViewById<Typography>(R.id.product_name)?.text = product.itemTitle
             if (product.status == PRODUCT_ACTIVE) {
-                itemView.status_bullet.setImageDrawable(
+                itemView.findViewById<ImageUnify>(R.id.status_bullet)?.setImageDrawable(
                     MethodChecker.getDrawable(
                         itemView.context,
                         R.drawable.affiliate_circle_active
                     )
                 )
-                itemView.product_status.setTextColor(
+                itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
                 )
-                itemView.product_status.text = getString(R.string.affiliate_active)
+                itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_active)
             } else {
-                itemView.status_bullet.setImageDrawable(
+                itemView.findViewById<ImageUnify>(R.id.status_bullet)?.setImageDrawable(
                     MethodChecker.getDrawable(
                         itemView.context,
                         R.drawable.affiliate_circle_inactive
                     )
                 )
-                itemView.product_status.setTextColor(
+                itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_NN500
                     )
                 )
-                itemView.product_status.text = getString(R.string.affiliate_inactive)
+                itemView.findViewById<Typography>(R.id.product_status)?.text = getString(R.string.affiliate_inactive)
             }
             itemView.setOnClickListener {
                 productClickInterface?.onProductClick(
