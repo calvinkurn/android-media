@@ -220,6 +220,12 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
         viewBinding?.containerInactivePhone?.let {
             Toaster.build(it, message, Toaster.LENGTH_LONG).show()
         }
+
+        setResult(Activity.RESULT_CANCELED, Intent().apply {
+            putExtras(Bundle().apply {
+                putString(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, message)
+            })
+        })
         finish()
     }
 

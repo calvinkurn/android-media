@@ -1,5 +1,7 @@
 package com.tokopedia.otp.verification.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -41,6 +43,7 @@ import com.tokopedia.otp.verification.view.adapter.VerificationMethodAdapter
 import com.tokopedia.otp.verification.view.viewbinding.VerificationMethodViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -281,7 +284,23 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, otpData.msisdn)
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
             }
-            startActivity(intent)
+            startActivityForResult(intent, INACTIVE_PHONE_CODE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            INACTIVE_PHONE_CODE -> {
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    val message = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY).orEmpty()
+                    view?.let {
+                        Toaster.build(it, message, Toaster.LENGTH_LONG).show()
+                    }
+                }
+            }
+            else -> {
+                super.onActivityResult(requestCode, resultCode, data)
+            }
         }
     }
 
@@ -354,6 +373,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         private const val TYPE_HIDE_LINK = 0
         private const val TYPE_CHANGE_PHONE_UPLOAD_KTP = 1
         private const val TYPE_PROFILE_SETTING = 2
+
+        private const val INACTIVE_PHONE_CODE = 1000
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = VerificationMethodFragment()
