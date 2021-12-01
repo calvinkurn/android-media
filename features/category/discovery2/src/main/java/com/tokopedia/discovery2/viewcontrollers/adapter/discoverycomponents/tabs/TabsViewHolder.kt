@@ -2,16 +2,19 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tab
 
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.datamapper.updateComponentsQueryParams
 import com.tokopedia.discovery2.di.getSubComponent
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.factory.ComponentsList
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
@@ -47,15 +50,25 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
+            var selectedPosition = 0
             it.forEachIndexed { index, tabItem ->
                 if (tabItem.data?.isNotEmpty() == true) {
                     tabItem.data?.firstOrNull()?.name?.let { tabTitle ->
-                        tabsHolder.addNewTab(tabTitle)
-                        if (tabItem.data?.firstOrNull()?.isSelected == true)
-                            tabsHolder.getUnifyTabLayout().getTabAt(index)?.select()
+                        if(tabItem.data?.firstOrNull()?.isSelected == true)
+                            selectedPosition = index
+                        tabsHolder.addNewTab(tabTitle, tabItem.data?.firstOrNull()?.isSelected ?: false)
                     }
                 }
             }
+            tabsHolder.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if(selectedPosition>=0) {
+                            tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
+                            selectedPosition = -1
+                        }
+                    }
+                })
         })
 
         tabsViewModel.getColorTabComponentLiveData().observe(fragment.viewLifecycleOwner, Observer {
@@ -83,13 +96,24 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     private fun openCategoryBottomSheet() {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackCategoryTreeDropDownClick(tabsViewModel.isUserLoggedIn())
         selectedTab?.position?.let { it ->
-            CategoryNavBottomSheet.getInstance(tabsViewModel
-                    .getTabItemData(it)?.filterValue ?: "",
+            if ((fragment.activity as DiscoveryActivity).isFromCategory()) {
+                CategoryNavBottomSheet.getInstance(
+                    tabsViewModel.components.data?.get(it)?.id ?: tabsViewModel.components.pageEndPoint,
+                    this,
+                    this,
+                    true).show(fragment.childFragmentManager, "")
+
+            } else {
+                CategoryNavBottomSheet.getInstance(
+                    tabsViewModel
+                        .getTabItemData(it)?.filterValue ?: "",
                     this,
                     this,
                     SHOULD_HIDE_L1,
-                    source = SOURCE)
+                    source = SOURCE
+                )
                     .show(fragment.childFragmentManager, "")
+            }
         }
     }
 
@@ -111,6 +135,15 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
     override fun onTabSelected(tab: TabLayout.Tab) {
         selectedTab = tab
         if (tabsViewModel.setSelectedState(tab.position, true)) {
+            (fragment.activity as DiscoveryActivity).let {
+                if (it.isFromCategory()) {
+                    tabsViewModel.components.getComponentsItem()?.get(tab.position).apply {
+                        (fragment as DiscoveryFragment).getDiscoveryAnalytics().setOldTabPageIdentifier(this?.data?.firstOrNull()?.id ?: "")
+                        it.getViewModel().pageIdentifier =
+                            this?.data?.firstOrNull()?.id ?: ""
+                    }
+                }
+            }
             tabsViewModel.onTabClick()
             trackTabsGTMStatus(tab)
         }
@@ -154,6 +187,28 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.reInitTabTargetComponents()
         tabsViewModel.reInitTabComponentData()
         tabsViewModel.fetchDynamicTabData()
+        (fragment.activity as DiscoveryActivity).let {
+            if (it.isFromCategory()) {
+                RouteManager.route(itemView.context, appLink)
+                it.finish()
+            }
+        }
+    }
+
+    override fun onL2Expanded(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickExpandNavigationAccordion(id)
+    }
+
+    override fun onL2Collapsed(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCollapseNavigationAccordion(id)
+    }
+
+    override fun onL3Clicked(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
+    }
+
+    override fun onL2Clicked(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
     }
 
     override fun onBottomSheetClosed() {

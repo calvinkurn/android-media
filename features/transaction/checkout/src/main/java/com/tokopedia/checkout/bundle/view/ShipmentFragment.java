@@ -529,7 +529,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 CrossSellModel crossSellModel = shipmentCrossSellModelList.get(i).getCrossSellModel();
                 String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
                 String digitalProductId = crossSellModel.getId();
-                String eventLabel = digitalCategoryName + " " + digitalProductId;
+                String eventLabel = digitalCategoryName + " - " + digitalProductId;
                 String digitalProductName = crossSellModel.getInfo().getTitle();
 
                 checkoutAnalyticsCourierSelection.eventViewAutoCheckCrossSell(userSessionInterface.getUserId(),
@@ -581,7 +581,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ArrayList<Long> childCategoryIds = new ArrayList<>();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
             for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
-                childCategoryIds.add(cartItemModel.getProductId());
+                childCategoryIds.add(cartItemModel.getProductCatId());
             }
         }
         return childCategoryIds;
@@ -1857,7 +1857,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         String digitalCategoryName = crossSellModel.getOrderSummary().getTitle();
         String digitalProductId = crossSellModel.getId();
-        String eventLabel = digitalCategoryName + " " + digitalProductId;
+        String eventLabel = digitalCategoryName + " - " + digitalProductId;
         String digitalProductName = crossSellModel.getInfo().getTitle();
 
         List<ShipmentCartItemModel> shipmentCartItemModels = shipmentAdapter.getShipmentCartItemModelList();

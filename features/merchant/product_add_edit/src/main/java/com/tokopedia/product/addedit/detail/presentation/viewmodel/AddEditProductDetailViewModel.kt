@@ -69,7 +69,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isReloadingShowCase = false
     var isFirstMoved = false
     var shouldUpdateVariant = false
-    var usingNewProductTitleRequest = false
 
     var productInputModel = ProductInputModel()
     val hasVariants get() = productInputModel.variantInputModel.selections.isNotEmpty()
@@ -268,22 +267,13 @@ class AddEditProductDetailViewModel @Inject constructor(
                 // remote product name validation
                 launchCatchError(block = {
                     productNameValidationResult = withContext(dispatchers.io) {
-                        if (usingNewProductTitleRequest) {
-                            getProductTitleValidationUseCase.setParam(productNameInput)
-                            getProductTitleValidationUseCase.getDataModelOnBackground()
-                        } else {
-                            validateProductUseCase.setParamsProductName(productNameInput)
-                            validateProductUseCase.getDataModelOnBackground()
-                        }
+                        getProductTitleValidationUseCase.setParam(productNameInput)
+                        getProductTitleValidationUseCase.getDataModelOnBackground()
                     }
 
                     productNameMessage = when {
                         productNameValidationResult.isBlacklistKeyword -> {
-                            if (usingNewProductTitleRequest) {
-                                provider.getTitleValidationErrorBlacklisted()
-                            } else {
-                                productNameValidationResult.errorKeywords.joinToString("\n")
-                            }
+                            provider.getTitleValidationErrorBlacklisted()
                         }
                         productNameValidationResult.isTypoDetected -> {
                             provider.getTitleValidationErrorTypo()

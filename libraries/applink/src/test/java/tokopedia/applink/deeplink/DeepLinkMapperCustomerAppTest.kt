@@ -106,9 +106,9 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check account old then should return tokopedia internal account`() {
+    fun `check account old then should return new account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://global/old-home-account/abc/def/123"
+            "${DeeplinkConstant.SCHEME_INTERNAL}://global/new-home-account/abc/def/123"
         every {
             DeeplinkMapperAccount.usingOldAccount(any())
         } returns true
@@ -116,7 +116,7 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check account new then should return tokopedia internal account`() {
+    fun `check account new then should return tokopedia internal new account`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://global/new-home-account/abc/def/123"
         every {
@@ -185,16 +185,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check home account appLink then should return tokopedia internal home navigation tab account in customerapp`() {
+    fun `check home account appLink then should return tokopedia internal new home account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=4"
+                "${DeeplinkConstant.SCHEME_INTERNAL}://global/new-home-account"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_ACCOUNT, expectedDeepLink)
     }
 
     @Test
-    fun `check home account seller appLink then should return tokopedia internal home navigation tab seller in customerapp`() {
+    fun `check home account seller appLink then should return tokopedia internal new home account`() {
         val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://home/navigation?TAB_POSITION=4&ACCOUNT_TAB=ACCOUNT_TAB_SELLER"
+                "${DeeplinkConstant.SCHEME_INTERNAL}://global/new-home-account"
         assertEqualsDeepLinkMapper(ApplinkConst.HOME_ACCOUNT_SELLER, expectedDeepLink)
     }
 
@@ -282,28 +282,10 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check shop old review appLink then should return tokopedia internal shop old review in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop-page/1479278/review"
-        val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278")
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW, RollenceKey.OLD_REVIEW_SHOP
-            )
-        } returns RollenceKey.OLD_REVIEW_SHOP
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
-    fun `check shop new review appLink then should return tokopedia internal shop review in customerapp`() {
+    fun `check shop review appLink then should return tokopedia internal shop review in customerapp`() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/shop/1479278/review"
         val appLink = UriUtil.buildUri(ApplinkConst.SHOP_REVIEW, "1479278")
-        every {
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.AB_TEST_SHOP_REVIEW, RollenceKey.OLD_REVIEW_SHOP
-            )
-        } returns RollenceKey.NEW_REVIEW_SHOP
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 

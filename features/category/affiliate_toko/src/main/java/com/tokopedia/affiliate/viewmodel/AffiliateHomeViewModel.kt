@@ -4,64 +4,72 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.AffiliatePerformanceData
+import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
+import com.tokopedia.affiliate.model.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.AffiliateValidateUserData
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
+import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
+import java.util.*
 import javax.inject.Inject
 
 class AffiliateHomeViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val affiliateValidateUseCaseUseCase: AffiliateValidateUserStatusUseCase,
         private val affiliatePerformanceUseCase: AffiliatePerformanceUseCase,
+        private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase
 ) : BaseViewModel() {
     private var shimmerVisibility = MutableLiveData<Boolean>()
     private var progressBar = MutableLiveData<Boolean>()
     private var validateUserdata = MutableLiveData<AffiliateValidateUserData>()
+    private var affiliateAnnouncement=MutableLiveData<AffiliateAnnouncementData>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var totalItemsCount = MutableLiveData<Int>()
-    private var errorMessage = MutableLiveData<String>()
+    private var errorMessage = MutableLiveData<Throwable>()
+    private var affiliateErrorMessage = MutableLiveData<Throwable>()
     private val pageLimit = 6
 
     fun getAffiliateValidateUser() {
         launchCatchError(block = {
-            progressBar.value = false
+            progressBar.value = true
             validateUserdata.value = affiliateValidateUseCaseUseCase.validateUserStatus(userSessionInterface.email)
         }, onError = {
             progressBar.value = false
             it.printStackTrace()
-            errorMessage.value = it.localizedMessage
+            errorMessage.value = it
         })
     }
-
-    fun getAffiliatePerformance(page : Int) {
-        if(page == PAGE_ZERO)
-            shimmerVisibility.value = true
+    fun getAnnouncementInformation() {
         launchCatchError(block = {
-            if(page == PAGE_ZERO)
-                shimmerVisibility.value = false
+            progressBar.value = true
+            affiliateAnnouncement.value = affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement()
+        },onError = {
+            progressBar.value = false
+            it.printStackTrace()
+            affiliateErrorMessage.value = it
+        })
+    }
+    fun getAffiliatePerformance(page : Int) {
+        shimmerVisibility.value = true
+        launchCatchError(block = {
             affiliatePerformanceUseCase.affiliatePerformance(page,pageLimit).getAffiliateItemsPerformanceList?.data?.sectionData?.let {
                 totalItemsCount.value = it.itemTotalCount
-                val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
-                it.items?.let { items ->
-                    for (product in items) {
-                        product?.let {
-                            tempList.add(AffiliateSharedProductCardsModel(product))
-                        }
-                    }
-                    affiliateDataList.value = tempList
+                convertDataToVisitables(it)?.let { visitables ->
+                    affiliateDataList.value = visitables
                 }
             }
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
-            errorMessage.value = it.localizedMessage
+            errorMessage.value = it
         })
     }
 
@@ -77,10 +85,26 @@ class AffiliateHomeViewModel @Inject constructor(
         return userSessionInterface.isLoggedIn
     }
 
+    fun convertDataToVisitables(data : AffiliatePerformanceData.GetAffiliateItemsPerformanceList.Data.SectionData) : ArrayList<Visitable<AffiliateAdapterTypeFactory>>?{
+        val tempList : ArrayList<Visitable<AffiliateAdapterTypeFactory>> = ArrayList()
+        data.items?.let { items ->
+            for (product in items) {
+                product?.let {
+                    tempList.add(AffiliateSharedProductCardsModel(product))
+                }
+            }
+            return tempList
+        }
+        return null
+    }
+
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
-    fun getErrorMessage(): LiveData<String> = errorMessage
+    fun getErrorMessage(): LiveData<Throwable> = errorMessage
+    fun getAffiliateErrorMessage(): LiveData<Throwable> = affiliateErrorMessage
     fun getValidateUserdata(): LiveData<AffiliateValidateUserData> = validateUserdata
+    fun getAffiliateAnnouncement() : LiveData<AffiliateAnnouncementData> = affiliateAnnouncement
     fun getAffiliateItemCount(): LiveData<Int> = totalItemsCount
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
     fun progressBar(): LiveData<Boolean> = progressBar
+
 }

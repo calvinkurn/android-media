@@ -272,10 +272,13 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         cancelWatermark();
 
         Bitmap bitmap = gestureCropImageView.getViewBitmap();
+        String userInfo;
 
-        String userInfo = userSession.hasShop() ?
-                userSession.getShopName() :
-                userSession.getName();
+        try {
+            userInfo = userSession.hasShop() ? userSession.getShopName() : userSession.getName();
+        } catch (Exception e) {
+            userInfo = "";
+        }
 
         imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
     }

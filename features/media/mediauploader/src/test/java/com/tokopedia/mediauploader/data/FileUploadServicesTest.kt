@@ -2,6 +2,7 @@ package com.tokopedia.mediauploader.data
 
 import com.google.gson.Gson
 import com.tokopedia.mediauploader.MockUploaderResponse
+import com.tokopedia.mediauploader.image.data.ImageUploadServices
 import kotlinx.coroutines.runBlocking
 import okhttp3.MultipartBody
 import okhttp3.mockwebserver.MockResponse
@@ -25,7 +26,7 @@ class FileUploadServicesTest {
         .baseUrl(mockWebServer.url(url))
         .addConverterFactory(GsonConverterFactory.create(Gson()))
         .build()
-        .create(FileUploadServices::class.java)
+        .create(ImageUploadServices::class.java)
 
     @Before fun setUp() {
         try {
@@ -43,7 +44,7 @@ class FileUploadServicesTest {
 
             // When
             val multipart = MultipartBody.Part.createFormData("test", "test")
-            val result = services.uploadFile(url, multipart, "")
+            val result = services.uploadImage(url, multipart, "")
 
             // Then
             assertTrue { result.data?.uploadId?.isNotEmpty() == true }
@@ -60,7 +61,7 @@ class FileUploadServicesTest {
 
             // When
             val multipart = MultipartBody.Part.createFormData("test", "test")
-            val result = services.uploadFile(url, multipart, "")
+            val result = services.uploadImage(url, multipart, "")
 
             mockWebServer.takeRequest(1, TimeUnit.SECONDS)
 

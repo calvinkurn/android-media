@@ -15,11 +15,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment.Companion.REQUEST_WITHDRAW_CODE
+import com.tokopedia.saldodetails.saldoDetail.coachmark.SaldoCoachMarkListener
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -29,7 +28,7 @@ import javax.inject.Inject
  */
 
 
-class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent> {
+class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComponent>, SaldoCoachMarkListener {
 
     private lateinit var saldoToolbar: HeaderUnify
 
@@ -46,7 +45,7 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
             if (supportFragmentManager.findFragmentByTag(TAG) == null) {
                 finish()
             } else {
-                (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).refresh()
+                (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).resetPageAfterWithdrawal()
             }
         }
         if (requestCode == REQUEST_CODE_LOGIN) {
@@ -141,5 +140,11 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
         private val REQUEST_CODE_LOGIN = 1001
         private val TAG = "DEPOSIT_FRAGMENT"
 
+    }
+
+    override fun startCoachMarkFlow(anchorView: View?) {
+        if (supportFragmentManager.findFragmentByTag(TAG) == null) { } else {
+            (supportFragmentManager.findFragmentByTag(TAG) as SaldoDepositFragment).startSaldoCoachMarkFlow(anchorView)
+        }
     }
 }
