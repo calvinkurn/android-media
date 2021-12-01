@@ -1413,14 +1413,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
-        productIds.forEach { productId ->
-            recyclerView?.post {
-                when (status) {
-                    DELETED -> productManageListAdapter.deleteProduct(productId)
-                    INACTIVE -> productManageListAdapter.setProductStatus(productId, status)
-                    else -> {
-                    }  // do nothing
-                }
+        recyclerView?.post {
+            when (status) {
+                DELETED -> productManageListAdapter.deleteProducts(productIds)
+                INACTIVE -> productManageListAdapter.setProductsStatuses(productIds, status)
+                else -> {
+                }  // do nothing
             }
         }
     }
