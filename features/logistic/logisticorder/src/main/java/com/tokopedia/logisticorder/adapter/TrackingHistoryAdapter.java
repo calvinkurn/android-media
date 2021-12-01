@@ -49,14 +49,12 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
     private DateUtil dateUtil;
     private Long orderId;
     private OnImageClicked listener;
-    private boolean isKurirRekomendasi;
 
-    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil, Long orderId, OnImageClicked listener, boolean isKurirRekomendasi) {
+    public TrackingHistoryAdapter(List<TrackHistoryModel> trackingHistoryData, DateUtil dateUtil, Long orderId, OnImageClicked listener) {
         this.trackingHistoryData = trackingHistoryData;
         this.dateUtil = dateUtil;
         this.orderId = orderId;
         this.listener = listener;
-        this.isKurirRekomendasi = isKurirRekomendasi;
     }
 
 
@@ -78,7 +76,7 @@ public class TrackingHistoryAdapter extends RecyclerView.Adapter<TrackingHistory
         holder.description.setText(!TextUtils.isEmpty(trackingHistoryData.get(position).getStatus()) ?
                 Html.fromHtml(trackingHistoryData.get(position).getStatus()) : "");
 
-        if (isKurirRekomendasi && (!trackingHistoryData.get(position).getPartnerName().isEmpty())) {
+        if (!trackingHistoryData.get(position).getPartnerName().isEmpty()) {
             holder.courierName.setText(holder.context.getString(R.string.label_kurir_rekomendasi, trackingHistoryData.get(position).getPartnerName()));
         } else {
             holder.courierName.setVisibility(View.GONE);
