@@ -128,12 +128,11 @@
         app:layout_constraintTop_toBottomOf="@id/snapshot_label_disc"
         app:typographyType="body_1" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_info"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/snapshot_product_name" />
 
     <!--expected nested to fulfill area onclick for tracking -->
@@ -188,12 +187,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_shop"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_marginTop="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/cl_shop" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -233,14 +231,13 @@
         app:layout_constraintTop_toTopOf="@id/snapshot_kondisi_label"
         app:typographyType="body_1" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_kondisi"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_kondisi_label" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -268,14 +265,13 @@
         app:layout_constraintTop_toTopOf="@id/snapshot_detail_berat_label"
         app:typographyType="body_1" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_berat"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_detail_berat_label" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -303,14 +299,13 @@
         app:layout_constraintTop_toTopOf="@id/snapshot_po_label"
         app:typographyType="body_1" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_po"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_po_label" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -339,14 +334,13 @@
         app:layout_constraintTop_toTopOf="@id/snapshot_min_order_label"
         app:typographyType="body_1" />
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_min_order"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@id/snapshot_min_order_label" />
 
     <com.tokopedia.unifyprinciples.Typography

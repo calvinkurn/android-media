@@ -271,6 +271,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 val shopShowcaseViewModelList = ArrayList<ShopEtalaseModel>()
                 if (showcaseList != null && showcaseList.size > 0) {
                     val lowercaseKeyword = s.toString().toLowerCase()
+                    tracking?.userTypeSearch(shopId, userSession.userId, lowercaseKeyword)
                     for (showcase in showcaseList) {
                         if (showcase.name.toLowerCase().contains(lowercaseKeyword)) {
                             shopShowcaseViewModelList.add(showcase)

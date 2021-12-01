@@ -72,6 +72,10 @@ class GetChatUseCaseStub @Inject constructor(
      * <!--- Start SRW Prompt --->
      */
 
+    val defaultSrwPrompt: GetExistingChatPojo get() {
+        return alterResponseOf(sellerSrwPromptPath) { response -> }
+    }
+
     val noTriggerTextSrwPrompt: GetExistingChatPojo
         get() = alterResponseOf(sellerSrwPromptPath) { response ->
             val chatReplies = response.getAsJsonObject(chatReplies)

@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.old.domain
 
 import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
 import com.tokopedia.digital.home.old.presentation.util.DigitalHomePageCategoryDataMapper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,7 +12,7 @@ import com.tokopedia.network.exception.MessageErrorException
 
 class SearchCategoryHomePageUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<DigitalHomePageCategoryModel>(graphqlRepository) {
 
-    suspend fun searchCategoryList(rawQuery: String, isLoadFromCloud: Boolean, searchQuery: String): List<DigitalHomePageSearchCategoryModel> {
+    suspend fun searchCategoryList(rawQuery: String, isLoadFromCloud: Boolean, searchQuery: String): DigitalHomePageSearchNewModel {
         setGraphqlQuery(rawQuery)
         setTypeClass(DigitalHomePageCategoryModel::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build())
@@ -33,7 +34,7 @@ class SearchCategoryHomePageUseCase(graphqlRepository: GraphqlRepository): Graph
                 item.searchQuery = searchQuery
                 return@map item
             }
-            return filteredData
+            return DigitalHomePageSearchNewModel(isFromAutoComplete = false, searchQuery= searchQuery, listSearchResult = filteredData)
         }
         throw MessageErrorException("Incorrect data model")
     }
