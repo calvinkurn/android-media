@@ -9,8 +9,13 @@ object DeepLinkMapperFind {
         var uri = Uri.parse(deepLink)
 
         var query = uri.lastPathSegment?.replace("-", "%20")
+        val queryString = if (query.isNullOrEmpty()) {
+            ""
+        } else {
+            "?q=$query"
+        }
         if (deepLink.startsWith(ApplinkConst.FIND) || deepLink.startsWith(ApplinkConst.AMP_FIND)) {
-            return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=" + query
+            return ApplinkConstInternalDiscovery.SEARCH_RESULT + queryString
         }
         return deepLink
     }
