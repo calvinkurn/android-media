@@ -681,7 +681,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 filterBottomSheet.dismiss()
                 // refreshHandler?.startRefresh()
                 doRefresh()
-                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(nameSelected)
+                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(FILTER_OFFERS_LABEL)
             }
         })
         filterBottomSheet.show(childFragmentManager)
