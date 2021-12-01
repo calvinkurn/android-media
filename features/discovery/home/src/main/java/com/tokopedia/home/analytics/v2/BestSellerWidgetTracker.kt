@@ -27,7 +27,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                         eventCategory = Category.HOMEPAGE,
                         eventAction = IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
                         eventLabel = Label.NONE,
-                        list = "",
+                        list = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel),
                         buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel),
                         products = listOf(mapToProductTracking(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName))
                 )
@@ -53,6 +53,20 @@ object BestSellerWidgetTracker : BaseTracking(){
         }
     }
 
+    private fun getCustomListBestSellerString(recommendationItem: RecommendationItem, position: Int, bestSellerDataModel: BestSellerDataModel): String {
+        return String.format(
+            LIST_BEST_SELLER,
+            position,
+            if (recommendationItem.isTopAds) "topads" else "non topads",
+            "carousel",
+            recommendationItem.recommendationType,
+            recommendationItem.pageName,
+            bestSellerDataModel.chipsPosition,
+            "",
+            recommendationItem.header
+        )
+    }
+
     fun sendClickTracker(recommendationItem: RecommendationItem, bestSellerDataModel: BestSellerDataModel, userId: String, position: Int) {
         val tracker = BaseTrackerBuilder()
                 .constructBasicProductClick(
@@ -60,7 +74,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                         eventCategory = Category.HOMEPAGE,
                         eventAction = CLICK_ON_PRODUCT.format(BEST_SELLER),
                         eventLabel = "${bestSellerDataModel.id} - ${bestSellerDataModel.title}",
-                        list = "",
+                        list = getCustomListBestSellerString(recommendationItem, position, bestSellerDataModel),
                         products = listOf(mapToProductTracking(recommendationItem, bestSellerDataModel.id, bestSellerDataModel.title, bestSellerDataModel.pageName)),
                         buildCustomList = buildCustomListBestSeller(position, bestSellerDataModel)
                 )
