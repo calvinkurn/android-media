@@ -6,10 +6,17 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 
 object DeepLinkMapperFind {
     fun getRegisteredFind(deepLink: String): String {
-        if (deepLink.startsWith(ApplinkConst.FIND)) {
-            return deepLink.replace(ApplinkConst.FIND, ApplinkConstInternalDiscovery.SEARCH_RESULT)
-        }else if(deepLink.startsWith(ApplinkConst.AMP_FIND))
-            return deepLink.replace(ApplinkConst.AMP_FIND, ApplinkConstInternalDiscovery.SEARCH_RESULT)
+        var uri = Uri.parse(deepLink)
+
+        var query = uri.lastPathSegment?.replace("-", "%20")
+        val queryString = if (query.isNullOrEmpty() || (deepLink.startsWith(ApplinkConst.AMP_FIND) && uri.pathSegments.size < 2)) {
+            ""
+        } else {
+            "?q=$query"
+        }
+        if (deepLink.startsWith(ApplinkConst.FIND) || deepLink.startsWith(ApplinkConst.AMP_FIND)) {
+            return ApplinkConstInternalDiscovery.SEARCH_RESULT + queryString
+        }
         return deepLink
     }
 }
