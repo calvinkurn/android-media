@@ -36,6 +36,7 @@ class BuyerOrderDetailNavigator(
         private const val PREFIX_HTTPS = "https://"
         private const val INVOICE_REF_NUM = "invoice_ref_num"
         private const val KEY_ORDER_CATEGORY = "KEY_ORDER_CATEGORY"
+        private const val BUYER_MODE = 1
     }
 
     private fun composeCallIntentData(phoneNumber: String): Uri {
@@ -62,7 +63,7 @@ class BuyerOrderDetailNavigator(
     fun goToTrackOrderPage(orderId: String) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.TRACK, "")
             .putExtra(ApplinkConstInternalOrder.EXTRA_ORDER_ID, orderId)
-            .putExtra(ApplinkConstInternalOrder.EXTRA_USER_MODE, 1)
+            .putExtra(ApplinkConstInternalOrder.EXTRA_USER_MODE, BUYER_MODE)
         fragment.startActivityForResult(intent, BuyerOrderDetailIntentCode.REQUEST_CODE_IGNORED)
         applyTransition()
     }

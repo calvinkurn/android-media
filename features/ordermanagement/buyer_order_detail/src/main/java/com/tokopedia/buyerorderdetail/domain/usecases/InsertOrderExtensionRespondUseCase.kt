@@ -20,7 +20,7 @@ class InsertOrderExtensionRespondUseCase @Inject constructor(
     private var params = RequestParams.create()
 
     override suspend fun executeOnBackground(): OrderExtensionRespondUiModel {
-        val actionType = params.getInt(ACTION_KEY, 0)
+        val actionType = params.getInt(ACTION_KEY, EXTENSION_ACTION)
         val orderExtensionRespondRequest = GraphqlRequest(
             QUERY,
             OrderExtensionRespondResponse::class.java,
@@ -57,6 +57,7 @@ class InsertOrderExtensionRespondUseCase @Inject constructor(
     companion object {
         private const val ORDER_ID_KEY = "order_id"
         private const val ACTION_KEY = "action"
+        private const val EXTENSION_ACTION = 1
 
         private val QUERY = """
             mutation OrderExtensionRespond(${'$'}order_id: Int!, ${'$'}action: Int!) {
