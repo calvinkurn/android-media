@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.sse.util
+package com.tokopedia.analyticsdebugger.util
 
 import java.lang.Exception
 import java.text.SimpleDateFormat

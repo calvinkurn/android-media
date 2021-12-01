@@ -1,6 +1,10 @@
 package com.tokopedia.analyticsdebugger.websocket.ui.uimodel
 
 /**
-* Created By : Jonathan Darwin on December 01, 2021
-*/class WebSocketLogGeneralInfoUiModel {
-}
+ * Created By : Jonathan Darwin on December 01, 2021
+ */
+data class WebSocketLogGeneralInfoUiModel(
+    val channelId: String = "",
+    val pageSource: String = "",
+    val gcToken: String = ""
+)
