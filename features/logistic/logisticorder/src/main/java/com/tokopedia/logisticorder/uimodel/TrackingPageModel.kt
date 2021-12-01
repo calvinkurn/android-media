@@ -3,7 +3,7 @@ package com.tokopedia.logisticorder.uimodel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.logisticorder.domain.response.*
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class TrackingPageModel(
     var trackingDataModel: TrackingDataModel = TrackingDataModel()
