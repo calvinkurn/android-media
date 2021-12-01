@@ -19,7 +19,7 @@ class GetOrderExtensionRespondInfoUseCase @Inject constructor(
     private var params = RequestParams.create()
 
     override suspend fun executeOnBackground(): OrderExtensionRespondInfoUiModel {
-        val orderId = params.getLong(ORDER_ID_KEY, 0)
+        val orderId = params.getLong(ORDER_ID_KEY, ORDER_ID_DEFAULT)
         val orderExtensionRespondInfoRequest = GraphqlRequest(
             QUERY,
             OrderExtensionRespondInfoResponse::class.java,
@@ -53,6 +53,7 @@ class GetOrderExtensionRespondInfoUseCase @Inject constructor(
 
     companion object {
         private const val ORDER_ID_KEY = "order_id"
+        private const val ORDER_ID_DEFAULT = 0L
 
         private val QUERY = """
             query OrderExtensionRespondInfo(${'$'}order_id: Int!) {
