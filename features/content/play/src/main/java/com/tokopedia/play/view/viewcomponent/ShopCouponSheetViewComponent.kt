@@ -1,12 +1,10 @@
 package com.tokopedia.play.view.viewcomponent
 
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,8 +25,6 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
 ) : ViewComponent(container, R.id.cl_shop_coupon_sheet){
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
-    private val clCouponContent: ConstraintLayout = findViewById(R.id.cl_coupon_content)
-    private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val rvVoucherList: RecyclerView = findViewById(R.id.rv_voucher_list)
     private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val clProductEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
@@ -43,15 +39,6 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
     }
 
     init {
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { _, insets ->
-            vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
-                height = insets.systemWindowInsetBottom
-            }
-            clCouponContent.setPadding(clCouponContent.paddingLeft, clCouponContent.paddingTop, clCouponContent.paddingRight, insets.systemWindowInsetBottom)
-
-            insets
-        }
-
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
             .setOnClickListener {
                 listener.onCloseButtonClicked(this)
