@@ -29,18 +29,6 @@ class TippingValueAdapter(private var actionListener: ActionListener) : Recycler
             lastIndex = position
             actionListener.onTippingValueClicked(tippingValueList[position])
         }
-//        holder.itemView.chips_item.apply {
-//            chipText = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(tippingValueList[position])
-//            chipType = ChipsUnify.TYPE_NORMAL
-//            chipSize = ChipsUnify.SIZE_MEDIUM
-//            setOnClickListener {
-//                notifyItemChanged(lastIndex)
-//                lastIndex = position
-//                chipType = ChipsUnify.TYPE_SELECTED
-//                actionListener.onTippingValueClicked(tippingValueList[position])
-//            }
-//
-//        }
     }
 
     override fun getItemCount(): Int {
