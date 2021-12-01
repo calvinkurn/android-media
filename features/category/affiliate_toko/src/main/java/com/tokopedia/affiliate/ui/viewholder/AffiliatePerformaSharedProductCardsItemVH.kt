@@ -10,6 +10,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedPr
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -75,6 +76,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
             when {
                 it > 0 -> {
                     view?.apply {
+                        show()
                         setImage(
                             newLightEnable = MethodChecker.getColor(
                                 itemView.context,
@@ -86,6 +88,7 @@ class AffiliatePerformaSharedProductCardsItemVH(
                 }
                 it < 0 -> {
                     view?.apply {
+                        show()
                         setImage(
                             newLightEnable = MethodChecker.getColor(
                                 itemView.context,
