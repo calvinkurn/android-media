@@ -14,4 +14,16 @@ object ProductCardRobot {
         ).perform(click())
     }
 
+    fun clickATCButtonAt(position: Int) {
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(position, R.id.tv_atc)
+        ).perform(click())
+    }
+
+    fun clickWishlistButtonAt(position: Int) {
+        onView(withRecyclerView(R.id.recycler_view_chatroom)
+            .atPositionOnView(position, R.id.tv_wishlist)
+        ).perform(click())
+    }
+
 }
