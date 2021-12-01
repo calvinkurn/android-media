@@ -107,7 +107,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.urlRes = getString(R.string.promo_checkout_empty_asset)
+        emptyModel.iconRes = R.drawable.ic_empty_promo_list_checkout
         emptyModel.content = getString(R.string.promo_label_empty_list)
         emptyModel.title = getString(R.string.promo_title_empty_list)
         return emptyModel
