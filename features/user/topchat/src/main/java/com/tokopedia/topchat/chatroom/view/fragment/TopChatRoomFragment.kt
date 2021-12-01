@@ -376,6 +376,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         replyCompose?.clearReferredComposedMsg()
     }
 
+    override fun notifyPreviewRemoved(model: SendablePreview) {
+        if (model is SendableProductPreview && hasProductPreviewShown()) {
+            reloadSrw()
+        }
+    }
+
     override fun removeSrwBubble() {
         adapter.removeSrwBubble()
     }

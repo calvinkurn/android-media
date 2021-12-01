@@ -81,6 +81,7 @@ interface TopChatContract {
         fun expandSrwBubble()
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
+        fun notifyPreviewRemoved(model: SendablePreview)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
