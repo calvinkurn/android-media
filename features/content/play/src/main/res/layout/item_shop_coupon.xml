@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/layout_lvl2"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,37 +40,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_goneMarginTop="@dimen/layout_lvl2"
         app:typographyType="body_2"
         app:typographyWeight="bold"
-        app:layout_goneMarginTop="@dimen/layout_lvl2"
         tools:text="Gratis Ongkir hingga Rp500.000" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvExpiredDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl2"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvMinTrax"
         app:layout_constraintTop_toBottomOf="@+id/tvMinTrax"
         app:typographyType="body_3"
         tools:text="Berakhir dalam 10 hari •"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCouponStock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:ellipsize="end"
         android:maxLines="1"
@@ -82,17 +84,21 @@
         app:layout_constraintTop_toTopOf="@+id/tvExpiredDate"
         app:typographyType="body_3"
         tools:text="Sisa 20 kupon"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMinTrax"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl2"
         android:ellipsize="end"
         android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvCouponTitle"
         app:layout_constraintTop_toBottomOf="@+id/tvCouponTitle"
+        app:layout_constraintVertical_bias="0.0"
+        app:layout_goneMarginBottom="@dimen/layout_lvl2"
         app:typographyType="body_3"
         tools:text="Transaksi min. Rp1.000.000"
         tools:visibility="visible" />

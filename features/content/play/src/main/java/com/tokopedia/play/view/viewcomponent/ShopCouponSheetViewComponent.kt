@@ -10,11 +10,11 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
-import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherNewViewHolder
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -60,7 +60,7 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
         rvVoucherList.apply {
             layoutManager = layoutManagerVoucherList
             adapter = voucherAdapter
-            addItemDecoration(ProductLineItemDecoration(rvVoucherList.context))
+            addItemDecoration(DividerItemDecoration(rvVoucherList.context, DividerItemDecoration.VERTICAL))
         }
 
         tvSheetTitle.text = getString(R.string.play_title_coupon)
