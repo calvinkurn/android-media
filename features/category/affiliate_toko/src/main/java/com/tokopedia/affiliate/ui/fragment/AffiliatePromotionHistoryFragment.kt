@@ -27,11 +27,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.*
-import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.affiliate_no_product_iv
-import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.home_global_error
-import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.products_rv
-import kotlinx.android.synthetic.main.affiliate_promotion_history_fragment_layout.swipe_refresh_layout
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -39,8 +34,9 @@ import javax.inject.Inject
 import android.app.Activity
 
 import android.content.Intent
-
-
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.unifyprinciples.Typography
 
 
 class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromotionHistoryViewModel>(), ProductClickInterface{
@@ -83,18 +79,18 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
         super.onViewCreated(view, savedInstanceState)
         afterViewCreated()
     }
-
     private fun afterViewCreated() {
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val productsRV = view?.findViewById<RecyclerView>(R.id.products_rv)
         adapter.setVisitables(ArrayList())
-        products_rv.layoutManager = layoutManager
-        swipe_refresh_layout.setOnRefreshListener {
+        productsRV?.layoutManager = layoutManager
+        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.setOnRefreshListener {
             isSwipeRefresh = true
             resetItems()
         }
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
-        products_rv.adapter = adapter
-        loadMoreTriggerListener?.let { products_rv.addOnScrollListener(it) }
+        productsRV?.adapter = adapter
+        loadMoreTriggerListener?.let { productsRV?.addOnScrollListener(it) }
         affiliatePromotionViewModel.getAffiliatePerformance(PAGE_ZERO)
     }
 
@@ -108,9 +104,9 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
 
 
     private fun showNoAffiliate() {
-        swipe_refresh_layout.hide()
-        affiliate_no_product_iv.show()
-        home_global_error.run {
+        view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.hide()
+        view?.findViewById<DeferredImageView>(R.id.affiliate_no_product_iv)?.show()
+        view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
             show()
             errorIllustration.hide()
             errorTitle.text = getString(R.string.affiliate_choose_product)
@@ -146,7 +142,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
         affiliatePromotionViewModel.getAffiliateDataItems().observe(this ,{ dataList ->
             adapter.removeShimmer(listSize)
             if(isSwipeRefresh){
-                swipe_refresh_layout.isRefreshing = false
+                view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)?.isRefreshing = false
                 isSwipeRefresh = !isSwipeRefresh
             }
             if (dataList.isNotEmpty()) {
@@ -158,7 +154,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
             }
         })
         affiliatePromotionViewModel.getErrorMessage().observe(this, { error ->
-            home_global_error.run {
+            view?.findViewById<GlobalError>(R.id.home_global_error)?.run {
                 when(error) {
                     is UnknownHostException, is SocketTimeoutException -> {
                         setType(GlobalError.NO_CONNECTION)
@@ -178,7 +174,7 @@ class AffiliatePromotionHistoryFragment : BaseViewModelFragment<AffiliatePromoti
             }
         })
         affiliatePromotionViewModel.getAffiliateItemCount().observe(this, { itemCount ->
-            affiliate_products_count.text = getString(R.string.affiliate_product_count, itemCount.toString())
+            view?.findViewById<Typography>(R.id.affiliate_products_count)?.text = getString(R.string.affiliate_product_count, itemCount.toString())
             totalDataItemsCount = itemCount
         })
     }
