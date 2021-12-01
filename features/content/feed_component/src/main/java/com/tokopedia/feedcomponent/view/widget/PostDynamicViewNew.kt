@@ -93,6 +93,7 @@ private const val PRODUCT_DOT_TIMER = 4000L
 private const val TIME_SECOND = 1000L
 private const val FOLLOW_SIZE = 7
 private const val MINUTE_IN_HOUR = 60
+private const val HOUR_IN_HOUR = 3600
 private const val SPACE = 3
 private const val DOT_SPACE = 2
 private const val SHOW_MORE = "Lihat Lainnya"
@@ -105,6 +106,8 @@ private val handlerFeed = Handler(Looper.getMainLooper())
 private var secondCountDownTimer: CountDownTimer? = null
 private var addViewTimer: Timer? = null
 private var isPaused = false
+private const val FOLLOW_MARGIN = 6
+private const val MARGIN_ZERO = 0
 
 
 /**
@@ -316,10 +319,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (isTopads){
             followCount.text = context.getString(R.string.feeds_ads_text)
         }
+
         followCount.showWithCondition(!isFollowed || followers.transitionFollow)
         shopImage.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
+        if (shopBadge.visibility == GONE) {
+            val layoutParams = (followCount?.layoutParams as? MarginLayoutParams)
+            layoutParams?.setMargins(FOLLOW_MARGIN, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
+            followCount?.layoutParams = layoutParams
+        }
         val activityName = ""
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val followCta =
@@ -407,12 +416,31 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
 
             }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            try {
+                spannableString.setSpan(
+                    cs,
+                    0,
+                    authorName.length - 1,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } catch (e: Exception) {
+            }
+            shopName.text = spannableString
+
+        } else {
+            try {
+                spannableString.setSpan(
+                    cs,
+                    0,
+                    authorName.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+            } catch (e: Exception) {
+            }
+            shopName.text = spannableString
+
         }
-        try {
-            spannableString.setSpan(cs, 0, authorName.length - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        } catch (e: Exception) {
-        }
-        shopName.text = spannableString
+
         shopName.movementMethod = LinkMovementMethod.getInstance()
         followers.transitionFollow = false
 
@@ -968,7 +996,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         if (tagProducts.isNotEmpty()) {
                                             if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH_INDP && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
-                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_EXPANDED_WIDTH_INDP) {
+                                            } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
                                             } else if (productTagBubbleShowing){
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
@@ -1185,6 +1213,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 }
             }
 
+
             volumeIcon.setOnClickListener {
                 isMute = !isMute
                 if (isMute)
@@ -1293,6 +1322,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val vodItem = getVODItem()
         feedMedia.canPlay = false
         feedMedia.videoView = vodItem
+
         vodItem?.run {
             vod_videoPreviewImage?.setImageUrl(feedMedia.coverUrl)
             vod_lihat_product?.setOnClickListener {
@@ -1458,6 +1488,21 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     override fun onFinish() {
                                         videoPlayer?.pause()
                                         isPaused = true
+                                        var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
+                                        if (time < HOUR_IN_HOUR) {
+                                            vod_timer_view.text =
+                                                    String.format(
+                                                            "%02d:%02d",
+                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                            time % MINUTE_IN_HOUR)
+                                        } else {
+                                            vod_timer_view.text =
+                                                    String.format(
+                                                            "%02d:%02d:%02d",
+                                                            (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
+                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                            time % MINUTE_IN_HOUR)
+                                        }
                                         vod_lanjut_menonton_btn?.visible()
                                         vod_frozen_view?.visible()
                                         vod_full_screen_icon?.gone()
@@ -1499,11 +1544,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
                            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                                override fun onTick(millisUntilFinished: Long) {
                                    time -= 1
-                                   vod_timer_view.text =
-                                           String.format(
-                                                   "%02d:%02d",
-                                                   (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                   time % MINUTE_IN_HOUR)
+                                   if (time < HOUR_IN_HOUR) {
+                                       vod_timer_view.text =
+                                               String.format(
+                                                       "%02d:%02d",
+                                                       (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                       time % MINUTE_IN_HOUR)
+                                   } else {
+                                       vod_timer_view.text =
+                                               String.format(
+                                                       "%02d:%02d:%02d",
+                                                       (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
+                                                       (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
+                                                       time % MINUTE_IN_HOUR)
+                                   }
                                }
 
                                override fun onFinish() {
@@ -1516,10 +1570,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     override fun onVideoStateChange(stopDuration: Long, videoDuration: Long) {
                         feedMedia.canPlay = false
+                        listener?.addVODView(feedXCard, feedXCard.playChannelID, positionInFeed, (videoPlayer?.getExoPlayer()?.currentPosition ?: 0L) / TIME_SECOND,false)
+
                     }
                 })
             }
         }
+
     }
 
 
@@ -1841,7 +1898,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
             handlerHide?.postDelayed({
                 if (!shouldContinueToShowLihatProduct(layout) && tagProducts.isNotEmpty()) {
-
                     hideViewWithoutAnimation(layoutLihatProdukParent, context)
                 }
                 },TIME_FOUR_SEC)

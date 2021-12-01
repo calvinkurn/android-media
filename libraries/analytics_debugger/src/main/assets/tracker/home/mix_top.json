@@ -4,7 +4,7 @@
   "query": [
     {
       "eventCategory": "homepage",
-      "item_list": ".*",
+      "item_list": "/ - p.* - .* - .* - carousel - .* - .* - .* - .*",
       "event": "view_item_list",
       "eventAction": "impression on product dynamic channel top carousel",
       "sessionIris": ".*",
@@ -28,7 +28,7 @@
     },
     {
       "eventCategory": "homepage",
-      "item_list": ".*",
+      "item_list": "/ - p.* - .* - .* - carousel - .* - .* - .* - .*",
       "event": "select_content",
       "eventAction": "click on product dynamic channel top carousel",
       "sessionIris": ".*",

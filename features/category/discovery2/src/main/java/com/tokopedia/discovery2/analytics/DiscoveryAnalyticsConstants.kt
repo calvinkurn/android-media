@@ -206,3 +206,6 @@ const val CLICK_SCREENSHOT_SHARE_CHANNEL  = "click - channel share bottom sheet 
 const val SCROLL_DEPTH_RATE_MANUAL = "scroll depth rate - manual"
 const val SCROLL_DEPTH_RATE_AUTO = "scroll depth rate - autoscroll"
 
+const val CALENDAR_WIDGET_IMPRESSION = "calendar widget impression"
+const val CALENDAR_WIDGET_CLICK = "calendar widget click"
+const val CALENDAR_WIDGET_CTA_CLICK = "calendar widget cta click"

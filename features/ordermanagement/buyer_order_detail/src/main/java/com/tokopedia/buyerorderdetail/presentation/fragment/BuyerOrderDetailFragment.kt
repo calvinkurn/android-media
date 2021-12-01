@@ -246,7 +246,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun hideDigitalRecommendation() {
-        Handler(Looper.getMainLooper()).post {
+        rvBuyerOrderDetail?.post {
             adapter.removeDigitalRecommendation()
         }
     }

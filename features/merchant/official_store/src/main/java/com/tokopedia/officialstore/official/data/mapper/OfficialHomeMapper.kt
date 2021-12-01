@@ -295,4 +295,11 @@ class OfficialHomeMapper (
             adapter?.submitList(this.toMutableList())
         }
     }
+
+    fun removeRecomWidget(adapter: OfficialHomeAdapter?){
+        listOfficialStore.run {
+            removeAll { it is BestSellerDataModel}
+            adapter?.submitList(this.toMutableList())
+        }
+    }
 }

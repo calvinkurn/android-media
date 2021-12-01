@@ -19,7 +19,8 @@ internal object TopAdsGtmTrackerConstant {
     const val PRODUCT_VIEW = "productView"
     const val SEARCH_RESULT = "search result"
     const val IMPRESSION_PRODUCT_TOPADS = "impression - product - topads"
-    const val SEARCH_PRODUCT_TOPADS_PRODUCTLIST = "/searchproduct - topads productlist - %s"
+    const val SEARCH_PRODUCT_TOPADS_PRODUCTLIST =
+        "/searchproduct - topads productlist - %s - component:%s"
 
     object Product {
         const val NAME = "name"
