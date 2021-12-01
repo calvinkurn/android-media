@@ -343,9 +343,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             if (!TextUtils.isEmpty(commissionMessage)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
-                        Html.FROM_HTML_MODE_LEGACY).toString()
+                        Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage).toString()
+                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
                 }
                 affiliateCommissionTextView?.visibility = View.VISIBLE
                 return
