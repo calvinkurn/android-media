@@ -9,9 +9,7 @@ import java.io.File
 internal interface Sources {
     interface Raw {
         suspend fun getDatabases(operation: Operation): List<File>
-        //suspend fun removeDatabase(operation: Operation): List<File>
-        //suspend fun renameDatabase(operation: Operation): List<File>
-        //suspend fun copyDatabase(operation: Operation): List<File>
+
     }
 
     interface Memory {
@@ -22,6 +20,7 @@ internal interface Sources {
     interface Local {
         interface Schema {
             suspend fun getTables(query: Query): QueryResult
+            suspend fun getTableByName(query: Query): QueryResult
         }
     }
 

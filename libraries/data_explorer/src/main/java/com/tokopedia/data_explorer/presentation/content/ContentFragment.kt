@@ -67,7 +67,11 @@ class ContentFragment: BaseDaggerFragment() {
                 RecyclerView.VERTICAL,
                 false
             )
-            Log.d("DATAEXPLORER", cells.map { it.text }.joinToString())
+            viewModel.getTableContent(databasePath, schemaName)
+            Log.d("DATAEXPLORER 1", cells.map { it.text }.joinToString())
+        })
+        viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
+            Log.d("DATAEXPLORER 2", cells.map { it.text }.joinToString())
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
             Toaster.build(rvDatabaseList, "Error", Toaster.TYPE_NORMAL, Toaster.LENGTH_LONG).show()

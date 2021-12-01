@@ -9,4 +9,5 @@ internal class SchemaSource: Sources.Local.Schema, CursorSource() {
 
     override suspend fun getTables(query: Query): QueryResult = collectRows(query)
 
+    override suspend fun getTableByName(query: Query): QueryResult = collectRows(query)
 }

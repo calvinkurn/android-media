@@ -20,5 +20,8 @@ internal object Statements {
     object Schema {
         fun tables(query: String?) =
             "SELECT name FROM sqlite_master WHERE type = 'table'"
+
+        fun table(name: String?) =
+            "SELECT * FROM $name "
     }
 }

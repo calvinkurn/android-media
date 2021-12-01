@@ -26,7 +26,7 @@ internal interface Repositories {
     }
 
     interface Schema: BaseRepository<ContentParameters, Page> {
-
+        suspend fun getByName(input: ContentParameters): Page
     }
 
 

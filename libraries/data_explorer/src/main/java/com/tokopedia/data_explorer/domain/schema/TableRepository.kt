@@ -16,4 +16,10 @@ internal class TableRepository @Inject constructor(
         val query = control.converter(input)
         return control.mapper(schemaSource.getTables(query))
     }
+
+    override suspend fun getByName(input: ContentParameters): Page {
+        val query = control.converter(input)
+        return control.mapper(schemaSource.getTableByName(query = query))
+    }
+
 }
