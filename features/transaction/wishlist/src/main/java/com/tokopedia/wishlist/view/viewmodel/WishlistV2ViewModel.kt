@@ -165,7 +165,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 listData = mapToProductCardList(wishlistV2Response.items, typeLayout)
 
                 val countManageRowData = WishlistV2CountManageRowData(wishlistV2Response.totalData)
-                listData.add(0, WishlistV2TypeLayoutData(countManageRowData, TYPE_COUNT_MANAGE_ROW))
+                // listData.add(0, WishlistV2TypeLayoutData(countManageRowData, TYPE_COUNT_MANAGE_ROW))
                 when {
                     // if user has 0-3 products, recom widget is at the bottom of the page (vertical/infinite scroll)
                     wishlistV2Response.totalData < topAdsPositionInPage -> {
@@ -206,7 +206,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
                 if (wishlistV2Response.page == 1) {
                     val countManageRowData = WishlistV2CountManageRowData(wishlistV2Response.totalData)
-                    listData.add(0, WishlistV2TypeLayoutData(countManageRowData, TYPE_COUNT_MANAGE_ROW))
+                    // listData.add(0, WishlistV2TypeLayoutData(countManageRowData, TYPE_COUNT_MANAGE_ROW))
 
                     val topadsData = getTopAdsData("")
                     if (topadsData != null) {

@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_wishlist_header"
-        android:visibility="gone"
+        android:visibility="visible"
         layout="@layout/wishlist_v2_count_manage_row_item" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh

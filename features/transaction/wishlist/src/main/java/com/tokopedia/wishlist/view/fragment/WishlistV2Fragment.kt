@@ -228,6 +228,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         // refreshHandler?.finishRefresh()
 
                         rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
+                        updateTotalLabel(wishlistV2.totalData)
 
                         if (wishlistV2.totalData == 0) {
                             isFetchRecommendation = true
@@ -292,6 +293,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 binding?.run {
                     containerDelete.gone()
                     clWishlistHeader.visible()
+                    wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
                 }
             }
             // refreshHandler = RefreshHandler(swipeRefreshLayout, this@WishlistV2Fragment)
@@ -342,10 +344,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
             }
             wishlistNavtoolbar.setIcon(icons)
+
             // setNonStickyCountManageLabel()
-            /*wishlistCountManageLayout.wishlistManageLabel.setOnClickListener {
-                onAturClicked(isBulkDeleteShow)
-            }*/
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.setOnClickListener { onStickyManageClicked() }
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -533,18 +534,27 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         })
     }
 
+    private fun updateTotalLabel(totalData: Int) {
+        binding?.run {
+            wishlistV2StickyCountManageLabel.root.visible()
+            wishlistV2StickyCountManageLabel.wishlistCountLabel.text = "$totalData"
+        }
+    }
+
     private fun showLoader() {
         wishlistV2Adapter.showLoader()
         binding?.run {
             wishlistSortFilter.gone()
+            wishlistV2StickyCountManageLabel.root.gone()
             wishlistLoaderLayout.root.visible()
         }
     }
 
     private fun hideLoader() {
         binding?.run {
-            wishlistSortFilter.visible()
             wishlistLoaderLayout.root.gone()
+            wishlistSortFilter.visible()
+            wishlistV2StickyCountManageLabel.root.visible()
         }
     }
 
@@ -930,6 +940,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         doRefresh()
     }
 
+    private fun onStickyManageClicked() {
+        if (!isBulkDeleteShow) {
+            isBulkDeleteShow = true
+            binding?.run {
+                wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_cancel_manage_label)
+            }
+            onManageClicked(showCheckbox = true)
+            WishlistV2Analytics.clickAturOnWishlist()
+        } else {
+            isBulkDeleteShow = false
+            onManageClicked(showCheckbox = false)
+            binding?.run {
+                wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
+            }
+        }
+
+    }
+
     override fun onManageClicked(showCheckbox: Boolean) {
         if (showCheckbox) {
             listBulkDelete.clear()
@@ -983,6 +1011,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun doRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
         }
         onLoadMore = false
         isFetchRecommendation = false
