@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.databinding.CampaignListItemLayoutBinding
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Label
 
@@ -33,7 +35,7 @@ class ActiveCampaignViewHolder(
         }
     }
 
-    fun bindData(activeCampaign: ActiveCampaign) {
+    fun bindData(activeCampaign: ActiveCampaign, onImpressed : (ActiveCampaign) -> Unit) {
         // tag active campaign data to item view
         binding.root.setTag(R.id.active_campaign, activeCampaign)
         // render campaign type name
@@ -65,5 +67,10 @@ class ActiveCampaignViewHolder(
             val campaignEndTime = it.getString(R.string.campaign_time_template, activeCampaign.endDate)
             binding.tpgCampaignEndTime.text = campaignEndTime
         }
+        addImpressionListener(activeCampaign, onImpressed)
+    }
+
+    private fun addImpressionListener(campaign : ActiveCampaign, onImpressed : (ActiveCampaign) -> Unit) {
+        binding.root.addOnImpressionListener(ImpressHolder()) { onImpressed(campaign) }
     }
 }

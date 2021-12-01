@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
+import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
@@ -46,6 +47,9 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var tracker : CampaignListTracker
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -184,6 +188,10 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     private fun setupActiveCampaignListView(binding: FragmentCampaignListBinding?) {
         adapter = ActiveCampaignListAdapter(this)
+        adapter?.setCampaignImpression { campaign ->
+            tracker.sendCampaignImpressionEvent(campaign.campaignId, userSession.shopId)
+        }
+
         binding?.rvCampaignList?.let {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
