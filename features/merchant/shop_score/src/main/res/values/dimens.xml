@@ -11,6 +11,7 @@
     <dimen name="sc_dimen_21dp">21dp</dimen>
     <dimen name="sc_dimen_80dp">80dp</dimen>
     <dimen name="sc_dimen_180dp">180dp</dimen>
+    <dimen name="progress_bar_width_tablet_mode">153dp</dimen>
 
     <!-- Tablet mode -->
     <dimen name="detail_penalty_tablet_welcome_illustration_width">199.14dp</dimen>
