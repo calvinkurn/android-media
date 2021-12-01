@@ -6,9 +6,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_product_voucher_info"
-        android:layout_gravity="center_horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content">
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_gravity="center_horizontal"
+        android:elevation="@dimen/layout_lvl3">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_voucher_intersect"
@@ -23,7 +25,7 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_voucher_substract"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -77,13 +79,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             app:layout_constraintEnd_toEndOf="@+id/tv_first_voucher_title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_first_voucher_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_first_voucher_title"
             app:typographyType="body_3"
-            android:ellipsize="end"
-            android:maxLines="1"
             tools:text="Masih ada 6 Kupon Toko lainnya!" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
