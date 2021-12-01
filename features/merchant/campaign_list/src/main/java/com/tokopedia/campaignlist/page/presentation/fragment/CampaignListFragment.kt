@@ -124,12 +124,16 @@ class CampaignListFragment : BaseDaggerFragment(),
 
         viewModel.setCampaignTypeId(campaignTypeId)
         viewModel.getCampaignList(campaignTypeId = campaignTypeId)
+
+        tracker.sendSelectCampaignTypeFilterClickEvent(selectedCampaignType.campaignTypeName, userSession.shopId)
     }
 
     override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
         viewModel.setCampaignStatusId(listOf(selectedCampaignStatus.statusId))
         viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
+
+        tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
     }
 
     private fun setupView(binding: FragmentCampaignListBinding?) {
@@ -160,6 +164,7 @@ class CampaignListFragment : BaseDaggerFragment(),
                     ChipsUnify.TYPE_NORMAL
                 }
                 campaignStatusBottomSheet?.show(childFragmentManager)
+                tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
             }
             // setup campaign type filter
             val campaignTypeFilterTitle = viewModel.getSelectedCampaignTypeSelection()?.campaignTypeName ?: ""

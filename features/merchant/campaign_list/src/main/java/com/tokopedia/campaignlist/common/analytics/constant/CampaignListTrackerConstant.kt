@@ -29,11 +29,15 @@ object CampaignListTrackerConstant {
         const val CLICK_CAMPAIGN_STATUS_AVAILABLE = "click filter campaign status - available"
         const val CLICK_CAMPAIGN_STATUS_UPCOMING = "click filter campaign status - upcoming"
         const val CLICK_CAMPAIGN_STATUS_ONGOING = "click filter campaign status - ongoing"
+        const val NOT_SPECIFIED = ""
     }
 
     object EventCategory {
         const val SPECIAL_RELEASE = "special release page"
     }
 
+    object Label {
+        const val EMPTY = ""
+    }
 }
 
