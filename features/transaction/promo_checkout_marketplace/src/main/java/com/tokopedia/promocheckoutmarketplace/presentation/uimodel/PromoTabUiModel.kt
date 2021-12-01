@@ -19,6 +19,7 @@ class PromoTabUiModel(
 
     data class UiState(
             var isInitialization: Boolean = false,
+            var isSelectionAction: Boolean = false,
             var selectedTabPosition: Int = 0
     )
 

@@ -38,6 +38,7 @@ class PromoTabViewHolder(private val viewBinding: PromoCheckoutMarketplaceModule
             tabSelectedListener = object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     element.uiState.selectedTabPosition = tab?.position ?: 0
+                    element.uiState.isSelectionAction = true
                     listener.onTabSelected(element)
                 }
 

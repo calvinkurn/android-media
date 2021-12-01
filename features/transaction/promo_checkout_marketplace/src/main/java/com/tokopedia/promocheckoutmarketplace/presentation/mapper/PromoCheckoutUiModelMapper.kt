@@ -79,7 +79,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoListHeaderUiModel(couponSubSection: SubSection, headerIdentifierId: Int, isHeaderEnabled: Boolean): PromoListHeaderUiModel {
+    fun mapPromoListHeaderUiModel(couponSubSection: SubSection,couponSection: CouponSection, headerIdentifierId: Int, isHeaderEnabled: Boolean): PromoListHeaderUiModel {
         return PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = couponSubSection.title
@@ -87,7 +87,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     iconUrl = couponSubSection.iconUrl
                     identifierId = headerIdentifierId
                     tmpPromoItemList = emptyList()
-                    tabId = couponSubSection.id
+                    tabId = if(isHeaderEnabled) {
+                        couponSubSection.id
+                    } else {
+                        couponSection.id
+                    }
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
                     isEnabled = couponSubSection.isEnabled
@@ -106,6 +110,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
 
     fun mapPromoListItemUiModel(couponItem: Coupon,
                                 couponSubSection: SubSection,
+                                couponSection: CouponSection,
                                 headerIdentifierId: Int,
                                 selectedPromo: List<String>,
                                 index: Int = 0): PromoListItemUiModel {
@@ -149,6 +154,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     remainingPromoCount = couponSubSection.coupons.filter {
                         it.groupId == couponItem.groupId
                     }.size
+                    tabId = if (couponSubSection.isEnabled) {
+                        couponSubSection.id
+                    } else {
+                        couponSection.id
+                    }
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = couponSubSection.isEnabled

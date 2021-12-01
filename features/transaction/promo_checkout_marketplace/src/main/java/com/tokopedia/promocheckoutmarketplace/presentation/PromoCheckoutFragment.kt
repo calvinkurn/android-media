@@ -51,6 +51,7 @@ import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
+import com.tokopedia.promocheckoutmarketplace.data.response.SectionTab
 import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketplaceModuleFragmentBinding
 import com.tokopedia.promocheckoutmarketplace.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapter
@@ -99,6 +100,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var promoCheckoutMarketplaceHanselHelper: PromoCheckoutMarketplaceHanselHelper? = null
     private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
+    private var clearSelectionActionFlagJob: Job? = null
     private var keyboardHeight = 0
     private var isPromoCheckoutLastSeenBottomSheetShown = false
     private var hasTriedToGetLastSeenData = false
@@ -126,6 +128,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val NO_ELEVATION = 0
         const val KEYBOARD_HEIGHT_THRESHOLD = 100
         const val DELAY_SHOW_BOTTOMSHEET_IN_MILIS = 250L
+        const val DELAY_DEFAULT_IN_MILIS = 500L
 
         private const val PREFERENCES_NAME = "promo_coachmark_preferences"
 
@@ -359,6 +362,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onDestroy() {
         showBottomsheetJob?.cancel()
+        clearSelectionActionFlagJob?.cancel()
         super.onDestroy()
     }
 
@@ -381,7 +385,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun renderStickyPromoHeader(recyclerView: RecyclerView) {
         if (adapter.data.isNotEmpty()) {
-            val promoTabUiModel: PromoTabUiModel? = viewModel.promoTabUiModel.value
+            val promoTabUiModel: PromoTabUiModel = viewModel.promoTabUiModel.value ?: return
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             if (topItemPosition == RecyclerView.NO_POSITION) return
             val topVisibleUiModel = adapter.data[topItemPosition]
@@ -391,10 +395,28 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     topVisibleUiModel !is PromoEligibilityHeaderUiModel) ||
                     (topVisibleUiModel is PromoEligibilityHeaderUiModel && !topVisibleUiModel.uiState.isEnabled)
 
-            // View logic here should be same as view logic on #PromoTabViewHolder
-//            if (promoTabUiModel != null && isShow && viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(0) == null) {
-//
-//            }
+            var tab: SectionTab? = null
+            if (topVisibleUiModel is PromoEligibilityHeaderUiModel && !topVisibleUiModel.uiState.isEnabled) {
+                tab = promoTabUiModel.uiData.tabs.firstOrNull {
+                    it.id == topVisibleUiModel.uiData.tabId
+                }
+            } else if (topVisibleUiModel is PromoListHeaderUiModel) {
+                tab = promoTabUiModel.uiData.tabs.firstOrNull {
+                    it.id == topVisibleUiModel.uiData.tabId
+                }
+            } else if (topVisibleUiModel is PromoListItemUiModel) {
+                tab = promoTabUiModel.uiData.tabs.firstOrNull {
+                    it.id == topVisibleUiModel.uiData.tabId
+                }
+            }
+
+            if (tab != null) {
+                val tabPosition = promoTabUiModel.uiData.tabs.indexOf(tab)
+                if (promoTabUiModel.uiState.selectedTabPosition != tabPosition && !promoTabUiModel.uiState.isSelectionAction) {
+                    promoTabUiModel.uiState.selectedTabPosition = tabPosition
+                    selectTab(promoTabUiModel)
+                }
+            }
 
             if (isShow) {
                 viewBinding?.tabsPromoHeader?.tabsPromo?.show()
@@ -451,16 +473,23 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         viewModel.promoTabUiModel.observe(viewLifecycleOwner, {
             if (it.uiState.isInitialization) {
                 viewBinding?.tabsPromoHeader?.tabsPromo?.customTabMode = TabLayout.MODE_SCROLLABLE
-                viewModel.promoTabUiModel.value?.uiData?.tabs?.forEach {
-                    viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
+
+                if (viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(0) == null) {
+                    viewModel.promoTabUiModel.value?.uiData?.tabs?.forEach {
+                        viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
+                    }
                 }
                 viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
                         val currentTabUiModel = viewModel.promoTabUiModel.value
                         currentTabUiModel?.let {
-                            it.uiState.selectedTabPosition = tab?.position ?: 0
-                            viewModel.changeSelectedTab(currentTabUiModel)
-                            scrollToTabIndex(currentTabUiModel)
+                            val tabPosition = tab?.position ?: 0
+                            if (it.uiState.selectedTabPosition != tabPosition || it.uiState.isSelectionAction) {
+                                it.uiState.selectedTabPosition = tabPosition
+                                it.uiState.isSelectionAction = true
+                                viewModel.changeSelectedTab(currentTabUiModel)
+                                scrollToTabIndex(currentTabUiModel)
+                            }
                         }
                     }
 
@@ -474,6 +503,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 })
             } else {
                 addOrModify(it)
+                clearSelectionActionFlagJob?.cancel()
+                clearSelectionActionFlagJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(DELAY_DEFAULT_IN_MILIS)
+                    it.uiState.isSelectionAction = false
+                }
             }
         })
     }
@@ -1075,25 +1109,32 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onTabSelected(element: PromoTabUiModel) {
+        selectTab(element)
+    }
+
+    private fun selectTab(element: PromoTabUiModel) {
         viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(element.uiState.selectedTabPosition)?.select()
     }
 
     private fun scrollToTabIndex(element: PromoTabUiModel) {
         var tmpIndex = RecyclerView.NO_POSITION
-        adapter.data.forEachIndexed { index, visitable ->
-            if (visitable is PromoEligibilityHeaderUiModel) {
+        loop@ for ((index, visitable) in adapter.data.withIndex()) {
+            if (visitable is PromoEligibilityHeaderUiModel && !visitable.uiState.isEnabled) {
                 if (visitable.uiData.tabId == element.uiData.tabs[element.uiState.selectedTabPosition].id) {
                     tmpIndex = index
+                    break@loop
                 }
-            } else if (visitable is PromoListHeaderUiModel) {
+            } else if (visitable is PromoListHeaderUiModel && visitable.uiState.isEnabled) {
                 if (visitable.uiData.tabId == element.uiData.tabs[element.uiState.selectedTabPosition].id) {
                     tmpIndex = index
+                    break@loop
                 }
             }
         }
 
         if (tmpIndex != RecyclerView.NO_POSITION) {
-            val tabHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48) ?: 0
+            val tabHeight = context?.resources?.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_48)
+                    ?: 0
 
             val layoutManager: RecyclerView.LayoutManager? = recyclerView?.layoutManager
             if (layoutManager != null) {

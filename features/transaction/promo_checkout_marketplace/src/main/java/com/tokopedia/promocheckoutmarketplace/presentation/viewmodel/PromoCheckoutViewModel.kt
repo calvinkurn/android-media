@@ -479,7 +479,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
             val tmpPromoHeaderList = ArrayList<Visitable<*>>()
             couponSectionItem.subSections.forEach { couponSubSection ->
-                val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId, couponSectionItem.isEnabled)
+                val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(
+                        couponSubSection, couponSectionItem, headerIdentifierId, couponSectionItem.isEnabled
+                )
 
                 if (eligibilityHeader.uiState.isEnabled) {
                     if (!eligibilityHeader.uiState.isCollapsed) {
@@ -495,8 +497,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 couponSubSection.coupons.forEachIndexed { index, couponItem ->
                     if (couponItem.isGroupHeader) {
                         val promoItem = uiModelMapper.mapPromoListItemUiModel(
-                                couponItem, couponSubSection, promoHeader.uiData.identifierId,
-                                preSelectedPromoList, index
+                                couponItem, couponSubSection, couponSectionItem,
+                                promoHeader.uiData.identifierId, preSelectedPromoList, index
                         )
                         if (eligibilityHeader.uiState.isEnabled) {
                             if (promoHeader.uiState.isCollapsed) {

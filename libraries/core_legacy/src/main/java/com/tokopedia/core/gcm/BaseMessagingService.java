@@ -54,7 +54,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
         if (appNotificationReceiver == null) {
             appNotificationReceiver = createInstance(mContext);
-            appNotificationReceiver.init(getApplication());
+//            appNotificationReceiver.init(getApplication());
         }
 
         if (Hansel.isPushFromHansel(data) && !GlobalConfig.isSellerApp()) {

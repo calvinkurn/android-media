@@ -35,7 +35,8 @@ data class PromoListItemUiModel(
             // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
             var currentClashingPromo: MutableList<String> = mutableListOf(),
             var promoInfos: List<PromoInfo> = emptyList(),
-            var remainingPromoCount: Int = 0
+            var remainingPromoCount: Int = 0,
+            var tabId: String = ""
     )
 
     data class UiState(
