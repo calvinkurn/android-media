@@ -15,7 +15,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.affiliate_share_item.view.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterface: ShareButtonInterface?,
                                    private val addSocialInterface: AddSocialInterface?)
@@ -29,14 +30,16 @@ class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterf
 
     override fun bind(element: AffiliateShareModel?) {
         if(element?.type == AffiliatePromotionBottomSheet.Companion.SheetType.ADD_SOCIAL){
-            itemView.checkbox.show()
-            itemView.share_button.hide()
-            itemView.checkbox.isChecked = element.isChecked
-            itemView.checkbox.setOnCheckedChangeListener { _ , isChecked ->
-                addSocialInterface?.onSocialChecked(adapterPosition,isChecked)
+            itemView.findViewById<UnifyButton>(R.id.share_button)?.hide()
+            itemView.findViewById<CheckboxUnify>(R.id.checkbox)?.run {
+                show()
+                isChecked = element.isChecked
+                setOnCheckedChangeListener { _ , isChecked ->
+                    addSocialInterface?.onSocialChecked(adapterPosition,isChecked)
+                }
             }
         }else {
-            itemView.share_button.run {
+            itemView.findViewById<UnifyButton>(R.id.share_button)?.run {
                 show()
                 isLoading = element?.buttonLoad == true
                 if (element?.isLinkGenerationEnabled == true){
@@ -58,12 +61,14 @@ class AffiliateShareItemViewHolder(itemView: View, private val shareButtonInterf
             }
         }
 
-        itemView.share_platform.text = element?.name
+        itemView.findViewById<Typography>(R.id.share_platform)?.text = element?.name
         if(element?.iconId != null) {
-            itemView.share_icon.show()
-            itemView.share_icon.setImage(element.iconId)
+            itemView.findViewById<IconUnify>(R.id.share_icon)?.run {
+                show()
+                setImage(element.iconId)
+            }
         } else {
-            itemView.share_icon.gone()
+            itemView.findViewById<IconUnify>(R.id.share_icon)?.gone()
         }
     }
 
