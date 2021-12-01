@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.design.SaldoWebViewActivity
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInstance
@@ -41,6 +42,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     private var mclDescTV: TextView? = null
     private var mclInfoListLL: LinearLayout? = null
     private var mclBoxLayout: RelativeLayout? = null
+    private var mclParentLayout: RelativeLayout? = null
     private var mclboxTitleTV: TextView? = null
     private var mclBoxDescTV: TextView? = null
     private var mclParentCardView: CardUnify? = null
@@ -77,11 +79,13 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         mclBoxDescTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_box_Desc)
         mclBlockedStatusTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_blocked_status)
         mclParentCardView = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_card_view)
+        mclParentLayout = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_detail_rl)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         populateData()
+        mclParentLayout?.setBackgroundResource(R.drawable.saldo_merchant_credit_background)
     }
 
     private fun populateData() {
