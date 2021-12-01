@@ -195,7 +195,7 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
 
     /**
      * Set a single text color for all states
-     * @param color Color value such as [androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)] or [Color.argb]
+     * @param color Color value such as [androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background)] or [Color.argb]
      */
     fun setTextColor(color: Int) {
         setTextColor(ColorStateList.valueOf(color))
@@ -252,7 +252,7 @@ class ProfileCompletionTextDrawable(private val context: Context) : Drawable() {
      * Internal method to apply the correct text color based on the drawable's state
      */
     private fun updateTextColors(stateSet: IntArray): Boolean {
-        val newColor = mTextColors?.getColorForState(stateSet, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        val newColor = mTextColors?.getColorForState(stateSet, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         if (mTextPaint.color != newColor) {
             mTextPaint.color = newColor ?: 0
             return true
