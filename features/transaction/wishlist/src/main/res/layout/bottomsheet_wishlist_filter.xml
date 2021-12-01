@@ -22,6 +22,7 @@
         app:unifyButtonType="main"
         android:text="@string/wishlist_save_label"
         android:textStyle="bold"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:unifyButtonSize="medium"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

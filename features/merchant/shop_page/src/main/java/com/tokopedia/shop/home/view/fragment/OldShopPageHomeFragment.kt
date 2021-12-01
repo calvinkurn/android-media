@@ -1775,7 +1775,9 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
 
     private fun isEligibleForWishlistRevamp(): Boolean {
         return try {
-            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+            // TODO : rollback to empty string for default value
+            // getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_V2_REVAMP) == RollenceKey.WISHLIST_V2_REVAMP
         } catch (e: Exception) {
             e.printStackTrace()
             false
@@ -1783,9 +1785,8 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     }
 
     private fun isRemoteConfigWishlistV2Revamp(): Boolean {
-        // TODO : change default to false when merge
         return try {
-            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, true) == true
+            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, false) == true
         } catch (e: Exception) {
             e.printStackTrace()
             false

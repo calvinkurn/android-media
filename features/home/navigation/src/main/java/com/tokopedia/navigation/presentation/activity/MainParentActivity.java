@@ -93,6 +93,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.RollenceKey;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -196,6 +197,7 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_ACTIVITY_ORDER_HISTORY = "activity_order_history";
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
+    private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -225,6 +227,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean isFirstNavigationImpression = false;
     private boolean useNewInbox = false;
     private boolean useNewNotificationOnNewInbox = false;
+    private RemoteConfigInstance remoteConfigInstance;
 
     private PerformanceMonitoring officialStorePerformanceMonitoring;
 
@@ -762,18 +765,19 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
 
-        // old wishlist - will apply rollence here
-        /*Bundle bundleWishlist = new Bundle();
-        bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
-        fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));*/
-
-        Bundle bundleWishlist = getIntent().getExtras();
-        if (bundleWishlist == null) {
-            bundleWishlist = new Bundle();
+        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+            Bundle bundleWishlist = getIntent().getExtras();
+            if (bundleWishlist == null) {
+                bundleWishlist = new Bundle();
+            }
+            bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
+            bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
+        } else {
+            Bundle bundleWishlist = new Bundle();
+            bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
+            fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
         }
-        bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
-        bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
-        fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
 
         Bundle bundleUoh = getIntent().getExtras();
         if (bundleUoh == null) {
@@ -785,6 +789,23 @@ public class MainParentActivity extends BaseActivity implements
         fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.UOH_LIST_FRAGMENT, bundleUoh));
 
         return fragmentList;
+    }
+
+    private boolean isEligibleForWishlistRevamp() {
+        // TODO : rollback to empty string for default value
+        // return getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, "").equals(RollenceKey.WISHLIST_V2_REVAMP);
+        return getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_V2_REVAMP).equals(RollenceKey.WISHLIST_V2_REVAMP);
+    }
+
+    private Boolean isRemoteConfigWishlistV2Revamp() {
+        return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2, false);
+    }
+
+    private AbTestPlatform getAbTestPlatform() {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = new RemoteConfigInstance(getApplication());
+        }
+        return remoteConfigInstance.getABTestPlatform();
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)

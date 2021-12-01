@@ -19,10 +19,8 @@ class WishlistV2FilterCheckboxViewHolder(private val binding: BottomsheetWishlis
 
         binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
         binding.root.setOnClickListener {
-            binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
-        }
-        binding.cbOption.setOnClickListener {
-            binding.cbOption.setOnCheckedChangeListener(checkboxListener(parentFilterName, optionId))
+            binding.cbOption.isChecked = !binding.cbOption.isChecked
+            listener?.onCheckboxSelected(parentFilterName, optionId, binding.cbOption.isChecked)
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -75,7 +76,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private var binding by autoClearedNullable<FragmentWishlistV2Binding>()
     private lateinit var wishlistV2Adapter: WishlistV2Adapter
-    private lateinit var scrollRecommendationListener: EndlessRecyclerViewScrollListener
+    private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
     private var paramWishlistV2 = WishlistV2Params()
     // private var refreshHandler: RefreshHandler? = null
     private var onLoadMore = false
@@ -226,7 +227,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         hideLoader()
                         // refreshHandler?.finishRefresh()
 
-                        scrollRecommendationListener.setHasNextPage(wishlistV2.hasNextPage)
+                        rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
 
                         if (wishlistV2.totalData == 0) {
                             isFetchRecommendation = true
@@ -259,10 +260,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         result.data.let { listData ->
                             if (!onLoadMore) {
                                 wishlistV2Adapter.addList(listData)
-                                scrollRecommendationListener.updateStateAfterGetData()
+                                rvScrollListener.updateStateAfterGetData()
                             } else {
                                 wishlistV2Adapter.appendList(listData)
-                                scrollRecommendationListener.updateStateAfterGetData()
+                                rvScrollListener.updateStateAfterGetData()
                             }
                         }
 
@@ -377,7 +378,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
         }
 
-        scrollRecommendationListener = object : EndlessRecyclerViewScrollListener(glm) {
+        rvScrollListener = object : EndlessRecyclerViewScrollListener(glm) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 currentPage += 1
                 onLoadMore = true
@@ -389,13 +390,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     loadWishlistV2()
                 }
             }
+
+            /*override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                println("++ dx = $dx, dy = $dy")
+            }*/
         }
 
         binding?.run {
             rvWishlist.apply {
                 layoutManager = glm
                 adapter = wishlistV2Adapter
-                addOnScrollListener(scrollRecommendationListener)
+                addOnScrollListener(rvScrollListener)
             }
         }
     }
@@ -429,7 +435,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         paramWishlistV2.query = searchQuery
         // refreshHandler?.startRefresh()
         doRefresh()
-        scrollRecommendationListener.resetState()
+        rvScrollListener.resetState()
         currRecommendationListPage = 1
     }
 
@@ -595,18 +601,29 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
         val filterBottomSheetAdapter = WishlistV2FilterBottomSheetAdapter()
         filterBottomSheetAdapter.filterItem = filterItem
-        val listOptionIdSelected = arrayListOf<String>()
+        var listOptionIdSelected = arrayListOf<String>()
         var nameSelected = ""
 
         filterBottomSheet.setAdapter(filterBottomSheetAdapter)
 
         if (filterItem.isActive) {
-            filterBottomSheet.setAction(CTA_RESET) {
-                filterBottomSheet.dismiss()
-                removeFilter(filterItem)
+            if (filterItem.name == FILTER_OFFERS) {
+                filterBottomSheetAdapter.isResetCheckbox = true
+                filterBottomSheetAdapter.notifyDataSetChanged()
+            } else {
+                filterBottomSheet.setAction(CTA_RESET) {
+                    filterBottomSheet.dismiss()
+                    removeFilter(filterItem)
+                }
             }
         }
 
+        paramWishlistV2.sortFilters.forEach { sortFilterParam ->
+            if (sortFilterParam.name == FILTER_OFFERS) {
+                listOptionIdSelected = sortFilterParam.selected
+                nameSelected = FILTER_OFFERS
+            }
+        }
 
         filterBottomSheet.setListener(object : WishlistV2FilterBottomSheet.BottomSheetListener{
             override fun onRadioButtonSelected(name: String, optionId: String, label: String) {
@@ -622,7 +639,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             override fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean) {
                 if (isChecked) {
                     nameSelected = name
-                    listOptionIdSelected.add(optionId)
+                    if (!listOptionIdSelected.contains(optionId)) {
+                        listOptionIdSelected.add(optionId)
+                    }
                 } else {
                     listOptionIdSelected.remove(optionId)
                 }
@@ -630,7 +649,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 filterBottomSheet.showButtonSave()
 
                 if (!filterItem.isActive) {
-                    filterBottomSheet.setAction(CTA_RESET) {
+                    filterBottomSheet.bottomSheetAction.text = CTA_RESET
+                    filterBottomSheet.bottomSheetAction.visible()
+                    filterBottomSheet.bottomSheetAction.setOnClickListener {
                         filterBottomSheetAdapter.isResetCheckbox = true
                         filterBottomSheetAdapter.notifyDataSetChanged()
                     }
@@ -644,14 +665,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         listCheckboxSelected = itemFilter.selected
                     }
                 }
-                paramWishlistV2.sortFilters.removeAll { it.name == nameSelected }
+                paramWishlistV2.sortFilters.clear()
 
                 listOptionIdSelected.forEach { optionId ->
                     listCheckboxSelected.add(optionId)
                 }
 
-                paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
-                        name = nameSelected, selected = listCheckboxSelected))
+                if (listCheckboxSelected.isNotEmpty()) {
+                    paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
+                            name = nameSelected, selected = listCheckboxSelected))
+                }
+
                 filterBottomSheet.dismiss()
                 // refreshHandler?.startRefresh()
                 doRefresh()
@@ -715,7 +739,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         wishlistViewModel.deleteWishlistV2(itemWishlist.id, userSession.userId)
                     }
                 }
-                WishlistV2Analytics.clickOptionOnThreeDotsMenu(additionalItem.action)
+                WishlistV2Analytics.clickOptionOnThreeDotsMenu(additionalItem.text)
             }
         })
         bottomSheetThreeDotsMenu.show(childFragmentManager)
@@ -725,7 +749,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         val shareListener = object : ShareBottomsheetListener {
 
             override fun onShareOptionClicked(shareModel: ShareModel) {
-                val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+                val linkerShareResult = DataMapper.getLinkerShareData(LinkerData().apply {
                     type = LinkerData.PRODUCT_TYPE
                     uri = wishlistItem.url
                     id = userSession.userId
@@ -739,18 +763,17 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         ogImageUrl = shareModel.ogImgUrl
                     }
                 })
+
                 LinkerManager.getInstance().executeShareRequest(
-                        LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                            override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                                val shareString = getString(
-                                        R.string.wishlist_v2_share_text,
-                                        userSession.shopName,
-                                        linkerShareData?.shareContents
-                                )
+                        LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
+                            override fun urlCreated(linkerShareResult: LinkerShareResult?) {
+                                val shareString = getString(R.string.wishlist_v2_share_text,
+                                        wishlistItem.name, wishlistItem.priceFmt,
+                                        wishlistItem.shop.name) + "\n${linkerShareResult?.url}"
                                 shareModel.subjectName = userSession.shopName
                                 SharingUtil.executeShareIntent(
                                         shareModel,
-                                        linkerShareData,
+                                        linkerShareResult,
                                         activity,
                                         view,
                                         shareString
@@ -907,29 +930,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         doRefresh()
     }
 
-    private fun onAturClicked(showCheckbox: Boolean) {
-        if (showCheckbox) {
-            wishlistV2Adapter.showCheckbox()
-            binding?.run {
-                clWishlistHeader.gone()
-                containerDelete.visible()
-                deleteButton.isEnabled = false
-            }
-            // setStickyCountManageLabel()
-
-        } else {
-            wishlistV2Adapter.hideCheckbox()
-            binding?.run {
-                containerDelete.gone()
-                clWishlistHeader.visible()
-            }
-            // setNonStickyCountManageLabel()
-        }
-        WishlistV2Analytics.clickAturOnWishlist()
-    }
-
     override fun onManageClicked(showCheckbox: Boolean) {
         if (showCheckbox) {
+            listBulkDelete.clear()
             wishlistV2Adapter.showCheckbox()
             binding?.run {
                 clWishlistHeader.gone()
@@ -951,6 +954,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
         val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
         dialog?.setTitle(getString(R.string.wishlist_v2_popup_delete_bulk_title, listBulkDelete.size))
+        dialog?.dialogDesc?.gone()
         dialog?.setPrimaryCTAText(getString(R.string.wishlist_delete_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()

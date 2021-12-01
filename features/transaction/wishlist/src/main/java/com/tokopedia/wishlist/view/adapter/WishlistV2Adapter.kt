@@ -190,6 +190,12 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun clearCheckbox() {
+        listTypeData.forEach {
+            it.isChecked = false
+        }
+    }
+
     fun setActionListener(v2Fragment: WishlistV2Fragment) {
         this.actionListener = v2Fragment
     }
@@ -209,6 +215,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun hideCheckbox() {
         isShowCheckbox = false
+        clearCheckbox()
         notifyDataSetChanged()
     }
 }

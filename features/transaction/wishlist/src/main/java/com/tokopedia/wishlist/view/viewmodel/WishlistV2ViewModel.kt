@@ -135,7 +135,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
 
             } else if (wishlistV2Response.sortFilters.isNotEmpty()) {
-                val wishlistV2Empty = WishlistV2EmptyStateData(R.string.empty_state_img, R.string.empty_state_desc_1, R.string.empty_state_title, R.string.empty_state_button)
+                val wishlistV2Empty = WishlistV2EmptyStateData(R.string.empty_state_img, R.string.empty_state_desc, R.string.empty_state_title, R.string.empty_state_button)
                 listData.add(WishlistV2TypeLayoutData(wishlistV2Empty, WishlistV2Consts.TYPE_EMPTY_STATE))
                 
             } else if (wishlistV2Response.sortFilters.isEmpty() && wishlistV2Response.query.isEmpty()) {
@@ -204,7 +204,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 if (wishlistV2Response.totalData >= topAdsPositionInPage && wishlistV2Response.page % 2 == 0) {
                     val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
                     listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
-                    listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
+                    listData.add(topAdsPositionInPage+1, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
                 } else {
                     listData.add(topAdsPositionInPage, WishlistV2TypeLayoutData(getTopAdsData(""), TYPE_TOPADS))
                 }
@@ -266,7 +266,8 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     shopBadgeList = listBadge,
                     discountPercentage = item.discountPercentageFmt,
                     countSoldRating = item.rating,
-                    slashedPrice = item.originalPriceFmt)
+                    slashedPrice = item.originalPriceFmt,
+                    freeOngkir = ProductCardModel.FreeOngkir(item.bebasOngkir.imageUrl.isNotEmpty(), item.bebasOngkir.imageUrl))
             listItem.add(WishlistV2TypeLayoutData(productModel, typeLayout, item))
         }
         return listItem

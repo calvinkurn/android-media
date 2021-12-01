@@ -6,7 +6,6 @@
     <string name="error_message_minimum_search_keyword">Masukkan min. 1 karakter di kolom pencarian.</string>
     <string name="wishlist_manage_label">Atur</string>
     <string name="wishlist_cancel_manage_label">Batal</string>
-    <string name="wishlist_count_label"><b>%d</b> barang</string>
     <string name="wishlist_save_label">Simpan</string>
     <string name="wishlist_delete_label">Hapus</string>
     <string name="wishlist_tutup_label">Tutup</string>
@@ -30,7 +29,8 @@
     <string name="wishlist_v2_bulk_delete_msg_toaster">%d barang telah dihapus dari Wishlist.</string>
     <string name="wishlist_v2_popup_delete_bulk_title">Yakin hapus %d barang ini dari Wishlist?</string>
     <string name="wishlist_v2_delete_text">Hapus</string>
+    <string name="wishlist_v2_barang_label">barang</string>
     <string name="wishlist_v2_delete_text_counter">Hapus (%d)</string>
     <string name="wishlist_v2_common_error_msg">Terjadi kesalahan, mohon dicoba kembali</string>
-    <string name="wishlist_v2_share_text">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
+    <string name="wishlist_v2_share_text">Coba cek ini, deh: \"%1s\" %2s di toko %3s Tokopedia. Bisa bebas ongkir, lho.</string>
 </resources>

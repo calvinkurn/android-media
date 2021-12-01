@@ -15,7 +15,7 @@ class WishlistV2CountManageRowItemViewHolder(private val binding: WishlistV2Coun
             /*if (isShowCheckbox) {
                 itemView.gone()
             } else {*/
-                binding.wishlistCountLabel.text = MethodChecker.fromHtml(itemView.context.getString(R.string.wishlist_count_label, item.dataObject.count))
+                binding.wishlistCountLabel.text = "${item.dataObject.count}"
                 binding.wishlistManageLabel.setOnClickListener {
                     if (!isShowCheckbox) {
                         binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_cancel_manage_label)
