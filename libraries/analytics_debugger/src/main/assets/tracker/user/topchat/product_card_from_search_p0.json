@@ -3,34 +3,6 @@
   "mode": "subset",
   "query": [
     {
-      "businessUnit": "communication",
-      "clientId": ".+",
-      "eventCategory": "chat detail",
-      "currentSite": "",
-      "item_list": "/chat - search chat",
-      "screenName": "",
-      "event": "view_item_list",
-      "userId": ".*",
-      "eventAction": "view on product thumbnail",
-      "sessionIris": ".+",
-      "eventLabel": ".+",
-      "items": [
-        {
-          "dimension87": "",
-          "dimension88": "",
-          "item_id": ".+",
-          "price": ".+",
-          "dimension40": "/chat - search chat",
-          "item_name": ".+",
-          "currency": ".+",
-          "list": "/chat - search chat",
-          "item_brand": ".+",
-          "item_variant": ".+",
-          "item_category": ""
-        }
-      ]
-    },
-    {
       "businessUnit": "",
       "clientId": ".+",
       "eventCategory": "chat detail",
