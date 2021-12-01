@@ -8,6 +8,7 @@
         android:id="@+id/cl_product_voucher_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/Neutral_N700"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_gravity="center_horizontal"
         android:elevation="@dimen/layout_lvl3">
@@ -17,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginStart="6dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="10dp"
             android:translationZ="1dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
