@@ -81,7 +81,7 @@
             android:layout_marginEnd="@dimen/dp_topchat_85"
             android:layout_marginRight="@dimen/dp_topchat_85"
             android:layout_weight="1"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Background"
             app:typographyType="body_3"
             tools:text="@string/error_no_connection_retrying" />
 
@@ -89,7 +89,7 @@
             android:id="@+id/action"
             android:layout_width="@dimen/layout_lvl2"
             android:layout_height="@dimen/layout_lvl2"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/Unify_Background"
             app:loader_type="circular_white" />
 
     </LinearLayout>

@@ -71,7 +71,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     private val bgOpposite: Drawable? by lazy(LazyThreadSafetyMode.NONE) {
         ViewUtil.generateBackgroundWithShadow(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -238,7 +238,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
             val strokeWidth = if (useStrokeSender) getStrokeWidthSenderDimenRes() else null
             bgSender = ViewUtil.generateBackgroundWithShadow(
                     this,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                     com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,

@@ -400,7 +400,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initTextComposeBackground() {
         val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
             view = composeArea,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
             topLeftRadius = R.dimen.dp_topchat_20,
             topRightRadius = R.dimen.dp_topchat_20,
             bottomLeftRadius = R.dimen.dp_topchat_20,

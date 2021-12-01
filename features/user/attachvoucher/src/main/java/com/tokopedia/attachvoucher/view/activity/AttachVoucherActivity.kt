@@ -37,13 +37,13 @@ class AttachVoucherActivity : BaseSimpleActivity(), HasComponent<AttachVoucherCo
             toolbar.elevation = 0f
         }
         supportActionBar?.setTitle(R.string.title_attachvoucher)
-        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     private fun useLightNotificationBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
     }
 }
