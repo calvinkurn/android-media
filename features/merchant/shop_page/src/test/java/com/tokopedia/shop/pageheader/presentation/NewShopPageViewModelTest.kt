@@ -149,7 +149,7 @@ class NewShopPageViewModelTest {
                 data = listOf(ShopProduct(),ShopProduct())
         )
         shopPageViewModel.getShopPageTabData(
-                SAMPLE_SHOP_ID.toIntOrZero(),
+                SAMPLE_SHOP_ID,
                 "shop domain",
                 1,
                 10,
@@ -183,7 +183,7 @@ class NewShopPageViewModelTest {
             NewShopPageHeaderMapper.mapToShopPageP1HeaderData(any(),any(),any(),any(),any())
         } throws Exception()
         shopPageViewModel.getShopPageTabData(
-                SAMPLE_SHOP_ID.toIntOrZero(),
+                SAMPLE_SHOP_ID,
                 "shop domain",
                 1,
                 10,
@@ -201,7 +201,7 @@ class NewShopPageViewModelTest {
     fun `check whether shopPageP1Data value is Fail`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } throws Exception()
         shopPageViewModel.getShopPageTabData(
-                SAMPLE_SHOP_ID.toIntOrZero(),
+                SAMPLE_SHOP_ID,
                 "shop domain",
                 1,
                 10,
@@ -219,7 +219,7 @@ class NewShopPageViewModelTest {
     fun `check whether shopPageP1Data value is not null when shopId is 0 but shopDomain isn't empty`() {
         coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1()
         shopPageViewModel.getShopPageTabData(
-                0,
+                "0",
                 "domain",
                 1,
                 10,
