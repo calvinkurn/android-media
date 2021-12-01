@@ -308,7 +308,7 @@ class ProfileCompletionFragment : BaseDaggerFragment(), ProfileCompletionContrac
         txtProceed?.isEnabled = answer
         if (answer) {
             txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400), PorterDuff.Mode.SRC_IN)
-            txtProceed?.setTextColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            txtProceed?.setTextColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         } else {
             txtProceed?.background?.setColorFilter(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N100), PorterDuff.Mode.SRC_IN)
             txtProceed?.setTextColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N200))
