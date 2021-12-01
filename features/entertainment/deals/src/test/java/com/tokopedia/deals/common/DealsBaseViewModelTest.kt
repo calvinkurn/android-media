@@ -100,8 +100,8 @@ class DealsBaseViewModelTest {
         )
 
         val DUMMY_LOCATION = Location(
-            id = 1001,
-            cityId = 1002,
+            id = "1001",
+            cityId = "1002",
             name = "Dummy Street",
             cityName = "Dummy City",
             coordinates = "103,104"

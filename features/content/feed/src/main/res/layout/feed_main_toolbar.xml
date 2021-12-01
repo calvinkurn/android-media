@@ -5,9 +5,9 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize"
-    app:contentInsetEnd="@dimen/dp_0"
-    app:contentInsetStart="@dimen/dp_0"
-    app:contentInsetStartWithNavigation="@dimen/dp_0"
+    app:contentInsetEnd="0dp"
+    app:contentInsetStart="0dp"
+    app:contentInsetStartWithNavigation="0dp"
     tools:layout_height="@dimen/dp_130">
 
     <RelativeLayout

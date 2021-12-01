@@ -9,5 +9,5 @@ import kotlinx.android.parcel.Parcelize
 data class CPLData (
     @SerializedName("shipperServices")
     @Expose
-    var shipperServices: ArrayList<Int>? = arrayListOf()
+    var shipperServices: ArrayList<Long>? = arrayListOf()
 ): Parcelable

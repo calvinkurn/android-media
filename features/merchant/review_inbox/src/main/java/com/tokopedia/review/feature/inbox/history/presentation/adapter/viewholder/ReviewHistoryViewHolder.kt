@@ -12,7 +12,7 @@ import com.tokopedia.review.common.util.getReviewStar
 import com.tokopedia.review.feature.inbox.history.presentation.adapter.uimodel.ReviewHistoryUiModel
 import com.tokopedia.review.feature.inbox.history.presentation.util.ReviewHistoryItemListener
 import com.tokopedia.review.inbox.R
-import kotlinx.android.synthetic.main.item_review_history.view.*
+import com.tokopedia.review.inbox.databinding.ItemReviewHistoryBinding
 
 class ReviewHistoryViewHolder(view: View,
                               private val reviewAttachedImagesClickListener: ReviewAttachedImagesClickListener,
@@ -20,8 +20,10 @@ class ReviewHistoryViewHolder(view: View,
 ) : AbstractViewHolder<ReviewHistoryUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_review_history
+        val LAYOUT = com.tokopedia.review.inbox.R.layout.item_review_history
     }
+
+    private val binding = ItemReviewHistoryBinding.bind(view)
 
     override fun bind(element: ReviewHistoryUiModel) {
         with(element.productrevFeedbackHistory) {
@@ -33,6 +35,7 @@ class ReviewHistoryViewHolder(view: View,
                 showDescription(reviewText)
                 showAttachedImages(attachments, product.productName, product.productId, feedbackId)
                 setupStarRatings(rating)
+                showBadRatingReason(badRatingReason)
             }
             showDate(timestamp.createTimeFormatted)
             showOtherReview(status.hasResponse)
@@ -40,15 +43,15 @@ class ReviewHistoryViewHolder(view: View,
     }
 
     private fun showProductName(productName: String) {
-        itemView.reviewHistoryProductName.setTextAndCheckShow(productName)
+        binding.reviewHistoryProductName.setTextAndCheckShow(productName)
     }
 
     private fun showProductVariantName(productVariantName: String) {
         if(productVariantName.isEmpty()) {
-            itemView.reviewHistoryProductVariant.hide()
+            binding.reviewHistoryProductVariant.hide()
             return
         }
-        itemView.reviewHistoryProductVariant.apply {
+        binding.reviewHistoryProductVariant.apply {
             text = (getString(R.string.review_pending_variant, productVariantName))
             show()
         }
@@ -56,31 +59,31 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun showAttachedImages(attachedImages: List<ProductrevReviewAttachment>, productName: String, productId: String, feedbackId: String) {
         if(attachedImages.isEmpty()) {
-            itemView.reviewHistoryAttachedImages.hide()
+            binding.reviewHistoryAttachedImages.hide()
             return
         }
-        itemView.reviewHistoryAttachedImages.apply {
+        binding.reviewHistoryAttachedImages.apply {
             setImages(attachedImages, productName, reviewAttachedImagesClickListener, reviewHistoryItemListener, productId, feedbackId)
             show()
         }
     }
 
     private fun setupStarRatings(rating: Int) {
-        itemView.reviewHistoryStars.apply {
+        binding.reviewHistoryStars.apply {
             setImageResource(getReviewStar(rating))
             show()
         }
     }
 
     private fun showDescription(reviewDescription: String) {
-        if(reviewDescription.isNullOrBlank()) {
-            itemView.reviewHistoryDescription.apply {
+        if(reviewDescription.isBlank()) {
+            binding.reviewHistoryDescription.apply {
                 text = getString(R.string.no_reviews_yet)
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             }
             return
         }
-        itemView.reviewHistoryDescription.apply {
+        binding.reviewHistoryDescription.apply {
             text = reviewDescription.removeNewLine()
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         }
@@ -88,24 +91,28 @@ class ReviewHistoryViewHolder(view: View,
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.reviewHistoryDate.apply {
-                text = itemView.context.resources.getString(R.string.review_date, date)
+            binding.reviewHistoryDate.apply {
+                text = binding.root.context.resources.getString(R.string.review_date, date)
                 show()
             }
         } else {
-            itemView.reviewHistoryDate.hide()
+            binding.reviewHistoryDate.hide()
         }
     }
 
     private fun showOtherReview(hasResponse: Boolean) {
         if(hasResponse) {
-            itemView.reviewHistoryReply.show()
+            binding.reviewHistoryReply.show()
             return
         }
-        itemView.reviewHistoryReply.hide()
+        binding.reviewHistoryReply.hide()
     }
 
     private fun String.removeNewLine(): String {
         return this.replace("\n", "")
+    }
+
+    private fun showBadRatingReason(badRatingReason: String) {
+        binding.reviewHistoryBadRatingReason.showBadRatingReason(badRatingReason)
     }
 }

@@ -8,7 +8,7 @@ data class CustomProductLogisticModel (
 data class CPLProductModel(
     var productId: Long = 0,
     var cplStatus: Int = 0,
-    var shipperServices: List<Int> = listOf()
+    var shipperServices: List<Long> = listOf()
 )
 
 data class ShipperListCPLModel(
@@ -18,7 +18,7 @@ data class ShipperListCPLModel(
 )
 
 data class ShipperCPLModel(
-    var shipperId: Int = 0,
+    var shipperId: Long = 0,
     var shipperName: String = "",
     var logo: String = "",
     var shipperProduct: List<ShipperProductCPLModel> = listOf(),
@@ -26,7 +26,7 @@ data class ShipperCPLModel(
 )
 
 data class ShipperProductCPLModel(
-    var shipperProductId: Int = 0,
+    var shipperProductId: Long = 0,
     var shipperProductName: String = "",
     var uiHidden: Boolean = false,
     var isActive: Boolean = false

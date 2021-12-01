@@ -28,11 +28,18 @@ class PayLaterViewModel @Inject constructor(
     val payLaterOptionsDetailLiveData: LiveData<Result<PayLaterGetSimulation>> =
         _payLaterOptionsDetailLiveData
 
+    /**
+     * @param refreshData -> This parameter is to check when to refresh data in on resume
+     * @param sortPosition -> Give the old filter position when so after refresh can go to previous state
+     * @param partnerDisplayPosition -> Give the old viewpager position so after refresh can go to previous state
+     */
+    var refreshData = false
+    var sortPosition = 0
+    var partnerDisplayPosition = 0
 
     private val _productDetailLiveData = MutableLiveData<Result<GetProductV3>>()
     val productDetailLiveData: LiveData<Result<GetProductV3>> = _productDetailLiveData
 
-    var isPayLaterProductActive = false
 
     private var idlingResourceProvider =
         TkpdIdlingResourceProvider.provideIdlingResource("SIMULATION")
@@ -49,6 +56,7 @@ class PayLaterViewModel @Inject constructor(
 
 
     }
+
 
     fun getProductDetail(productId: String) {
         productDetailUseCase.cancelJobs()
@@ -89,6 +97,7 @@ class PayLaterViewModel @Inject constructor(
         productDetailUseCase.cancelJobs()
         super.onCleared()
     }
+
 
     companion object {
         const val DATA_FAILURE = "NULL DATA"

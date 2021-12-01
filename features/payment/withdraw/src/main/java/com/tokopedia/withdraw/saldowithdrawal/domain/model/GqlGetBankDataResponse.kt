@@ -88,6 +88,14 @@ data class BankAccount(
         @Expose
         var defaultBankAccount: Boolean = false,
 
+        @SerializedName("warning_message")
+        @Expose
+        var warningMessage: String? = null,
+
+        @SerializedName("warning_color")
+        @Expose
+        var warningColor: Int = 0,
+
         var isChecked: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -107,6 +115,8 @@ data class BankAccount(
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readInt(),
             parcel.readByte() != 0.toByte()) {
     }
 
@@ -127,6 +137,8 @@ data class BankAccount(
         parcel.writeByte(if (haveRPProgram) 1 else 0)
         parcel.writeByte(if (haveSpecialOffer) 1 else 0)
         parcel.writeByte(if (defaultBankAccount) 1 else 0)
+        parcel.writeString(warningMessage)
+        parcel.writeInt(warningColor)
         parcel.writeByte(if (isChecked) 1 else 0)
     }
 

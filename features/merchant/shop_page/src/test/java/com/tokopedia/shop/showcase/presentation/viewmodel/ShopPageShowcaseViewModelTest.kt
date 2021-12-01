@@ -1,19 +1,23 @@
 package com.tokopedia.shop.showcase.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.showcase.domain.model.GetFeaturedShowcase
 import com.tokopedia.shop.showcase.domain.model.ShopFeaturedShowcase
 import com.tokopedia.shop.showcase.domain.usecase.GetFeaturedShowcaseUseCase
+import com.tokopedia.shop.showcase.presentation.model.ShowcasesBuyerUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -89,6 +93,22 @@ class ShopPageShowcaseViewModelTest {
     }
 
     @Test
+    fun `check getShowcasesInitialData showcasesBuyerUiModel value is Fail if exception is thrown`() {
+        val mockShopId = "123"
+        coEvery {
+            getShopEtalaseByShopUseCase.createObservable(any()).toBlocking().first()
+        } returns arrayListOf()
+        coEvery {
+            getFeaturedShowcaseUseCase.executeOnBackground()
+        } returns GetFeaturedShowcase(result = listOf(ShopFeaturedShowcase()))
+        val observer = mockk<Observer<Result<ShowcasesBuyerUiModel>>>(relaxed = true)
+        viewModel?.showcasesBuyerUiModel?.observeForever(observer)
+        every { observer.onChanged(any<Success<ShowcasesBuyerUiModel>>()) } throws Exception()
+        viewModel?.getShowcasesInitialData(mockShopId)
+        assert(viewModel?.showcasesBuyerUiModel?.value is Fail)
+    }
+
+    @Test
     fun `check whether featuredShowcaseList post success value`() {
         val mockShopId = "123"
         coEvery {
@@ -134,7 +154,8 @@ class ShopPageShowcaseViewModelTest {
         every {
             userSessionInterface.shopId
         } returns mockShopId
-        assert(viewModel?.isMyShop(mockShopId) == true)
+        assert(viewModel?.
+        isMyShop(mockShopId) == true)
     }
 
     @Test

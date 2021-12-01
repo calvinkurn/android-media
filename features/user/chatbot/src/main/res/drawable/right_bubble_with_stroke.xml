@@ -4,9 +4,9 @@
 
 
     <corners
-        android:bottomLeftRadius="@dimen/dp_12"
-        android:bottomRightRadius="@dimen/dp_12"
-        android:topLeftRadius="@dimen/dp_12" />
+        android:bottomLeftRadius="12dp"
+        android:bottomRightRadius="12dp"
+        android:topLeftRadius="12dp" />
     <stroke
         android:width="@dimen/dp_1"
         android:color="@color/grey_300" />

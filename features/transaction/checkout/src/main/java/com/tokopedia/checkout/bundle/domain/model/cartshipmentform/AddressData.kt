@@ -2,7 +2,7 @@ package com.tokopedia.checkout.bundle.domain.model.cartshipmentform
 
 import android.os.Parcelable
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class AddressData(

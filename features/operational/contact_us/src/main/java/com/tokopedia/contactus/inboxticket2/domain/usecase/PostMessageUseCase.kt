@@ -2,6 +2,9 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 import javax.inject.Named
@@ -16,10 +19,14 @@ const val AGENT_REPLY = "agentReply"
 class PostMessageUseCase @Inject constructor(@Named("reply_ticket") val replyTicketQuery: String,
                                              private val repository: ContactUsRepository) {
 
-    suspend fun getCreateTicketResult(requestParams: RequestParams): TicketReplyResponse {
-        return repository.getGQLData(replyTicketQuery,
-                TicketReplyResponse::class.java,
-                requestParams.parameters)
+    suspend fun getCreateTicketResult(requestParams: RequestParams): GraphqlResponse {
+        val gql = MultiRequestGraphqlUseCase()
+        gql.addRequest(
+            GraphqlRequest(replyTicketQuery,
+            TicketReplyResponse::class.java,
+            requestParams.parameters)
+        )
+        return gql.executeOnBackground()
     }
 
     fun createRequestParams(id: String, message: String, photo: Int, photoall: String, agentReply: String, userId: String): RequestParams {

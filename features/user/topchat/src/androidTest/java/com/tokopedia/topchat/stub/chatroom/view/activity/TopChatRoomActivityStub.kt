@@ -24,8 +24,16 @@ class TopChatRoomActivityStub : TopChatRoomActivity() {
         return TopChatRoomFragmentStub.createInstance(bundle)
     }
 
+    override fun getTagFragment(): String {
+        return TAG_STUB_FRAGMENT
+    }
+
     fun getTotalItemInChat(): Int {
         return findViewById<RecyclerView>(R.id.recycler_view_chatroom).layoutManager?.itemCount ?:
             throw IllegalStateException("No recyclerview found")
+    }
+
+    companion object {
+        const val TAG_STUB_FRAGMENT = "TAG_STUB_FRAGMENT"
     }
 }

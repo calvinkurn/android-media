@@ -80,9 +80,6 @@ open class LoginBase: LoginRegisterBase() {
     lateinit var getAdminTypeUseCaseStub: GetAdminTypeUseCaseStub
 
     @Inject
-    lateinit var getFacebookCredentialUseCaseStub: GetFacebookCredentialUseCaseStub
-
-    @Inject
     lateinit var loginTokenUseCaseStub: LoginTokenUseCaseStub
 
     @Inject
@@ -121,7 +118,6 @@ open class LoginBase: LoginRegisterBase() {
     protected fun setDefaultDiscover() {
         val mockProviders = arrayListOf(
             ProviderData("gplus", "Google", "https://accounts.tokopedia.com/gplus-login", "", "#FFFFFF"),
-            ProviderData("facebook", "Facebook", "https://accounts.tokopedia.com/fb-login", "", "#FFFFFF")
         )
         val response = DiscoverPojo(DiscoverData(mockProviders, ""))
         discoverUseCaseStub.response = response

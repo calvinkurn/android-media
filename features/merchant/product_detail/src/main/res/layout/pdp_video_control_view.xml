@@ -5,7 +5,7 @@
     tools:viewBindingIgnore="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dp_16"
+    android:padding="16dp"
     android:orientation="horizontal">
 
     <FrameLayout
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_pdp_rounded_black"
-        android:padding="@dimen/dp_5"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal">
@@ -57,7 +57,7 @@
         android:id="@+id/pdp_volume_control"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_maximize_control"
         app:srcCompat="@drawable/ic_pdp_volume_mute" />

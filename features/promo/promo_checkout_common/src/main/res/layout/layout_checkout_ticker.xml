@@ -54,9 +54,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/background_checkout_ticker_view_white"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10">
+            android:paddingBottom="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="10dp">
 
             <ImageView
                 android:id="@+id/imageCheck"
@@ -64,9 +64,9 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_centerVertical="true"
                 android:background="@drawable/half_circle_green"
-                android:paddingRight="@dimen/dp_6"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_10"
+                android:paddingRight="6dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 app:srcCompat="@drawable/ic_check_black" />
 
             <ImageView
@@ -82,8 +82,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_toEndOf="@+id/imageCheck"
                 android:layout_toLeftOf="@+id/imageClose"
                 android:layout_toRightOf="@+id/imageCheck"
@@ -97,8 +97,8 @@
 
                     <ImageView
                         android:id="@+id/imageTitleCoupon"
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:adjustViewBounds="true"
                         tools:src="@drawable/ic_coupon_grey_promo_checkout"
                         />
@@ -109,8 +109,8 @@
                         android:id="@+id/titleCoupon"
                         app:typographyType="body_3"
                         app:typographyWeight="bold"
-                        android:layout_marginLeft="@dimen/dp_10"
-                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:ellipsize="end"

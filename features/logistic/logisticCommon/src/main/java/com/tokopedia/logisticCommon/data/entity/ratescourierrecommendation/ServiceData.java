@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,6 +18,7 @@ public class ServiceData implements Parcelable {
     @SerializedName("service_name")
     @Expose
     private String serviceName;
+    @SuppressLint("Invalid Data Type")
     @SerializedName("service_id")
     @Expose
     private int serviceId;

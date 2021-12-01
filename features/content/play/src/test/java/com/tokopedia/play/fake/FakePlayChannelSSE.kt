@@ -5,14 +5,12 @@ import com.tokopedia.play_common.sse.PlayChannelSSE
 import com.tokopedia.play_common.sse.model.SSEAction
 import com.tokopedia.play_common.sse.model.SSECloseReason
 import com.tokopedia.play_common.sse.model.SSEResponse
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.*
 
 /**
  * Created By : Jonathan Darwin on September 14, 2021
  */
 class FakePlayChannelSSE(
-    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
 ): PlayChannelSSE {
 

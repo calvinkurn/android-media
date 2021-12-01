@@ -1,4 +1,4 @@
-package com.tokopedia.shop_settings.presenter.shopsettingsaddress
+package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule

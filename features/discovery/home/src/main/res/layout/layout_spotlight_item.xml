@@ -11,14 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
+        android:contentDescription="@string/content_desc_background_spotlight"
         />
 
     <LinearLayout
         android:id="@+id/spotlightTitleContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="12dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -32,12 +33,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/spotlightTag"
             style="@style/TextView"
             tools:text="Label"
             android:maxLength="@integer/spotlight_label_char_limit"
-            android:textSize="@dimen/dp_10"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -52,14 +54,15 @@
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/spotlightDesc"
         style="@style/TextView.Micro"
-        android:textSize="@dimen/dp_12"
+        android:textSize="12dp"
         android:layout_marginTop="2dp"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        app:typographyType="body_3"
         android:layout_below="@id/spotlightTitleContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

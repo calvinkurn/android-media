@@ -22,8 +22,8 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
-import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 
 
 class FlexBoxChatLayout : ViewGroup {
@@ -378,7 +378,8 @@ class FlexBoxChatLayout : ViewGroup {
                 0f
             }
             val lastLineAndStatusWidth = msgLastLineWidth + statusWidth
-            if (lastLineAndStatusWidth < maxAvailableWidth) {
+            val offset = 5
+            if (lastLineAndStatusWidth < maxAvailableWidth + offset) {
                 totalWidth += statusWidth
             } else {
                 totalHeight += statusHeight
@@ -486,8 +487,8 @@ class FlexBoxChatLayout : ViewGroup {
     }
 
     companion object {
-        val LAYOUT = R.layout.flexbox_chat_message
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
+        val LAYOUT = R.layout.flexbox_chat_message
     }
 }

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginTop="16dp"
     android:orientation="vertical">
 
     <com.tokopedia.product.info.widget.TitleAnimatedChevron
@@ -15,9 +15,9 @@
         android:id="@+id/product_detail_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="12dp"
         android:autoLink="all"
         android:longClickable="true"
         android:textColorLink="@color/Unify_G500"
@@ -28,9 +28,9 @@
         android:id="@+id/horizontal_scroll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginTop="12dp"
         android:scrollbars="none"
         android:visibility="gone">
 
@@ -46,7 +46,7 @@
         android:id="@+id/expandable_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="10dp"
         android:background="@color/Unify_N75"
         app:layout_constraintTop_toBottomOf="@+id/loader_detail_item_title_1" />
 

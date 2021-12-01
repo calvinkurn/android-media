@@ -11,11 +11,11 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.campaignstock.ui.dataview.uimodel.SellableStockProductUIModel
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.constant.EditProductConstant
+import com.tokopedia.product.manage.databinding.ItemCampaignStockVariantEditorBinding
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.QuantityEditorUnify
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_campaign_stock_variant_editor.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SellableStockProductViewHolder (itemView: View?,
                                       private val onVariantStockChanged: (productId: String, stock: Int) -> Unit,
@@ -25,10 +25,6 @@ class SellableStockProductViewHolder (itemView: View?,
                                       private val shopId: String
 ): AbstractViewHolder<SellableStockProductUIModel>(itemView) {
 
-    private var stockEditTextWatcher: TextWatcher? = null
-
-    private val ongoingPromotionCountText: Typography? = itemView?.findViewById(R.id.tv_campaign_stock_count_variant)
-
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.item_campaign_stock_variant_editor
@@ -37,17 +33,21 @@ class SellableStockProductViewHolder (itemView: View?,
         private const val MINIMUM_INPUT = 0
     }
 
+    private val binding by viewBinding<ItemCampaignStockVariantEditorBinding>()
+
+    private var stockEditTextWatcher: TextWatcher? = null
+
     override fun onViewRecycled() {
         removeListeners()
         super.onViewRecycled()
     }
 
     override fun bind(element: SellableStockProductUIModel) {
-        with(itemView) {
-            tv_campaign_stock_variant_editor_name?.text = element.productName
-            qte_campaign_stock_variant_editor?.setElement(element)
-            label_campaign_stock_inactive?.visibleWithCondition(!element.isActive)
-            ongoingPromotionCountText?.run {
+        binding?.run {
+            tvCampaignStockVariantEditorName.text = element.productName
+            qteCampaignStockVariantEditor.setElement(element)
+            labelCampaignStockInactive.visibleWithCondition(!element.isActive)
+            tvCampaignStockCountVariant?.run {
                 visibleWithCondition(element.isCampaign)
                 if (element.isCampaign) {
                     element.campaignTypeList?.let { campaignList ->
@@ -58,7 +58,7 @@ class SellableStockProductViewHolder (itemView: View?,
                     }
                 }
             }
-            switch_campaign_stock_variant_editor?.run {
+            switchCampaignStockVariantEditor.run {
                 isChecked = element.isActive
                 setOnCheckedChangeListener { _, isChecked ->
                     element.isActive = isChecked
@@ -68,7 +68,7 @@ class SellableStockProductViewHolder (itemView: View?,
                         ProductStatus.INACTIVE
                     }
                     val shouldShowInactiveLabel = !isChecked || getInactivityByStock(element)
-                    this@with.label_campaign_stock_inactive?.visibleWithCondition(shouldShowInactiveLabel)
+                    labelCampaignStockInactive.visibleWithCondition(shouldShowInactiveLabel)
                     onVariantStatusChanged(element.productId, status)
                     ProductManageTracking.eventClickAllocationProductStatus(
                         isVariant = true,
@@ -79,7 +79,7 @@ class SellableStockProductViewHolder (itemView: View?,
                     )
                 }
             }
-            switch_campaign_stock_variant_editor.isEnabled = element.access.editProduct
+            switchCampaignStockVariantEditor.isEnabled = element.access.editProduct
         }
         showHideInactiveLabel(element)
     }
@@ -140,11 +140,12 @@ class SellableStockProductViewHolder (itemView: View?,
     }
 
     private fun getInactivityByStatus(): Boolean {
-        return itemView.switch_campaign_stock_variant_editor?.isChecked == false
+        return binding?.switchCampaignStockVariantEditor?.isChecked == false
     }
 
     private fun showHideInactiveLabel(element: SellableStockProductUIModel) {
-        itemView.label_campaign_stock_inactive?.visibleWithCondition(getInactivityByStock(element) || getInactivityByStatus())
+        binding?.labelCampaignStockInactive?.visibleWithCondition(
+            getInactivityByStock(element) || getInactivityByStatus())
     }
 
     private fun View.visibleWithCondition(isVisible: Boolean) {
@@ -160,13 +161,13 @@ class SellableStockProductViewHolder (itemView: View?,
         val canEditStock = element.access.editStock
 
         if(canEditStock) {
-            itemView.qte_campaign_stock_variant_editor.show()
-            itemView.textStock.hide()
+            binding?.qteCampaignStockVariantEditor?.show()
+            binding?.textStock?.hide()
         } else {
 
-            itemView.qte_campaign_stock_variant_editor.hide()
-            itemView.textStock.show()
-            itemView.textStock.text = element.stock
+            binding?.qteCampaignStockVariantEditor?.hide()
+            binding?.textStock?.show()
+            binding?.textStock?.text = element.stock
         }
     }
 
@@ -192,18 +193,18 @@ class SellableStockProductViewHolder (itemView: View?,
     private fun removeListeners() {
         itemView.run {
             stockEditTextWatcher?.let {
-                qte_campaign_stock_variant_editor?.editText?.removeTextChangedListener(it)
+                binding?.qteCampaignStockVariantEditor?.editText?.removeTextChangedListener(it)
             }
-            switch_campaign_stock_variant_editor?.setOnCheckedChangeListener(null)
+            binding?.switchCampaignStockVariantEditor?.setOnCheckedChangeListener(null)
         }
     }
 
     private fun getCurrentStockInput(): Int {
-        val stockEditor = itemView.qte_campaign_stock_variant_editor
+        val stockEditor = binding?.qteCampaignStockVariantEditor
         val input = stockEditor?.editText?.text.toString()
 
         return if(input.isNotEmpty()) {
-            stockEditor.getValue()
+            stockEditor?.getValue().orZero()
         } else {
             MINIMUM_INPUT
         }

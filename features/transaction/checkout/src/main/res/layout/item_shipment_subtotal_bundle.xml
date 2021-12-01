@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?selectableItemBackground"
-        android:padding="@dimen/dp_16">
+        android:padding="16dp">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_cart_sub_total"
@@ -29,7 +29,7 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dp_5"
+            android:layout_marginStart="5dp"
             android:contentDescription="@string/content_desc_iv_detail_option_chevron"
             app:icon_name="CHEVRON_DOWN" />
 
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="@dimen/dp_84"
             android:gravity="end"
             android:textColor="@color/Unify_G400"
@@ -65,8 +65,8 @@
         android:id="@+id/rl_shipment_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:visibility="visible"
         tools:visibility="visible">
 
@@ -74,7 +74,7 @@
             android:id="@+id/tv_total_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Harga (1 Barang)" />
@@ -95,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_total_item"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Ongkos Kirim (1kg)" />
@@ -116,7 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_shipping_fee"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             android:text="@string/label_insurance_price"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
@@ -137,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_insurance_fee"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Proteksi Produk (3 Barang)" />
@@ -158,7 +158,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_purchase_protection_label"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             android:text="@string/label_seller_additional_cost"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
@@ -179,7 +179,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_additional_fee"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             android:text="@string/label_order_priority_cost"
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
@@ -200,7 +200,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_additional_fee"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginBottom="16dp"
             android:text="@string/label_promo"
             android:visibility="gone"
             app:typographyType="body_3"

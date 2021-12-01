@@ -242,6 +242,236 @@
                     }
                 },
                 {
+                    "id": 142785,
+                    "name": "[Testing] Campaign Widget Tuesday",
+                    "layout": "campaign_widget",
+                    "pageName": "",
+                    "type": "inspiration",
+                    "campaignID": 0,
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "campaignCode": "",
+                    "header": {
+                        "id": 161925,
+                        "name": "[Testing] Campaign Widget Tuesday",
+                        "url": "https://www.tokopedia.com/discovery/bazar",
+                        "applink": "tokopedia://discovery/bazar?source=homepage.campaign_widget.0.142785",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "subtitle": "",
+                        "textColor": "#31353b"
+                    },
+                    "hero": null,
+                    "grids": [
+                        {
+                            "id": 2794,
+                            "name": "Tokopedia Garage Special Exhibition November",
+                            "url": "https://www.tokopedia.com/discovery/tokopedia-garage",
+                            "applink": "tokopedia://discovery/tokopedia-garage",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/1/0051bc4b-4f2e-4904-96f2-e553b8e2a296.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2935,
+                            "name": "Kebutuhan Harian November 2021",
+                            "url": "https://www.tokopedia.com/discovery/kebutuhan-harian",
+                            "applink": "tokopedia://discovery/kebutuhan-harian",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/1/ddb403b1-5473-45a9-b710-6c3844f751fb.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2865,
+                            "name": "Tokopedia Beauty Awards",
+                            "url": "https://www.tokopedia.com/discovery/tokopedia-beauty-awards",
+                            "applink": "tokopedia://discovery/tokopedia-beauty-awards",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/2/08667375-e20a-4d36-8707-3413f2339bca.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2910,
+                            "name": "Happyfit x Salonpas Exclusive Collab",
+                            "url": "https://www.tokopedia.com/discovery/happyfit-salonpas",
+                            "applink": "tokopedia://discovery/happyfit-salonpas",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/2/890273b6-674b-445e-90a3-85d3d8e74844.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        },
+                        {
+                            "id": 2822,
+                            "name": "Toyspedia x Wakakids Exclusive Promo",
+                            "url": "https://www.tokopedia.com/discovery/toyspedia",
+                            "applink": "tokopedia://discovery/toyspedia",
+                            "price": "",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/SuMXtx/2021/11/2/89015642-2ff5-40b0-91c8-c392fe6987a2.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "warehouseID": 0,
+                            "discountPercentage": 0,
+                            "freeOngkir": {
+                                "isActive": false,
+                                "imageUrl": ""
+                            },
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "campaignCode": "",
+                            "labelGroup": [],
+                            "back_color": "",
+                            "productImageUrl": "",
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            }
+                        }
+                    ],
+                    "banner": {
+                        "id": 23019,
+                        "title": "",
+                        "description": "",
+                        "url": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "",
+                        "text_color": "#ffffff",
+                        "image_url": "",
+                        "back_color": "",
+                        "gradient_color": [
+                            "#FFFFFF"
+                        ],
+                        "attribution": ""
+                    },
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "category_persona": "",
+                    "brand_id": ""
+                },
+                {
                     "id": 29555,
                     "group_id": 169,
                     "galaxy_attribution": "PG",

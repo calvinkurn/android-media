@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.di.DaggerUserIdentificationCommonComponent
@@ -25,6 +26,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user_identification_common.KYCConstant
 import com.tokopedia.user_identification_common.KycUrl
+import com.tokopedia.utils.file.FileUtil
 import javax.inject.Inject
 
 /**
@@ -94,16 +96,17 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     private fun setLivenessViews() {
         title?.setText(R.string.face_title)
         subtitle?.setText(R.string.face_subtitle)
+        bulletTextLayout?.apply {
+            addView(addTextWithBullet(getString(R.string.face_subtitle_body_1)))
+            addView(addTextWithBullet(getString(R.string.face_subtitle_body_2)))
+        }?.show()
         button?.setText(R.string.face_button)
         button?.setOnClickListener { v: View? ->
             analytics?.eventClickNextSelfiePage()
             goToKycLiveness()
         }
+
         setLottieAnimation()
-        if (activity is UserIdentificationFormActivity) {
-            (activity as UserIdentificationFormActivity)
-                    .updateToolbarTitle(getString(R.string.title_kyc_form_face))
-        }
     }
 
     private fun setLottieAnimation() {
@@ -136,6 +139,7 @@ class UserIdentificationFormFaceFragment : BaseUserIdentificationStepperFragment
     }
 
     override fun trackOnBackPressed() {
+        FileUtil.deleteFile(stepperModel?.ktpFile)
         analytics?.eventClickBackSelfiePage()
     }
 

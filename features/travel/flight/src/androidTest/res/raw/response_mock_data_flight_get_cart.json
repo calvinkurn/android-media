@@ -81,6 +81,7 @@
               }
             ],
             "mandatoryDOB": false,
+            "mandatoryIdentificationNumber": true,
             "amenityOptions": [
               {
                 "id": "_KNO_SUB_972_SUB_MKQ_1798_1",

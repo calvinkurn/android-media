@@ -20,7 +20,8 @@ class LongClickMenu : BottomSheetUnify() {
     private val menuAdapter = LongClickMenuAdapter()
 
     init {
-        setFullPage(false)
+        isFullpage = false
+        clearContentPadding = true
         setCloseClickListener {
             dismiss()
         }

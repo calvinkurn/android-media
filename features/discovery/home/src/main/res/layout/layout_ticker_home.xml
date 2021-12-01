@@ -6,7 +6,7 @@
     android:layout_marginLeft="@dimen/home_component_margin_default"
     android:layout_marginEnd="@dimen/home_component_margin_default"
     android:layout_marginRight="@dimen/home_component_margin_default"
-    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginTop="8dp"
     android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

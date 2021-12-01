@@ -39,7 +39,6 @@ object BuyerConsts {
     const val BUTTON_REGULER_CANCELATION = "Ajukan Pembatalan"
     const val RESULT_CODE_INSTANT_CANCEL = "result_code_instant"
     const val RESULT_MSG_INSTANT_CANCEL = "result_msg_instant"
-    const val INSTANT_CANCEL_BUYER_REQUEST = 100
     const val RESULT_CODE_SUCCESS = 1
     const val RESULT_CODE_BACK = 0
 
@@ -50,4 +49,7 @@ object BuyerConsts {
     const val BUYER_CANCEL_REASON_SCREEN_NAME = "BuyerCancelReason"
 
     const val ACTION_FINISH_ORDER = "event_dialog_deliver_finish"
+
+    const val FINISH_ORDER_BOTTOMSHEET_TITLE = "Selesaikan pesanan ini?"
+    const val CREATE_REVIEW_ERROR_MESSAGE = "create_review_error"
 }

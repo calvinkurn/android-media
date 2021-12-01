@@ -372,11 +372,11 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position0.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = searchProductModelPage1.getTotalProductItem() + searchProductModelPage2.getTotalProductItem()
+        val expectedTopSeparatorPosition = searchProductModelPage1.getTotalProductItem() + searchProductModelPage2.getTotalProductItem() + 1
         val expectedBottomSeparatorPosition = -1
 
         `Test broad match with position`(searchProductModelPage1, searchProductModelPage2, expectedTopSeparatorPosition, expectedBottomSeparatorPosition) { visitableList ->
-            val firstProductItemPosition = visitableList.indexOfFirst { it is ProductItemDataView }
+            val firstProductItemPosition = visitableList.indexOfFirst { it is SearchProductCountDataView }
 
             firstProductItemPosition + expectedTopSeparatorPosition + 1
         }
@@ -392,8 +392,8 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
         val expectedTopSeparatorPosition = -1
-        val expectedBottomSeparatorPosition = 5
-        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
+        val expectedBottomSeparatorPosition = 6
+        val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 2
 
         `Test broad match with position`(
                 searchProductModelPage1, searchProductModelPage2,
@@ -406,8 +406,8 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position4.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = 4
-        val expectedBottomSeparatorPosition = 10
+        val expectedTopSeparatorPosition = 5
+        val expectedBottomSeparatorPosition = 11
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
 
         `Test broad match with position`(
@@ -421,8 +421,8 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val searchProductModelPage1 = broadMatchResponseCode0Page1Position12.jsonToObject<SearchProductModel>()
         val searchProductModelPage2 = broadMatchResponseCode0Page2.jsonToObject<SearchProductModel>()
 
-        val expectedTopSeparatorPosition = 12
-        val expectedBottomSeparatorPosition = 18
+        val expectedTopSeparatorPosition = 13
+        val expectedBottomSeparatorPosition = 19
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
 
         `Test broad match with position`(

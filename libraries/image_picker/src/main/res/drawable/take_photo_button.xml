@@ -4,5 +4,5 @@
     <solid android:color="@android:color/transparent" />
     <stroke
         android:color="@color/Unify_N0_68"
-        android:width="@dimen/dp_4" />
+        android:width="4dp" />
 </shape>

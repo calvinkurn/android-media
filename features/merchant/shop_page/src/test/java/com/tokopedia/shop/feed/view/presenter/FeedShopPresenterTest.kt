@@ -1,17 +1,23 @@
 package com.tokopedia.shop.feed.view.presenter
 
 import android.content.Context
+import android.text.TextUtils
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItemShop
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKol
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolData
+import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
@@ -81,7 +87,6 @@ class FeedShopPresenterTest: KolPostLikeListener {
             getDynamicFeedFirstUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<DynamicFeedShopDomain>>().onCompleted()
-            secondArg<Subscriber<DynamicFeedShopDomain>>().onError(Throwable())
             secondArg<Subscriber<DynamicFeedShopDomain>>().onNext(DynamicFeedShopDomain())
         }
 
@@ -93,6 +98,103 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
         verify {
             getDynamicFeedFirstUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun `get feed first page should be successful must not call onSuccessGetFeedFirstPage if DynamicFeedShopDomain is null`() {
+        every {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedShopDomain>>().onCompleted()
+            secondArg<Subscriber<DynamicFeedShopDomain>>().onNext(null)
+        }
+
+        every {
+            view.userSession.userId
+        } returns "10000"
+
+        presenter.getFeedFirstPage("123", false, false)
+
+        verify {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+        }
+        verify(exactly = 0) {
+            view.onSuccessGetFeedFirstPage(any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `get feed first page error should call showGetListError`() {
+        every {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedShopDomain>>().onError(Throwable())
+        }
+        every {
+            view.userSession.userId
+        } returns "10000"
+        presenter.getFeedFirstPage("123", false, false)
+        verify {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+            view.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `get feed first page error should call showGetListError when isAllowDebuggingTools is true and error is null`() {
+        every {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedShopDomain>>().onError(null)
+        }
+        every {
+            view.userSession.userId
+        } returns "10000"
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.getFeedFirstPage("123", false, false)
+        verify {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+            view.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `get feed first page error should call showGetListError when isAllowDebuggingTools is true and error is not null`() {
+        every {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedShopDomain>>().onError(Throwable())
+        }
+        every {
+            view.userSession.userId
+        } returns "10000"
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.getFeedFirstPage("123", false, false)
+        verify {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+            view.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `get feed first page error should call showGetListError when isAllowDebuggingTools is false`() {
+        every {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedShopDomain>>().onError(Throwable())
+        }
+        every {
+            view.userSession.userId
+        } returns "10000"
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.getFeedFirstPage("123", false, false)
+        verify {
+            getDynamicFeedFirstUseCase.execute(any(), any())
+            view.showGetListError(any())
         }
     }
 
@@ -131,36 +233,432 @@ class FeedShopPresenterTest: KolPostLikeListener {
     }
 
     @Test
-    fun `follow kol should be successful`() {
+    fun `get feed should not call onSuccessGetFeed when DynamicFeedDomainModel is null`() {
         every {
-            followKolPostGqlUseCase.execute(any())
+            getDynamicFeedUseCase.execute(any(), any())
         } answers {
-            firstArg<Subscriber<GraphqlResponse>>().onCompleted()
-            firstArg<Subscriber<GraphqlResponse>>().onError(Throwable())
-            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(any(), any(), false))
+            secondArg<Subscriber<DynamicFeedDomainModel>>().onNext(null)
         }
 
-        presenter.followKol(1231)
+        presenter.getFeed("1231")
 
         verify {
-            followKolPostGqlUseCase.execute(any())
+            getDynamicFeedUseCase.execute(any(), any())
+        }
+        verify(exactly = 0) {
+            view.onSuccessGetFeed(any(), any())
         }
     }
 
     @Test
-    fun `unfollow kol should be successful`() {
+    fun `get feed should not call showGetListError when view is null`() {
+        presenter.detachView()
+        every {
+            getDynamicFeedUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedDomainModel>>().onError(Throwable())
+        }
+
+        presenter.getFeed("1231")
+
+        verify {
+            getDynamicFeedUseCase.execute(any(), any())
+        }
+        verify(exactly = 0) {
+            view.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `get feed should call showGetListError when view is null, isAllowDebuggingTools true and throwable is not null`() {
+        every {
+            getDynamicFeedUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedDomainModel>>().onError(Throwable())
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.getFeed("1231")
+
+        verify {
+            getDynamicFeedUseCase.execute(any(), any())
+        }
+        verify {
+            view.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `get feed should call showGetListError when view is null, isAllowDebuggingTools true and throwable is null`() {
+        every {
+            getDynamicFeedUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedDomainModel>>().onError(null)
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.getFeed("1231")
+
+        verify {
+            getDynamicFeedUseCase.execute(any(), any())
+        }
+        verify {
+            view.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `get feed should call showGetListError when view is null, isAllowDebuggingTools false and throwable is not null`() {
+        every {
+            getDynamicFeedUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<DynamicFeedDomainModel>>().onError(Throwable())
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.getFeed("1231")
+
+        verify {
+            getDynamicFeedUseCase.execute(any(), any())
+        }
+        verify {
+            view.showGetListError(any())
+        }
+    }
+
+    @Test
+    fun `when followKol success should call onSuccessFollow`() {
         every {
             followKolPostGqlUseCase.execute(any())
         } answers {
             firstArg<Subscriber<GraphqlResponse>>().onCompleted()
-            firstArg<Subscriber<GraphqlResponse>>().onError(Throwable())
-            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(any(), any(), false))
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(
+                    mapOf(
+                            FollowKolQuery::class.java to FollowKolQuery().apply {
+                                data = FollowKol().apply {
+                                    error = ""
+                                    data = FollowKolData().apply {
+                                        status = 1
+                                    }
+                                }
+                            }
+                    )
+                    , any(), false))
         }
 
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns true
+        presenter.followKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onSuccessFollowKol()
+        }
+    }
+
+    @Test
+    fun `when followKol is not success should call onErrorFollowKol`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onCompleted()
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(
+                    mapOf(
+                            FollowKolQuery::class.java to FollowKolQuery().apply {
+                                data = FollowKol().apply {
+                                    data = FollowKolData().apply {
+                                        status = 0
+                                    }
+                                }
+                            }
+                    ),
+                    any(), false))
+        }
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns true
+        presenter.followKol(1231)
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when followKol data error should call onErrorFollowKol`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onCompleted()
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(
+                    mapOf(
+                            FollowKolQuery::class.java to FollowKolQuery().apply {
+                                data = FollowKol().apply {
+                                    data = FollowKolData().apply {
+                                        status = 0
+                                    }
+                                    error = "error message"
+                                }
+                            }
+                    ),
+                    any(), false))
+        }
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns false
+        presenter.followKol(1231)
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when followKol response error should call onErrorFollowKol if view is not null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onError(Throwable())
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.followKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.followKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when followKol response error should call onErrorFollowKol if view is not null and throwable is null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onError(null)
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.followKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.followKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when followKol response error should not call onErrorFollowKol if view null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onError(Throwable())
+        }
+        presenter.detachView()
+        presenter.followKol(1231)
+        verify {
+            followKolPostGqlUseCase.execute(any())
+        }
+        verify(exactly = 0) {
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when followKol should call onErrorFollowKol if query is null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(any(), any(), false))
+        }
+        presenter.followKol(1231)
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when unfollow kol success should call onSuccessFollowKol`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onCompleted()
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(mapOf(
+                    FollowKolQuery::class.java to FollowKolQuery().apply {
+                        data = FollowKol().apply {
+                            data = FollowKolData().apply {
+                                status = 1
+                            }
+                            error = "error message"
+                        }
+                    }
+            ), any(), false))
+        }
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns true
         presenter.unfollowKol(1231)
 
         verify {
             followKolPostGqlUseCase.execute(any())
+            view.onSuccessFollowKol()
+        }
+    }
+
+    @Test
+    fun `when unfollow kol is not success should call onErrorFollowKol`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onCompleted()
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(mapOf(
+                    FollowKolQuery::class.java to FollowKolQuery().apply {
+                        data = FollowKol().apply {
+                            data = FollowKolData().apply {
+                                status = 0
+                            }
+                            error = "error message"
+                        }
+                    }
+            ), any(), false))
+        }
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns true
+        presenter.unfollowKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when unfollow kol data error should call onErrorFollowKol`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onCompleted()
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(mapOf(
+                    FollowKolQuery::class.java to FollowKolQuery().apply {
+                        data = FollowKol().apply {
+                            data = FollowKolData().apply {
+                                status = 0
+                            }
+                            error = "error message"
+                        }
+                    }
+            ), any(), false))
+        }
+        mockkStatic(TextUtils::class)
+        every { TextUtils.isEmpty(any()) } returns false
+        presenter.unfollowKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when unfollow kol should call onErrorFollowKol if query is null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(any(), any(), false))
+        }
+        presenter.unfollowKol(1231)
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when unfollow kol response error should call onErrorFollowKol if view is not null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onError(Throwable())
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.unfollowKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.unfollowKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when unfollow kol response error should call onErrorFollowKol if view is not null and throwable is null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onError(null)
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.unfollowKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.unfollowKol(1231)
+
+        verify {
+            followKolPostGqlUseCase.execute(any())
+            view.onErrorFollowKol(any())
+        }
+    }
+
+    @Test
+    fun `when unfollow kol response error should not call onErrorFollowKol if view null`() {
+        every {
+            followKolPostGqlUseCase.execute(any())
+        } answers {
+            firstArg<Subscriber<GraphqlResponse>>().onError(Throwable())
+        }
+        presenter.detachView()
+        presenter.unfollowKol(1231)
+        verify {
+            followKolPostGqlUseCase.execute(any())
+        }
+        verify(exactly = 0) {
+            view.onErrorFollowKol(any())
         }
     }
 
@@ -197,12 +695,11 @@ class FeedShopPresenterTest: KolPostLikeListener {
     }
 
     @Test
-    fun `delete post should be successful`() {
+    fun `delete post success should call onSuccessDeletePost`() {
         every {
             deletePostUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<Boolean>>().onCompleted()
-            secondArg<Subscriber<Boolean>>().onError(Throwable())
             secondArg<Subscriber<Boolean>>().onNext(true)
         }
 
@@ -210,6 +707,104 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
         verify {
             deletePostUseCase.execute(any(), any())
+            view.onSuccessDeletePost(any())
+        }
+    }
+
+    @Test
+    fun `delete post success is false should not call onSuccessDeletePost`() {
+        every {
+            deletePostUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onCompleted()
+            secondArg<Subscriber<Boolean>>().onNext(false)
+        }
+
+        presenter.deletePost(anyInt(), anyInt())
+
+        verify {
+            deletePostUseCase.execute(any(), any())
+        }
+        verify(exactly = 0) {
+            view.onSuccessDeletePost(any())
+        }
+    }
+
+    @Test
+    fun `delete post success is null should not call onSuccessDeletePost`() {
+        every {
+            deletePostUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onCompleted()
+            secondArg<Subscriber<Boolean>>().onNext(null)
+        }
+
+        presenter.deletePost(anyInt(), anyInt())
+
+        verify {
+            deletePostUseCase.execute(any(), any())
+        }
+        verify(exactly = 0) {
+            view.onSuccessDeletePost(any())
+        }
+    }
+
+    @Test
+    fun `delete post response is error should call onErrorDeletePost`() {
+        every {
+            deletePostUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onError(Throwable())
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.deletePost(anyInt(), anyInt())
+        verify {
+            deletePostUseCase.execute(any(), any())
+            view.onErrorDeletePost(any(), any(), any())
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.deletePost(anyInt(), anyInt())
+        verify {
+            deletePostUseCase.execute(any(), any())
+            view.onErrorDeletePost(any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `delete post response is error should not call onErrorDeletePost if view is null`() {
+        every {
+            deletePostUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onError(Throwable())
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.detachView()
+        presenter.deletePost(anyInt(), anyInt())
+        verify {
+            deletePostUseCase.execute(any(), any())
+        }
+        verify(exactly = 0) {
+            view.onErrorDeletePost(any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `delete post response is error should call onErrorDeletePost if throwable is null`() {
+        every {
+            deletePostUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onError(null)
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.deletePost(anyInt(), anyInt())
+        verify {
+            deletePostUseCase.execute(any(), any())
+            view.onErrorDeletePost(any(), any(), any())
         }
     }
 
@@ -226,7 +821,8 @@ class FeedShopPresenterTest: KolPostLikeListener {
         every {
             view.userSession.isLoggedIn
         } returns true
-
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
         presenter.trackPostClick(anyString(), anyString())
 
         verify {
@@ -236,12 +832,22 @@ class FeedShopPresenterTest: KolPostLikeListener {
         every {
             view.userSession.isLoggedIn
         } returns false
-
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
         presenter.trackPostClick(anyString(), anyString())
 
         verify {
             trackAffiliateClickUseCase.execute(any(), any())
         }
+
+        every {
+            trackAffiliateClickUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onError(null)
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.trackPostClick(anyString(), anyString())
     }
 
     @Test
@@ -253,22 +859,41 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<Boolean>>().onError(Throwable())
             secondArg<Subscriber<Boolean>>().onNext(true)
         }
-
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
         presenter.trackPostClickUrl(anyString())
 
         verify {
             trackAffiliateClickUseCase.execute(any(), any())
         }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.trackPostClickUrl(anyString())
+
+        verify {
+            trackAffiliateClickUseCase.execute(any(), any())
+        }
+
+        every {
+            trackAffiliateClickUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<Boolean>>().onError(null)
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.trackPostClickUrl(anyString())
     }
 
     @Test
-    fun `add post tag item to cart should be successful`() {
+    fun `add post tag item success should call onAddToCartSuccess`() {
         every {
             atcUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<AddToCartDataModel>>().onCompleted()
-            secondArg<Subscriber<AddToCartDataModel>>().onError(Throwable())
-            secondArg<Subscriber<AddToCartDataModel>>().onNext(AddToCartDataModel())
+            secondArg<Subscriber<AddToCartDataModel>>().onNext(AddToCartDataModel(
+                    data = DataModel(success = 1)
+            ))
         }
 
         var postTagItem = PostTagItem().copy(shop = listOf(PostTagItemShop("12314"))).apply {
@@ -285,6 +910,145 @@ class FeedShopPresenterTest: KolPostLikeListener {
         postTagItem.applink = "www.tokopedia.com"
         presenter.addPostTagItemToCart(postTagItem)
 
+        verify {
+            view.onAddToCartSuccess()
+        }
+    }
+
+    @Test
+    fun `add post tag item not success should call onAddToCartFailed`() {
+        every {
+            atcUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().onCompleted()
+            secondArg<Subscriber<AddToCartDataModel>>().onNext(AddToCartDataModel(
+                    data = DataModel(success = 0)
+            ))
+        }
+
+        var postTagItem = PostTagItem().copy(shop = listOf(PostTagItemShop("12314"))).apply {
+            id = "10000"
+            price = "50000"
+        }
+        presenter.addPostTagItemToCart(postTagItem)
+
+        verify {
+            atcUseCase.execute(any(), any())
+        }
+
+        postTagItem = PostTagItem().copy(shop = listOf())
+        postTagItem.applink = "www.tokopedia.com"
+        presenter.addPostTagItemToCart(postTagItem)
+
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+
+        every {
+            atcUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().onNext(null)
+        }
+        postTagItem = PostTagItem().copy(shop = listOf(PostTagItemShop("12314"))).apply {
+            id = "10000"
+            price = "50000"
+            applink = "www.tokopedia.com"
+        }
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+
+        every {
+            atcUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().onNext(AddToCartDataModel())
+        }
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+    }
+
+    @Test
+    fun `add post tag item response error should call onAddToCartFailed`() {
+        every {
+            atcUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().onError(Throwable())
+        }
+        var postTagItem = PostTagItem().copy(shop = listOf(PostTagItemShop("12314"))).apply {
+            id = "10000"
+            price = "50000"
+        }
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            atcUseCase.execute(any(), any())
+        }
+        postTagItem = PostTagItem().copy(shop = listOf())
+        postTagItem.applink = "www.tokopedia.com"
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+    }
+
+    @Test
+    fun `add post tag item response error should call onAddToCartFailed when exception is null`() {
+        every {
+            atcUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().onError(null)
+        }
+        var postTagItem = PostTagItem().copy(shop = listOf(PostTagItemShop("12314"))).apply {
+            id = "10000"
+            price = "50000"
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+    }
+
+    @Test
+    fun `add post tag item response error should call onAddToCartFailed when exception is not null`() {
+        every {
+            atcUseCase.execute(any(), any())
+        } answers {
+            secondArg<Subscriber<AddToCartDataModel>>().onError(Throwable())
+        }
+        var postTagItem = PostTagItem().copy(shop = listOf(PostTagItemShop("12314"))).apply {
+            id = "10000"
+            price = "50000"
+        }
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns true
+        presenter.addPostTagItemToCart(postTagItem)
+        verify {
+            view.onAddToCartFailed(postTagItem.applink)
+        }
+
+        mockkStatic(GlobalConfig::class)
+        every { GlobalConfig.isAllowDebuggingTools() } returns false
+        presenter.addPostTagItemToCart(postTagItem)
         verify {
             view.onAddToCartFailed(postTagItem.applink)
         }

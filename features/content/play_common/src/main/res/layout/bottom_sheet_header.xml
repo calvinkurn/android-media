@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <LinearLayout
         android:id="@+id/ll_header"
@@ -20,7 +22,7 @@
             android:id="@+id/iv_sheet_close"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
-            app:icon_color_light_enable="@color/play_dms_bottom_sheet_action_close"
+            app:icon_color_light_enable="@color/Unify_N700_96"
             app:icon_name="CLOSE"
             />
 
@@ -30,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/play_bottom_sheet_title_margin_start"
             android:layout_marginLeft="@dimen/play_bottom_sheet_title_margin_start"
-            android:textColor="@color/play_dms_bottom_sheet_title"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_3"
             app:typographyWeight="bold"
             android:ellipsize="end"

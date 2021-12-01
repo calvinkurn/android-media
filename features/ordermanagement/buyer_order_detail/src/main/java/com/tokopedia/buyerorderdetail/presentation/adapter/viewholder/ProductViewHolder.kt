@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductViewHolder(
+open class ProductViewHolder(
         itemView: View?,
         private val listener: ProductViewListener,
         private val navigator: BuyerOrderDetailNavigator
@@ -34,12 +34,12 @@ class ProductViewHolder(
 
     private val container = itemView?.findViewById<ConstraintLayout>(R.id.container)
     private val cardBuyerOrderDetailProduct = itemView?.findViewById<CardUnify>(R.id.cardBuyerOrderDetailProduct)
-    private val btnBuyerOrderDetailBuyProductAgain = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
     private val ivBuyerOrderDetailProductThumbnail = itemView?.findViewById<ImageUnify>(R.id.ivBuyerOrderDetailProductThumbnail)
     private val tvBuyerOrderDetailProductName = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductName)
     private val tvBuyerOrderDetailProductPriceQuantity = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceQuantity)
     private val tvBuyerOrderDetailProductNote = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductNote)
     private val tvBuyerOrderDetailProductPriceValue = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailProductPriceValue)
+    protected val btnBuyerOrderDetailBuyProductAgain = itemView?.findViewById<UnifyButton>(R.id.btnBuyerOrderDetailBuyProductAgain)
 
     private var element: ProductListUiModel.ProductUiModel? = null
 
@@ -137,7 +137,7 @@ class ProductViewHolder(
         btnBuyerOrderDetailBuyProductAgain?.setOnClickListener(this@ProductViewHolder)
     }
 
-    private fun setupProductThumbnail(productThumbnailUrl: String) {
+    protected open fun setupProductThumbnail(productThumbnailUrl: String) {
         ivBuyerOrderDetailProductThumbnail?.apply {
             setImageUrl(productThumbnailUrl)
         }
@@ -162,7 +162,7 @@ class ProductViewHolder(
         tvBuyerOrderDetailProductPriceValue?.text = totalPrice
     }
 
-    private fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
+    protected open fun setupButton(showBuyAgainButton: ActionButtonsUiModel.ActionButton, processing: Boolean) {
         btnBuyerOrderDetailBuyProductAgain?.apply {
             isLoading = processing
             text = showBuyAgainButton.label

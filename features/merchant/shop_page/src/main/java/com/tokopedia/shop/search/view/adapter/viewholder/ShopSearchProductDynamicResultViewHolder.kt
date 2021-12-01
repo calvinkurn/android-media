@@ -5,9 +5,11 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.ShopSearchProductDynamicResultLayoutBinding
 import com.tokopedia.shop.search.util.SpanTextHelper
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResultDataModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopSearchProductDynamicResultViewHolder(
         private val view: View
@@ -17,9 +19,10 @@ class ShopSearchProductDynamicResultViewHolder(
         val LAYOUT = R.layout.shop_search_product_dynamic_result_layout
     }
 
-    private val ivProduct: ImageView? = itemView.findViewById(R.id.iv_product)
-    private val tvLabelProductName: Typography? = itemView.findViewById(R.id.tv_label_product_name)
-    private val tvLabelPrice: Typography? = itemView.findViewById(R.id.tv_label_price)
+    private val viewBinding : ShopSearchProductDynamicResultLayoutBinding? by viewBinding()
+    private val ivProduct: ImageView? = viewBinding?.ivProduct
+    private val tvLabelProductName: Typography? = viewBinding?.tvLabelProductName
+    private val tvLabelPrice: Typography? = viewBinding?.tvLabelPrice
 
     override fun bind(element: ShopSearchProductDynamicResultDataModel) {
         ivProduct?.loadImage(element.imageUri)

@@ -3,14 +3,11 @@ package com.tokopedia.topchat.stub.chatroom.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
@@ -44,16 +41,10 @@ class ChatRoomFakePresenterModule {
             topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
             getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
             replyChatUseCase: ReplyChatUseCase,
-            getShopFollowingUseCase: GetShopFollowingUseCase,
-            toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-            addToCartUseCase: AddToCartUseCase,
             compressImageUseCase: CompressImageUseCase,
-            seamlessLoginUsecase: SeamlessLoginUsecase,
-            getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
             addWishListUseCase: AddWishListUseCase,
             removeWishListUseCase: RemoveWishListUseCase,
             uploadImageUseCase: TopchatUploadImageUseCase,
-            orderProgressUseCase: OrderProgressUseCase,
             groupStickerUseCase: ChatListGroupStickerUseCase,
             chatAttachmentUseCase: ChatAttachmentUseCase,
             chatToggleBlockChat: ChatToggleBlockChatUseCase,
@@ -74,16 +65,10 @@ class ChatRoomFakePresenterModule {
                         topChatRoomWebSocketMessageMapper,
                         getTemplateChatRoomUseCase,
                         replyChatUseCase,
-                        getShopFollowingUseCase,
-                        toggleFavouriteShopUseCase,
-                        addToCartUseCase,
                         compressImageUseCase,
-                        seamlessLoginUsecase,
-                        getChatRoomSettingUseCase,
                         addWishListUseCase,
                         removeWishListUseCase,
                         uploadImageUseCase,
-                        orderProgressUseCase,
                         groupStickerUseCase,
                         chatAttachmentUseCase,
                         chatToggleBlockChat,

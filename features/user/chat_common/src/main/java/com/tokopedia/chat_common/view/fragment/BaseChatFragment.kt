@@ -112,9 +112,9 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
-        if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
-            onGoToWebView(viewModel.redirectUrl, viewModel.attachmentId)
+    override fun onImageAnnouncementClicked(uiModel: ImageAnnouncementUiModel) {
+        if (!TextUtils.isEmpty(uiModel.redirectUrl)) {
+            onGoToWebView(uiModel.redirectUrl, uiModel.attachmentId)
         }
     }
 
@@ -180,7 +180,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
-    override fun onProductClicked(element: ProductAttachmentViewModel) {
+    override fun onProductClicked(element: ProductAttachmentUiModel) {
         val ROLE_SHOP = "shop"
 
         if (!GlobalConfig.isSellerApp() || opponentRole != ROLE_SHOP) {
@@ -197,7 +197,7 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
-    override fun onRetrySendImage(element: ImageUploadViewModel) {
+    override fun onRetrySendImage(element: ImageUploadUiModel) {
 
     }
 
@@ -218,11 +218,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         viewState?.onReceiveRead()
     }
 
-    override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         //Please override if you use
     }
 
-    override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+    override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         //Please override if you use
     }
 
@@ -259,17 +259,17 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
-    override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+    override fun onClickBannedProduct(uiModel: BannedProductAttachmentUiModel) {}
 
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
+    override fun trackSeenProduct(element: ProductAttachmentUiModel) {}
 
-    override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+    override fun trackSeenBannedProduct(uiModel: BannedProductAttachmentUiModel) {}
 
-    override fun onClickAddToWishList(product: ProductAttachmentViewModel, success: () -> Unit) {}
+    override fun onClickAddToWishList(product: ProductAttachmentUiModel, success: () -> Unit) {}
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {}
 
-    override fun trackClickProductThumbnail(product: ProductAttachmentViewModel) {}
+    override fun trackClickProductThumbnail(product: ProductAttachmentUiModel) {}
 
     override fun onItemClicked(t: Visitable<*>?) {}
 }

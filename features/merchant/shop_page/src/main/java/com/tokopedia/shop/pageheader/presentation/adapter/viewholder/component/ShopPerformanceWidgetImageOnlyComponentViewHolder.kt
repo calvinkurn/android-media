@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetImageOnlyComponentBinding
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderBadgeTextValueComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageOnlyComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetImageOnlyComponentViewHolder(
         itemView: View,
@@ -26,8 +28,8 @@ class ShopPerformanceWidgetImageOnlyComponentViewHolder(
                 shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
     }
-
-    private val imageView: ImageView? = itemView.findViewById(R.id.iv_image)
+    private val viewBinding: LayoutShopPerformanceWidgetImageOnlyComponentBinding? by viewBinding()
+    private val imageView: ImageView? = viewBinding?.ivImage
 
     override fun bind(model: ShopHeaderImageOnlyComponentUiModel) {
         val imageUrl = model.image

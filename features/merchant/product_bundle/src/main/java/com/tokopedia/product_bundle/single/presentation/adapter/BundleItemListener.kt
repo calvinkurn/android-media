@@ -4,7 +4,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product_bundle.single.presentation.model.SingleProductBundleSelectedItem
 
 interface BundleItemListener {
-    fun onVariantSpinnerClicked(selectedVariant: ProductVariant?)
+    fun onVariantSpinnerClicked(selectedVariant: ProductVariant?, selectedProductId: String?)
     fun onBundleItemSelected(
         originalPrice: Double,
         discountedPrice: Double,

@@ -1,16 +1,12 @@
 package com.tokopedia.loginregister.login.view.viewmodel
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.facebook.AccessToken
-import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.encryption.security.decodeBase64
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.loginregister.common.data.ResponseConverter
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.domain.usecase.ActivateUserUseCase
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
@@ -23,9 +19,6 @@ import com.tokopedia.loginregister.login.domain.RegisterCheckFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckFingerprint
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
-import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
-import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
@@ -34,7 +27,6 @@ import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.mapper.LoginV2Mapper
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
-import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
 import com.tokopedia.sessioncommon.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -49,7 +41,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         private val registerCheckUseCase: RegisterCheckUseCase,
         private val discoverUseCase: DiscoverUseCase,
         private val activateUserUseCase: ActivateUserUseCase,
-        private val getFacebookCredentialUseCase: GetFacebookCredentialUseCase,
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
@@ -87,18 +78,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
     private val mutableProfileResponse = MutableLiveData<Result<ProfilePojo>>()
     val profileResponse: LiveData<Result<ProfilePojo>>
         get() = mutableProfileResponse
-
-    private val mutableGetFacebookCredentialResponse = MutableLiveData<Result<FacebookCredentialData>>()
-    val getFacebookCredentialResponse: LiveData<Result<FacebookCredentialData>>
-        get() = mutableGetFacebookCredentialResponse
-
-    private val mutableLoginTokenFacebookResponse = MutableLiveData<Result<LoginToken>>()
-    val loginTokenFacebookResponse: LiveData<Result<LoginToken>>
-        get() = mutableLoginTokenFacebookResponse
-
-    private val mutableLoginTokenFacebookPhoneResponse = MutableLiveData<Result<LoginTokenPojo>>()
-    val loginTokenFacebookPhoneResponse: LiveData<Result<LoginTokenPojo>>
-        get() = mutableLoginTokenFacebookPhoneResponse
 
     private val mutableShowPopup = MutableLiveData<PopupError>()
     val showPopup: LiveData<PopupError>
@@ -208,39 +187,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
                     mutableShowLocationAdminPopUp.value = Fail(it)
                 }
         ))
-    }
-
-    fun loginFacebook(accessToken: AccessToken, email: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
-                LoginTokenSubscriber(userSession,
-                        {
-                            onSuccessLoginTokenFacebook(it)
-                        },
-                        {
-                            onFailedLoginTokenFacebook(it)
-                        },
-                        { showPopup(it.loginToken.popupError) },
-                        { onGoToActivationPage(email) },
-                        { onGoToSecurityQuestion(email) }
-                ))
-    }
-
-    fun loginFacebookPhone(accessToken: AccessToken, phone: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
-                accessToken.token, LoginTokenUseCase.SOCIAL_TYPE_FACEBOOK),
-                LoginTokenFacebookSubscriber(userSession,
-                        {
-                            mutableLoginTokenFacebookPhoneResponse.value = Success(it)
-                        }, {
-                            mutableLoginTokenFacebookPhoneResponse.value = Fail(it)
-                        },
-                        { showPopup(it.loginToken.popupError) },
-                        { onGoToSecurityQuestion("") }
-                )
-        )
     }
 
     fun loginGoogle(accessToken: String, email: String) {
@@ -369,50 +315,6 @@ class LoginEmailPhoneViewModel @Inject constructor(
         }, {
             mutableDynamicBannerResponse.postValue(Fail(it))
         })
-    }
-
-    fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
-        getFacebookCredentialUseCase.execute(
-                GetFacebookCredentialUseCase.getParam(
-                        fragment,
-                        callbackManager),
-                GetFacebookCredentialSubscriber(
-                        ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener(
-                                {
-                                    onSuccessGetFacebookEmailCredential().invoke(it)
-                                },
-                                {
-                                    onSuccessGetFacebookPhoneCredential(it)
-                                },
-                                {
-                                    onFailedGetFacebookCredential(it)
-                                }
-                        )
-                )
-        )
-    }
-
-    private fun onSuccessGetFacebookEmailCredential(): (FacebookCredentialData) -> Unit {
-        return {
-            mutableGetFacebookCredentialResponse.value = Success(it)
-        }
-    }
-
-    private fun onSuccessGetFacebookPhoneCredential(facebookCredentialData: FacebookCredentialData) {
-        mutableGetFacebookCredentialResponse.value = Success(facebookCredentialData)
-    }
-
-    private fun onFailedGetFacebookCredential(throwable: Throwable) {
-        mutableGetFacebookCredentialResponse.value = Fail(throwable)
-    }
-
-    private fun onFailedLoginTokenFacebook(throwable: Throwable) {
-        mutableLoginTokenFacebookResponse.value = Fail(throwable)
-    }
-
-    private fun onSuccessLoginTokenFacebook(loginToken: LoginTokenPojo) {
-        mutableLoginTokenFacebookResponse.value = Success(loginToken.loginToken)
     }
 
     private fun showPopup(popupError: PopupError) {

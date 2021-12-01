@@ -28,8 +28,8 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
-    viewBinding {
-        enabled true
+    buildFeatures {
+        viewBinding true
     }
 }
 

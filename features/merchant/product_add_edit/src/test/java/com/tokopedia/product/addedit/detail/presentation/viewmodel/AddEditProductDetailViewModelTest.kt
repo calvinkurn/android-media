@@ -4,7 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
@@ -41,13 +43,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertFalse
+import junit.framework.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.mockito.ArgumentMatchers.any
+import java.io.IOException
 import kotlin.reflect.KFunction0
 
 @FlowPreview
@@ -362,8 +364,6 @@ class AddEditProductDetailViewModelTest {
         val resultMessage = listOf("indodax")
         val errorMessage = "error blacklist"
 
-        viewModel.usingNewProductTitleRequest = true
-
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
         } returns TitleValidationModel(
@@ -388,7 +388,6 @@ class AddEditProductDetailViewModelTest {
     @Test
     fun `validateProductNameInput should valid when product name no error`() = coroutineTestRule.runBlockingTest {
         val productNameInput = "indomilk"
-        viewModel.usingNewProductTitleRequest = true
 
         coEvery {
             getProductTitleValidationUseCase.getDataModelOnBackground()
@@ -835,6 +834,22 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `When validate product sku error, should log error to crashlytics`() {
+        coEvery { validateProductUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        //Mock FirebaseCrashlytics because .getInstance() method is a static method
+        mockkStatic(FirebaseCrashlytics::class)
+
+        every { FirebaseCrashlytics.getInstance().recordException(any()) } returns mockk(relaxed = true)
+
+        viewModel.validateProductSkuInput("ESKU")
+
+        coVerify { validateProductUseCase.executeOnBackground() }
+
+        coVerify { AddEditProductErrorHandler.logExceptionToCrashlytics(any()) }
+    }
+
+    @Test
     fun `updateProductPhotos should not change any image url's`() {
         val sampleProductPhotos = getSampleProductPhotos()
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
@@ -973,6 +988,21 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `When get shop showcases error, should post error to observer`() = runBlocking {
+        coEvery {
+            getShopEtalaseUseCase.executeOnBackground()
+        } throws IOException()
+
+        viewModel.getShopShowCasesUseCase()
+
+        coVerify {
+            getShopEtalaseUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.shopShowCases.value is Fail)
+    }
+
+    @Test
     fun `getAnnotationCategory should return unfilled data when productId is not provided`() = coroutineTestRule.runBlockingTest {
         val annotationCategoryData = listOf<AnnotationCategoryData>()
 
@@ -1103,6 +1133,23 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `When get annotation category error, should post error to observer`() = runBlocking {
+        coEvery {
+            annotationCategoryUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.getAnnotationCategory("", "11090")
+
+        val result = viewModel.annotationCategoryData.getOrAwaitValue()
+
+        coVerify {
+            annotationCategoryUseCase.executeOnBackground()
+        }
+
+        assertTrue(result is Fail)
+    }
+
+    @Test
     fun `updateSpecificationByAnnotationCategory should return empty when annotation category is not selected`() = runBlocking {
         val annotationCategoryData = listOf(
                 AnnotationCategoryData(
@@ -1171,11 +1218,13 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
         every { userSession.isMultiLocationShop } returns true
-        every { provider.getEditProductMultiLocationMessage() } returns editMessage
+        every { provider.getEditProductPriceMultiLocationMessage() } returns editMessage
+        every { provider.getEditProductStockMultiLocationMessage() } returns editMessage
 
         viewModel.isEditing = true
         viewModel.setupMultiLocationShopValues()
 
+        assert(viewModel.productPriceMessage == editMessage)
         assert(stockAllocationDefaultMessage == editMessage)
         assert(viewModel.productStockMessage == editMessage)
     }
@@ -1186,12 +1235,14 @@ class AddEditProductDetailViewModelTest {
         every { userSession.isShopAdmin } returns false
         every { userSession.isShopOwner } returns true
         every { userSession.isMultiLocationShop } returns true
-        every { provider.getAddProductMultiLocationMessage() } returns addMessage
+        every { provider.getAddProductPriceMultiLocationMessage() } returns addMessage
+        every { provider.getAddProductStockMultiLocationMessage() } returns addMessage
 
         viewModel.isEditing = false
         viewModel.isAdding = true
         viewModel.setupMultiLocationShopValues()
 
+        assert(viewModel.productPriceMessage == addMessage)
         assert(stockAllocationDefaultMessage == addMessage)
         assert(viewModel.productStockMessage == addMessage)
     }
@@ -1250,6 +1301,21 @@ class AddEditProductDetailViewModelTest {
         }
 
         assertEquals(1000.0, result.suggestedPrice)
+    }
+
+    @Test
+    fun `When get all product drafts error, should post error to observer`() = runBlocking {
+        coEvery {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+        } throws MessageErrorException("")
+
+        viewModel.getProductPriceRecommendationByKeyword("Batik")
+
+        coVerify {
+            priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.productPriceRecommendationError.value is Throwable)
     }
 
     @Test
@@ -1426,12 +1492,12 @@ class AddEditProductDetailViewModelTest {
             viewModel.validatePreOrderDurationInput(AddEditProductDetailConstants.UNIT_WEEK, "${AddEditProductDetailConstants.MAX_PREORDER_WEEKS + 1}")
         }
 
-        runValidationAndProvideMessage(provider::getEditProductMultiLocationMessage, null) {
+        runValidationAndProvideMessage(provider::getEditProductStockMultiLocationMessage, null) {
             viewModel.isEditing = true
             viewModel.isAdding = false
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String
         }
-        runValidationAndProvideMessage(provider::getAddProductMultiLocationMessage, null) {
+        runValidationAndProvideMessage(provider::getAddProductStockMultiLocationMessage, null) {
             viewModel.isEditing = false
             viewModel.isAdding = true
             viewModel.callPrivateFunc("getMultiLocationStockAllocationMessage") as String

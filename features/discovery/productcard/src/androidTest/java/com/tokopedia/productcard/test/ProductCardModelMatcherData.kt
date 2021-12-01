@@ -47,6 +47,8 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testProductCardWithSpoilerPrice())
     it.add(testProductCardWithSpoilerPriceAndViewCount())
     it.add(testProductCardWithSpoilerPriceAndStockBar())
+    it.add(testProductCardWithNameAndStockBarAndStockBarLabelColor())
+    it.add(testLongerProductCardWithStockBar())
     it.add(testHasBadgeNoLocation())
     it.add(testHasRatingReviewAndLabelIntegrity())
     it.add(testHasFreeOngkirAndLabelShipping())
@@ -67,7 +69,6 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelBestSellerAndCategorySide())
     it.add(testLabelBestSellerAndCategoryBottom())
     it.add(testLabelCategorySideAndBottomWithoutBestSeller())
-    it.add(testProductCardWithNameAndStockBarAndStockBarLabelColor())
     it.add(testLabelETA())
     it.add(testLabelCategory())
     it.add(testLabelCostPerUnit())
@@ -281,6 +282,70 @@ private fun testProductCardWithSpoilerPriceAndStockBar(): ProductCardModelMatche
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
         it[R.id.progressBarStock] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testProductCardWithNameAndStockBarAndStockBarLabelColor(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+        productName = "Product Card With Stock label color",
+        productImageUrl = productImageUrl,
+        pdpViewCount = "17.7k View",
+        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        stockBarLabel = "Segera Habis",
+        stockBarPercentage = 80,
+        stockBarLabelColor = "#ef144a",
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.imageViewPdpView]= isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBarStock] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLongerProductCardWithStockBar(): ProductCardModelMatcher {
+    val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+
+    val productCardModel = ProductCardModel(
+        productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
+        productImageUrl = productImageUrl,
+        formattedPrice = "Rp7.999.000",
+        shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+            badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+        },
+        shopLocation = "DKI Jakarta",
+        pdpViewCount = "17.7k View",
+        freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+        stockBarLabel = "Segera Habis",
+        stockBarPercentage = 80,
+        stockBarLabelColor = "#ef144a",
+        countSoldRating = "4.5",
+        labelGroupList = listOf(labelIntegrity)
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.imageViewPdpView]= isDisplayed()
+        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
+        it[R.id.textViewPrice] = isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayed()
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
+        it[R.id.progressBarStock] = isDisplayed()
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloatLine] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -1967,30 +2032,6 @@ private fun testLabelCategorySideAndBottomWithoutBestSeller(): ProductCardModelM
         it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
-    }
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
-private fun testProductCardWithNameAndStockBarAndStockBarLabelColor(): ProductCardModelMatcher {
-    val productCardModel = ProductCardModel(
-            productName = "Product Card With Stock label color",
-            productImageUrl = productImageUrl,
-            pdpViewCount = "17.7k View",
-            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            stockBarLabel = "Segera Habis",
-            stockBarPercentage = 80,
-            stockBarLabelColor = "#ef144a",
-    )
-
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.imageViewPdpView]= isDisplayed()
-        it[R.id.textViewPdpView] = isDisplayedWithText(productCardModel.pdpViewCount)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.textViewStockLabel] = isDisplayedWithText(productCardModel.stockBarLabel)
-        it[R.id.progressBarStock] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

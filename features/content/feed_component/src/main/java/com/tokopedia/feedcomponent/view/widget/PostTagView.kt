@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.widget
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -78,7 +79,8 @@ class PostTagView @JvmOverloads constructor(
         products: List<FeedXProduct>,
         width: Int,
         height: Int,
-        positionInFeed: Int
+        positionInFeed: Int,
+        bitmap: Bitmap?
     ) {
         this.listener = dynamicPostListener
         this.dotMarginStart = (width * (feedXTag.posX)).toInt()
@@ -116,7 +118,7 @@ class PostTagView @JvmOverloads constructor(
 
         productTagExpandedView.doOnLayout {
             val w = productTagExpandedView.width
-            bubbleMarginStart = setProductTagBubbleStartMargin(w)
+            bubbleMarginStart = setProductTagBubbleStartMargin(w, bitmap)
 
             if (position == POSITION_BOTTOM) {
                 productTagExpandedView.setMargin(bubbleMarginStart,
@@ -177,20 +179,21 @@ class PostTagView @JvmOverloads constructor(
     }
 
     private fun setProductTagBubbleStartMargin(
-        bubbleInflatedWidth: Int
+        bubbleInflatedWidth: Int,
+        bitmap: Bitmap?
     ): Int {
         return if (feedXTag.posX <= CENTER_POS_X) {
             if (dotMarginStart >= bubbleInflatedWidth / 2)
                 dotMarginStart - bubbleInflatedWidth / 2
             else
-                0
+                calculateGreyAreaY(bitmap)
 
         } else {
             val endMargin = postImageWidth - dotMarginStart
             if (endMargin >= bubbleInflatedWidth / 2)
                 dotMarginStart - bubbleInflatedWidth / 2
             else
-                postImageWidth - bubbleInflatedWidth
+                postImageWidth - bubbleInflatedWidth - calculateGreyAreaY(bitmap)
         }
     }
     private fun setSlashedPriceText(priceOriginal: String) {
@@ -232,6 +235,16 @@ class PostTagView @JvmOverloads constructor(
                 }
             }
         }, PRODUCT_DOT_TIMER)
+    }
+    private fun calculateGreyAreaY(bitmap: Bitmap?): Int {
+        bitmap?.let {
+            return if (bitmap.height > bitmap.width) {
+                val newBitmapHeight = (postImageWidth * bitmap.width) / bitmap.height
+                (postImageWidth - newBitmapHeight) / 2
+            } else
+                0
+        }
+        return 0
     }
 }
 

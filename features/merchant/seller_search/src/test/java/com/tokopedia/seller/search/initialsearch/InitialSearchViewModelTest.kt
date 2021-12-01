@@ -1,22 +1,22 @@
 package com.tokopedia.seller.search.initialsearch
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.search.common.domain.model.SellerSearchResponse
 import com.tokopedia.seller.search.feature.initialsearch.domain.model.DeleteHistoryResponse
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
-import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
 import com.tokopedia.seller.search.feature.suggestion.domain.model.SuccessSearchResponse
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import junit.framework.TestCase
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyString
+import java.lang.Exception
 
 class InitialSearchViewModelTest: InitialSearchViewModelTestFixture() {
 
@@ -42,6 +42,19 @@ class InitialSearchViewModelTest: InitialSearchViewModelTestFixture() {
             val expectedValue = Success(RegisterSearchUiModel())
             assertTrue(viewModel.insertSuccessSearch.value is Success)
             viewModel.insertSuccessSearch.verifyValueEquals(expectedValue)
+        }
+    }
+
+    @Test
+    fun `when insert fail search suggestion should return fail`() {
+        runBlocking {
+            val error = MessageErrorException()
+            onInsertSuccessSearch_thenError(error)
+            viewModel.insertSearchSeller(anyString(), anyString(), anyString(), ArgumentMatchers.anyInt())
+
+            verifyInsertSuccessSearchUseCaseCalled()
+            val expectedResult = Fail(error)
+            viewModel.insertSuccessSearch.verifyErrorEquals(expectedResult)
         }
     }
 
@@ -129,6 +142,10 @@ class InitialSearchViewModelTest: InitialSearchViewModelTestFixture() {
 
     private fun onInsertSuccessSearch_thenReturn() {
         coEvery { insertSellerSearchUseCase.executeOnBackground() } returns SuccessSearchResponse.SuccessSearch()
+    }
+
+    private fun onInsertSuccessSearch_thenError(exception: Exception) {
+        coEvery { insertSellerSearchUseCase.executeOnBackground() } coAnswers { throw exception }
     }
 
     private fun verifySuccessGetSellerSearchUseCaseCaseCalled() {

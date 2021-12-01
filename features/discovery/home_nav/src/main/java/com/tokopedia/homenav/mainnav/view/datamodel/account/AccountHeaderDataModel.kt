@@ -59,10 +59,10 @@ data class AccountHeaderDataModel(
         const val NAV_PROFILE_STATE_FAILED = 96
     }
 
-    fun setProfileData(userName: String, userImage: String, loginState: Int) {
+    fun setProfileData(userName: String, userImage: String, loginState: Int, isGetUserNameError: Boolean) {
         this.profileDataModel.userImage = userImage
         this.profileDataModel.userName = userName
-        this.profileDataModel.isGetUserNameError = false
+        this.profileDataModel.isGetUserNameError = isGetUserNameError
         this.loginState = loginState
     }
 

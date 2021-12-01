@@ -9,7 +9,7 @@
         android:id="@+id/rv_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="@dimen/dp_5"/>
+        android:paddingTop="5dp"/>
 
 
     <ProgressBar
@@ -38,8 +38,8 @@
                 android:layout_height="325dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="-100dp"
-                android:layout_marginLeft="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 app:lottie_autoPlay="true"
                 app:lottie_fileName="empty_cactus.json"
                 app:lottie_loop="true"/>
@@ -59,7 +59,7 @@
                 android:layout_width="170dp"
                 android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="20dp"
                 android:textColor="@color/white"
                 android:textAllCaps="false"
                 android:text="@string/string_follow_empty_button"

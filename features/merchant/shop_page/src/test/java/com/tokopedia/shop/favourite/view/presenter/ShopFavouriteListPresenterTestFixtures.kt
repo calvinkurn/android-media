@@ -41,7 +41,5 @@ open class ShopFavouriteListPresenterTestFixtures {
                 toggleFavouriteShopAndDeleteCacheUseCase,
                 CoroutineTestDispatchersProvider
         )
-
-        shopFavouriteListPresenter.attachView(shopFavouriteListView)
     }
 }

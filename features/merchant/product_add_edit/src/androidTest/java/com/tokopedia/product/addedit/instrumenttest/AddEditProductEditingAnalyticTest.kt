@@ -176,6 +176,7 @@ class AddEditProductEditingAnalyticTest {
         performScrollAndClick(R.id.tv_start_add_edit_product_variant)
         performPressBack()
         performDialogSecondaryClick()
+        Thread.sleep(500)
     }
 
     private fun testEditPromotion() {

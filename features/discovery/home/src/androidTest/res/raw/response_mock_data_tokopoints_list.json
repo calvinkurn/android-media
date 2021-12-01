@@ -2,105 +2,116 @@
   {
     "data": {
       "tokopointsDrawerList": {
+        "offFlag": false,
         "drawerList": [
           {
+            "type": "Coupon",
             "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/kupon-saya.png",
-            "redirectAppLink": "tokopedia://rewards/kupon-saya",
             "redirectURL": "https://www.tokopedia.com/rewards/kupon-saya",
+            "redirectAppLink": "tokopedia://rewards/kupon-saya",
             "sectionContent": [
               {
-                "tagAttributes": {
-                  "backgroundColor": "",
-                  "text": ""
-                },
+                "type": "text",
                 "textAttributes": {
+                  "text": "Kupon Saya",
                   "color": "#31353B",
-                  "isBold": true,
-                  "text": "Kupon Saya"
+                  "isBold": true
                 },
-                "type": "text"
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
               },
               {
-                "tagAttributes": {
-                  "backgroundColor": "",
-                  "text": ""
-                },
+                "type": "text",
                 "textAttributes": {
+                  "text": "19 Kupon Baru",
                   "color": "#adadad",
-                  "isBold": true,
-                  "text": "800 Kupon Baru"
+                  "isBold": true
                 },
-                "type": "text"
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
               }
-            ],
-            "type": "Coupon"
+            ]
           },
           {
+            "type": "BBO",
             "iconImageURL": "https://ecs7.tokopedia.net/img/tokopoints/benefit/BebasOngkir.png",
+            "redirectURL": "https://164-staging-feature.tokopedia.com/install-app/bbo",
             "redirectAppLink": "tokopedia://cart",
-            "redirectURL": "https://m.tokopedia.com/install-app/bbo",
             "sectionContent": [
               {
-                "tagAttributes": {
-                  "backgroundColor": "",
-                  "text": ""
-                },
+                "type": "text",
                 "textAttributes": {
+                  "text": "Bebas Ongkir",
                   "color": "#31353B",
-                  "isBold": true,
-                  "text": "Bebas Ongkir"
+                  "isBold": true
                 },
-                "type": "text"
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
               },
               {
-                "tagAttributes": {
-                  "backgroundColor": "",
-                  "text": ""
-                },
+                "type": "text",
                 "textAttributes": {
+                  "text": "2 Kuota Baru",
                   "color": "#adadad",
-                  "isBold": false,
-                  "text": "800 Kuota baru"
+                  "isBold": false
                 },
-                "type": "text"
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
               }
-            ],
-            "type": "BBO"
+            ]
           },
           {
+            "type": "TokoPoints",
             "iconImageURL": "https://ecs7.tokopedia.net/img/blog/promo/2021/04/tokopoints.png",
-            "redirectAppLink": "tokopedia://webview?url=https://www.tokopedia.com/points-center",
-            "redirectURL": "https://www.tokopedia.com/points-center",
+            "redirectURL": "https://staging.tokopedia.com/points-center",
+            "redirectAppLink": "tokopedia://webview?url=https://staging.tokopedia.com/points-center",
             "sectionContent": [
               {
-                "tagAttributes": {
-                  "backgroundColor": "",
-                  "text": ""
-                },
+                "type": "text",
                 "textAttributes": {
+                  "text": "Rp0 (0 Points)",
                   "color": "#31353B",
-                  "isBold": true,
-                  "text": "Rp8.000.000"
+                  "isBold": true
                 },
-                "type": "text"
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
               },
               {
-                "tagAttributes": {
-                  "backgroundColor": "",
-                  "text": ""
-                },
+                "type": "text",
                 "textAttributes": {
-                  "color": "#adadad",
-                  "isBold": false,
-                  "text": "(8.000.000 Points)"
+                  "text": "Tambah Points",
+                  "color": "#03ac0e",
+                  "isBold": true
                 },
-                "type": "text"
+                "tagAttributes": {
+                  "text": "",
+                  "backgroundColor": ""
+                }
               }
-            ],
-            "type": "TokoPoints"
+            ]
           }
         ],
-        "offFlag": false
+        "coachMarkList": [
+          {
+            "type": "status_matching",
+            "coachMarkContent": [
+              {
+                "title": "Your loyalty levels have been maximized!",
+                "content": "Awesome! You leveled up to Juragan on GoClub because you're Platinum"
+              }
+            ]
+          }
+        ]
       }
     }
   }

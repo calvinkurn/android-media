@@ -14,14 +14,9 @@ import com.tokopedia.gopay.kyc.analytics.GoPayKycEvent
 import com.tokopedia.gopay.kyc.presentation.activity.GoPayCameraKtpActivity
 import com.tokopedia.gopay.kyc.presentation.fragment.base.GoPayKycBaseCameraFragment
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.pxToDp
-import kotlinx.android.synthetic.main.fragment_gopay_ktp_layout.*
 import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.*
-import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.camera
-import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.capturedImage
-import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.gopayCameraLayout
-import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.kycHeader
-import kotlinx.android.synthetic.main.fragment_gopay_selfie_ktp_layout.photoInstructionTV
 import kotlinx.android.synthetic.main.gopay_camera_action_layout.*
 
 class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
@@ -59,14 +54,12 @@ class GoPaySelfieKtpFragment : GoPayKycBaseCameraFragment() {
         cameraView?.facing = Facing.FRONT
         cameraView?.zoom = 0f
         capturedImageView = capturedImage
-        reverseCamera = cameraSwitchImage
+        cameraSwitchImage.gone()
         retakeButton = resetPhotoButton
         shutterImageView = cameraShutterImage
-        cameraControlLayout = cameraControlGroup
         reviewPhotoLayout = reviewPhotoGroup
         ktpInstructionText = photoInstructionTV
         cameraLayout = gopayCameraLayout
-
 
         val calculatedMargin =
             context?.pxToDp((getScreenHeight().toFloat() * HEIGHT_RATIO_CUTOUT).toInt()) ?: 0

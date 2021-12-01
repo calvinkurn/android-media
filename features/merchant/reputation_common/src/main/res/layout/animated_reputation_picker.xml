@@ -16,32 +16,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsView
             android:id="@+id/anim_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsView
             android:id="@+id/anim_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsView
             android:id="@+id/anim_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10" />
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsView
             android:id="@+id/anim_5"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="8dp"
         app:typographyType="heading_5"
         tools:text="Memuaskan" />
 </LinearLayout>

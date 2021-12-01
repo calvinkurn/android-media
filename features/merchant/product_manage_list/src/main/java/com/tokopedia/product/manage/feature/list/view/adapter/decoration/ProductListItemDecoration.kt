@@ -4,8 +4,8 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.product.manage.databinding.ItemManageProductListBinding
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 
 class ProductListItemDecoration: RecyclerView.ItemDecoration() {
 
@@ -16,7 +16,9 @@ class ProductListItemDecoration: RecyclerView.ItemDecoration() {
         val viewHolder = parent.getChildViewHolder(view)
 
         if(viewHolder is ProductViewHolder && position == itemCount) {
-            viewHolder.itemView.divider.hide()
+            val binding = ItemManageProductListBinding.bind(viewHolder.itemView)
+            binding.divider.hide()
         }
     }
+
 }

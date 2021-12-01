@@ -16,7 +16,7 @@ import javax.inject.Inject
 /**
  * Created by User on 9/8/2017.
  */
-class ToggleFavouriteShopUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
+open class ToggleFavouriteShopUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
                                                      private val resources: Resources) : UseCase<Boolean>() {
     enum class Action(val actionString: String) {
         FOLLOW("follow"), UNFOLLOW("unfollow");

@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:id="@+id/exchange_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,9 +21,9 @@
         android:id="@+id/shipper_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
@@ -33,8 +33,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/price"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_68"
@@ -48,7 +48,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_margin="16dp"
         android:background="@color/Unify_N50"
         app:layout_constraintTop_toBottomOf="@id/price"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -12,10 +12,10 @@
 
         <ImageView
             android:id="@+id/backButton"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_39"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="39dp"
             android:contentDescription="@null"
             android:src="@drawable/icon_back_white"/>
         

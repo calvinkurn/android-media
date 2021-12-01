@@ -1,5 +1,6 @@
 package com.tokopedia.logisticCommon.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class GetDistrictDetailsResponse(
@@ -24,17 +25,20 @@ data class DistrictItem(
         @SerializedName("city_name")
         val cityName: String = "",
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("province_id")
-        val provinceId: Int = 0,
+        val provinceId: Long = 0,
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("district_id")
-        val districtId: Int = 0,
+        val districtId: Long = 0,
 
         @SerializedName("zip_code")
         val zipCode: List<String> = emptyList(),
 
+        @SuppressLint("Invalid Data Type")
         @SerializedName("city_id")
-        val cityId: Int = 0,
+        val cityId: Long = 0,
 
         @SerializedName("province_name")
         val provinceName: String = ""

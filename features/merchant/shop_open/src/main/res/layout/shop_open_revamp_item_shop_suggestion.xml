@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginEnd="@dimen/dp_8"
+    android:layout_marginEnd="8dp"
     android:id="@+id/chip_container_domain_suggestion"
     android:background="@drawable/unify_chip_normal_small"
     android:layout_width="wrap_content"
@@ -12,12 +12,12 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/chip_textview"
         android:background="@drawable/unify_chips_bg_img_rounded_corner"
-        android:textSize="@dimen/sp_14"
+        android:textSize="14sp"
         android:gravity="center"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginBottom="@dimen/dp_6"
-        android:layout_marginRight="@dimen/dp_12"
-        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
         android:textColor="@color/Unify_N200"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

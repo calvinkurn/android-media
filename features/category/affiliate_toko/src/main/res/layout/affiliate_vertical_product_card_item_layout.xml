@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_4"
-    android:layout_marginLeft="@dimen/dp_8"
-    android:layout_marginRight="@dimen/dp_8"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
     app:card_background_color="@color/Unify_N0"
     app:card_type="shadow"
     app:layout_constraintTop_toTopOf="parent">
@@ -16,7 +16,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_8">
+        android:layout_margin="8dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/product_image"
@@ -30,8 +30,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintLeft_toRightOf="@id/product_image"
             app:layout_constraintRight_toRightOf="parent"
@@ -43,10 +43,10 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/status_bullet"
-            android:layout_width="@dimen/dp_8"
-            android:layout_height="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:src="@drawable/affiliate_circle_active"
             app:layout_constraintBottom_toBottomOf="@id/product_status"
             app:layout_constraintLeft_toRightOf="@id/product_image"
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_margin="@dimen/dp_4"
+            android:layout_margin="4dp"
             android:textColor="@color/Unify_GN500"
             app:layout_constraintLeft_toRightOf="@id/status_bullet"
             app:layout_constraintTop_toBottomOf="@id/product_name"
@@ -68,11 +68,11 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/badge"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
             app:icon_name="BADGE_OS_FILLED"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/product_image"
@@ -83,9 +83,9 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_alignParentTop="true"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_4"
+            android:paddingLeft="4dp"
+            android:paddingTop="2dp"
+            android:paddingRight="4dp"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="@id/badge"
             app:layout_constraintLeft_toRightOf="@id/badge"

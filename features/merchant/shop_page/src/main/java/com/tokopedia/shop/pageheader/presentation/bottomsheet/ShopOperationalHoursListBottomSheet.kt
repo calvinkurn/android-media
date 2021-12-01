@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
+import com.tokopedia.shop.databinding.ShopOperationalHoursListBottomsheetBinding
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopOperationalHoursListBottomsheetAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by Rafli Syam on 16/04/2021
@@ -29,9 +31,10 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
     var operationalHourList = mutableListOf<ShopOperationalHour>()
     private var rvOperationalHours: RecyclerView? = null
     private var rvOperationalHoursAdapter: ShopOperationalHoursListBottomsheetAdapter? = null
+    private var viewBinding by autoClearedNullable<ShopOperationalHoursListBottomsheetBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setupBottomsheetChildView(inflater, container)
+        setupBottomsheetChildView()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -50,14 +53,11 @@ class ShopOperationalHoursListBottomSheet : BottomSheetUnify() {
         operationalHourList = newList.toMutableList()
     }
 
-    private fun setupBottomsheetChildView(
-            inflater: LayoutInflater,
-            container: ViewGroup?
-    ) {
-        inflater.inflate(LAYOUT, container).apply {
-            rvOperationalHours = findViewById(R.id.rv_shop_operational_hours_list)
+    private fun setupBottomsheetChildView() {
+        viewBinding = ShopOperationalHoursListBottomsheetBinding.inflate(LayoutInflater.from(context)).apply {
+            rvOperationalHours = this.rvShopOperationalHoursList
             setTitle(getString(R.string.shop_ops_hour_bottomsheet_title))
-            setChild(this)
+            setChild(this.root)
             setCloseClickListener {
                 dismiss()
             }

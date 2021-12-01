@@ -1,0 +1,67 @@
+[
+  {
+    "data": {
+      "creditCardTenorList": {
+        "process_time": "73.327431ms",
+        "error_code": "",
+        "error_msg": "",
+        "tenor_list": [
+          {
+            "type": "FULL",
+            "bank": "CBRI",
+            "description": "",
+            "amount": 516000,
+            "fee": 0,
+            "rate": 0,
+            "disabled": false
+          },
+          {
+            "type": "3",
+            "bank": "CBRI",
+            "description": "",
+            "amount": 167000,
+            "fee": 1899,
+            "rate": 0,
+            "disabled": false
+          },
+          {
+            "type": "6",
+            "bank": "CBRI",
+            "description": "",
+            "amount": 85000,
+            "fee": 3699,
+            "rate": 0,
+            "disabled": false
+          },
+          {
+            "type": "12",
+            "bank": "CBRI",
+            "description": "Minimum pembayaran cicilan kartu kredit ini adalah Rp 1.000.000",
+            "amount": 1831,
+            "fee": 468,
+            "rate": 0,
+            "disabled": true
+          },
+          {
+            "type": "18",
+            "bank": "CBRI",
+            "description": "Minimum pembayaran cicilan kartu kredit ini adalah Rp 3.000.000",
+            "amount": 1227,
+            "fee": 583,
+            "rate": 0,
+            "disabled": true
+          },
+          {
+            "type": "24",
+            "bank": "CBRI",
+            "description": "Minimum pembayaran cicilan kartu kredit ini adalah Rp 5.000.000",
+            "amount": 925,
+            "fee": 698,
+            "rate": 0,
+            "disabled": true
+          }
+        ]
+      }
+    }
+  }
+]

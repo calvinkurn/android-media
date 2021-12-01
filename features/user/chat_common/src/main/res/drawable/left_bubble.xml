@@ -5,8 +5,8 @@
     <solid android:color="@color/Unify_N50" />
 
     <corners
-        android:bottomLeftRadius="@dimen/dp_12"
-        android:bottomRightRadius="@dimen/dp_12"
-        android:topRightRadius="@dimen/dp_12" />
+        android:bottomLeftRadius="12dp"
+        android:bottomRightRadius="12dp"
+        android:topRightRadius="12dp" />
 
 </shape>

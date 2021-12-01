@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:gravity="center"
-    android:paddingTop="@dimen/dp_12"
+    android:paddingTop="12dp"
     android:visibility="gone"
     app:globalerrors_type="NO_CONNECTION"
     tools:visbility="visible" />

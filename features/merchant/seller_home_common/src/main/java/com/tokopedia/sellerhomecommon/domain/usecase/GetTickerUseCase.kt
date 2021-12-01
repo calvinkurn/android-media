@@ -56,7 +56,6 @@ class GetTickerUseCase(
                   title
                   ticker_type
                   message
-                  color
                 }
               }
             }

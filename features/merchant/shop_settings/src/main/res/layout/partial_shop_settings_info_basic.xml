@@ -21,9 +21,9 @@
             android:id="@+id/cu_income_overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12">
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="12dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -38,7 +38,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     app:cardCornerRadius="@dimen/dp_60"
-                    app:cardElevation="@dimen/dp_4"
+                    app:cardElevation="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -89,8 +89,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:text="@string/shop_slogan_label"
         android:textColor="@color/Unify_N700_96"
         android:textStyle="bold"
@@ -104,9 +104,9 @@
         android:id="@+id/tvShopSlogan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
@@ -119,9 +119,9 @@
         android:id="@+id/tvShopDescriptionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:layout_marginTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:text="@string/shop_description_label"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="heading_5"
@@ -135,9 +135,9 @@
         android:id="@+id/tvShopDescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:layout_marginBottom="@dimen/spacing_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -150,7 +150,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnChangeShopInfo"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="48dp"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="16dp"
         android:layout_marginRight="@dimen/spacing_lvl4"
@@ -164,7 +164,7 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
+        android:layout_height="8dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
@@ -178,7 +178,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dp_16"
+        android:paddingTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider">
@@ -198,7 +198,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lineSpacingExtra="4sp"
-            android:paddingTop="@dimen/dp_2"
+            android:paddingTop="2dp"
             android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
@@ -213,8 +213,8 @@
     </LinearLayout>
 
     <ImageView
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/vgShopStatusContainer"
         app:layout_constraintEnd_toEndOf="@+id/vgShopStatusContainer"
         app:layout_constraintTop_toTopOf="@+id/vgShopStatusContainer"
@@ -228,8 +228,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:lineSpacingExtra="3sp"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingBottom="@dimen/dp_12"
+        android:paddingTop="16dp"
+        android:paddingBottom="12dp"
         android:text="@string/shop_settings_membership_label"
         android:textColor="@color/Unify_N700_96"
         android:textStyle="bold"
@@ -277,8 +277,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_logo_power_merchant"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
                 tools:srcCompat="@drawable/ic_power_merchant" />
 
@@ -314,8 +314,8 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_logo_official_store"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
                 tools:srcCompat="@drawable/ic_power_merchant" />
 

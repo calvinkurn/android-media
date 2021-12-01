@@ -76,7 +76,7 @@
             android:layout_height="@dimen/shop_performance_promo_creation_icon_size"
             android:layout_marginTop="@dimen/layout_lvl1"
             android:adjustViewBounds="true"
-            android:padding="@dimen/dp_12" />
+            android:padding="12dp" />
 
     </FrameLayout>
 

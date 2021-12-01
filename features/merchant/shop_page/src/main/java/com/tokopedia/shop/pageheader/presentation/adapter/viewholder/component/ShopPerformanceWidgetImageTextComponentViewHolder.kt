@@ -12,10 +12,12 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.R
+import com.tokopedia.shop.databinding.LayoutShopPerformanceWidgetImageTextComponentBinding
 import com.tokopedia.shop.pageheader.presentation.ShopPageActionButtonWidgetMarginItemDivider
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopImageTextComponentImagesAdapter
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderImageTextComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetImageTextComponentViewHolder(
         itemView: View,
@@ -34,10 +36,10 @@ class ShopPerformanceWidgetImageTextComponentViewHolder(
         )
     }
 
-    private val recyclerViewImages: RecyclerView? = itemView.findViewById(R.id.rv_images)
-    private val textLabel: TextView? = itemView.findViewById(R.id.text_label)
-    private val constraintLayout: ConstraintLayout? = itemView.findViewById(R.id.constraint_layout_image_text_component)
-
+    private val viewBinding: LayoutShopPerformanceWidgetImageTextComponentBinding? by viewBinding()
+    private val recyclerViewImages: RecyclerView? = viewBinding?.rvImages
+    private val textLabel: TextView? = viewBinding?.textLabel
+    private val constraintLayout: ConstraintLayout? = viewBinding?.constraintLayoutImageTextComponent
 
     override fun bind(model: ShopHeaderImageTextComponentUiModel) {
         configureLayoutPosition(model)

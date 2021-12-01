@@ -28,7 +28,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Companion.SCREEN_REGISTER_EMAIL
@@ -43,7 +42,6 @@ import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.constants.SessionConstants
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.util.PasswordUtils
@@ -537,22 +535,8 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
         }
     }
 
-    private val abTestingRemoteConfig: RemoteConfig
-        get() = RemoteConfigInstance.getInstance().abTestPlatform
-
-    fun isEnableEncryptRollout(): Boolean {
-        val rolloutKey = if(GlobalConfig.isSellerApp()) {
-            SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION_SELLER
-        } else {
-            SessionConstants.Rollout.ROLLOUT_REGISTER_ENCRYPTION
-        }
-
-        val variant = abTestingRemoteConfig.getString(rolloutKey)
-        return variant.isNotEmpty()
-    }
-
     private fun isUseEncryption(): Boolean {
-        return isEnableEncryptRollout() && isEnableEncryption
+        return isEnableEncryption
     }
 
     private fun onFailedRegisterEmail(errorMessage: String?) {

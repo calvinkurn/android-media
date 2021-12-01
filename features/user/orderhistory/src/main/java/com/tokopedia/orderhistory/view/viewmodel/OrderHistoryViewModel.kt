@@ -6,8 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.graphql.data.GqlParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
+import com.tokopedia.orderhistory.data.OrderHistoryParam
 import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,15 +27,22 @@ class OrderHistoryViewModel @Inject constructor(
         private var addToCartUseCase: AddToCartUseCase,
 ) : BaseViewModel(contextProvider.main) {
 
+    private var minOrderTime = "0"
+
     private val _product: MutableLiveData<Result<ChatHistoryProductResponse>> = MutableLiveData()
     val product: LiveData<Result<ChatHistoryProductResponse>> get() = _product
 
     fun loadProductHistory(shopId: String?) {
         if (shopId == null) return
-        productHistoryUseCase.loadProductHistory(
-                shopId,
-                ::onSuccessGetHistoryProduct,
-                ::onErrorGetHistoryProduct
+        launchCatchError(
+            block = {
+                val response = productHistoryUseCase(OrderHistoryParam(shopId, minOrderTime))
+                onSuccessGetHistoryProduct(response)
+                minOrderTime = response.minOrderTime
+            },
+            onError = {
+                onErrorGetHistoryProduct(it)
+            }
         )
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivity.Companion.FILE_NAME_KYC
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.UnifyImageButton
@@ -284,7 +285,11 @@ class UserIdentificationCameraFragment : TkpdBaseV4Fragment() {
             CameraUtils.decodeBitmap(imageByte, mCaptureNativeSize?.width
                     ?: 0, mCaptureNativeSize?.height ?: 0) { bitmap: Bitmap? ->
                 if (bitmap != null) {
-                    val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(bitmap, Bitmap.CompressFormat.JPEG)
+                    val cameraResultFile = ImageProcessingUtil.writeImageToTkpdPath(
+                        bitmap,
+                        Bitmap.CompressFormat.JPEG,
+                        FILE_NAME_KYC
+                    )
                     if (cameraResultFile!= null) {
                         onSuccessImageTakenFromCamera(cameraResultFile)
                     }

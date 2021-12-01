@@ -13,8 +13,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/readingInquirerProfilePicture"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginTop="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/layout_lvl2"
             android:layout_marginLeft="@dimen/layout_lvl2"
@@ -114,8 +114,8 @@
 
             <com.tokopedia.unifycomponents.ImageUnify
                 android:id="@+id/readingRespondentProfilePicture"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:visibility="gone"
                 app:unify_image_type="circle"
                 app:layout_constraintTop_toTopOf="parent"

@@ -10,7 +10,7 @@ import com.tokopedia.product.addedit.productlimitation.presentation.model.Produc
 class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemViewHolder>() {
 
     private var items: MutableList<ProductLimitationActionItemModel> = mutableListOf()
-    private var itemOnClick: (String) -> Unit = {}
+    private var itemOnClick: (String, String, String) -> Unit = { _, _, _-> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductLimitationItemViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.item_product_limitation, parent, false)
@@ -29,8 +29,10 @@ class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemVi
     private fun setupViewHolder(rootView: View): ProductLimitationItemViewHolder {
         return ProductLimitationItemViewHolder(rootView).apply {
             setOnClickListener { position ->
+                val articleCategory = items[position].articleCategory
+                val actionTitle = items[position].title
                 val actionUrl = items[position].actionUrl
-                itemOnClick.invoke(actionUrl)
+                itemOnClick.invoke(articleCategory, actionTitle, actionUrl)
             }
         }
     }
@@ -44,7 +46,7 @@ class ProductLimitationItemAdapter: RecyclerView.Adapter<ProductLimitationItemVi
         notifyDataSetChanged()
     }
 
-    fun setOnItemClick (listener: (String) -> Unit) {
+    fun setOnItemClick (listener: (String, String, String) -> Unit) {
         itemOnClick = listener
     }
 }

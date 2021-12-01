@@ -73,7 +73,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
     public void onCreate() {
         SplashScreenPerformanceTracker.isColdStart = true;
         GlobalConfig.DEBUG = true;
-        GlobalConfig.VERSION_NAME = "3.115";
+        GlobalConfig.VERSION_NAME = "3.150";
         SplitCompat.install(this);
         FpmLogger.init(this);
         PersistentCacheManager.init(this);
@@ -86,7 +86,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
-        GraphqlClient.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);
 
         super.onCreate();

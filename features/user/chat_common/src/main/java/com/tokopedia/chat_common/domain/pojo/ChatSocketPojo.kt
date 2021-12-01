@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.JsonObject
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.util.IdentifierUtil
 
 /**
@@ -60,7 +61,11 @@ data class ChatSocketPojo(
     var label: String = "",
     @SerializedName("local_id")
     @Expose
-    var localId: String = ""
+    var localId: String = "",
+    @SerializedName("parent_reply")
+    val parentReply: ParentReply? = null,
+    @SerializedName("fraud_status")
+    val fraudStatus: Int = 0
 ) {
 
     fun generateLocalIdIfNotExist() {

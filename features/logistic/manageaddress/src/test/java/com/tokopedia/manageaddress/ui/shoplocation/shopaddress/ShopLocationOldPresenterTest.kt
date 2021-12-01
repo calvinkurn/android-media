@@ -2,7 +2,6 @@ package com.tokopedia.manageaddress.ui.shoplocation.shopaddress
 
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel
-import com.tokopedia.shop_settings.presenter.shopsettingsaddress.ShopSettingsAddressTestFixture
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi

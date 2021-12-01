@@ -14,10 +14,10 @@ import io.mockk.mockk
  * Created by jegul on 11/05/21
  */
 class PlayTitleAndTagsViewModelRobot(
-        private val hydraConfigStore: HydraConfigStore,
-        private val dispatcher: CoroutineDispatchers,
-        private val setupDataStore: PlayBroadcastSetupDataStore,
-        private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase
+        hydraConfigStore: HydraConfigStore,
+        dispatcher: CoroutineDispatchers,
+        setupDataStore: PlayBroadcastSetupDataStore,
+        getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase
 ) : Robot {
 
     private val viewModel: PlayTitleAndTagsSetupViewModel = PlayTitleAndTagsSetupViewModel(

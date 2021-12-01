@@ -12,7 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.chat_common.BaseChatToolbarActivity
-import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
@@ -60,7 +60,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
                              keyword: String, image: String): Intent {
             val intent = Intent(context, ChatbotActivity::class.java)
             intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
-            val model = ChatRoomHeaderViewModel()
+            val model = ChatRoomHeaderUiModel()
             model.name = name
             model.label = label
             model.senderId = senderId

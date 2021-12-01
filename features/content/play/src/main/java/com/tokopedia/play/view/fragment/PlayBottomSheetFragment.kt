@@ -389,10 +389,11 @@ class PlayBottomSheetFragment @Inject constructor(
 
                     trackImpressedProduct()
                     trackImpressedVoucher()
-                } else {
-                    productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
+                    return@observe
                 }
             }
+
+            productSheetView.showEmpty(it.productTags.basicInfo.partnerId)
         }
     }
 
@@ -480,7 +481,6 @@ class PlayBottomSheetFragment @Inject constructor(
                     val data = it.data.getContentIfNotHandled() ?: return@DistinctObserver
 
                     if (data.isSuccess) {
-                        playViewModel.updateBadgeCart()
                         when (data.action) {
                             ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                             ProductAction.AddToCart -> doShowToaster(
@@ -488,7 +488,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                     toasterType = Toaster.TYPE_NORMAL,
                                     message = getString(R.string.play_add_to_cart_message_success),
                                     actionText = getString(R.string.play_action_view),
-                                    actionClickListener = View.OnClickListener {
+                                    actionClickListener = {
                                         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                                         analytic.clickSeeToasterAfterAtc()
                                     }

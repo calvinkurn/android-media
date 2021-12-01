@@ -2,13 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
+    tools:viewBindingIgnore="true"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="@dimen/dp_120"
         android:layout_height="104dp"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="20dp"
         android:background="@drawable/bg_card_recharge_widget"
         android:orientation="vertical">
 
@@ -16,8 +17,8 @@
             android:id="@+id/categoryName"
             android:layout_width="@dimen/dp_50"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
             android:gravity="right"
             app:typographyType="small"
             android:textAllCaps="true"
@@ -33,10 +34,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8">
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productName"
@@ -56,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/productName"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginTop="2dp"
                 android:maxLines="1"
                 android:ellipsize="end"
                 app:typographyType="body_3"
@@ -73,7 +74,7 @@
     <include layout="@layout/layout_template_icon_recharge_widget"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="8dp"
         />
 
 </FrameLayout>

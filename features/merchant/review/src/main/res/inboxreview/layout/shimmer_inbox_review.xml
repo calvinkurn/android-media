@@ -85,35 +85,35 @@
             android:layout_marginTop="@dimen/spacing_lvl4" />
 
         <include
-            android:id="@+id/partial_feedback_detail_shimmer"
+            android:id="@+id/partial_feedback_detail_shimmer_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             layout="@layout/partial_feedback_detail_shimmer"
             android:layout_marginTop="@dimen/spacing_lvl4" />
 
         <include
-            android:id="@+id/partial_feedback_detail_shimmer"
+            android:id="@+id/partial_feedback_detail_shimmer_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             layout="@layout/partial_feedback_detail_shimmer"
             android:layout_marginTop="@dimen/spacing_lvl4" />
 
         <include
-            android:id="@+id/partial_feedback_detail_shimmer"
+            android:id="@+id/partial_feedback_detail_shimmer_4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             layout="@layout/partial_feedback_detail_shimmer"
             android:layout_marginTop="@dimen/spacing_lvl4" />
 
         <include
-            android:id="@+id/partial_feedback_detail_shimmer"
+            android:id="@+id/partial_feedback_detail_shimmer_5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             layout="@layout/partial_feedback_detail_shimmer"
             android:layout_marginTop="@dimen/spacing_lvl4" />
 
         <include
-            android:id="@+id/partial_feedback_detail_shimmer"
+            android:id="@+id/partial_feedback_detail_shimmer_6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             layout="@layout/partial_feedback_detail_shimmer"

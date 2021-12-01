@@ -7,7 +7,7 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_20">
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:layout_width="@dimen/bu_item_small_width"
@@ -16,13 +16,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productName"
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/unify_space_8"
                 android:layout_marginRight="@dimen/unify_space_8"
                 android:layout_marginTop="@dimen/unify_space_8"
                 android:gravity="right"
-                android:textSize="@dimen/dp_10"
+                android:textSize="10dp"
                 android:textColor="@color/Unify_N700_68"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -35,7 +35,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="@dimen/unify_space_8"
                 android:layout_marginStart="@dimen/unify_space_8"
                 android:layout_marginLeft="@dimen/unify_space_8"
@@ -56,7 +56,7 @@
                     android:layout_alignParentTop="true"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/dp_12"
+                    android:textSize="12dp"
                     android:textColor="@color/Unify_N700_96"
                     android:textStyle="bold"
                     android:visibility="gone"
@@ -69,13 +69,13 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/title"
                     android:layout_above="@id/footer"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:layout_marginBottom="@dimen/dp_2"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
                     android:maxLines="1"
                     android:ellipsize="end"
-                    android:textSize="@dimen/dp_10"
+                    android:textSize="10dp"
                     android:textColor="@color/Unify_N700_96"
-                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:lineSpacingExtra="6sp"
                     android:visibility="gone"
                     tools:text="081234567890"
                     tools:visibility="visible" />

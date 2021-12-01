@@ -142,12 +142,6 @@ class LoginActivityTest: LoginBase() {
                 "login page",
                 "click on masuk dengan google",
                 "click"
-            ),
-            getAnalyticValidator(
-                "clickLogin",
-                "login page",
-                "click on masuk dengan facebook",
-                "click"
             )
         )
         validate(cassavaTestRule, query)
@@ -164,7 +158,6 @@ class LoginActivityTest: LoginBase() {
         LoginSocmedTestHelper.clickGoogleLogin()
 
         LoginSocmedTestHelper.clickSocmedButton()
-        LoginSocmedTestHelper.clickFacebookLogin()
     }
 
     fun simulateLoginEmail() {

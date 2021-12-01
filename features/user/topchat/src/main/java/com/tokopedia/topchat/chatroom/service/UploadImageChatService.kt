@@ -12,8 +12,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.data.ImageUploadUiModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.network.utils.ErrorHandler
@@ -40,7 +40,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
     @Inject
     lateinit var dispatcher: CoroutineDispatchers
 
-    private var image: ImageUploadViewModel? = null
+    private var image: ImageUploadUiModel? = null
     private var messageId = ""
     private var notificationManager: UploadImageNotificationManager? = null
 
@@ -96,14 +96,25 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         }
     }
 
-    private fun onSuccessUploadImage(uploadId: String, dummyMessage: ImageUploadViewModel) {
+    private fun onSuccessUploadImage(uploadId: String, dummyMessage: ImageUploadUiModel) {
         sendImageByGQL(messageId, "Uploaded Image", uploadId, dummyMessage)
     }
 
-    private fun sendImageByGQL(msgId: String, msg: String, filePath: String, dummyMessage: ImageUploadViewModel) {
+    private fun sendImageByGQL(
+        msgId: String,
+        msg: String,
+        filePath: String,
+        dummyMessage: ImageUploadUiModel
+    ) {
         launchCatchError(block = {
             withContext(dispatcher.io) {
-                val result = replyChatGQLUseCase.replyMessage(msgId, msg, filePath, dummyMessage.source)
+                val result = replyChatGQLUseCase.replyMessage(
+                    msgId = msgId,
+                    msg = msg,
+                    filePath = filePath,
+                    source = dummyMessage.source,
+                    parentReply = dummyMessage.parentReply
+                )
                 if(result.data.attachment.attributes.isNotEmpty()) {
                     removeDummyOnList(dummyMessage)
                     sendSuccessBroadcast()
@@ -131,7 +142,7 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
         return bundle
     }
 
-    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
+    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadUiModel) {
         val position = findDummy(image)?: -1
         flagDummyInPosition(position)
 
@@ -224,9 +235,9 @@ open class UploadImageChatService: JobIntentService(), CoroutineScope {
 
         fun findDummy(dummy: Visitable<*>): Int? {
             for(i in 0 until dummyMap.size) {
-                val temp = (dummyMap[i].visitable as SendableViewModel)
-                if (temp.startTime == (dummy as SendableViewModel).startTime
-                        && temp.messageId == (dummy as SendableViewModel).messageId) {
+                val temp = (dummyMap[i].visitable as SendableUiModel)
+                if (temp.startTime == (dummy as SendableUiModel).startTime
+                        && temp.messageId == (dummy as SendableUiModel).messageId) {
                     return i
                 }
             }

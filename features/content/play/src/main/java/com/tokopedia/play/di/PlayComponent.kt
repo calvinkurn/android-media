@@ -1,10 +1,7 @@
 package com.tokopedia.play.di
 
-import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.play.view.fragment.*
-import dagger.BindsInstance
 import dagger.Component
 
 /**

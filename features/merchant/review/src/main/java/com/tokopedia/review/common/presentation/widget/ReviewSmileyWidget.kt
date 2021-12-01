@@ -3,8 +3,7 @@ package com.tokopedia.review.common.presentation.widget
 import android.animation.Animator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import android.view.animation.AlphaAnimation
+import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.hide
@@ -12,22 +11,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.util.ReviewScoreClickListener
 import com.tokopedia.review.common.util.ReviewConstants
+import com.tokopedia.review.databinding.WidgetReviewSmileyBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.widget_review_smiley.view.*
 
 class ReviewSmileyWidget : BaseCustomView {
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
+    constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
         setView(attrs)
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
         setView(attrs, defStyleAttr)
     }
 
@@ -42,10 +37,12 @@ class ReviewSmileyWidget : BaseCustomView {
 
     private var isActive = false
     private var score = 0
+    
+    private val binding = WidgetReviewSmileyBinding.inflate(LayoutInflater.from(context), this, true)
 
     fun showActiveBad() {
         this.isActive = true
-        this.reviewEditableImageView.apply {
+        binding.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_active))
         }
         showSmileyText()
@@ -53,7 +50,7 @@ class ReviewSmileyWidget : BaseCustomView {
 
     fun showActiveMediocre() {
         this.isActive = true
-        this.reviewEditableImageView.apply {
+        binding.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_active))
         }
         showSmileyText()
@@ -61,7 +58,7 @@ class ReviewSmileyWidget : BaseCustomView {
 
     fun showActiveExcellent() {
         this.isActive = true
-        this.reviewEditableImageView.apply {
+        binding.reviewEditableImageView.apply {
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_active))
         }
         showSmileyText()
@@ -92,7 +89,7 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     fun showSmileyText() {
-        this.reviewEditableText.apply {
+        binding.reviewEditableText.apply {
             show()
             animate().alpha(1f)
         }
@@ -100,10 +97,6 @@ class ReviewSmileyWidget : BaseCustomView {
 
     fun setSmileyClickListener(reviewScoreClickListener: ReviewScoreClickListener) {
         setAnimations(reviewScoreClickListener)
-    }
-
-    private fun init() {
-        View.inflate(context, R.layout.widget_review_smiley, this)
     }
 
     private fun setView(attrs: AttributeSet, defStyleAttr: Int = 0) {
@@ -116,7 +109,7 @@ class ReviewSmileyWidget : BaseCustomView {
         } else {
             setInactiveImage(score)
         }
-        this.reviewEditableSmiley.addAnimatorListener(object : Animator.AnimatorListener {
+        binding.reviewEditableSmiley.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {
                 // No Op
             }
@@ -127,8 +120,8 @@ class ReviewSmileyWidget : BaseCustomView {
                 } else {
                     setInactiveImage(score)
                 }
-                reviewEditableImageView.show()
-                reviewEditableSmiley.hide()
+                binding.reviewEditableImageView.show()
+                binding.reviewEditableSmiley.hide()
             }
 
             override fun onAnimationCancel(animation: Animator?) {
@@ -136,7 +129,7 @@ class ReviewSmileyWidget : BaseCustomView {
             }
 
             override fun onAnimationStart(animation: Animator?) {
-                reviewEditableImageView.hide()
+                binding.reviewEditableImageView.hide()
                 if (isActive) {
                     showSmileyText()
                 }
@@ -162,22 +155,22 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setInactiveImage(score: Int) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
+                binding.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_bad_inactive))
                 setBadSmileyText()
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
+                binding.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_neutral_inactive))
                 setMediocreSmileyText()
             }
             else -> {
-                this.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
+                binding.reviewEditableImageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_smiley_great_inactive))
                 setExcellentSmileyText()
             }
         }
     }
 
     fun hideSmileyText(hideText: Boolean) {
-        this.reviewEditableText.apply {
+        binding.reviewEditableText.apply {
             animate().alpha(0f)
             if(hideText) {
                 hide()
@@ -188,7 +181,7 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setAnimations(reviewScoreClickListener: ReviewScoreClickListener) {
         when (score) {
             ReviewConstants.REPUTATION_SCORE_BAD -> {
-                this.reviewEditableImageView.apply {
+                binding.reviewEditableImageView.apply {
                     setOnClickListener {
                         val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
                         if(!isActive) {
@@ -202,7 +195,7 @@ class ReviewSmileyWidget : BaseCustomView {
                 }
             }
             ReviewConstants.REPUTATION_SCORE_MEDIOCRE -> {
-                this.reviewEditableImageView.apply {
+                binding.reviewEditableImageView.apply {
                     setOnClickListener {
                         val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
                         if(!isActive) {
@@ -216,7 +209,7 @@ class ReviewSmileyWidget : BaseCustomView {
                 }
             }
             else -> {
-                this.reviewEditableImageView.apply {
+                binding.reviewEditableImageView.apply {
                     setOnClickListener {
                         val shouldAnimate = reviewScoreClickListener.onReviewScoreClicked(score)
                         if(!isActive) {
@@ -240,10 +233,10 @@ class ReviewSmileyWidget : BaseCustomView {
             val lottieCompositionLottieTask = LottieCompositionFactory.fromUrl(it, animationUrl)
 
             lottieCompositionLottieTask.addListener { result ->
-                this.reviewEditableSmiley.apply {
-                    this.reviewEditableSmiley.setComposition(result)
+                binding.reviewEditableSmiley.apply {
+                    binding.reviewEditableSmiley.setComposition(result)
                     show()
-                    this.reviewEditableSmiley.playAnimation()
+                    binding.reviewEditableSmiley.playAnimation()
                 }
             }
 
@@ -269,21 +262,21 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     private fun setBadSmileyText() {
-        this.reviewEditableText.apply {
+        binding.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_bad)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
         }
     }
 
     private fun setMediocreSmileyText() {
-        this.reviewEditableText.apply {
+        binding.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_mediocre)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300))
         }
     }
 
     private fun setExcellentSmileyText() {
-        this.reviewEditableText.apply {
+        binding.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_excellent)
             setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         }

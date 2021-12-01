@@ -1,8 +1,14 @@
 package com.tokopedia.digital.home.presentation.util
 
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.model.*
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomepageSearchEnumLayoutType
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
@@ -129,6 +135,7 @@ object RechargeHomepageSectionMapper {
                             tickerList
                         } else null
                     }
+                    SECTION_SWIPE_BANNER -> RechargeHomepageSwipeBannerModel(it)
                     else -> null
                 }
             }
@@ -250,6 +257,47 @@ object RechargeHomepageSectionMapper {
         }
     }
 
+    fun mapSearchAutoCompletetoSearch(autoComplete: DigitalHomePageSearchAutoComplete, searchQuery:String): List<DigitalHomePageSearchCategoryModel> {
+        val searchCategoryModels = mutableListOf<DigitalHomePageSearchCategoryModel>()
+        autoComplete.digiPersoSearchSuggestion.data.items.map{ item ->
+           searchCategoryModels.add(DigitalHomePageSearchCategoryModel(
+                   id = "",
+                   label = item.title,
+                   subtitle = item.subtitle,
+                   applink = item.applink,
+                   icon =  item.imageUrl,
+                   searchQuery = searchQuery,
+                   typeLayout = getLayoutType(item.template),
+                   trackerUser = autoComplete.digiPersoSearchSuggestion.data.tracking,
+                   trackerItem = item.tracking
+           ))
+        }
+        return searchCategoryModels
+    }
+
+    fun boldReverseSearchAutoComplete(label: String, searchQuery: String): SpannableStringBuilder {
+        val splittedString = label.split(" ")
+        val resultString = SpannableStringBuilder()
+        if (splittedString.isNotEmpty()) {
+            for (splitted in splittedString) {
+                resultString.append(spannableBoldString(splitted, searchQuery))
+            }
+        } else resultString.append(spannableBoldString(label, searchQuery))
+
+        return resultString
+    }
+
+    private fun spannableBoldString(label:String, searchQuery: String): SpannableStringBuilder {
+        val spannableString = SpannableStringBuilder(label.plus(" "))
+        val searchQueryIndexes = label.indexesOf(searchQuery, ignoreCase = true)
+        for (searchQueryIndex in searchQueryIndexes){
+            if (searchQueryIndex > -1) {
+                spannableString.setSpan(StyleSpan(Typeface.BOLD), searchQueryIndex, searchQueryIndex + searchQuery.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+        return spannableString
+    }
+
     private fun isExpired(section: RechargeHomepageSections.Section): Boolean {
         section.items.firstOrNull()?.run {
             if (dueDate.isNotEmpty()) {
@@ -264,5 +312,28 @@ object RechargeHomepageSectionMapper {
 
     private fun getServerTime(serverTimeString: String): Date {
         return DateHelper.getExpiredTime(serverTimeString)
+    }
+
+    private fun getLayoutType(template:String): Int {
+        return when(template){
+            DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.SINGLE_LINE.layoutType
+            DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DOUBLE_LINE.layoutType
+            DigitalHomepageSearchEnumLayoutType.HEADER.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.HEADER.layoutType
+            DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutTemplate -> DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutType
+            else -> DigitalHomepageSearchEnumLayoutType.DEFAULT.layoutType
+        }
+    }
+
+    fun String?.indexesOf(substr: String, ignoreCase: Boolean = true): List<Int> {
+        tailrec fun String.collectIndexesOf(offset: Int = 0, indexes: List<Int> = emptyList()): List<Int> =
+                when (val index = indexOf(substr, offset, ignoreCase)) {
+                    -1 -> indexes
+                    else -> collectIndexesOf(index + substr.length, indexes + index)
+                }
+
+        return when (this) {
+            null -> emptyList()
+            else -> collectIndexesOf()
+        }
     }
 }

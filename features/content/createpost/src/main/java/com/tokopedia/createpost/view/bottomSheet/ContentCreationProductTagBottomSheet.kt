@@ -5,12 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.view.adapter.CreatePostTagAdapter
 import com.tokopedia.createpost.view.listener.CreateContentPostCommonListener
-import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -25,7 +23,7 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
     private val createPostTagAdapter: CreatePostTagAdapter by lazy {
         CreatePostTagAdapter(onDeleteProduct = this::onDeleteProduct)
     }
-    private lateinit var listener: CreateContentPostCommonListener
+    private var listener: CreateContentPostCommonListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,16 +69,12 @@ class ContentCreationProductTagBottomSheet : BottomSheetUnify() {
                 Toaster.TYPE_NORMAL).show()
         }
 
-        listener.deleteItemFromProductTagList(position,
+        if (productData?.size == 1)
+            dismiss()
+        listener?.deleteItemFromProductTagList(position,
             productData?.get(position)?.id.toString(),
             false,
             mediaType)
-    }
-
-
-    private fun openUrlWebView(urlString: String) {
-        val webViewAppLink = ApplinkConst.WEBVIEW + "?url=" + urlString
-        RouteManager.route(context, webViewAppLink)
     }
 
     fun show(

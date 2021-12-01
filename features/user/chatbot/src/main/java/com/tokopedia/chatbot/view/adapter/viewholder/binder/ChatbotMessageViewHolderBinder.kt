@@ -3,7 +3,7 @@ package com.tokopedia.chatbot.view.adapter.viewholder.binder
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.util.ChatTimeConverter
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
@@ -32,10 +32,10 @@ object ChatbotMessageViewHolderBinder {
     }
 
     fun bindHourTextView(
-            viewModel: MessageViewModel,
-            hour: TextView?
+        uiModel: MessageUiModel,
+        hour: TextView?
     ) {
-        val hourTime = getHourTime(viewModel.replyTime)
+        val hourTime = getHourTime(uiModel.replyTime)
         hour?.text = hourTime
     }
 
@@ -49,13 +49,13 @@ object ChatbotMessageViewHolderBinder {
         }
     }
 
-    fun bindChatReadStatus(element: MessageViewModel, messageView: CustomChatbotChatLayout?) {
+    fun bindChatReadStatus(element: MessageUiModel, messageView: CustomChatbotChatLayout?) {
         messageView?.checkMark?.let {
             bindChatReadStatus(element, it)
         }
     }
 
-    fun bindChatReadStatus(element: MessageViewModel, checkMark: ImageView) {
+    fun bindChatReadStatus(element: MessageUiModel, checkMark: ImageView) {
         if (element.isShowTime && element.isSender) {
             checkMark.show()
             val imageResource = when {

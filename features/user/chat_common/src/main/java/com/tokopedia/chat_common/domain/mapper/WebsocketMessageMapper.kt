@@ -30,7 +30,7 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     open fun convertToMessageViewModel(pojo: ChatSocketPojo): Visitable<*> {
-        return MessageViewModel.Builder()
+        return MessageUiModel.Builder()
             .withResponseFromWs(pojo)
             .build()
     }
@@ -45,11 +45,11 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     private fun convertToImageUpload(@NonNull pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            ImageUploadViewModel {
+            ImageUploadUiModel {
         val pojoAttribute = GsonBuilder().create().fromJson(
             jsonAttribute, ImageUploadAttributes::class.java
         )
-        return ImageUploadViewModel.Builder()
+        return ImageUploadUiModel.Builder()
             .withResponseFromWs(pojo)
             .withImageUrl(pojoAttribute.imageUrl)
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
@@ -57,12 +57,12 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     private fun convertToProductAttachment(@NonNull pojo: ChatSocketPojo, jsonAttribute:
-    JsonObject): ProductAttachmentViewModel {
+    JsonObject): ProductAttachmentUiModel {
         val canShowFooter = canShowFooterProductAttachment(pojo.isOpposite, pojo.fromRole)
         val pojoAttribute = GsonBuilder().create().fromJson(
             jsonAttribute, ProductAttachmentAttributes::class.java
         )
-        return ProductAttachmentViewModel.Builder()
+        return ProductAttachmentUiModel.Builder()
             .withResponseFromWs(pojo)
             .withProductAttributesResponse(pojoAttribute)
             .withCanShowFooter(canShowFooter)
@@ -71,10 +71,10 @@ open class WebsocketMessageMapper @Inject constructor() {
     }
 
     private fun convertToInvoiceSent(pojo: ChatSocketPojo, jsonAttribute: JsonObject):
-            AttachInvoiceSentViewModel {
+            AttachInvoiceSentUiModel {
         val invoiceSentPojo = GsonBuilder().create().fromJson(jsonAttribute,
                 InvoiceSentPojo::class.java)
-        return AttachInvoiceSentViewModel.Builder()
+        return AttachInvoiceSentUiModel.Builder()
             .withResponseFromWs(pojo)
             .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
             .withNeedSync(false)
@@ -93,7 +93,7 @@ open class WebsocketMessageMapper @Inject constructor() {
         pojo.attachment?.fallbackAttachment?.let {
             fallbackMessage = it.message
         }
-        return FallbackAttachmentViewModel.Builder()
+        return FallbackAttachmentUiModel.Builder()
             .withResponseFromWs(pojo)
             .withMsg(fallbackMessage)
             .build()

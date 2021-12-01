@@ -83,7 +83,7 @@ class CampaignStockViewModel @Inject constructor(
 
     fun getStockAllocation(
         productIds: List<String>,
-        isProductBundling: Boolean = false
+        isProductBundling: Boolean
     ) {
         if (productIds.isNotEmpty()) {
             productId = productIds.first()
@@ -190,16 +190,21 @@ class CampaignStockViewModel @Inject constructor(
                         campaignProductName,
                         currentNonVariantStock + nonVariantReservedStock,
                         currentNonVariantStatus,
+                        isStockChanged = false,
+                        isStatusChanged = false,
                         true
                     )
                 )
 
+                var isUpdateStatus = false
+
                 if (nonVariantStatus != currentNonVariantStatus) {
                     result = editProductStatus(nonVariantStatus)
+                    isUpdateStatus = true
                 }
 
                 if (nonVariantStock != currentNonVariantStock) {
-                    result = editProductStock(nonVariantStock, result.data.isSuccess)
+                    result = editProductStock(nonVariantStock, result.data.isSuccess, isUpdateStatus)
                 }
 
                 mProductUpdateResponseLiveData.value = result
@@ -212,7 +217,8 @@ class CampaignStockViewModel @Inject constructor(
 
     private suspend fun editProductStock(
         nonVariantStock: Int,
-        isUpdateStatusSuccess: Boolean
+        isUpdateStatusSuccess: Boolean,
+        isAlsoUpdateStatus: Boolean,
     ): Success<UpdateCampaignStockResult> {
         return withContext(dispatchers.io) {
             val requestParams = UpdateProductStockWarehouseUseCase.createRequestParams(
@@ -237,6 +243,8 @@ class CampaignStockViewModel @Inject constructor(
                     campaignProductName,
                     nonVariantStock + nonVariantReservedStock,
                     status,
+                    isStockChanged = true,
+                    isStatusChanged = isAlsoUpdateStatus,
                     true
                 )
             )
@@ -265,6 +273,8 @@ class CampaignStockViewModel @Inject constructor(
                     campaignProductName,
                     nonVariantStock + nonVariantReservedStock,
                     status,
+                    isStockChanged = false,
+                    isStatusChanged = true,
                     isSuccess,
                     message
                 )
@@ -285,18 +295,23 @@ class CampaignStockViewModel @Inject constructor(
                             productName,
                             totalStock,
                             status,
+                            isStockChanged = false,
+                            isStatusChanged = false,
                             true,
                             variantsMap = getMappedVariantsResult()
                         )
                     )
                 }
 
+                var isStatusChanged = false
+
                 if (shouldEditVariantStatus()) {
                     result = editVariantStatus()
+                    isStatusChanged = true
                 }
 
                 if (shouldEditVariantStock()) {
-                    result = editVariantStock()
+                    result = editVariantStock(isStatusChanged)
                 }
 
                 mProductUpdateResponseLiveData.value = result
@@ -325,6 +340,8 @@ class CampaignStockViewModel @Inject constructor(
                         productName,
                         totalStock,
                         status,
+                        isStockChanged = false,
+                        isStatusChanged = true,
                         editStockResponse.productUpdateV3Data.isSuccess,
                         editStockResponse.productUpdateV3Data.header.errorMessage.firstOrNull(),
                         variantsMap = getMappedVariantsResult()
@@ -334,7 +351,7 @@ class CampaignStockViewModel @Inject constructor(
         }
     }
 
-    private suspend fun editVariantStock(): Success<UpdateCampaignStockResult> {
+    private suspend fun editVariantStock(isStatusChanged: Boolean): Success<UpdateCampaignStockResult> {
         return withContext(dispatchers.io) {
             with(editVariantResult) {
                 val status = getVariantStatus()
@@ -353,6 +370,8 @@ class CampaignStockViewModel @Inject constructor(
                         campaignProductName,
                         totalStock,
                         status,
+                        isStockChanged = true,
+                        isStatusChanged = isStatusChanged,
                         true,
                         variantsMap = getMappedVariantsResult()
                     )
@@ -364,7 +383,7 @@ class CampaignStockViewModel @Inject constructor(
     private suspend fun getNonVariantResult(
         productId: String,
         stockAllocationData: GetStockAllocationData,
-        isProductBundling: Boolean = false
+        isProductBundling: Boolean
     ): NonVariantStockAllocationResult {
         val warehouseId = getWarehouseId(userSession.shopId)
         otherCampaignStockDataUseCase.params =
@@ -401,7 +420,7 @@ class CampaignStockViewModel @Inject constructor(
     private suspend fun getVariantResult(
         productId: String,
         stockAllocationData: GetStockAllocationData,
-        isProductBundling: Boolean = false
+        isProductBundling: Boolean
     ): VariantStockAllocationResult {
         campaignReservedStock = stockAllocationData.summary.reserveStock.toIntOrZero()
 
@@ -442,9 +461,9 @@ class CampaignStockViewModel @Inject constructor(
                 }?.stock.toIntOrZero()
                 variant.copy(stock = stock)
             }
-            val getVariantResult = it.copy(variants = variants)
+            val variantResult = it.copy(variants = variants)
             val variantsEditResult =
-                ProductManageVariantMapper.mapVariantsToEditResult(productId, getVariantResult)
+                ProductManageVariantMapper.mapVariantsToEditResult(productId, variantResult)
             editVariantResult = variantsEditResult
             variantList = variants
         }

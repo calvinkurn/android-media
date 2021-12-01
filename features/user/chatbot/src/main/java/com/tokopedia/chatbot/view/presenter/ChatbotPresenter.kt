@@ -1,5 +1,7 @@
 package com.tokopedia.chatbot.view.presenter
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.text.TextUtils
 import android.util.Log
@@ -7,9 +9,10 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.*
-import com.tokopedia.chat_common.data.SendableViewModel.Companion.SENDING_TEXT
+import com.tokopedia.chat_common.data.SendableUiModel.Companion.SENDING_TEXT
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_READ_MESSAGE
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE
@@ -22,6 +25,7 @@ import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
+import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
 import com.tokopedia.chatbot.R
@@ -34,6 +38,7 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
@@ -53,6 +58,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
@@ -67,19 +73,18 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import okhttp3.Interceptor
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import okhttp3.WebSocket
+import okhttp3.*
 import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
-import java.util.Calendar
+import java.lang.reflect.Type
+import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.coroutines.CoroutineContext
+
 
 /**
  * @author by nisie on 05/12/18.
@@ -100,7 +105,9 @@ class ChatbotPresenter @Inject constructor(
         private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
         private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
         private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
-        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
+        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
+        private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
+        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -221,6 +228,7 @@ class ChatbotPresenter @Inject constructor(
                     view.showErrorWebSocket(true)
 
                 }
+                connectWebSocket(messageId)
             }
 
             override fun onClose() {
@@ -411,25 +419,25 @@ class ChatbotPresenter @Inject constructor(
 
     override fun generateInvoice(
         invoiceLinkPojo: InvoiceLinkPojo, senderId: String
-    ) : AttachInvoiceSentViewModel {
-        return AttachInvoiceSentViewModel.Builder()
+    ) : AttachInvoiceSentUiModel {
+        return AttachInvoiceSentUiModel.Builder()
             .withInvoiceAttributesResponse(invoiceLinkPojo)
             .withFromUid(senderId)
             .withFrom(userSession.name)
             .withAttachmentType(AttachmentType.Companion.TYPE_INVOICE_SEND)
             .withReplyTime(SENDING_TEXT)
-            .withStartTime(SendableViewModel.generateStartTime())
+            .withStartTime(SendableUiModel.generateStartTime())
             .withIsRead(false)
             .withIsDummy(true)
             .withIsSender(true)
             .build()
     }
 
-    override fun uploadImages(it: ImageUploadViewModel,
+    override fun uploadImages(it: ImageUploadUiModel,
                               messageId: String,
                               opponentId: String,
-                              onError: (Throwable, ImageUploadViewModel) -> Unit) {
-        if (validateImageAttachment(it.imageUrl)) {
+                              onError: (Throwable, ImageUploadUiModel) -> Unit) {
+        if (validateImageAttachment(it.imageUrl, MAX_FILE_SIZE)) {
             isUploading = true
             uploadImageUseCase.unsubscribe()
 
@@ -472,6 +480,42 @@ class ChatbotPresenter @Inject constructor(
 
     }
 
+    override fun uploadImageSecureUpload(
+            imageUploadViewModel: ImageUploadUiModel,
+            messageId: String,
+            opponentId: String,
+            onErrorImageUpload: (Throwable, ImageUploadUiModel) -> Unit,
+            path: String?,
+            context: Context?
+    ) {
+        if (validateImageAttachment(imageUploadViewModel.imageUrl, MAX_FILE_SIZE_UPLOAD_SECURE)) {
+            chatBotSecureImageUploadUseCase.setRequestParams(messageId, path ?: "")
+            chatBotSecureImageUploadUseCase.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
+                override fun onCompleted() {}
+                override fun onError(e: Throwable) {
+                    onErrorImageUpload(e, imageUploadViewModel)
+                }
+
+                override fun onNext(t: Map<Type?, RestResponse?>?) {
+                    val token = object : TypeToken<UploadSecureResponse?>() {}.type
+                    val restResponse = t?.get(token)
+                    val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
+                    sendUploadedImageToWebsocket(
+                            ChatbotSendWebsocketParam
+                                    .generateParamUploadSecureSendImage(
+                                            messageId,
+                                            uploadSecureResponse?.uploadSecureData?.urlImage ?: "",
+                                            imageUploadViewModel.startTime,
+                                            opponentId,
+                                            userSession.name)
+                    )
+                }
+
+            })
+        }
+
+    }
+
     override fun cancelImageUpload() {
         uploadImageUseCase.unsubscribe()
     }
@@ -488,7 +532,7 @@ class ChatbotPresenter @Inject constructor(
         return RequestBody.create(MediaType.parse("text/plain"), content)
     }
 
-    private fun validateImageAttachment(uri: String?): Boolean {
+    private fun validateImageAttachment(uri: String?, maxFileSize:Int): Boolean {
 
         if (uri == null) return false
         val file = File(uri)
@@ -503,7 +547,7 @@ class ChatbotPresenter @Inject constructor(
         return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
             view.onUploadUndersizedImage()
             false
-        } else if (fileSize >= MAX_FILE_SIZE) {
+        } else if (fileSize >= maxFileSize) {
             view.onUploadOversizedImage()
             false
         } else {
@@ -627,5 +671,20 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleNewSession(isNewSession: Boolean) {
         if (isNewSession) view.startNewSession() else view.loadChatHistory()
+    }
+
+    override fun checkUploadSecure(messageId: String, data: Intent) {
+        val params = checkUploadSecureUseCase.createRequestParams(messageId)
+        launchCatchError(
+            block = {
+                val response = checkUploadSecureUseCase.checkUploadSecure(params)
+                val isSecureUpload = response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
+                if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(data)
+            },
+            onError = {
+                view.loadChatHistory()
+                view.enableTyping()
+            }
+        )
     }
 }

@@ -1,19 +1,21 @@
 package com.tokopedia.topchat.stub.chatroom.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
-import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.seamless_login_common.domain.usecase.GetKeygenUsecase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.StickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -127,23 +129,6 @@ class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideGetShopFollowingUseCase(
-            stub: GetShopFollowingUseCaseStub
-    ): GetShopFollowingUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideGetShopFollowingUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<ShopFollowingPojo>,
-            dispatchers: CoroutineDispatchers
-    ): GetShopFollowingUseCaseStub {
-        return GetShopFollowingUseCaseStub(gqlUseCase, dispatchers)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
     fun provideUploadImageUseCase(
             stub: TopchatUploadImageUseCaseStub
     ): TopchatUploadImageUseCase = stub
@@ -192,22 +177,6 @@ class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideOrderProgressUseCase(
-            stub: OrderProgressUseCaseStub
-    ): OrderProgressUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideOrderProgressUseCaseStub(
-            gqlUseCase: GraphqlUseCaseStub<OrderProgressResponse>
-    ): OrderProgressUseCaseStub {
-        return OrderProgressUseCaseStub(gqlUseCase)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
     fun provideChatBackgroundUseCase(
             stub: ChatBackgroundUseCaseStub
     ): ChatBackgroundUseCase = stub
@@ -220,22 +189,6 @@ class ChatRoomFakeUseCaseModule {
             dispatchers: CoroutineDispatchers
     ): ChatBackgroundUseCaseStub {
         return ChatBackgroundUseCaseStub(gqlUseCase, cacheManager, dispatchers)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideChatRoomSettingUseCaseUseCase(
-            stub: GetChatRoomSettingUseCaseStub
-    ): GetChatRoomSettingUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideChatRoomSettingUseCaseaseStub(
-            gqlUseCase: GraphqlUseCaseStub<RoomSettingResponse>
-    ): GetChatRoomSettingUseCaseStub {
-        return GetChatRoomSettingUseCaseStub(gqlUseCase)
     }
 
     // -- separator -- //
@@ -269,5 +222,123 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetExistingMessageIdUseCaseStub {
         return GetExistingMessageIdUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetShopFollowingUseCase(
+        stub: GetShopFollowingUseCaseStub
+    ): GetShopFollowingUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetShopFollowingUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetShopFollowingUseCaseStub {
+        return GetShopFollowingUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideToggleFavouriteShopUseCase(
+        stub: ToggleFavouriteShopUseCaseStub
+    ): ToggleFavouriteShopUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideToggleFavouriteShopUseCaseStub(
+        @ApplicationContext context: Context
+    ): ToggleFavouriteShopUseCaseStub {
+        return ToggleFavouriteShopUseCaseStub(GraphqlUseCase(), context.resources)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideOrderProgressUseCase(
+        stub: OrderProgressUseCaseStub
+    ): OrderProgressUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideOrderProgressUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): OrderProgressUseCaseStub {
+        return OrderProgressUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatRoomSettingUseCase(
+        stub: GetChatRoomSettingUseCaseStub
+    ): GetChatRoomSettingUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatRoomSettingUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetChatRoomSettingUseCaseStub {
+        return GetChatRoomSettingUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideKeyGenUseCase(
+        stub: GetKeygenUseCaseStub
+    ): GetKeygenUsecase = stub
+
+    @Provides
+    @ChatScope
+    fun provideKeyGenUseCaseStub(
+        @ApplicationContext context: Context,
+        repository: GraphqlRepositoryStub
+    ): GetKeygenUseCaseStub {
+        return GetKeygenUseCaseStub(context.resources, repository)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideGetReminderTickerUseCase(
+        stub: GetReminderTickerUseCaseStub
+    ): GetReminderTickerUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideGetReminderTickerUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetReminderTickerUseCaseStub {
+        return GetReminderTickerUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideCloseReminderTicker(
+        stub: CloseReminderTickerStub
+    ): CloseReminderTicker = stub
+
+    @Provides
+    @ChatScope
+    fun provideCloseReminderTickerStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): CloseReminderTickerStub {
+        return CloseReminderTickerStub(repository, dispatchers)
     }
 }

@@ -10,7 +10,8 @@
             android:name=".feature.reviewdetail.view.activity.SellerReviewDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -23,26 +24,24 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.reviewreply.view.activity.SellerReviewReplyActivity"
             android:label="@string/title_review_reply"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name="com.tokopedia.review.feature.inbox.presentation.ReviewInboxActivity"
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden"></activity>
-
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name="com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity"
             android:label="@string/title_activity_reputation_review"
             android:theme="@style/Theme.AppCompat.Translucent"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -55,12 +54,30 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.review.feature.createreputation.presentation.activity.EditReviewActivity"
+            android:label="@string/title_activity_reputation_review"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:pathPattern="@string/path_edit_review"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.tokopedia.review.feature.historydetails.presentation.activity.ReviewDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -73,22 +90,21 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.reputationhistory.view.activity.SellerReputationDatePickerActivity"
-            android:label="@string/set_date"
+            android:label="@string/reputation_history_set_date"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".feature.reputationhistory.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
             android:theme="@style/Theme.White" />
-
         <activity
             android:name=".feature.inbox.presentation.InboxReputationActivity"
             android:label="@string/title_activity_reputation_review"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -101,12 +117,12 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.inbox.buyerreview.view.activity.InboxReputationDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -128,8 +144,8 @@
             android:name=".feature.inbox.buyerreview.view.activity.InboxReputationReportActivity"
             android:label="@string/title_report"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -141,15 +157,14 @@
                     android:pathPattern="@string/path_review_report"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".feature.reviewreminder.view.activity.ReviewReminderActivity"
             android:label="@string/review_reminder_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -162,13 +177,12 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.reading.presentation.activity.ReadReviewActivity"
             android:label="@string/review_reading_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -179,26 +193,22 @@
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_product_review"
                     android:scheme="@string/internal_scheme" />
-
                 <data
                     android:host="@string/host_marketplace"
                     android:pathPattern="@string/path_shop_review"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.imagepreview.presentation.activity.ReviewImagePreviewActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-        </activity>
-
+            android:theme="@style/Theme.White"></activity>
         <activity
             android:name=".feature.gallery.presentation.activity.ReviewGalleryActivity"
             android:label="@string/review_gallery_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
-
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -211,11 +221,11 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.credibility.presentation.activity.ReviewCredibilityActivity"
             android:theme="@style/Theme.AppCompat.Translucent"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -228,7 +238,5 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
     </application>
-
 </manifest>
