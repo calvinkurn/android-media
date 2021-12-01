@@ -22,7 +22,7 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imgReactivatedSellerComeback"
-            android:layout_width="220dp"
+            android:layout_width="@dimen/img_reactivated_comeback_width"
             android:layout_height="101dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="16dp"

@@ -860,10 +860,8 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     counterPenalty = headerShopPerformanceUiModel?.scorePenalty.orZero()
                     showPenaltyBadge()
                     processShowCoachMark()
-                    headerShopPerformanceUiModel?.let { headerPerformanceUiModel ->
-                        showPopupEndTenureNewSeller(
-                            headerPerformanceUiModel
-                        )
+                    context?.let { context ->
+                        processShowPopupEndTenure(it.data.first, context)
                     }
                 }
                 is Fail -> {
@@ -878,6 +876,20 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                     )
                 }
             }
+        }
+    }
+
+    private fun processShowPopupEndTenure(data: List<BaseShopPerformance>, context: Context) {
+        val headerShopPerformanceUiModel = if (DeviceScreenInfo.isTablet(context)) {
+            data.filterIsInstance<ItemHeaderParameterDetailUiModel>()
+                .firstOrNull()?.headerShopPerformanceUiModel
+        } else {
+            data.filterIsInstance<HeaderShopPerformanceUiModel>().firstOrNull()
+        }
+        headerShopPerformanceUiModel?.let { headerPerformanceUiModel ->
+            showPopupEndTenureNewSeller(
+                headerPerformanceUiModel
+            )
         }
     }
 
