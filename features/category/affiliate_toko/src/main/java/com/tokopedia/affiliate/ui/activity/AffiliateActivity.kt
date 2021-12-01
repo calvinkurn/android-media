@@ -118,7 +118,7 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
 
     fun showAffiliatePortal() {
         clearBackStack()
-        findViewById<ImageUnify>(R.id.affiliate_background_image).show()
+        findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
     }
@@ -188,9 +188,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     private fun showSplashScreen() {
-        findViewById<Group>(R.id.splash_group).show()
+        findViewById<Group>(R.id.splash_group)?.show()
         Handler().postDelayed({
-            findViewById<Group>(R.id.splash_group).hide()
+            findViewById<Group>(R.id.splash_group)?.hide()
             showAffiliatePortal()
         }, AFFILIATE_SPLASH_TIME)
     }
