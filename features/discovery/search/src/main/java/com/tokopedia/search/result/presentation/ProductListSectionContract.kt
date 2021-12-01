@@ -104,10 +104,22 @@ interface ProductListSectionContract {
         fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
-        fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
-        fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
+        fun trackDynamicProductCarouselImpression(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackDynamicProductCarouselClick(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView)
+        fun trackEventClickSeeMoreDynamicProductCarousel(
+            dynamicProductCarousel: BroadMatchDataView,
+            type: String,
+            inspirationCarouselOption: InspirationCarouselDataView.Option,
+        )
         fun modifyApplinkToSearchResult(applink: String): String
     }
 
