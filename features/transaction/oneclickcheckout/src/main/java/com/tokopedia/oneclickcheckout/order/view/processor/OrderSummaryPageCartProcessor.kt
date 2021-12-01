@@ -14,6 +14,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Com
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.purchase_platform.common.utils.Utils
 import dagger.Lazy
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -92,7 +93,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                             UpdateCartOccCartRequest(
                                     it.cartId,
                                     it.orderQuantity,
-                                    it.notes,
+                                    Utils.getHtmlFormat(it.notes),
                                     it.productId.toString()
                             )
                     )
