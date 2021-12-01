@@ -245,8 +245,9 @@ object DeepLinkChecker {
         var searchKeyword = if (segments.size > 1) segments[1] else ""
         var city = if (segments.indexOf("c") == 2) "%20di%20" + segments[segments.lastIndex] else ""
         var query = searchKeyword + city
+        val queryString = "?q=${query.replace("-", "%20")}"
 
-        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + query))
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + queryString))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {
