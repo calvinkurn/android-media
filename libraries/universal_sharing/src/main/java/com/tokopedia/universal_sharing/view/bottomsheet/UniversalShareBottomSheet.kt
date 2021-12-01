@@ -296,8 +296,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun isAffiliateEnabled(): Boolean{
-        if(context != null) {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
+        if(LinkerManager.getInstance().context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(LinkerManager.getInstance().context)
             return remoteConfig.getBoolean(GLOBAL_AFFILIATE_FEATURE_FLAG, true)
         }else{
             return false
