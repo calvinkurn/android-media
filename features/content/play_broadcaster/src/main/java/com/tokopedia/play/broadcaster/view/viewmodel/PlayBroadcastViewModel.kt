@@ -341,8 +341,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
             // configure live streaming duration
             livePusherMediator.setLiveStreamingDuration(
-                if (configUiModel.channelType == ChannelType.Pause) configUiModel.remainingTime
-                else configUiModel.durationConfig.duration
+                if (configUiModel.channelType == ChannelType.Pause) configUiModel.durationConfig.duration - configUiModel.remainingTime
+                else 0,
+                configUiModel.durationConfig.duration
             )
             livePusherMediator.setLiveStreamingPauseDuration(configUiModel.durationConfig.pauseDuration)
 
@@ -742,6 +743,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
             is TotalView -> _observableTotalView.value = playBroadcastMapper.mapTotalView(result)
             is TotalLike -> _observableTotalLike.value = playBroadcastMapper.mapTotalLike(result)
             is LiveDuration -> {
+                // TODO: need to change this validation, instead of remaining changes this to currDuration == maxDuration
                 if (result.remaining <= 0) logger.logSocketType(result)
                 restartLiveDuration(result)
             }
@@ -826,8 +828,10 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private fun restartLiveDuration(duration: LiveDuration) {
         viewModelScope.launchCatchError(block = {
-            val remainingDuration = TimeUnit.SECONDS.toMillis(duration.remaining)
-            livePusherMediator.restartLiveCountDownTimer(remainingDuration)
+            _configInfo.value?.durationConfig?.duration?.let {
+                val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
+                livePusherMediator.restartLiveCountDownTimer(durationInMillis, it)
+            }
         }) { }
     }
 
@@ -922,6 +926,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
         return if(configInfo is NetworkResult.Success) configInfo.data.countDown.toInt()
                 else DEFAULT_BEFORE_LIVE_COUNT_DOWN
     }
+
+    fun getShopIconUrl(): String = userSession.shopAvatar
 
     companion object {
 

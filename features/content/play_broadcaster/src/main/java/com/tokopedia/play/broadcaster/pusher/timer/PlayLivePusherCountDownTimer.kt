@@ -8,7 +8,7 @@ interface PlayLivePusherCountDownTimer {
 
     val remainingDurationInMillis: Long
 
-    fun setDuration(duration: Long)
+    fun setDuration(duration: Long, maxDuration: Long)
 
     fun setListener(listener: PlayLivePusherCountDownTimerListener)
 
@@ -16,7 +16,7 @@ interface PlayLivePusherCountDownTimer {
 
     fun stop()
 
-    fun restart(duration: Long)
+    fun restart(duration: Long, maxDuration: Long)
 
     fun resume()
 

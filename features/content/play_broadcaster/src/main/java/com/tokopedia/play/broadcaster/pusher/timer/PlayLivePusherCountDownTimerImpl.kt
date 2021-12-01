@@ -18,7 +18,7 @@ class PlayLivePusherCountDownTimerImpl(private val cacheHandler: LocalCacheHandl
 
     private var mListener: PlayLivePusherCountDownTimerListener? = null
 
-    override fun setDuration(duration: Long) {
+    override fun setDuration(duration: Long, maxDuration: Long) {
         setupDuration(duration)
     }
 
@@ -35,14 +35,14 @@ class PlayLivePusherCountDownTimerImpl(private val cacheHandler: LocalCacheHandl
         removeLastRemainingMillis()
     }
 
-    override fun restart(duration: Long) {
+    override fun restart(duration: Long, maxDuration: Long) {
         setupDuration(duration)
         start(duration)
     }
 
     override fun resume() {
         val lastMillis = cacheHandler.getLong(KEY_REMAINING_MILLIS, 0L)
-        restart(lastMillis)
+        restart(lastMillis, lastMillis)
     }
 
     override fun pause() {
