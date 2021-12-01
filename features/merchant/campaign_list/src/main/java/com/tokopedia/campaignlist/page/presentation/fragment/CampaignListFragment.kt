@@ -78,11 +78,6 @@ class CampaignListFragment : BaseDaggerFragment(),
                 .inject(this)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         val viewBinding = FragmentCampaignListBinding.inflate(inflater, container, false)
@@ -130,7 +125,6 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     private fun setupView(binding: FragmentCampaignListBinding?) {
         setupSearchBar(binding)
-        setupCampaignListFilter(binding)
         setupActiveCampaignListView(binding)
     }
 
@@ -146,9 +140,9 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     private fun setupCampaignListFilter(binding: FragmentCampaignListBinding?) {
         binding?.sfCampaignList?.apply {
-
             // setup campaign status filter
-            campaignStatusFilter = SortFilterItem("Status")
+            val campaignStatusFilterTitle = getString(R.string.campaign_list_label_status)
+            campaignStatusFilter = SortFilterItem(campaignStatusFilterTitle)
             campaignStatusFilter?.listener = {
                 campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
                     ChipsUnify.TYPE_SELECTED
@@ -157,9 +151,10 @@ class CampaignListFragment : BaseDaggerFragment(),
                 }
                 campaignStatusBottomSheet?.show(childFragmentManager)
             }
-
             // setup campaign type filter
-            campaignTypeFilter = SortFilterItem("Rilisan Spesial")
+            val campaignTypeFilterTitle = viewModel.getSelectedCampaignTypeSelection()?.campaignTypeName ?: ""
+            campaignTypeFilter = SortFilterItem(campaignTypeFilterTitle)
+            campaignTypeFilter?.type = ChipsUnify.TYPE_SELECTED
             campaignTypeFilter?.listener = {
                 campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
                     ChipsUnify.TYPE_SELECTED
@@ -168,16 +163,16 @@ class CampaignListFragment : BaseDaggerFragment(),
                 }
                 campaignTypeBottomSheet?.show(childFragmentManager)
             }
-
-
             val sortFilterItemList = ArrayList<SortFilterItem>()
             campaignStatusFilter?.run { sortFilterItemList.add(this) }
             campaignTypeFilter?.run { sortFilterItemList.add(this) }
-
             addItem(sortFilterItemList)
-
-            campaignStatusFilter?.refChipUnify?.setChevronClickListener { campaignStatusBottomSheet?.show(childFragmentManager) }
-            campaignTypeFilter?.refChipUnify?.setChevronClickListener { campaignTypeBottomSheet?.show(childFragmentManager) }
+            campaignStatusFilter?.refChipUnify?.setChevronClickListener {
+                campaignStatusFilter?.listener?.invoke()
+            }
+            campaignTypeFilter?.refChipUnify?.setChevronClickListener {
+                campaignTypeFilter?.listener?.invoke()
+            }
         }
     }
 
@@ -247,6 +242,9 @@ class CampaignListFragment : BaseDaggerFragment(),
                     val campaignStatus = result.data.getSellerCampaignSellerAppMeta.campaignStatus
                     val campaignStatusSelections = viewModel.mapCampaignStatusToCampaignStatusSelections(campaignStatus)
                     setupCampaignStatusBottomSheet(campaignStatusSelections)
+                    // set default selection for campaign type
+                    viewModel.setDefaultCampaignTypeSelection(campaignTypeSelections)
+                    setupCampaignListFilter(binding)
                 }
                 is Fail -> {
                     // TODO : log error

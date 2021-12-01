@@ -12,5 +12,6 @@
     <string name="label_coming_soon">Segera Hadir</string>
     <string name="campaign_list_product_quantity_label">%s Produk</string>
     <string name="campaign_time_template" tools:ignore="ExtraTranslation">%s WIB</string>
+    <string name="campaign_list_label_status">Status</string>
     <item name="active_campaign" type="id"/>
 </resources>
