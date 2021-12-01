@@ -53,6 +53,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
@@ -61,6 +62,7 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
@@ -105,7 +107,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
-    WidgetListener, CoroutineScope, SellerHomeFragmentListener {
+    WidgetListener, CoroutineScope, SellerHomeFragmentListener, FragmentChangeCallback {
 
     companion object {
         @JvmStatic
@@ -219,6 +221,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             null
         }
         sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        (activity as? SellerHomeActivity)?.attachSellerHomeFragmentChangeCallback(this)
     }
 
     override fun onCreateView(
@@ -324,6 +327,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun loadData(page: Int) {
 
+    }
+
+    override fun setCurrentFragmentType(fragmentType: Int) {
+        if (fragmentType != FragmentType.HOME) {
+            if (coachMark?.isDismissed == false) {
+                coachMark?.dismissCoachMark()
+            }
+        }
     }
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
