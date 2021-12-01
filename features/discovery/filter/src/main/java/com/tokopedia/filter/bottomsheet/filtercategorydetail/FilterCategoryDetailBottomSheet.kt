@@ -122,7 +122,7 @@ internal class FilterCategoryDetailBottomSheet :
 
     private fun initButtonReset() {
         bottomSheetAction.setMargin(marginRight = 16.toPx())
-        setAction(getString(R.string.filter_button_reset_text)) { filterCategoryDetailViewModel?.resetCategoryFilter() }
+        setAction(getString(R.string.filter_button_reset_text)) { filterCategoryDetailViewModel?.onResetButtonClicked() }
         setBottomSheetActionBold()
     }
 
@@ -183,12 +183,12 @@ internal class FilterCategoryDetailBottomSheet :
         filterCategoryDetailViewModel?.onHeaderItemClick(filterCategoryLevelOneViewModel)
     }
 
-    override fun onLevelTwoCategoryClicked(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel, isChecked: Boolean) {
-        filterCategoryDetailViewModel?.onFilterCategoryClicked(filterCategoryLevelTwoViewModel, isChecked)
+    override fun onLevelTwoCategoryClicked(filterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
+        filterCategoryDetailViewModel?.onFilterCategoryClicked(filterCategoryLevelTwoViewModel)
     }
 
-    override fun onLevelThreeCategoryClicked(filterCategoryLevelThreeViewModel: FilterCategoryLevelThreeViewModel, isChecked: Boolean) {
-        filterCategoryDetailViewModel?.onFilterCategoryClicked(filterCategoryLevelThreeViewModel, isChecked)
+    override fun onLevelThreeCategoryClicked(filterCategoryLevelThreeViewModel: FilterCategoryLevelThreeViewModel) {
+        filterCategoryDetailViewModel?.onFilterCategoryClicked(filterCategoryLevelThreeViewModel)
     }
 
     interface Callback {

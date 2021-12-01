@@ -148,13 +148,13 @@ internal class FilterCategoryDetailViewModel {
         }
     }
 
-    fun onFilterCategoryClicked(clickedFilterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel, isChecked: Boolean) {
-        selectedCategoryFilterValue = if (isChecked) clickedFilterCategoryLevelTwoViewModel.levelTwoCategory.value else ""
+    fun onFilterCategoryClicked(clickedFilterCategoryLevelTwoViewModel: FilterCategoryLevelTwoViewModel) {
+        selectedCategoryFilterValue = clickedFilterCategoryLevelTwoViewModel.levelTwoCategory.value
 
         var previousSelectedIndex = -1
         updateUnselectedToAllCategoryFilter { previousSelectedIndex = it }
 
-        clickedFilterCategoryLevelTwoViewModel.isSelectedOrExpanded = isChecked
+        clickedFilterCategoryLevelTwoViewModel.isSelectedOrExpanded = true
 
         val currentSelectedIndex = contentViewModelList.indexOf(clickedFilterCategoryLevelTwoViewModel)
 
@@ -175,20 +175,20 @@ internal class FilterCategoryDetailViewModel {
         }
     }
 
-    fun onFilterCategoryClicked(clickedFilterCategoryLevelThreeViewModel: FilterCategoryLevelThreeViewModel, isChecked: Boolean) {
-        selectedCategoryFilterValue = if (isChecked) clickedFilterCategoryLevelThreeViewModel.levelThreeCategory.value else ""
+    fun onFilterCategoryClicked(clickedFilterCategoryLevelThreeViewModel: FilterCategoryLevelThreeViewModel) {
+        selectedCategoryFilterValue = clickedFilterCategoryLevelThreeViewModel.levelThreeCategory.value
 
         var previousSelectedIndex = -1
         updateUnselectedToAllCategoryFilter { previousSelectedIndex = it }
 
-        clickedFilterCategoryLevelThreeViewModel.isSelected = isChecked
+        clickedFilterCategoryLevelThreeViewModel.isSelected = true
 
         val currentSelectedIndex = getLevelThreePositionInContent(clickedFilterCategoryLevelThreeViewModel)
 
         notifyViewUpdate(currentSelectedIndex, previousSelectedIndex)
     }
 
-    fun resetCategoryFilter() {
+    fun onResetButtonClicked() {
         selectedCategoryFilterValue = ""
 
         var previousSelectedIndex = -1

@@ -114,8 +114,8 @@ internal class FilterCategoryLevelTwoAdapter(
             val binding = binding ?: return
             binding.filterCategoryDetailLevelTwoRadioButton.setOnCheckedChangeListener(null)
             binding.filterCategoryDetailLevelTwoRadioButton.isChecked = filterCategoryLevelTwoViewModel.isSelectedOrExpanded
-            binding.filterCategoryDetailLevelTwoRadioButton.setOnCheckedChangeListener { _, isChecked ->
-                callback.onLevelTwoCategoryClicked(filterCategoryLevelTwoViewModel, isChecked)
+            binding.filterCategoryDetailLevelTwoRadioButton.setOnCheckedChangeListener { _, _ ->
+                callback.onLevelTwoCategoryClicked(filterCategoryLevelTwoViewModel)
             }
         }
     }
