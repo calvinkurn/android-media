@@ -66,14 +66,16 @@ class InactivePhoneOnboardingPinFragment : BaseInactivePhoneOnboardingFragment()
     }
 
     private fun gotoChallengeEmail() {
-        val intent = goToVerification(InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_EMAIL)
+        val intent = goToVerification(InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_EMAIL, isShowOtherMethod = false)
         startActivityForResult(intent, REQUEST_CODE_OTP_EMAIL)
     }
 
     private fun gotoChallengePin() {
         val intent = goToVerification(
             otpType = InactivePhoneConstant.OTP_TYPE_INACTIVE_PHONE_PIN,
-            otpMode = OTP_MODE_PIN)
+            otpMode = OTP_MODE_PIN,
+            isShowOtherMethod = false
+        )
         startActivityForResult(intent, REQUEST_CODE_VALIDATE_PIN)
     }
 
