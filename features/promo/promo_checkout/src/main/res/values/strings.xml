@@ -36,5 +36,6 @@
     <string name="promo_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>
     <string name="promo_btn_verifikasi">Verifikasi Nomor HP</string>
     <string name="promo_phone_verification_message_v2">Kamu baru bisa pakai promo ini setelah verifikasi nomor HP.</string>
+    <string name="promo_checkout_empty_asset">https://assets.tokopedia.net/asts/android/promocheckout/ic_empty_promo_list_checkout.PNG</string>
 
 </resources>
