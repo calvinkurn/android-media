@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -21,6 +19,10 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.shoplocation.GeneralTickerModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.databinding.BottomsheetActionShopAddressBinding
+import com.tokopedia.manageaddress.databinding.BottomsheetDeactivateLocationBinding
+import com.tokopedia.manageaddress.databinding.BottomsheetMainAddressInformationBinding
+import com.tokopedia.manageaddress.databinding.FragmentShopLocationBinding
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationState
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.ShopSettingsAddressActivity
@@ -34,11 +36,9 @@ import com.tokopedia.manageaddress.util.ShopLocationConstant.ERROR_CODE_NO_ACCES
 import com.tokopedia.manageaddress.util.ShopLocationConstant.INTENT_SHOP_SETTING_ADDRESS_OLD
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -57,24 +57,17 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         ViewModelProvider(this, viewModelFactory).get(ShopLocationViewModel::class.java)
     }
 
-    private var tickerShopLocation: Ticker? = null
-    private var addressList: RecyclerView? = null
+    private var binding by autoClearedNullable<FragmentShopLocationBinding>()
+
     private var bottomSheetAddressType: BottomSheetUnify? = null
     private var bottomSheetAddressConfirmation: BottomSheetUnify? = null
     private var bottomSheetMainLocationInfo: BottomSheetUnify? = null
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
-    private var globalErrorLayout: GlobalError? = null
-    private var buttonSetLocationStatus: Typography? = null
-    private var buttonBackAddressConfirm: UnifyButton? = null
-    private var buttonDeactivateAddressConfirm: UnifyButton? = null
-    private var buttonMengerti: UnifyButton? = null
-    private var tickerMainLocationInfo: Ticker? = null
     private var warehouseName: String = ""
     private var warehouseStatus: Int? = null
-    private var tvDeactivateConfirmation: Typography? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_location, container, false)
+        binding = FragmentShopLocationBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun getScreenName(): String = ""
@@ -102,13 +95,8 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun initViews() {
-        tickerShopLocation = view?.findViewById(R.id.ticker_shop_location)
-        addressList = view?.findViewById(R.id.address_list)
-        globalErrorLayout = view?.findViewById(R.id.global_error)
-        swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh)
-
-        addressList?.adapter = adapter
-        addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding?.addressList?.adapter = adapter
+        binding?.addressList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
     private fun initViewModel() {
@@ -116,7 +104,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
             when (it) {
                 is ShopLocationState.Success -> {
                     if (it.data.data.eligibilityState == ELIGIBLE_USER_WHITELIST_STATE) {
-                        swipeRefreshLayout?.isRefreshing = false
+                        binding?.swipeRefresh?.isRefreshing = false
                         fetchData()
                     } else {
                         activity?.finish()
@@ -126,14 +114,14 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                 }
 
                 is ShopLocationState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
                     }
                 }
 
                 else -> {
-                    swipeRefreshLayout?.isRefreshing = true
+                    binding?.swipeRefresh?.isRefreshing = true
                 }
             }
         })
@@ -141,21 +129,21 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         viewModel.shopLocation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShopLocationState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    globalErrorLayout?.gone()
+                    binding?.swipeRefresh?.isRefreshing = false
+                    binding?.globalError?.gone()
                     updateData(it.data.listWarehouse)
                     setGeneralTicker(it.data.generalTicker)
                 }
 
                 is ShopLocationState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     if (it.throwable != null) {
                         handleError(it.throwable)
                     }
                 }
 
                 else -> {
-                    swipeRefreshLayout?.isRefreshing = true
+                    binding?.swipeRefresh?.isRefreshing = true
                 }
             }
         })
@@ -163,7 +151,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         viewModel.result.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ShopLocationState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     if (warehouseStatus == STATE_WAREHOUSE_ACTIVE) {
                         view?.let { view -> Toaster.build(view, getString(R.string.text_deactivate_success, warehouseName), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show() }
                     } else {
@@ -173,12 +161,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                 }
 
                 is ShopLocationState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
+                    binding?.swipeRefresh?.isRefreshing = false
                     view?.let { view -> Toaster.build(view, ManageAddressConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
                 }
 
                 else -> {
-                    swipeRefreshLayout?.isRefreshing = true
+                    binding?.swipeRefresh?.isRefreshing = true
                 }
             }
         })
@@ -195,7 +183,7 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun setGeneralTicker(data: GeneralTickerModel) {
         if (data.header.isNotEmpty()) {
-            tickerShopLocation?.apply {
+            binding?.tickerShopLocation?.apply {
                 tickerTitle = data.header
                 visibility = View.VISIBLE
                 setHtmlDescription(data.body + getString(R.string.general_ticker_link))
@@ -211,19 +199,19 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                 })
             }
         } else {
-            tickerShopLocation?.visibility = View.GONE
+            binding?.tickerShopLocation?.visibility = View.GONE
         }
     }
 
     private fun openBottomSheetAddressType(shopLocation: Warehouse) {
         bottomSheetAddressType = BottomSheetUnify()
-        val viewBottomSheetAddressType = View.inflate(context, R.layout.bottomsheet_action_shop_address, null)
+        val viewBottomSheetAddressType = BottomsheetActionShopAddressBinding.inflate(LayoutInflater.from(context), null, false)
         setupChild(shopLocation, viewBottomSheetAddressType)
 
         bottomSheetAddressType?.apply {
             setTitle(BOTTOMSHEET_TITLE_ATUR_LOKASI)
             setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetAddressType)
+            setChild(viewBottomSheetAddressType.root)
             setOnDismissListener { dismiss() }
         }
 
@@ -232,15 +220,14 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         }
     }
 
-    private fun setupChild(data: Warehouse, child: View) {
-        buttonSetLocationStatus = child.findViewById(R.id.btn_set_location_status)
+    private fun setupChild(data: Warehouse, child: BottomsheetActionShopAddressBinding) {
         if (data.status == STATE_WAREHOUSE_ACTIVE) {
-            buttonSetLocationStatus?.text = getString(R.string.deactivate_location)
+            child.btnSetLocationStatus.text = getString(R.string.deactivate_location)
         } else if (data.status == STATE_WAREHOUSE_INACTIVE)   {
-            buttonSetLocationStatus?.text = getString(R.string.activate_location)
+            child.btnSetLocationStatus.text = getString(R.string.activate_location)
         }
 
-        buttonSetLocationStatus?.setOnClickListener {
+        child.btnSetLocationStatus.setOnClickListener {
             if (data.status == STATE_WAREHOUSE_ACTIVE) {
                 openBottomSheetAddressConfirmation(data)
             } else {
@@ -253,12 +240,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     private fun openBottomSheetAddressConfirmation(shopLocation: Warehouse) {
         bottomSheetAddressConfirmation = BottomSheetUnify()
-        val viewBottomSheetAddressConfirmation = View.inflate(context, R.layout.bottomsheet_deactivate_location, null)
+        val viewBottomSheetAddressConfirmation = BottomsheetDeactivateLocationBinding.inflate(LayoutInflater.from(context), null, false)
         setupChildAddressConfirmation(shopLocation, viewBottomSheetAddressConfirmation)
 
         bottomSheetAddressConfirmation?.apply {
             setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetAddressConfirmation)
+            setChild(viewBottomSheetAddressConfirmation.root)
             setOnDismissListener { dismiss() }
         }
 
@@ -267,14 +254,10 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         }
     }
 
-    private fun setupChildAddressConfirmation(data: Warehouse, child: View) {
-        buttonBackAddressConfirm = child.findViewById(R.id.btn_kembali)
-        buttonDeactivateAddressConfirm = child.findViewById(R.id.btn_nonaktifkan)
-        tvDeactivateConfirmation = child.findViewById(R.id.tv_deactivate_location)
-
-        tvDeactivateConfirmation?.text = getString(R.string.text_deactivate_confirmation, data.warehouseName)
-        buttonBackAddressConfirm?.setOnClickListener { bottomSheetAddressConfirmation?.dismiss() }
-        buttonDeactivateAddressConfirm?.setOnClickListener {
+    private fun setupChildAddressConfirmation(data: Warehouse, child: BottomsheetDeactivateLocationBinding) {
+        child.tvDeactivateLocation.text = getString(R.string.text_deactivate_confirmation, data.warehouseName)
+        child.btnKembali.setOnClickListener { bottomSheetAddressConfirmation?.dismiss() }
+        child.btnNonaktifkan.setOnClickListener {
             viewModel.setShopLocationState(data.warehouseId, STATE_WAREHOUSE_INACTIVE)
             warehouseStatus = data.status
             warehouseName = data.warehouseName
@@ -318,12 +301,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
     }
 
     private fun showGlobalError(type: Int) {
-        globalErrorLayout?.setType(type)
-        globalErrorLayout?.setActionClickListener {
+        binding?.globalError?.setType(type)
+        binding?.globalError?.setActionClickListener {
             viewModel.getShopLocationList(userSession.shopId.toLong())
         }
-        addressList?.gone()
-        globalErrorLayout?.visible()
+        binding?.addressList?.gone()
+        binding?.globalError?.visible()
     }
 
     override fun onShopLocationStateStatusClicked(data: Warehouse) {
@@ -336,12 +319,12 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
 
     override fun onImageMainInfoIconClicked() {
         bottomSheetMainLocationInfo = BottomSheetUnify()
-        val viewBottomSheetMainLocation = View.inflate(context, R.layout.bottomsheet_main_address_information, null)
+        val viewBottomSheetMainLocation = BottomsheetMainAddressInformationBinding.inflate(LayoutInflater.from(context), null, false)
         setupChildMainInfo(viewBottomSheetMainLocation)
 
         bottomSheetMainLocationInfo?.apply {
             setCloseClickListener { dismiss() }
-            setChild(viewBottomSheetMainLocation)
+            setChild(viewBottomSheetMainLocation.root)
             setOnDismissListener { dismiss() }
         }
 
@@ -350,12 +333,9 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
         }
     }
 
-    private fun setupChildMainInfo(child: View) {
-        buttonMengerti = child.findViewById(R.id.btn_mengerti_info)
-        tickerMainLocationInfo = child.findViewById(R.id.ticker_address_info)
-
-        tickerMainLocationInfo?.setHtmlDescription(getString(R.string.ticker_main_info))
-        buttonMengerti?.setOnClickListener {
+    private fun setupChildMainInfo(child: BottomsheetMainAddressInformationBinding) {
+        child.tickerAddressInfo.setHtmlDescription(getString(R.string.ticker_main_info))
+        child.btnMengertiInfo.setOnClickListener {
             bottomSheetMainLocationInfo?.dismiss()
         }
     }

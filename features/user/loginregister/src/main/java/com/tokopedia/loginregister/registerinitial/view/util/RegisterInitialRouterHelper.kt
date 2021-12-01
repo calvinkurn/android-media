@@ -65,15 +65,6 @@ open class RegisterInitialRouterHelper {
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
     }
 
-    open fun goToChooseAccountPageFacebook(fragment: Fragment, accessToken: String){
-        val intent = RouteManager.getIntent(fragment.context,
-                ApplinkConstInternalGlobal.CHOOSE_ACCOUNT)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, accessToken)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_LOGIN_TYPE, LoginConstants.LoginType.FACEBOOK_LOGIN_TYPE)
-
-        fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHOOSE_ACCOUNT)
-    }
-
     open fun goToChangeName(fragment: Fragment) {
         val intent = (fragment.context?.applicationContext as ApplinkRouter).getApplinkIntent(fragment.context, ApplinkConst.ADD_NAME_PROFILE)
         fragment.startActivityForResult(intent, RegisterConstants.Request.REQUEST_CHANGE_NAME)

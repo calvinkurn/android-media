@@ -169,11 +169,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleAppLink(intent)
-
-        val sellerHomeLifecycleState = navigator?.getHomeFragment()?.lifecycle?.currentState
-        if (sellerHomeLifecycleState?.isAtLeast(Lifecycle.State.CREATED) == true) {
-            navigator?.getHomeFragment()?.onNewIntent(intent?.data)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -482,6 +477,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                         SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
+
+                    navigator?.run {
+                        if (isHomePageSelected()) {
+                            supportActionBar?.title = userSession.shopName
+                        }
+
+                        setHomeTitle(userSession.shopName)
+                    }
                 }
             }
         })
@@ -584,7 +587,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         menu.add(
             BottomMenu(
                 R.id.menu_order,
-                resources.getString(R.string.sah_sale),
+                resources.getString(R.string.sah_order),
                 R.raw.anim_bottom_nav_order,
                 R.raw.anim_bottom_nav_order_to_enabled,
                 R.drawable.ic_sah_bottom_nav_order_active,

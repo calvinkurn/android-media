@@ -10,19 +10,21 @@ import com.tokopedia.sellerorder.waitingpaymentorder.domain.model.WaitingPayment
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.Paging
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.viewmodel.WaitingPaymentOrderViewModel
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@ExperimentalCoroutinesApi
 @RunWith(JUnit4::class)
 class WaitingPaymentOrderViewModelTest {
 
@@ -118,7 +120,8 @@ class WaitingPaymentOrderViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = CoroutineTestDispatchersProvider
+    @get:Rule
+    var coroutineTestRule = CoroutineTestRule()
 
     @RelaxedMockK
     lateinit var getWaitingPaymentOrderGqlUseCase: GraphqlUseCase<WaitingPaymentOrderResponse.Data>
@@ -130,7 +133,7 @@ class WaitingPaymentOrderViewModelTest {
     }
 
     private val viewModel by lazy {
-        WaitingPaymentOrderViewModel(dispatcher, getWaitingPaymentOrderUseCase)
+        WaitingPaymentOrderViewModel(coroutineTestRule.dispatchers, getWaitingPaymentOrderUseCase)
     }
 
     @Before

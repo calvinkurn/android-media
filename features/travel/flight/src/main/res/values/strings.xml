@@ -407,4 +407,11 @@ di tempatmu.</string>
     <string name="flight_promo_chips_title">Sortir dari maskapai harga termurah</string>
     <string name="flight_error_cancel_voucher">Maaf, belum berhasil hapus kupon. Coba lagi, yuk!</string>
     <string name="flight_show_all_promo_text">Lihat Semua</string>
+
+    <string name="flight_booking_passenger_identification_number_hint">NIK (sesuai KTP/Kartu Keluarga)</string>
+    <string name="flight_booking_passenger_identification_number_min_length">Oops, harus 16 angka. Cek lagi, ya.</string>
+    <string name="flight_booking_passenger_identification_number_message">Untuk penumpang di bawah 17 tahun, isi dengan NIK yang tercantum pada Kartu Keluarga.</string>
+    <string name="flight_booking_passenger_identification_number_empty">Oops, yang ini wajib diisi.</string>
+    <string name="flight_booking_passenger_identification_number_only">Oops, hanya bisa masukkan angka.</string>
+    <string name="flight_booking_passenger_identification_number_label">NIK</string>
 </resources>

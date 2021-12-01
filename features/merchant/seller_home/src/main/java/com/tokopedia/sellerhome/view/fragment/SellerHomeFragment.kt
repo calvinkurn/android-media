@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.view.fragment
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -184,7 +183,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private var recommendationWidgetView: View? = null
     private var navigationOtherMenuView: View? = null
-    private var isEligibleShowRecommendationCoachMark: Boolean = false
     private val coachMark: CoachMark2? by lazy {
         context?.let {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -280,7 +278,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        handleInterruptPageOnActivityResult(requestCode)
         handleMilestoneWidgetFinishedMission(requestCode)
     }
 
@@ -428,10 +425,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     override fun showRecommendationWidgetCoachMark(view: View) {
-        this.recommendationWidgetView = view
-        if (!isEligibleShowRecommendationCoachMark) return
-        isEligibleShowRecommendationCoachMark = false
-
+        recommendationWidgetView = view
         val coachMarkItems by getCoachMarkItems()
 
         if (coachMarkItems.isNotEmpty()) {
@@ -665,20 +659,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }, NOTIFICATION_BADGE_DELAY)
-    }
-
-    fun onNewIntent(uri: Uri?) {
-        uri?.let {
-            binding?.run {
-                pmShopScoreInterruptHelper.setShopScoreConsentStatus(it) {
-                    if (it) {
-                        pmShopScoreInterruptHelper.showsShopScoreConsentToaster(root.rootView)
-                    }
-                }
-
-                pmShopScoreInterruptHelper.showToasterPmProInterruptPage(it, root.rootView)
-            }
-        }
     }
 
     private fun initPltPerformanceMonitoring() {
@@ -1008,20 +988,18 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun observeWidgetLayoutLiveData() {
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
-            recyclerView?.post {
-                when (result) {
-                    is Success -> {
-                        stopLayoutCustomMetric(result.data)
-                        setOnSuccessGetLayout(result.data)
-                        setRecommendationCoachMarkEligibility()
-                    }
-                    is Fail -> {
-                        stopCustomMetric(
-                            SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE,
-                            true
-                        )
-                        setOnErrorGetLayout(result.throwable)
-                    }
+            when (result) {
+                is Success -> {
+                    stopLayoutCustomMetric(result.data)
+                    setOnSuccessGetLayout(result.data)
+                    setRecommendationCoachMarkEligibility()
+                }
+                is Fail -> {
+                    stopCustomMetric(
+                        SellerHomePerformanceMonitoringConstant.SELLER_HOME_LAYOUT_TRACE,
+                        true
+                    )
+                    setOnErrorGetLayout(result.throwable)
                 }
             }
         })
@@ -1133,7 +1111,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        recyclerView?.post {
+            updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
 
         val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
         if (!isAnyWidgetFromCache) {
@@ -1386,18 +1366,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         type: String
     ) {
         liveData.observe(viewLifecycleOwner, { result ->
-            recyclerView?.post {
-                startHomeLayoutRenderMonitoring()
-                when (result) {
-                    is Success -> result.data.setOnSuccessWidgetState(type)
-                    is Fail -> {
-                        stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
-                        stopPltMonitoringIfNotCompleted(fromCache = false)
-                        result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
-                    }
+            startHomeLayoutRenderMonitoring()
+            when (result) {
+                is Success -> result.data.setOnSuccessWidgetState(type)
+                is Fail -> {
+                    stopSellerHomeFragmentWidgetPerformanceMonitoring(type, isFromCache = false)
+                    stopPltMonitoringIfNotCompleted(fromCache = false)
+                    result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
                 }
-                loadNextUnloadedWidget()
             }
+            loadNextUnloadedWidget()
         })
     }
 
@@ -1624,8 +1602,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun Ticker.addSellerHomeImpressionListener(impressHolder: ImpressHolder?,
-                                                       ticker: TickerItemUiModel?) {
+    private fun Ticker.addSellerHomeImpressionListener(
+        impressHolder: ImpressHolder?,
+        ticker: TickerItemUiModel?
+    ) {
         impressHolder?.let { holder ->
             ticker?.let { ticker ->
                 addOnImpressionListener(holder) {
@@ -1726,8 +1706,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun setRecommendationCoachMarkEligibility() {
-        isEligibleShowRecommendationCoachMark =
-            pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        val isEligibleShowRecommendationCoachMark =
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
         if (isEligibleShowRecommendationCoachMark) {
             scrollToRecommendationWidget()
         }
@@ -1802,17 +1782,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 )
             }
             return@lazy coachMarkItems
-        }
-    }
-
-    private fun handleInterruptPageOnActivityResult(requestCode: Int) {
-        view?.let {
-            if (::pmShopScoreInterruptHelper.isInitialized) {
-                pmShopScoreInterruptHelper.onActivityResult(requestCode) {
-                    scrollToRecommendationWidget()
-                    isEligibleShowRecommendationCoachMark = true
-                }
-            }
         }
     }
 

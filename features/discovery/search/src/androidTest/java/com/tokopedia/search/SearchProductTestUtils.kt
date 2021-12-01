@@ -133,7 +133,11 @@ internal fun createBannerAdsListener(): BannerAdsListener {
 
 internal fun createSuggestionListener(): SuggestionListener {
     return object : SuggestionListener {
-        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView?) {
+        override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
+
+        }
+
+        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
 
         }
     }

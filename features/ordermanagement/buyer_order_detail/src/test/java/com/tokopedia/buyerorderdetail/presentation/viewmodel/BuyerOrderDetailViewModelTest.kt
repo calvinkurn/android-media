@@ -319,7 +319,7 @@ BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     fun `getCategoryId should return 0 shop type when getBuyerOrderDetail result is fail`() {
         createFailedBuyerOrderDetailResult()
         val categoryId = viewModel.getCategoryId()
-        assert(categoryId.size == 0)
+        assert(categoryId.isEmpty())
     }
 
     @Test

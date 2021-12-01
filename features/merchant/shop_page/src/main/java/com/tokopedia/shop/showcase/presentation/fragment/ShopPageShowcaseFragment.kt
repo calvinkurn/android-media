@@ -27,9 +27,9 @@ import com.tokopedia.shop.analytic.ShopPageShowcaseTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
-import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
+import com.tokopedia.shop.databinding.FragmentShopPageShowcaseBinding
 import com.tokopedia.shop.showcase.presentation.adapter.viewholder.ShopShowcaseListImageListener
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.showcase.di.component.DaggerShopPageShowcaseComponent
@@ -44,6 +44,7 @@ import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -115,6 +116,8 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     private var shopAttribution: String? = ""
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
+    private var maxShowcaseList: Int = 0
+    private val viewBinding : FragmentShopPageShowcaseBinding? by viewBinding()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,12 +126,12 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_page_showcase, container, false)
-        initView(view)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView(view)
         initListener()
         observeLiveData()
         loadShowcaseInitialData()
@@ -175,13 +178,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseClicked(element: FeaturedShowcaseUiModel, position: Int) {
         // track click featured showcase item
-        shopPageShowcaseTracking.clickFeaturedShowcaseItem(
-                featuredShowcase = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.clickFeaturedShowcaseItem(
+                    featuredShowcase = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
 
         // open showcase product result list page
         goToShowcaseProductListResult(element.id, true)
@@ -189,19 +193,21 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseImpressed(element: FeaturedShowcaseUiModel, position: Int) {
         // track featured showcase item impression
-        shopPageShowcaseTracking.featuredShowcaseItemImpressed(
-                featuredShowcase = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.featuredShowcaseItemImpressed(
+                    featuredShowcase = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
     }
 
     override fun onShowcaseListItemSelected(element: ShopEtalaseUiModel, position: Int) {
         // track click all showcase item
         shopPageShowcaseTracking.clickAllShowcaseItem(
                 allShowcaseItem = element,
+                maxShowcaseList = maxShowcaseList,
                 isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
                 position = position,
                 customDimensionShopPage = customDimensionShopPage,
@@ -215,26 +221,27 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onShowcaseListItemImpressed(element: ShopEtalaseUiModel, position: Int) {
         // track featured showcase item impression
-        shopPageShowcaseTracking.showcaseItemImpressed(
-                showcaseItem = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.showcaseItemImpressed(
+                    showcaseItem = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
     }
 
     private fun initView(view: View?) {
         view?.let {
-            showcaseShimmerView = it.findViewById(R.id.showcase_loading_shimmer)
-            featuredShowcaseRv = it.findViewById(R.id.rvFeaturedShowcase)
-            allShowcaseRv = it.findViewById(R.id.rvAllShowcase)
-            tvFeaturedShowcaseTitle = it.findViewById(R.id.tvFeaturedTitle)
-            tvAllShowcaseTitle = it.findViewById(R.id.tvAllShowcaseTitle)
-            icShowcaseSearch = it.findViewById(R.id.icSearchShowcase)
-            localLoadAllShowcase = it.findViewById(R.id.localLoadAllShowcase)
-            localLoadFeaturedShowcase = it.findViewById(R.id.localLoadFeaturedShowcase)
-            globalError = it.findViewById(R.id.globalError)
+            showcaseShimmerView = viewBinding?.showcaseLoadingShimmer?.root
+            featuredShowcaseRv = viewBinding?.rvFeaturedShowcase
+            allShowcaseRv = viewBinding?.rvAllShowcase
+            tvFeaturedShowcaseTitle = viewBinding?.tvFeaturedTitle
+            tvAllShowcaseTitle = viewBinding?.tvAllShowcaseTitle
+            icShowcaseSearch = viewBinding?.icSearchShowcase
+            localLoadAllShowcase = viewBinding?.localLoadAllShowcase
+            localLoadFeaturedShowcase = viewBinding?.localLoadFeaturedShowcase
+            globalError = viewBinding?.globalError
 
             // init recyclerview for featured and all showcase
             initRecyclerView()
@@ -245,14 +252,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
         // search showcase icon on click listener
         icShowcaseSearch?.setOnClickListener {
-
-            // track click search icon
-            shopPageShowcaseTracking.clickSearchIcon(
-                    shopPageShowcaseViewModel.isMyShop(shopId),
-                    customDimensionShopPage,
-                    shopPageShowcaseViewModel.userId.orEmpty()
-            )
-
             goToShopShowcaseList()
         }
 
@@ -439,6 +438,7 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
     private fun renderAllShowcaseSection(list: List<ShopEtalaseUiModel>) {
         if (list.isNotEmpty()) {
             // show all showcase section if data is not empty
+            maxShowcaseList = list.size
             allShowcaseListAdapter?.updateShowcaseList(list)
             shouldShowAllShowcaseLocalLoad(false)
         }

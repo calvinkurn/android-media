@@ -21,6 +21,11 @@ import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment.Companion.CHECKOUT_CATALOG_DETAIL_FRAGMENT
 
+/**
+ * Old Promo List Page for Marketplace
+ *
+ * No longer used by minion bob & PP tribe
+ */
 class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
     override fun getNewFragment(): Fragment {
