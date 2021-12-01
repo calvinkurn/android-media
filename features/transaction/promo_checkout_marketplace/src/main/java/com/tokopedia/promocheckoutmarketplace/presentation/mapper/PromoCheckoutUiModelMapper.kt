@@ -69,12 +69,10 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoEligibilityHeaderUiModel.UiData().apply {
                     title = couponSectionItem.title
                     subTitle = couponSectionItem.subTitle
-                    tmpPromo = emptyList()
                     tabId = couponSectionItem.id
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
-                    isCollapsed = false
                 }
         )
     }

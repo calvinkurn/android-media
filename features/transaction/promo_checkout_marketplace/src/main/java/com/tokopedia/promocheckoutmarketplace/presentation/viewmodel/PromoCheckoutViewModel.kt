@@ -477,16 +477,13 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
             // Initialize promo list header
             val tmpIneligiblePromoList = ArrayList<Visitable<*>>()
-            val tmpPromoHeaderList = ArrayList<Visitable<*>>()
             couponSectionItem.subSections.forEach { couponSubSection ->
                 val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(
                         couponSubSection, couponSectionItem, headerIdentifierId, couponSectionItem.isEnabled
                 )
 
                 if (eligibilityHeader.uiState.isEnabled) {
-                    if (!eligibilityHeader.uiState.isCollapsed) {
-                        couponList.add(promoHeader)
-                    }
+                    couponList.add(promoHeader)
                 } else {
                     tmpIneligiblePromoList.add(promoHeader)
                 }
@@ -516,23 +513,11 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                     if (tmpCouponList.isNotEmpty()) {
                         promoHeader.uiData.tmpPromoItemList = tmpCouponList
                     }
-
-                    if (promoHeader.uiState.isCollapsed) {
-                        tmpPromoHeaderList.add(promoHeader)
-                    }
                 }
-            }
-
-            if (tmpPromoHeaderList.isNotEmpty()) {
-                eligibilityHeader.uiData.tmpPromo = tmpPromoHeaderList
             }
 
             if (tmpIneligiblePromoList.isNotEmpty()) {
-                if (eligibilityHeader.uiState.isCollapsed) {
-                    eligibilityHeader.uiData.tmpPromo = tmpIneligiblePromoList
-                } else {
-                    couponList.addAll(tmpIneligiblePromoList)
-                }
+                couponList.addAll(tmpIneligiblePromoList)
             }
         }
         _promoListUiModel.value = couponList
@@ -1324,53 +1309,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun updateIneligiblePromoList(element: PromoEligibilityHeaderUiModel) {
-        val modifiedData = ArrayList<Visitable<*>>()
-
-        val dataIndex = promoListUiModel.value?.indexOf(element) ?: 0
-
-        if (dataIndex != -1) {
-            val data = promoListUiModel.value?.get(dataIndex) as PromoEligibilityHeaderUiModel
-            data.let {
-                if (!it.uiState.isCollapsed) {
-                    // Collapse ineligible section
-                    val startIndex = dataIndex + 1
-                    val promoListSize = promoListUiModel.value?.size ?: 0
-                    for (index in startIndex until promoListSize) {
-                        promoListUiModel.value?.get(index)?.let {
-                            modifiedData.add(it)
-                        }
-                    }
-
-                    it.uiState.isCollapsed = !it.uiState.isCollapsed
-                    it.uiData.tmpPromo = modifiedData
-
-                    _tmpUiModel.value = Update(it)
-                    modifiedData.forEach {
-                        _tmpUiModel.value = Delete(it)
-                    }
-                    promoListUiModel.value?.removeAll(modifiedData)
-                } else {
-                    // Expand ineligible section
-                    it.uiState.isCollapsed = !it.uiState.isCollapsed
-
-                    _tmpUiModel.value = Update(it)
-                    val mapListPromoHeader = HashMap<Visitable<*>, List<Visitable<*>>>()
-                    mapListPromoHeader[it] = it.uiData.tmpPromo
-
-                    _tmpListUiModel.value = Insert(mapListPromoHeader)
-                    it.uiData.tmpPromo.forEach {
-                        promoListUiModel.value?.add(it)
-                    }
-                    it.uiData.tmpPromo = emptyList()
-                    _tmpUiModel.value = Update(it)
-
-                    analytics.eventClickExpandIneligiblePromoList(getPageSource())
-                }
-            }
-        }
-    }
-
     fun updatePromoInputStateBeforeApplyPromo(promoCode: String, isFromLastSeen: Boolean) {
         analytics.eventClickTerapkanPromo(getPageSource(), promoCode)
         analytics.eventClickTerapkanAfterTypingPromoCode(getPageSource(), promoCode, isFromLastSeen)
@@ -1661,20 +1599,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                         if (it.uiState.isDisabled) {
                             // Update : This logic is not valid for case load promo page.
                             // Promo item might be disabled only if get red state after apply promo / validate use.
-                            disabledPromotions.add(generatePromoEnhancedEcommerceMapData())
-                        } else {
-                            enabledPromotions.add(generatePromoEnhancedEcommerceMapData())
-                        }
-                    } else {
-                        disabledPromotions.add(generatePromoEnhancedEcommerceMapData())
-                    }
-                }
-            } else if (it is PromoEligibilityHeaderUiModel && !it.uiState.isEnabled && it.uiData.tmpPromo.isNotEmpty()) {
-                it.uiData.tmpPromo.forEach {
-                    // Update : This logic is not valid.
-                    // Goes here for promo disabled section so all promo item must be disabled.
-                    if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
-                        if (it.uiState.isDisabled) {
                             disabledPromotions.add(generatePromoEnhancedEcommerceMapData())
                         } else {
                             enabledPromotions.add(generatePromoEnhancedEcommerceMapData())

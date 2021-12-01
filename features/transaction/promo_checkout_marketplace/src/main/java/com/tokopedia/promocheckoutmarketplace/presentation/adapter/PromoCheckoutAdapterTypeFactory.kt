@@ -67,7 +67,7 @@ class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionL
             }
             PromoEligibilityHeaderViewHolder.LAYOUT -> {
                 val viewBinding = PromoCheckoutMarketplaceModuleItemPromoEligibilityHeaderBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)
-                PromoEligibilityHeaderViewHolder(viewBinding, listener)
+                PromoEligibilityHeaderViewHolder(viewBinding)
             }
             PromoListHeaderEnabledViewHolder.LAYOUT -> {
                 val viewBinding = PromoCheckoutMarketplaceModuleItemPromoListHeaderEnabledBinding.inflate(LayoutInflater.from(view.context), view as ViewGroup, false)

@@ -15,13 +15,11 @@ data class PromoEligibilityHeaderUiModel(
     data class UiData(
             var title: String = "",
             var subTitle: String = "",
-            var tmpPromo: List<Visitable<*>> = emptyList(),
             var tabId: String = ""
     )
 
     data class UiState(
-            var isEnabled: Boolean = false,
-            var isCollapsed: Boolean = false
+            var isEnabled: Boolean = false
     )
 
 }

@@ -1084,10 +1084,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         startActivity(intent)
     }
 
-    override fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel) {
-//        viewModel.updateIneligiblePromoList(element)
-    }
-
     override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
         if (element.uiData.emptyStateStatus == STATUS_PHONE_NOT_VERIFIED) {
             analytics.eventClickButtonVerifikasiNomorHp(viewModel.getPageSource())

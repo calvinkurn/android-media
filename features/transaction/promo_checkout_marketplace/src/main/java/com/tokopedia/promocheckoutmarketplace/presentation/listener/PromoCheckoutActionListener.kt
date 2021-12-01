@@ -18,8 +18,6 @@ interface PromoCheckoutActionListener {
 
     fun onClickPromoItemDetail(element: PromoListItemUiModel)
 
-    fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel)
-
     fun onClickEmptyStateButton(element: PromoEmptyStateUiModel)
 
     fun onClickErrorStateButton(destination: String)
