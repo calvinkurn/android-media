@@ -196,7 +196,6 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun initActivityOnCreate() {
-        GraphqlClient.init(this)
         initInjector()
     }
 

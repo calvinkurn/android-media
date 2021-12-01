@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
@@ -149,6 +150,13 @@ class ShopHomeCarouselProductPersonalizationViewHolder (
                 )
             }
 
+        }
+        setWidgetImpressionListener(element)
+    }
+
+    private fun setWidgetImpressionListener(model: ShopHomeCarousellProductUiModel) {
+        itemView.addOnImpressionListener(model.impressHolder) {
+            shopHomeCarouselProductListener.onCarouselProductWidgetImpression(adapterPosition, model)
         }
     }
 

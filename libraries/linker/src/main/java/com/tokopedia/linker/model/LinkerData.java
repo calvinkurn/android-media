@@ -76,6 +76,7 @@ public class LinkerData implements Parcelable {
     private String feature;
     private String channel;
     private String campaign;
+    private boolean isAffiliate;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -131,6 +132,7 @@ public class LinkerData implements Parcelable {
         feature = in.readString();
         channel = in.readString();
         campaign = in.readString();
+        isAffiliate = in.readByte() != 0;
     }
 
     @Override
@@ -177,6 +179,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(feature);
         dest.writeString(channel);
         dest.writeString(campaign);
+        dest.writeByte((byte) (isAffiliate ? 1 : 0));
     }
 
     @Override
@@ -323,13 +326,23 @@ public class LinkerData implements Parcelable {
 
         String renderedUrl;
 
+        String utmSource = ARG_UTM_SOURCE;
+        String utmMedium = ARG_UTM_MEDIUM;
+
+        if(!TextUtils.isEmpty(getFeature())){
+            utmMedium = getFeature();
+        }
+        if(!TextUtils.isEmpty(getChannel())){
+            utmSource = getChannel();
+        }
+
         if (url.contains("?")) {
             Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                    url, utmSource, utmMedium, campaign));
             renderedUrl = uri.toString();
         } else {
             Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                    url, utmSource, utmMedium, campaign));
             renderedUrl = uri.toString();
         }
 
@@ -623,6 +636,14 @@ public class LinkerData implements Parcelable {
         this.campaign = campaign;
     }
 
+    public boolean isAffiliate() {
+        return isAffiliate;
+    }
+
+    public void setAffiliate(boolean affiliate) {
+        isAffiliate = affiliate;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -667,6 +688,7 @@ public class LinkerData implements Parcelable {
         private String feature;
         private String channel;
         private String campaign;
+        private boolean isAffiliate;
 
         private Builder() {
         }
@@ -889,6 +911,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setAffiliate(Boolean isAffiliate){
+            this.isAffiliate = isAffiliate;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -937,6 +964,7 @@ public class LinkerData implements Parcelable {
             linkerData.setFeature(feature);
             linkerData.setChannel(channel);
             linkerData.setCampaign(campaign);
+            linkerData.setAffiliate(isAffiliate);
             return linkerData;
         }
 
