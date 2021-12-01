@@ -19,6 +19,7 @@ import com.tokopedia.cart.databinding.ItemCartProductBundleBinding
 import com.tokopedia.cart.bundle.view.adapter.cart.CartItemAdapter
 import com.tokopedia.cart.bundle.view.uimodel.CartItemHolderData
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
 import com.tokopedia.unifyprinciples.Typography
@@ -542,9 +543,9 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
             textFieldNotes.show()
             textNotesChange.gone()
             textNotesFilled.gone()
-            textNotesFilled.text = element.notes
+            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
             textFieldNotes.setCounter(element.maxNotesLength)
-            textFieldNotes.editText.setText(element.notes)
+            textFieldNotes.editText.setText(Utils.getHtmlFormat(element.notes))
             textFieldNotes.editText.setSelection(textFieldNotes.editText.length())
             textFieldNotes.editText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -582,7 +583,7 @@ class CartItemViewHolder constructor(private val binding: ItemCartProductBundleB
     private fun renderProductNotesFilled(element: CartItemHolderData) {
         with(binding) {
             textFieldNotes.gone()
-            textNotesFilled.text = element.notes
+            textNotesFilled.text = Utils.getHtmlFormat(element.notes)
             setProductNotesWidth(element)
             textNotesFilled.show()
             textNotesChange.show()
