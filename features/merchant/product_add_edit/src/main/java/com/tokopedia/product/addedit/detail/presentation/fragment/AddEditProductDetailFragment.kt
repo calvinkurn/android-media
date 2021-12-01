@@ -110,10 +110,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_PICKER
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.SHOWCASE_PICKER_RESULT_REQUEST_CODE
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
-import com.tokopedia.unifycomponents.TextFieldUnify2
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -223,9 +220,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private var productShowCasesReloadButton: Typography? = null
 
     // button continue
-    private var submitButton: ViewGroup? = null
-    private var submitTextView: AppCompatTextView? = null
-    private var submitLoadingIndicator: LoaderUnify? = null
+    private var submitButton: UnifyButton? = null
 
     // PLT monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -495,8 +490,6 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
         // submit button
         submitButton = view.findViewById(R.id.btn_submit)
-        submitTextView = view.findViewById(R.id.tv_submit_text)
-        submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
         setupButton()
 
         // fill the form with detail input model
@@ -674,8 +667,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
         // Continue to add product description
         submitButton?.setOnClickListener {
-            submitTextView?.hide()
-            submitLoadingIndicator?.show()
+            submitButton?.isLoading = true
             validateInput()
             val isInputValid = viewModel.isInputValid.value
             isInputValid?.let {
@@ -688,8 +680,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                     else submitInputEdit()
                 }
             }
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
+            submitButton?.isLoading = false
         }
 
         setupDefaultFieldMessage()
@@ -805,9 +796,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
 
     private fun setupButton() {
         if (viewModel.isAdding && viewModel.isFirstMoved) {
-            submitTextView?.text = getString(R.string.action_continue)
+            submitButton?.text = getString(R.string.action_continue)
         } else {
-            submitTextView?.text = getString(R.string.action_save)
+            submitButton?.text = getString(R.string.action_save)
         }
     }
 
@@ -1198,7 +1189,6 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         return inputResult
     }
 
-    @Suppress("RedundantIf", "LiftReturnOrAssignment")
     private fun fillProductDetailForm(detailInputModel: DetailInputModel) {
 
         // product photo
@@ -1258,21 +1248,17 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             }
 
             // list item click listener
-            productConditionListView?.run {
-                this.setOnItemClickListener { _, _, position, _ ->
-                    setSelected(productConditions, position) {
-                        if (position == NEW_PRODUCT_INDEX) isProductConditionNew = true
-                        else isProductConditionNew = false
-                    }
+            productConditionListView?.setOnItemClickListener { _, _, position, _ ->
+                productConditionListView?.setSelected(productConditions, position) {
+                    (position == NEW_PRODUCT_INDEX).apply { isProductConditionNew = this }
                 }
             }
 
-            productConditions.forEachIndexed { index, listItemUnify ->
+            productConditions.forEachIndexed { position, listItemUnify ->
                 listItemUnify.setTextColorToUnify(requireContext())
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
-                    productConditionListView?.setSelected(productConditions, index) {
-                        if (index == NEW_PRODUCT_INDEX) isProductConditionNew = true
-                        else isProductConditionNew = false
+                    productConditionListView?.setSelected(productConditions, position) {
+                        (position == NEW_PRODUCT_INDEX).apply { isProductConditionNew = this }
                     }
                 }
             }
@@ -1771,58 +1757,52 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     }
 
     private fun enableSubmitButton() {
-        submitButton?.isClickable = true
-        submitButton?.setBackgroundResource(R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Static_White)) }
+        submitButton?.isEnabled = true
     }
 
     private fun disableSubmitButton() {
-        submitButton?.isClickable = false
-        submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)) }
+        submitButton?.isEnabled = false
     }
 
     private fun showDurationUnitOption() {
-        fragmentManager?.let {
-            val optionPicker = OptionPicker()
-            optionPicker.setCloseClickListener {
-                if (viewModel.isEditing) {
-                    ProductEditMainTracking.clickCancelPreOrderDuration(shopId)
-                } else {
-                    ProductAddMainTracking.clickCancelPreOrderDuration(shopId)
-                }
-                optionPicker.dismiss()
+        val optionPicker = OptionPicker()
+        optionPicker.setCloseClickListener {
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickCancelPreOrderDuration(shopId)
+            } else {
+                ProductAddMainTracking.clickCancelPreOrderDuration(shopId)
             }
-            val title = getString(R.string.label_duration)
-            val options: ArrayList<String> = ArrayList()
-            options.add(getString(getDurationUnit(UNIT_DAY)))
-            options.add(getString(getDurationUnit(UNIT_WEEK)))
+            optionPicker.dismiss()
+        }
+        val title = getString(R.string.label_duration)
+        val options: ArrayList<String> = ArrayList()
+        options.add(getString(getDurationUnit(UNIT_DAY)))
+        options.add(getString(getDurationUnit(UNIT_WEEK)))
 
-            optionPicker.apply {
-                setSelectedPosition(selectedDurationPosition)
-                setDividerVisible(true)
-                setTitle(title)
-                setItemMenuList(options)
-                show(it, null)
+        optionPicker.apply {
+            setSelectedPosition(selectedDurationPosition)
+            setDividerVisible(true)
+            setTitle(title)
+            setItemMenuList(options)
+            show(childFragmentManager, null)
 
-                if (viewModel.isEditing) {
-                    ProductEditMainTracking.clickPreorderDropDownMenu(shopId)
-                } else {
-                    ProductAddMainTracking.clickPreorderDropDownMenu(shopId)
-                }
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickPreorderDropDownMenu(shopId)
+            } else {
+                ProductAddMainTracking.clickPreorderDropDownMenu(shopId)
             }
+        }
 
-            optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
-                if (viewModel.isEditing) {
-                    ProductEditMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
-                } else {
-                    ProductAddMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
-                }
-                preOrderDurationUnitField?.textFieldInput?.setText(selectedText)
-                selectedDurationPosition = selectedPosition
-                val preOrderDurationInput = preOrderDurationField?.textFieldInput?.editableText.toString()
-                viewModel.validatePreOrderDurationInput(selectedDurationPosition, preOrderDurationInput)
+        optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
+            } else {
+                ProductAddMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
             }
+            preOrderDurationUnitField?.textFieldInput?.setText(selectedText)
+            selectedDurationPosition = selectedPosition
+            val preOrderDurationInput = preOrderDurationField?.textFieldInput?.editableText.toString()
+            viewModel.validatePreOrderDurationInput(selectedDurationPosition, preOrderDurationInput)
         }
     }
 

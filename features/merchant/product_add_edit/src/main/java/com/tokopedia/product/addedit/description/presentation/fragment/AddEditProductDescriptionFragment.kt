@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -29,7 +28,6 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
-import com.tokopedia.product.addedit.common.AddEditProductFragment
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_SAVE_INSTANCE_ISADDING
@@ -227,7 +225,6 @@ class AddEditProductDescriptionFragment:
 
         // set bg color programatically, to reduce overdraw
         setFragmentToUnifyBgColor()
-        highlightNavigationButton()
 
         // to check whether current fragment is visible or not
         isFragmentVisible = true
@@ -243,6 +240,7 @@ class AddEditProductDescriptionFragment:
         onFragmentResult()
         setupOnBackPressed()
         hideKeyboardWhenTouchOutside()
+        highlightNavigationButton()
 
         // setup observer
         observeProductInputModel()
