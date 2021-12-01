@@ -146,6 +146,7 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             setActionClickListener {
                 hide()
                 affiliateIncomeViewModel.getAffiliateBalance()
+                affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
             }
         }
     }
@@ -205,13 +206,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
                     affiliateIncomeViewModel.getAffiliateTransactionHistory(page - 1)
             }
         }
-    }
-
-    private fun getStartFromDate(date: String): String {
-        return ""
-    }
-    private fun getEndFromDate(date: String): String {
-        return ""
     }
 
 //    override fun getVMFactory(): ViewModelProvider.Factory {
