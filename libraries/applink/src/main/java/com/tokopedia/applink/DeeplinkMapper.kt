@@ -510,6 +510,7 @@ object DeeplinkMapper {
             deeplink.startsWith(ApplinkConstInternalOrder.CANCELLATION_REQUEST) -> getSomCancellationRequestAppLink(uri)
             deeplink.startsWith(ApplinkConstInternalOrder.HISTORY) -> getSomAllOrderAppLink(uri)
             deeplink.startsWith(ApplinkConstInternalMarketplace.SHOP_PAGE_BASE) -> getShopPageInternalAppLink(context,uri,deeplink, "", uri.pathSegments.getOrNull(1).orEmpty())
+            (deeplink.startsWith(ApplinkConstInternalGlobal.ADVANCED_SETTING) || deeplink.startsWith(ApplinkConstInternalGlobal.GENERAL_SETTING)) -> ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT
             else -> return ""
         }
     }
