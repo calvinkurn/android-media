@@ -87,5 +87,9 @@
     <string name="fragment_silent_verif_label_button_change_method">Ubah Metode Verifikasi</string>
     <string name="fragment_silent_verif_subtitle_fail_change_method">Nomor HP kamu belum berhasil diverifikasi.\nCoba metode lain, yuk!</string>
     <string name="fragment_silent_verif_try_again_btn">Coba Lagi</string>
+    <string name="dialog_silent_verif_title">Pastikan paket datamu aktif</string>
+    <string name="dialog_silent_verif_desc">Kamu perlu paket data untuk pakai metode verifikasi ini.</string>
+    <string name="dialog_silent_verif_lanjut">Lanjut Verifikasi</string>
+    <string name="dialog_silent_verif_batal">Batal</string>
 
 </resources>
