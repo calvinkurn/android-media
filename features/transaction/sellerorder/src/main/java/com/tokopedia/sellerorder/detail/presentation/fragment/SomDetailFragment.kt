@@ -58,6 +58,7 @@ import com.tokopedia.sellerorder.common.util.SomConnectionMonitor
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ACTION_OK
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_MVC_USAGE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PRODUCTS_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_SHIPPING_TYPE
@@ -103,6 +104,7 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.*
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
 import com.tokopedia.sellerorder.detail.presentation.model.BaseProductUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
+import com.tokopedia.sellerorder.detail.presentation.model.MVCUsageUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.NonProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.model.ProductBundleUiModel
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
@@ -117,7 +119,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.webview.KEY_TITLE
 import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
@@ -530,6 +531,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
         renderProducts()
         renderShipment()
         renderPayment()
+        renderMvc()
         renderButtons()
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
@@ -680,6 +682,18 @@ open class SomDetailFragment : BaseDaggerFragment(),
                 paymentMethodUiModel = paymentMethodList, pricingData = pricingList)
 
         listDetailData.add(SomDetailData(dataPayments, DETAIL_PAYMENT_TYPE))
+    }
+
+    private fun renderMvc() {
+        dynamicPriceResponse?.let { dynamicPriceResponse ->
+            val description = dynamicPriceResponse.promoShipping?.label.orEmpty()
+            val value = dynamicPriceResponse.promoShipping?.value.orEmpty()
+            val valueDetail = dynamicPriceResponse.promoShipping?.valueDetail.orEmpty()
+            if (description.isNotBlank() && value.isNotBlank()) {
+                val mvcData = MVCUsageUiModel(description, value, valueDetail)
+                listDetailData.add(SomDetailData(mvcData, DETAIL_MVC_USAGE_TYPE))
+            }
+        }
     }
 
     private fun renderButtons() {

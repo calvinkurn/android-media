@@ -329,4 +329,7 @@
     <string name="som_list_bulk_accept_dialog_description_unprocessed">Ada %1$d pesanan yang belum terproses, nih.</string>
     <string name="som_list_bulk_accept_dialog_primary_button_unprocessed">Coba Lagi</string>
     <string name="som_list_bulk_accept_dialog_secondary_button_unprocessed">Kembali</string>
+
+    <!--  MVC Usage  -->
+    <string name="som_detail_mvc_usage_label">Promo Penjual</string>
 </resources>
