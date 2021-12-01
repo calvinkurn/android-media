@@ -476,7 +476,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupBackground() {
-        presenter.getBackground()
+        viewModel.getBackground()
     }
 
     private fun setupBeforeReplyTime(replyTimeMillis: String) {
@@ -2438,6 +2438,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Success -> onSuccessDeleteConversation()
                 is Fail -> onError(it.throwable)
             }
+        })
+
+        viewModel.chatBackground.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> renderBackground(it.data)
+                is Fail -> {
+                    //Do nothing
+                }
+            }
+        })
+
+        viewModel.chatAttachments.observe(viewLifecycleOwner, {
+            updateAttachmentsView(it)
         })
     }
 

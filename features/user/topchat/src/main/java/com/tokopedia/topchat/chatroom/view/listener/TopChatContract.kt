@@ -182,8 +182,6 @@ interface TopChatContract {
             onError: (Throwable) -> Unit
         )
 
-        fun getBackground()
-
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 
         fun hasEmptyAttachmentPreview(): Boolean

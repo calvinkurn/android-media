@@ -97,10 +97,9 @@ open class TopChatRoomPresenter @Inject constructor(
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private val groupStickerUseCase: ChatListGroupStickerUseCase,
-    private val chatAttachmentUseCase: ChatAttachmentUseCase,
+    private val groupStickerUseCase: ChatListGroupStickerUseCase, //
+    private val chatAttachmentUseCase: ChatAttachmentUseCase, //
     private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
-    private val chatBackgroundUseCase: ChatBackgroundUseCase,
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
     private val sharedPref: SharedPreferences,
@@ -854,12 +853,6 @@ open class TopChatRoomPresenter @Inject constructor(
         chatToggleBlockChat.unBlockChat(messageId, onSuccess, onError)
     }
 
-    override fun getBackground() {
-        chatBackgroundUseCase.getBackground(
-            ::onLoadBackgroundFromCache, ::onSuccessLoadBackground
-        ) {}
-    }
-
     override fun addOngoingUpdateProductStock(
         productId: String,
         product: ProductAttachmentUiModel, adapterPosition: Int,
@@ -880,16 +873,6 @@ open class TopChatRoomPresenter @Inject constructor(
                 _srw.postValue(Resource.error(it, null))
             }
         )
-    }
-
-    private fun onLoadBackgroundFromCache(url: String) {
-        view?.renderBackground(url)
-    }
-
-    private fun onSuccessLoadBackground(url: String, needToUpdate: Boolean) {
-        if (needToUpdate) {
-            view?.renderBackground(url)
-        }
     }
 
     private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {

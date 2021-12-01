@@ -21,15 +21,11 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressRes
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -47,8 +43,12 @@ class TopChatViewModel @Inject constructor(
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val chatBackgroundUseCase: ChatBackgroundUseCaseNew,
+    private val chatAttachmentUseCase: ChatAttachmentUseCaseNew,
     private val dispatcher: CoroutineDispatchers,
-    private val remoteConfig: RemoteConfig
+    private val remoteConfig: RemoteConfig,
+    private val cacheManager: TopchatCacheManager,
+    private val mapper: ChatAttachmentMapper
 ) : BaseViewModel(dispatcher.main) {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -87,6 +87,25 @@ class TopChatViewModel @Inject constructor(
     private val _chatDeleteStatus = MutableLiveData<Result<ChatDeleteStatus>>()
     val chatDeleteStatus: LiveData<Result<ChatDeleteStatus>>
         get() = _chatDeleteStatus
+
+    private val _chatBackground = MutableLiveData<Result<String>>()
+    val chatBackground: MutableLiveData<Result<String>>
+        get() = _chatBackground
+
+    private val _chatAttachments = MutableLiveData<ArrayMap<String, Attachment>>()
+    val chatAttachments: MutableLiveData<ArrayMap<String, Attachment>>
+        get() = _chatAttachments
+
+    val attachments: ArrayMap<String, Attachment> = ArrayMap()
+    private var userLocationInfo = LocalCacheModel()
+    var attachProductWarehouseId = "0"
+        private set
+
+    fun initUserLocation(userLocation: LocalCacheModel?) {
+        userLocation ?: return
+        this.userLocationInfo = userLocation
+        this.attachProductWarehouseId = userLocation.warehouse_id
+    }
 
     fun getMessageId(
         toUserId: String,
@@ -243,6 +262,73 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             _chatDeleteStatus.value = Fail(it)
         })
+    }
+
+    fun getBackground() {
+        launchCatchError(block = {
+            val cacheUrl = getCacheUrl(CHAT_BACKGROUND_CACHE_KEY)?.also {
+                _chatBackground.value = Success(it)
+            }
+            val result = chatBackgroundUseCase(Unit)
+            val responseImageUrl = result.chatBackground.urlImage
+            if (responseImageUrl != cacheUrl) {
+                _chatBackground.value = Success(responseImageUrl)
+                cacheManager.saveCache(CHAT_BACKGROUND_CACHE_KEY, responseImageUrl)
+            }
+        }, onError = {
+            _chatBackground.value = Fail(it)
+        })
+    }
+
+    fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
+        launchCatchError(block = {
+            if (chatRoom.hasAttachment() && msgId != 0L) {
+                val params = generateAttachmentParams(msgId, chatRoom.replyIDs)
+                val result = chatAttachmentUseCase(params)
+                val mapAttachment = mapper.map(result)
+                attachments.putAll(mapAttachment.toMap())
+                _chatAttachments.value = attachments
+            }
+        }, onError = {
+            val mapErrorAttachment = mapper.mapError(chatRoom.replyIDs)
+            attachments.putAll(mapErrorAttachment.toMap())
+            _chatAttachments.value = attachments
+        })
+    }
+
+    private fun generateAttachmentParams(
+        msgId: Long,
+        replyIDs: String
+    ): ChatAttachmentParam {
+        val addressId = userLocationInfo.address_id.toLongOrZero()
+        val districtId = userLocationInfo.district_id.toLongOrZero()
+        val postalCode = userLocationInfo.postal_code
+        val latlon = if (userLocationInfo.lat.isEmpty() || userLocationInfo.long.isEmpty()) {
+            ""
+        } else {
+            "${userLocationInfo.lat},${userLocationInfo.long}"
+        }
+        return ChatAttachmentParam(
+            msgId = msgId,
+            replyIDs = replyIDs,
+            addressId = addressId,
+            districtId = districtId,
+            postalCode = postalCode,
+            latlon = latlon
+        )
+    }
+
+    private fun getCacheUrl(cacheKey: String): String? {
+        try {
+            return cacheManager.loadCache(cacheKey, String::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    companion object {
+        private const val CHAT_BACKGROUND_CACHE_KEY = "cache_key_chat_background_url"
     }
 
 }
