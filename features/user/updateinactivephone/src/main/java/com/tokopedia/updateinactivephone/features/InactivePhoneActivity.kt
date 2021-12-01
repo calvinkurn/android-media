@@ -2,6 +2,7 @@ package com.tokopedia.updateinactivephone.features
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -240,5 +241,14 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
 
         private const val KEY_MINIMUM_VERSION_CUSTOMER = "key_android_inactive_phone_minimum_version_customer"
         private const val KEY_MINIMUM_VERSION_SELLER = "key_android_inactive_phone_minimum_version_seller"
+
+        fun createIntent(context: Context, phoneNumber: String, email: String): Intent {
+            return Intent(context, InactivePhoneActivity::class.java).apply {
+                putExtras(Bundle().apply {
+                    putString(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber)
+                    putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+                })
+            }
+        }
     }
 }

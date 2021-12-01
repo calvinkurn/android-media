@@ -19,7 +19,7 @@ open class GetVerificationMethodInactivePhoneUseCase @Inject constructor(
 ) : CoroutineUseCase<InactivePhoneVerificationMethodeParams, OtpModeListPojo>(dispatcher.io) {
 
     override suspend fun execute(params: InactivePhoneVerificationMethodeParams): OtpModeListPojo {
-        return graphqlRepository.request(graphqlQuery(), params.toMapParam())
+        return graphqlRepository.request(graphqlQuery(), params)
     }
 
     override fun graphqlQuery(): String {
