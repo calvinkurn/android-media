@@ -245,7 +245,7 @@ class CampaignListFragment : BaseDaggerFragment(),
                     }
                 }
                 is Fail -> {
-                    // TODO : log error
+                    displayGetDataError()
                 }
             }
         })
@@ -263,7 +263,7 @@ class CampaignListFragment : BaseDaggerFragment(),
                     setupCampaignStatusBottomSheet(campaignStatusSelections)
                 }
                 is Fail -> {
-                    displayGetCampaignMetadataError()
+                    displayGetDataError()
                 }
             }
         })
@@ -295,7 +295,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         ).show()
     }
 
-    private fun displayGetCampaignMetadataError() {
+    private fun displayGetDataError() {
         Toaster.build(
             view = binding?.root ?: return,
             text = getString(R.string.campaign_error_fetch_metadata),
