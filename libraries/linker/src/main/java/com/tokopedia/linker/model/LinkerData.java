@@ -326,13 +326,23 @@ public class LinkerData implements Parcelable {
 
         String renderedUrl;
 
+        String utmSource = ARG_UTM_SOURCE;
+        String utmMedium = ARG_UTM_MEDIUM;
+
+        if(!TextUtils.isEmpty(getFeature())){
+            utmMedium = getFeature();
+        }
+        if(!TextUtils.isEmpty(getChannel())){
+            utmSource = getChannel();
+        }
+
         if (url.contains("?")) {
             Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                    url, utmSource, utmMedium, campaign));
             renderedUrl = uri.toString();
         } else {
             Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                    url, utmSource, utmMedium, campaign));
             renderedUrl = uri.toString();
         }
 
