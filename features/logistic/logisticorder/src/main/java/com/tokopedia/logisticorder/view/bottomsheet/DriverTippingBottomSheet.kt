@@ -22,6 +22,10 @@ import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent
 import com.tokopedia.logisticorder.di.TrackingPageComponent
 import com.tokopedia.logisticorder.uimodel.LogisticDriverModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
+import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -108,8 +112,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
     private fun setDriverTipLayout(logisticDriverModel: LogisticDriverModel) {
         when (logisticDriverModel.status) {
-            100 -> {
-                //driver found
+            OPEN -> {
                 setTitle(getString(com.tokopedia.logisticorder.R.string.title_prepayment_tipping))
                 binding.paymentTippingLayout.visibility = View.VISIBLE
                 binding.resultTippingLayout.visibility = View.GONE
@@ -145,11 +148,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     )
                 }
             }
-            150 -> {
-                //tip sedang diproses
+            WAITING_PAYMENT -> {
             }
-            200, 210 -> {
-                //post payment
+            SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> {
                 binding.resultTippingLayout.visibility = View.VISIBLE
                 binding.paymentTippingLayout.visibility = View.GONE
                 binding.btnTipping.run {

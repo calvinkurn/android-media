@@ -33,6 +33,11 @@ import com.tokopedia.logisticorder.uimodel.TippingModel
 import com.tokopedia.logisticorder.uimodel.TrackOrderModel
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.utils.DateUtil
+import com.tokopedia.logisticorder.utils.TippingConstant.OPEN
+import com.tokopedia.logisticorder.utils.TippingConstant.REFUND_TIP
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_PAYMENT
+import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
+import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.utils.TrackingPageUtil
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.HEADER_KEY_AUTH
 import com.tokopedia.logisticorder.utils.TrackingPageUtil.getDeliveryImage
@@ -212,9 +217,9 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
             }
 
             btnTipping.text = when (tippingData.status) {
-                200, 210 -> "Lihat Bukti"
-                150 -> "Cek Status"
-                300 -> "Lihat Saldo"
+                SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> "Lihat Bukti"
+                WAITING_PAYMENT -> "Cek Status"
+                REFUND_TIP -> "Lihat Saldo"
                 else -> "Beri Tip"
             }
 
@@ -227,13 +232,13 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
 
             btnTipping.setOnClickListener {
                 when (tippingData.status) {
-                    200, 210, 100 -> {
+                    SUCCESS_PAYMENT, SUCCESS_TO_GOJEK, OPEN -> {
                         DriverTippingBottomSheet().show(parentFragmentManager, mOrderId, data)
                     }
-                    150 -> {
+                    WAITING_PAYMENT -> {
                         RouteManager.route(context, ApplinkConst.PMS)
                     }
-                    300 -> {
+                    REFUND_TIP -> {
                         RouteManager.route(context, ApplinkConst.SALDO)
                     }
                     else -> {
