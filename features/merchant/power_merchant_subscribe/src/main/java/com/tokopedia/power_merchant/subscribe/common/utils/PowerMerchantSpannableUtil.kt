@@ -94,7 +94,7 @@ object PowerMerchantSpannableUtil {
         return try {
             val colorHexInt = context?.let { ContextCompat.getColor(it, idColor) }
             val colorToHexString = colorHexInt?.let {
-                Integer.toHexString(it).uppercase().substring(Constant.START_INDEX_HEX_STRING)
+                Integer.toHexString(it).uppercase().substring(START_INDEX_HEX_STRING)
             }
             return "#$colorToHexString"
         } catch (e: Exception) {
@@ -102,4 +102,6 @@ object PowerMerchantSpannableUtil {
             ""
         }
     }
+
+    private const val START_INDEX_HEX_STRING = 2
 }
