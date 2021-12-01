@@ -5,6 +5,5 @@ package com.tokopedia.analyticsdebugger.websocket.ui.uimodel
  */
 data class WebSocketLogGeneralInfoUiModel(
     val channelId: String = "",
-    val pageSource: String = "",
-    val gcToken: String = ""
+    val gcToken: String = "",
 )

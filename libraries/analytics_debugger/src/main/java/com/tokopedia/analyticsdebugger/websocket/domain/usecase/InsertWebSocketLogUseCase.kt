@@ -29,7 +29,6 @@ class InsertWebSocketLogUseCase @Inject constructor(
         param?.let {
             val request = WebSocketLogEntity(
                 channelId = it.generalInfo.channelId,
-                pageSource = it.generalInfo.pageSource,
                 gcToken = it.generalInfo.gcToken,
                 event = it.event,
                 message = it.message,

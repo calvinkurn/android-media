@@ -16,7 +16,6 @@ class WebSocketLogMapper @Inject constructor() {
             id = it.id,
             generalInfo = WebSocketLogGeneralInfoUiModel(
                 channelId = if(it.channelId.isEmpty()) "-" else it.channelId,
-                pageSource = if(it.pageSource.isEmpty()) "-" else it.pageSource,
                 gcToken = if(it.gcToken.isEmpty()) "-" else it.gcToken,
             ),
             event = it.event,

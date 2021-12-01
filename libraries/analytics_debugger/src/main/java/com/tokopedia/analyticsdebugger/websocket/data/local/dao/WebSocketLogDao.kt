@@ -18,6 +18,6 @@ interface WebSocketLogDao {
     @Query("DELETE FROM websocket_log")
     fun deleteAll()
 
-    @Query("SELECT * FROM websocket_log WHERE channel_id LIKE :query OR page_source LIKE :query OR gc_token lIKE :query OR event LIKE :query OR message LIKE :query ORDER BY timestamp DESC LIMIT 50")
+    @Query("SELECT * FROM websocket_log WHERE channel_id LIKE :query OR gc_token lIKE :query OR event LIKE :query OR message LIKE :query ORDER BY timestamp DESC LIMIT 50")
     fun get(query: String): List<WebSocketLogEntity>
 }

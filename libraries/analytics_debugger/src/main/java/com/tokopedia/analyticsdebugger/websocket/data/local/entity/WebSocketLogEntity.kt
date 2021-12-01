@@ -18,9 +18,6 @@ data class WebSocketLogEntity (
     @ColumnInfo(name = "channel_id")
     val channelId: String,
 
-    @ColumnInfo(name = "page_source")
-    val pageSource: String,
-
     @ColumnInfo(name = "gc_token")
     val gcToken: String,
 
