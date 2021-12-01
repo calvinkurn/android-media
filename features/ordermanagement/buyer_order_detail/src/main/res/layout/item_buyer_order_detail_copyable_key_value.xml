@@ -12,7 +12,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailCopyableLabel"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingStart="4dp"
         android:paddingTop="4dp"
@@ -20,6 +20,7 @@
         android:paddingBottom="4dp"
         android:text="@string/label_awb_number"
         android:textColor="@color/Unify_N700_68"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/icBuyerOrderDetailCopy"
         app:layout_constraintHorizontal_bias="0"
@@ -27,13 +28,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0"
-        app:layout_constraintWidth_default="wrap"
         app:typographyType="body_3" />
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icBuyerOrderDetailCopy"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl2"
         android:paddingStart="0dp"
@@ -58,11 +58,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvBuyerOrderDetailCopyableValue"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:paddingTop="4dp"
         android:textColor="@color/Unify_N700_96"
+        app:layout_constrainedWidth="true"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintTop_toTopOf="@id/tvBuyerOrderDetailCopyableLabel"
         app:typographyType="body_3"
