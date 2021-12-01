@@ -26,13 +26,21 @@ import com.tokopedia.unifyprinciples.Typography
 class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListener {
 
     companion object {
-        fun createNewInstance(textAreaListener: TextAreaListener, text: String, incentiveHelper: String = "", isUserEligible: Boolean = false, templates: List<String> = listOf()): CreateReviewTextAreaBottomSheet {
+        fun createNewInstance(
+            textAreaListener: TextAreaListener,
+            text: String,
+            incentiveHelper: String = "",
+            isUserEligible: Boolean = false,
+            templates: List<String> = listOf(),
+            placeholder: String = ""
+        ): CreateReviewTextAreaBottomSheet {
             return CreateReviewTextAreaBottomSheet().apply {
                 this.text = text
                 this.textAreaListener = textAreaListener
                 this.incentiveHelper = incentiveHelper
                 this.isUserEligible = isUserEligible
                 this.templates = templates
+                this.placeholder = placeholder
             }
         }
     }
@@ -42,6 +50,7 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     private var incentiveHelper = ""
     private var isUserEligible = false
     private var templates: List<String> = listOf()
+    private var placeholder: String = ""
 
     private var editText: EditText? = null
     private var incentiveHelperText: Typography? = null
@@ -53,11 +62,14 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     override fun onCreate(savedInstanceState: Bundle?) {
         clearContentPadding = true
         context?.let {
-            val view = View.inflate(context, R.layout.widget_create_review_text_area_bottom_sheet, null)
+            val view =
+                View.inflate(context, R.layout.widget_create_review_text_area_bottom_sheet, null)
             editText = view.findViewById(R.id.createReviewBottomSheetEditText)
             incentiveHelperText = view.findViewById(R.id.incentiveHelperTypography)
-            templatesRecyclerView = view.findViewById(R.id.review_text_area_bottomsheet_templates_rv)
+            templatesRecyclerView =
+                view.findViewById(R.id.review_text_area_bottomsheet_templates_rv)
             editText?.apply {
+                hint = placeholder
                 setOnFocusChangeListener { _, hasFocus ->
                     activity?.run {
                         if (hasFocus) {
@@ -70,11 +82,21 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
                 }
                 setBackgroundColor(Color.TRANSPARENT)
                 addTextChangedListener(object : TextWatcher {
-                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
                         // No Op
                     }
 
-                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
                         // No Op
                     }
 
@@ -86,14 +108,15 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
                         incentiveHelper = when {
                             textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
                                 context?.getString(R.string.review_create_bottom_sheet_text_area_eligible)
-                                        ?: ""
+                                    ?: ""
                             }
                             textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
                                 context?.getString(R.string.review_create_bottom_sheet_text_area_partial)
-                                        ?: ""
+                                    ?: ""
                             }
                             else -> {
-                                context?.getString(R.string.review_create_bottom_sheet_text_area_empty) ?: ""
+                                context?.getString(R.string.review_create_bottom_sheet_text_area_empty)
+                                    ?: ""
                             }
                         }
                         incentiveHelperText?.text = incentiveHelper
@@ -115,7 +138,10 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
             }
             setOnDismissListener {
                 editText?.onFocusChangeListener = null
-                textAreaListener?.onDismissBottomSheet(editText?.text.toString(), templatesAdapter.getTemplates())
+                textAreaListener?.onDismissBottomSheet(
+                    editText?.text.toString(),
+                    templatesAdapter.getTemplates()
+                )
             }
             isKeyboardOverlap = false
             setShowListener {
@@ -130,8 +156,10 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     }
 
     override fun onTemplateSelected(template: String) {
-        editText?.append(context?.getString(R.string.review_form_templates_formatting, template)
-                ?: template)
+        editText?.append(
+            context?.getString(R.string.review_form_templates_formatting, template)
+                ?: template
+        )
     }
 
     private fun View.showKeyboard() {
@@ -140,18 +168,22 @@ class CreateReviewTextAreaBottomSheet : BottomSheetUnify(), ReviewTemplateListen
     }
 
     private fun Context.hideKeyboard() {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
     }
 
     private fun setTemplates() {
-        if (templates.isEmpty() || isUserEligible)  {
+        if (templates.isEmpty() || isUserEligible) {
             hideTemplates()
             return
         }
         templatesRecyclerView?.apply {
             adapter = templatesAdapter
-            layoutManager = StaggeredGridLayoutManager(CreateReviewBottomSheet.TEMPLATES_ROW_COUNT, RecyclerView.HORIZONTAL)
+            layoutManager = StaggeredGridLayoutManager(
+                CreateReviewBottomSheet.TEMPLATES_ROW_COUNT,
+                RecyclerView.HORIZONTAL
+            )
             showTemplates()
         }
         templatesAdapter.setData(templates)
