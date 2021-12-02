@@ -481,7 +481,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         reconnectJob()
     }
 
-    fun startLiveCountDownTimer() {
+    fun startLiveTimer() {
         viewModelScope.launch {
             delay(START_COUNTDOWN_DELAY)
             livePusherMediator.startLiveTimer()
