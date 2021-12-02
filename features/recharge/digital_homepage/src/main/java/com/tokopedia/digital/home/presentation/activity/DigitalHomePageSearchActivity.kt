@@ -11,6 +11,7 @@ import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.di.RechargeHomepageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageSearchFragment
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomepageSearchByDynamicIconsFragment
+import com.tokopedia.digital.home.presentation.fragment.DigitalHomepageSearchNewFragment
 import com.tokopedia.graphql.data.GraphqlClient
 
 class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<RechargeHomepageComponent> {
@@ -20,8 +21,6 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-
-        GraphqlClient.init(this)
     }
 
     override fun getNewFragment(): Fragment {
@@ -31,8 +30,11 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         val sectionId = bundle?.getStringArrayList(PARAM_SECTION_ID) ?: arrayListOf()
         val searchBarPlaceHolder = bundle?.getString(PARAM_SEARCH_BAR_PLACE_HOLDER, "") ?: ""
         val searchBarScreenName = bundle?.getString(PARAM_SEARCH_BAR_SCREEN_NAME, SCREEN_NAME_TOPUP_BILLS) ?: SCREEN_NAME_TOPUP_BILLS
+        val searchBarRedirection = bundle?.getString(EXTRA_SEARCH_BAR_REDIRECTION, "") ?: ""
 
-        return if (platformId != null && sectionId.isNotEmpty()) {
+        return if(!searchBarRedirection.isNullOrEmpty()){
+            DigitalHomepageSearchNewFragment.newInstance(searchBarRedirection)
+        } else if (platformId != null && sectionId.isNotEmpty()) {
             DigitalHomepageSearchByDynamicIconsFragment.newInstance(platformId, enablePersonalize,
                     sectionId, searchBarPlaceHolder, searchBarScreenName)
         } else {
@@ -53,6 +55,7 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
         private const val PARAM_SECTION_ID = "section_id"
         private const val PARAM_SEARCH_BAR_PLACE_HOLDER = "search_bar_place_holder"
         private const val PARAM_SEARCH_BAR_SCREEN_NAME = "search_bar_screen_name"
+        private const val EXTRA_SEARCH_BAR_REDIRECTION = "search_bar_redirection"
 
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageSearchActivity::class.java)
 
@@ -60,13 +63,16 @@ class DigitalHomePageSearchActivity : BaseSimpleActivity(), HasComponent<Recharg
                              enablePersonalize: Boolean = true,
                              sectionId: ArrayList<String>,
                              searchBarPlaceHolder: String,
-                             screenName: String): Intent {
+                             screenName: String,
+                             searchBarRedirection: String
+        ): Intent {
             val intent = Intent(context, DigitalHomePageSearchActivity::class.java)
             intent.putExtra(PARAM_PLATFORM_ID, platformID)
             intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)
             intent.putStringArrayListExtra(PARAM_SECTION_ID, sectionId)
             intent.putExtra(PARAM_SEARCH_BAR_PLACE_HOLDER, searchBarPlaceHolder)
             intent.putExtra(PARAM_SEARCH_BAR_SCREEN_NAME, screenName)
+            intent.putExtra(EXTRA_SEARCH_BAR_REDIRECTION, searchBarRedirection)
             return intent
         }
     }

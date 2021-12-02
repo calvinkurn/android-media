@@ -61,6 +61,9 @@ object RollenceKey {
     const val VARIANT_REVIEW_CREDIBILITY_WITHOUT_BOTTOM_SHEET = "without_bottomsheet"
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
 
+    //Auto Complete
+    const val AUTOCOMPLETE_INITIAL_STATE_COMPONENT_TRACKING = "keyword_track_init"
+
     // Purchase Platform
     const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
 }

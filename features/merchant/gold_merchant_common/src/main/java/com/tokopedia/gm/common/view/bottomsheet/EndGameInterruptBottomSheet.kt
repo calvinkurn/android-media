@@ -24,7 +24,7 @@ class EndGameInterruptBottomSheet : BaseBottomSheet() {
         setBackgroundColor(
             ContextCompat.getColor(
                 context,
-                com.tokopedia.unifyprinciples.R.color.Unify_Background
+                com.tokopedia.unifyprinciples.R.color.Unify_N0
             )
         )
         tvEndGameInterrupt = findViewById(R.id.tvEndGameInterrupt)

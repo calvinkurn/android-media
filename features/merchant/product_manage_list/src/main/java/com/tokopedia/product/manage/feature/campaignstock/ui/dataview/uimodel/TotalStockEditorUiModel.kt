@@ -8,7 +8,8 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCamp
 class TotalStockEditorUiModel(
     val totalStock: Int,
     val access: ProductManageAccess?,
-    val campaignTypeList: List<ProductCampaignType>?
+    val campaignTypeList: List<ProductCampaignType>?,
+    val productId: String?
 ): Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =

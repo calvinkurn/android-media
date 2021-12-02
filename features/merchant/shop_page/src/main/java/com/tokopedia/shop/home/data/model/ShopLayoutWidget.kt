@@ -95,12 +95,18 @@ data class ShopLayoutWidget(
                 val totalNotify: Int = 0,
                 @SerializedName("totalNotifyWording")
                 val totalNotifyWording: String = "",
+                @SerializedName("totalProduct")
+                val totalProduct: Int = 0,
+                @SerializedName("totalProductWording")
+                val totalProductWording: String = "",
                 @SerializedName("dynamicRule")
                 val dynamicRule: DynamicRule = DynamicRule(),
                 @SerializedName("banners")
                 val listBanner: List<Banner> = listOf(),
                 @SerializedName("products")
                 val listProduct: List<Product> = listOf(),
+                @SerializedName("backgroundGradientColor")
+                val backgroundGradientColor: BackgroundGradientColor = BackgroundGradientColor(),
                 @SerializedName("displayPrice")
                 val displayPrice: String = "",
                 @SerializedName("originalPrice")
@@ -142,6 +148,13 @@ data class ShopLayoutWidget(
                     val bannerType: String = "",
                     @SerializedName("device")
                     val device: String = ""
+            )
+
+            data class BackgroundGradientColor(
+                    @SerializedName("firstColor")
+                    val firstColor: String = "",
+                    @SerializedName("secondColor")
+                    val secondColor: String = ""
             )
 
             data class Product(

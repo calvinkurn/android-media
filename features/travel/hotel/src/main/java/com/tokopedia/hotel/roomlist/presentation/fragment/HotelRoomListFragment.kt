@@ -44,6 +44,7 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity.
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
+import com.tokopedia.imagepreviewslider.presentation.view.ImagePreviewViewer
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
@@ -60,6 +61,7 @@ import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.android.synthetic.main.layout_hotel_image_slider.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -96,6 +98,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     lateinit var progressDialog: ProgressDialog
 
     private lateinit var remoteConfig: RemoteConfig
+
+    private var imagePreviewViewer: ImagePreviewViewer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -422,9 +426,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         }
     }
 
-    override fun onPhotoClickListener(room: HotelRoom) {
+    override fun onPhotoClickListener(room: HotelRoom, imageUrls: List<String>, position: Int) {
         trackingHotelUtil.hotelClickRoomListPhoto(context, room.additionalPropertyInfo.propertyId, room.roomId,
                 room.roomPrice.priceAmount.roundToLong().toString(), ROOM_LIST_SCREEN_NAME)
+        if (imagePreviewViewer == null) imagePreviewViewer = ImagePreviewViewer()
+        imagePreviewViewer?.startImagePreviewViewer(room.roomInfo.name, image_banner, imageUrls, requireContext(), position)
     }
 
     private fun navigateToLoginPage() {
@@ -481,6 +487,11 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         dialog.setCancelable(false)
         dialog.setOverlayClose(false)
         dialog.show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        imagePreviewViewer = null
     }
 
     companion object {

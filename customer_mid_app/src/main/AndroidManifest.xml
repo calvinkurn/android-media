@@ -5,7 +5,6 @@
     tools:replace="android:resizeableActivity">
 
     <application>
-
         <activity
             android:name="com.tokopedia.tkpd.ConsumerSplashScreen"
             android:label="Tokopedia"
@@ -13,41 +12,37 @@
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.Tokopedia3.CustomerApp.Launcher">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="tokopedia.link"
-                    android:scheme="https"/>
+                    android:scheme="https" />
                 <data
                     android:host="tokopedia-alternate.app.link"
-                    android:scheme="https"/>
+                    android:scheme="https" />
                 <data
                     android:host="tokopedia.app.link"
-                    android:scheme="https"/>
+                    android:scheme="https" />
                 <data
                     android:host="tkpd.page.link"
-                    android:scheme="https"/>
+                    android:scheme="https" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tkpd.FallbackActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.PlainGreen">
-        </activity>
-
+            android:theme="@style/Theme.Tokopedia3.PlainGreen"></activity>
         <activity
             android:name="com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
@@ -55,89 +50,86 @@
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="www.tokopedia.com"
                     android:pathPattern=".*"
-                    android:scheme="https"/>
-
+                    android:scheme="https" />
             </intent-filter>
-
         </activity>
-
-        <activity android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
-            android:exported="true"
+        <activity
+            android:name="com.tokopedia.navigation.presentation.activity.MainParentActivity"
             android:label="Tokopedia"
             android:launchMode="singleTask"
             android:theme="@style/TokopediaTransparentStatus"
             android:windowSoftInputMode="adjustPan"
             android:resizeableActivity="true"
             android:screenOrientation="portrait">
-
             <meta-data
                 android:name="APPS_HOME"
-                android:value="true"/>
-
+                android:value="true" />
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_home"
-                    android:path="@string/path_navigation"/>
+                    android:path="@string/path_navigation" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name="com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_gold_merchant_redirect"/>
+                    android:path="@string/path_gold_merchant_redirect" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="tokopedia"/>
-                <data android:scheme="sellerapp"/>
+                <data android:scheme="tokopedia" />
+                <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tkpd.redirect.RedirectCreateShopActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3" >
+            android:theme="@style/Theme.Tokopedia3"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_merchant"
-                    android:path="@string/path_redirect_create_shop"/>
+                    android:path="@string/path_redirect_create_shop" />
             </intent-filter>
         </activity>
 
@@ -148,22 +140,24 @@
 
         <activity
             android:name="com.tokopedia.tkpd.home.TkpdYoutubeVideoActivity"
-            android:screenOrientation="sensor" >
+            android:screenOrientation="sensor"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
-                    android:path="@string/path_youtube_video"/>
+                    android:path="@string/path_youtube_video" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.tokopedia.tkpd.nfc.NFCHandlerActivity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>

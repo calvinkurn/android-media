@@ -56,7 +56,7 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:typographyType="body_3"
-        android:text="@string/produk_ditemukan"
+        android:text="@string/affiliate_produk_ditemukan"
         android:visibility="gone"
         tools:visibility="visible"
         />
@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/promo_affiliate_progress_bar"
-        android:text="@string/tunggu_ya_produknya_lagi_dicari"
+        android:text="@string/affiliate_tunggu_ya_produknya_lagi_dicari"
         />
 
     <FrameLayout

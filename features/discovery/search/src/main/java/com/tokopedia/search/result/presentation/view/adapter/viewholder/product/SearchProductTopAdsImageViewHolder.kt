@@ -7,10 +7,11 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchResultProductTopAdsImageViewLayoutBinding
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
-import com.tokopedia.topads.sdk.widget.TopAdsImageView
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SearchProductTopAdsImageViewHolder(
         itemView: View,
@@ -22,18 +23,20 @@ class SearchProductTopAdsImageViewHolder(
         @JvmField
         val LAYOUT = R.layout.search_result_product_top_ads_image_view_layout
     }
+    private var binding: SearchResultProductTopAdsImageViewLayoutBinding? by viewBinding()
 
     override fun bind(element: SearchProductTopAdsImageDataView?) {
+        val binding = binding ?: return
         element ?: return
 
-        val topAdsImageView = itemView.findViewById<TopAdsImageView?>(R.id.searchProductTopAdsImageView)
+        val topAdsImageView = binding.searchProductTopAdsImageView
         val topAdsImageViewModel = element.topAdsImageViewModel
 
-        topAdsImageView?.loadImage(topAdsImageViewModel, 20) {
+        topAdsImageView.loadImage(topAdsImageViewModel, 20) {
             topAdsImageView.hide()
         }
 
-        topAdsImageView?.addOnImpressionListener(element, object: ViewHintListener {
+        topAdsImageView.addOnImpressionListener(element, object: ViewHintListener {
             override fun onViewHint() {
                 topAdsImageViewListener.onTopAdsImageViewImpressed(
                         topAdsImageView.javaClass.canonicalName,
@@ -42,7 +45,7 @@ class SearchProductTopAdsImageViewHolder(
             }
         })
 
-        topAdsImageView?.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
+        topAdsImageView.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
             override fun onTopAdsImageViewClicked(applink: String?) {
                 topAdsImageViewListener.onTopAdsImageViewClick(element)
             }
