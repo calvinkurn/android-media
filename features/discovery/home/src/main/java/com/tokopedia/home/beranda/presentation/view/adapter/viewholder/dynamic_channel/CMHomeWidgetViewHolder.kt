@@ -24,7 +24,7 @@ class CMHomeWidgetViewHolder(
                 cmHomeWidget.visibility = View.VISIBLE
                 cmHomeWidget.setOnCMHomeWidgetCloseClickListener(object :
                     CMHomeWidgetCloseClickListener {
-                    override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {
+                    override fun onCMHomeWidgetDismissClick(parentId: Long, campaignId: Long) {
                         cmHomeWidget.visibility = View.GONE
                         callback.onCMHomeWidgetDismissClick()
                     }

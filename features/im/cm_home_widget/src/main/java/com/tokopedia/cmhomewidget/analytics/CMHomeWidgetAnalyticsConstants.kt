@@ -8,6 +8,17 @@ object CMHomeWidgetAnalyticsConstants {
             const val BUSINESS_UNIT = "businessUnit"
             const val CAMPAIGN_CODE = "campaignCode"
             const val USER_ID = "userId"
+            const val PARENT_ID = "parent_id"
+            const val CAMPAIGN_ID = "campaign_id"
+            const val NOTIFICATION_ID = "notification_id"
+            const val MESSAGE_ID = "message_id"
+            const val IS_SILENT = "is_silent"
+            const val ITEMS = "items"
+            const val ITEM_ID = "item_id"
+            const val ITEM_NAME = "item_name"
+            const val PRICE = "price"
+            const val SHOP_ID = "shop_id"
+            const val SHOP_NAME = "shop_name"
         }
     }
 
@@ -40,6 +51,13 @@ object CMHomeWidgetAnalyticsConstants {
     internal interface Category {
         companion object {
             const val HOME_TO_DO_WIDGET = "home to do widget"
+        }
+    }
+
+    internal interface IsSilent {
+        companion object {
+            const val TRUE = true
+            const val FALSE = false //default value
         }
     }
 }

@@ -49,12 +49,12 @@ class DummyTestCMHomeWidgetViewModel @Inject constructor(
         _getCMHomeWidgetDataLiveData.value = Fail(throwable)
     }
 
-    fun deleteCMHomeWidgetData(productID: Long, campaignID: Long) {
+    fun deleteCMHomeWidgetData(productId: Long, campaignId: Long) {
         dismissCMHomeWidgetUseCase.deleteCMHomeWidgetData(
             ::onDeleteCMHomeWidgetSuccessData,
             ::onDeleteCMHomeWidgetFailData,
-            productID,
-            campaignID
+            productId,
+            campaignId
         )
     }
 

@@ -145,15 +145,22 @@ class CMHomeWidget @JvmOverloads constructor(
 
     private fun sendCMWidgetReceivedEvent() {
         cmHomeWidgetData?.let {
-            cmHomeWidgetAnalytics.get().sendCMWidgetReceivedEvent(it.parentId, it.campaignId, "")
+            cmHomeWidgetAnalytics.get().sendCMHomeWidgetReceivedEvent(
+                it.parentId,
+                it.campaignId,
+                it.notificationId,
+                it.messageId
+            )
         }
     }
 
     override fun onProductCardClick(dataItem: CMHomeWidgetProductCardData) {
+        sendCMWidgetClickEvent(dataItem)
         startRequiredActivity(dataItem.appLink)
     }
 
     override fun onBuyDirectBtnClick(dataItem: CMHomeWidgetProductCardData) {
+        sendCMWidgetClickEvent(dataItem)
         startRequiredActivity(dataItem.cmHomeWidgetActionButtons?.get(0)?.appLink)
     }
 
@@ -170,14 +177,24 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     private fun startRequiredActivity(appLink: String?) {
-        sendCMWidgetClickEvent()
         val intent = RouteManager.getIntent(context, appLink)
         context.startActivity(intent)
     }
 
-    private fun sendCMWidgetClickEvent() {
+    private fun sendCMWidgetClickEvent(dataItem: CMHomeWidgetProductCardData) {
         cmHomeWidgetData?.let {
-            cmHomeWidgetAnalytics.get().sendCMWidgetClickEvent(it.parentId, it.campaignId, "")
+            cmHomeWidgetAnalytics.get()
+                .sendCMHomeWidgetProductClickEvent(
+                    it.parentId,
+                    it.campaignId,
+                    it.notificationId,
+                    it.messageId,
+                    dataItem.id,
+                    dataItem.name,
+                    dataItem.currentPrice,
+                    dataItem.cmHomeWidgetShop?.id,
+                    dataItem.cmHomeWidgetShop?.name
+                )
         }
     }
 }

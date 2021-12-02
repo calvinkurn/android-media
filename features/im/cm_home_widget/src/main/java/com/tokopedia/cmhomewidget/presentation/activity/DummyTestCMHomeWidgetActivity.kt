@@ -108,9 +108,9 @@ class DummyTestCMHomeWidgetActivity : AppCompatActivity(),
         cmHomeWidget.visibility = View.VISIBLE
     }
 
-    override fun onCMHomeWidgetDismissClick(parentID: Long, campaignID: Long) {
+    override fun onCMHomeWidgetDismissClick(parentId: Long, campaignId: Long) {
         hideCMHomeWidget()
         //passing 0,0 intensionally to avoid data deletion and adding data again and again.
-        dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetData(parentID, campaignID)
+        dummyTestCMHomeWidgetViewModel.deleteCMHomeWidgetData(parentId, campaignId)
     }
 }

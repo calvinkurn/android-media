@@ -17,12 +17,12 @@ class DismissCMHomeWidgetUseCase @Inject constructor(graphqlRepository: GraphqlR
     fun deleteCMHomeWidgetData(
         onSuccess: (DeleteCMHomeWidgetDataResponse) -> Unit,
         onError: (Throwable) -> Unit,
-        parentID: Long,
-        campaignID: Long
+        parentId: Long,
+        campaignId: Long
     ) {
         try {
             this.setTypeClass(DeleteCMHomeWidgetDataGqlResponse::class.java)
-            this.setRequestParams(getRequestParams(parentID.toInt(), campaignID.toInt()))
+            this.setRequestParams(getRequestParams(parentId, campaignId))
             this.setGraphqlQuery(DismissCMHomeWidgetGQLQuery())
             this.execute(
                 { result ->
@@ -36,9 +36,9 @@ class DismissCMHomeWidgetUseCase @Inject constructor(graphqlRepository: GraphqlR
         }
     }
 
-    private fun getRequestParams(parentID: Int, campaignID: Int) = mutableMapOf(
-        KEY_PARENT_ID to parentID,
-        KEY_CAMPAIGN_ID to campaignID
+    private fun getRequestParams(parentID: Long, campaignID: Long) = mutableMapOf(
+        KEY_PARENT_ID to parentID.toInt(),
+        KEY_CAMPAIGN_ID to campaignID.toInt()
     )
 
     companion object {

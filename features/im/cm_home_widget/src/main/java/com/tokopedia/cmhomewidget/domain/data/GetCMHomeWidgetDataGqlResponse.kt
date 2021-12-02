@@ -1,6 +1,7 @@
 package com.tokopedia.cmhomewidget.domain.data
 
 import android.annotation.SuppressLint
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cmhomewidget.presentation.adapter.factory.CMHomeWidgetViewHolderTypeFactory
 import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVisitable
@@ -8,55 +9,75 @@ import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVis
 @SuppressLint("Invalid Data Type")
 data class GetCMHomeWidgetDataGqlResponse(
     @SerializedName("notifier_getHtdw")
+    @Expose
     val cmHomeWidgetDataResponse: CMHomeWidgetDataResponse
 )
 
 data class CMHomeWidgetDataResponse(
     @SerializedName("status")
+    @Expose
     val status: Int,
     @SerializedName("data")
+    @Expose
     val cmHomeWidgetData: CMHomeWidgetData?
 )
 
 @SuppressLint("Invalid Data Type")
 data class CMHomeWidgetData(
+    @SerializedName("notification_id")
+    @Expose
+    val notificationId: Long,
+    @SerializedName("message_id")
+    @Expose
+    val messageId: String,
     @SerializedName("parent_id")
+    @Expose
     val parentId: Long,
     @SerializedName("campaign_id")
+    @Expose
     val campaignId: Long,
     @SerializedName("widget_title")
+    @Expose
     val widgetTitle: String?,
-    @SerializedName("widget_type")
-    val widgetType: String?,
     @SerializedName("products")
+    @Expose
     val cmHomeWidgetProductCardData: List<CMHomeWidgetProductCardData>?,
     @SerializedName("card")
+    @Expose
     val cmHomeWidgetViewAllCardData: CMHomeWidgetViewAllCardData?
 )
 
 @SuppressLint("Invalid Data Type")
 data class CMHomeWidgetProductCardData(
     @SerializedName("id")
+    @Expose
     val id: Long,
     @SerializedName("name")
+    @Expose
     val name: String?,
     @SerializedName("image_url")
+    @Expose
     val imageUrl: String?,
     @SerializedName("current_price")
+    @Expose
     val currentPrice: String?,
-    @SerializedName("dropped_percent")
-    val droppedPercent: String?,
     @SerializedName("actual_price")
+    @Expose
     val actualPrice: String?,
-    @SerializedName("badge_type")
-    val badgeType: String?,
+    @SerializedName("dropped_percent")
+    @Expose
+    val droppedPercent: String?,
     @SerializedName("badge_image_url")
+    @Expose
     val badgeImageUrl: String?,
     @SerializedName("app_link")
+    @Expose
     val appLink: String?,
     @SerializedName("shop")
+    @Expose
     val cmHomeWidgetShop: CMHomeWidgetShop?,
     @SerializedName("action_buttons")
+    @Expose
     val cmHomeWidgetActionButtons: List<CMHomeWidgetActionButton>?
 ) : CMHomeWidgetVisitable {
     override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {
@@ -67,35 +88,38 @@ data class CMHomeWidgetProductCardData(
 @SuppressLint("Invalid Data Type")
 data class CMHomeWidgetShop(
     @SerializedName("id")
+    @Expose
     val id: Long,
     @SerializedName("name")
+    @Expose
     val name: String?,
-    @SerializedName("badge_title")
-    val badgeTitle: String?,
     @SerializedName("badge_image_url")
+    @Expose
     val badgeImageUrl: String?
 )
 
 @SuppressLint("Invalid Data Type")
 data class CMHomeWidgetActionButton(
     @SerializedName("id")
+    @Expose
     val id: Long,
-    @SerializedName("icon")
-    val icon: String?,
     @SerializedName("text")
+    @Expose
     val text: String?,
-    @SerializedName("type")
-    val type: String?,
     @SerializedName("app_link")
+    @Expose
     val appLink: String?
 )
 
 data class CMHomeWidgetViewAllCardData(
     @SerializedName("label")
+    @Expose
     val label: String?,
     @SerializedName("description")
+    @Expose
     val description: String?,
     @SerializedName("app_link")
+    @Expose
     val appLink: String?
 ) : CMHomeWidgetVisitable {
     override fun type(typeFactory: CMHomeWidgetViewHolderTypeFactory): Int {

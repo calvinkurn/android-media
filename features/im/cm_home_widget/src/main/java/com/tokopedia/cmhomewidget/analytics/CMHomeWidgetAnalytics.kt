@@ -16,33 +16,57 @@ class CMHomeWidgetAnalytics @Inject constructor(
     private val analyticTracker: ContextAnalytics
         get() = TrackApp.getInstance().gtm
 
-    fun sendCMWidgetReceivedEvent(
-        parentID: Long,
-        campaignID: Long,
-        campaignCode: String
+    fun sendCMHomeWidgetReceivedEvent(
+        parentId: Long,
+        campaignId: Long,
+        notificationId: Long,
+        messageId: String
     ) {
         val map = TrackAppUtils.gtmData(
             CMHomeWidgetAnalyticsConstants.Event.WIDGET_RECEIVED,
             CMHomeWidgetAnalyticsConstants.Category.HOME_TO_DO_WIDGET,
             CMHomeWidgetAnalyticsConstants.Action.RECEIVED,
-            getLabel(parentID, campaignID)
+            getLabel(parentId, campaignId)
         )
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = campaignCode
+        map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
+        map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
+        map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
         sendGeneralEvent(map)
     }
 
-    fun sendCMWidgetClickEvent(
-        parentID: Long,
-        campaignID: Long,
-        campaignCode: String
+    fun sendCMHomeWidgetProductClickEvent(
+        parentId: Long,
+        campaignId: Long,
+        notificationId: Long,
+        messageId: String,
+        productId: Long?,
+        productName: String?,
+        productPrice: String?,
+        shopId: Long?,
+        shopName: String?,
     ) {
         val map = TrackAppUtils.gtmData(
             CMHomeWidgetAnalyticsConstants.Event.WIDGET_CLICKED,
             CMHomeWidgetAnalyticsConstants.Category.HOME_TO_DO_WIDGET,
             CMHomeWidgetAnalyticsConstants.Action.CLICK_CTA,
-            getLabel(parentID, campaignID)
+            getLabel(parentId, campaignId)
         )
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = campaignCode
+        map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
+        map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
+        map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
+        val itemsList = ArrayList<Map<String, Any>>()
+        val itemMap = HashMap<String, Any>()
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_ID] = productId ?: 0
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_NAME] = productName ?: ""
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.PRICE] = productPrice ?: ""
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_ID] = shopId ?: 0
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_NAME] = shopName ?: ""
+        itemsList.add(itemMap)
+        map[CMHomeWidgetAnalyticsConstants.Key.ITEMS] = itemsList
         sendGeneralEvent(map)
     }
 
@@ -51,8 +75,11 @@ class CMHomeWidgetAnalytics @Inject constructor(
             CMHomeWidgetAnalyticsConstants.BusinessUnit.VALUE_BUSINESS_UNIT
         map[CMHomeWidgetAnalyticsConstants.Key.CURRENT_SITE] =
             CMHomeWidgetAnalyticsConstants.CurrentSite.VALUE_CURRENT_SITE
-        map[CMHomeWidgetAnalyticsConstants.Key.USER_ID] = userSession.get().userId
-//        analyticTracker.sendGeneralEvent(map)
+//        map[CMHomeWidgetAnalyticsConstants.Key.USER_ID] = userSession.get().userId
+        // always false for now
+        map[CMHomeWidgetAnalyticsConstants.Key.IS_SILENT] =
+            CMHomeWidgetAnalyticsConstants.IsSilent.FALSE
+        analyticTracker.sendGeneralEvent(map)
     }
 
     private fun getLabel(
