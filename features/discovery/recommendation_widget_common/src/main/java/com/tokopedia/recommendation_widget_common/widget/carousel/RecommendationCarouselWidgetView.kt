@@ -33,6 +33,7 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
 import com.tokopedia.recommendation_widget_common.widget.carousel.chips.RecomChipsAdapter
 import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderListener
+import com.tokopedia.recommendation_widget_common.widget.header.RecommendationHeaderView
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactory
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.CommonRecomCarouselCardTypeFactoryImpl
 import com.tokopedia.recommendation_widget_common.widget.productcard.carousel.model.RecomCarouselBannerDataModel
@@ -41,7 +42,6 @@ import com.tokopedia.recommendation_widget_common.widget.productcard.common.Reco
 import com.tokopedia.recommendation_widget_common.widget.tokonowutil.TokonowQuantityUpdater
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.layout_widget_recommendation_carousel.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -73,6 +73,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     private var tokonowPageNameListener: RecommendationCarouselTokonowPageNameListener? = null
     private var basicChipListener: RecomCarouselChipListener? = null
     private var carouselData: RecommendationCarouselData? = null
+    private var headerView: RecommendationHeaderView? = null
+    private var loadingView: View? = null
     private lateinit var typeFactory: CommonRecomCarouselCardTypeFactory
     private lateinit var recyclerView: RecyclerView
     private lateinit var rvChips: RecyclerView
@@ -94,6 +96,8 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         val view = LayoutInflater.from(context)
             .inflate(R.layout.layout_widget_recommendation_carousel, this)
         recyclerView = view.findViewById(R.id.rv_product)
+        headerView = view.findViewById(R.id.recommendation_header_view)
+        loadingView = view.findViewById(R.id.loadingRecom)
         rvChips = view.findViewById(R.id.rv_chips)
         this.itemView = view
         this.itemContext = view.context
@@ -185,12 +189,12 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     fun bindTemporaryHeader(tempHeaderName: String) {
-        itemView.recommendation_header_view.bindData(
+        headerView?.bindData(
             RecommendationWidget(title = tempHeaderName),
             null
         )
         recyclerView.gone()
-        itemView.loadingRecom.visible()
+        loadingView?.visible()
     }
 
     fun getCurrentPosition(): Int {
@@ -393,7 +397,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
 
     private fun setHeaderComponent(carouselData: RecommendationCarouselData) {
-        itemView.recommendation_header_view.bindData(data = carouselData.recommendationData, listener = object : RecommendationHeaderListener {
+        headerView?.bindData(data = carouselData.recommendationData, listener = object : RecommendationHeaderListener {
             override fun onSeeAllClick(link: String) {
                 basicListener?.onSeeAllBannerClicked(carouselData, link)
             }
@@ -440,7 +444,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         if (carouselData == null || isForceRefresh) {
             adapter?.clearAllElements()
             recyclerView.gone()
-            itemView.loadingRecom.visible()
+            loadingView?.visible()
             viewModel?.loadRecommendationCarousel(
                 pageName = pageName,
                 productIds = productIds,
@@ -450,7 +454,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             )
         } else {
             recyclerView.visible()
-            itemView.loadingRecom.gone()
+            loadingView?.gone()
         }
     }
 
@@ -462,11 +466,11 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         doActionBasedOnRecomState(carouselData.state,
             onLoad = {
                 recyclerView.gone()
-                itemView.loadingRecom.visible()
+                loadingView?.visible()
             },
             onReady = {
                 recyclerView.visible()
-                itemView.loadingRecom.gone()
+                loadingView?.gone()
                 impressChannel(carouselData)
                 setHeaderComponent(carouselData)
                 setData(carouselData)
@@ -475,7 +479,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
             },
             onFailed = {
                 recyclerView.gone()
-                itemView.loadingRecom.gone()
+                loadingView?.gone()
             }
         )
     }
