@@ -746,19 +746,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun reloadSrw() {
         if (!isSeller() && topchatViewState?.hasProductPreviewShown() == true) {
-            val productIdCommaSeparated = if (isProductLevelSrw()) {
-                presenter.getProductIdPreview().joinToString(separator = ",")
-            } else {
-                ""
-            }
+            val productIdCommaSeparated = presenter.getProductIdPreview()
+                .joinToString(separator = ",")
             presenter.getSmartReplyWidget(messageId, productIdCommaSeparated)
         }
-    }
-
-    private fun isProductLevelSrw(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-            AB_PRODUCT_LEVEL, ""
-        ) == AB_PRODUCT_LEVEL
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -2599,8 +2590,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val SECOND_DIVIDER = 1000
-
-        private const val AB_PRODUCT_LEVEL = "srw_productlevel"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
