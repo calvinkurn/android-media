@@ -178,7 +178,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         setupInsets()
         setupObserve()
 
-        if((requireActivity() as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false)
+        if((activity as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false)
             parentViewModel.startLiveCountDownTimer()
 
         if (GlobalConfig.DEBUG) setupDebugView(view)
