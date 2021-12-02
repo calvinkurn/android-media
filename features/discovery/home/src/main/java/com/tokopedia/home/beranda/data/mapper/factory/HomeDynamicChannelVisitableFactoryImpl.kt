@@ -587,11 +587,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
         position: Int,
         questData: QuestData
     ) {
-        visitableList.add(mappingQuestWidgetComponent(
-            channel,
-            position,
-            questData
-            ))
+        if(!isCache && !visitableList.any { it is QuestWidgetModel }) {
+            visitableList.add(
+                mappingQuestWidgetComponent(
+                    channel,
+                    position,
+                    questData
+                )
+            )
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList
