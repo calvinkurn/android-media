@@ -202,7 +202,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CampaignListFragment)
             setUtmCampaignData(
-                    pageName = getString(R.string.active_campaign_list),
+                    pageName = this@CampaignListFragment.getString(R.string.active_campaign_list),
                     userId = userSession.userId,
                     pageId = userSession.shopId,
                     feature = SHARE
@@ -264,7 +264,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        TODO("Not yet implemented")
+
     }
 
     override fun onCloseOptionClicked() {
