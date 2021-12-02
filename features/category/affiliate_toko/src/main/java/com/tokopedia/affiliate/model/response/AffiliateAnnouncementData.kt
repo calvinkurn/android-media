@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.model
+package com.tokopedia.affiliate.model.response
 
 import com.google.gson.annotations.SerializedName
 
@@ -11,19 +11,19 @@ data class AffiliateAnnouncementData(
         val `data`: Data?
     ) {
         data class Data(
-            @SerializedName("AnnouncementDescription")
+                @SerializedName("AnnouncementDescription")
             val announcementDescription: String?,
-            @SerializedName("AnnouncementTitle")
+                @SerializedName("AnnouncementTitle")
             val announcementTitle: String?,
-            @SerializedName("CtaLink")
+                @SerializedName("CtaLink")
             val ctaLink: CtaLink?,
-            @SerializedName("CtaText")
+                @SerializedName("CtaText")
             val ctaText: String?,
-            @SerializedName("Error")
+                @SerializedName("Error")
             val error: Error?,
-            @SerializedName("Status")
+                @SerializedName("Status")
             val status: Int?,
-            @SerializedName("Type")
+                @SerializedName("Type")
             val type: String?
         ) {
             data class CtaLink(
@@ -38,13 +38,13 @@ data class AffiliateAnnouncementData(
             )
 
             data class Error(
-                @SerializedName("CtaLink")
+                    @SerializedName("CtaLink")
                 val ctaLink: CtaLink?,
-                @SerializedName("CtaText")
+                    @SerializedName("CtaText")
                 val ctaText: String?,
-                @SerializedName("ErrorType")
+                    @SerializedName("ErrorType")
                 val errorType: Int?,
-                @SerializedName("Message")
+                    @SerializedName("Message")
                 val message: String?
             )
         }
