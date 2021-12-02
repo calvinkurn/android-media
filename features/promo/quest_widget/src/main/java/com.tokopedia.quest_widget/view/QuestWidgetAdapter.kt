@@ -22,7 +22,7 @@ class QuestWidgetAdapter(
     }
 
     override fun onBindViewHolder(holder: QuestWidgetViewHolder, position: Int) {
-        configList?.get(position)?.let { holder.questWidgetItemView.setData(data[position], it, questTracker, source) }
+        configList?.get(position)?.let { holder.questWidgetItemView.setData(data[position], it, questTracker, source, position) }
     }
 
     override fun getItemCount(): Int {

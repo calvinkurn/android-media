@@ -14,7 +14,6 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.example.quest_widget.R
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.util.Const
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -25,7 +24,6 @@ import com.tokopedia.quest_widget.data.Progress
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
-import com.tokopedia.quest_widget.tracker.Tracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -38,6 +36,8 @@ class QuestWidgetItemView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : CardUnify(context, attrs), ProgressCompletionListener {
 
+    private lateinit var status: String
+    private var position = 0
     private lateinit var questTracker: QuestTracker
     private var questId = ""
     private var source = QuestSource.HOME
@@ -76,12 +76,14 @@ class QuestWidgetItemView @JvmOverloads constructor(
         item: QuestWidgetListItem,
         config: Config,
         questTracker: QuestTracker,
-        source: Int
+        source: Int,
+        position: Int
     ) {
 
         this.questTracker = questTracker
         this.source = source
         this.questId = item.id.toString()
+        this.position = position
 
         var appLink = ""
 
@@ -93,6 +95,8 @@ class QuestWidgetItemView @JvmOverloads constructor(
         when (item.questUser?.status) {
 
             QuestUserStatus.IDLE -> {
+
+                status = QuestUserStatus.IDLE
                 appLink = QuestUrls.QUEST_URL_STAGING + questId
 
                 startTranslationAnimation()
@@ -401,7 +405,10 @@ class QuestWidgetItemView @JvmOverloads constructor(
                     if (showBox) {
                         showBox = false
                         translationAnimation(ivBannerIconSecond, ivBannerIcon)
-                        timer.cancel()
+                        // To repeat animation if first position and IDLE status
+                        if(position != 0 || status != QuestUserStatus.IDLE){
+                            timer.cancel()
+                        }
                     } else {
                         showBox = true
                         translationAnimation(ivBannerIcon, ivBannerIconSecond)

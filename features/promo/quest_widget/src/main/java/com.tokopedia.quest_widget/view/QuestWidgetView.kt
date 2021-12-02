@@ -20,6 +20,7 @@ import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
+import com.tokopedia.quest_widget.util.ConnectionLiveData
 import com.tokopedia.quest_widget.util.LiveDataResult
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.user.session.UserSession
@@ -58,6 +59,8 @@ class QuestWidgetView @JvmOverloads constructor(
     private lateinit var page: String
     private lateinit var questWidgetCallbacks: QuestWidgetCallbacks
 
+    private var reload = false
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -81,6 +84,18 @@ class QuestWidgetView @JvmOverloads constructor(
             viewModel = viewModelProvider[QuestWidgetViewModel::class.java]
         }
         userSession = UserSession(context)
+
+        val connectionLiveData = ConnectionLiveData(context)
+        connectionLiveData.observe(context as AppCompatActivity, {
+            if(!it){
+                reload = true
+                showErrorUi()
+            }
+            else{
+                if(reload)
+                getQuestList(0, "", page = page, source = source)
+            }
+        })
 
         viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {

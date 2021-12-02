@@ -61,7 +61,7 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
             )
             if (response != null){
                 if(response.questWidgetList?.resultStatus?.code == "200") {
-                    if (response.questWidgetList.isEligible != false) {
+                    if (response.questWidgetList.isEligible == false) {
                         questWidgetListLiveData.postValue(LiveDataResult.emptyData())
                     }
                     else {

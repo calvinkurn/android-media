@@ -2325,7 +2325,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 activity?.let {
                     val intentQuestWidget = RouteManager.getIntent(
                         context,
-                        "tokopedia://webview?need_login=true&url=https://staging.tokopedia.com/seru/topquest"
+                        "tokopedia://webview?need_login=true&url=https://tokopedia.com/seru/topquest"
                     )
 
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
