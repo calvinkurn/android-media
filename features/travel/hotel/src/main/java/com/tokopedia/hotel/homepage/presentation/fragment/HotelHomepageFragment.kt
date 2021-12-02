@@ -752,8 +752,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     override fun onStop() {
-        super.onStop()
         binding?.bannerHotelHomepagePromo?.timer?.cancel()
+        super.onStop()
     }
 
     companion object {

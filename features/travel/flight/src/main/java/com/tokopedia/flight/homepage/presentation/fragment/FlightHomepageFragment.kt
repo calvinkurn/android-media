@@ -583,6 +583,11 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private fun measureBannerHeightBasedOnRatio(): Int =
             (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
 
+    override fun onStop() {
+        binding?.flightHomepageBanner?.timer?.cancel()
+        super.onStop()
+    }
+
     companion object {
         // Banner Ratio = 414 : 139
         private const val BANNER_WIDTH_RATIO = 414f
