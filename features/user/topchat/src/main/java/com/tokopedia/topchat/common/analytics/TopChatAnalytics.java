@@ -136,7 +136,6 @@ public class TopChatAnalytics {
         public static final String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
         public static final String CLICK_VOUCHER_THUMBNAIL = "click shop voucher thumbnail";
-        public static final String CLICK_ATC_PRODUCT_THUMBNAIL = "click atc on product thumbnail";
         public static final String CLICK_BUY_PRODUCT_THUMBNAIL = "click buy on product thumbnail";
         public static final String SENT_INVOICE_ATTACHMENT = "click kirim after attach invoice";
         public static final String CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
@@ -419,20 +418,6 @@ public class TopChatAnalytics {
         eventTracking.put("eventLabel", "");
 
         return eventTracking;
-    }
-
-    // #AP7
-    public void eventClickAddToCartProductAttachment(
-            @NotNull ProductAttachmentUiModel product,
-            @NotNull UserSessionInterface user
-    ) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.CHAT_DETAIL,
-                EVENT_CATEGORY, Category.CHAT_DETAIL,
-                EVENT_ACTION, Action.CLICK_ATC_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId()),
-                USER_ID, user.getUserId()
-        ));
     }
 
     // #AP9

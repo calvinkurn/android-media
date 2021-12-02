@@ -1531,7 +1531,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
-        analytics.eventClickAddToCartProductAttachment(element, session)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else {

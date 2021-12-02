@@ -44,7 +44,7 @@ data class AddToCartParam (
     companion object {
         const val SOURCE_ACTION_ATC = "atc"
         const val SOURCE_ACTION_BUY = "buy"
-        private const val EVENT_ACTION_ATC = "click atc on bottom sheet"
+        private const val EVENT_ACTION_ATC = "click atc on product thumbnail"
         private const val EVENT_ACTION_BUY = "click buy on bottom sheet"
         private const val FIELD_BC = "/broadcast"
         private const val FIELD_CHAT = "/chat"
