@@ -1,5 +1,6 @@
 package com.tokopedia.quest_widget.listeners
 
-interface QuestWidgetLoginClickListener {
+interface QuestWidgetCallbacks {
     fun questLogin()
+    fun deleteQuestWidget()
 }

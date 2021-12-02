@@ -1716,4 +1716,10 @@ open class HomeRevampViewModel @Inject constructor(
             _beautyFestLiveData.postValue(HomeRevampFragment.BEAUTY_FEST_NOT_SET)
         })
     }
+
+    fun deleteQuestWidget() {
+        findWidget<QuestWidgetModel> { questWidgetModel, index ->
+            deleteWidget(questWidgetModel, index)
+        }
+    }
 }

@@ -7,14 +7,14 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.data.QuestData
-import com.tokopedia.quest_widget.listeners.QuestWidgetLoginClickListener
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.view.QuestWidgetView
 
 const val HOMEPAGE_PARAM = "homepag1"
 class QuestWidgetViewHolder(
     itemView: View,
-    var questWidgetLoginClickListener: QuestWidgetLoginClickListener
+    var questWidgetCallbacks: QuestWidgetCallbacks
 ): AbstractViewHolder<QuestWidgetModel>(itemView){
 
     private var questWidget: QuestWidgetView?=null
@@ -29,7 +29,7 @@ class QuestWidgetViewHolder(
     }
 
     override fun bind(element: QuestWidgetModel?) {
-        questWidget?.setupListeners(questWidgetLoginClickListener)
+        questWidget?.setupListeners(questWidgetCallbacks)
         if(element?.questData == null){
             questWidget?.getQuestList(page = QuestWidgetLocations.HOME_PAGE, source = QuestSource.HOME)
         }

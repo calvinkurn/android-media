@@ -127,7 +127,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
-import com.tokopedia.quest_widget.listeners.QuestWidgetLoginClickListener
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -173,6 +173,7 @@ import kotlinx.android.synthetic.main.fragment_home_revamp.*
 import kotlinx.android.synthetic.main.home_header_ovo.view.*
 import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
 import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -201,7 +202,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     HomeAutoRefreshListener,
     PlayWidgetListener,
     RecommendationWidgetListener,
-    QuestWidgetLoginClickListener {
+    QuestWidgetCallbacks {
 
     companion object {
         private const val className =
@@ -3636,5 +3637,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     override fun questLogin() {
         val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
         startActivityForResult(intent, REQUEST_CODE_LOGIN_QUEST_WIDGET)
+    }
+
+    override fun deleteQuestWidget() {
+        viewModel.get().deleteQuestWidget()
     }
 }

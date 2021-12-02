@@ -11,14 +11,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.di.DaggerQuestComponent
-import com.tokopedia.quest_widget.listeners.QuestWidgetLoginClickListener
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
 import com.tokopedia.quest_widget.util.LiveDataResult
@@ -57,7 +56,7 @@ class QuestWidgetView @JvmOverloads constructor(
     private var rvError: RecyclerView
     var userSession: UserSessionInterface
     private lateinit var page: String
-    private lateinit var questWidgetLoginClickListener: QuestWidgetLoginClickListener
+    private lateinit var questWidgetCallbacks: QuestWidgetCallbacks
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -105,6 +104,10 @@ class QuestWidgetView @JvmOverloads constructor(
                         showErrorUi()
                     }
                 }
+                LiveDataResult.STATUS.EMPTY_DATA ->{
+                    hide()
+                    questWidgetCallbacks.deleteQuestWidget()
+                }
             }
         })
     }
@@ -148,19 +151,18 @@ class QuestWidgetView @JvmOverloads constructor(
         return false
     }
 
-    fun setupListeners(listener: QuestWidgetLoginClickListener) {
-        questWidgetLoginClickListener = listener
+    fun setupListeners(listener: QuestWidgetCallbacks) {
+        questWidgetCallbacks = listener
     }
 
     private fun setupNonLoginClickListeners() {
 
         tvLihat.setOnClickListener {
-            questWidgetLoginClickListener.questLogin()
+            questWidgetCallbacks.questLogin()
         }
 
         questWidgetLogin.setOnClickListener {
-
-            questWidgetLoginClickListener.questLogin()
+            questWidgetCallbacks.questLogin()
         }
 
     }
@@ -177,6 +179,7 @@ class QuestWidgetView @JvmOverloads constructor(
 
             data?.widgetData?.questWidgetList?.pageDetail?.cta?.applink?.let {
                 try {
+//                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, it)
                     RouteManager.route(context, it)
                 } catch (e: Exception) {
                     e.printStackTrace()

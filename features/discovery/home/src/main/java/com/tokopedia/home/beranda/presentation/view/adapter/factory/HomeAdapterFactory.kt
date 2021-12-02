@@ -28,7 +28,7 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
-import com.tokopedia.quest_widget.listeners.QuestWidgetLoginClickListener
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -65,7 +65,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val dynamicIconComponentListener: DynamicIconComponentListener,
                          private val legoSixAutoListener: Lego6AutoBannerListener,
                          private val campaignWidgetComponentListener: CampaignWidgetComponentListener,
-                         private val questWidgetLoginClickListener: QuestWidgetLoginClickListener
+                         private val questWidgetCallbacks: QuestWidgetCallbacks
 ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -450,7 +450,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             homeComponentListener,
                             parentRecycledViewPool)
             QuestWidgetViewHolder.LAYOUT -> viewHolder =
-                QuestWidgetViewHolder(view, questWidgetLoginClickListener)
+                QuestWidgetViewHolder(view, questWidgetCallbacks)
             CampaignWidgetViewHolder.LAYOUT -> viewHolder = CampaignWidgetViewHolder(
                 view,
                 homeComponentListener,
