@@ -44,19 +44,19 @@ class PlayLivePusherMediator(
         }
     }
 
-    private val countDownTimerListener = object : PlayLivePusherTimerListener {
+    private val timerListener = object : PlayLivePusherTimerListener {
         override fun onTimerActive(timeInMillis: Long) {
-            broadcastCountDownTimerActive(timeInMillis)
+            broadcastTimerActive(timeInMillis)
         }
 
         override fun onTimerFinish() {
-            broadcastCountDownTimerFinish()
+            broadcastTimerFinish()
         }
     }
 
     init {
         livePusher.setListener(livePusherListener)
-        mTimer.setListener(countDownTimerListener)
+        mTimer.setListener(timerListener)
     }
 
     fun setLiveStreamingDuration(durationInMillis: Long, maxDuration: Long) {
@@ -81,7 +81,7 @@ class PlayLivePusherMediator(
         mTimer.start()
     }
 
-    fun restartLiveCountDownTimer(duration: Long, maxDuration: Long) {
+    fun restartLiveTimer(duration: Long, maxDuration: Long) {
         mTimer.restart(duration, maxDuration)
     }
 
@@ -146,12 +146,12 @@ class PlayLivePusherMediator(
         mListeners.forEach { it.onLivePusherStatsUpdated(stats) }
     }
 
-    private fun broadcastCountDownTimerActive(timeInMillis: Long) {
-        mListeners.forEach { it.onLiveCountDownTimerActive(timeInMillis) }
+    private fun broadcastTimerActive(timeInMillis: Long) {
+        mListeners.forEach { it.onLiveTimerActive(timeInMillis) }
     }
 
-    private fun broadcastCountDownTimerFinish() {
-        mListeners.forEach { it.onLiveCountDownTimerFinish() }
+    private fun broadcastTimerFinish() {
+        mListeners.forEach { it.onLiveTimerFinish() }
     }
 
     private fun broadcastReachMaxPauseDuration() {

@@ -25,13 +25,13 @@ class PlayStatInfoView : ConstraintLayout {
 
     private var tvTotalView: Typography
     private var tvTotalLike: Typography
-    private val tvCountDown: Typography
+    private val tvCountUp: Typography
 
     init {
         val view = View.inflate(context, R.layout.view_play_stats_info, this)
         tvTotalView = view.findViewById(com.tokopedia.play_common.R.id.tv_total_views)
         tvTotalLike = view.findViewById(R.id.tv_total_likes)
-        tvCountDown = view.findViewById(R.id.tv_bro_count_down)
+        tvCountUp = view.findViewById(R.id.tv_bro_count_up)
 
         tvTotalView.text = context.getString(R.string.play_live_broadcast_stat_info_default)
         tvTotalLike.text = context.getString(R.string.play_live_broadcast_stat_info_default)
@@ -45,12 +45,12 @@ class PlayStatInfoView : ConstraintLayout {
         tvTotalLike.text = totalLike.totalLike
     }
 
-    fun setCountDown(timeInMillis: Long) {
+    fun setTimerCounter(timeInMillis: Long) {
         val hour = timeInMillis.millisToHours()
         val minutes = timeInMillis.millisToRemainingMinutes()
         val seconds = timeInMillis.millisToRemainingSeconds()
 
-        tvCountDown.text = if(hour > 0) {
+        tvCountUp.text = if(hour > 0) {
             context.getString(
                 R.string.play_live_broadcast_remaining_duration_format_with_hour,
                 hour, minutes, seconds

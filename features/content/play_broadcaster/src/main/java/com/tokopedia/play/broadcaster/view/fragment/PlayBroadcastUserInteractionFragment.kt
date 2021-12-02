@@ -42,7 +42,7 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFor
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.*
-import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
@@ -308,7 +308,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * render to ui
      */
     private fun showCounterDuration(remainingInMs: Long) {
-        viewStatInfo.setCountDown(remainingInMs)
+        viewStatInfo.setTimerCounter(remainingInMs)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
@@ -546,10 +546,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner) {
+        parentViewModel.observableLiveTimerState.observe(viewLifecycleOwner) {
             when(it)  {
-                is PlayLiveCountDownTimerState.Active -> showCounterDuration(it.remainingInMs)
-                is PlayLiveCountDownTimerState.Finish -> {
+                is PlayLiveTimerState.Active -> showCounterDuration(it.remainingInMs)
+                is PlayLiveTimerState.Finish -> {
                     analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                     showDialogWhenTimeout()
                 }

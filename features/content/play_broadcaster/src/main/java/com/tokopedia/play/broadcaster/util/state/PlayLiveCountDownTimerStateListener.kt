@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.util.state
 
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediatorListener
-import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 
 
 /**
@@ -9,14 +9,14 @@ import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
  */
 interface PlayLiveCountDownTimerStateListener : PlayLivePusherMediatorListener {
 
-    override fun onLiveCountDownTimerActive(timeInMillis: Long) {
-        onLiveCountDownTimerStateChanged(PlayLiveCountDownTimerState.Active(timeInMillis))
+    override fun onLiveTimerActive(timeInMillis: Long) {
+        onLiveTimerStateChanged(PlayLiveTimerState.Active(timeInMillis))
     }
 
-    override fun onLiveCountDownTimerFinish() {
-        onLiveCountDownTimerStateChanged(PlayLiveCountDownTimerState.Finish)
+    override fun onLiveTimerFinish() {
+        onLiveTimerStateChanged(PlayLiveTimerState.Finish)
     }
 
-    fun onLiveCountDownTimerStateChanged(countDownTimerState: PlayLiveCountDownTimerState)
+    fun onLiveTimerStateChanged(timerState: PlayLiveTimerState)
 
 }
