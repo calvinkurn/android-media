@@ -124,7 +124,8 @@ class PlayUserInteractionFragment @Inject constructor(
         InteractiveWinnerBadgeViewComponent.Listener,
         RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
-        ProductSeeMoreViewComponent.Listener
+        ProductSeeMoreViewComponent.Listener,
+        LikeBubbleViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -150,7 +151,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
-        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
+        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage, this) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
 
     /**
@@ -499,6 +500,17 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickFeaturedProductSeeMore()
     }
 
+    /**
+     * Like Bubble View Component Listener
+     */
+    override fun onBubbleShown(view: LikeBubbleViewComponent) {
+        productFeaturedView?.setShouldFadeEnd(true)
+    }
+
+    override fun onNoBubbleShown(view: LikeBubbleViewComponent) {
+        productFeaturedView?.setShouldFadeEnd(false)
+    }
+
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -563,6 +575,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (playViewModel.isPiPAllowed) pipView?.show()
         else pipView?.hide()
+
+        likeBubbleView.rootView.doOnLayout {
+            productFeaturedView?.setFadingWidth(3 * it.width)
+        }
     }
 
     private fun setupInsets(view: View) {

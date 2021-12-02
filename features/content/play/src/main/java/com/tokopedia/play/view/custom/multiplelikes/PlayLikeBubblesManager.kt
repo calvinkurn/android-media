@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit
 
 class PlayLikeBubblesManager(
     private val scope: CoroutineScope,
+    private val listener: Listener,
 ) {
 
     private var mView: PlayLikeBubblesView? = null
@@ -43,6 +44,7 @@ class PlayLikeBubblesManager(
                 }
                 bubbles.clear()
                 bubbles.addAll(newBubbles)
+                listener.onTimerTick(hasBubble = newBubbles.isNotEmpty())
                 mView?.setBubbles(bubbles)
                 mView?.postInvalidate()
             }
@@ -104,6 +106,7 @@ class PlayLikeBubblesManager(
     fun stop() {
         timerJob?.cancel()
         synchronized(bubbles) { bubbles.clear() }
+        listener.onTimerStopped()
     }
 
     private fun getTimeByFps(fps: Int): Long {
@@ -116,5 +119,10 @@ class PlayLikeBubblesManager(
         private const val MAX_BUBBLES_ON_SCREEN = 30
 
         private const val FULL_FPS = 60
+    }
+
+    interface Listener {
+        fun onTimerTick(hasBubble: Boolean)
+        fun onTimerStopped()
     }
 }

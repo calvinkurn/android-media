@@ -9,6 +9,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
+import com.tokopedia.play.view.custom.ProductFeaturedRecyclerView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -20,7 +21,7 @@ class ProductFeaturedViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, R.id.view_product_featured) {
 
-    private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
+    private val rvProductFeatured: ProductFeaturedRecyclerView = findViewById(R.id.rv_product_featured)
     private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
@@ -77,8 +78,17 @@ class ProductFeaturedViewComponent(
         setFeaturedProducts(getPlaceholder(), TOTAL_PLACEHOLDER)
     }
 
+    fun setFadingWidth(width: Int) {
+        rvProductFeatured.setFadingEndWidth(width)
+    }
+
+    fun setShouldFadeEnd(shouldFade: Boolean) {
+        rvProductFeatured.setShouldFade(shouldFade)
+    }
+
     private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        return products.take(maxProducts)
+//        return products.take(maxProducts)
+        return products.take(50)
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
