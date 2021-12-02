@@ -75,7 +75,9 @@ data class AffiliatePerformanceData(
                         @SerializedName("LinkID")
                         var linkID: String,
                         @SerializedName("Status")
-                        var status: Int?
+                        var status: Int?,
+                        @SerializedName("Metrics")
+                        var metrics: ArrayList<Metrics>?
                 ) {
                     data class Footer(
                             @SerializedName("FooterIcon")
@@ -85,7 +87,18 @@ data class AffiliatePerformanceData(
                             @SerializedName("FooterType")
                             var footerType: Int?
                     )
-
+                    data class Metrics(
+                        @SerializedName("MetricType")
+                        var metricType: String?,
+                        @SerializedName("MetricTitle")
+                        var metricTitle: String?,
+                        @SerializedName("MetricValue")
+                        var metricValue: String?,
+                        @SerializedName("MetricDifferenceValue")
+                        var metricDifferenceValue: String?,
+                        @SerializedName("trend")
+                        var trend: Int?
+                    )
                     data class Image(
                             @SerializedName("AndroidURL")
                             var androidURL: String?,
