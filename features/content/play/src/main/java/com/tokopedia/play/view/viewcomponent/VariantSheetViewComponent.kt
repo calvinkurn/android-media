@@ -121,6 +121,17 @@ class VariantSheetViewComponent(
                 isPartialSelected
         )
 
+        val findVariant = variantSheetUiModel?.mapOfSelectedVariants?.keys?.indexOf(variantOptions.variantCategoryKey)
+        val indexOf = variantSheetUiModel?.mapOfSelectedVariants?.keys
+        labelVariant1.shouldShowWithAction(listOfVariants?.getOrNull(0)?.variantOptions?.isNotEmpty() == true &&
+                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.first().orEmpty()) != "0"){
+            if(findVariant == 0) labelVariant1.text = variantOptions.variantName
+        }
+        labelVariant2.shouldShowWithAction(listOfVariants?.getOrNull(1)?.variantOptions?.isNotEmpty() == true &&
+                variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.last().orEmpty()) != "0"){
+            if(findVariant == 1) labelVariant2.text = variantOptions.variantName
+        }
+
         if (!listOfVariants.isNullOrEmpty()) {
             val pairSelectedProduct = VariantCommonMapper.selectedProductData(
                     variantSheetUiModel?.parentVariant?: ProductVariant())
@@ -157,17 +168,6 @@ class VariantSheetViewComponent(
                     tvProductStock.text = getString(R.string.play_product_item_stock, stockInString)
                 }
                 setProduct(product)
-
-                val findVariant = variantSheetUiModel?.mapOfSelectedVariants?.keys?.indexOf(variantOptions.variantCategoryKey)
-                val indexOf = variantSheetUiModel?.mapOfSelectedVariants?.keys
-                labelVariant1.shouldShowWithAction(listOfVariants?.getOrNull(0)?.variantOptions?.isNotEmpty() == true &&
-                        variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.first().orEmpty()) != "0"){
-                    if(findVariant == 0) labelVariant1.text = variantOptions.variantName
-                }
-                labelVariant2.shouldShowWithAction(listOfVariants?.getOrNull(1)?.variantOptions?.isNotEmpty() == true &&
-                        variantSheetUiModel?.mapOfSelectedVariants?.getValue(indexOf?.last().orEmpty()) != "0"){
-                    if(findVariant == 1) labelVariant2.text = variantOptions.variantName
-                }
 
                 btnAction.isEnabled = variantSheetUiModel?.isPartialySelected() == false
             }
