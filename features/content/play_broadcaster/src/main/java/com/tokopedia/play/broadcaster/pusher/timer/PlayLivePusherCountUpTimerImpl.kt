@@ -11,7 +11,7 @@ import javax.inject.Inject
 class PlayLivePusherCountUpTimerImpl @Inject constructor(
     private val cacheHandler: LocalCacheHandler,
     private val countUp: PlayCountUp,
-) : PlayLivePusherCountDownTimer {
+) : PlayLivePusherTimer {
 
     override val remainingDurationInMillis: Long
         get() = mMaxDuration - mDuration
@@ -19,13 +19,13 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
     private var mDuration: Long = 0L
     private var mMaxDuration: Long = 0L
 
-    private var mListener: PlayLivePusherCountDownTimerListener? = null
+    private var mListener: PlayLivePusherTimerListener? = null
 
     override fun setDuration(duration: Long, maxDuration: Long) {
         setupDuration(duration, maxDuration)
     }
 
-    override fun setListener(listener: PlayLivePusherCountDownTimerListener) {
+    override fun setListener(listener: PlayLivePusherTimerListener) {
         mListener = listener
     }
 

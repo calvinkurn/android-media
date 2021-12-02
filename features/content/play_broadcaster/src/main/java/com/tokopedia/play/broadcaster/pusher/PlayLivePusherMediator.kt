@@ -1,8 +1,8 @@
 package com.tokopedia.play.broadcaster.pusher
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerListener
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimerListener
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
@@ -14,11 +14,11 @@ import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 class PlayLivePusherMediator(
     private val livePusher: PlayLivePusher,
     private val cacheHandler: LocalCacheHandler,
-    private val mCountDownTimer: PlayLivePusherCountDownTimer
+    private val mTimer: PlayLivePusherTimer
 ): PlayLivePusher by livePusher {
 
     val remainingDurationInMillis: Long
-        get() = mCountDownTimer.remainingDurationInMillis
+        get() = mTimer.remainingDurationInMillis
 
     private val mListeners = mutableListOf<PlayLivePusherMediatorListener>()
 
@@ -30,8 +30,8 @@ class PlayLivePusherMediator(
             broadcastStateChanged(pusherMediatorState)
 
             when {
-                pusherState.isPaused -> mCountDownTimer.pause()
-                pusherState.isResumed -> mCountDownTimer.resume()
+                pusherState.isPaused -> mTimer.pause()
+                pusherState.isResumed -> mTimer.resume()
                 pusherState.isStopped -> removeLastPauseMillis()
                 pusherMediatorState is PlayLivePusherMediatorState.Error -> {
                     if (pusherMediatorState.error.type.isNetworkTrouble) doAutoReconnect()
@@ -44,7 +44,7 @@ class PlayLivePusherMediator(
         }
     }
 
-    private val countDownTimerListener = object : PlayLivePusherCountDownTimerListener {
+    private val countDownTimerListener = object : PlayLivePusherTimerListener {
         override fun onCountDownTimerActive(timeInMillis: Long) {
             broadcastCountDownTimerActive(timeInMillis)
         }
@@ -56,11 +56,11 @@ class PlayLivePusherMediator(
 
     init {
         livePusher.setListener(livePusherListener)
-        mCountDownTimer.setListener(countDownTimerListener)
+        mTimer.setListener(countDownTimerListener)
     }
 
     fun setLiveStreamingDuration(durationInMillis: Long, maxDuration: Long) {
-        mCountDownTimer.setDuration(durationInMillis, maxDuration)
+        mTimer.setDuration(durationInMillis, maxDuration)
     }
 
     fun setLiveStreamingPauseDuration(durationInMillis: Long) {
@@ -73,20 +73,20 @@ class PlayLivePusherMediator(
     }
 
     fun stopLiveStreaming() {
-        mCountDownTimer.stop()
+        mTimer.stop()
         livePusher.stop()
     }
 
     fun startLiveCountDownTimer() {
-        mCountDownTimer.start()
+        mTimer.start()
     }
 
     fun restartLiveCountDownTimer(duration: Long, maxDuration: Long) {
-        mCountDownTimer.restart(duration, maxDuration)
+        mTimer.restart(duration, maxDuration)
     }
 
     fun destroy() {
-        mCountDownTimer.destroy()
+        mTimer.destroy()
         release()
     }
 
