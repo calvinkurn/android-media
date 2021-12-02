@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightSelectAdsTypeAdapter.Companion.SelectAdsTypeViewHolder
+import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightAdsTypeAdapter.Companion.SelectAdsTypeViewHolder
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class TopAdsInsightSelectAdsTypeAdapter(
-    private val list: List<InsightAdsTypeItem>,
-    private val adSelected: (Int) -> Unit
+class TopAdsInsightAdsTypeAdapter(
+    private val list: List<InsightAdObj>,
+    private val adSelected: (Int,InsightAdObj) -> Unit
 ) : RecyclerView.Adapter<SelectAdsTypeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectAdsTypeViewHolder {
@@ -25,7 +25,7 @@ class TopAdsInsightSelectAdsTypeAdapter(
         holder.adName.text = item.adName
         holder.radioButton.isChecked = item.isSelected
         holder.itemView.setOnClickListener {
-            adSelected.invoke(holder.adapterPosition)
+            adSelected.invoke(holder.adapterPosition,item)
             item.isSelected = true
             uncheckAll(holder.adapterPosition)
         }
@@ -58,7 +58,7 @@ class TopAdsInsightSelectAdsTypeAdapter(
     }
 }
 
-data class InsightAdsTypeItem(
+data class InsightAdObj(
     val adName: String,
     var isSelected: Boolean
 )

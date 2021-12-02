@@ -23,17 +23,15 @@ data class RecommendedKeywordData(
     val shopID: String? = null,
     val recommendedKeywordCount: Int = 0,
     val groupCount: Int = 0,
-    val totalImpressionCount: String? = null,
+    val totalImpressionCount: String? = "",
     val recommendedKeywordDetails: List<RecommendedKeywordDetail>? = null,
-    val topadsHeadlineKeywordSuggestion: TopadsHeadlineKeywordSuggestion? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readInt(),
         parcel.readInt(),
         parcel.readString(),
-        parcel.createTypedArrayList(RecommendedKeywordDetail),
-        parcel.readParcelable(TopadsHeadlineKeywordSuggestion::class.java.classLoader)
+        parcel.createTypedArrayList(RecommendedKeywordDetail)
     ) {
     }
 
@@ -72,6 +70,7 @@ data class RecommendedKeywordDetail(
     val impressionCount: Int = 0
 ) : Parcelable {
     var isChecked: Boolean = true
+    var priceBid: Double = 0.0
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",

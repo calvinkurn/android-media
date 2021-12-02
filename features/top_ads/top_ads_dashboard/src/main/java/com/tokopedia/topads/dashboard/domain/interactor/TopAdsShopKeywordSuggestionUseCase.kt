@@ -4,8 +4,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
+import javax.inject.Inject
 
-class TopAdsHeadlineShopInsightUseCase {
+class TopAdsShopKeywordSuggestionUseCase @Inject constructor() {
 
     suspend fun getKeywordRecommendation(map: Map<String,Any>): GraphqlResponse {
 

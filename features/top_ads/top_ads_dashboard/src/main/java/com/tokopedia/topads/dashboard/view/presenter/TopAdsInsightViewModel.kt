@@ -8,24 +8,29 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.dashboard.data.model.insightkey.ErrorsItem
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
-import com.tokopedia.topads.dashboard.domain.interactor.TopAdsHeadlineShopInsightUseCase
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopKeywordSuggestionUseCase
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class TopAdsInsightViewModel @Inject constructor() : BaseViewModel(Dispatchers.Main) {
+class TopAdsInsightViewModel @Inject constructor(
+    private val shopKeywordSuggestionUseCase: TopAdsShopKeywordSuggestionUseCase
+) : BaseViewModel(Dispatchers.Main) {
 
     private val _recommendedKeyword = MutableLiveData<RecommendedKeywordData>()
-    val recommendedKeyword : LiveData<RecommendedKeywordData> = _recommendedKeyword
+    val recommendedKeyword: LiveData<RecommendedKeywordData> = _recommendedKeyword
+
+    private val _applyKeyword = MutableLiveData<Int>()
+    val applyKeyword : LiveData<Int> = _applyKeyword
+
     val error = MutableLiveData<ErrorsItem>()
 
     fun getShopKeywords(shopID: String, groupIds: Array<String>) {
 
-        val useCase = TopAdsHeadlineShopInsightUseCase()
-
         launchCatchError(block = {
-            val gqlResponse = useCase.getKeywordRecommendation(useCase.getParams(shopID, groupIds))
+            val gqlResponse = shopKeywordSuggestionUseCase.getKeywordRecommendation(
+                    shopKeywordSuggestionUseCase.getParams(shopID, groupIds))
             val keyword = gqlResponse
-                .getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
+                    .getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
 
             keyword?.suggestion?.recommendedKeywordData?.let {
                 _recommendedKeyword.postValue(it)
@@ -38,6 +43,10 @@ class TopAdsInsightViewModel @Inject constructor() : BaseViewModel(Dispatchers.M
         })
     }
 
+    fun applyRecommendedKeywords() {
+
+    }
+
     companion object {
         fun getShopAdsKeywordRecommendation(): TopAdsShopHeadlineKeyword {
             return Gson().fromJson(getResp(), TopAdsShopHeadlineKeyword::class.java)
@@ -47,7 +56,7 @@ class TopAdsInsightViewModel @Inject constructor() : BaseViewModel(Dispatchers.M
                 "    \"topadsHeadlineKeywordSuggestion\": {\n" +
                 "      \"data\": {\n" +
                 "        \"shopID\": \"479085\",\n" +
-                "        \"recommendedKeywordCount\": 1,\n" +
+                "        \"recommendedKeywordCount\": 2,\n" +
                 "        \"groupCount\": 1,\n" +
                 "        \"totalImpressionCount\": \"243\",\n" +
                 "        \"recommendedKeywordDetails\": [\n" +

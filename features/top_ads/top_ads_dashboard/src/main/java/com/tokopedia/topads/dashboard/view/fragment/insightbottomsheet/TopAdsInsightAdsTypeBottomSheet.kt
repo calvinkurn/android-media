@@ -6,20 +6,18 @@ import android.view.WindowManager
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.model.GroupListDataItem
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.view.adapter.insight.InsightAdsTypeItem
-import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightSelectAdsTypeAdapter
+import com.tokopedia.topads.dashboard.view.adapter.insight.InsightAdObj
+import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightAdsTypeAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_insight_select_ads_type_bottomsheet.*
 
-class TopAdsInsightSelectAdsTypeBottomSheet(
-    adsList: List<InsightAdsTypeItem>,
-    onAdSelected: (Int) -> Unit
+class TopAdsInsightAdsTypeBottomSheet(
+    adsList: List<InsightAdObj>,
+    onAdSelected: (Int,InsightAdObj) -> Unit
 ) : BottomSheetUnify() {
 
-    private val mAdapter by lazy { TopAdsInsightSelectAdsTypeAdapter(adsList, onAdSelected) }
+    private val mAdapter by lazy { TopAdsInsightAdsTypeAdapter(adsList, onAdSelected) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,10 +60,10 @@ class TopAdsInsightSelectAdsTypeBottomSheet(
     }
 
     companion object {
-        private const val ADS_TYPE_BOTTOM_SHEET_TAG = "insight_select_ads_type_bottom_sheet"
+        private const val ADS_TYPE_BOTTOM_SHEET_TAG = "ads_type_bottom_sheet"
         fun getInstance(
-            list: List<InsightAdsTypeItem>,
-            onAdSelected: (Int) -> Unit
-        ) = TopAdsInsightSelectAdsTypeBottomSheet(list, onAdSelected)
+                list: List<InsightAdObj>,
+                onAdSelected: (Int,InsightAdObj) -> Unit
+        ) = TopAdsInsightAdsTypeBottomSheet(list, onAdSelected)
     }
 }

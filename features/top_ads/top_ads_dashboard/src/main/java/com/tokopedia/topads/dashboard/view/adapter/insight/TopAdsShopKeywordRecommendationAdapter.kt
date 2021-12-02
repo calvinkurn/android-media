@@ -1,24 +1,21 @@
 package com.tokopedia.topads.dashboard.view.adapter.insight
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_EDIT_OPTION
+import com.tokopedia.topads.common.data.response.KeywordEditInput
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsInsightShopKeywordViewHolder
-import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
 
-class TopAdsInsightShopKeywordRecommAdapter(
+class TopAdsShopKeywordRecommendationAdapter(
     private val list: List<RecommendedKeywordDetail>,
     private val type: Int,
     private val lstnr: (Int) -> Unit
 ) : RecyclerView.Adapter<TopAdsInsightShopKeywordViewHolder>() {
 
-    private var selectedItemsCount = list.size
+    var selectedItemsCount = list.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopAdsInsightShopKeywordViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -27,17 +24,39 @@ class TopAdsInsightShopKeywordRecommAdapter(
 
     override fun onBindViewHolder(holder: TopAdsInsightShopKeywordViewHolder, position: Int) {
         val item = list[holder.adapterPosition]
-        holder.initView(type,item)
+        holder.initView(type, item)
 
         holder.bindData(type)
 
         holder.addListeners { checkBox ->
-            checkBox.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) selectedItemsCount++ else selectedItemsCount--
-                item.isChecked = isChecked
+            checkBox.setOnClickListener {
+                item.isChecked = !item.isChecked
+                if (item.isChecked) selectedItemsCount++ else selectedItemsCount--
                 lstnr.invoke(selectedItemsCount)
             }
         }
+    }
+
+    fun getSelectedList(): List<KeywordEditInput> {
+        val selectedList = mutableListOf<KeywordEditInput>()
+
+        list.forEach {
+            if (it.isChecked) {
+                selectedList.add(KeywordEditInput(
+                    PARAM_EDIT_OPTION,
+                    KeywordEditInput.Keyword(
+                        it.groupId.toString(),
+                        "",
+                        "",
+                        it.keywordTag,
+                        it.priceBid,
+                        ""
+                    ))
+                )
+            }
+        }
+
+        return selectedList
     }
 
     fun checkAllItems() {
@@ -61,7 +80,7 @@ class TopAdsInsightShopKeywordRecommAdapter(
             list: List<RecommendedKeywordDetail>,
             type: Int,
             lstnr: (Int) -> Unit
-        ) = TopAdsInsightShopKeywordRecommAdapter(list, type, lstnr)
+        ) = TopAdsShopKeywordRecommendationAdapter(list, type, lstnr)
     }
 
 }

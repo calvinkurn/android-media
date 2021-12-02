@@ -21,57 +21,26 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
 
     private lateinit var item: RecommendedKeywordDetail
 
-    fun initView(type: Int, it: RecommendedKeywordDetail) = with(view) {
-        item = it
-        when (type) {
-            BID_KEYWORD -> {
-                searchGroup.hide()
-            }
-            NEW_KEYWORD -> {
-                (txtSubTitle2.layoutParams as ConstraintLayout.LayoutParams)
-                    .startToEnd = R.id.guideline
-                (edtBid.layoutParams as ConstraintLayout.LayoutParams)
-                    .endToEnd = R.id.centerVerticalGuideline
-
-                txtSubTitle2.text = resources.getString(R.string.new_keyword_subtitle2)
-
-                newKeywordGroup.hide()
-                searchGroup.show()
-            }
-            NEGATIVE_KEYWORD -> {
-                searchGroup.hide()
-                btnEditFee.hide()
-            }
-        }
-    }
-
     fun bindData(type: Int) = with(view) {
         checkBox.isChecked = item.isChecked
 
         txtTitle.text = item.keywordTag
         textGroupName.text = item.groupName
 
-        txtSubTitle1Value.text = String.format(resources.getString(R.string.per_click_value), 0)
-        updateSubTitle2Value(item.recommendedBid)
-
-        edtBid.textFieldInput.setText(item.recommendedBid.toString())
-        updateRecommendedBudgetText()
-
-        txtFooter.attributedString(
-            String.format(resources.getString(R.string.max_times_month), 500)
+        txtNoOfSearches.attributedString(
+            String.format(resources.getString(R.string.no_of_searches), item.totalHits)
         )
 
-        updateDataSpecific(type)
-    }
+        updateSubTitle2Value(item.recommendedBid)
+        edtBid.textFieldInput.setText("${item.recommendedBid}")
+        txtRecommendedBudget.text = String.format(
+            view.resources.getString(R.string.keyword_recommended_budget),
+            item.recommendedBid
+        )
 
-    private fun updateDataSpecific(type: Int) = with(view) {
-        when (type) {
-            NEW_KEYWORD -> {
-                txtNoOfSearches.attributedString(
-                    String.format(resources.getString(R.string.no_of_searches), 10)
-                )
-            }
-        }
+        txtFooter.attributedString(
+            String.format(resources.getString(R.string.max_times_month), item.impressionCount)
+        )
     }
 
     fun addListeners(lstr: (CheckboxUnify) -> Unit) = with(view) {
@@ -86,7 +55,18 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
     }
 
     private fun editTextValueChanged(text: String) {
-        updateRecommendedBudgetText(text.toDouble() > item.recommendedBid)
+        val inputBudget = text.toDouble()
+        view.txtRecommendedBudget.text =
+            if (inputBudget <= item.recommendedBid && inputBudget > item.minBid) {
+                String.format(view.resources.getString(R.string.keyword_recommended_budget), item.recommendedBid)
+            } else if(inputBudget > item.recommendedBid && inputBudget < item.maxBid) {
+                view.resources.getString(R.string.biaya_optimal)
+            } else if(inputBudget < item.minBid) {
+                String.format(view.resources.getString(R.string.min_bid_error_new), item.minBid)
+            } else if(inputBudget > item.maxBid) {
+                String.format(view.resources.getString(R.string.max_bid_error_new), item.maxBid)
+            } else ""
+        item.priceBid = inputBudget
     }
 
     private fun View.closeEditTextFee() {
@@ -108,22 +88,36 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
         edtBid.show()
     }
 
-    private fun updateRecommendedBudgetText(optimal: Boolean = false) {
-        view.txtRecommendedBudget.text =
-            if (optimal) view.resources.getString(R.string.biaya_optimal)
-            else String.format(
-                view.resources.getString(R.string.keyword_recommended_budget),
-                item.recommendedBid
-            )
-    }
-
     private fun updateSubTitle2Value(value: Double) {
         view.txtSubTitle2Value.attributedString(
             String.format(
-                view.resources.getString(R.string.per_click_bold_value),
-                value
+                view.resources.getString(R.string.per_click_bold_value), value
             )
         )
+    }
+
+    fun initView(type: Int, it: RecommendedKeywordDetail) = with(view) {
+        item = it
+        when (type) {
+            BID_KEYWORD -> {
+                searchGroup.hide()
+            }
+            NEW_KEYWORD -> {
+                (txtSubTitle2.layoutParams as ConstraintLayout.LayoutParams)
+                        .startToEnd = R.id.guideline
+                (edtBid.layoutParams as ConstraintLayout.LayoutParams)
+                        .endToEnd = R.id.centerVerticalGuideline
+
+                txtSubTitle2.text = resources.getString(R.string.new_keyword_subtitle2)
+
+                newKeywordGroup.hide()
+                searchGroup.show()
+            }
+            NEGATIVE_KEYWORD -> {
+                searchGroup.hide()
+                btnEditFee.hide()
+            }
+        }
     }
 }
 
