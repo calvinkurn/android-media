@@ -10,9 +10,7 @@ import com.tokopedia.sellerhome.stub.di.module.AppModuleStub
 object BaseAppComponentStubInstance {
     private lateinit var baseAppComponentStub: BaseAppComponentStub
 
-    fun getBaseAppComponentStub(
-        application: Application
-    ): BaseAppComponentStub {
+    fun getBaseAppComponentStub(application: Application): BaseAppComponentStub {
         if (!::baseAppComponentStub.isInitialized) {
             baseAppComponentStub = DaggerBaseAppComponentStub.builder()
                 .appModuleStub(AppModuleStub(application))

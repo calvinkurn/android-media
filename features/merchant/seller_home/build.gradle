@@ -115,7 +115,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation rootProject.ext.libraries.unitTest
+    androidTestImplementation projectOrAar(rootProject.ext.features.loginregister)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
