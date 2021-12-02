@@ -121,7 +121,7 @@
         android:background="@drawable/bg_red_dot_unread"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:textColor="@color/Unify_Background"
+        android:textColor="@color/Unify_N0"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/time"
         app:layout_constraintTop_toBottomOf="@+id/time"

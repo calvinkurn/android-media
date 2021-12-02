@@ -14,6 +14,7 @@ import com.tokopedia.orderhistory.di.DaggerOrderHistoryComponent
 import com.tokopedia.orderhistory.di.OrderHistoryComponent
 import com.tokopedia.orderhistory.di.OrderHistoryContextModule
 import com.tokopedia.orderhistory.view.fragment.OrderHistoryFragment
+import com.tokopedia.utils.resources.isDarkMode
 
 open class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComponent> {
 
@@ -54,7 +55,9 @@ open class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistor
 
     private fun useLightNotificationBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            if (!isDarkMode()) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
             window.statusBarColor = MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
         }
     }

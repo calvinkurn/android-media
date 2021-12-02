@@ -113,7 +113,7 @@
                     android:layout_alignParentBottom="true"
                     android:gravity="end"
                     android:singleLine="true"
-                    android:textColor="@color/Unify_Background"
+                    android:textColor="@color/Unify_N0"
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     tools:text="LGOFFICIFO" />
