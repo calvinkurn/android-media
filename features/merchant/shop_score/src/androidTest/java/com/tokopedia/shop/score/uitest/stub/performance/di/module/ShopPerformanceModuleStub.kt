@@ -6,9 +6,13 @@ import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.domain.mapper.ShopScoreCommonMapper
 import com.tokopedia.shop.score.common.ShopScorePrefManager
 import com.tokopedia.shop.score.performance.di.scope.ShopPerformanceScope
+import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
 import com.tokopedia.shop.score.performance.domain.usecase.GetShopPerformanceUseCase
 import com.tokopedia.shop.score.uitest.stub.common.UserSessionStub
 import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
+import com.tokopedia.shop.score.uitest.stub.common.util.ShopScorePrefManagerStub
+import com.tokopedia.shop.score.uitest.stub.performance.domain.mapper.ShopScoreCommonMapperStub
+import com.tokopedia.shop.score.uitest.stub.performance.domain.mapper.ShopScoreMapperStub
 import com.tokopedia.shop.score.uitest.stub.performance.domain.usecase.GetShopInfoPeriodUseCaseStub
 import com.tokopedia.shop.score.uitest.stub.performance.domain.usecase.GetShopPerformanceUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
@@ -20,7 +24,7 @@ class ShopPerformanceModuleStub {
 
     @Provides
     @ShopPerformanceScope
-    fun provideShopInfoPeriodUseCase(
+    fun provideShopInfoPeriodUseCaseStub(
         graphqlRepositoryStub: GraphqlRepositoryStub,
         shopScoreCommonMapper: ShopScoreCommonMapper
     ): GetShopInfoPeriodUseCase {
@@ -29,19 +33,35 @@ class ShopPerformanceModuleStub {
 
     @Provides
     @ShopPerformanceScope
-    fun provideGetShopPerformanceUseCase(graphqlRepositoryStub: GraphqlRepositoryStub): GetShopPerformanceUseCase {
+    fun provideGetShopPerformanceUseCaseStub(graphqlRepositoryStub: GraphqlRepositoryStub): GetShopPerformanceUseCase {
         return GetShopPerformanceUseCaseStub(graphqlRepositoryStub)
     }
 
     @ShopPerformanceScope
     @Provides
-    fun provideShopScorePrefsManager(@ApplicationContext context: Context): ShopScorePrefManager {
-        return ShopScorePrefManager(context)
+    fun provideShopScorePrefsManagerStub(@ApplicationContext context: Context): ShopScorePrefManager {
+        return ShopScorePrefManagerStub(context)
     }
 
     @ShopPerformanceScope
     @Provides
     fun provideUserSessionStub(@ApplicationContext context: Context): UserSessionInterface {
         return UserSessionStub(context)
+    }
+
+    @ShopPerformanceScope
+    @Provides
+    fun provideShopScoreMapperStub(
+        userSessionInterface: UserSessionInterface,
+        @ApplicationContext context: Context,
+        shopScorePrefManager: ShopScorePrefManager
+    ): ShopScoreMapper {
+        return ShopScoreMapperStub(userSessionInterface, context, shopScorePrefManager)
+    }
+
+    @ShopPerformanceScope
+    @Provides
+    fun provideShopScoreCommonMapperStub(): ShopScoreCommonMapper {
+        return ShopScoreCommonMapperStub()
     }
 }

@@ -53,7 +53,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
-class ShopScoreMapper @Inject constructor(
+open class ShopScoreMapper @Inject constructor(
     private val userSession: UserSessionInterface,
     @ApplicationContext val context: Context?,
     private val shopScorePrefManager: ShopScorePrefManager
@@ -288,7 +288,7 @@ class ShopScoreMapper @Inject constructor(
         return shopScoreVisitableList
     }
 
-    private fun mapToHeaderShopPerformance(
+    fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
         shopAge: Long,
@@ -565,7 +565,7 @@ class ShopScoreMapper @Inject constructor(
         return shopInfoLevelUiModel
     }
 
-    private fun mapToItemDetailPerformanceUiModel(
+    fun mapToItemDetailPerformanceUiModel(
         shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Long,
         shopScore: Long,
@@ -861,7 +861,7 @@ class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToItemFaqUiModel(
+    fun mapToItemFaqUiModel(
         isNewSeller: Boolean,
         isOfficialStore: Boolean,
         pmData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data.PowerMerchant?,

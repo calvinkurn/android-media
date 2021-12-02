@@ -5,18 +5,18 @@ import com.tokopedia.shop.score.uitest.stub.common.di.component.BaseAppComponent
 import com.tokopedia.shop.score.uitest.stub.common.di.component.DaggerBaseAppComponentStub
 import com.tokopedia.shop.score.uitest.stub.common.di.module.AppModuleStub
 
-object BaseAppComponentStubInstance {
+class BaseAppComponentStubInstance {
 
-    private lateinit var baseAppComponentStub: BaseAppComponentStub
+    companion object {
+        private var baseAppComponentStub: BaseAppComponentStub? = null
 
-    fun getBaseAppComponentStub(
-        application: Application
-    ): BaseAppComponentStub {
-        if (!::baseAppComponentStub.isInitialized) {
-            baseAppComponentStub = DaggerBaseAppComponentStub.builder()
-                .appModuleStub(AppModuleStub(application))
-                .build()
+        fun getBaseAppComponentStub(
+            application: Application
+        ): BaseAppComponentStub {
+            return baseAppComponentStub?.run { baseAppComponentStub }
+                ?: DaggerBaseAppComponentStub.builder()
+                    .appModuleStub(AppModuleStub(application))
+                    .build()
         }
-        return baseAppComponentStub
     }
 }
