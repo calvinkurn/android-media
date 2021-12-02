@@ -576,6 +576,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 filterBottomSheet.setAction(CTA_RESET) {
                     filterBottomSheetAdapter.isResetCheckbox = true
                     filterBottomSheetAdapter.notifyDataSetChanged()
+                    filterBottomSheet.showButtonSave()
+                    listOptionIdSelected.clear()
                 }
             } else {
                 filterBottomSheet.setAction(CTA_RESET) {
@@ -618,31 +620,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     filterBottomSheet.bottomSheetAction.text = CTA_RESET
                     filterBottomSheet.bottomSheetAction.visible()
                     filterBottomSheet.bottomSheetAction.setOnClickListener {
+                        listOptionIdSelected.clear()
                         filterBottomSheetAdapter.isResetCheckbox = true
                         filterBottomSheetAdapter.notifyDataSetChanged()
                     }
+                    filterBottomSheet.showButtonSave()
                 }
             }
 
             override fun onSaveCheckboxSelection() {
-                var listCheckboxSelected = arrayListOf<String>()
-                paramWishlistV2.sortFilters.forEach { itemFilter ->
-                    if (itemFilter.name == nameSelected) {
-                        listCheckboxSelected = itemFilter.selected
-                    }
-                }
                 paramWishlistV2.sortFilters.clear()
-
-                listCheckboxSelected.addAll(listOptionIdSelected)
-
-                if (listCheckboxSelected.isNotEmpty()) {
+                if (listOptionIdSelected.isNotEmpty()) {
                     paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
-                            name = nameSelected, selected = listCheckboxSelected))
+                            name = nameSelected, selected = listOptionIdSelected as ArrayList<String>))
                 }
 
                 filterBottomSheet.dismiss()
                 doRefresh()
-                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(FILTER_OFFERS_LABEL)
+                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(listOptionIdSelected.toString())
             }
         })
         filterBottomSheet.show(childFragmentManager)
@@ -780,7 +775,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onCariBarangClicked() {
-        RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH)
+        RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         WishlistV2Analytics.clickCariBarangOnEmptyStateNoItems()
     }
 
