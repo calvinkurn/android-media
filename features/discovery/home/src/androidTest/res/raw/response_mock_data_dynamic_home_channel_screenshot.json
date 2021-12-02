@@ -1333,6 +1333,7 @@
                     "perso_type": 1,
                     "campaignCode": "",
                     "has_close_button": true,
+                    "pageName": "page_name",
                     "header": {
                         "id": 25833,
                         "name": "Android Test List Carousel",
@@ -1349,6 +1350,7 @@
                         {
                             "id": 45873377,
                             "back_color": "",
+                            "recommendationType": "recommendation_type",
                             "name": "Microsoft Surface Pro 4 Cover / Keyboard Fingerprint Original Garansi",
                             "url": "https://www.tokopedia.com/chocoapple/microsoft-surface-pro-4-cover-keyboard-fingerprint-original-garansi?src=topads",
                             "applink": "tokopedia://product/45873377",
@@ -1402,6 +1404,7 @@
                         },
                         {
                             "id": 45873377,
+                            "recommendationType": "recommendation_type",
                             "back_color": "",
                             "name": "Microsoft Surface Pro 4 Cover / Keyboard Fingerprint Original Garansi",
                             "url": "https://www.tokopedia.com/chocoapple/microsoft-surface-pro-4-cover-keyboard-fingerprint-original-garansi?src=topads",
