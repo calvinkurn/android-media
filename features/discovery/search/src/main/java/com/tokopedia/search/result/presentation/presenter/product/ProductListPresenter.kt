@@ -8,6 +8,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_5
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_6
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
 import com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.LOCAL_CACHE_NAME
@@ -1155,20 +1156,30 @@ class ProductListPresenter @Inject constructor(
         if (!isHeadlineAdsAllowed()) return
 
         val cpmModel = searchProductModel.cpmModel
+        val listLayoutFive = arrayListOf<CpmData>()
         val listLayoutSix = arrayListOf<CpmData>()
         cpmModel.data?.forEachIndexed { index, cpmData ->
             if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
 
-            if (cpmData.cpm.layout == LAYOUT_6) {
-                listLayoutSix.add(cpmData)
-                if (cpmModel.data.size - 1 != index) return@forEachIndexed
-                val cpmDataView = createCpmDataView(cpmModel, listLayoutSix)
-                process(index, cpmDataView)
-            } else {
-                val list = arrayListOf<CpmData>()
-                list.add(cpmData)
-                val cpmDataView = createCpmDataView(cpmModel, list)
-                process(index, cpmDataView)
+            when (cpmData.cpm.layout) {
+                LAYOUT_6 -> {
+                    listLayoutSix.add(cpmData)
+                    if (cpmModel.data.size - 1 != index) return@forEachIndexed
+                    val cpmDataView = createCpmDataView(cpmModel, listLayoutSix)
+                    process(index, cpmDataView)
+                }
+                LAYOUT_5 -> {
+                    listLayoutFive.add(cpmData)
+                    if (cpmModel.data.size - 1 != index) return@forEachIndexed
+                    val cpmDataView = createCpmDataView(cpmModel, listLayoutFive)
+                    process(index, cpmDataView)
+                }
+                else -> {
+                    val list = arrayListOf<CpmData>()
+                    list.add(cpmData)
+                    val cpmDataView = createCpmDataView(cpmModel, list)
+                    process(index, cpmDataView)
+                }
             }
         }
     }
