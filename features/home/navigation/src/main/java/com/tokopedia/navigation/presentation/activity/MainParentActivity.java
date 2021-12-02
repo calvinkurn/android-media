@@ -792,12 +792,10 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private boolean isEligibleForWishlistRevamp() {
-        // TODO : rollback to empty string for default value
-        // return getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, "").equals(RollenceKey.WISHLIST_V2_REVAMP);
-        return getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_V2_REVAMP).equals(RollenceKey.WISHLIST_V2_REVAMP);
+        return getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, "").equals(RollenceKey.WISHLIST_V2_REVAMP);
     }
 
-    private Boolean isRemoteConfigWishlistV2Revamp() {
+    private boolean isRemoteConfigWishlistV2Revamp() {
         return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2, false);
     }
 

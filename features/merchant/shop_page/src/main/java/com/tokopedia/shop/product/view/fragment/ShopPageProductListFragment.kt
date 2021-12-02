@@ -329,9 +329,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun isEligibleForWishlistRevamp(): Boolean {
         return try {
-            // TODO : rollback to empty string for default value
-            // getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
-            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_V2_REVAMP) == RollenceKey.WISHLIST_V2_REVAMP
+            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
         } catch (e: Exception) {
             e.printStackTrace()
             false
