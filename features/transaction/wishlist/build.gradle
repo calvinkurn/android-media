@@ -9,9 +9,6 @@ kapt {
     useBuildCache = true
 }
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-}
 buildscript {
     repositories {
         google()
@@ -41,7 +38,6 @@ android {
 
 dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog

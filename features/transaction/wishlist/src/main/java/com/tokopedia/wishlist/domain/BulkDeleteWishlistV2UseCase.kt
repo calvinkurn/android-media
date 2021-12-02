@@ -25,7 +25,7 @@ class BulkDeleteWishlistV2UseCase @Inject constructor(@ApplicationContext privat
     private fun generateParam(productId: List<String>, userId: String): Map<String, Any?> {
         return mapOf(
                 WishlistV2Consts.PRODUCT_IDs to productId,
-                WishlistV2Consts.USER_ID to Integer.parseInt(userId))
+                WishlistV2Consts.USER_ID to userId)
     }
 
     companion object {

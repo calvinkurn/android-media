@@ -5,6 +5,7 @@
     <application>
         <activity
             android:name=".view.activity.WishlistV2Activity"
+            android:exported="false"
             android:label="@string/page_name_wishlist"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

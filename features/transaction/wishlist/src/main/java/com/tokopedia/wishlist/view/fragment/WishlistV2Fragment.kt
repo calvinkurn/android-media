@@ -86,7 +86,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var isBulkDeleteShow = false
     private var listBulkDelete: ArrayList<String> = arrayListOf()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-    private var checkpoint = false
     private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
     private lateinit var trackingQueue: TrackingQueue
     private var wishlistItemOnAtc = WishlistV2Response.Data.WishlistV2.Item()
@@ -237,30 +236,27 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun observingWishlistData() {
-        if (!checkpoint) {
-            checkpoint = true
-            wishlistViewModel.wishlistV2Data.observe(viewLifecycleOwner, { result ->
-                when (result) {
-                    is Success -> {
-                        finishRefresh()
-                        result.data.let { listData ->
-                            if (!onLoadMore) {
-                                wishlistV2Adapter.addList(listData)
-                                rvScrollListener.updateStateAfterGetData()
-                            } else {
-                                wishlistV2Adapter.appendList(listData)
-                                rvScrollListener.updateStateAfterGetData()
-                            }
+        wishlistViewModel.wishlistV2Data.observe(viewLifecycleOwner, { result ->
+            when (result) {
+                is Success -> {
+                    finishRefresh()
+                    result.data.let { listData ->
+                        if (!onLoadMore) {
+                            wishlistV2Adapter.addList(listData)
+                            rvScrollListener.updateStateAfterGetData()
+                        } else {
+                            wishlistV2Adapter.appendList(listData)
+                            rvScrollListener.updateStateAfterGetData()
                         }
+                    }
 
-                    }
-                    is Fail -> {
-                        finishRefresh()
-                        showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
-                    }
                 }
-            })
-        }
+                is Fail -> {
+                    finishRefresh()
+                    showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
+                }
+            }
+        })
     }
 
     private fun getBaseAppComponent(): BaseAppComponent {
@@ -377,7 +373,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun loadWishlistV2() {
-        checkpoint = false
         paramWishlistV2.page = currPage
         wishlistViewModel.loadWishlistV2(paramWishlistV2, wishlistPref?.getTypeLayout())
     }
@@ -407,6 +402,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
                             doRefresh()
+                        } else {
+                            context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
                         }
                     }
                 }

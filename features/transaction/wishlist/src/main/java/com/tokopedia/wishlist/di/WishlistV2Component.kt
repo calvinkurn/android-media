@@ -13,5 +13,4 @@ import dagger.Component
 @Component(modules = [WishlistV2Module::class, WishlistV2ViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface WishlistV2Component {
     fun inject(fragment: WishlistV2Fragment)
-    fun inject(activity: WishlistV2Activity)
 }
