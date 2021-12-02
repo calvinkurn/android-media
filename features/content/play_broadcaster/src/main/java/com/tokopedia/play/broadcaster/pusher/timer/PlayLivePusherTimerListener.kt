@@ -6,7 +6,7 @@ package com.tokopedia.play.broadcaster.pusher.timer
  */
 interface PlayLivePusherTimerListener {
 
-    fun onCountDownTimerActive(timeInMillis: Long)
+    fun onTimerActive(timeInMillis: Long)
 
-    fun onCountDownTimerFinish()
+    fun onTimerFinish()
 }

@@ -70,11 +70,11 @@ class PlayLivePusherCountUpTimerImpl @Inject constructor(
         countUp.setListener(object: PlayCountUpListener{
             override fun onTick(duration: Long) {
                 mDuration = duration
-                mListener?.onCountDownTimerActive(mDuration)
+                mListener?.onTimerActive(mDuration)
             }
 
             override fun onFinish() {
-                mListener?.onCountDownTimerFinish()
+                mListener?.onTimerFinish()
             }
         })
     }

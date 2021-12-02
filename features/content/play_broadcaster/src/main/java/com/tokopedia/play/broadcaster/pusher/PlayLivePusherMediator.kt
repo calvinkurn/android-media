@@ -45,11 +45,11 @@ class PlayLivePusherMediator(
     }
 
     private val countDownTimerListener = object : PlayLivePusherTimerListener {
-        override fun onCountDownTimerActive(timeInMillis: Long) {
+        override fun onTimerActive(timeInMillis: Long) {
             broadcastCountDownTimerActive(timeInMillis)
         }
 
-        override fun onCountDownTimerFinish() {
+        override fun onTimerFinish() {
             broadcastCountDownTimerFinish()
         }
     }
