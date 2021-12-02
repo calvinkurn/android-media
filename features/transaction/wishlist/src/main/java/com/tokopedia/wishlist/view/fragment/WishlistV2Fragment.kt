@@ -187,12 +187,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
         if (isVisibleToUser && isAutoRefreshEnabled()) {
-        if (isVisibleToUser) {
+            doResetFilter()
             binding?.run {
                 rvWishlist.scrollToPosition(0)
             }
-            doRefresh()
-        }
         }
     }
 
