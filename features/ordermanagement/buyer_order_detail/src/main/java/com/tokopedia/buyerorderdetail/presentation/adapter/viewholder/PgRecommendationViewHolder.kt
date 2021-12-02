@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.*
 
-class PgRecommendationViewHolder(itemView: View,
+open class PgRecommendationViewHolder(itemView: View,
                                  private val buyerOrderDetailBindRecomWidgetListener: BuyerOrderDetailBindRecomWidgetListener) :
         AbstractViewHolder<PGRecommendationWidgetUiModel>(itemView),
         RecomCarouselWidgetBasicListener {

@@ -9,48 +9,50 @@
             android:name=".ovoactivation.view.IntroOvoActivity"
             android:label="@string/wallet_title_header_ovo"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_ovo"
                     android:path="@string/path_intro_ovo" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".ovoactivation.view.ActivationOvoActivity"
             android:label="@string/wallet_title_header_activation_ovo"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_ovo"
                     android:path="@string/path_activation_ovo" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".ovoactivationflashdeals.InactiveOvoActivity"
             android:label="@string/wallet_title_header_activation_ovo"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/tokopedia_scheme"
                     android:host="@string/host_ovo"
@@ -58,5 +60,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

@@ -50,6 +50,7 @@ import com.tokopedia.product.detail.data.model.upcoming.ProductUpcomingData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.recommendation_widget_common.extension.LAYOUTTYPE_HORIZONTAL_ATC
 import com.tokopedia.recommendation_widget_common.extension.toProductCardModels
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
@@ -258,8 +259,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     }
 
     private fun updateBestSellerData(
-        dataP1: DynamicProductInfoP1? = null,
-        productId: String? = null
+            dataP1: DynamicProductInfoP1? = null,
+            productId: String? = null
     ) {
         updateData(ProductDetailConstant.BEST_SELLER) {
             bestSellerData?.run {
@@ -490,6 +491,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
 
+        updateUpcoming(productId, upcomingData)
+    }
+
+    private fun updateUpcoming(productId: String,
+                               upcomingData: Map<String, ProductUpcomingData>?) {
         updateData(ProductDetailConstant.UPCOMING_DEALS) {
             notifyMeMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
@@ -498,9 +504,12 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
                 startDate = selectedUpcoming?.startDate ?: ""
                 notifyMe = selectedUpcoming?.notifyMe ?: false
-                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
-                        selectedUpcoming?.startDate ?: "")
+                bgColorUpcoming = selectedUpcoming?.bgColorUpcoming ?: ""
+                upcomingNplData = UpcomingNplDataModel(
+                        upcomingType = selectedUpcoming?.upcomingType ?: "",
+                        ribbonCopy = selectedUpcoming?.campaignTypeName ?: "",
+                        startDate = selectedUpcoming?.startDate ?: "",
+                )
             }
         }
     }
@@ -519,19 +528,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             }
         }
 
-        updateData(ProductDetailConstant.UPCOMING_DEALS) {
-            notifyMeMap?.run {
-                val selectedUpcoming = upcomingData?.get(productId)
-                campaignID = selectedUpcoming?.campaignId ?: ""
-                campaignType = selectedUpcoming?.campaignType ?: ""
-                campaignTypeName = selectedUpcoming?.campaignTypeName ?: ""
-                startDate = selectedUpcoming?.startDate ?: ""
-                notifyMe = selectedUpcoming?.notifyMe ?: false
-                upcomingNplData = UpcomingNplDataModel(selectedUpcoming?.upcomingType
-                        ?: "", selectedUpcoming?.campaignTypeName ?: "",
-                        selectedUpcoming?.startDate ?: "")
-            }
-        }
+        updateUpcoming(productId, upcomingData)
     }
 
     fun updateDataP2General(data: ProductInfoP2Other?) {
@@ -555,7 +552,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     fun updateRecommendationData(data: RecommendationWidget) {
         updateData(data.pageName) {
             when (data.pageName) {
-                PDP_7 -> {
+                PDP_7, PDP_9_TOKONOW -> {
                     (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
                         recomWidgetData = data
                         cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
@@ -728,7 +725,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         var variantTotalItems = 0
         miniCart.values.forEach { miniCartItem ->
             if (miniCartItem.productParentId == recomItem.parentID.toString()) {
-                variantTotalItems+=miniCartItem.quantity
+                variantTotalItems += miniCartItem.quantity
             }
         }
         return variantTotalItems
