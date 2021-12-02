@@ -36,7 +36,9 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.getString(R.string.sbank_privacy_url)?.let { privacyWebview.loadUrl(it) }
+        context?.getString(R.string.sbank_privacy_url)?.let { url ->
+            privacyWebview.loadUrl(url)
+        }
     }
 
 
