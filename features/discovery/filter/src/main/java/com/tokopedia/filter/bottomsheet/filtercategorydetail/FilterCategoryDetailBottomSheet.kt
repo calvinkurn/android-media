@@ -1,11 +1,13 @@
 package com.tokopedia.filter.bottomsheet.filtercategorydetail
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.updateScrollingChild
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.filter.R
 import com.tokopedia.filter.common.data.Filter
@@ -37,6 +39,13 @@ internal class FilterCategoryDetailBottomSheet :
     private var filterCategoryLevelOneAdapter: FilterCategoryLevelOneAdapter? = null
     private val filterCategoryLevelTwoAdapter = FilterCategoryLevelTwoAdapter(this)
     private var filterCategoryDetailViewModel: FilterCategoryDetailViewModel? = null
+
+    private var itemTouchListener: RecyclerView.OnItemTouchListener = object : RecyclerView.SimpleOnItemTouchListener() {
+        override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+            bottomSheet.updateScrollingChild(rv)
+            return false
+        }
+    }
 
     fun show(fragmentManager: FragmentManager, filter: Filter, selectedCategoryFilterValue: String, callback: Callback) {
         this.filter = filter.copyParcelable()
@@ -80,9 +89,14 @@ internal class FilterCategoryDetailBottomSheet :
 
     private fun initHeaderView() {
         filterCategoryDetailBottomSheetView?.filterCategoryDetailHeaderRecyclerView?.let {
+            val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+            val itemDecoration = createFilterDividerItemDecoration(it.context, layoutManager.orientation, 0)
+
             filterCategoryLevelOneAdapter = FilterCategoryLevelOneAdapter(this)
             it.adapter = filterCategoryLevelOneAdapter
-            it.layoutManager = LinearLayoutManager(it.context)
+            it.layoutManager = layoutManager
+            it.addItemDecorationIfNotExists(itemDecoration)
+            it.addOnItemTouchListener(itemTouchListener)
         }
     }
 
@@ -94,6 +108,7 @@ internal class FilterCategoryDetailBottomSheet :
             it.adapter = filterCategoryLevelTwoAdapter
             it.layoutManager = layoutManager
             it.addItemDecorationIfNotExists(itemDecoration)
+            it.addOnItemTouchListener(itemTouchListener)
         }
     }
 

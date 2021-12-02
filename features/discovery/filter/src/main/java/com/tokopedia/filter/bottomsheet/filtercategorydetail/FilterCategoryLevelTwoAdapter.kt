@@ -55,7 +55,7 @@ internal class FilterCategoryLevelTwoAdapter(
             binding.filterCategoryDetailLevelTwoRadioButton.showWithCondition(!filterCategoryLevelTwoViewModel.isExpandable)
 
             val shouldShowLevelThreeCategory = filterCategoryLevelTwoViewModel.isExpandable && filterCategoryLevelTwoViewModel.isSelectedOrExpanded
-            binding.filterCategoryDetailLevelThreeRecyclerView?.showWithCondition(shouldShowLevelThreeCategory)
+            binding.filterCategoryDetailLevelThreeRecyclerView.showWithCondition(shouldShowLevelThreeCategory)
 
             if (filterCategoryLevelTwoViewModel.isExpandable) {
                 bindContainerExpandable(filterCategoryLevelTwoViewModel)
