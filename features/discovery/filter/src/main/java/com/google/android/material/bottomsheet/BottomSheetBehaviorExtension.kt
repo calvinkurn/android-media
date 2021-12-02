@@ -11,6 +11,6 @@ import java.lang.ref.WeakReference
  * - https://hanru-yeh.medium.com/funny-solution-that-makes-bottomsheetdialog-support-viewpager-with-nestedscrollingchilds-bfdca72235c3
  * - https://stackoverflow.com/questions/42159473/bottomsheetbehavior-with-two-recyclerview
  */
-fun BottomSheetBehavior<View>.updateScrollingChild(child: View) {
+internal fun BottomSheetBehavior<View>.updateScrollingChild(child: View) {
     nestedScrollingChildRef = WeakReference(child)
 }
