@@ -187,7 +187,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
+                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
                     createQuestChannel(channel, position , questData = QuestData())
                 }
             }
