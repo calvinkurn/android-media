@@ -437,7 +437,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         this.mRealCode = data.realCode
         btnAction2?.setOnClickListener { v ->
 
-            if (phoneVerificationState == false) {
+            if (phoneVerificationState != null && phoneVerificationState == false) {
                 openPhoneVerificationBottomSheet()
             } else {
                 val code = mRealCode as String
