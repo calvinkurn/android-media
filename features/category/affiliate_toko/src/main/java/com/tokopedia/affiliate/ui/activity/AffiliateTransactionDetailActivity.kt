@@ -55,18 +55,9 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
     }
 
     private fun afterViewCreated() {
-        initNavBar()
         initRv()
         initObserver()
         getData()
-    }
-
-    private fun initNavBar() {
-        findViewById<NavToolbar>(R.id.transaction_navToolbar)?.run {
-            setOnBackButtonClickListener {
-                finish()
-            }
-        }
     }
 
     private fun getData() {
