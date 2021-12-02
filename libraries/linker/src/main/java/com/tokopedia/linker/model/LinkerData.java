@@ -19,6 +19,7 @@ public class LinkerData implements Parcelable {
     public static final String RIDE_TYPE = "Ride";
     public static final String PROMO_TYPE = "Promo";
     public static final String HOTEL_TYPE = "Hotel";
+    public static final String ENTERTAINMENT_TYPE = "Entertainment";
 
     public static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";
@@ -326,13 +327,23 @@ public class LinkerData implements Parcelable {
 
         String renderedUrl;
 
+        String utmSource = ARG_UTM_SOURCE;
+        String utmMedium = ARG_UTM_MEDIUM;
+
+        if(!TextUtils.isEmpty(getFeature())){
+            utmMedium = getFeature();
+        }
+        if(!TextUtils.isEmpty(getChannel())){
+            utmSource = getChannel();
+        }
+
         if (url.contains("?")) {
             Uri uri = Uri.parse(String.format("%s&utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                    url, utmSource, utmMedium, campaign));
             renderedUrl = uri.toString();
         } else {
             Uri uri = Uri.parse(String.format("%s?utm_source=%s&utm_medium=%s&utm_campaign=%s",
-                    url, ARG_UTM_SOURCE, ARG_UTM_MEDIUM, campaign));
+                    url, utmSource, utmMedium, campaign));
             renderedUrl = uri.toString();
         }
 

@@ -5,13 +5,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import kotlinx.android.synthetic.main.item_spec.view.*
+import com.tokopedia.recommendation_widget_common.databinding.ItemSpecBinding
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SpecsItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    private var binding: ItemSpecBinding? by viewBinding()
     fun bind(specsModel: SpecsModel, position: Int) {
-        if (position == 0) view.view_divider.visibility = View.INVISIBLE
-        view.tv_spec_title.text = specsModel.specsTitle
-        view.tv_spec_summary.text = MethodChecker.fromHtml(specsModel.specsSummary)
+        if (position == 0) binding?.viewDivider?.visibility = View.INVISIBLE
+        binding?.tvSpecTitle?.text = specsModel.specsTitle
+        binding?.tvSpecSummary?.text = MethodChecker.fromHtml(specsModel.specsSummary)
 
         val drawable = ContextCompat.getDrawable(view.context, specsModel.bgDrawableRef)
         drawable?.let {
@@ -20,6 +22,6 @@ class SpecsItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
                 ContextCompat.getColor(view.context, specsModel.bgDrawableColorRef)
             )
         }
-        view.holder_specs.background = drawable
+        binding?.holderSpecs?.background = drawable
     }
 }
