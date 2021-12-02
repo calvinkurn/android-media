@@ -40,7 +40,7 @@ internal class FilterCategoryDetailBottomSheet :
     private val filterCategoryLevelTwoAdapter = FilterCategoryLevelTwoAdapter(this)
     private var filterCategoryDetailViewModel: FilterCategoryDetailViewModel? = null
 
-    private var itemTouchListener: RecyclerView.OnItemTouchListener = object : RecyclerView.SimpleOnItemTouchListener() {
+    private val itemTouchListener: RecyclerView.OnItemTouchListener = object : RecyclerView.SimpleOnItemTouchListener() {
         override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
             bottomSheet.updateScrollingChild(rv)
             return false
