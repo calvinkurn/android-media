@@ -99,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:background="@drawable/bg_delete_wishlist"
+        android:background="@drawable/bg_delete_wishlist_v2"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
