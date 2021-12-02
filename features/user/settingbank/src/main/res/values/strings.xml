@@ -59,5 +59,9 @@
     <string name="sbank_oke">oke</string>
     <string name="sbank_ya_tambah">Ya, Tambah</string>
     <string name="sbank_batal">Batal</string>
+    <string name="sbank_privacy_url">https://www.tokopedia.com/privacy</string>
+    <string name="sbank_privacy">Kebijakan</string>
+    <string name="sbank_terms">Syarat</string>
+    <string name="sbank_and_privacy_terms">dan</string>
 
 </resources>

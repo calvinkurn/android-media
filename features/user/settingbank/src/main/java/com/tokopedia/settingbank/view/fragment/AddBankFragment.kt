@@ -514,36 +514,41 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun createPrivacyTextSpannable(): SpannableStringBuilder? {
         val originalText = createTermsAndConditionSpannable()
-        val startIndexPrivacy = originalText.indexOf("Kebijakan")
-        val endIndexPrivacy = originalText.indexOf("dan") - 1
+        val startIndexPrivacy = originalText?.indexOf(getString(R.string.sbank_privacy))
+        val endIndexPrivacy =
+            originalText?.indexOf(getString(R.string.sbank_and_privacy_terms))?.minus(1)
         val spannableStringPrivacyPolicy = SpannableString(originalText)
         val color =
             MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
-        spannableStringPrivacyPolicy.setSpan(
-            color,
-            startIndexPrivacy,
-            endIndexPrivacy,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        spannableStringPrivacyPolicy.setSpan(object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                openPrivacyBottomSheet()
-            }
+        startIndexPrivacy?.let { startIndPrivacy ->
+            endIndexPrivacy?.let { endIndPrivacy ->
+                spannableStringPrivacyPolicy.setSpan(
+                    color,
+                    startIndPrivacy,
+                    endIndPrivacy,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                spannableStringPrivacyPolicy.setSpan(object : ClickableSpan() {
+                    override fun onClick(widget: View) {
+                        openPrivacyBottomSheet()
+                    }
 
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = color
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                        ds.color = color
+                    }
+                }, startIndPrivacy, endIndPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-        }, startIndexPrivacy, endIndexPrivacy, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
         return SpannableStringBuilder.valueOf(spannableStringPrivacyPolicy)
     }
 
-    private fun createTermsAndConditionSpannable(): SpannableStringBuilder {
+    private fun createTermsAndConditionSpannable(): SpannableStringBuilder? {
         val originalText = getString(R.string.sbank_add_bank_tnc)
-        // val readMoreText = getString(R.string.sbank_add_bank_tnc_clickable_part)
         val spannableStringTermAndCondition = SpannableString(originalText)
-        val startIndex = originalText.indexOf("Syarat")
+        val startIndex = originalText.indexOf(getString(R.string.sbank_terms))
         val endIndex = originalText.length
 
 

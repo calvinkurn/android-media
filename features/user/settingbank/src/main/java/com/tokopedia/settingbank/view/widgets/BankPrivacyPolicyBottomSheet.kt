@@ -14,8 +14,6 @@ import kotlinx.android.synthetic.main.bottom_sheets_privacy_policy.*
 class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
 
 
-    val MIME_TYPE = "text/html"
-    val ENCODING = "utf-8"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +36,7 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        privacyWebview.loadUrl("https://www.tokopedia.com/privacy")
+        context?.getString(R.string.sbank_privacy_url)?.let { privacyWebview.loadUrl(it) }
     }
 
 
@@ -49,8 +47,8 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        private val TITLE = "Kebijakan Privasi"
-        private val TAG = "BankPrivacyBottomSheet"
+        private const val TITLE = "Kebijakan Privasi"
+        private const val TAG = "BankPrivacyBottomSheet"
         fun showBankPrivacyBottomSheet(activity: FragmentActivity?) {
             activity?.let {
                 if (!activity.isFinishing) {
