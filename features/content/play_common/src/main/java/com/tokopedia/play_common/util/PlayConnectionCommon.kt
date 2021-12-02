@@ -67,7 +67,7 @@ object PlayConnectionCommon {
                     }
                 }
             }
-            return result
+            result
         } catch (e: Exception){
             false
         }
