@@ -483,7 +483,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     fun startLiveTimer() {
         viewModelScope.launch {
-            delay(START_COUNTDOWN_DELAY)
+            delay(START_LIVE_TIMER_DELAY)
             livePusherMediator.startLiveTimer()
         }
         // TODO("find the best way to trigger engagement tools")
@@ -931,7 +931,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
 
-        private const val START_COUNTDOWN_DELAY = 1000L
+        private const val START_LIVE_TIMER_DELAY = 1000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
     }
