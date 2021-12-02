@@ -131,7 +131,7 @@ class ReviewGalleryFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_review_gallery, container, false)
+        return inflater.inflate(com.tokopedia.review.R.layout.fragment_review_gallery, container, false)
     }
 
     override fun getComponent(): ReviewGalleryComponent? {
@@ -327,7 +327,8 @@ class ReviewGalleryFragment :
                 userStats = this.userStats,
                 isAnonymous = this.isAnonymous,
                 userId = this.user.userId,
-                userImage = this.user.image
+                userImage = this.user.image,
+                badRatingReason = this.badRatingReasonFmt
             )
         }
         detail.reviewGalleryImages.firstOrNull { it.attachmentId == attachmentId }?.apply {
