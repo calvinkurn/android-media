@@ -228,11 +228,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         // refreshHandler?.finishRefresh()
 
                         rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
-                        updateTotalLabel(wishlistV2.totalData)
 
                         if (wishlistV2.totalData == 0) {
                             isFetchRecommendation = true
+                            hideTotalLabel()
+                        } else {
+                            updateTotalLabel(wishlistV2.totalData)
                         }
+
                         if (currPage == 1 && wishlistV2.sortFilters.isNotEmpty()) {
                             renderChipsFilter(wishlistV2.sortFilters)
                         }
@@ -312,7 +315,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         triggerSearch()
                         /*when {
                             searchQuery.isBlank() -> {
-                                context?.let { WishlistUtils.hideKeyBoard(it, root) }
+                                wishlistNavtoolbar.hideKeyboard()
                                 triggerSearch()
                             }
                             searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
@@ -538,6 +541,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         binding?.run {
             wishlistV2StickyCountManageLabel.root.visible()
             wishlistV2StickyCountManageLabel.wishlistCountLabel.text = "$totalData"
+        }
+    }
+
+    private fun hideTotalLabel() {
+        binding?.run {
+            wishlistV2StickyCountManageLabel.root.gone()
         }
     }
 

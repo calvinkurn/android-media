@@ -129,16 +129,21 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
         var listData = arrayListOf<WishlistV2TypeLayoutData>()
 
+        var isFilterActive = false
+        for (itemFilter in wishlistV2Response.sortFilters) {
+            if (itemFilter.isActive) isFilterActive = true
+        }
+
         // empty wishlist
         if (wishlistV2Response.items.isEmpty() && wishlistV2Response.page == 1) {
             if (wishlistV2Response.query.isNotEmpty()) {
                 listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
 
-            } else if (wishlistV2Response.sortFilters.isNotEmpty()) {
+            } else if (isFilterActive) {
                 val wishlistV2Empty = WishlistV2EmptyStateData(R.string.empty_state_img, R.string.empty_state_desc, R.string.empty_state_title, R.string.empty_state_button)
                 listData.add(WishlistV2TypeLayoutData(wishlistV2Empty, WishlistV2Consts.TYPE_EMPTY_STATE))
                 
-            } else if (wishlistV2Response.sortFilters.isEmpty() && wishlistV2Response.query.isEmpty()) {
+            } else if (!isFilterActive && wishlistV2Response.query.isEmpty()) {
                 listData.add(WishlistV2TypeLayoutData("", WishlistV2Consts.TYPE_EMPTY_STATE_CAROUSEL))
             }
             /*when {
