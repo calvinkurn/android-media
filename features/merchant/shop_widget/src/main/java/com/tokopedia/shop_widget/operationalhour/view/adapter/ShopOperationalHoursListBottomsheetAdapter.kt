@@ -1,29 +1,27 @@
-package com.tokopedia.shop.pageheader.presentation.adapter
+package com.tokopedia.shop_widget.operationalhour.view.adapter
 
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.shop.R
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
-import com.tokopedia.shop.databinding.ItemShopOperationalHoursBinding
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.shop_widget.R
+import com.tokopedia.shop_widget.databinding.ItemShopOperationalHoursBinding
 import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Rafli Syam on 16/04/2021
  */
 class ShopOperationalHoursListBottomsheetAdapter(
-        private val context: Context?,
-        private val operationalHoursList: MutableList<ShopOperationalHour>
+        private val context: Context?
 ): RecyclerView.Adapter<ShopOperationalHoursListBottomsheetAdapter.ViewHolder>() {
-
     companion object {
         @LayoutRes
         private val ITEM_LAYOUT = R.layout.item_shop_operational_hours
-
+        private const val VALUE_ZERO = 0
         // Days Name List
         const val MONDAY_LABEL = "Senin"
         const val TUESDAY_LABEL = "Selasa"
@@ -47,6 +45,12 @@ class ShopOperationalHoursListBottomsheetAdapter(
         const val END_TIME_INDEX = 5
         const val MIN_START_TIME = "00:00:00"
         const val MAX_END_TIME = "23:59:00"
+    }
+    private var operationalHoursList: MutableList<ShopOperationalHour> = mutableListOf()
+
+    fun addOperationalHourListData(operationalHoursList: MutableList<ShopOperationalHour>){
+        this.operationalHoursList = operationalHoursList
+        notifyItemRangeChanged(VALUE_ZERO, this.operationalHoursList.size)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
