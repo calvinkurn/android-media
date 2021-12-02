@@ -3,6 +3,8 @@ package com.tokopedia.hotel.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.InputType
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -99,6 +101,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private lateinit var remoteConfig: RemoteConfig
     private var bannerWidthInPixels = 0
+    private var timerHotel = Timer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -176,7 +179,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
         loadRecentSearchData()
-        loadPromoData()
         renderView()
     }
 
@@ -630,7 +632,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
         trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
         binding?.bannerHotelHomepagePromo?.apply {
-            timer = Timer()
             freeMode = false
             centerMode = true
             slideToScroll = 1
@@ -643,7 +644,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
             } else {
                 slideToShow = SLIDE_TO_SHOW
-                autoplay = true
+                timerHotel.scheduleAtFixedRate(object : TimerTask() {
+                    override fun run() {
+                        Handler(Looper.getMainLooper()).post {
+                            nextSlide()
+                        }
+                    }
+                }, autoplayDuration, autoplayDuration)
+                autoplay = false
                 infinite = true
             }
 
@@ -753,9 +761,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
         binding?.hotelContainerLastSearch?.visibility = View.GONE
     }
 
-    override fun onStop() {
-        binding?.bannerHotelHomepagePromo?.autoplay = false
-        super.onStop()
+    override fun onDestroy() {
+        timerHotel.cancel()
+        super.onDestroy()
     }
 
     companion object {

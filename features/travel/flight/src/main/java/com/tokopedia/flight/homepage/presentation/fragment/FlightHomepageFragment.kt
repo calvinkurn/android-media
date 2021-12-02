@@ -2,6 +2,8 @@ package com.tokopedia.flight.homepage.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
@@ -73,6 +75,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private var isSearchFromWidget: Boolean = false
     private var bannerWidthInPixels = 0
     private var binding by autoClearedNullable<FragmentFlightHomepageBinding>()
+    private var timerFlight = Timer()
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -374,7 +377,14 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
                 } else {
                     slideToShow = BANNER_SHOW_SIZE
-                    autoplay = true
+                    timerFlight.scheduleAtFixedRate(object : TimerTask() {
+                        override fun run() {
+                            Handler(Looper.getMainLooper()).post {
+                                nextSlide()
+                            }
+                        }
+                    }, autoplayDuration, autoplayDuration)
+                    autoplay = false
                     infinite = true
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -589,9 +599,9 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private fun measureBannerHeightBasedOnRatio(): Int =
             (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
 
-    override fun onStop() {
-        binding?.flightHomepageBanner?.autoplay = false
-        super.onStop()
+    override fun onDestroy() {
+        timerFlight.cancel()
+        super.onDestroy()
     }
 
     companion object {
