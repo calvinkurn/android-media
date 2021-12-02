@@ -22,6 +22,7 @@ import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import java.net.URLEncoder
 import java.util.*
@@ -37,6 +38,8 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
 
     @Inject
     lateinit var pvtUserSession: UserSessionInterface
+
+    private val gopayUrl = TokopediaUrl.getInstance().WEB + "user/settings/payment/gopay"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,7 +172,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
             SettingConstant.SETTING_GOPAY -> {
                 RouteManager.route(
                     activity,
-                    SettingConstant.Url.BASE_WEBVIEW_APPLINK + GOPAY_URL
+                    SettingConstant.Url.BASE_WEBVIEW_APPLINK + gopayUrl
                 )
             }
         }
@@ -185,7 +188,6 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
     }
 
     companion object {
-        const val GOPAY_URL = "https://www.tokopedia.com/user/settings/payment/gopay"
         fun createInstance(): Fragment {
             return TkpdPaySettingFragment()
         }
