@@ -6,14 +6,11 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
+import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
+import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
+import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -24,6 +21,7 @@ abstract class BaseTopChatViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    //UseCases
     @RelaxedMockK
     lateinit var getExistingMessageIdUseCase: GetExistingMessageIdUseCase
 
@@ -55,7 +53,21 @@ abstract class BaseTopChatViewModelTest {
     lateinit var mutationMoveChatToTrashUseCase: MutationMoveChatToTrashUseCase
 
     @RelaxedMockK
+    lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseNew
+
+    @RelaxedMockK
+    lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseNew
+
+    //Misc
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
+
+    @RelaxedMockK
+    lateinit var cacheManager: TopchatCacheManager
+
+    @RelaxedMockK
+    lateinit var mapper: ChatAttachmentMapper
+
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
     protected lateinit var viewModel: TopChatViewModel
@@ -80,8 +92,12 @@ abstract class BaseTopChatViewModelTest {
             reminderTickerUseCase,
             closeReminderTicker,
             mutationMoveChatToTrashUseCase,
+            chatBackgroundUseCase,
+            chatAttachmentUseCase,
             dispatchers,
-            remoteConfig
+            remoteConfig,
+            cacheManager,
+            mapper
         )
     }
 }

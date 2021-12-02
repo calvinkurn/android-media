@@ -98,7 +98,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
     private val groupStickerUseCase: ChatListGroupStickerUseCase, //
-    private val chatAttachmentUseCase: ChatAttachmentUseCase, //
     private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
@@ -718,7 +717,6 @@ open class TopChatRoomPresenter @Inject constructor(
         replyChatUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
         groupStickerUseCase.safeCancel()
-        chatAttachmentUseCase.safeCancel()
         super.detachView()
     }
 
@@ -794,15 +792,6 @@ open class TopChatRoomPresenter @Inject constructor(
         groupStickerUseCase.getStickerGroup(
             chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
         ) {}
-    }
-
-    override fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
-        if (chatRoom.hasAttachment() && msgId != 0L) {
-            chatAttachmentUseCase.getAttachments(
-                msgId, chatRoom.replyIDs, userLocationInfo,
-                ::onSuccessGetAttachments, ::onErrorGetAttachments
-            )
-        }
     }
 
     override fun setBeforeReplyTime(createTime: String) {

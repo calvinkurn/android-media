@@ -327,7 +327,7 @@ class TopChatViewModel @Inject constructor(
     private fun getCacheUrl(cacheKey: String): String? {
         try {
             return cacheManager.loadCache(cacheKey, String::class.java)
-        } catch (e: Exception) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
         return null
