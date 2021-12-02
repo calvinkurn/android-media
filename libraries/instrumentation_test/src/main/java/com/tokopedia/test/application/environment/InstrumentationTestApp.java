@@ -86,7 +86,6 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
-        GraphqlClient.init(this);
         RemoteConfigInstance.initAbTestPlatform(this);
 
         super.onCreate();
