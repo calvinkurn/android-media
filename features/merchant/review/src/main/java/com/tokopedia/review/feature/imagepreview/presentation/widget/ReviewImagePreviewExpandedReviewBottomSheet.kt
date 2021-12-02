@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.feature.credibility.presentation.activity.ReviewCredibilityActivity
 import com.tokopedia.review.feature.imagepreview.analytics.ReviewImagePreviewTracking
@@ -40,6 +41,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
 
     private var basicInfoWidget: ReviewBasicInfoWidget? = null
     private var review: Typography? = null
+    private var badRatingWidget: ReviewBadRatingReasonWidget? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,7 +49,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         savedInstanceState: Bundle?
     ): View? {
         val view =
-            View.inflate(context, R.layout.bottomsheet_image_preview_expanded_review_detail, null)
+            View.inflate(context, com.tokopedia.review.R.layout.bottomsheet_image_preview_expanded_review_detail, null)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -58,6 +60,7 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         hideHeader()
         setBasicInfo()
         setReview()
+        setBadRatingReason()
     }
 
     override fun onUserNameClicked(userId: String) {
@@ -99,9 +102,14 @@ class ReviewImagePreviewExpandedReviewBottomSheet : BottomSheetUnify(), ReviewBa
         }
     }
 
+    private fun setBadRatingReason() {
+        badRatingWidget?.showBadRatingReason(uiModel.badRatingReason)
+    }
+
     private fun bindViews(view: View) {
         basicInfoWidget = view.findViewById(R.id.review_gallery_expanded_review_detail_basic_info)
         review = view.findViewById(R.id.review_gallery_expanded_review)
+        badRatingWidget = view.findViewById(R.id.review_gallery_expanded_review_bad_reason)
     }
 
     private fun hideHeader() {

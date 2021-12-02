@@ -1,5 +1,8 @@
 package com.tokopedia.graphql.data;
 
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
+
 import android.content.Context;
 
 import androidx.annotation.AnyThread;
@@ -35,12 +38,10 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import kotlin.Unit;
+import okhttp3.Authenticator;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
-import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -64,16 +65,16 @@ public class GraphqlClient {
     }
 
     @AnyThread
-    public synchronized static void init(@NonNull Context context) {
+    public synchronized static void init(@NonNull Context context, Authenticator authenticator) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
             TkpdOkHttpBuilder tkpdOkHttpBuilder = getTkpdOkHttpBuilder(context);
-            initializeRetrofit(tkpdOkHttpBuilder, context, userSession);
+            initializeRetrofit(tkpdOkHttpBuilder, context, userSession, authenticator);
         }
     }
 
     @AnyThread
-    public synchronized static void init(@NonNull Context context, boolean addBrotliInterceptor) {
+    public synchronized static void init(@NonNull Context context, boolean addBrotliInterceptor, Authenticator authenticator) {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
 
@@ -91,44 +92,29 @@ public class GraphqlClient {
                     tkpdOkHttpBuilder.addInterceptor(interceptor);
                 }
             }
-            initializeRetrofit(tkpdOkHttpBuilder, context, userSession);
+            initializeRetrofit(tkpdOkHttpBuilder, context, userSession, authenticator);
         }
     }
 
-    private static void initializeRetrofit(TkpdOkHttpBuilder tkpdOkHttpBuilder, Context context, UserSession userSession){
+    private static void initializeRetrofit(TkpdOkHttpBuilder tkpdOkHttpBuilder, Context context, UserSession userSession, Authenticator authenticator){
         sRetrofit = CommonNetwork.createRetrofit(
                 GraphqlUrl.BASE_URL,
                 tkpdOkHttpBuilder,
                 new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
                 new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
-                TkpdAuthenticator.Companion.createAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
-                    new StringResponseConverter(),
-                    new GsonBuilder());
-            sFingerprintManager = new FingerprintManager(userSession);
-
+                authenticator,
+                new StringResponseConverter(),
+                new GsonBuilder()
+        );
+        sFingerprintManager = new FingerprintManager(userSession);
         sGraphqlDatabase = GraphqlDatabase.getInstance(context);
-
         function = new Function(context);
     }
 
     @AnyThread
     public static Function getFunction() {
         if (function == null) {
-            if(canBeInitialized()){
-                init(applicationContext);
-            }
-            else {
-                throw new RuntimeException("Please call init() before using graphql library");
-            }
-        }
-        return function;
-    }
-
-    @AnyThread
-    //Use this method for safe usage
-    public static Function getFunctionWithContext(Context context) {
-        if (!isInitialized()) {
-            init(context);
+            throw new RuntimeException("Please call init() before using graphql library");
         }
         return function;
     }
@@ -166,7 +152,7 @@ public class GraphqlClient {
     }
 
     @NotNull
-    protected static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
+    public static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));

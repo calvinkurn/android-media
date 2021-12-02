@@ -18,6 +18,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_component.viewholders.DynamicLegoBannerViewHolder
 import com.tokopedia.home_component.viewholders.FeaturedBrandViewHolder
+import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.viewholders.MixLeftComponentViewHolder
 import com.tokopedia.home_component.viewholders.MixTopComponentViewHolder
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -68,6 +69,7 @@ class OfficialStoreAnalyticsTest {
             super.beforeActivityLaunched()
             InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             setToLocation1()
+            setupGraphqlMockResponse(OfficialStoreMockResponseConfig())
         }
     }
 
@@ -76,7 +78,6 @@ class OfficialStoreAnalyticsTest {
 
     @Before
     fun setup() {
-        setupGraphqlMockResponse(OfficialStoreMockResponseConfig())
         osRecyclerViewIdlingResource = OSRecyclerViewIdlingResource(
                 activity = activityRule.activity,
                 limitCountToIdle = 3
@@ -197,6 +198,13 @@ class OfficialStoreAnalyticsTest {
                     viewHolder.itemView,
                     R.id.carouselProductCardRecyclerView,
                     0
+                )
+            }
+            is FeaturedShopViewHolder -> {
+                CommonActions.clickOnEachItemRecyclerView(
+                        viewHolder.itemView,
+                        R.id.dc_banner_rv,
+                        0
                 )
             }
             is OfficialProductRecommendationViewHolder -> {
