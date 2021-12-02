@@ -89,6 +89,6 @@
 
     <!--Pinned Product-->
     <string name="play_zero">0</string>
-    <string name="play_product_item_stock">Stok: %1$s</string>
+    <string name="play_product_item_stock">Stok %1$s</string>
 
 </resources>
