@@ -772,8 +772,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 val linkerShareResult = DataMapper.getLinkerShareData(LinkerData().apply {
                     type = LinkerData.PRODUCT_TYPE
                     uri = wishlistItem.url
-                    id = userSession.userId
-                    //set and share in the Linker Data
+                    id = wishlistItem.id
                     feature = shareModel.feature
                     channel = shareModel.channel
                     campaign = shareModel.campaign

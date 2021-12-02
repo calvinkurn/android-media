@@ -1,10 +1,14 @@
 package com.tokopedia.wishlist.view.adapter.viewholder
 
-import android.widget.CompoundButton
+import android.view.View
+import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.productcard.R as RProductCard
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2ListItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
@@ -12,6 +16,13 @@ import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBinding, private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData, position: Int, isShowCheckbox: Boolean) {
         binding.wishlistItem.setProductModel(item.dataObject as ProductCardModel)
+
+        val footerLayout = binding.wishlistItem.findViewById<View>(RProductCard.id.productCardFooterLayout)
+        val buttonSecondary = footerLayout.findViewById<FrameLayout>(RProductCard.id.buttonSecondary)
+        val rlPrimaryButton = footerLayout.findViewById<RelativeLayout>(RProductCard.id.rlPrimaryButtonWishlist)
+        val buttonAtc = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonTambahKeranjang)
+        val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonLihatBarangSerupa)
+
         if (isShowCheckbox) {
             binding.wishlistCheckbox.setOnCheckedChangeListener(null)
             binding.wishlistCheckbox.visible()
@@ -19,9 +30,8 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             binding.wishlistCheckbox.setOnClickListener {
                 actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
             }
-
-            binding.wishlistItem.setSecondaryButtonVisibility(false)
-            binding.wishlistItem.setPrimaryButtonVisibility(false)
+            buttonSecondary.gone()
+            rlPrimaryButton.gone()
             binding.wishlistItem.setOnClickListener {
                 binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
                 actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
@@ -33,33 +43,29 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
 
         } else {
             binding.wishlistCheckbox.gone()
-            binding.wishlistItem.setSecondaryButtonVisibility(true)
-            binding.wishlistItem.setPrimaryButtonVisibility(true)
+            buttonSecondary.visible()
+            rlPrimaryButton.visible()
             binding.wishlistItem.setOnClickListener {
                 actionListener?.onProductItemClicked(item.wishlistItem, position)
             }
         }
 
         if (item.dataObject.tambahKeranjangButton) {
-            binding.wishlistItem.setTambahKeranjangButtonClickListener { actionListener?.onAtc(item.wishlistItem, position) }
+            buttonSeeSimilarProduct.gone()
+            buttonAtc.visible()
+            buttonAtc.setOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }
         } else {
-            binding.wishlistItem.setLihatBarangSerupaButtonClickListener {
+            buttonSeeSimilarProduct.setOnClickListener {
                 actionListener?.onCheckSimilarProduct(
-                    item.wishlistItem.buttons.primaryButton.url
+                        item.wishlistItem.buttons.primaryButton.url
                 )
             }
         }
 
-        binding.wishlistItem.setSecondaryButtonClickListener {
+        buttonSecondary.setOnClickListener {
             actionListener?.onThreeDotsMenuClicked(item.wishlistItem)
         }
 
         actionListener?.onViewProductCard(item.wishlistItem, position)
-    }
-
-    private fun checkboxListener(item: WishlistV2TypeLayoutData, position: Int): CompoundButton.OnCheckedChangeListener {
-        return CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, isChecked, position)
-        }
     }
 }

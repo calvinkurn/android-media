@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.expandTouchArea
 import com.tokopedia.productcard.utils.getDimensionPixelSize
@@ -196,31 +194,5 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonAddToCart?.isEnabled = false
         buttonAddToCart?.buttonVariant = UnifyButton.Variant.FILLED
         buttonAddToCart?.text = context.getString(R.string.product_card_out_of_stock)
-    }
-
-    fun setSecondaryButtonVisibility(visible: Boolean) {
-        if (visible) buttonSecondary?.visibility = View.VISIBLE
-        else buttonSecondary?.visibility = View.GONE
-    }
-
-    fun setPrimaryButtonVisibility(visible: Boolean) {
-        if (visible) rlPrimaryButtonWishlist?.visibility = View.VISIBLE
-        else rlPrimaryButtonWishlist?.visibility = View.GONE
-    }
-
-    fun setSecondaryButtonClickListener(secondaryButtonListener: (View) -> Unit) {
-        buttonSecondary?.setOnClickListener(secondaryButtonListener)
-    }
-
-    fun setTambahKeranjangButtonClickListener(tambahKeranjangButtonListener: (View) -> Unit) {
-        buttonLihatBarangSerupa?.gone()
-        buttonTambahKeranjang?.visible()
-        buttonTambahKeranjang?.setOnClickListener(tambahKeranjangButtonListener)
-    }
-
-    fun setLihatBarangSerupaButtonClickListener(lihatBarangSerupaButtonListener: (View) -> Unit) {
-        buttonTambahKeranjang?.gone()
-        buttonLihatBarangSerupa?.visible()
-        buttonLihatBarangSerupa?.setOnClickListener(lihatBarangSerupaButtonListener)
     }
 }
