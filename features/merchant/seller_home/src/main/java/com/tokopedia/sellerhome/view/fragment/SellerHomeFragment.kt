@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -1132,9 +1133,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        recyclerView?.post {
-            updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
-        }
+        updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
 
         val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
         if (!isAnyWidgetFromCache) {
@@ -1676,14 +1675,31 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Suppress("UNCHECKED_CAST")
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
-        val diffUtilCallback = SellerHomeDiffUtilCallback(
-            adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-            newWidgets
-        )
-        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-        adapter.data.clear()
-        adapter.data.addAll(newWidgets)
-        diffUtilResult.dispatchUpdatesTo(adapter)
+        notifyWidgetWithSdkChecking {
+            val diffUtilCallback = SellerHomeDiffUtilCallback(
+                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+                newWidgets
+            )
+            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+            adapter.data.clear()
+            adapter.data.addAll(newWidgets)
+            diffUtilResult.dispatchUpdatesTo(adapter)
+        }
+    }
+
+    @SuppressLint("AnnotateVersionCheck")
+    private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                callback()
+            } else {
+                recyclerView?.post {
+                    callback()
+                }
+            }
+        } catch (e: Exception) {
+            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+        }
     }
 
     private fun checkLoadingWidgets() {
