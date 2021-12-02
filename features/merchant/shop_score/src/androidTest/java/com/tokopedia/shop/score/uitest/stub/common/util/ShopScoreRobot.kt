@@ -5,7 +5,7 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 
-class ShopScoreRobot {
+object ShopScoreRobot {
 
     fun ViewInteraction.isGone() = getViewAssertion(ViewMatchers.Visibility.GONE)
 
