@@ -905,8 +905,7 @@ class ShopScoreMapper @Inject constructor(
                         titleDetailPerformance = shopScoreDetail.title,
                         valueDetailPerformance = rawValueFormatted,
                         colorValueDetailPerformance = shopScoreDetail.colorText,
-                        targetDetailPerformance =
-                        if (isReactivatedSellerAfterComeback) "" else targetDetailPerformanceText,
+                        targetDetailPerformance = targetDetailPerformanceText,
                         isDividerHide = if (isShowProtectedParameter) false
                         else index + 1 == shopScoreLevelSize,
                         identifierDetailPerformance = shopScoreDetail.identifier,
