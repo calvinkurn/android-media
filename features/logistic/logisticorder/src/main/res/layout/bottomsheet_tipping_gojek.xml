@@ -55,7 +55,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:text_field_input_type="number"
             app:text_field_label="Tulis Nominal Tip"
-            app:text_field_message="Rp1.0000 - Rp.20.000"/>
+            app:text_field_message="Rp1.000 - Rp.20.000"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
