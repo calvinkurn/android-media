@@ -3,6 +3,7 @@ package com.tokopedia.shop.score.penalty.presentation.adapter.viewholder
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.getColoredIndicator
@@ -64,6 +65,10 @@ class ItemPenaltyViewHolder(
     }
 
     private fun setSelectedTabletBackground(isSelected: Boolean) {
-        binding?.shopPenaltySelected?.showWithCondition(isSelected)
+        binding?.run {
+            if (DeviceScreenInfo.isTablet(root.context)) {
+                shopPenaltySelected?.showWithCondition(isSelected)
+            }
+        }
     }
 }
