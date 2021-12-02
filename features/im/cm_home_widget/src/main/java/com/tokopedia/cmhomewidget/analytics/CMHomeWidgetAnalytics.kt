@@ -36,7 +36,7 @@ class CMHomeWidgetAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    fun sendCMHomeWidgetProductClickEvent(
+    fun sendProductCardClickEvent(
         parentId: Long,
         campaignId: Long,
         notificationId: Long,
@@ -70,12 +70,32 @@ class CMHomeWidgetAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
+    fun sendViewAllCardClickEvent(
+        parentId: Long,
+        campaignId: Long,
+        notificationId: Long,
+        messageId: String
+    ) {
+        val map = TrackAppUtils.gtmData(
+            CMHomeWidgetAnalyticsConstants.Event.WIDGET_CLICKED,
+            CMHomeWidgetAnalyticsConstants.Category.HOME_TO_DO_WIDGET,
+            CMHomeWidgetAnalyticsConstants.Action.CLICK_CTA,
+            getLabel(parentId, campaignId)
+        )
+        map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
+        map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
+        map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
+        sendGeneralEvent(map)
+    }
+
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {
         map[CMHomeWidgetAnalyticsConstants.Key.BUSINESS_UNIT] =
             CMHomeWidgetAnalyticsConstants.BusinessUnit.VALUE_BUSINESS_UNIT
         map[CMHomeWidgetAnalyticsConstants.Key.CURRENT_SITE] =
             CMHomeWidgetAnalyticsConstants.CurrentSite.VALUE_CURRENT_SITE
-//        map[CMHomeWidgetAnalyticsConstants.Key.USER_ID] = userSession.get().userId
+        map[CMHomeWidgetAnalyticsConstants.Key.USER_ID] = userSession.get().userId
         // always false for now
         map[CMHomeWidgetAnalyticsConstants.Key.IS_SILENT] =
             CMHomeWidgetAnalyticsConstants.IsSilent.FALSE

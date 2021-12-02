@@ -6,6 +6,7 @@ const val GQL_QUERY_GET_CM_HOME_WIDGET_DATA = """query{
         data {
             notification_id
             message_id
+            is_test
             parent_id
             campaign_id
             widget_title

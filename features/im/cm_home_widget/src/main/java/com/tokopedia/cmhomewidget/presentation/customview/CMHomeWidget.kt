@@ -155,12 +155,12 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun onProductCardClick(dataItem: CMHomeWidgetProductCardData) {
-        sendCMWidgetClickEvent(dataItem)
+        sendProductCardClickEvent(dataItem)
         startRequiredActivity(dataItem.appLink)
     }
 
     override fun onBuyDirectBtnClick(dataItem: CMHomeWidgetProductCardData) {
-        sendCMWidgetClickEvent(dataItem)
+        sendProductCardClickEvent(dataItem)
         startRequiredActivity(dataItem.cmHomeWidgetActionButtons?.get(0)?.appLink)
     }
 
@@ -169,6 +169,7 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {
+        sendViewAllCardClickEvent()
         startRequiredActivity(dataItem.appLink)
     }
 
@@ -181,20 +182,36 @@ class CMHomeWidget @JvmOverloads constructor(
         context.startActivity(intent)
     }
 
-    private fun sendCMWidgetClickEvent(dataItem: CMHomeWidgetProductCardData) {
+    private fun sendProductCardClickEvent(dataItem: CMHomeWidgetProductCardData) {
         cmHomeWidgetData?.let {
-            cmHomeWidgetAnalytics.get()
-                .sendCMHomeWidgetProductClickEvent(
-                    it.parentId,
-                    it.campaignId,
-                    it.notificationId,
-                    it.messageId,
-                    dataItem.id,
-                    dataItem.name,
-                    dataItem.currentPrice,
-                    dataItem.cmHomeWidgetShop?.id,
-                    dataItem.cmHomeWidgetShop?.name
-                )
+            if (!it.isTest) {
+                cmHomeWidgetAnalytics.get()
+                    .sendProductCardClickEvent(
+                        it.parentId,
+                        it.campaignId,
+                        it.notificationId,
+                        it.messageId,
+                        dataItem.id,
+                        dataItem.name,
+                        dataItem.currentPrice,
+                        dataItem.cmHomeWidgetShop?.id,
+                        dataItem.cmHomeWidgetShop?.name
+                    )
+            }
+        }
+    }
+
+    private fun sendViewAllCardClickEvent() {
+        cmHomeWidgetData?.let {
+            if (!it.isTest) {
+                cmHomeWidgetAnalytics.get()
+                    .sendViewAllCardClickEvent(
+                        it.parentId,
+                        it.campaignId,
+                        it.notificationId,
+                        it.messageId
+                    )
+            }
         }
     }
 }

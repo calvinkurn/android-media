@@ -30,6 +30,9 @@ data class CMHomeWidgetData(
     @SerializedName("message_id")
     @Expose
     val messageId: String,
+    @SerializedName("is_test")
+    @Expose
+    val isTest: Boolean,
     @SerializedName("parent_id")
     @Expose
     val parentId: Long,
