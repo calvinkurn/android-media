@@ -91,7 +91,10 @@ data class FeedXCard(
     @SerializedName("mediaRatio")
     var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
     @SerializedName("views")
-    var views: FeedXViews = FeedXViews()
+    var views: FeedXViews = FeedXViews(),
+    //Active carousel index
+    var currentCarouselIndex:Int = 0
+
 
 ) : ImpressHolder() {
     fun copyPostData(): FeedXCard {

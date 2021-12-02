@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -28,7 +30,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedplus.R
@@ -44,6 +48,7 @@ import com.tokopedia.feedplus.view.analytics.ProductEcommerce
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
+import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailHeaderModel
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
@@ -59,6 +64,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
@@ -86,6 +92,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: DetailFeedAdapter
     private lateinit var pagingHandler: PagingHandler
+    private lateinit var feedViewModel: FeedViewModel
     private var detailId: String = ""
     private var shopId: String = ""
     private var productList = emptyList<FeedXProduct>()
@@ -120,6 +127,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             presenter = viewModelProvider.get(FeedDetailViewModel::class.java)
+            feedViewModel = viewModelProvider.get(FeedViewModel::class.java)
         }
         initVar(savedInstanceState)
     }
@@ -319,6 +327,186 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     override fun onBackPressed() {
         activity?.onBackPressed()
+    }
+
+    override fun onBottomSheetMenuClicked(
+            item: ProductFeedDetailViewModelNew,
+            context: Context,
+            shopId: String
+    ) {
+        val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+        feedAnalytics.eventClickBottomSheetMenu(
+                finalID,
+                item.postType,
+                item.isFollowed,
+                item.shopId
+        )
+        val bundle = Bundle()
+        bundle.putBoolean("isLogin", userSession.isLoggedIn)
+        val sheet = ProductActionBottomSheet.newInstance(bundle)
+        sheet.show((context as FragmentActivity).supportFragmentManager, "")
+        sheet.shareProductCB = {
+            onShareProduct(
+                    item.id.toIntOrZero(),
+                    item.text,
+                    item.description,
+                    item.weblink,
+                    item.imgUrl,
+                    finalID,
+                    item.postType,
+                    item.isFollowed,
+                    item.shopId,
+                    item.isTopads
+            )
+        }
+        sheet.addToCartCB = {
+            onTagSheetItemBuy(
+                    finalID,
+                    item.positionInFeed,
+                    item.product,
+                    item.shopId,
+                    item.postType,
+                    item.isFollowed,
+                    item.playChannelId
+            )
+        }
+        sheet.addToWIshListCB = {
+            addToWishList(finalID, item.id, item.postType, item.isFollowed, item.shopId, item.playChannelId)
+        }
+    }
+    private fun onShareProduct(
+            id: Int,
+            title: String,
+            description: String,
+            url: String,
+            imageUrl: String,
+            activityId: String,
+            type: String,
+            isFollowed: Boolean,
+            shopId: String,
+            isTopads:Boolean = false
+    ) {
+        feedAnalytics.eventonShareProductClicked(
+                activityId,
+                id.toString(),
+                type,
+                isFollowed, shopId
+        )
+
+        val urlString: String = if (isTopads) {
+            String.format(getString(R.string.feed_share_pdp), id.toString())
+        } else{
+            url
+        }
+        activity?.let {
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id.toString())
+                    .setName(title)
+                    .setDescription(description)
+                    .setImgUri(imageUrl)
+                    .setUri(url)
+                    .setDeepLink(url)
+                    .setType(LinkerData.FEED_TYPE)
+                    .setDesktopUrl(urlString)
+
+            if (isTopads) {
+                linkerBuilder.setOgImageUrl(imageUrl)
+            }
+            shareData = linkerBuilder.build()
+            val linkerShareData = DataMapper().getLinkerShareData(shareData)
+            LinkerManager.getInstance().executeShareRequest(
+                    LinkerUtils.createShareRequest(
+                            0,
+                            linkerShareData,
+                            this
+                    )
+            )
+        }
+
+    }
+    private fun onTagSheetItemBuy(
+            activityId: String,
+            positionInFeed: Int,
+            postTagItem: FeedXProduct,
+            shopId: String,
+            type: String,
+            isFollowed: Boolean,
+            playChannelId: String
+    ) {
+        if (type == TYPE_FEED_X_CARD_PLAY)
+            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1,shopId,postTagItem.authorName, type, isFollowed)
+        else
+            feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+        if (userSession.isLoggedIn) {
+            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
+        } else {
+            onGoToLogin()
+        }
+    }
+    private fun addToWishList(
+            postId: String,
+            productId: String,
+            type: String,
+            isFollowed: Boolean,
+            shopId: String,
+            playChannelId: String
+    ) {
+        val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
+
+        feedAnalytics.eventAddToWishlistClicked(
+                finalId,
+                productId,
+                type,
+                isFollowed,
+                shopId
+        )
+
+        feedViewModel.addWishlist(
+                postId,
+                productId,
+                shopId,
+                0,
+                type,
+                isFollowed,
+                ::onWishListFail,
+                ::onWishListSuccess
+        )
+    }
+
+    private fun onWishListFail(s: String) {
+        showToast(s, Toaster.TYPE_ERROR)
+    }
+
+    private fun onWishListSuccess(
+            activityId: String,
+            shopId: String,
+            type: String,
+            isFollowed: Boolean
+    ) {
+        Toaster.build(
+                requireView(),
+                getString(R.string.feed_added_to_wishlist),
+                Toaster.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.feed_go_to_wishlist),
+                View.OnClickListener {
+                    feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                    RouteManager.route(context, ApplinkConst.WISHLIST)
+                }).show()
+    }
+     fun onGoToLogin() {
+        if (activity != null) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+            requireActivity().startActivityForResult(intent, FeedPlusFragment.REQUEST_LOGIN)
+        }
+    }
+
+    private fun showToast(message: String, type: Int, actionText: String? = null) {
+        if (actionText?.isEmpty() == false)
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
+        else {
+            Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
+
+        }
     }
 
     private fun onSuccessGetFeedDetail(

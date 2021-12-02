@@ -234,7 +234,7 @@ object FeedScrollListenerNew {
         val config: RemoteConfig = FirebaseRemoteConfigImpl(recyclerView.context)
         return config.getBoolean(RemoteConfigKey.CONFIG_AUTOPLAY_VIDEO_WIFI, false)
     }
-    fun isWifiEnabled(context: Context) : Boolean {
+    private fun isWifiEnabled(context: Context) : Boolean {
         val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         return wifiManager.isWifiEnabled
     }

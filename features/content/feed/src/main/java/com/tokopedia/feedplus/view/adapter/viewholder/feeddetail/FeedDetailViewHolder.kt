@@ -32,15 +32,15 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             productName.text = MethodChecker.fromHtml(productFeedDetailViewModelNew.text)
             productPrice.text = productFeedDetailViewModelNew.priceFmt
 
-                if (productFeedDetailViewModelNew.isDiscount) {
-                    productTag.apply {
-                        paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                        text = productFeedDetailViewModelNew.originalPriceFmt
-                    }
-                    productFeedDetailViewModelNew.text = productFeedDetailViewModelNew.discountFmt
-                    productPrice.text = productFeedDetailViewModelNew.priceDiscountFmt
-
+            if (productFeedDetailViewModelNew.isDiscount) {
+                productTag.apply {
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    text = productFeedDetailViewModelNew.originalPriceFmt
                 }
+                productFeedDetailViewModelNew.text = productFeedDetailViewModelNew.discountFmt
+                productPrice.text = productFeedDetailViewModelNew.priceDiscountFmt
+
+            }
 
             freeShipping.showWithCondition(productFeedDetailViewModelNew.isFreeShipping)
             if (productFeedDetailViewModelNew.isFreeShipping) {
@@ -58,6 +58,9 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             setOnClickListener {
                 viewListener.onGoToProductDetail(
                         productFeedDetailViewModelNew, adapterPosition)
+            }
+            menu.setOnClickListener {
+                viewListener.onBottomSheetMenuClicked(productFeedDetailViewModelNew, itemView.context)
             }
         }
     }

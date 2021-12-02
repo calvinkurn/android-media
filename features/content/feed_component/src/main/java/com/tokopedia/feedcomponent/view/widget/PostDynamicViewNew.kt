@@ -676,7 +676,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         spannableString.setSpan(
                             cs,
                             0,
-                            caption.author.name.length - 1,
+                            caption.author.name.length ,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
                         captionText.text = spannableString
@@ -706,7 +706,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             spannableString.setSpan(
                 cs,
                 0,
-                caption.author.name.length - 1,
+                caption.author.name.length ,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
             captionText.text = spannableString
@@ -1092,6 +1092,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                     override fun onActiveIndexChanged(prev: Int, current: Int) {
                         pageControl.setCurrentIndicator(current)
+                        feedXCard.currentCarouselIndex = current
                         imagePostListener.userCarouselImpression(
                                 feedXCard.id,
                                 media[current],
@@ -1244,7 +1245,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layoutLihatProdukParent.gone()
             } else {
                 layoutLihatProdukParent.visible()
-                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                 hideViewWithAnimation(layoutLihatProdukParent, context)
             }
 
 
@@ -1413,7 +1414,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layoutLihatProdukParent.gone()
             } else {
                 layoutLihatProdukParent.visible()
-                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                hideViewWithAnimation(layoutLihatProdukParent, context)
             }
             vod_frozen_view?.gone()
             vod_full_screen_icon?.visible()
@@ -1862,6 +1863,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.tags = feedXCard.products
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    feedXCard.currentCarouselIndex = current
                     pageControl.setCurrentIndicator(current)
                     bindImage(feedXCard.products, feedXCard.media[current])
 
@@ -2045,7 +2047,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             handlerHide = null
         }
         if (!fromSlide) {
-            carouselView.activeIndex = 0
+//            carouselView.activeIndex = 0
             if (model is DynamicPostUiModel) {
                 model?.feedXCard?.media?.firstOrNull()?.canPlay = false
                 model?.feedXCard?.media?.firstOrNull()?.isImageImpressedFirst = true
@@ -2142,7 +2144,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (tagProducts.isEmpty()) {
                 layoutLihatProdukParent.gone()
             } else {
-                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                hideViewWithAnimation(layoutLihatProdukParent, context)
             }
 
             if (handlerAnim == null) {
