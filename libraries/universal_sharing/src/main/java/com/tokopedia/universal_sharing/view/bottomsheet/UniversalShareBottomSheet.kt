@@ -236,6 +236,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var affiliateQueryData : AffiliatePDPInput? = null
     private var showLoader: Boolean = false
+    private var handler: Handler? = null
 
     //observer flag
     private var preserveImage: Boolean = false
@@ -276,7 +277,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     //call this method before show method if the request data is awaited
     fun affiliateRequestDataAwaited(){
        showLoader = true
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler = Handler(Looper.getMainLooper())
+        handler?.postDelayed({
             affiliateRequestDataReceived(false)
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
@@ -309,7 +311,14 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         loaderUnify?.visibility = View.GONE
     }
 
+    private fun removeHandlerTimeout() {
+        if (handler != null) {
+            handler?.removeCallbacksAndMessages(null)
+        }
+    }
+
     private fun executeAffiliateEligibilityUseCase(){
+        removeHandlerTimeout()
          val job  = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
