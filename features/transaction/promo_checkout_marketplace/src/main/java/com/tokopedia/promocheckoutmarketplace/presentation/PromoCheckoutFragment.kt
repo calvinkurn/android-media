@@ -68,7 +68,6 @@ import com.tokopedia.promocheckoutmarketplace.presentation.viewmodel.*
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.VALIDATE_USE_QUERY
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -332,8 +331,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                         ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
-                        ?: ArrayList())
+                viewModel.clearPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                 analytics.eventClickBeliTanpaPromo(viewModel.getPageSource())
             }
         }
@@ -346,8 +344,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                         ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                viewModel.applyPromo(VALIDATE_USE_QUERY, validateUsePromoRequest, bboPromoCodes
-                        ?: ArrayList())
+                viewModel.applyPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
             }
         }
     }
@@ -908,14 +905,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                                 ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                        viewModel.applyPromo(VALIDATE_USE_QUERY, validateUsePromoRequest, bboPromoCodes
-                                ?: ArrayList())
+                        viewModel.applyPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                     } else {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                                 ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
-                        viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
-                                ?: ArrayList())
+                        viewModel.clearPromo(validateUsePromoRequest, bboPromoCodes ?: ArrayList())
                     }
                 }
                 setSecondaryCTAClickListener {
