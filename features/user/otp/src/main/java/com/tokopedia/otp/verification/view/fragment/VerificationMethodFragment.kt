@@ -164,7 +164,6 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
     private fun gotoSilentVerificationPage(modeListData: ModeListData) {
         if(activity != null && isEnableSilentVerif()) {
             goToSilentVerificationpage(modeListData)
-//            (activity as VerificationActivity).goToSilentVerificationpage(modeListData)
         }
     }
 

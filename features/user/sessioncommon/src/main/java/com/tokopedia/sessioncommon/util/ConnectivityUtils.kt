@@ -46,26 +46,5 @@ object ConnectivityUtils {
 
     fun isSimCardReady(context: Context): Boolean {
         return getSimCardStatus(context) == TelephonyManager.SIM_STATE_READY
-//        when (simState) {
-//            TelephonyManager.SIM_STATE_ABSENT -> {
-//                text?.text = "TelephonyManager.SIM_STATE_ABSENT"
-//            }
-//            TelephonyManager.SIM_STATE_NETWORK_LOCKED -> {
-//                text?.text = "TelephonyManager.SIM_STATE_NETWORK_LOCKED"
-//            }
-//            TelephonyManager.SIM_STATE_PIN_REQUIRED -> {
-//                text?.text = "TelephonyManager.SIM_STATE_PIN_REQUIRED"
-//            }
-//            TelephonyManager.SIM_STATE_PUK_REQUIRED -> {
-//                text?.text = "TelephonyManager.SIM_STATE_PUK_REQUIRED"
-//            }
-//            TelephonyManager.SIM_STATE_READY -> {
-//                text?.text = "TelephonyManager.SIM_STATE_READY"
-//            }
-//            TelephonyManager.SIM_STATE_UNKNOWN -> {
-//                text?.text = "TelephonyManager.SIM_STATE_UNKNOWN"
-//            }
-//        }
-
     }
 }
