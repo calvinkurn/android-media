@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.FragmentConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.*
@@ -132,7 +133,6 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.*
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
-import com.tokopedia.shop.showcase.presentation.fragment.ShopPageShowcaseFragment
 import com.tokopedia.stickylogin.common.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
@@ -1581,17 +1581,22 @@ class NewShopPageFragment :
                 shopPageProductFragment
         ))
 
+        val shopShowcaseTabFragment = RouteManager.instantiateFragmentDF(
+            activity as AppCompatActivity,
+            FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH,
+            Bundle().apply {
+                putString("SHOP_ID", shopId)
+                putString("SHOP_REF", shopRef)
+                putString("SHOP_ATTRIBUTION", shopAttribution)
+                putBoolean("IS_OS", shopPageHeaderDataModel?.isOfficial ?: false)
+                putBoolean("IS_GOLD_MERCHANT", shopPageHeaderDataModel?.isGoldMerchant ?: false)
+            }
+        )
         listShopPageTabModel.add(ShopPageTabModel(
                 getString(R.string.shop_info_title_tab_showcase),
                 iconTabShowcaseInactive,
                 iconTabShowcaseActive,
-                ShopPageShowcaseFragment.createInstance(
-                        shopId,
-                        shopRef,
-                        shopAttribution,
-                        shopPageHeaderDataModel?.isOfficial ?: false,
-                        shopPageHeaderDataModel?.isGoldMerchant ?: false,
-                )
+                shopShowcaseTabFragment
         ))
 
         if (isShowFeed) {

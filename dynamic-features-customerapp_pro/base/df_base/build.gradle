@@ -106,7 +106,7 @@ dependencies {
     //Merchant
     implementation projectOrAar(rootProject.ext.features.shopOpen)
     implementation projectOrAar(rootProject.ext.features.talk)
-    implementation projectOrAar(rootProject.ext.features.shopShowcase)
+//    implementation projectOrAar(rootProject.ext.features.shopShowcase)
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
