@@ -2,7 +2,7 @@
     android:shape="oval"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
-    <solid android:color="@color/Unify_Background"/>
+    <solid android:color="@color/Unify_N0"/>
     <stroke
         android:width="@dimen/shake_landing_dp_1"
         android:color="@color/Unify_G400"/>

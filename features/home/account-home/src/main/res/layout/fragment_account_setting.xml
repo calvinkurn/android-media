@@ -164,7 +164,7 @@
                         android:lineSpacingExtra="2sp"
                         android:padding="@dimen/unify_space_2"
                         android:textAllCaps="true"
-                        android:textColor="@color/Unify_Background" />
+                        android:textColor="@color/Unify_N0" />
 
                 </RelativeLayout>
 
