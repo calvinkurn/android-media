@@ -7,7 +7,7 @@ import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 /**
  * Created by mzennis on 04/08/21.
  */
-interface PlayLiveCountDownTimerStateListener : PlayLivePusherMediatorListener {
+interface PlayLiveTimerStateListener : PlayLivePusherMediatorListener {
 
     override fun onLiveTimerActive(timeInMillis: Long) {
         onLiveTimerStateChanged(PlayLiveTimerState.Active(timeInMillis))

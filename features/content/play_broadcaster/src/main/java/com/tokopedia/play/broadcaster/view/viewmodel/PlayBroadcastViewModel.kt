@@ -39,7 +39,7 @@ import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
-import com.tokopedia.play.broadcaster.util.state.PlayLiveCountDownTimerStateListener
+import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.state.*
@@ -252,7 +252,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private val liveCountDownTimerStateListener = object : PlayLiveCountDownTimerStateListener {
+    private val liveTimerStateListener = object : PlayLiveTimerStateListener {
         override fun onLiveTimerStateChanged(timerState: PlayLiveTimerState) {
             if (timerState == PlayLiveTimerState.Finish) {
                 val event = _observableEvent.value
@@ -283,7 +283,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(liveViewStateListener)
         livePusherMediator.addListener(liveChannelStateListener)
-        livePusherMediator.addListener(liveCountDownTimerStateListener)
+        livePusherMediator.addListener(liveTimerStateListener)
         if (GlobalConfig.DEBUG) livePusherMediator.addListener(livePusherStatisticListener)
         livePusherMediator.addListener(livePusherStateChangedListener)
     }
@@ -484,7 +484,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     fun startLiveCountDownTimer() {
         viewModelScope.launch {
             delay(START_COUNTDOWN_DELAY)
-            livePusherMediator.startLiveCountDownTimer()
+            livePusherMediator.startLiveTimer()
         }
         // TODO("find the best way to trigger engagement tools")
         getInteractiveConfig()
@@ -827,7 +827,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             _configInfo.value?.durationConfig?.duration?.let {
                 val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
-                livePusherMediator.restartLiveCountDownTimer(durationInMillis, it)
+                livePusherMediator.restartLiveTimer(durationInMillis, it)
             }
         }) { }
     }

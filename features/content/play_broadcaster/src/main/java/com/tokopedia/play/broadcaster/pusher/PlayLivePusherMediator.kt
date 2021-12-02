@@ -69,7 +69,7 @@ class PlayLivePusherMediator(
 
     fun startLiveStreaming(ingestUrl: String, withTimer: Boolean = true) {
         livePusher.start(ingestUrl)
-        if (withTimer) startLiveCountDownTimer()
+        if (withTimer) startLiveTimer()
     }
 
     fun stopLiveStreaming() {
@@ -77,7 +77,7 @@ class PlayLivePusherMediator(
         livePusher.stop()
     }
 
-    fun startLiveCountDownTimer() {
+    fun startLiveTimer() {
         mTimer.start()
     }
 
