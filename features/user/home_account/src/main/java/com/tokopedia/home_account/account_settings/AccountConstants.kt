@@ -51,6 +51,7 @@ object AccountConstants {
         const val EVENT_LABEL = "eventLabel"
         const val TOP_NAV = "top nav"
         const val SCREEN_NAME_ACCOUNT = "/account"
+        const val ACTIVITY_NAME_SALDO_DEPOSIT = "com.tokopedia.saldodetails.saldoDetail.SaldoDepositActivity"
         const val MY_ACCOUNT = "my account page"
         const val CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun"
         const val CLICK_KYC_SETTING = "click dokumen data diri"

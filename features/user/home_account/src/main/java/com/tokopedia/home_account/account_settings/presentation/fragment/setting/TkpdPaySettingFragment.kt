@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.home_account.R
+import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.ACTIVITY_NAME_SALDO_DEPOSIT
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.BALANCE
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CREDIT_CARD
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOCASH
@@ -143,7 +144,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
                         }
                         accountAnalytics.homepageSaldoClick(
                             context,
-                            "com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+                            ACTIVITY_NAME_SALDO_DEPOSIT
                         )
                     } else {
                         pvtUserSession.setSaldoIntroPageStatus(true)

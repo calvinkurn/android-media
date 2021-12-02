@@ -2,20 +2,11 @@ package com.tokopedia.navigation_common.model
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.text.TextUtils
 import com.google.gson.Gson
 
-class WalletPref(context: Context, gson: Gson) {
+class WalletPref(context: Context, val gson: Gson) {
 
     private val preferences: SharedPreferences = context.getSharedPreferences(WALLET_PREF, Context.MODE_PRIVATE)
-
-    private val gson: Gson = gson
-
-    fun saveWallet(wallet: WalletModel?) {
-        val editor = preferences.edit()
-        val jsonWallet = gson.toJson(wallet)
-        editor.putString(WALLET_PREF, jsonWallet).apply()
-    }
 
     fun saveDebitInstantUrl(url: String?) {
         val editor = preferences.edit()
@@ -29,7 +20,7 @@ class WalletPref(context: Context, gson: Gson) {
     fun retrieveWallet(): WalletModel? {
         return try {
             val jsonWallet = preferences.getString(WALLET_PREF, null)
-            if (TextUtils.isEmpty(jsonWallet)) {
+            if (jsonWallet.isNullOrEmpty()) {
                 null
             } else {
                 gson.fromJson(jsonWallet, WalletModel::class.java)
