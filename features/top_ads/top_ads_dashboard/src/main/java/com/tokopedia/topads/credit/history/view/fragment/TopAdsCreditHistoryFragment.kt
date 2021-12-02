@@ -56,13 +56,6 @@ class TopAdsCreditHistoryFragment : BaseListFragment<CreditHistory, TopAdsCredit
         }
     }
 
-    override fun onStart() {
-        context?.let {
-            GraphqlClient.init(it)
-        }
-        super.onStart()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.run {

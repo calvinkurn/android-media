@@ -150,7 +150,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         recyclerviewScrollListener = onRecyclerViewListener()
         val typeFactory: FeedPlusDetailTypeFactory = FeedPlusDetailTypeFactoryImpl(this)
         adapter = DetailFeedAdapter(typeFactory)
-        GraphqlClient.init(requireContext())
         pagingHandler = PagingHandler()
     }
 
