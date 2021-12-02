@@ -46,7 +46,10 @@ internal class ContentViewModel @Inject constructor(
     }
 
     private fun onTableContentFetched(page: Page) {
-        contentLiveData.postValue(page.cells)
+        val mergedList= columnHeaderLiveData.value?.plus(page.cells)
+        if (mergedList.isNullOrEmpty())
+            contentLiveData.postValue(page.cells)
+        else contentLiveData.postValue(mergedList)
     }
 
     private fun onColumnHeaderFetched(page: Page) {

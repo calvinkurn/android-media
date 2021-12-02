@@ -12,35 +12,35 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.data_explorer.R
 import com.tokopedia.data_explorer.di.DataExplorerComponent
+import com.tokopedia.data_explorer.domain.shared.models.DataBaseController
 import com.tokopedia.data_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.presentation.Constants
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.data_explorer_fragment_content_layout.*
-import kotlinx.android.synthetic.main.fragment_database_list_layout.*
 import javax.inject.Inject
 
 class ContentFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
-    private val headerAdapter: HeaderAdapter = HeaderAdapter()
     private val contentAdapter: ContentAdapter = ContentAdapter()
 
     private val viewModel: ContentViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(ContentViewModel::class.java)
     }
-
     private val databaseName: String by lazy(LazyThreadSafetyMode.NONE){
         arguments?.getString(Constants.Keys.DATABASE_NAME).orEmpty()
     }
-
     private val databasePath: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(Constants.Keys.DATABASE_PATH).orEmpty()
     }
-
     private val schemaName: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(Constants.Keys.SCHEMA_NAME).orEmpty()
+    }
+    private val dataBaseController: DataBaseController by lazy(LazyThreadSafetyMode.NONE) {
+        DataBaseController(databaseName, databasePath, schemaName)
     }
 
     override fun onCreateView(
@@ -53,19 +53,22 @@ class ContentFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getTableInfo(databasePath, schemaName)
+        if (dataBaseController.hasSchemaData)
+            viewModel.getTableInfo(databasePath, schemaName)
+        else showDatabaseError(GlobalError.PAGE_NOT_FOUND)
         observeViewModels()
-        headerAdapter.onClick = {
-
+        contentAdapter.onClick = { cell ->
+            cell.text?.let { cellText -> ContentPreviewBottomSheet.show(cellText, childFragmentManager) }
         }
-        contentAdapter.onClick = {
+    }
 
-        }
+    private fun showDatabaseError(errorType: Int) {
+        dataExplorerGlobalError.visible()
+        dataExplorerGlobalError.setType(errorType)
     }
 
     private fun observeViewModels() {
         viewModel.columnHeaderLiveData.observe(viewLifecycleOwner, { cells ->
-            headerAdapter.setItems(cells)
             contentAdapter.headersCount = cells.size
             rvContent.setupGrid()
             rvContent.layoutManager = GridLayoutManager(
@@ -74,19 +77,16 @@ class ContentFragment: BaseDaggerFragment() {
                 RecyclerView.VERTICAL,
                 false
             )
-            //rvContent.adapter = headerAdapter
-
             viewModel.getTableContent(databasePath, schemaName)
             Log.d("DATAEXPLORER 1", cells.map { it.text }.joinToString())
         })
         viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
             rvContent.adapter = contentAdapter
-
             contentAdapter.submitList(cells)
             Log.d("DATAEXPLORER 2", cells.map { it.text }.joinToString())
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
-            Toaster.build(rvDatabaseList, "Error", Toaster.TYPE_NORMAL, Toaster.LENGTH_LONG).show()
+            showDatabaseError(GlobalError.MAINTENANCE)
         })
     }
 

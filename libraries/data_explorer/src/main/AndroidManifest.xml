@@ -7,7 +7,7 @@
             android:name="com.tokopedia.data_explorer.presentation.databases.DataExplorerActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTask"
-            android:label="@string/title_app_db_inspector"
+            android:label="@string/title_app_data_explorer"
             android:theme="@style/Theme.WhiteUnify"
             android:taskAffinity="com.tokopedia.db_inspector.task"
             android:exported="true">

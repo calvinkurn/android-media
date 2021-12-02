@@ -34,15 +34,15 @@ class SchemaActivity : BaseSimpleActivity(), HasComponent<DataExplorerComponent>
     }
 
     private fun setUpToolBar() {
-        dbInspectorHeader.isShowBackButton = true
-        toolbar = dbInspectorHeader
+        dataExplorerHeader.isShowBackButton = true
+        toolbar = dataExplorerHeader
         setSupportActionBar(toolbar)
         supportActionBar?.let {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(true)
         }
-        dbInspectorHeader.title = "Schema"
-        dbInspectorHeader.headerSubTitle = databaseName
+        dataExplorerHeader.title = "Schema"
+        dataExplorerHeader.headerSubTitle = databaseName
     }
 
     override fun getNewFragment() = SchemaFragment.newInstance(databaseName, databasePath)

@@ -26,14 +26,14 @@ class DataExplorerActivity : BaseSimpleActivity(), HasComponent<DataExplorerComp
     }
 
     private fun setUpToolBar() {
-        dbInspectorHeader.isShowBackButton = true
-        toolbar = dbInspectorHeader
+        dataExplorerHeader.isShowBackButton = true
+        toolbar = dataExplorerHeader
         setSupportActionBar(toolbar)
         supportActionBar?.let {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(true)
         }
-        dbInspectorHeader.title = "Db Inspector"
+        dataExplorerHeader.title = "Data Explorer"
     }
 
     override fun getNewFragment() = DatabaseListFragment.newInstance()

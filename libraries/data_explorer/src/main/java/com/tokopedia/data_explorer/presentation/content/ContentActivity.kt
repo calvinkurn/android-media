@@ -37,15 +37,15 @@ class ContentActivity : BaseSimpleActivity(), HasComponent<DataExplorerComponent
     }
 
     private fun setUpToolBar() {
-        dbInspectorHeader.isShowBackButton = true
-        toolbar = dbInspectorHeader
+        dataExplorerHeader.isShowBackButton = true
+        toolbar = dataExplorerHeader
         setSupportActionBar(toolbar)
         supportActionBar?.let {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowTitleEnabled(true)
         }
-        dbInspectorHeader.title = "Table"
-        dbInspectorHeader.headerSubTitle = schemaName
+        dataExplorerHeader.title = "Table"
+        dataExplorerHeader.headerSubTitle = schemaName
     }
 
     override fun getNewFragment() = ContentFragment.newInstance(schemaName, databaseName, databasePath)

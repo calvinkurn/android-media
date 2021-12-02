@@ -1,5 +1,5 @@
 <resources>
-    <string name="title_app_db_inspector">Db Inspector</string>
+    <string name="title_app_data_explorer">Data Explorer</string>
     <string name="title_schema">Schema</string>
 
 </resources>
