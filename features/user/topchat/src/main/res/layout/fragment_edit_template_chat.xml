@@ -47,7 +47,7 @@
             android:gravity="center"
             android:minHeight="50dp"
             android:text="@string/title_save"
-            android:textColor="@color/Unify_Background" />
+            android:textColor="@color/Unify_N0" />
 
     </RelativeLayout>
 

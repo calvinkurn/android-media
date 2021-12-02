@@ -94,7 +94,7 @@ class BroadcastCampaignLabelView : LinearLayout {
     private fun bindDescColor(banner: ImageAnnouncementUiModel) {
         val colorRes = when (banner.statusCampaign) {
             CampaignStatus.ENDED -> com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-            else -> com.tokopedia.unifyprinciples.R.color.Unify_Background
+            else -> com.tokopedia.unifyprinciples.R.color.Unify_N0
         }
         val color = MethodChecker.getColor(context, colorRes)
         desc?.setTextColor(color)
