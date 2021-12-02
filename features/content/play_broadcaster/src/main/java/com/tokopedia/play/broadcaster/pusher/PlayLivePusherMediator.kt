@@ -1,14 +1,10 @@
 package com.tokopedia.play.broadcaster.pusher
 
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerImpl
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimerListener
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountUpTimerImpl
 import com.tokopedia.play.broadcaster.util.error.PlayLivePusherException
 import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
-import com.tokopedia.play.broadcaster.view.custom.PlayTimerCountDown
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 
 
@@ -24,7 +20,6 @@ class PlayLivePusherMediator(
     val remainingDurationInMillis: Long
         get() = mCountDownTimer.remainingDurationInMillis
 
-//    private val mCountDownTimer: PlayLivePusherCountDownTimer = PlayLivePusherCountDownTimerImpl(cacheHandler)
     private val mListeners = mutableListOf<PlayLivePusherMediatorListener>()
 
     private var mPauseDuration = 0L
