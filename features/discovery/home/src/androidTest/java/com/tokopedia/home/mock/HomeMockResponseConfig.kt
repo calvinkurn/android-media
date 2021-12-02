@@ -38,6 +38,7 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_CHIPS = "RecommendationFilterChipsQuery"
         const val KEY_CONTAINS_WALLETAPP_GETBALANCES = "walletAppGetBalance"
         const val KEY_CONTAINS_PLAY_GET_WIDGET_V2 = "playGetWidgetV2"
+        const val KEY_CONTAINS_CM_HOME_WIDGET = "notifier_getHtdw"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -217,6 +218,11 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_PLAY_GET_WIDGET_V2,
             getRawString(context, R.raw.response_mock_data_play_widget_v2),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_CM_HOME_WIDGET,
+            getRawString(context, R.raw.response_cm_home_widget),
             FIND_BY_CONTAINS
         )
         updateMock(context)
