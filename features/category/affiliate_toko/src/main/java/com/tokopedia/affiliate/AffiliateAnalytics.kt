@@ -54,14 +54,16 @@ object AffiliateAnalytics {
         productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
         productMap[EventKeys.KEY_ITEM_NAME] = itemName
         list.add(productMap)
+        val eCommerce = mapOf(
+            EventKeys.KEY_IMPRESSIONS to list)
         val map = HashMap<String,Any>()
-        map[EventKeys.KEY_EVENT] = event
+        map[EventKeys.KEY_EVENT] = EventKeys.PRODUCT_VIEW
         map[EventKeys.KEY_EVENT_CATEGORY] = category
         map[EventKeys.KEY_EVENT_ACTION] = action
         map[EventKeys.KEY_EVENT_LABEL] = productId
         map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
-        map[EventKeys.KEY_PROMOTION] = list
+        map[EventKeys.KEY_ECOMMERCE] = eCommerce
         map[EventKeys.KEY_USER_ID] = userId
 
         getTracker().sendEnhanceEcommerceEvent(map)
@@ -94,6 +96,10 @@ object AffiliateAnalytics {
 
             const val KEY_PROMOTION = "promotions"
             const val SELECT_CONTENT = "selectContent"
+            const val PRODUCT_VIEW = "productview"
+
+            const val KEY_IMPRESSIONS = "impressions"
+            const val KEY_ECOMMERCE = "ecommerce"
         }
     }
 
