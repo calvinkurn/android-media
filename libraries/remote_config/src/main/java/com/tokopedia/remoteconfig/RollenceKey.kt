@@ -62,5 +62,5 @@ object RollenceKey {
     const val VARIANT_REVIEW_CREDIBILITY_WITH_BOTTOM_SHEET = "with_bottomsheet"
 
     // Purchase Platform
-    const val WISHLIST_V2_REVAMP = "WL_revamp_android"
+    const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
 }

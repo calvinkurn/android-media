@@ -19,20 +19,9 @@ class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2
                     productCardModelList = convertIntoProductDataModel(data),
                     carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
                         override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            // val wishlistDataModel = data.getOrNull(carouselProductCardPosition) ?: return
                             actionListener?.onProductRecommItemClicked(data.get(carouselProductCardPosition).productId.toString())
                         }
                     },
-//                    carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener{
-//                        override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
-//                            return data.getOrNull(carouselProductCardPosition)?.recommendationItemList
-//                        }
-//
-//                        override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-//                            val wishlistDataModel = element.list.getOrNull(carouselProductCardPosition) ?: return
-//                            (listener as WishlistListener).onProductImpression(wishlistDataModel, carouselProductCardPosition)
-//                        }
-//                    }
                 )
             }
 

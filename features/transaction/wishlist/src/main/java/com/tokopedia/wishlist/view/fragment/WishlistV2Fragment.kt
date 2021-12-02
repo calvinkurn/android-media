@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.annotation.Keep
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -78,9 +77,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private lateinit var wishlistV2Adapter: WishlistV2Adapter
     private lateinit var rvScrollListener: EndlessRecyclerViewScrollListener
     private var paramWishlistV2 = WishlistV2Params()
-    // private var refreshHandler: RefreshHandler? = null
     private var onLoadMore = false
-    // private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
     private var currPage = 1
     private var currRecommendationListPage = 1
@@ -128,7 +125,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
 
         const val REQUEST_CODE_LOGIN = 288
-        const val MIN_KEYWORD_CHARACTER_COUNT = 1
         private const val PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2"
         const val PARAM_HOME = "home"
         const val SHARE_LINK_PRODUCT = "SHARE_LINK_PRODUCT"
@@ -136,14 +132,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         const val ATC_WISHLIST = "ADD_TO_CART"
         const val CTA_ATC = "Lihat"
         const val CTA_RESET = "Reset"
-        private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
-
-        private const val topAdsPositionInPage = 4
-        private const val newMinItemRegularRule = 24
-        private const val WISHLIST_TOPADS_SOURCE = "6"
-        private const val WISHLIST_TOPADS_ADS_COUNT = 1
-        private const val WISHLIST_TOPADS_DIMENS = 3
-        private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
 
         private const val FILTER_SORT = "sort"
         private const val FILTER_OFFERS = "offers"
@@ -198,7 +186,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     private fun launchAutoRefresh(isVisibleToUser: Boolean = true) {
-        // TODO : follow up about remote config - make sure old remote config can be used
         if (isVisibleToUser && isAutoRefreshEnabled()) {
         if (isVisibleToUser) {
             binding?.run {
@@ -225,8 +212,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     finishRefresh()
                     result.data.let { wishlistV2 ->
                         hideLoader()
-                        // refreshHandler?.finishRefresh()
-
                         rvScrollListener.setHasNextPage(wishlistV2.hasNextPage)
 
                         if (wishlistV2.totalData == 0) {
@@ -247,7 +232,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
                 is Fail -> {
                     finishRefresh()
-                    // refreshHandler?.finishRefresh()
                     showToaster(ErrorHandler.getErrorMessage(context, result.throwable), "", Toaster.TYPE_ERROR)
                 }
             }
@@ -299,8 +283,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
                 }
             }
-            // refreshHandler = RefreshHandler(swipeRefreshLayout, this@WishlistV2Fragment)
-            // refreshHandler?.setPullEnabled(true)
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistNavtoolbar)
@@ -313,19 +295,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         }
                         wishlistNavtoolbar.hideKeyboard()
                         triggerSearch()
-                        /*when {
-                            searchQuery.isBlank() -> {
-                                wishlistNavtoolbar.hideKeyboard()
-                                triggerSearch()
-                            }
-                            searchQuery.length in 1 until MIN_KEYWORD_CHARACTER_COUNT -> {
-                                showToaster(getString(R.string.error_message_minimum_search_keyword), "", Toaster.TYPE_ERROR)
-                            }
-                            else -> {
-                                wishlistNavtoolbar.hideKeyboard()
-                                triggerSearch()
-                            }
-                        }*/
                     }
             )
             val pageSource: String
@@ -347,8 +316,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
             }
             wishlistNavtoolbar.setIcon(icons)
-
-            // setNonStickyCountManageLabel()
             wishlistV2StickyCountManageLabel.wishlistManageLabel.setOnClickListener { onStickyManageClicked() }
         }
 
@@ -357,18 +324,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
         addEndlessScrollListener()
     }
-
-    /*private fun setStickyCountManageLabel() {
-        binding?.run {
-            appBarLayout.setExpanded(true, true)
-        }
-    }
-
-    private fun setNonStickyCountManageLabel() {
-        binding?.run {
-            appBarLayout.setExpanded(false, true)
-        }
-    }*/
 
     private fun addEndlessScrollListener() {
         val glm = GridLayoutManager(activity, 2)
@@ -387,18 +342,12 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 currentPage += 1
                 onLoadMore = true
                 if (isFetchRecommendation) {
-                    // onLoadMoreRecommendation = true
                     loadRecommendationList()
                 } else {
                     paramWishlistV2.page = currPage
                     loadWishlistV2()
                 }
             }
-
-            /*override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(view, dx, dy)
-                println("++ dx = $dx, dy = $dy")
-            }*/
         }
 
         binding?.run {
@@ -437,7 +386,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     private fun triggerSearch() {
         paramWishlistV2.query = searchQuery
-        // refreshHandler?.startRefresh()
         doRefresh()
         rvScrollListener.resetState()
         currRecommendationListPage = 1
@@ -460,7 +408,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
-                            // refreshHandler?.startRefresh()
                             doRefresh()
                         }
                     }
@@ -490,7 +437,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
-                            // refreshHandler?.startRefresh()
                             doRefresh()
                         }
                     }
@@ -588,7 +534,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 sortFilterPrefix.setOnClickListener {
                     resetAllFilters()
                     paramWishlistV2 = WishlistV2Params()
-                    // refreshHandler?.startRefresh()
                     doRefresh()
                     WishlistV2Analytics.clickXChipsToClearFilter()
                 }
@@ -653,7 +598,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 paramWishlistV2.sortFilters.removeAll { it.name == name }
                 paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
                         name = filterItem.name, selected = arrayListOf(optionId)))
-                // refreshHandler?.startRefresh()
                 doRefresh()
                 hitAnalyticsFilterOptionSelected(name, label)
             }
@@ -697,7 +641,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 }
 
                 filterBottomSheet.dismiss()
-                // refreshHandler?.startRefresh()
                 doRefresh()
                 WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(FILTER_OFFERS_LABEL)
             }
@@ -915,7 +858,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 price = wishlistItem.originalPriceFmt,
                 quantity = wishlistItem.minOrder.toInt(),
                 shopId = wishlistItem.shop.id.toInt(),
-                // category = wishlistItem.category.,
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST)
         wishlistViewModel.doAtc(atcParam)
         wishlistItemOnAtc = wishlistItem
@@ -1023,7 +965,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
         onLoadMore = false
         isFetchRecommendation = false
-        // onLoadMoreRecommendation = false
         currPage = 1
         currRecommendationListPage = 1
         loadWishlistV2()

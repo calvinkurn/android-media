@@ -2,13 +2,9 @@ package com.tokopedia.wishlist.util
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import javax.inject.Inject
 
-/**
- * Created by fwidjaja on 17/10/21.
- */
 class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
     companion object {
         const val USER_LAYOUT_WISHLIST = "user_layout_wishlist"
@@ -26,6 +22,7 @@ class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
         sharedPrefs?.edit()?.putInt(USER_LAYOUT_WISHLIST_TYPE, type)?.apply()
     }
 
+    // do not delete : for phase 2 will use grid layout
     fun getTypeLayout(): String {
         return TYPE_LIST
         /*val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_TYPE, 0)

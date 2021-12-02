@@ -12,21 +12,17 @@ class WishlistV2CountManageRowItemViewHolder(private val binding: WishlistV2Coun
                                              private val actionListener: WishlistV2Adapter.ActionListener?) : RecyclerView.ViewHolder(binding.root) {
     fun bind(item: WishlistV2TypeLayoutData, isShowCheckbox: Boolean) {
         if (item.dataObject is WishlistV2CountManageRowData) {
-            /*if (isShowCheckbox) {
-                itemView.gone()
-            } else {*/
-                binding.wishlistCountLabel.text = "${item.dataObject.count}"
-                binding.wishlistManageLabel.setOnClickListener {
-                    if (!isShowCheckbox) {
-                        binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_cancel_manage_label)
-                        actionListener?.onManageClicked(true)
-                    } else {
-                        binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_manage_label)
-                        actionListener?.onManageClicked(false)
-                    }
-                    item.dataObject.isBulkDeleteShow = !item.dataObject.isBulkDeleteShow
+            binding.wishlistCountLabel.text = "${item.dataObject.count}"
+            binding.wishlistManageLabel.setOnClickListener {
+                if (!isShowCheckbox) {
+                    binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_cancel_manage_label)
+                    actionListener?.onManageClicked(true)
+                } else {
+                    binding.wishlistManageLabel.text = itemView.context.getString(R.string.wishlist_manage_label)
+                    actionListener?.onManageClicked(false)
                 }
-            // }
+                item.dataObject.isBulkDeleteShow = !item.dataObject.isBulkDeleteShow
+            }
         }
     }
 
