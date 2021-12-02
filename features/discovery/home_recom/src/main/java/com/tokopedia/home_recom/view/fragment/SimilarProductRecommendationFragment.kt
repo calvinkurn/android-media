@@ -30,6 +30,7 @@ import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
+import com.tokopedia.home_recom.databinding.FragmentSimillarRecommendationBinding
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.model.entity.ProductDetailData
@@ -52,7 +53,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.android.synthetic.main.fragment_simillar_recommendation.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -63,6 +64,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
         RecommendationErrorListener,
         RecommendationEmptyViewHolder.RecommendationEmptyStateListener,
         SortFilterBottomSheet.Callback {
+    private var binding: FragmentSimillarRecommendationBinding? by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -167,7 +169,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
 
     private fun setupRecyclerView(view: View){
-        view.filter_sort_recommendation?.hide()
+        binding?.filterSortRecommendation?.hide()
         getRecyclerView(view)?.apply {
             if(this is VerticalRecyclerView) clearItemDecoration()
             layoutManager = recyclerViewLayoutManager
@@ -176,13 +178,14 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
                     super.onScrolled(recyclerView, dx, dy)
                     val lastItems = staggeredGrid.findFirstCompletelyVisibleItemPositions(null)
                     if (lastItems.isNotEmpty() && lastItems[0] >= 2) {
-                        if(!view.recom_back_to_top.isShown) {
-                            view.recom_back_to_top?.show()
-                            view.recom_back_to_top.visible()
+                        val shown = binding?.recomBackToTop?.isShown == true
+                        if(!shown) {
+                            binding?.recomBackToTop?.show()
+                            binding?.recomBackToTop?.visible()
                         }
                     } else {
-                        view.recom_back_to_top.gone()
-                        view.recom_back_to_top?.hide()
+                        binding?.recomBackToTop?.gone()
+                        binding?.recomBackToTop?.hide()
                     }
                 }
             })
@@ -209,8 +212,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<HomeRecommend
     }
 
     private fun setupBackToTop(view: View){
-        view.recom_back_to_top?.circleMainMenu?.setOnClickListener {
-            view.recycler_view?.smoothScrollToPosition(0)
+        binding?.recomBackToTop?.circleMainMenu?.setOnClickListener {
+            binding?.recyclerView?.smoothScrollToPosition(0)
         }
     }
 
