@@ -1,8 +1,8 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.affiliate.model.AffiliatePerformanceData
-import com.tokopedia.affiliate.model.AffiliateValidateUserData
+import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
+import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.AffiliateAnnouncementUseCase
 import com.tokopedia.affiliate.usecase.AffiliatePerformanceUseCase
 import com.tokopedia.affiliate.usecase.AffiliateValidateUserStatusUseCase
@@ -18,7 +18,6 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import rx.Subscriber
 
 @ExperimentalCoroutinesApi
 class AffiliateHomeViewModelTest{

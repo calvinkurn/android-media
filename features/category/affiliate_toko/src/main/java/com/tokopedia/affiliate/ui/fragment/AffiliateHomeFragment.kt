@@ -19,7 +19,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.ProductClickInterface
-import com.tokopedia.affiliate.model.AffiliateAnnouncementData
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
@@ -256,8 +256,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
     private fun onGetAnnouncementError() {
         product_list_group.hide()
         setupTickerView(
-            getString(R.string.system_down_title),
-            getString(R.string.system_down_description),
+            getString(R.string.affiliate_system_down_title),
+            getString(R.string.affiliate_system_down_description),
             Ticker.TYPE_ANNOUNCEMENT
         )
     }
@@ -300,8 +300,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
         } else{
             product_list_group.hide()
             setupTickerView(
-                getString(R.string.system_down_title),
-                getString(R.string.system_down_description),
+                getString(R.string.affiliate_system_down_title),
+                getString(R.string.affiliate_system_down_description),
                 Ticker.TYPE_ANNOUNCEMENT
             )
         }
@@ -363,7 +363,8 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
 
     override fun onProductClick(productId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, status : Int?) {
         if(status == AffiliateSharedProductCardsItemVH.PRODUCT_ACTIVE){
-            AffiliatePromotionBottomSheet.newInstance(productId , productName , productImage, productUrl,productIdentifier,
+            AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
+                    null,null,productId , productName , productImage, productUrl,productIdentifier,
                     AffiliatePromotionBottomSheet.ORIGIN_HOME,!isUserBlackListed).show(childFragmentManager, "")
         }else {
             AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
