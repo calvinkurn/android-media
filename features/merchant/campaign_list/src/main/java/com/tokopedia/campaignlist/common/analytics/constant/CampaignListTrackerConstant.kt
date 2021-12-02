@@ -10,11 +10,13 @@ object CampaignListTrackerConstant {
         const val CURRENT_SITE = "currentSite"
         const val SHOP_ID = "shopId"
         const val BUSINESS_UNIT = "businessUnit"
+        const val USER_ID = "userId"
     }
 
     object Values {
         const val TOKOPEDIA_SELLER = "tokopediaseller"
         const val PHYSICAL_GOODS = "physical goods"
+        const val SHARING_EXPERIENCE = "sharingexperience"
     }
 
     object Event {

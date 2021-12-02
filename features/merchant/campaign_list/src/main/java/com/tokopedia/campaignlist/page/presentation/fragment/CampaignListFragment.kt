@@ -106,6 +106,15 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onShareButtonClicked(activeCampaign: ActiveCampaign) {
+        viewModel.setSelectedCampaignId(activeCampaign.campaignId)
+
+        tracker.sendShareButtonClickEvent(
+            activeCampaign.campaignType,
+            activeCampaign.campaignId,
+            userSession.shopId,
+            userSession.userId,
+        )
+
         try {
             val campaignId = activeCampaign.campaignId.toInt()
             viewModel.getSellerBanner(campaignId)
@@ -243,6 +252,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         viewModel.getMerchantBannerResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
+                    sendBottomSheetDisplayedTracker()
                     if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
                         setupUniversalShareBottomSheet(result.data)
                         universalShareBottomSheet?.show(childFragmentManager, this)
@@ -277,11 +287,22 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        TODO("Not yet implemented")
+        tracker.sendSelectShareChannelClickEvent(
+            shareModel.channel.orEmpty(),
+            viewModel.getCampaignTypeId(),
+            viewModel.getSelectedCampaignId(),
+            userSession.userId,
+            userSession.shopId
+        )
     }
 
     override fun onCloseOptionClicked() {
-
+        tracker.sendShareBottomSheetDismissClickEvent(
+            viewModel.getCampaignTypeId(),
+            viewModel.getSelectedCampaignId(),
+            userSession.userId,
+            userSession.shopId
+        )
     }
 
     private fun displayGetCampaignListError(@StringRes stringResourceId : Int) {
@@ -310,5 +331,14 @@ class CampaignListFragment : BaseDaggerFragment(),
             duration = Toaster.LENGTH_LONG,
             type = Toaster.TYPE_ERROR
         ).show()
+    }
+
+    private fun sendBottomSheetDisplayedTracker() {
+        tracker.sendShareBottomSheetDisplayedEvent(
+            viewModel.getCampaignTypeId(),
+            viewModel.getSelectedCampaignId(),
+            userSession.userId,
+            userSession.shopId
+        )
     }
 }
