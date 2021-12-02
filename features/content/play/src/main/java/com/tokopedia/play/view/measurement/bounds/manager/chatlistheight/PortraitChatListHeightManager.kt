@@ -10,6 +10,7 @@ import com.tokopedia.play.view.custom.MaximumHeightRecyclerView
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play_common.util.extension.*
+import com.tokopedia.unifycomponents.R as unifyR
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 
@@ -30,6 +31,8 @@ class PortraitChatListHeightManager(
     private val quickReplyView: View = container.findViewById(R.id.rv_quick_reply)
 
     private val videoChatMargin = container.resources.getDimensionPixelOffset(R.dimen.play_landscape_video_chat_margin)
+    private val chatPinnedMargin = container.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl3)
+    private val reservedMargin = container.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl3)
     private val maxVerticalChatHeight = container.resources.getDimension(R.dimen.play_chat_vertical_max_height)
     private val differencesHorizontalChatMode = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl6)
 
@@ -126,7 +129,7 @@ class PortraitChatListHeightManager(
         val nonOffsetOccupiedHeight = productFeaturedView.visibleHeight + pinnedVoucherView.visibleHeight + pinnedMessageView.visibleHeight
         val offsetOccupiedHeight = productFeaturedView.marginLp.bottomMargin + pinnedVoucherView.marginLp.bottomMargin + pinnedMessageView.marginLp.bottomMargin
 
-        val maxHeight = (bottomBounds - topBounds) - nonOffsetOccupiedHeight - offsetOccupiedHeight - videoChatMargin
+        val maxHeight = (bottomBounds - topBounds) - nonOffsetOccupiedHeight - offsetOccupiedHeight - videoChatMargin - chatPinnedMargin - reservedMargin
 
         maxHeight.toFloat()
     }
