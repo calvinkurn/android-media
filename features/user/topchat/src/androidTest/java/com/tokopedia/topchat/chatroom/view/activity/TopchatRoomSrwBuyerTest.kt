@@ -1294,6 +1294,25 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwTotalQuestion(3)
     }
 
+    /**
+     * Simulate when messageId is empty
+     */
+    @Test
+    fun should_render_srw_question_when_product_coming_from_chat_entry_point_such_as_pdp() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity {
+            it.putExtra(ApplinkConst.Chat.MESSAGE_ID, "")
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(1)
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user receive voucher event from ws.

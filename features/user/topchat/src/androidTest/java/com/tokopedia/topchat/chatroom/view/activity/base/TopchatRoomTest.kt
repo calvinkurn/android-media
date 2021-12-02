@@ -171,7 +171,6 @@ abstract class TopchatRoomTest {
     protected var orderProgressResponse = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
-    protected var existingMessageIdResponse = GetExistingMessageIdPojo()
 
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
@@ -256,7 +255,6 @@ abstract class TopchatRoomTest {
         chatSrwUseCase.response = chatSrwResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
-        getExistingMessageIdUseCaseNewStub.response = existingMessageIdResponse
         toggleFavouriteShopUseCaseStub.response = true
     }
 
