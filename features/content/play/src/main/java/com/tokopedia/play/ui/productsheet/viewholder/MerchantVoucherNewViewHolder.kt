@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.productsheet.viewholder
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.play.R
@@ -21,6 +22,7 @@ class MerchantVoucherNewViewHolder(
     private val tvVoucherDescription: TextView = itemView.findViewById(R.id.tvMinTrax)
     private val tvVoucherStock: TextView = itemView.findViewById(R.id.tvCouponStock)
     private val tvVoucherExpiredDate: TextView = itemView.findViewById(R.id.tvExpiredDate)
+    private val ivCopyVoucher: IconUnify = itemView.findViewById(R.id.ivCopyVoucher)
 
     fun bind(item: MerchantVoucherUiModel) {
         tvVoucherTitle.text = item.title
@@ -31,11 +33,17 @@ class MerchantVoucherNewViewHolder(
         tvVoucherExpiredDate.shouldShowWithAction(item.expiredDate.isNotEmpty()){
             tvVoucherExpiredDate.text = getString(R.string.play_voucher_sheet_coupon_expired, countDays(item.expiredDate).toString())
         }
+        ivCopyVoucher.shouldShowWithAction(item.copyable){
+            ivCopyVoucher.setOnClickListener {
+                listener.onCopyItemVoucherClicked(item)
+            }
+        }
     }
 
     private fun countDays(expiredDate: String): Long =
         DateUtil.getDayDiffFromToday(expiredDate)
 
     interface Listener{
+        fun onCopyItemVoucherClicked(voucher: MerchantVoucherUiModel)
     }
 }

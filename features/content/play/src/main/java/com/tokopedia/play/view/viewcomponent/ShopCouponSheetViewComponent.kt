@@ -5,6 +5,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -30,11 +32,25 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
     private val clProductEmpty: ConstraintLayout = findViewById(R.id.cl_product_empty)
 
     private val voucherAdapter = MerchantVoucherAdapter(object : MerchantVoucherNewViewHolder.Listener {
+        override fun onCopyItemVoucherClicked(voucher: MerchantVoucherUiModel) {
+            listener.onCopyVoucherCodeClicked(this@ShopCouponSheetViewComponent, voucher)
+        }
     })
 
     private val layoutManagerVoucherList = object : LinearLayoutManager(rvVoucherList.context, RecyclerView.VERTICAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
+            listener.onVouchersImpressed(this@ShopCouponSheetViewComponent, getVisibleVouchers())
+        }
+    }
+
+    private val voucherScrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            val layoutManager = recyclerView.layoutManager
+            if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
+                layoutManager is LinearLayoutManager) {
+                listener.onVoucherScrolled(this@ShopCouponSheetViewComponent, layoutManager.findLastVisibleItemPosition())
+            }
         }
     }
 
@@ -49,6 +65,8 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
             adapter = voucherAdapter
             addItemDecoration(DividerItemDecoration(rvVoucherList.context, DividerItemDecoration.VERTICAL))
         }
+
+        rvVoucherList.addOnScrollListener(voucherScrollListener)
 
         tvSheetTitle.text = getString(R.string.play_title_coupon)
     }
@@ -77,7 +95,29 @@ class ShopCouponSheetViewComponent (container: ViewGroup,
         show()
     }
 
+    fun getVisibleVouchers(): List<MerchantVoucherUiModel> {
+        val vouchers = voucherAdapter.getItems()
+        if (vouchers.isNotEmpty()) {
+            val startPosition = layoutManagerVoucherList.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManagerVoucherList.findLastCompletelyVisibleItemPosition()
+            if (startPosition > -1 && endPosition < vouchers.size) {
+                return vouchers
+                    .slice(startPosition..endPosition)
+                    .filterIsInstance<MerchantVoucherUiModel>()
+            }
+        }
+        return emptyList()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy(){
+        rvVoucherList.removeOnScrollListener(voucherScrollListener)
+    }
+
     interface Listener {
         fun onCloseButtonClicked(view: ShopCouponSheetViewComponent)
+        fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int)
+        fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<MerchantVoucherUiModel>)
+        fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: MerchantVoucherUiModel)
     }
 }
