@@ -2,6 +2,7 @@ package com.tokopedia.shop.score.uitest.stub.common.util
 
 import android.app.Application
 import com.tokopedia.shop.score.uitest.stub.common.di.component.BaseAppComponentStub
+import com.tokopedia.shop.score.uitest.stub.common.di.component.DaggerBaseAppComponentStub
 import com.tokopedia.shop.score.uitest.stub.common.di.module.AppModuleStub
 
 object BaseAppComponentStubInstance {

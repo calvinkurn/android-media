@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.shop.score"
+    android:versionCode="1"
+    android:versionName="1.0.0">
+
+    <application
+        android:label="Shop Score Test"
+        tools:replace="android:label">
+        <activity
+            android:name=".performance.presentation.activity.ShopPerformancePageActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+    </application>
+</manifest>
