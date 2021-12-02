@@ -29,7 +29,7 @@ data class LocalCacheModel (
      */
     val latLong: String
         get() {
-            return if (lat.isNotEmpty() && long.isNotEmpty()) {
+            return if (lat.isNotBlank() && long.isNotBlank()) {
                 "$lat,$long"
             } else {
                 ""
