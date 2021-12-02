@@ -22,6 +22,7 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -54,9 +55,18 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
     }
 
     private fun afterViewCreated() {
+        initNavBar()
         initRv()
         initObserver()
         getData()
+    }
+
+    private fun initNavBar() {
+        findViewById<NavToolbar>(R.id.transaction_navToolbar)?.run {
+            setOnBackButtonClickListener {
+                finish()
+            }
+        }
     }
 
     private fun getData() {
