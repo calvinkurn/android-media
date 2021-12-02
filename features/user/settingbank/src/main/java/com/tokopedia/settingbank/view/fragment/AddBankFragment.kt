@@ -540,9 +540,9 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun createPrivacyTextSpannable(): SpannableStringBuilder? {
         val originalText = createTermsAndConditionSpannable()
-        val startIndexPrivacy = originalText?.indexOf(getString(R.string.sbank_privacy))?:0
+        val startIndexPrivacy = originalText?.indexOf(getString(R.string.sbank_privacy)) ?: 0
         val endIndexPrivacy =
-            originalText?.indexOf(getString(R.string.sbank_and_privacy_terms))?.minus(1)?:0
+            originalText?.indexOf(getString(R.string.sbank_and_privacy_terms))?.minus(1) ?: 0
         val spannableStringPrivacyPolicy = SpannableString(originalText)
         val color =
             MethodChecker.getColor(context, com.tokopedia.unifycomponents.R.color.Unify_G400)
