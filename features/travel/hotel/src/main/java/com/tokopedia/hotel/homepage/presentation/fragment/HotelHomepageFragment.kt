@@ -751,6 +751,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
         binding?.hotelContainerLastSearch?.visibility = View.GONE
     }
 
+    override fun onStop() {
+        super.onStop()
+        binding?.bannerHotelHomepagePromo?.timer?.cancel()
+    }
+
     companion object {
         const val REQUEST_CODE_DESTINATION = 101
         const val REQUEST_CODE_SEARCH = 102
