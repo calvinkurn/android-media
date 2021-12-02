@@ -313,6 +313,9 @@ class SuggestionPresenter @Inject constructor(
             TYPE_CURATED -> {
                 view?.trackTokoNowEventClickCurated(getCuratedEventLabelForTracking(item), item)
             }
+            else -> {
+                view?.trackEventClick(item)
+            }
         }
     }
 
@@ -386,6 +389,9 @@ class SuggestionPresenter @Inject constructor(
                     item.dimension90,
                     item,
                 )
+            }
+            else -> {
+                view?.trackEventClick(item)
             }
         }
     }

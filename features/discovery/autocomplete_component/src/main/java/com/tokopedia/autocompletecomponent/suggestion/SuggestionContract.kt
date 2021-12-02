@@ -85,6 +85,8 @@ interface SuggestionContract {
 
         fun trackEventImpression(item: BaseSuggestionDataView)
 
+        fun trackEventClick(item: BaseSuggestionDataView)
+
         fun dropKeyBoard()
 
         fun route(applink: String, searchParameter: Map<String, String>)

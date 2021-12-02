@@ -275,6 +275,33 @@ internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
     }
 
     @Test
+    fun `test tracking click suggestion item tokonow not keyword or curated`() {
+        val searchParameter = mutableMapOf(
+            SearchApiConst.Q to keywordTypedByUser,
+            SearchApiConst.NAVSOURCE to "tokonow"
+        )
+
+        `given suggestion tracker use case capture request params`()
+        `Given View already load data`(suggestionCommonResponse, searchParameter)
+
+        val item = visitableList.findSingleLine(TYPE_RECENT_KEYWORD)
+
+        `when suggestion item clicked`(item.data)
+
+        `Then verify track click event tokonow`(item.data)
+    }
+
+    private fun `Then verify track click event tokonow`(
+        item: BaseSuggestionDataView,
+    ) {
+        verify {
+            suggestionView.showSuggestionResult(any())
+            suggestionView.trackEventClick(item)
+            suggestionView.onClickSuggestion(item.applink)
+        }
+    }
+
+    @Test
     fun `test tracking click suggestion chip widget`() {
         `given suggestion tracker use case capture request params`()
         `Given View already load data`(suggestionCommonResponse, searchParameter)

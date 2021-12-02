@@ -330,6 +330,10 @@ class SuggestionFragment :
         suggestionTracking?.eventImpressionSuggestion(item)
     }
 
+    override fun trackEventClick(item: BaseSuggestionDataView) {
+        suggestionTracking?.eventClickSuggestion(item)
+    }
+
     interface SuggestionViewUpdateListener {
 
         fun showSuggestionView()

@@ -333,4 +333,8 @@ open class SuggestionTracking(
     open fun eventImpressionSuggestion(searchComponentTracking: SearchComponentTracking) {
         SearchComponentTrackingRollence.impress(iris, listOf(searchComponentTracking), ROLLENCE_KEY)
     }
+
+    open fun eventClickSuggestion(searchComponentTracking: SearchComponentTracking) {
+        SearchComponentTrackingRollence.click(searchComponentTracking, ROLLENCE_KEY)
+    }
 }
