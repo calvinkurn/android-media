@@ -27,7 +27,6 @@ import com.tokopedia.shop.analytic.ShopPageShowcaseTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopCommonExtraConstant
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
-import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.view.model.ShopEtalaseUiModel
 import com.tokopedia.shop.databinding.FragmentShopPageShowcaseBinding
@@ -179,13 +178,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseClicked(element: FeaturedShowcaseUiModel, position: Int) {
         // track click featured showcase item
-        shopPageShowcaseTracking.clickFeaturedShowcaseItem(
-                featuredShowcase = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.clickFeaturedShowcaseItem(
+                    featuredShowcase = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
 
         // open showcase product result list page
         goToShowcaseProductListResult(element.id, true)
@@ -193,13 +193,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onFeaturedShowcaseImpressed(element: FeaturedShowcaseUiModel, position: Int) {
         // track featured showcase item impression
-        shopPageShowcaseTracking.featuredShowcaseItemImpressed(
-                featuredShowcase = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.featuredShowcaseItemImpressed(
+                    featuredShowcase = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
     }
 
     override fun onShowcaseListItemSelected(element: ShopEtalaseUiModel, position: Int) {
@@ -220,13 +221,14 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
     override fun onShowcaseListItemImpressed(element: ShopEtalaseUiModel, position: Int) {
         // track featured showcase item impression
-        shopPageShowcaseTracking.showcaseItemImpressed(
-                showcaseItem = element,
-                isOwner = shopPageShowcaseViewModel.isMyShop(shopId),
-                position = position,
-                customDimensionShopPage = customDimensionShopPage,
-                userId = shopPageShowcaseViewModel.userId.orEmpty()
-        )
+        if(!shopPageShowcaseViewModel.isMyShop(shopId)) {
+            shopPageShowcaseTracking.showcaseItemImpressed(
+                    showcaseItem = element,
+                    position = position,
+                    customDimensionShopPage = customDimensionShopPage,
+                    userId = shopPageShowcaseViewModel.userId.orEmpty()
+            )
+        }
     }
 
     private fun initView(view: View?) {
@@ -250,14 +252,6 @@ class ShopPageShowcaseFragment : BaseDaggerFragment(),
 
         // search showcase icon on click listener
         icShowcaseSearch?.setOnClickListener {
-
-            // track click search icon
-            shopPageShowcaseTracking.clickSearchIcon(
-                    shopPageShowcaseViewModel.isMyShop(shopId),
-                    customDimensionShopPage,
-                    shopPageShowcaseViewModel.userId.orEmpty()
-            )
-
             goToShopShowcaseList()
         }
 
