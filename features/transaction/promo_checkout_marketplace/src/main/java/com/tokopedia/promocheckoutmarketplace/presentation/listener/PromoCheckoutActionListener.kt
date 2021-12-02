@@ -8,7 +8,7 @@ interface PromoCheckoutActionListener {
 
     fun onClickPromoManualInputTextField()
     
-    fun onClickApplyManualInputPromo(promoCode: String, isFromLastSeen: Boolean)
+    fun onClickApplyManualInputPromo(promoCode: String, isFromSuggestion: Boolean)
 
     fun onCLickClearManualInputPromo()
 

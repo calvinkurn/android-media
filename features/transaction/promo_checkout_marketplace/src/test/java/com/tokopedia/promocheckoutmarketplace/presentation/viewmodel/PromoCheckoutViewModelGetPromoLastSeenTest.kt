@@ -53,10 +53,10 @@ class PromoCheckoutViewModelGetPromoLastSeenTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.getPromoLastSeen("")
+        viewModel.getPromoSuggestion("")
 
         //then
-        assertNotNull(viewModel.getPromoLastSeenResponse.value)
+        assertNotNull(viewModel.getPromoSuggestionResponse.value)
     }
 
     @Test
@@ -69,10 +69,10 @@ class PromoCheckoutViewModelGetPromoLastSeenTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.getPromoLastSeen("")
+        viewModel.getPromoSuggestion("")
 
         //then
-        assert(viewModel.getPromoLastSeenResponse.value?.state == GetPromoLastSeenAction.ACTION_SHOW)
+        assert(viewModel.getPromoSuggestionResponse.value?.state == GetPromoSuggestionAction.ACTION_SHOW)
     }
 
     @Test
@@ -85,10 +85,10 @@ class PromoCheckoutViewModelGetPromoLastSeenTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.getPromoLastSeen("")
+        viewModel.getPromoSuggestion("")
 
         //then
-        assert(viewModel.getPromoLastSeenResponse.value?.data?.uiData?.promoLastSeenItemUiModelList?.isNotEmpty() == true)
+        assert(viewModel.getPromoSuggestionResponse.value?.data?.uiData?.promoSuggestionItemUiModelList?.isNotEmpty() == true)
     }
 
     @Test
@@ -101,10 +101,10 @@ class PromoCheckoutViewModelGetPromoLastSeenTest {
         coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
 
         //when
-        viewModel.getPromoLastSeen("")
+        viewModel.getPromoSuggestion("")
 
         //then
-        assert(viewModel.getPromoLastSeenResponse.value?.state != GetPromoLastSeenAction.ACTION_SHOW)
+        assert(viewModel.getPromoSuggestionResponse.value?.state != GetPromoSuggestionAction.ACTION_SHOW)
     }
 
 }

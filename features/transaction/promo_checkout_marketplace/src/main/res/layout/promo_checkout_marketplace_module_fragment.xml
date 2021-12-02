@@ -134,7 +134,7 @@
     </RelativeLayout>
 
     <include
-        android:id="@+id/promo_last_seen_bottom_sheet"
+        android:id="@+id/promo_suggestion_bottom_sheet"
         layout="@layout/promo_checkout_marketplace_module_bottom_sheet_layout"
         tools:visibility="gone" />
 

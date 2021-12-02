@@ -201,18 +201,18 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         }
     }
 
-    fun mapPromoLastSeenResponse(response: GetPromoSuggestionResponse): PromoLastSeenUiModel {
-        return PromoLastSeenUiModel(
-                uiData = PromoLastSeenUiModel.UiData().apply {
-                    promoLastSeenItemUiModelList = ArrayList()
+    fun mapPromoSuggestionResponse(response: GetPromoSuggestionResponse): PromoSuggestionUiModel {
+        return PromoSuggestionUiModel(
+                uiData = PromoSuggestionUiModel.UiData().apply {
+                    promoSuggestionItemUiModelList = ArrayList()
                     response.promoSuggestion.promoHistory.forEach {
-                        val promoLastSeenItemUiModel = PromoLastSeenItemUiModel(
-                                uiData = PromoLastSeenItemUiModel.UiData().apply {
+                        val promoSuggestionItemUiModel = PromoSuggestionItemUiModel(
+                                uiData = PromoSuggestionItemUiModel.UiData().apply {
                                     promoCode = it.promoCode
                                     promoTitle = it.promoContent.promoTitle
                                 }
                         )
-                        (promoLastSeenItemUiModelList as ArrayList<PromoLastSeenItemUiModel>).add(promoLastSeenItemUiModel)
+                        (promoSuggestionItemUiModelList as ArrayList<PromoSuggestionItemUiModel>).add(promoSuggestionItemUiModel)
                     }
                 }
         )

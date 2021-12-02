@@ -5,10 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
@@ -18,6 +15,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Compani
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
 import com.tokopedia.promocheckoutmarketplace.domain.usecase.GetCouponListRecommendationUseCase
+import com.tokopedia.promocheckoutmarketplace.domain.usecase.GetPromoSuggestionUseCase
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
@@ -35,7 +33,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Valid
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -43,8 +40,9 @@ import kotlin.collections.HashMap
 
 class PromoCheckoutViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
                                                  private val getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase,
-                                                 private val validateUseUseCasse: ValidateUsePromoRevampUseCase,
+                                                 private val validateUseUseCase: ValidateUsePromoRevampUseCase,
                                                  private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                                 private val getPromoSuggestionUseCase: GetPromoSuggestionUseCase,
                                                  private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
                                                  private val analytics: PromoCheckoutAnalytics)
@@ -97,10 +95,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
         get() = _tmpListUiModel
 
-    // Promo Last Seen UI Model
-    private val _promoLastSeenUiModel = MutableLiveData<PromoLastSeenUiModel>()
-    val promoLastSeenUiModel: LiveData<PromoLastSeenUiModel>
-        get() = _promoLastSeenUiModel
+    // Promo Suggestion UI Model
+    private val _promoSuggestionUiModel = MutableLiveData<PromoSuggestionUiModel>()
+    val promoSuggestionUiModel: LiveData<PromoSuggestionUiModel>
+        get() = _promoSuggestionUiModel
 
     // Live data to notify UI state after hit clear promo API
     private val _clearPromoResponse = MutableLiveData<ClearPromoResponseAction>()
@@ -117,10 +115,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     val getPromoListResponseAction: LiveData<GetPromoListResponseAction>
         get() = _getPromoListResponseAction
 
-    // Live data to store and notify UI of promo last seen
-    private val _getPromoLastSeenResponse = MutableLiveData<GetPromoLastSeenAction>()
-    val getPromoLastSeenResponse: LiveData<GetPromoLastSeenAction>
-        get() = _getPromoLastSeenResponse
+    // Live data to store and notify UI of promo suggestion
+    private val _getPromoSuggestionResponse = MutableLiveData<GetPromoSuggestionAction>()
+    val getPromoSuggestionResponse: LiveData<GetPromoSuggestionAction>
+        get() = _getPromoSuggestionResponse
 
     // Page source : CART, CHECKOUT, OCC
     fun getPageSource(): Int {
@@ -569,8 +567,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
-        validateUseUseCasse.setParam(validateUsePromoRequest)
-        validateUseUseCasse.execute(
+        validateUseUseCase.setParam(validateUsePromoRequest)
+        validateUseUseCase.execute(
                 onSuccess = {
                     PromoCheckoutIdlingResource.decrement()
                     onSuccessValidateUse(it, selectedPromoList, validateUsePromoRequest)
@@ -933,48 +931,45 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Get Last Seen Promo */
     //--------------------------------------------//
 
-    fun getPromoLastSeen(query: String) {
-        launchCatchError(block = {
-            doGetPromoLastSeen(query)
-        }) {
-            getPromoLastSeenResponse.value?.let {
-                it.state = GetPromoLastSeenAction.ACTION_RELEASE_LOCK_FLAG
-                _getPromoLastSeenResponse.value = it
-            }
-        }
-    }
-
-    private suspend fun doGetPromoLastSeen(query: String) {
+    fun getPromoSuggestion() {
         // Get response
         PromoCheckoutIdlingResource.increment()
-        val response = withContext(dispatcher) {
-            val request = GraphqlRequest(query, GetPromoSuggestionResponse::class.java)
-            graphqlRepository.response(listOf(request))
-                    .getSuccessData<GetPromoSuggestionResponse>()
-        }
-        PromoCheckoutIdlingResource.decrement()
-
-        handleGetPromoLastSeenResponse(response)
+        getPromoSuggestionUseCase.execute(
+                onSuccess = {
+                    PromoCheckoutIdlingResource.decrement()
+                    onSuccessGetPromoSuggestion(it)
+                },
+                onError = {
+                    PromoCheckoutIdlingResource.decrement()
+                    onErrorGetPromoSuggestion()
+                }
+        )
     }
 
-    private fun handleGetPromoLastSeenResponse(response: GetPromoSuggestionResponse) {
+    private fun onSuccessGetPromoSuggestion(response: GetPromoSuggestionResponse) {
         // Initialize response action state
-        if (getPromoLastSeenResponse.value == null) {
-            _getPromoLastSeenResponse.value = GetPromoLastSeenAction()
+        if (getPromoSuggestionResponse.value == null) {
+            _getPromoSuggestionResponse.value = GetPromoSuggestionAction()
         }
 
         if (response.promoSuggestion.promoHistory.isNotEmpty()) {
             // Remove promo code on validate use params after clear promo success
-            getPromoLastSeenResponse.value?.let {
-                it.state = GetPromoLastSeenAction.ACTION_SHOW
-                it.data = uiModelMapper.mapPromoLastSeenResponse(response)
-                _getPromoLastSeenResponse.value = it
+            getPromoSuggestionResponse.value?.let {
+                it.state = GetPromoSuggestionAction.ACTION_SHOW
+                it.data = uiModelMapper.mapPromoSuggestionResponse(response)
+                _getPromoSuggestionResponse.value = it
             }
         } else {
-            throw PromoErrorException()
+            onErrorGetPromoSuggestion()
         }
     }
 
+    private fun onErrorGetPromoSuggestion() {
+        getPromoSuggestionResponse.value?.let {
+            it.state = GetPromoSuggestionAction.ACTION_RELEASE_LOCK_FLAG
+            _getPromoSuggestionResponse.value = it
+        }
+    }
 
     //---------------------//
     /* UI Callback Section */
@@ -1133,9 +1128,9 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun updatePromoInputStateBeforeApplyPromo(promoCode: String, isFromLastSeen: Boolean) {
+    fun updatePromoInputStateBeforeApplyPromo(promoCode: String, isFromSuggestion: Boolean) {
         analytics.eventClickTerapkanPromo(getPageSource(), promoCode)
-        analytics.eventClickTerapkanAfterTypingPromoCode(getPageSource(), promoCode, isFromLastSeen)
+        analytics.eventClickTerapkanAfterTypingPromoCode(getPageSource(), promoCode, isFromSuggestion)
         promoInputUiModel.value?.let {
             it.uiState.isLoading = true
             it.uiState.isButtonSelectEnabled = true
@@ -1183,8 +1178,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     fun setPromoInputFromLastApply(promoCode: String) {
         analytics.eventClickPromoLastSeenItem(getPageSource(), promoCode)
         promoInputUiModel.value?.let {
-            it.uiState.isValidLastSeenPromo = true
-            it.uiData.validLastSeenPromoCode = promoCode
+            it.uiState.isValidSuggestionPromo = true
+            it.uiData.validSuggestionPromoCode = promoCode
             it.uiData.promoCode = promoCode
 
             _tmpUiModel.value = Update(it)

@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottom_sheet_promo_last_seen"
+    android:id="@+id/bottom_sheet_promo_suggestion"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bottomsheet_background"
@@ -39,7 +39,7 @@
             android:layout_centerVertical="true"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:text="@string/label_promo_last_seen_title"
+            android:text="@string/label_promo_suggestion_title"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@+id/bottom_sheet_close"
             app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,7 @@
             app:typographyType="heading_3" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_promo_last_seen"
+            android:id="@+id/rv_promo_suggestion"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:paddingLeft="12dp"

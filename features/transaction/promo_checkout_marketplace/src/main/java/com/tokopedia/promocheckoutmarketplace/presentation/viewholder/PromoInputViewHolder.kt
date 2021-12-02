@@ -40,7 +40,7 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
             buttonApplyPromo.setOnClickListener {
                 val promoCode = textFieldInputPromo.editText.text.toString()
                 if (promoCode.isNotEmpty()) {
-                    listener.onClickApplyManualInputPromo(promoCode, element.uiState.isValidLastSeenPromo)
+                    listener.onClickApplyManualInputPromo(promoCode, element.uiState.isValidSuggestionPromo)
                 }
             }
         }
@@ -72,8 +72,8 @@ class PromoInputViewHolder(private val viewBinding: PromoCheckoutMarketplaceModu
                 }
 
                 override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (element.uiState.isValidLastSeenPromo) {
-                        element.uiState.isValidLastSeenPromo = text.toString() == element.uiData.validLastSeenPromoCode
+                    if (element.uiState.isValidSuggestionPromo) {
+                        element.uiState.isValidSuggestionPromo = text.toString() == element.uiData.validSuggestionPromoCode
                     }
                     element.uiData.promoCode = text?.toString() ?: ""
                     if (text?.isNotEmpty() == true) {

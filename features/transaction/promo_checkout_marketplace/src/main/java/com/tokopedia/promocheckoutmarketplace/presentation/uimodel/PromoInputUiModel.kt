@@ -15,14 +15,14 @@ data class PromoInputUiModel(
     data class UiData(
             var promoCode: String = "",
             var exception: Throwable? = null,
-            var validLastSeenPromoCode: String = ""
+            var validSuggestionPromoCode: String = ""
     )
 
     data class UiState(
             var isButtonSelectEnabled: Boolean = false,
             var isError: Boolean = false,
             var isLoading: Boolean = false,
-            var isValidLastSeenPromo: Boolean = false,
+            var isValidSuggestionPromo: Boolean = false,
             var viewHeight: Int = 0
     )
 
