@@ -8,7 +8,6 @@
         android:id="@+id/cl_product_voucher_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Neutral_N700"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_gravity="center_horizontal"
         android:elevation="@dimen/layout_lvl3">
