@@ -419,6 +419,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (isShow) {
                 viewBinding?.tabsPromoHeader?.root?.show()
                 viewBinding?.tabsPromoHeader?.tabsPromo?.show()
+                viewBinding?.tabsPromoHeader?.tabsPromo?.customTabMode = TabLayout.MODE_SCROLLABLE
                 setToolbarShadowVisibility(false)
             } else {
                 viewBinding?.tabsPromoHeader?.root?.gone()
