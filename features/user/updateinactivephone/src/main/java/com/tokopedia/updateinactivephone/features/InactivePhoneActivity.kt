@@ -14,9 +14,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.utils.reformatPhoneNumber
@@ -88,7 +88,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
                             gotoChoseAccount(inactivePhoneUserDataModel?.oldPhoneNumber.orEmpty())
                         }
                         InactivePhoneConstant.STATUS_FAIL -> {
-                            onError(Throwable(it.data.validation.error))
+                            onError(MessageErrorException(it.data.validation.error))
                         }
                     }
                 }
@@ -104,7 +104,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), HasComponent<InactivePhoneCo
                     if (it.data.statusInactivePhoneNumber.isSuccess) {
                         onSuccessGetStatus(it.data)
                     } else {
-                        onError(Throwable(it.data.statusInactivePhoneNumber.errorMessage))
+                        onError(MessageErrorException(it.data.statusInactivePhoneNumber.errorMessage))
                     }
                 }
                 is Fail -> {
