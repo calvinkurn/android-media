@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import android.text.Spanned
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -32,8 +33,8 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         const val ESTIMASI_TIDAK_TERSEDIA = "Estimasi tidak tersedia"
     }
 
-    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
-        val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
+    fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?, isOcc: Boolean) {
+        val formattedTitle = HtmlLinkHelper(itemView.context, if (isOcc) data.freeShippingItemTitle else data.freeShippingChosenCourierTitle).spannedString
         if (data.isBebasOngkirExtra) {
             tvTitleExtra.text = formattedTitle
             tvTitleExtra.visibility = View.VISIBLE
