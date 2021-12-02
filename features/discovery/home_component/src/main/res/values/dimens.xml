@@ -17,7 +17,7 @@
     <dimen name="component_featured_brand_content_max_widht">75dp</dimen>
 
 
-    <dimen name="campaign_widget_card_height">260dp</dimen>
+    <dimen name="campaign_widget_card_height">259dp</dimen>
     <dimen name="campaign_widget_card_width">@dimen/product_card_flashsale_width</dimen>
 
 </resources>
