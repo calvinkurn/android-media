@@ -14,7 +14,6 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.model.LazyHeaders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -210,7 +209,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 imgFindDriver.visibility = View.VISIBLE
             } else {
                 driverLayout.visibility = View.VISIBLE
-                ImageHandler.loadImageFitCenter(context, imgDriver, tippingData.lastDriver.photo)
+                imgDriver.setImageUrl(tippingData.lastDriver.photo)
 
                 driverName.text = tippingData.lastDriver.name
                 driverPhone.text = tippingData.lastDriver.phone + "•" + tippingData.lastDriver.licenseNumber
