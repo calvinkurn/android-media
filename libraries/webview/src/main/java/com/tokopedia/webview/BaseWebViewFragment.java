@@ -114,6 +114,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PRINT_AWB_URL = "tokopedia.com/shipping-label";
     private static final String PLAY_GOOGLE_URL = "play.google.com";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
+    private static final String FDL_HOST = "tkpd.page.link";
+    private static String ENABLE_FDL_HOST_WEBVIEW = "android_enable_fdl_host_webview";
     private static final String SCHEME_INTENT = "intent";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
@@ -719,7 +721,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             startActivity(intent);
             return true;
-        } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) && !GlobalConfig.isSellerApp()) {
+        } else if ((BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost()) || isFDLHostEnabled(uri))
+                && !GlobalConfig.isSellerApp()) {
             //Avoid crash in app that doesn't support branch IO
             try {
                 Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
@@ -785,6 +788,15 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         hasMoveToNativePage = RouteManagerKt.moveToNativePageFromWebView(getActivity(), url);
         finishActivityIfBackPressedDisabled(hasMoveToNativePage);
         return hasMoveToNativePage;
+    }
+
+    private boolean isFDLHostEnabled(Uri uri){
+        if(remoteConfig != null){
+            return remoteConfig.getBoolean(ENABLE_FDL_HOST_WEBVIEW, true)
+                    && FDL_HOST.equalsIgnoreCase(uri.getHost());
+        }else{
+            return FDL_HOST.equalsIgnoreCase(uri.getHost());
+        }
     }
 
     private void routeToHomeCredit(String appLink, String overlayUrl, String headerText) {
