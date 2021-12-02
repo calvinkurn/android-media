@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.home.presentation.bottomsheet
+package com.tokopedia.tokopedianow.educationalinfo.presentation.bottomsheet
 
 import android.content.Context
 import android.os.Bundle
@@ -19,14 +19,15 @@ import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class TokoNowHomeEducationalInformationBottomSheet : BottomSheetUnify() {
+class TokoNowEducationalInfoBottomSheet :
+    BottomSheetUnify(){
 
     companion object {
         private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/others/bg_bottomsheet_tokomart_educational_information.png"
-        private val TAG = TokoNowHomeEducationalInformationBottomSheet::class.simpleName
+        private val TAG = TokoNowEducationalInfoBottomSheet::class.simpleName
 
-        fun newInstance(): TokoNowHomeEducationalInformationBottomSheet {
-            return TokoNowHomeEducationalInformationBottomSheet()
+        fun newInstance(): TokoNowEducationalInfoBottomSheet {
+            return TokoNowEducationalInfoBottomSheet()
         }
     }
 
