@@ -8,7 +8,8 @@
             android:name=".view.activity.AttachProductActivity"
             android:screenOrientation="portrait"
             android:label="@string/string_attach_product_activity_title"
-            android:theme="@style/Theme.AttachCommon">
+            android:theme="@style/Theme.AttachCommon"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
