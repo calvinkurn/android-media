@@ -3,25 +3,21 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.PromoCheckoutIdlingResource
-import com.tokopedia.promocheckoutmarketplace.R
-import com.tokopedia.promocheckoutmarketplace.data.request.CouponListRecommendationRequest
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ErrorPage
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.promocheckoutmarketplace.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
+import com.tokopedia.promocheckoutmarketplace.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoCheckoutLogger
 import com.tokopedia.promocheckoutmarketplace.presentation.PromoErrorException
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
@@ -46,13 +42,12 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class PromoCheckoutViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
+                                                 private val getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase,
                                                  private val validateUseUseCasse: ValidateUsePromoRevampUseCase,
                                                  private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                                  private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
-                                                 private val analytics: PromoCheckoutAnalytics,
-                                                 private val gson: Gson,
-                                                 private val chosenAddressRequestHelper: ChosenAddressRequestHelper)
+                                                 private val analytics: PromoCheckoutAnalytics)
     : BaseViewModel(dispatcher) {
 
     // Fragment UI Model. Store UI model and state on fragment level
@@ -161,37 +156,26 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     /* Network Call Section : Get Promo List */
     //---------------------------------------//
 
-    fun getPromoList(mutation: String, promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context? = null) {
-        launchCatchError(block = {
-            doGetPromoList(mutation, promoRequest, promoCode, chosenAddress, tmpContext)
-        }) { throwable ->
-            setFragmentStateLoadPromoListFailed(throwable)
-        }
-    }
-
-    private suspend fun doGetPromoList(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String, chosenAddress: ChosenAddress?, tmpContext: Context? = null) {
+    fun getPromoList(promoRequest: PromoRequest, promoCode: String, chosenAddress: ChosenAddress? = null, tmpContext: Context? = null) {
         // Set request data
-        val getPromoRequestParam = setGetPromoRequestData(tmpPromoCode, promoRequest, chosenAddress)
+        prepareGetPromoRequestData(promoCode, promoRequest, chosenAddress)
 
         // Get response data
         PromoCheckoutIdlingResource.increment()
-//        val response = withContext(dispatcher) {
-//            val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, getPromoRequestParam)
-//            graphqlRepository.response(listOf(request))
-//                    .getSuccessData<CouponListRecommendationResponse>()
-//        }
-
-        // Todo : remove dummy
-        val responseText = GraphqlHelper.loadRawString(tmpContext?.resources, R.raw.dummy_promo_list_response)
-        val response = Gson().fromJson(responseText, CouponListRecommendationResponse::class.java)
-
-        PromoCheckoutIdlingResource.decrement()
-
-        // Handle response data
-        handleGetPromoListResponse(response, tmpPromoCode)
+        getCouponListRecommendationUseCase.setParams(promoRequest, chosenAddress, tmpContext)
+        getCouponListRecommendationUseCase.execute(
+                onSuccess = {
+                    PromoCheckoutIdlingResource.decrement()
+                    onSuccessGetPromoList(it, promoCode)
+                },
+                onError = {
+                    PromoCheckoutIdlingResource.decrement()
+                    setFragmentStateLoadPromoListFailed(it)
+                }
+        )
     }
 
-    private fun setGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest, chosenAddress: ChosenAddress?): Map<String, Any?> {
+    private fun prepareGetPromoRequestData(tmpPromoCode: String, promoRequest: PromoRequest, chosenAddress: ChosenAddress?) {
         val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
 
         resetGetPromoRequestData(promoCode, promoRequest)
@@ -207,13 +191,6 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
 
         removeDuplicateAttemptedPromoRequestData(promoRequest, promoCode)
-
-        return mapOf(
-                "params" to CouponListRecommendationRequest(promoRequest = promoRequest),
-                // Add current selected address from local cache
-                ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS to (chosenAddress
-                        ?: chosenAddressRequestHelper.getChosenAddress())
-        )
     }
 
     private fun setGetPromoRequestDataFromSelectedPromoItem(it: PromoListItemUiModel, order: Order, promoRequest: PromoRequest) {
@@ -265,7 +242,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    private fun handleGetPromoListResponse(response: CouponListRecommendationResponse, tmpPromoCode: String) {
+    private fun onSuccessGetPromoList(response: CouponListRecommendationResponse, tmpPromoCode: String) {
         if (response.couponListRecommendation.status == "OK") {
             if (response.couponListRecommendation.data.errorPage.isShowErrorPage) {
                 handleShowErrorPage(response.couponListRecommendation.data.errorPage)
@@ -278,7 +255,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             }
         } else {
             PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException("response status error"))
-            throw PromoErrorException()
+            val exception = PromoErrorException()
+            setFragmentStateLoadPromoListFailed(exception)
         }
     }
 
@@ -327,7 +305,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException(response.couponListRecommendation.data.resultStatus.message.joinToString { ". " }))
         } else {
             PromoCheckoutLogger.logOnErrorLoadPromoCheckoutPage(PromoErrorException("response status ok but data is empty"))
-            throw PromoErrorException()
+            val exception = PromoErrorException()
+            setFragmentStateLoadPromoListFailed(exception)
         }
     }
 
@@ -603,10 +582,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         )
     }
 
-    private fun onErrorValidateUse(it: Throwable) {
-        PromoCheckoutLogger.logOnErrorApplyPromo(it)
+    private fun onErrorValidateUse(throwable: Throwable) {
+        PromoCheckoutLogger.logOnErrorApplyPromo(throwable)
         // Notify fragment apply promo to stop loading
-        setApplyPromoStateFailed(it)
+        setApplyPromoStateFailed(throwable)
     }
 
     private fun onSuccessValidateUse(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel,
@@ -735,7 +714,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
                 // If one of promo merchant is error, then show error message
                 val exception = PromoErrorException(voucherOrder.messageUiModel.text)
                 PromoCheckoutLogger.logOnErrorApplyPromo(exception)
-                throw exception
+                // Notify fragment apply promo to stop loading
+                setApplyPromoStateFailed(exception)
             }
         }
 
@@ -785,12 +765,15 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             calculateAndRenderTotalBenefit()
             val exception = PromoErrorException(responseValidatePromo.additionalInfoUiModel.errorDetailUiModel.message)
             PromoCheckoutLogger.logOnErrorApplyPromo(exception)
-            throw exception
+            // Notify fragment apply promo to stop loading
+            setApplyPromoStateFailed(exception)
         } else {
             // Voucher global is empty and voucher orders are empty but the response is OK
             // This section is added as fallback mechanism
             PromoCheckoutLogger.logOnErrorApplyPromo(PromoErrorException("response is ok but got empty applied promo"))
-            throw PromoErrorException()
+            val exception = PromoErrorException()
+            // Notify fragment apply promo to stop loading
+            setApplyPromoStateFailed(exception)
         }
     }
 
@@ -877,8 +860,8 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
             }
             setClearPromoStateSuccess(clearPromoUiModel, validateUsePromoRequest)
         } else {
-            val throwable = PromoErrorException()
-            setClearPromoStateFailed(throwable)
+            val exception = PromoErrorException()
+            setClearPromoStateFailed(exception)
         }
     }
 

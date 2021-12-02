@@ -51,6 +51,7 @@
             <include
                 android:id="@+id/tabs_promo_header"
                 layout="@layout/promo_checkout_marketplace_module_item_promo_tab"
+                android:visibility="gone"
                 tools:visibility="visible" />
 
             <View

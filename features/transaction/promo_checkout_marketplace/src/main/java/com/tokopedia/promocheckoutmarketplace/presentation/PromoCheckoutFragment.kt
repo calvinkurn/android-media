@@ -417,9 +417,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             if (isShow) {
+                viewBinding?.tabsPromoHeader?.root?.show()
                 viewBinding?.tabsPromoHeader?.tabsPromo?.show()
                 setToolbarShadowVisibility(false)
             } else {
+                viewBinding?.tabsPromoHeader?.root?.gone()
                 viewBinding?.tabsPromoHeader?.tabsPromo?.gone()
             }
         }
@@ -470,9 +472,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observePromoTabUiModel() {
         viewModel.promoTabUiModel.observe(viewLifecycleOwner, {
             if (it.uiState.isInitialization) {
-                viewBinding?.tabsPromoHeader?.tabsPromo?.customTabMode = TabLayout.MODE_SCROLLABLE
-
                 if (viewBinding?.tabsPromoHeader?.tabsPromo?.getUnifyTabLayout()?.getTabAt(0) == null) {
+                    viewBinding?.tabsPromoHeader?.tabsPromo?.customTabMode = TabLayout.MODE_SCROLLABLE
                     viewModel.promoTabUiModel.value?.uiData?.tabs?.forEach {
                         viewBinding?.tabsPromoHeader?.tabsPromo?.addNewTab(it.title)
                     }
@@ -863,9 +864,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         activity?.let {
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-            val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
             val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-            viewModel.getPromoList(mutation, promoRequest, "", chosenAddress, it)
+            viewModel.getPromoList(promoRequest, "", chosenAddress, it)
         }
     }
 
@@ -1040,9 +1040,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         activity?.let {
             viewModel.updatePromoInputStateBeforeApplyPromo(promoCode, isFromLastSeen)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) ?: PromoRequest()
-            val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
             val chosenAddress: ChosenAddress? = arguments?.getParcelable(ARGS_CHOSEN_ADDRESS)
-            viewModel.getPromoList(mutation, promoRequest, promoCode, chosenAddress, it)
+            viewModel.getPromoList(promoRequest, promoCode, chosenAddress, it)
         }
     }
 
