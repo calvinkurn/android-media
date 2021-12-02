@@ -70,9 +70,20 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:layout_constraintBottom_toTopOf="@id/fl_product_tag"
+            app:layout_constraintBottom_toTopOf="@id/layout_product_tag"
             app:layout_constraintEnd_toEndOf="@id/chat_list"
             app:layout_constraintStart_toStartOf="@id/chat_list"
+            />
+
+        <include
+            android:id="@+id/layout_product_tag"
+            layout="@layout/layout_product_tag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            app:layout_constraintBottom_toTopOf="@id/fl_product_tag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             />
 
         <include
