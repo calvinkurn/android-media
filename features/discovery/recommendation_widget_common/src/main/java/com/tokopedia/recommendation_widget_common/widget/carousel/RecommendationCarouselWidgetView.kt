@@ -117,7 +117,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         adapterPosition: Int = 0,
         basicListener: RecomCarouselWidgetBasicListener?,
         tokonowListener: RecommendationCarouselTokonowListener?,
-        chipListener: RecomCarouselChipListener?,
+        chipListener: RecomCarouselChipListener? = null,
         scrollToPosition: Int = 0
     ) {
         try {
@@ -371,7 +371,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                 try {
                     recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
                     recyclerView.visible()
-                    itemView.loadingRecom.gone()
+                    loadingView?.gone()
                 } catch (throwable: Throwable) {
                     throwable.printStackTrace()
                 }
@@ -542,7 +542,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                     )
                 }
         }
-        itemView.loadingRecom.show()
+        loadingView?.show()
         recyclerView.invisible()
     }
 
@@ -692,7 +692,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
                             pageName = result.pageName,
                             e = result.throwable ?: MessageErrorException(context?.getString(R.string.failed_to_load)))
                         recyclerView.visible()
-                        itemView.loadingRecom.gone()
+                        loadingView?.gone()
                     }
                 }
             })

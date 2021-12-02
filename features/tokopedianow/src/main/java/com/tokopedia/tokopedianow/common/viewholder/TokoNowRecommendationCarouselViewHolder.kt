@@ -41,16 +41,15 @@ class TokoNowRecommendationCarouselViewHolder(
             binding?.tokoNowSearchCategoryRecomCarousel?.let {
                 recommendationCarouselWidgetBindPageNameListener?.setViewToLifecycleOwner(it)
                 it.bind(
-                    pageName = PAGENAME_PDP_3,
-                    productIds = listOf("842872966"),
+                    pageName = element.pageName,
                     tokonowPageNameListener = this,
                     basicListener = this,
                     adapterPosition = adapterPosition,
                     scrollToPosition = scrollToPosition.orZero(),
                     isForceRefresh = element.isFirstLoad,
-//                    isTokonow = true,
-//                    categoryIds = element.categoryId,
-//                    keyword = element.keywords
+                    isTokonow = true,
+                    categoryIds = element.categoryId,
+                    keyword = element.keywords
                 )
                 element.isFirstLoad = false
             }
@@ -60,7 +59,7 @@ class TokoNowRecommendationCarouselViewHolder(
                 adapterPosition = adapterPosition,
                 basicListener = this,
                 tokonowListener = this,
-                scrollToPosition = scrollToPosition.orZero(),
+                scrollToPosition = scrollToPosition.orZero()
             )
             recommendationCarouselListener?.onBindRecommendationCarousel(
                 element,
