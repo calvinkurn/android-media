@@ -692,6 +692,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (chatRoomFlexModeListener?.isFlexMode() == true) {
             chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = messageId)
         }
+        reloadSrw()
     }
 
     private fun onSuccessGetExistingChatFirstTime(
@@ -745,7 +746,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun reloadSrw() {
-        if (!isSeller() && topchatViewState?.hasProductPreviewShown() == true) {
+        if (!isSeller() && messageId.isNotBlank() &&
+            topchatViewState?.hasProductPreviewShown() == true
+        ) {
             val productIdCommaSeparated = presenter.getProductIdPreview()
                 .joinToString(separator = ",")
             presenter.getSmartReplyWidget(messageId, productIdCommaSeparated)
