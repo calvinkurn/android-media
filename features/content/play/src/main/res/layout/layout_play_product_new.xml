@@ -20,6 +20,7 @@
             android:layout_gravity="center"
             android:layout_width="@dimen/play_product_item_image_size"
             android:layout_height="@dimen/play_product_item_image_size"
+            app:unify_image_corner_radius="0"
             tools:src="@tools:sample/avatars" />
     </FrameLayout>
 
@@ -35,7 +36,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/fl_product_image"
         app:layout_constraintTop_toTopOf="@+id/fl_product_image"
-        app:typographyType="body_2"
+        app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="Stok : 5"
         tools:visibility="visible" />
