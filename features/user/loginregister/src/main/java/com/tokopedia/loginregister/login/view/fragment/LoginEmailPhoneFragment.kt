@@ -795,7 +795,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             socmedButtonsContainer?.removeAllViews()
             discoverData.providers.forEach { provider ->
                 context?.let { context ->
-                    val tv = LoginTextView(context, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                    val tv = LoginTextView(context, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     tv.setText(provider.name)
                     if (userSession.name.isNotEmpty()) {
                         var name = userSession.name

@@ -70,7 +70,7 @@ class LoginTextView : LinearLayout {
         val resourceId: Int
         try {
             customText = a.getString(R.styleable.LoginTextView_customText)
-            textColor = a.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            textColor = a.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             borderColorCustom = a.getInt(R.styleable.LoginTextView_borderColor, 0)
             cornerSize = a.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, CORNER_SIZE)
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, BORDER_SIZE)

@@ -350,7 +350,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
             optionTitle.setText(R.string.register_option_title)
 
             context?.let {
-                registerButton.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                registerButton.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             registerButton.setBorderColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             registerButton.setRoundCorner(REGISTER_BUTTON_CORNER_SIZE)
@@ -552,7 +552,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         discoverData.providers.forEach { provider ->
             context?.let {
-                val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                val loginTextView = LoginTextView(it, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 loginTextView.setText(provider.name)
                 loginTextView.setImage(provider.image)
                 loginTextView.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
