@@ -176,6 +176,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         // last search need to reload every time user back to homepage
         hideHotelLastSearchContainer()
         loadRecentSearchData()
+        loadPromoData()
         renderView()
     }
 
@@ -629,6 +630,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         trackingHotelUtil.hotelBannerImpression(context, promoDataList.firstOrNull(), 0, HOMEPAGE_SCREEN_NAME)
 
         binding?.bannerHotelHomepagePromo?.apply {
+            timer = Timer()
             freeMode = false
             centerMode = true
             slideToScroll = 1
@@ -752,7 +754,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     override fun onStop() {
-        binding?.bannerHotelHomepagePromo?.timer?.cancel()
+        binding?.bannerHotelHomepagePromo?.autoplay = false
         super.onStop()
     }
 

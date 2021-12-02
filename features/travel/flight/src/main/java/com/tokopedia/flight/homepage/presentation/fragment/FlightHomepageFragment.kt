@@ -175,6 +175,11 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        flightHomepageViewModel.fetchBannerData(true)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
         return binding?.root
@@ -356,6 +361,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             showBannerView()
             binding?.flightHomepageAllPromo?.setOnClickListener { onAllBannerClicked() }
             binding?.flightHomepageBanner?.apply {
+                timer = Timer()
                 freeMode = false
                 centerMode = true
                 slideToScroll = 1
@@ -584,7 +590,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
 
     override fun onStop() {
-        binding?.flightHomepageBanner?.timer?.cancel()
+        binding?.flightHomepageBanner?.autoplay = false
         super.onStop()
     }
 
