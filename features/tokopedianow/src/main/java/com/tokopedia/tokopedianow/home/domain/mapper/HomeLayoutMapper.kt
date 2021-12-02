@@ -92,6 +92,10 @@ object HomeLayoutMapper {
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
+        add(HomeLayoutItemUiModel(
+            layout = HomeQuestSequenceWidgetUiModel("test", HomeLayoutItemState.LOADED),
+            state = HomeLayoutItemState.NOT_LOADED
+        ))
 
         if (!hasTickerBeenRemoved) {
             val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = emptyList())

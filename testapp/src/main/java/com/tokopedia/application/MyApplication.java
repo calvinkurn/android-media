@@ -34,6 +34,7 @@ import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.interceptor.TkpdAuthenticator;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.tkpd.ActivityFrameMetrics;
 import com.tokopedia.tkpd.BuildConfig;
@@ -46,6 +47,7 @@ import com.tokopedia.user.session.UserSession;
 import java.io.IOException;
 import java.util.Map;
 
+import okhttp3.Authenticator;
 import okhttp3.Response;
 import timber.log.Timber;
 
@@ -84,7 +86,8 @@ public class MyApplication extends BaseMainApplication
 
         upgradeSecurityProvider();
 
-        GraphqlClient.init(this);
+        Authenticator authenticator = new TkpdAuthenticator(this, (NetworkRouter) getApplicationContext(), new UserSession(this));
+        GraphqlClient.init(this, authenticator);
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         TrackApp.initTrackApp(this);
