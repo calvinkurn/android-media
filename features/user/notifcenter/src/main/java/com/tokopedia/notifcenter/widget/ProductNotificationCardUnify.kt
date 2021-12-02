@@ -309,11 +309,18 @@ class ProductNotificationCardUnify(
             btnCheckout?.hide()
         } else {
             btnCheckout?.show()
+            checkIfPreOrder(product.isPreorder)
             btnCheckout?.setOnClickListener {
                 notification?.let {
                     listener?.buyProduct(it, product)
                 }
             }
+        }
+    }
+
+    private fun checkIfPreOrder(isPreorder: Boolean) {
+        if (isPreorder) {
+            btnCheckout?.text = context.getText(R.string.notifcenter_btn_preorder)
         }
     }
 

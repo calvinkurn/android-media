@@ -99,6 +99,7 @@ query notifcenter_detail_v3(
 				is_buyable
 				is_topads
 				is_wishlist
+				is_preorder
 				rating
 				count_review
 				labels {
@@ -229,6 +230,7 @@ query notifcenter_detail_v3(
 				is_buyable
 				is_topads
 				is_wishlist
+				is_preorder
 				rating
 				count_review
 				labels {
