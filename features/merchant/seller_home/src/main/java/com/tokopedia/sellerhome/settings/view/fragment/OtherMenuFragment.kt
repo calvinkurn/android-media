@@ -423,11 +423,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     checkUsingCustomBranchLinkDomain(linkerShareData)
-                    val shareString = getString(
+                    val shareString = activity?.getString(
                         R.string.sah_new_other_share_text,
                         userSession.shopName,
                         linkerShareData?.shareContents
-                    )
+                    ).orEmpty()
                     shareModel.subjectName = userSession.shopName
                     SharingUtil.executeShareIntent(
                         shareModel,

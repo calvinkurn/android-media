@@ -366,7 +366,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void generateAffiliateLink(final LinkerData data, final Context context,
                                       final ShareCallback shareCallback, final UserData userData) {
-        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback);
+        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback, context);
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,

@@ -446,7 +446,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
         if (isEligibleShowRecommendationCoachMark) {
             if (coachMarkItems.isNotEmpty()) {
-                pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                coachMark?.onFinishListener = {
+                    pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                }
+                coachMark?.isDismissed = false
                 coachMark?.showCoachMark(coachMarkItems)
             }
         }
