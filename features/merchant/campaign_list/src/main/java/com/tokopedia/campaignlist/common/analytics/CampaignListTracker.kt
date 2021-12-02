@@ -61,6 +61,53 @@ class CampaignListTracker @Inject constructor() {
         )
     }
 
+  /*  fun sendShareButtonClickEvent(selectedCampaignStatus: Int, shopId: String) {
+        sendGeneralTracking(
+            event = CampaignListTrackerConstant.Event.CLICK_SHOP_PAGE,
+            action = CampaignListTrackerConstant.Action.CLICK_SHARE_BUTTON,
+            category = CampaignListTrackerConstant.EventCategory.SHOP_PAGE_NPL,
+            label = "",
+            shopId = shopId
+        )
+    }
+
+    fun sendShareCampaignDismissClickEvent(selectedCampaignStatus: Int, shopId: String) {
+
+
+        sendGeneralTracking(
+            event = CampaignListTrackerConstant.Event.CLICK_RELEASE_PAGE,
+            action = action,
+            category = CampaignListTrackerConstant.EventCategory.SHOP_PAGE_NPL,
+            label = CampaignListTrackerConstant.Label.EMPTY,
+            shopId = shopId
+        )
+    }
+
+
+    fun sendSelectShareChannelClickEvent(selectedChannel: Int, shopId: String) {
+
+
+        sendGeneralTracking(
+            event = CampaignListTrackerConstant.Event.CLICK_RELEASE_PAGE,
+            action = action,
+            category = CampaignListTrackerConstant.EventCategory.SHOP_PAGE_NPL,
+            label = CampaignListTrackerConstant.Label.EMPTY,
+            shopId = shopId
+        )
+    }
+
+    fun sendShareBottomSheetDisplayedEvent(selectedChannel: Int, shopId: String) {
+
+
+        sendGeneralTracking(
+            event = CampaignListTrackerConstant.Event.CLICK_RELEASE_PAGE,
+            action = action,
+            category = CampaignListTrackerConstant.EventCategory.SHOP_PAGE_NPL,
+            label = CampaignListTrackerConstant.Label.EMPTY,
+            shopId = shopId
+        )
+    }*/
+
     private fun sendGeneralTracking(
         event: String,
         category: String,
