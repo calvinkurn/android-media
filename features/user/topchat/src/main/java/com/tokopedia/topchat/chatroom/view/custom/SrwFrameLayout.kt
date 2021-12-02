@@ -26,7 +26,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.srw.SrwQuestionVie
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
-import com.tokopedia.unifycomponents.LocalLoad
 import com.tokopedia.unifyprinciples.Typography
 
 class SrwFrameLayout : FrameLayout {
@@ -42,7 +41,6 @@ class SrwFrameLayout : FrameLayout {
     private var titleContainer: LinearLayout? = null
     private var titleIcon: IconUnify? = null
     private var srwContentContainer: LinearLayout? = null
-    private var errorState: LocalLoad? = null
 
     private var bgExpanded: Drawable? = null
 
@@ -58,7 +56,6 @@ class SrwFrameLayout : FrameLayout {
     private var latestState: Resource<ChatSmartReplyQuestionResponse>? = null
 
     interface Listener {
-        fun onRetrySrw()
         fun trackViewSrw()
         fun onExpandStateChanged(isExpanded: Boolean)
     }
@@ -75,17 +72,6 @@ class SrwFrameLayout : FrameLayout {
         initBackground()
         initToggleExpandCollapsed()
         initRecyclerView()
-        initErrorState()
-    }
-
-    private fun initErrorState() {
-        errorState?.let { errorView ->
-            errorView.refreshBtn?.setOnClickListener {
-                // refresh here
-                listener?.onRetrySrw()
-                errorView.progressState = !errorView.progressState
-            }
-        }
     }
 
     fun updateSrwList(data: ChatSmartReplyQuestionResponse?) {
@@ -153,7 +139,6 @@ class SrwFrameLayout : FrameLayout {
         titleIcon = findViewById(R.id.ic_header_state_partial)
         rvSrw = findViewById(R.id.rv_srw_partial)
         srwContentContainer = findViewById(R.id.rv_srw_content_container)
-        errorState = findViewById(R.id.ll_srw_partial)
     }
 
     private fun initToggleExpandCollapsed() {
@@ -215,30 +200,19 @@ class SrwFrameLayout : FrameLayout {
 
     private fun renderLoadingState() {
         hideSrwContent()
-        hideErrorState()
     }
 
     private fun renderSrwContent() {
-        hideErrorState()
         showSrwContent()
     }
 
     private fun renderErrorState() {
         hideSrwContent()
-        showErrorState()
     }
 
     fun hideSrw() {
         hide()
         hideSrwContent()
-    }
-
-    private fun showErrorState() {
-        errorState?.show()
-    }
-
-    private fun hideErrorState() {
-        errorState?.hide()
     }
 
     private fun showSrwContent() {

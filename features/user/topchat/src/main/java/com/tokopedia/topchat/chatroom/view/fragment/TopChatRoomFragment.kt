@@ -270,10 +270,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initSrw() {
         rvSrw?.initialize(this, object : SrwFrameLayout.Listener {
-            override fun onRetrySrw() {
-                reloadSrw()
-            }
-
             override fun trackViewSrw() {
                 analytics.eventViewSrw(shopId, session.userId)
             }

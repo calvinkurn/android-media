@@ -218,26 +218,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
     }
 
     @Test
-    fun load_srw_preview_from_error_state_if_buyer_attach_from_start_intent() {
-        // Given
-        getChatUseCase.response = firstPageChatAsBuyer
-        chatAttachmentUseCase.response = chatAttachmentResponse
-        chatSrwUseCase.isError = true
-        launchChatRoomActivity {
-            putProductAttachmentIntent(it)
-        }
-
-        // When
-        chatSrwUseCase.isError = false
-        chatSrwUseCase.response = chatSrwResponse
-        onView(withId(com.tokopedia.unifycomponents.R.id.refreshID))
-            .perform(click())
-
-        // Then
-        assertSrwPreviewContentIsVisible()
-    }
-
-    @Test
     fun assert_srw_preview_expand_collapse_interaction() {
         // Given
         getChatUseCase.response = firstPageChatAsBuyer
