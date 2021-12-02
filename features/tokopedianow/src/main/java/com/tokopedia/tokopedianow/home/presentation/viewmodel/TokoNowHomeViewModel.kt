@@ -46,6 +46,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProd
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCategoryGridData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
@@ -54,12 +55,10 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProd
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateProductRecomQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.updateRepurchaseProductQuantity
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.setStateToLoading
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper
 import com.tokopedia.tokopedianow.home.domain.mapper.TickerMapper
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
-import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
-import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.*
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -83,6 +82,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase,
+    private val getQuestListUseCase: GetQuestListUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
@@ -416,6 +416,7 @@ class TokoNowHomeViewModel @Inject constructor(
         when (item) {
             is HomeTickerUiModel -> getTickerDataAsync(item).await()
             is HomeSharingEducationWidgetUiModel -> getSharingEducationAsync(item, warehouseId).await()
+            is HomeQuestSequenceWidgetUiModel -> getQuestListAsync(item).await()
         }
     }
 
@@ -467,6 +468,16 @@ class TokoNowHomeViewModel @Inject constructor(
             val tickerList = getTickerUseCase.execute().ticker.tickerList
             val tickerData = TickerMapper.mapTickerData(tickerList)
             homeLayoutItemList.mapTickerData(item, tickerData)
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
+    private suspend fun getQuestListAsync(item: HomeQuestSequenceWidgetUiModel): Deferred<Unit?> {
+        return asyncCatchError(block = {
+            val questListResponse = getQuestListUseCase.execute().questList
+            val questData = QuestMapper.mapQuestData(questListResponse)
+            homeLayoutItemList.mapQuestData(item, questData)
         }) {
             homeLayoutItemList.removeItem(item.id)
         }

@@ -15,6 +15,7 @@ class HomeQuestWidgetViewHolder(
 ): AbstractViewHolder<HomeQuestWidgetUiModel>(itemView) {
 
     companion object {
+        private const val PROGRESS_WIDTH = 15F
         private const val PERCENT_MULTIPLIER = 100
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_widget
@@ -28,14 +29,16 @@ class HomeQuestWidgetViewHolder(
         setDesc(element.desc)
     }
 
-    private fun setCircularProgressBar(currentProgress: Int, totalProgress: Int) {
-        val result = (currentProgress.toFloat() / totalProgress) * PERCENT_MULTIPLIER
-        binding?.circularProgressBar?.apply {
-            setProgress(result)
-            setProgressWidth(12F)
-            setRounded(true)
-            setProgressColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-            setProgressBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_circle_progressbar_background_dms_color))
+    private fun setCircularProgressBar(currentProgress: Float, totalProgress: Float) {
+        val result = (currentProgress / totalProgress) * PERCENT_MULTIPLIER
+        if (!result.isNaN()) {
+            binding?.circularProgressBar?.apply {
+                setProgress(result)
+                setProgressWidth(PROGRESS_WIDTH)
+                setRounded(true)
+                setProgressColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                setProgressBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_circle_progressbar_background_dms_color))
+            }
         }
     }
 

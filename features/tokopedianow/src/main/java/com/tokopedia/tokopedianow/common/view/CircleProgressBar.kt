@@ -24,7 +24,7 @@ class CircularProgressView : View {
     }
 
     private val rect = RectF()
-    private val startAngle = -90f
+    private val startAngle = -80f
     private val maxAngle = 360f
     private val maxProgress = 100
 
@@ -32,7 +32,7 @@ class CircularProgressView : View {
     private var angle = 0f
 
     override fun onDraw(canvas: Canvas) {
-        drawCircle(maxAngle, canvas, imagePaint)
+//        drawCircle(maxAngle, canvas, imagePaint)
         drawCircle(maxAngle, canvas, backgroundPaint)
         drawCircle(angle, canvas, progressPaint)
     }

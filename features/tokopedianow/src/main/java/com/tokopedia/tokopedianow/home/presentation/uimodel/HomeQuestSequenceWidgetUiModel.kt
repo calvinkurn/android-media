@@ -8,7 +8,8 @@ data class HomeQuestSequenceWidgetUiModel (
     val state: HomeLayoutItemState = HomeLayoutItemState.NOT_LOADED,
     val title: String = "",
     val seeAll: String = "",
-    val appLink: String = ""
+    val appLink: String = "",
+    val questList: List<HomeQuestWidgetUiModel> = listOf()
 ) : HomeLayoutUiModel(id)  {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

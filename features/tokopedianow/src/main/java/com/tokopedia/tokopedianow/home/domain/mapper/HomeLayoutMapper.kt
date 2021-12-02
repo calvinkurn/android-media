@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.CA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.EDUCATIONAL_INFORMATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
@@ -40,9 +41,9 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMapper.mapEducationalInformationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
+import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
@@ -61,7 +62,8 @@ object HomeLayoutMapper {
         PRODUCT_RECOM,
         REPURCHASE_PRODUCT,
         EDUCATIONAL_INFORMATION,
-        SHARING_EDUCATION
+        SHARING_EDUCATION,
+        MAIN_QUEST
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -93,7 +95,13 @@ object HomeLayoutMapper {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
         add(HomeLayoutItemUiModel(
-            layout = HomeQuestSequenceWidgetUiModel("test", HomeLayoutItemState.LOADED),
+            layout = HomeQuestSequenceWidgetUiModel(
+                MAIN_QUEST,
+                HomeLayoutItemState.LOADED,
+                title = "Testing Aja Woy",
+                seeAll = "Lihat nggak?",
+                questList = emptyList(),
+            ),
             state = HomeLayoutItemState.NOT_LOADED
         ))
 
@@ -172,6 +180,16 @@ object HomeLayoutMapper {
         updateItemById(item.visitableId) {
             val ticker = HomeTickerUiModel(id = TICKER_WIDGET_ID, tickers = tickerData)
             HomeLayoutItemUiModel(ticker, HomeLayoutItemState.LOADED)
+        }
+    }
+
+    fun MutableList<HomeLayoutItemUiModel>.mapQuestData(
+        item: HomeQuestSequenceWidgetUiModel,
+        questList: List<HomeQuestWidgetUiModel>
+    ) {
+        updateItemById(item.visitableId) {
+            val quest = HomeQuestSequenceWidgetUiModel(id = MAIN_QUEST, questList = questList)
+            HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }
     }
 
@@ -402,6 +420,7 @@ object HomeLayoutMapper {
             REPURCHASE_PRODUCT -> mapRepurchaseUiModel(response, state)
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, HomeLayoutItemState.LOADED)
             SHARING_EDUCATION -> mapSharingEducationUiModel(response, state)
+            MAIN_QUEST -> mapQuestUiModel(response, state)
             else -> null
         }
     }
