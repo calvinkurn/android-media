@@ -9,6 +9,9 @@ android{
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         multiDexEnabled true
     }
+    buildFeatures {
+        aidl true
+    }
 }
 
 buildscript {
