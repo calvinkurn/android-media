@@ -16,8 +16,8 @@
     <ImageView
         android:id="@+id/card_campaign_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:contentDescription="@string/content_desc_campaign_image" />
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:contentDescription="@string/content_desc_campaign_image"/>
 
 </androidx.cardview.widget.CardView>
