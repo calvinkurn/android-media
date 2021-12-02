@@ -24,6 +24,7 @@ class ContentFragment: BaseDaggerFragment() {
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private val headerAdapter: HeaderAdapter = HeaderAdapter()
+    private val contentAdapter: ContentAdapter = ContentAdapter()
 
     private val viewModel: ContentViewModel by lazy(LazyThreadSafetyMode.NONE) {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
@@ -54,23 +55,34 @@ class ContentFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         viewModel.getTableInfo(databasePath, schemaName)
         observeViewModels()
+        headerAdapter.onClick = {
+
+        }
+        contentAdapter.onClick = {
+
+        }
     }
 
     private fun observeViewModels() {
         viewModel.columnHeaderLiveData.observe(viewLifecycleOwner, { cells ->
             headerAdapter.setItems(cells)
+            contentAdapter.headersCount = cells.size
             rvContent.setupGrid()
-            rvContent.adapter = headerAdapter
             rvContent.layoutManager = GridLayoutManager(
                 context,
                 cells.size,
                 RecyclerView.VERTICAL,
                 false
             )
+            //rvContent.adapter = headerAdapter
+
             viewModel.getTableContent(databasePath, schemaName)
             Log.d("DATAEXPLORER 1", cells.map { it.text }.joinToString())
         })
         viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
+            rvContent.adapter = contentAdapter
+
+            contentAdapter.submitList(cells)
             Log.d("DATAEXPLORER 2", cells.map { it.text }.joinToString())
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
