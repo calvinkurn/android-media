@@ -1133,7 +1133,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
 
         val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
         if (!isAnyWidgetFromCache) {
@@ -1477,7 +1479,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         binding?.root?.addOneTimeGlobalLayoutListener {
             recyclerView?.post {
                 checkLoadingWidgets()
@@ -1555,7 +1559,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             extras = widgetErrorExtraMap
         )
 
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         showErrorToaster()
         view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
@@ -1572,7 +1578,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 it
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         checkLoadingWidgets()
     }
 
@@ -1669,22 +1677,22 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 else -> widget
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         checkLoadingWidgets()
     }
 
     @Suppress("UNCHECKED_CAST")
     private fun updateWidgets(newWidgets: List<BaseWidgetUiModel<BaseDataUiModel>>) {
-        notifyWidgetWithSdkChecking {
-            val diffUtilCallback = SellerHomeDiffUtilCallback(
-                adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
-                newWidgets
-            )
-            val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
-            adapter.data.clear()
-            adapter.data.addAll(newWidgets)
-            diffUtilResult.dispatchUpdatesTo(adapter)
-        }
+        val diffUtilCallback = SellerHomeDiffUtilCallback(
+            adapter.data as List<BaseWidgetUiModel<BaseDataUiModel>>,
+            newWidgets
+        )
+        val diffUtilResult = DiffUtil.calculateDiff(diffUtilCallback)
+        adapter.data.clear()
+        adapter.data.addAll(newWidgets)
+        diffUtilResult.dispatchUpdatesTo(adapter)
     }
 
     @SuppressLint("AnnotateVersionCheck")
@@ -1693,7 +1701,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
                 callback()
             } else {
-                recyclerView?.post {
+                Handler(Looper.getMainLooper()).post {
                     callback()
                 }
             }
