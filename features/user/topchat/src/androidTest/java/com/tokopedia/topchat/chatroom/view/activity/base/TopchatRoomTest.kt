@@ -495,28 +495,6 @@ abstract class TopchatRoomTest {
         ).check(matches(visibilityMatcher))
     }
 
-    protected fun assertSrwPreviewLoadingVisibility(
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            allOf(
-                withId(R.id.lu_srw_partial),
-                isDescendantOfA(withId(R.id.cl_attachment_preview))
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertSrwBubbleLoadingVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.lu_srw_partial
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
     /**
      * assert unify snackbar/toaster
      */
@@ -528,7 +506,6 @@ abstract class TopchatRoomTest {
         assertSrwPreviewContentContainerVisibility(isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
         assertSrwPreviewErrorVisibility(not(isDisplayed()))
-        assertSrwPreviewLoadingVisibility(not(isDisplayed()))
     }
 
     protected fun assertSrwBubbleDoesNotExist() {
@@ -541,11 +518,9 @@ abstract class TopchatRoomTest {
         assertSrwBubbleContentContainerVisibility(position, isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
         assertSrwBubbleErrorVisibility(position, not(isDisplayed()))
-        assertSrwBubbleLoadingVisibility(position, not(isDisplayed()))
     }
 
     protected fun assertSrwPreviewContentIsLoading() {
-        assertSrwPreviewLoadingVisibility(isDisplayed())
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
         assertTemplateChatVisibility(not(isDisplayed()))
         assertSrwPreviewErrorVisibility(not(isDisplayed()))
@@ -553,7 +528,6 @@ abstract class TopchatRoomTest {
 
     protected fun assertSrwPreviewContentIsError() {
         assertSrwPreviewErrorVisibility(isDisplayed())
-        assertSrwPreviewLoadingVisibility(not(isDisplayed()))
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
         assertTemplateChatVisibility(not(isDisplayed()))
     }
@@ -561,7 +535,6 @@ abstract class TopchatRoomTest {
     protected fun assertSrwPreviewContentIsHidden() {
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
         assertSrwPreviewErrorVisibility(not(isDisplayed()))
-        assertSrwPreviewLoadingVisibility(not(isDisplayed()))
     }
 
     protected fun assertHeaderRightMsgBubbleVisibility(
