@@ -8,6 +8,9 @@ android {
     buildFeatures {
         viewBinding true
     }
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+    }
 }
 
 kapt {
@@ -24,6 +27,7 @@ buildscript {
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
     }
+
 }
 
 dependencies {
