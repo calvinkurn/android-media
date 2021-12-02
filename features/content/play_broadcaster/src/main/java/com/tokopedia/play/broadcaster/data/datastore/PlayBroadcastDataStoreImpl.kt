@@ -64,17 +64,14 @@ class PlayBroadcastDataStoreImpl @Inject constructor(
                             },
                             discountedPrice = when(val price = it.price) {
                                 is DiscountedPrice -> price.discountedPrice
-                                is OriginalPrice -> ""
                                 else -> ""
                             },
                             discountedPriceNumber = when(val price = it.price) {
                                 is DiscountedPrice -> price.discountedPriceNumber
-                                is OriginalPrice -> 0.0
                                 else -> 0.0
                             },
                             discountedPercent = when(val price = it.price) {
                                 is DiscountedPrice -> price.discountPercent
-                                is OriginalPrice -> 0
                                 else -> 0
                             },
                         )
