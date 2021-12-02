@@ -5,10 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.AllVariant
+import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeSuggestionViewHolder
 
 class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionViewHolder>() {
@@ -16,7 +15,7 @@ class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionV
     private var highlightCharLength: Int = 0
     private var items: MutableList<AllVariant> = mutableListOf()
     private var onItemClickedListener: ((position: Int, variantTypeName: String) -> Unit)? = null
-    private var firstItemDisabled = false
+    private var disabledVariantDetails: List<VariantDetail> = emptyList()
 
     override fun getItemCount(): Int {
         return items.size
@@ -29,9 +28,9 @@ class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionV
     }
 
     override fun onBindViewHolder(holder: VariantTypeSuggestionViewHolder, position: Int) {
-        val variantUnitValue = items[position].variantName
-        val enabled = !(position.isZero() && firstItemDisabled)
-        holder.bindData(variantUnitValue, highlightCharLength, enabled)
+        val variantName = items[position].variantName
+        val enabled = !disabledVariantDetails.any { it.name == variantName }
+        holder.bindData(variantName, highlightCharLength, enabled)
     }
 
     private fun initViewHolder(rootView: View): VariantTypeSuggestionViewHolder {
@@ -49,10 +48,11 @@ class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionV
 
     fun setData(items: List<AllVariant>) {
         this.items = items.toMutableList()
-        this.items.sortWith(compareBy(String.CASE_INSENSITIVE_ORDER, {
-            it.variantName
-        }))
         notifyDataSetChanged()
+    }
+
+    fun setDisabledData(disabledVariantDetails: List<VariantDetail>) {
+        this.disabledVariantDetails = disabledVariantDetails
     }
 
     fun getItemFromVariantName(variantTypeName: String): AllVariant? {
@@ -62,11 +62,6 @@ class VariantTypeSuggestionAdapter : RecyclerView.Adapter<VariantTypeSuggestionV
     fun setHighlightCharLength(length: Int) {
         highlightCharLength = length
         notifyDataSetChanged()
-    }
-
-    fun setDisableFirst(isDisabled: Boolean) {
-        firstItemDisabled = isDisabled
-        notifyItemChanged(Int.ZERO)
     }
 
     fun setOnItemClickedListener(listener: (position: Int, variantTypeName: String) -> Unit) {

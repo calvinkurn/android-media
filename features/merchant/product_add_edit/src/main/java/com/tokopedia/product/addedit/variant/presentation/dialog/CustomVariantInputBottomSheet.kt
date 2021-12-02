@@ -114,13 +114,13 @@ class CustomVariantInputBottomSheet (
             val cleanedText = it.trim().replace("\\s+".toRegex(), " ")
             binding?.textFieldVariantTypeInput?.setMessage("")
             binding?.textFieldVariantTypeInput?.isInputError = false
-            variantTypeSuggestionAdapter.setDisableFirst(false)
             variantTypeSuggestionAdapter.setHighlightCharLength(cleanedText.length)
             viewModel.getAllVariantFromKeyword(cleanedText)
         }
     }
 
     private fun setupRecyclerViewSuggestion() {
+        variantTypeSuggestionAdapter.setDisabledData(selectedVariantDetails)
         variantTypeSuggestionAdapter.setOnItemClickedListener { position, variantTypeName ->
             try {
                 binding?.textFieldVariantTypeInput?.setText(variantTypeName)
@@ -166,7 +166,6 @@ class CustomVariantInputBottomSheet (
                     }
                     VariantTitleValidationStatus.USED_NAME -> {
                         setMessage(getString(R.string.error_used_variant_name))
-                        variantTypeSuggestionAdapter.setDisableFirst(true)
                     }
                     VariantTitleValidationStatus.MINIMUM_CHAR -> {
                         setMessage(getString(R.string.error_min_char_variant_name))
