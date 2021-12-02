@@ -260,4 +260,7 @@ object ApplinkConstInternalMarketplace {
     const val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
 
     const val ARGS_IS_UPGRADE = "is_upgrade"
+
+    const val SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET = "$INTERNAL_MARKETPLACE/shop/widget/operational-hour/{shop_id}/"
+
 }
