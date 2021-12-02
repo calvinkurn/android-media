@@ -41,6 +41,7 @@ class CampaignListViewModel @Inject constructor(
     private var campaignName = ""
     private var campaignTypeId = NPL_CAMPAIGN_TYPE
     private var campaignStatusId = GetCampaignListUseCase.statusId
+    private var selectedCampaignId : String = ""
 
     fun setDefaultCampaignTypeSelection(campaignTypeSelections: List<CampaignTypeSelection>) {
         selectedCampaignTypeSelection = campaignTypeSelections.find { campaignTypeSelection ->
@@ -149,6 +150,10 @@ class CampaignListViewModel @Inject constructor(
         this.campaignStatusId = campaignStatusId
     }
 
+    fun setSelectedCampaignId(selectedCampaignId: String) {
+        this.selectedCampaignId = selectedCampaignId
+    }
+
     fun getCampaignName(): String {
         return campaignName
     }
@@ -159,5 +164,9 @@ class CampaignListViewModel @Inject constructor(
 
     fun getCampaignStatusId(): List<Int> {
         return campaignStatusId
+    }
+
+    fun getSelectedCampaignId(): String {
+        return selectedCampaignId
     }
 }
