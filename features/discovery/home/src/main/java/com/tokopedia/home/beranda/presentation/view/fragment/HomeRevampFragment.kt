@@ -1916,7 +1916,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             bannerCarouselCallback,
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
-            CampaignWidgetComponentCallback(context, this)
+            CampaignWidgetComponentCallback(context, this),
+            this
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
