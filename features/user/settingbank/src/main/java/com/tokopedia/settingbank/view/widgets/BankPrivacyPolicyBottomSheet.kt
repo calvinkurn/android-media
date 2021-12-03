@@ -36,9 +36,12 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        context?.getString(R.string.sbank_privacy_url)?.let { url ->
-            privacyWebview.loadUrl(url)
+        privacyWebview.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
         }
+        privacyWebview.loadUrl("https://www.tokopedia.com/privacy")
+
     }
 
 
