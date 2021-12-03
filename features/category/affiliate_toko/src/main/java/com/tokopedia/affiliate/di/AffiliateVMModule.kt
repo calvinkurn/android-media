@@ -78,6 +78,12 @@ abstract class AffiliateVMModule {
     @Binds
     @IntoMap
     @AffiliateScope
+    @ViewModelKey(AffiliatePromotionHistoryViewModel::class)
+    internal abstract fun affiliatePromotionHistoryViewModel(viewModel: AffiliatePromotionHistoryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @AffiliateScope
     @ViewModelKey(WithdrawalDetailViewModel::class)
     internal abstract fun affiliateWithdrawalDetailViewModel(viewModel: WithdrawalDetailViewModel): ViewModel
 

@@ -35,7 +35,6 @@ import com.tokopedia.explore.view.uimodel.ExploreCategoryViewModel
 import com.tokopedia.explore.view.uimodel.ExploreImageViewModel
 import com.tokopedia.explore.view.uimodel.ExploreViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.user.session.UserSessionInterface
 import io.embrace.android.embracesdk.Embrace
 import javax.inject.Inject
@@ -122,7 +121,6 @@ class ContentExploreFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        GraphqlClient.init(requireContext())
         initVar()
         initView()
         presenter.attachView(this)

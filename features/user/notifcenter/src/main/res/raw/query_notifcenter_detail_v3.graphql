@@ -99,6 +99,7 @@ query notifcenter_detail_v3(
 				is_buyable
 				is_topads
 				is_wishlist
+				is_preorder
 				rating
 				count_review
 				labels {
@@ -124,6 +125,7 @@ query notifcenter_detail_v3(
 					location
 					is_gold
 					is_official
+					is_tokonow
 					badges {
 						title
 						image_url
@@ -133,6 +135,7 @@ query notifcenter_detail_v3(
 				stock
 				type_button
 				is_show
+				is_variant
 			}
 			bottomsheet {
 				title
@@ -227,6 +230,7 @@ query notifcenter_detail_v3(
 				is_buyable
 				is_topads
 				is_wishlist
+				is_preorder
 				rating
 				count_review
 				labels {
@@ -252,6 +256,7 @@ query notifcenter_detail_v3(
 					location
 					is_gold
 					is_official
+					is_tokonow
 					badges {
 						title
 						image_url
@@ -261,6 +266,7 @@ query notifcenter_detail_v3(
 				stock
 				type_button
 				is_show
+				is_variant
 			}
 			bottomsheet {
 				title
