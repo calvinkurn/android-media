@@ -38,7 +38,7 @@ class SomListActivity : BaseActivity(), SomListLoadTimeMonitoringActivity {
         _binding = ActivitySomListBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupStatusBar()
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         setupFragment()
     }
 
