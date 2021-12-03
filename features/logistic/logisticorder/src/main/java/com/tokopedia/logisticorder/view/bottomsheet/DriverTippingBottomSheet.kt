@@ -31,7 +31,9 @@ import com.tokopedia.logisticorder.utils.TippingConstant.SUCCESS_TO_GOJEK
 import com.tokopedia.logisticorder.utils.TippingConstant.WAITING_PAYMENT
 import com.tokopedia.logisticorder.view.TrackingPageViewModel
 import com.tokopedia.logisticorder.view.adapter.TippingValueAdapter
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -111,6 +113,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
                 is Fail -> {
                     binding.progressBar.visibility = View.VISIBLE
+                    showSoftError(it.throwable)
                 }
             }
         })
@@ -234,5 +237,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         this.orderId = orderId
         this.trackingDataModel = trackingDataModel
         show(fm, "TAG")
+    }
+
+    private fun showSoftError(error: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, error)
+        view?.let { Toaster.build(it, message, Toaster.LENGTH_SHORT).show() }
     }
 }

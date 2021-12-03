@@ -38,7 +38,7 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="driver_tipping_ticker">&lt;ul&gt; &lt;li&gt; %s </string>
     <string name="driver_tipping_ticker_new"><![CDATA[<ul> <li>%s</li> <li>%s</li></ul>]]></string>
     <string name="payment_value"><![CDATA[<b>%s %s</b>]]></string>
-    <string name="title_prepayment_tipping">Beri Tip untuk driver</string>
+    <string name="title_prepayment_tipping">Beri tip untuk driver</string>
     <string name="button_tipping_payment">Pilih Pembayaran</string>
 
     <string name="button_tipping_done">Mengerti</string>
@@ -53,4 +53,11 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="phone_number_label">Nomor HP</string>
     <string name="driver_name_label">Nama Driver</string>
     <string name="license_label">Plat Nomor Kendaraan</string>
+    <string name="btn_tipping_success_text">Lihat Bukti</string>
+    <string name="btn_tipping_waiting_payment_text">Cek Status</string>
+    <string name="btn_tipping_refund_text">Lihat Saldo</string>
+    <string name="btn_tipping_open_text">Beri Tip</string>
+    <string name="driver_description_template">%1$s • %2$s</string>
+    <string name="info_driver_title">Driver bisa berganti\nsewaktu-waktu</string>
+    <string name="info_driver_detail">Jika driver berganti, tip akan diberikan\nke driver yang mengantar pesanan</string>
 </resources>

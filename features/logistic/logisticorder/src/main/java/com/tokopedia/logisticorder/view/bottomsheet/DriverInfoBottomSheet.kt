@@ -47,8 +47,8 @@ class DriverInfoBottomSheet : BottomSheetUnify() {
     private fun setupDriverInfoBottomSheet() {
         binding.apply {
             imgInfoDriver.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_illus_tipping_retry) })
-            tvInfoDriver.text = "Driver bisa berganti\nsewaktu-waktu"
-            tvInfoDriverDetail.text = "Jika driver berganti, tip akan diberikan\nke driver yang mengantar pesanan"
+            tvInfoDriver.text = getString(R.string.info_driver_title)
+            tvInfoDriverDetail.text = getString(R.string.info_driver_detail)
             btnClose.setOnClickListener {
                 dismiss()
             }

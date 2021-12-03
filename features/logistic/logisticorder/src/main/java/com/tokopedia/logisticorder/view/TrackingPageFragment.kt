@@ -212,14 +212,14 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 imgDriver.setImageUrl(tippingData.lastDriver.photo)
 
                 driverName.text = tippingData.lastDriver.name
-                driverPhone.text = tippingData.lastDriver.phone + " • " + tippingData.lastDriver.licenseNumber
+                driverPhone.text = getString(R.string.driver_description_template, tippingData.lastDriver.phone, tippingData.lastDriver.licenseNumber)
             }
 
             btnTipping.text = when (tippingData.status) {
-                SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> "Lihat Bukti"
-                WAITING_PAYMENT -> "Cek Status"
-                REFUND_TIP -> "Lihat Saldo"
-                else -> "Beri Tip"
+                SUCCESS_PAYMENT, SUCCESS_TO_GOJEK -> getString(R.string.btn_tipping_success_text)
+                WAITING_PAYMENT -> getString(R.string.btn_tipping_waiting_payment_text)
+                REFUND_TIP -> getString(R.string.btn_tipping_refund_text)
+                else -> getString(R.string.btn_tipping_open_text)
             }
 
             tippingText.text = tippingData.statusTitle
