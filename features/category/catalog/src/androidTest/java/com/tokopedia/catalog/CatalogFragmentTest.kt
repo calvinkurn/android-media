@@ -406,7 +406,7 @@ class CatalogFragmentTest
 
     private fun launchActivity() {
         val bundle = Bundle()
-        bundle.putString(EXTRA_CATALOG_ID, "53169")
+        bundle.putString(EXTRA_CATALOG_ID, "57735")
         val intent = Intent(context, CatalogDetailPageActivity::class.java)
         intent.putExtras(bundle)
         activityRule.launchActivity(intent)
