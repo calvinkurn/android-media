@@ -1,20 +1,13 @@
 package com.tokopedia.shop.score.performance.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.google.android.material.shape.CornerFamily
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.gm.common.constant.NEW_SELLER_DAYS
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
-import com.tokopedia.shop.score.common.ShopScoreConstant
-import com.tokopedia.shop.score.common.ShopScoreUtils
 import com.tokopedia.shop.score.databinding.ItemHeaderShopPerformanceBinding
 import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformanceListener
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
-import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.view.binding.viewBinding
-import java.lang.NumberFormatException
 
 class ItemHeaderShopPerformanceViewHolder(
     view: View,

@@ -204,14 +204,18 @@ class HeaderPerformanceWidget : ConstraintLayout {
                 tvHeaderShopService.hide()
                 tvDescShopService.hide()
                 cardDescNewSeller.show()
-                tvHeaderShopServiceNewSeller.text = element.titleHeaderShopService ?: "-"
-                tvDescShopServiceNewSeller.text = element.descHeaderShopService ?: "-"
+                tvHeaderShopServiceNewSeller.text =
+                    element.titleHeaderShopService?.let { context.getString(it) }.orEmpty()
+                tvDescShopServiceNewSeller.text =
+                    element.descHeaderShopService?.let { context.getString(it) }.orEmpty()
             } else {
                 tvHeaderShopService.show()
                 tvDescShopService.show()
                 cardDescNewSeller.hide()
-                tvHeaderShopService.text = element?.titleHeaderShopService ?: "-"
-                tvDescShopService.text = element?.descHeaderShopService ?: "-"
+                tvHeaderShopService.text =
+                    element?.titleHeaderShopService?.let { context.getString(it) }.orEmpty()
+                tvDescShopService.text =
+                    element?.descHeaderShopService?.let { context.getString(it) }.orEmpty()
             }
         }
     }

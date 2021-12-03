@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.transition.MaterialContainerTransform
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -26,7 +25,6 @@ import com.tokopedia.shop.score.penalty.presentation.bottomsheet.PenaltyStatusBo
 import com.tokopedia.shop.score.penalty.presentation.model.ItemPenaltyUiModel
 import com.tokopedia.shop.score.penalty.presentation.model.ShopPenaltyDetailUiModel
 import com.tokopedia.shop.score.penalty.presentation.viewmodel.ShopPenaltyDetailViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
@@ -118,7 +116,10 @@ open class ShopPenaltyDetailFragment : BaseDaggerFragment() {
                 shopPenaltyDetailUiModel.endDateDetail
             )
         )
-        binding?.tvDescResultDetailPenalty?.text = shopPenaltyDetailUiModel.descStatusPenalty
+        shopPenaltyDetailUiModel.descStatusPenalty?.let {
+            binding?.tvDescResultDetailPenalty?.text = getString(it)
+        }
+
         setupRvStepper(shopPenaltyDetailUiModel.stepperPenaltyDetailList)
 
         binding?.icInfoStatusPenalty?.setOnClickListener {

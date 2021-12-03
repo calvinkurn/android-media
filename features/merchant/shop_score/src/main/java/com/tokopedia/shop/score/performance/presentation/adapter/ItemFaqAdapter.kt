@@ -76,10 +76,15 @@ class ItemFaqAdapter(private var itemFaqListener: ItemFaqListener) :
 
         fun bind(data: ItemFaqUiModel) {
             binding?.run {
-                tvTitleFaqShopScore.text = data.title
+                tvTitleFaqShopScore.text =
+                    data.title?.let { root.context.getString(it) }.orEmpty()
                 tvDescFaqShopScore.showWithCondition(data.isShow)
-                tvDescFaqShopScore.text = MethodChecker.fromHtml(data.desc_first)
-                tvDescParameterPerformanceFaq.text = data.desc_second
+                tvDescFaqShopScore.text = MethodChecker.fromHtml(
+                    data.desc_first?.let { root.context.getString(it) }.orEmpty()
+                )
+                tvDescParameterPerformanceFaq.text = data.desc_second?.let {
+                    root.context.getString(it)
+                }.orEmpty()
 
                 initAdapterCardLevel(data)
                 initAdapterParameterFaq(data)

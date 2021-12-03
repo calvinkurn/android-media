@@ -42,9 +42,16 @@ class ItemParameterFaqAdapter :
         private val binding: ItemParameterPerformanceShopScoreBinding? by viewBinding()
         fun bind(data: ItemParameterFaqUiModel) {
             binding?.run {
-                tvTitleIndicatorParameterPerformance.text = data.title
-                tvDescIndicatorParameterPerformance.text = MethodChecker.fromHtml(data.desc)
-                tvScoreParameterValue.text = data.score
+                tvTitleIndicatorParameterPerformance.text =
+                    data.title?.let { root.context.getString(it) }.orEmpty()
+                tvDescIndicatorParameterPerformance.text = data.desc?.let {
+                    MethodChecker.fromHtml(
+                        root.context.getString(it)
+                    )
+                } ?: ""
+                tvScoreParameterValue.text = data.score?.let {
+                    root.context.getString(it)
+                }.orEmpty()
             }
             showDividerVerticalTabletMode()
         }

@@ -4,9 +4,9 @@ import com.tokopedia.shop.score.performance.presentation.adapter.ShopPerformance
 
 data class ProtectedParameterSectionUiModel(
     override val itemProtectedParameterList: List<ItemProtectedParameterUiModel> = emptyList(),
-    override val titleParameterRelief: String = "",
-    override val descParameterRelief: String = "",
-    override val descParameterReliefBottomSheet: String = ""
+    override val titleParameterRelief: Int? = null,
+    override val descParameterRelief: Int? = null,
+    override val descParameterReliefBottomSheet: Int? = null
 ) : BaseProtectedParameterSectionUiModel(
     itemProtectedParameterList,
     titleParameterRelief,

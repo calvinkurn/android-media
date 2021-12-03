@@ -52,16 +52,25 @@ class ParameterProtectedSectionWidget : ConstraintLayout {
     ) {
         binding?.run {
             setCardItemProtectedBackground()
-            tvTitleParameterRelief.text = element?.titleParameterRelief.orEmpty()
-            tvDescParameterRelief.text = element?.descParameterRelief.orEmpty()
+            tvTitleParameterRelief.text =
+                element?.titleParameterRelief?.let { context.getString(it) }.orEmpty()
+            tvDescParameterRelief.text =
+                element?.descParameterRelief?.let { context.getString(it) }.orEmpty()
+            val descParameterReliefBottomSheet = element?.descParameterReliefBottomSheet?.let {
+                context.getString(
+                    it,
+                    element.protectedParameterDaysDate
+                )
+            }.orEmpty()
+
             cardDescParameterRelief.setOnClickListener {
                 protectedParameterListener?.onProtectedParameterChevronClicked(
-                    element?.descParameterReliefBottomSheet.orEmpty()
+                    descParameterReliefBottomSheet
                 )
             }
             icDescParameterRelief.setOnClickListener {
                 protectedParameterListener?.onProtectedParameterChevronClicked(
-                    element?.descParameterReliefBottomSheet.orEmpty()
+                    descParameterReliefBottomSheet
                 )
             }
         }

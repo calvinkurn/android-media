@@ -432,39 +432,28 @@ class ShopScoreMapper @Inject constructor(
         with(headerShopPerformanceUiModel) {
             when {
                 isNewSellerBeforeFirstMonday(shopScore, shopAge) -> {
-                    titleHeaderShopService =
-                        context?.getResString(R.string.title_new_seller_level_0).orEmpty()
+                    titleHeaderShopService = R.string.title_new_seller_level_0
                     this.showCard = true
-                    descHeaderShopService =
-                        context?.getResString(R.string.desc_new_seller_level_0).orEmpty()
+                    descHeaderShopService = R.string.desc_new_seller_level_0
                 }
                 isNewSellerAfterFirstMonday(shopScore, shopAge) -> {
                     when {
                         shopScore < SHOP_SCORE_SIXTY -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_tenure_new_seller_score_under_60)
-                                    .orEmpty()
+                            titleHeaderShopService = R.string.title_tenure_new_seller_score_under_60
                         }
                         shopScore in SHOP_SCORE_SIXTY..SHOP_SCORE_SEVENTY_NINE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_tenure_new_seller_score_between_60_to_79)
-                                    .orEmpty()
+                            titleHeaderShopService = R.string.title_tenure_new_seller_score_between_60_to_79
                         }
                         shopScore >= SHOP_SCORE_EIGHTY -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_tenure_new_seller_score_more_80)
-                                    .orEmpty()
+                            titleHeaderShopService = R.string.title_tenure_new_seller_score_more_80
                         }
                     }
-                    descHeaderShopService =
-                        context?.getResString(R.string.desc_tenure_new_seller).orEmpty()
+                    descHeaderShopService = R.string.desc_tenure_new_seller
                 }
                 isReactivatedSellerBeforeFirstMonday(shopScore, shopAge) -> {
-                    titleHeaderShopService =
-                        context?.getResString(R.string.title_reactivated_seller_level_0).orEmpty()
+                    titleHeaderShopService = R.string.title_reactivated_seller_level_0
                     this.showCard = true
-                    descHeaderShopService =
-                        context?.getResString(R.string.desc_reactivated_seller_level_0).orEmpty()
+                    descHeaderShopService = R.string.desc_reactivated_seller_level_0
                 }
                 isReactivatedSellerAfterComeback(
                     shopScore,
@@ -525,131 +514,90 @@ class ShopScoreMapper @Inject constructor(
                 in SHOP_SCORE_SIXTY..SHOP_SCORE_SIXTY_NINE -> {
                     when (shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_keep_up_level_1) ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_keep_up_level_1) ?: "-"
+                            titleHeaderShopService = R.string.title_keep_up_level_1
+                            descHeaderShopService = R.string.desc_keep_up_level_1
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_keep_up_level_2) ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_keep_up_level_2) ?: "-"
+                            titleHeaderShopService = R.string.title_keep_up_level_2
+                            descHeaderShopService = R.string.desc_keep_up_level_2
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_keep_up_level_3) ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_keep_up_level_3) ?: "-"
+                            titleHeaderShopService = R.string.title_keep_up_level_3
+                            descHeaderShopService = R.string.desc_keep_up_level_3
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_keep_up_level_4) ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_keep_up_level_4) ?: "-"
+                            titleHeaderShopService = R.string.title_keep_up_level_4
+                            descHeaderShopService = R.string.desc_keep_up_level_4
                         }
                     }
                 }
                 in SHOP_SCORE_SEVENTY..SHOP_SCORE_SEVENTY_NINE -> {
                     when (shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_good_level_1) ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_good_level_1) ?: "-"
+                            titleHeaderShopService = R.string.title_good_level_1
+                            descHeaderShopService = R.string.desc_good_level_1
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_good_level_2) ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_good_level_2) ?: "-"
+                            titleHeaderShopService = R.string.title_good_level_2
+                            descHeaderShopService = R.string.desc_good_level_2
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_good_level_3) ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_good_level_3) ?: "-"
+                            titleHeaderShopService = R.string.title_good_level_3
+                            descHeaderShopService = R.string.desc_good_level_3
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_good_level_4)
-                                    ?: "-"
-                            descHeaderShopService =
-                                context?.getResString(R.string.desc_good_level_4)
-                                    ?: "-"
+                            titleHeaderShopService = R.string.title_good_level_4
+                            descHeaderShopService = R.string.desc_good_level_4
                         }
                     }
                 }
                 in SHOP_SCORE_EIGHTY..SHOP_SCORE_EIGHTY_NINE -> {
                     when (shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_great_level_1) ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_great_level_1) ?: "-"
+                            titleHeaderShopService = R.string.title_great_level_1
+                            descHeaderShopService = R.string.desc_great_level_1
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_great_level_2) ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_great_level_2) ?: "-"
+                            titleHeaderShopService = R.string.title_great_level_2
+                            descHeaderShopService = R.string.desc_great_level_2
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_great_level_3)
-                                    ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_great_level_3)
-                                ?: "-"
+                            titleHeaderShopService = R.string.title_great_level_3
+                            descHeaderShopService = R.string.desc_great_level_3
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService = context?.getResString(R.string.title_great_level_4)
-                                ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_great_level_4)
-                                ?: "-"
+                            titleHeaderShopService = R.string.title_great_level_4
+                            descHeaderShopService = R.string.desc_great_level_4
                         }
                     }
                 }
                 in SHOP_SCORE_NINETY..SHOP_SCORE_ONE_HUNDRED -> {
                     when (shopLevel) {
                         SHOP_SCORE_LEVEL_ONE -> {
-                            titleHeaderShopService =
-                                context?.getResString(R.string.title_perfect_level_1)
-                                    ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_perfect_level_1)
-                                ?: "-"
+                            titleHeaderShopService = R.string.title_perfect_level_1
+                            descHeaderShopService = R.string.desc_perfect_level_1
                         }
                         SHOP_SCORE_LEVEL_TWO -> {
-                            titleHeaderShopService = context?.getResString(R.string.title_perfect_level_2)
-                                ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_perfect_level_2)
-                                ?: "-"
+                            titleHeaderShopService = R.string.title_perfect_level_2
+                            descHeaderShopService = R.string.desc_perfect_level_2
                         }
                         SHOP_SCORE_LEVEL_THREE -> {
-                            titleHeaderShopService = context?.getResString(R.string.title_perfect_level_3)
-                                ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_perfect_level_3)
-                                ?: "-"
+                            titleHeaderShopService = R.string.title_perfect_level_3
+                            descHeaderShopService = R.string.desc_perfect_level_3
                         }
                         SHOP_SCORE_LEVEL_FOUR -> {
-                            titleHeaderShopService = context?.getResString(R.string.title_perfect_level_4)
-                                ?: "-"
-                            descHeaderShopService = context?.getResString(R.string.desc_perfect_level_4)
-                                ?: "-"
+                            titleHeaderShopService = R.string.title_perfect_level_4
+                            descHeaderShopService = R.string.desc_perfect_level_4
                         }
                     }
                 }
                 in SHOP_SCORE_FIFTY..SHOP_SCORE_FIFTY_NINE -> {
-                    titleHeaderShopService = context?.getResString(R.string.title_performance_approaching)
-                        ?: "-"
-                    descHeaderShopService =
-                        context?.getResString(R.string.desc_performance_approaching)
-                            ?: "-"
+                    titleHeaderShopService = R.string.title_performance_approaching
+                    descHeaderShopService = R.string.desc_performance_approaching
                 }
                 in SHOP_SCORE_ZERO..SHOP_SCORE_FORTY_NINE -> {
-                    titleHeaderShopService =
-                        context?.getResString(R.string.title_performance_below)
-                            ?: "-"
-                    descHeaderShopService =
-                        context?.getResString(R.string.desc_performance_below)
-                            ?: "-"
+                    titleHeaderShopService = R.string.title_performance_below
+                    descHeaderShopService = R.string.desc_performance_below
                 }
             }
         }
@@ -1037,14 +985,13 @@ class ShopScoreMapper @Inject constructor(
         return ItemStatusRMUiModel(
             titleRMEligible =
             if (isNewSellerProjection)
-                context?.
-                getResString(R.string.title_header_rm_section_new_seller).orEmpty()
+                R.string.title_header_rm_section_new_seller
             else
-                context?.getResString(R.string.title_header_rm_section).orEmpty(),
+                R.string.title_header_rm_section,
             descRMEligible = if (isNewSellerProjection)
-                context?.getResString(R.string.desc_potential_rm_section_new_seller).orEmpty()
+                R.string.desc_potential_rm_section_new_seller
             else
-                context?.getResString(R.string.desc_potential_eligible_power_merchant).orEmpty()
+                R.string.desc_potential_eligible_power_merchant
         )
     }
 
@@ -1088,25 +1035,22 @@ class ShopScoreMapper @Inject constructor(
         return mutableListOf<ItemFaqUiModel>().apply {
             add(
                 ItemFaqUiModel(
-                    title = context?.getResString(R.string.title_shop_score_performance).orEmpty(),
-                    desc_first = context?.getResString(R.string.desc_shop_score_performance)
-                        .orEmpty(),
+                    title = R.string.title_shop_score_performance,
+                    desc_first = R.string.desc_shop_score_performance,
                     isShow = true
                 )
             )
             add(
                 ItemFaqUiModel(
-                    title = context?.getResString(R.string.title_shop_score_benefit).orEmpty(),
-                    desc_first = context?.getResString(R.string.desc_shop_score_benefit).orEmpty(),
+                    title = R.string.title_shop_score_benefit,
+                    desc_first = R.string.desc_shop_score_benefit,
                 )
             )
             add(
                 ItemFaqUiModel(
-                    title = context?.getResString(R.string.title_shop_score_calculation).orEmpty(),
-                    desc_first = context?.getResString(R.string.desc_section_1_shop_score_calculation)
-                        .orEmpty(),
-                    desc_second = context?.getResString(R.string.desc_section_2_shop_score_calculation)
-                        .orEmpty(),
+                    title = R.string.title_shop_score_calculation,
+                    desc_first = R.string.desc_section_1_shop_score_calculation,
+                    desc_second = R.string.desc_section_2_shop_score_calculation,
                     isCalculationScore = true,
                     cardLevelList = mapToCardTooltipLevel(),
                     parameterFaqList = mapToItemParameterFaq()
@@ -1114,20 +1058,16 @@ class ShopScoreMapper @Inject constructor(
             )
             add(
                 ItemFaqUiModel(
-                    title = context?.getResString(R.string.title_calculate_shop_performance_if_parameter_value_missing)
-                        .orEmpty(),
-                    desc_first = context?.getResString(R.string.desc_calculate_shop_performance_if_parameter_value_missing)
-                        .orEmpty(),
+                    title = R.string.title_calculate_shop_performance_if_parameter_value_missing,
+                    desc_first = R.string.desc_calculate_shop_performance_if_parameter_value_missing,
                 )
             )
 
             if (!isOfficialStore) {
                 add(
                     ItemFaqUiModel(
-                        title = context?.getResString(R.string.title_calculate_shop_performance_for_new_seller)
-                            .orEmpty(),
-                        desc_first = context?.getResString(R.string.desc_calculate_shop_performance_for_new_seller)
-                            .orEmpty(),
+                        title = R.string.title_calculate_shop_performance_for_new_seller,
+                        desc_first = R.string.desc_calculate_shop_performance_for_new_seller,
                     )
                 )
             }
@@ -1135,10 +1075,8 @@ class ShopScoreMapper @Inject constructor(
             if (isOfficialStore) {
                 add(
                     ItemFaqUiModel(
-                        title = context?.getResString(R.string.title_shop_score_affect_os)
-                            .orEmpty(),
-                        desc_first = context?.getResString(R.string.desc_shop_score_affect_os)
-                            .orEmpty(),
+                        title = R.string.title_shop_score_affect_os,
+                        desc_first = R.string.desc_shop_score_affect_os,
                     )
                 )
             }
@@ -1146,10 +1084,8 @@ class ShopScoreMapper @Inject constructor(
             if (isNewSeller) {
                 add(
                     ItemFaqUiModel(
-                        title = context?.getResString(R.string.title_time_adjustment_what_relief_for_new_seller)
-                            .orEmpty(),
-                        desc_first = context?.getResString(R.string.desc_time_adjustment_what_relief_for_new_seller)
-                            .orEmpty(),
+                        title = R.string.title_time_adjustment_what_relief_for_new_seller,
+                        desc_first = R.string.desc_time_adjustment_what_relief_for_new_seller,
                     )
                 )
             }
@@ -1157,10 +1093,8 @@ class ShopScoreMapper @Inject constructor(
             if (isReactivatedBeforeMonday || isReactivatedAfterMonday) {
                 add(
                     ItemFaqUiModel(
-                        title = context?.getResString(R.string.title_time_adjustment_what_relief_for_reactivated_seller)
-                            .orEmpty(),
-                        desc_first = context?.getResString(R.string.desc_time_adjustment_what_relief_for_reactivated_seller)
-                            .orEmpty(),
+                        title = R.string.title_time_adjustment_what_relief_for_reactivated_seller,
+                        desc_first = R.string.desc_time_adjustment_what_relief_for_reactivated_seller,
                     )
                 )
             }
@@ -1168,10 +1102,8 @@ class ShopScoreMapper @Inject constructor(
             if (isReactivatedBeforeMonday && isPowerMerchantOrProIdle(pmData)) {
                 add(
                     ItemFaqUiModel(
-                        title = context?.getResString(R.string.title_pm_or_pro_reactivated_seller_faq)
-                            .orEmpty(),
-                        desc_first = context?.getResString(R.string.desc_pm_or_pro_reactivated_seller_faq)
-                            .orEmpty(),
+                        title = R.string.title_pm_or_pro_reactivated_seller_faq,
+                        desc_first = R.string.desc_pm_or_pro_reactivated_seller_faq,
                     )
                 )
             }
@@ -1181,19 +1113,19 @@ class ShopScoreMapper @Inject constructor(
     private fun mapToItemParameterFaq(): List<ItemParameterFaqUiModel> {
         return listOf(
             ItemParameterFaqUiModel(
-                title = context?.getResString(R.string.title_parameter_shop_score_1).orEmpty(),
-                desc = context?.getResString(R.string.desc_parameter_shop_score_1).orEmpty(),
-                score = context?.getResString(R.string.score_parameter_shop_score_1).orEmpty()
+                title = R.string.title_parameter_shop_score_1,
+                desc = R.string.desc_parameter_shop_score_1,
+                score = R.string.score_parameter_shop_score_1
             ),
             ItemParameterFaqUiModel(
-                title = context?.getResString(R.string.title_parameter_shop_score_2).orEmpty(),
-                desc = context?.getResString(R.string.desc_parameter_shop_score_2).orEmpty(),
-                score = context?.getResString(R.string.score_parameter_shop_score_2).orEmpty()
+                title = R.string.title_parameter_shop_score_2,
+                desc = R.string.desc_parameter_shop_score_2,
+                score = R.string.score_parameter_shop_score_2
             ),
             ItemParameterFaqUiModel(
-                title = context?.getResString(R.string.title_parameter_shop_score_3).orEmpty(),
-                desc = context?.getResString(R.string.desc_parameter_shop_score_3).orEmpty(),
-                score = context?.getResString(R.string.score_parameter_shop_score_3).orEmpty()
+                title = R.string.title_parameter_shop_score_3,
+                desc = R.string.desc_parameter_shop_score_3,
+                score = R.string.score_parameter_shop_score_3
             )
         )
     }
@@ -1226,21 +1158,15 @@ class ShopScoreMapper @Inject constructor(
         val (titleParameterRelief, descParameterRelief, descParameterReliefBottomSheet) =
             if (getSellerType(shopScoreLevelList) == SellerTypeConstants.REACTIVATED_SELLER) {
                 Triple(
-                    context?.getResString(R.string.title_relief_parameter_for_new_seller_bottom_sheet)
-                        .orEmpty(),
-                    context?.getResString(R.string.desc_relief_parameter_for_reactivated_seller)
-                        .orEmpty(),
-                    context?.getResString(R.string.desc_relief_parameter_for_reactivated_seller_bottom_sheet)
-                        .orEmpty()
+                    R.string.title_relief_parameter_for_new_seller_bottom_sheet,
+                    R.string.desc_relief_parameter_for_reactivated_seller,
+                    R.string.desc_relief_parameter_for_reactivated_seller_bottom_sheet
                 )
             } else {
                 Triple(
-                    context?.getResString(R.string.title_parameter_relief_new_seller).orEmpty(),
-                    context?.getResString(R.string.desc_new_seller_parameter_relief).orEmpty(),
-                    context?.getResString(
-                        R.string.desc_relief_parameter_for_new_seller_bottom_sheet,
-                        getProtectedParameterDaysDate(shopAge)
-                    ).orEmpty(),
+                    R.string.title_parameter_relief_new_seller,
+                    R.string.desc_new_seller_parameter_relief,
+                    R.string.desc_relief_parameter_for_new_seller_bottom_sheet
                 )
             }
 
@@ -1251,7 +1177,8 @@ class ShopScoreMapper @Inject constructor(
             ),
             titleParameterRelief = titleParameterRelief,
             descParameterRelief = descParameterRelief,
-            descParameterReliefBottomSheet = descParameterReliefBottomSheet
+            descParameterReliefBottomSheet = descParameterReliefBottomSheet,
+            protectedParameterDaysDate = getProtectedParameterDaysDate(shopAge)
         )
     }
 
