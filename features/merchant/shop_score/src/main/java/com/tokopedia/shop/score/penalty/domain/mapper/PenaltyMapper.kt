@@ -23,6 +23,7 @@ import com.tokopedia.shop.score.common.ShopScoreConstant.START
 import com.tokopedia.shop.score.common.ShopScoreConstant.START_ACTIVE_PENALTY_DETAIL
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_SORT
 import com.tokopedia.shop.score.common.ShopScoreConstant.TITLE_TYPE_PENALTY
+import com.tokopedia.shop.score.common.getResString
 import com.tokopedia.shop.score.penalty.domain.response.*
 import com.tokopedia.shop.score.penalty.presentation.model.*
 import javax.inject.Inject
@@ -271,13 +272,13 @@ class PenaltyMapper @Inject constructor(@ApplicationContext val context: Context
 
                 val descStatusPenaltyDetail = when (it.status) {
                     POINTS_NOT_YET_DEDUCTED -> {
-                        context?.getString(R.string.desc_point_have_not_been_deducted) ?: ""
+                        context?.getResString(R.string.desc_point_have_not_been_deducted) ?: ""
                     }
                     ON_GOING -> {
-                        context?.getString(R.string.desc_on_going_status_penalty) ?: ""
+                        context?.getResString(R.string.desc_on_going_status_penalty) ?: ""
                     }
                     PENALTY_DONE -> {
-                        context?.getString(R.string.desc_done_status_penalty) ?: ""
+                        context?.getResString(R.string.desc_done_status_penalty) ?: ""
                     }
                     else -> ""
                 }
