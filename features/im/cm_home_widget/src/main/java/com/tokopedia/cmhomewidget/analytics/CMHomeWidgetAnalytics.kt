@@ -28,50 +28,12 @@ class CMHomeWidgetAnalytics @Inject constructor(
             CMHomeWidgetAnalyticsConstants.Action.RECEIVED,
             getLabel(parentId, campaignId)
         )
-        map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
-        map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
-        map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
+        addStaticCommonData(map)
+        addDynamicCommonData(map, parentId, campaignId, notificationId, messageId)
         sendGeneralEvent(map)
     }
 
-    fun sendProductCardClickEvent(
-        parentId: Long,
-        campaignId: Long,
-        notificationId: Long,
-        messageId: String,
-        productId: Long,
-        productName: String?,
-        productPrice: String?,
-        shopId: Long?,
-        shopName: String?,
-    ) {
-        val map = TrackAppUtils.gtmData(
-            CMHomeWidgetAnalyticsConstants.Event.ADD_TO_CART,
-            CMHomeWidgetAnalyticsConstants.Category.HOME_TO_DO_WIDGET,
-            CMHomeWidgetAnalyticsConstants.Action.CLICK_CTA,
-            getLabel(parentId, campaignId)
-        )
-        map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
-        map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
-        map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
-        val itemsList = ArrayList<Map<String, Any>>()
-        val itemMap = HashMap<String, Any>()
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_ID] = productId
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_NAME] = productName.toString()
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.PRICE] = productPrice.toString()
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_ID] = shopId.toString()
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_NAME] = shopName.toString()
-        itemsList.add(itemMap)
-        map[CMHomeWidgetAnalyticsConstants.Key.ECOMMERCE] =
-            mapOf(CMHomeWidgetAnalyticsConstants.Key.ITEMS to itemsList)
-        sendEnhancedEcommerceEvent(map)
-    }
-
-    fun sendViewAllCardClickEvent(
+    fun sendCMHomeWidgetClickEvent(
         parentId: Long,
         campaignId: Long,
         notificationId: Long,
@@ -83,15 +45,19 @@ class CMHomeWidgetAnalytics @Inject constructor(
             CMHomeWidgetAnalyticsConstants.Action.CLICK_CTA,
             getLabel(parentId, campaignId)
         )
-        map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
-        map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
-        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
-        map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
+        addStaticCommonData(map)
+        addDynamicCommonData(map, parentId, campaignId, notificationId, messageId)
         sendGeneralEvent(map)
     }
 
-    private fun addCommonKeys(map: MutableMap<String, Any>) {
+    private fun getLabel(
+        parentID: Long,
+        campaignID: Long
+    ): String {
+        return "$parentID - $campaignID"
+    }
+
+    private fun addStaticCommonData(map: MutableMap<String, Any>) {
         map[CMHomeWidgetAnalyticsConstants.Key.BUSINESS_UNIT] =
             CMHomeWidgetAnalyticsConstants.BusinessUnit.VALUE_BUSINESS_UNIT
         map[CMHomeWidgetAnalyticsConstants.Key.CURRENT_SITE] =
@@ -102,21 +68,20 @@ class CMHomeWidgetAnalytics @Inject constructor(
             CMHomeWidgetAnalyticsConstants.IsSilent.FALSE
     }
 
-    private fun getLabel(
-        parentID: Long,
-        campaignID: Long
-    ): String {
-        return "$parentID - $campaignID"
+    private fun addDynamicCommonData(
+        map: MutableMap<String, Any>, parentId: Long,
+        campaignId: Long,
+        notificationId: Long,
+        messageId: String
+    ) {
+        map[CMHomeWidgetAnalyticsConstants.Key.PARENT_ID] = parentId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_ID] = campaignId
+        map[CMHomeWidgetAnalyticsConstants.Key.NOTIFICATION_ID] = notificationId
+        map[CMHomeWidgetAnalyticsConstants.Key.CAMPAIGN_CODE] = messageId
+        map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
     }
 
     private fun sendGeneralEvent(map: MutableMap<String, Any>) {
-        addCommonKeys(map)
-//        analyticTracker.sendGeneralEvent(map)
+        analyticTracker.sendGeneralEvent(map)
     }
-
-    private fun sendEnhancedEcommerceEvent(map: MutableMap<String, Any>) {
-        addCommonKeys(map)
-//        analyticTracker.sendEnhanceEcommerceEvent(map)
-    }
-
 }

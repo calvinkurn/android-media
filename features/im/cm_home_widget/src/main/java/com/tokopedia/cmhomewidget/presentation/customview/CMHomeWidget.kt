@@ -155,12 +155,12 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun onProductCardClick(dataItem: CMHomeWidgetProductCardData) {
-        sendProductCardClickEvent(dataItem)
+        sendCMHomeWidgetClickEvent()
         startRequiredActivity(dataItem.appLink)
     }
 
     override fun onBuyDirectBtnClick(dataItem: CMHomeWidgetProductCardData) {
-        sendProductCardClickEvent(dataItem)
+        sendCMHomeWidgetClickEvent()
         startRequiredActivity(dataItem.cmHomeWidgetActionButtons?.get(0)?.appLink)
     }
 
@@ -169,7 +169,7 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun onViewAllCardClick(dataItem: CMHomeWidgetViewAllCardData) {
-        sendViewAllCardClickEvent()
+        sendCMHomeWidgetClickEvent()
         startRequiredActivity(dataItem.appLink)
     }
 
@@ -182,30 +182,11 @@ class CMHomeWidget @JvmOverloads constructor(
         context.startActivity(intent)
     }
 
-    private fun sendProductCardClickEvent(dataItem: CMHomeWidgetProductCardData) {
+    private fun sendCMHomeWidgetClickEvent() {
         cmHomeWidgetData?.let {
             if (!it.isTest) {
                 cmHomeWidgetAnalytics.get()
-                    .sendProductCardClickEvent(
-                        it.parentId,
-                        it.campaignId,
-                        it.notificationId,
-                        it.messageId,
-                        dataItem.id,
-                        dataItem.name,
-                        dataItem.currentPrice,
-                        dataItem.cmHomeWidgetShop?.id,
-                        dataItem.cmHomeWidgetShop?.name
-                    )
-            }
-        }
-    }
-
-    private fun sendViewAllCardClickEvent() {
-        cmHomeWidgetData?.let {
-            if (!it.isTest) {
-                cmHomeWidgetAnalytics.get()
-                    .sendViewAllCardClickEvent(
+                    .sendCMHomeWidgetClickEvent(
                         it.parentId,
                         it.campaignId,
                         it.notificationId,

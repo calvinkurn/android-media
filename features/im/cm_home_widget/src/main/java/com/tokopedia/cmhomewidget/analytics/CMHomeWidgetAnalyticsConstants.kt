@@ -39,7 +39,6 @@ object CMHomeWidgetAnalyticsConstants {
         companion object {
             const val WIDGET_RECEIVED = "WidgetReceived"
             const val WIDGET_CLICKED = "WidgetClicked"
-            const val ADD_TO_CART = "add_to_cart"
         }
     }
 
