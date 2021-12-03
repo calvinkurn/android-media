@@ -24,48 +24,62 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonSeeSimilarProductWishlist)
 
         if (isShowCheckbox) {
-            binding.wishlistCheckbox.setOnCheckedChangeListener(null)
-            binding.wishlistCheckbox.visible()
-            binding.wishlistCheckbox.isChecked = item.isChecked
-            binding.wishlistCheckbox.setOnClickListener {
-                actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
-            }
-            buttonSecondary.gone()
-            rlPrimaryButton.gone()
-            binding.wishlistItem.setOnClickListener {
-                binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-                actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
-            }
-            binding.root.setOnClickListener {
-                binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
-                actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
-            }
+            renderBulkDelete(item, buttonSecondary, rlPrimaryButton)
 
         } else {
-            binding.wishlistCheckbox.gone()
-            buttonSecondary.visible()
-            rlPrimaryButton.visible()
-            binding.wishlistItem.setOnClickListener {
-                actionListener?.onProductItemClicked(item.wishlistItem, position)
-            }
+            renderRegularWishlist(item, buttonSecondary, rlPrimaryButton)
         }
 
         if (item.dataObject.hasAddToCartWishlist) {
-            buttonSeeSimilarProduct.gone()
-            buttonAtc.visible()
-            buttonAtc.setOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }
+            renderButtonPrimaryAtc(buttonAtc, buttonSeeSimilarProduct, item)
         } else {
-            buttonSeeSimilarProduct.setOnClickListener {
-                actionListener?.onCheckSimilarProduct(
-                        item.wishlistItem.buttons.primaryButton.url
-                )
-            }
+            renderButtonSeeSimilarProduct(buttonSeeSimilarProduct, item)
         }
 
-        buttonSecondary.setOnClickListener {
-            actionListener?.onThreeDotsMenuClicked(item.wishlistItem)
-        }
+        buttonSecondary.setOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
 
         actionListener?.onViewProductCard(item.wishlistItem, position)
+    }
+
+    private fun renderBulkDelete(item: WishlistV2TypeLayoutData, buttonSecondary: FrameLayout, rlPrimaryButton: RelativeLayout) {
+        binding.wishlistCheckbox.setOnCheckedChangeListener(null)
+        binding.wishlistCheckbox.visible()
+        binding.wishlistCheckbox.isChecked = item.isChecked
+        binding.wishlistCheckbox.setOnClickListener {
+            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+        }
+        buttonSecondary.gone()
+        rlPrimaryButton.gone()
+        binding.wishlistItem.setOnClickListener {
+            binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
+            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+        }
+        binding.root.setOnClickListener {
+            binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
+            actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+        }
+    }
+
+    private fun renderRegularWishlist(item: WishlistV2TypeLayoutData, buttonSecondary: FrameLayout, rlPrimaryButton: RelativeLayout) {
+        binding.wishlistCheckbox.gone()
+        buttonSecondary.visible()
+        rlPrimaryButton.visible()
+        binding.wishlistItem.setOnClickListener {
+            actionListener?.onProductItemClicked(item.wishlistItem, position)
+        }
+    }
+
+    private fun renderButtonPrimaryAtc(buttonAtc: UnifyButton, buttonSeeSimilarProduct: UnifyButton, item: WishlistV2TypeLayoutData) {
+        buttonSeeSimilarProduct.gone()
+        buttonAtc.visible()
+        buttonAtc.setOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }
+    }
+
+    private fun renderButtonSeeSimilarProduct(buttonSeeSimilarProduct: UnifyButton, item: WishlistV2TypeLayoutData) {
+        buttonSeeSimilarProduct.setOnClickListener {
+            actionListener?.onCheckSimilarProduct(
+                    item.wishlistItem.buttons.primaryButton.url
+            )
+        }
     }
 }

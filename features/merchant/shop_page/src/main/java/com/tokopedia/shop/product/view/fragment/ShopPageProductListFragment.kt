@@ -146,7 +146,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val KEY_SHOP_HOME_TYPE = "SHOP_HOME_TYPE"
         private const val KEY_IS_OFFICIAL = "IS_OFFICIAL"
         private const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
-        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         @JvmStatic
         fun createInstance(

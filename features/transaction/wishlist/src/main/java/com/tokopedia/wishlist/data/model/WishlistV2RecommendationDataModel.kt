@@ -1,8 +1,9 @@
 package com.tokopedia.wishlist.data.model
 
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.productcard.ProductCardModel
 
 data class WishlistV2RecommendationDataModel(
-    val recommendationData: List<RecommendationItem> = listOf(),
-    val title: String = ""
+        val recommendationData: List<ProductCardModel> = listOf(),
+        val listRecommendationId: List<Long> = listOf(),
+        val title: String = ""
 )

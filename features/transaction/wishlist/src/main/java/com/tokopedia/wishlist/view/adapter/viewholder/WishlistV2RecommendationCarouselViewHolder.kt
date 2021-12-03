@@ -3,7 +3,6 @@ package com.tokopedia.wishlist.view.adapter.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2RecommendationCarouselItemBinding
@@ -15,48 +14,17 @@ class WishlistV2RecommendationCarouselViewHolder(private val binding: WishlistV2
         fun bind(element: WishlistV2TypeLayoutData) {
             if (element.dataObject is WishlistV2RecommendationDataModel) {
                 val data = element.dataObject.recommendationData
+                val listRecommId = element.dataObject.listRecommendationId
                 binding.carousel.bindCarouselProductCardViewGrid(
-                    productCardModelList = convertIntoProductDataModel(data),
+                    productCardModelList = data,
                     carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
                         override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
-                            actionListener?.onProductRecommItemClicked(data.get(carouselProductCardPosition).productId.toString())
+                            if (listRecommId.isNotEmpty()) {
+                                actionListener?.onProductRecommItemClicked(listRecommId[carouselProductCardPosition].toString())
+                            }
                         }
                     },
                 )
             }
-
         }
-
-    private fun convertIntoProductDataModel(data: List<RecommendationItem>): List<ProductCardModel> {
-        return data.map { element ->
-            ProductCardModel(
-                slashedPrice = element.slashedPrice,
-                productName = element.name,
-                formattedPrice = element.price,
-                productImageUrl = element.imageUrl,
-                isTopAds = element.isTopAds,
-                discountPercentage = element.discountPercentage,
-                reviewCount = element.countReview,
-                ratingCount = element.rating,
-                shopLocation = element.location,
-                isWishlistVisible = true,
-                isWishlisted = element.isWishlist,
-                shopBadgeList = element.badgesUrl.map {
-                    ProductCardModel.ShopBadge(imageUrl = it ?: "")
-                },
-                freeOngkir = ProductCardModel.FreeOngkir(
-                    isActive = element.isFreeOngkirActive,
-                    imageUrl = element.freeOngkirImageUrl
-                ),
-                labelGroupList = element.labelGroupList.map { recommendationLabel ->
-                    ProductCardModel.LabelGroup(
-                        position = recommendationLabel.position,
-                        title = recommendationLabel.title,
-                        type = recommendationLabel.type,
-                        imageUrl = recommendationLabel.imageUrl
-                    )
-                }
-            )
-        }
-    }
 }

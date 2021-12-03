@@ -1263,7 +1263,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         private const val SEARCH_AUTOCOMPLETE_PAGE_SOURCE = "SEARCH_AUTOCOMPLETE_PAGE_SOURCE"
         private const val DEFAULT_SHOWCASE_ID = "0"
         private const val SHOP_SEARCH_PAGE_NAV_SOURCE = "shop"
-        private const val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
         @JvmStatic
         fun createInstance(shopId: String,
