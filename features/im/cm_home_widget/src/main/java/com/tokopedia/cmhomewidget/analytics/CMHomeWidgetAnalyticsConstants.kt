@@ -19,6 +19,7 @@ object CMHomeWidgetAnalyticsConstants {
             const val PRICE = "price"
             const val SHOP_ID = "shop_id"
             const val SHOP_NAME = "shop_name"
+            const val ECOMMERCE = "ecommerce"
         }
     }
 
@@ -38,6 +39,7 @@ object CMHomeWidgetAnalyticsConstants {
         companion object {
             const val WIDGET_RECEIVED = "WidgetReceived"
             const val WIDGET_CLICKED = "WidgetClicked"
+            const val ADD_TO_CART = "add_to_cart"
         }
     }
 
@@ -56,8 +58,8 @@ object CMHomeWidgetAnalyticsConstants {
 
     internal interface IsSilent {
         companion object {
-            const val TRUE = true
-            const val FALSE = false //default value
+            const val TRUE = "true"
+            const val FALSE = "false" //default value
         }
     }
 }

@@ -60,14 +60,14 @@ class CMHomeWidgetAnalytics @Inject constructor(
         map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
         val itemsList = ArrayList<Map<String, Any>>()
         val itemMap = HashMap<String, Any>()
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_ID] = productId ?: 0
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_NAME] = productName ?: ""
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.PRICE] = productPrice ?: ""
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_ID] = shopId ?: 0
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_NAME] = shopName ?: ""
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_ID] = productId.toString()
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_NAME] = productName.toString()
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.PRICE] = productPrice.toString()
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_ID] = shopId.toString()
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_NAME] = shopName.toString()
         itemsList.add(itemMap)
-        map[CMHomeWidgetAnalyticsConstants.Key.ITEMS] = itemsList
-        sendGeneralEvent(map)
+        map[CMHomeWidgetAnalyticsConstants.Key.ECOMMERCE] = mapOf(CMHomeWidgetAnalyticsConstants.Key.ITEMS to itemsList)
+        sendEnhancedEcommerceEvent(map)
     }
 
     fun sendViewAllCardClickEvent(
@@ -90,7 +90,7 @@ class CMHomeWidgetAnalytics @Inject constructor(
         sendGeneralEvent(map)
     }
 
-    private fun sendGeneralEvent(map: MutableMap<String, Any>) {
+    private fun addCommonKeys(map: MutableMap<String, Any>) {
         map[CMHomeWidgetAnalyticsConstants.Key.BUSINESS_UNIT] =
             CMHomeWidgetAnalyticsConstants.BusinessUnit.VALUE_BUSINESS_UNIT
         map[CMHomeWidgetAnalyticsConstants.Key.CURRENT_SITE] =
@@ -99,14 +99,23 @@ class CMHomeWidgetAnalytics @Inject constructor(
         // always false for now
         map[CMHomeWidgetAnalyticsConstants.Key.IS_SILENT] =
             CMHomeWidgetAnalyticsConstants.IsSilent.FALSE
-        analyticTracker.sendGeneralEvent(map)
     }
 
     private fun getLabel(
         parentID: Long,
         campaignID: Long
     ): String {
-        return "${parentID - campaignID}"
+        return "$parentID - $campaignID"
+    }
+
+    private fun sendGeneralEvent(map: MutableMap<String, Any>) {
+        addCommonKeys(map)
+//        analyticTracker.sendGeneralEvent(map)
+    }
+
+    private fun sendEnhancedEcommerceEvent(map: MutableMap<String, Any>) {
+        addCommonKeys(map)
+//        analyticTracker.sendEnhanceEcommerceEvent(map)
     }
 
 }
