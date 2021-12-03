@@ -40,7 +40,7 @@ class TippingValueAdapter(private var actionListener: ActionListener) : Recycler
             binding.chipsItem.apply {
                 chipText = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(tippingValue)
                 chipType = ChipsUnify.TYPE_NORMAL
-                chipSize = ChipsUnify.SIZE_MEDIUM
+                chipSize = ChipsUnify.SIZE_SMALL
                 setOnClickListener {
                     onClick()
                     chipType = ChipsUnify.TYPE_SELECTED

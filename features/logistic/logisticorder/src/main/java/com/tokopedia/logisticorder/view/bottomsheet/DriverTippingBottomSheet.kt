@@ -1,8 +1,10 @@
 package com.tokopedia.logisticorder.view.bottomsheet
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -57,6 +60,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
         setCloseClickListener {
             dismiss()
         }
+
+        clearContentPadding = true
+        isKeyboardOverlap = false
     }
 
     override fun onCreateView(
@@ -119,9 +125,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.btnTipping.text = getString(com.tokopedia.logisticorder.R.string.button_tipping_payment)
 
                 val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build()
+                        .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                        .setRowStrategy(ChipsLayoutManager.STRATEGY_FILL_SPACE)
+                        .setMaxViewsInRow(3)
+                        .build()
 
                 ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
                 tippingValueAdapter = TippingValueAdapter(this)
@@ -172,6 +179,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
                     chipsPayment.chip_image_icon.setImageUrl(logisticDriverModel.payment.methodIcon)
                     chipsPayment.chip_text.run {
+                        setTextSize(TypedValue.COMPLEX_UNIT_SP,16F)
                         text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
                         setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                     }
