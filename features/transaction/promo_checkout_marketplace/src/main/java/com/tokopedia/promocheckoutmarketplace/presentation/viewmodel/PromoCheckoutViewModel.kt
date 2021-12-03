@@ -38,12 +38,11 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class PromoCheckoutViewModel @Inject constructor(private val dispatcher: CoroutineDispatcher,
+class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                  private val getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase,
                                                  private val validateUseUseCase: ValidateUsePromoRevampUseCase,
                                                  private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                                  private val getPromoSuggestionUseCase: GetPromoSuggestionUseCase,
-                                                 private val graphqlRepository: GraphqlRepository,
                                                  private val uiModelMapper: PromoCheckoutUiModelMapper,
                                                  private val analytics: PromoCheckoutAnalytics)
     : BaseViewModel(dispatcher) {

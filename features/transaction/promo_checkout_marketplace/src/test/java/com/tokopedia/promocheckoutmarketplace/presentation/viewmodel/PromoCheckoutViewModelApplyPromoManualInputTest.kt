@@ -32,7 +32,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
-class PromoCheckoutViewModelApplyPromoManualInputTest {
+class PromoCheckoutViewModelApplyPromoManualInputTest: BasePromoCheckoutViewModelTest() {
 
     private lateinit var viewModel: PromoCheckoutViewModel
     private lateinit var dispatcher: CoroutineDispatcher

@@ -36,42 +36,20 @@ import org.junit.Rule
 import org.junit.Test
 import java.lang.reflect.Type
 
-class PromoCheckoutViewModelGetPromoListTest {
-
-    private lateinit var viewModel: PromoCheckoutViewModel
-    private lateinit var dispatcher: CoroutineDispatcher
-
-    private var graphqlRepository: GraphqlRepository = mockk(relaxed = true)
-    private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
-    private var analytics: PromoCheckoutAnalytics = mockk()
-    private var gson = Gson()
-    private var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
-
-    @get: Rule
-    var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @Before
-    fun setUp() {
-        dispatcher = Dispatchers.Unconfined
-        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, gson, chosenAddressRequestHelper)
-
-        every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
-        every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs
-
-        viewModel.initFragmentUiModel(PAGE_CART)
-    }
+class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() {
 
     @Test
     fun `WHEN get promo list and get complete expanded data THEN fragment ui model should not be null and state success`() {
         //given
-        val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val response = provideGetPromoListResponseSuccessAllExpanded()
 
-        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
 
         //when
-        viewModel.getPromoList("", PromoRequest(), "")
+        viewModel.getPromoList(PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.fragmentUiModel.value)

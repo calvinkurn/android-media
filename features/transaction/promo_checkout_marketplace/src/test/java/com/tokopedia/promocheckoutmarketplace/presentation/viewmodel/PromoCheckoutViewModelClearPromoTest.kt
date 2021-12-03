@@ -29,7 +29,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
-class PromoCheckoutViewModelClearPromoTest {
+class PromoCheckoutViewModelClearPromoTest : BasePromoCheckoutViewModelTest() {
 
     private lateinit var viewModel: PromoCheckoutViewModel
     private lateinit var dispatcher: CoroutineDispatcher

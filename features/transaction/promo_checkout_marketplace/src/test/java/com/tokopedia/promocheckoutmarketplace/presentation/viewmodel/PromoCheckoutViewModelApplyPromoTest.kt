@@ -44,7 +44,7 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.set
 
-class PromoCheckoutViewModelApplyPromoTest {
+class PromoCheckoutViewModelApplyPromoTest : BasePromoCheckoutViewModelTest() {
 
     private lateinit var viewModel: PromoCheckoutViewModel
     private lateinit var dispatcher: CoroutineDispatcher

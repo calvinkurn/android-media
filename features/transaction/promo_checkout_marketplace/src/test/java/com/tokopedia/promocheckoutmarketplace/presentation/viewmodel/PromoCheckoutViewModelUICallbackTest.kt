@@ -1,48 +1,14 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.viewmodel
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.promocheckoutmarketplace.GetPromoListDataProvider
-import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
-import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
-import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import io.mockk.*
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
-class PromoCheckoutViewModelUICallbackTest {
-
-    private lateinit var viewModel: PromoCheckoutViewModel
-    private lateinit var dispatcher: CoroutineDispatcher
-
-    private var graphqlRepository: GraphqlRepository = mockk(relaxed = true)
-    private var uiModelMapper: PromoCheckoutUiModelMapper = spyk()
-    private var analytics: PromoCheckoutAnalytics = mockk()
-    private var gson = Gson()
-    private var chosenAddressRequestHelper: ChosenAddressRequestHelper = mockk(relaxed = true)
-
-    @get: Rule
-    var instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
-
-    @Before
-    fun setUp() {
-        dispatcher = Dispatchers.Unconfined
-        viewModel = PromoCheckoutViewModel(dispatcher, graphqlRepository, uiModelMapper, analytics, gson, chosenAddressRequestHelper)
-
-        every { analytics.eventViewAvailablePromoListEligiblePromo(any(), any()) } just Runs
-        every { analytics.eventViewAvailablePromoListIneligibleProduct(any(), any()) } just Runs
-
-        viewModel.initFragmentUiModel(PAGE_CART)
-    }
+class PromoCheckoutViewModelUICallbackTest : BasePromoCheckoutViewModelTest() {
 
     @Test
     fun `WHEN has any promo selected THEN should return true`() {
