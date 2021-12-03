@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -294,7 +295,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun showListView(otpModeListData: OtpModeListData) {
         if(context != null) {
-            if(!ConnectivityUtils.isSilentVerificationPossible(requireContext()) || !isEnableSilentVerif()) {
+            if(!ConnectivityUtils.isSilentVerificationPossible(requireContext()) || !isEnableSilentVerif() || GlobalConfig.isSellerApp()) {
                 otpModeListData.modeList.removeAll { it.modeText == SILENT_VERIFICATION }
             }
         }
