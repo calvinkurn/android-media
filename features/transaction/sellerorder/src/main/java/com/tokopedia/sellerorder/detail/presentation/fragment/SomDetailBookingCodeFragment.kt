@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
@@ -73,6 +75,7 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun initLayout() {
+        setupHeader()
         binding?.barcodeLabel?.run {
             text = HtmlLinkHelper(context, getString(R.string.barcode_label_one)).spannedString
         }
@@ -86,6 +89,19 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         somBookingCodeMsgAdapter.listMessage.add(getString(R.string.online_booking_msg_2))
         somBookingCodeMsgAdapter.notifyDataSetChanged()
         generateBarcode(bookingCode, barcodeType)?.let { showBarcode(it) }
+    }
+
+    private fun setupHeader() {
+        (activity as? AppCompatActivity)?.run {
+            binding?.headerSomBookingCode?.let { header ->
+                supportActionBar?.hide()
+                setSupportActionBar(header)
+                header.navigationIcon = ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_som_booking_code_close
+                )
+            }
+        }
     }
 
     private fun initListeners() {
