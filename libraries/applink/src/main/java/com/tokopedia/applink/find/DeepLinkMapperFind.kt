@@ -1,18 +1,27 @@
 package com.tokopedia.applink.find
 
+import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import tokopedia.applink.R
 
 object DeepLinkMapperFind {
-    fun getRegisteredNavigationFindFromHttp(uri: Uri, deepLink: String): String {
+    fun getRegisteredNavigationFindFromHttp(context: Context, uri: Uri): String {
         val segments = uri.pathSegments
-        val searchKeyword = if (segments.size > 1) segments[1] else ""
-        val city = if (segments.indexOf("c") == 2) "-di-" + segments[segments.lastIndex] else ""
-        val query = searchKeyword + city
+        val indexOfFindSegment = segments.indexOf("find")
+        val searchSegments = segments.filterIndexed { index, _ ->
+            index > indexOfFindSegment
+        }
+        var query = ""
+        if (searchSegments.isNotEmpty()) {
+            val city = if (searchSegments.indexOf("c") == 1) "-di-" + searchSegments[searchSegments.lastIndex] else ""
+            query = searchSegments[0] + city
+        }
 
-        if (deepLink.startsWith(ApplinkConst.FIND) || deepLink.startsWith(ApplinkConst.AMP_FIND)) {
-            return ApplinkConst.FIND + "/" + query
+        if (segments.joinToString("/").startsWith(context.getString(R.string.host_find), false) ||
+                segments.joinToString("/").startsWith(context.getString(R.string.host_amp_find), false)) {
+            return getRegisteredFind(ApplinkConst.FIND + "/" + query)
         }
 
         return ""

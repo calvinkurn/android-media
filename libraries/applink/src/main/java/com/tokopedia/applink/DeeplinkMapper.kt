@@ -230,7 +230,7 @@ object DeeplinkMapper {
         }
 
         val applinkFind =
-                DeepLinkMapperFind.getRegisteredNavigationFindFromHttp(uri, deeplink)
+                DeepLinkMapperFind.getRegisteredNavigationFindFromHttp(context, uri)
         if (applinkFind.isNotEmpty()) {
             return applinkFind
         }
