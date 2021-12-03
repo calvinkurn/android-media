@@ -66,7 +66,7 @@ data class FreeShipping(
 
         @SerializedName("shipping_price")
         @Expose
-        val shipping_price: String = "",
+        val shippingPrice: String = "",
 
         @SerializedName("eta_text")
         @Expose

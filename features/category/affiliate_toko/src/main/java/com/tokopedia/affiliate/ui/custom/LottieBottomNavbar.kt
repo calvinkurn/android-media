@@ -433,6 +433,13 @@ class LottieBottomNavbar : LinearLayout {
         }
     }
 
+    fun selectBottomTab(position: Int) {
+        if (menu.size > position) {
+            changeColor(position)
+            selectedItem = position
+        }
+    }
+
     fun setMenu(menu: List<BottomMenu>, isThreeItemBottomNav:Boolean = false) {
         this.menu.clear()
         this.menu.addAll(menu)

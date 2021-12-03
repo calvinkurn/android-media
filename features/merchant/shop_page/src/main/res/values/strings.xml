@@ -59,7 +59,6 @@
     <string name="shop_info_title_tab_showcase">Etalase</string>
     <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
-    <string name="shop_info_title_tab_review">Review</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
     <string name="shop_info_title_tab_feed">Feed</string>
 
@@ -262,13 +261,6 @@
     <string name="follow_button_label">Follow</string>
     <string name="follow_button_label_npl">Follow Toko</string>
 
-    <!-- Shop Operational Hour -->
-    <string name="shop_ops_hour_bottomsheet_title">Jam Operasional</string>
-    <string name="shop_ops_hour_bottomsheet_description">Pesanan yang lewat dari jam operasional akan diproses saat toko beroperasi kembali.</string>
-    <string name="shop_ops_hour_datetime_format_text">Jam %1$s - %2$s WIB</string>
-    <string name="shop_ops_hour_datetime_format_24_hours_text">Buka 24 Jam</string>
-    <string name="shop_ops_hour_datetime_format_holiday_text">Libur</string>
-
     <!-- shop share -->
     <string name="shop_page_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="shop_page_share_copy_link">Copy Link</string>
@@ -301,4 +293,14 @@
     <string name="shop_page_showcase_all_text">Semua Etalase</string>
     <string name="shop_page_showcase_featured_product_count_text">%1$s Produk</string>
 
+    <!-- flash sale -->
+    <string name="shop_page_label_flash_sale_toko">Flash Sale Toko</string>
+    <string name="shop_page_label_flash_sale">Flash Sale</string>
+    <string name="shop_page_label_see_all">Lihat Semua</string>
+    <string name="shop_page_label_started_in">Dimulai dalam</string>
+    <string name="shop_page_label_ends_in">Berakhir dalam</string>
+    <string name="shop_page_label_remind_me">Ingatkan</string>
+    <string name="shop_page_label_thousand">rb</string>
+    <string name="shop_page_label_million">jt</string>
+    <string name="shop_page_label_oke">Oke</string>
 </resources>

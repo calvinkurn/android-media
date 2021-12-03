@@ -46,94 +46,173 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
             separator.visibility = View.VISIBLE
         }
 
-        if (shippingCourierAdapterListener?.isToogleYearEndPromotionOn() == true &&
-                !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)) {
-            tvPromoPotency.visibility = View.VISIBLE
-        } else {
-            tvPromoPotency.visibility = View.GONE
-        }
-
-        if (shippingCourierUiModel.productData.codProductData != null) {
-            /*cod label*/
-            codLabel.text = shippingCourierUiModel.productData.codProductData.codText
-            codLabel.visibility = if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
-        }
-
-        if (shippingCourierUiModel.productData.features != null &&
-                shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
-            val otd = shippingCourierUiModel
-                    .productData.features.ontimeDeliveryGuarantee
-            otdLabel.visibility = if (otd.available) View.VISIBLE else View.GONE
-        }
-
-        if (shippingCourierUiModel.productData.features.dynamicPriceData == null ||
-                shippingCourierUiModel.productData.features.dynamicPriceData.textLabel.isEmpty()) {
-            dynamicPriceLabel.visibility = View.GONE
-        } else {
-            dynamicPriceLabel.visibility = View.VISIBLE
-            dynamicPriceLabel.text = shippingCourierUiModel.productData.features.dynamicPriceData.textLabel
-        }
-
-        if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null && shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == 1) {
-            layoutMvc.visibility = View.VISIBLE
-            flDisableContainer.foreground = ContextCompat.getDrawable(flDisableContainer.context, R.drawable.fg_enabled_item)
-            ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo)
-            tvMvc.setText(R.string.tv_mvc_text)
-            tvMvcError.visibility = View.GONE
-        } else if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null && shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == -1) {
-            layoutMvc.visibility = View.VISIBLE
-            flDisableContainer.foreground = ContextCompat.getDrawable(flDisableContainer.context, R.drawable.fg_disabled_item)
-            ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo)
-            tvMvc.setText(R.string.tv_mvc_text)
-            tvMvcError.visibility = View.VISIBLE
-            tvMvcError.text = shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcErrorMessage
-        } else {
-            layoutMvc.visibility = View.GONE
-            tvMvcError.visibility = View.GONE
-        }
-
-        setTextAndContentDescription(tvCourier, shippingCourierUiModel.productData.shipperName, tvCourier.context.getString(R.string.content_desc_tv_courier))
-
-        if (shippingCourierUiModel.productData.error != null &&
-                shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()) {
-            setTextAndContentDescription(tvCourier, shippingCourierUiModel.productData.shipperName, tvCourier.context.getString(R.string.content_desc_tv_courier))
-            if (shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                tvPriceOrDuration.text = shippingCourierUiModel.productData.error.errorMessage
-                tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-                itemView.setOnClickListener { shippingCourierAdapterListener?.onCourierChoosen(shippingCourierUiModel, cartPosition, true) }
+        if (!shippingCourierUiModel.productData.isUiRatesHidden) {
+            if (shippingCourierAdapterListener?.isToogleYearEndPromotionOn() == true &&
+                !TextUtils.isEmpty(shippingCourierUiModel.productData.promoCode)
+            ) {
+                tvPromoPotency.visibility = View.VISIBLE
             } else {
-                tvPriceOrDuration.text = shippingCourierUiModel.productData.error.errorMessage
-                tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.context, com.tokopedia.unifyprinciples.R.color.Unify_R600))
-                tvCourier.setTextColor(ContextCompat.getColor(tvCourier.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
-                itemView.setOnClickListener(null)
+                tvPromoPotency.visibility = View.GONE
             }
-        } else {
-            /*ETA*/
-            if (shippingCourierUiModel.productData.estimatedTimeArrival != null && shippingCourierUiModel.productData.estimatedTimeArrival.errorCode == 0) {
-                if (shippingCourierUiModel.productData.estimatedTimeArrival.textEta.isNotEmpty()) {
-                    tvPriceOrDuration.text = shippingCourierUiModel.productData.estimatedTimeArrival.textEta
-                } else {
-                    tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia)
-                }
-                val shipperNameEta = shippingCourierUiModel.productData.shipperName + " " + "(" + shippingCourierUiModel.productData.price.formattedPrice + ")"
-                setTextAndContentDescription(tvCourier, shipperNameEta, tvCourier.context.getString(R.string.content_desc_tv_courier))
-                codLabel.visibility = View.GONE
-                codLabelEta.text = shippingCourierUiModel.productData.codProductData.codText
-                codLabelEta.visibility = if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
-            } else {
-                setTextAndContentDescription(tvCourier, shippingCourierUiModel.productData.shipperName, tvCourier.context.getString(R.string.content_desc_tv_courier))
-                tvPriceOrDuration.text = shippingCourierUiModel.productData.price.formattedPrice
-                codLabelEta.visibility = View.GONE
+
+            if (shippingCourierUiModel.productData.codProductData != null) {
+                /*cod label*/
                 codLabel.text = shippingCourierUiModel.productData.codProductData.codText
-                codLabel.visibility = if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
+                codLabel.visibility =
+                    if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
             }
-            tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
-            tvCourier.setTextColor(ContextCompat.getColor(tvCourier.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
-            itemView.setOnClickListener {
-                shippingCourierAdapterListener?.onCourierChoosen(
-                        shippingCourierUiModel, cartPosition, false)
+
+            if (shippingCourierUiModel.productData.features != null &&
+                shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null
+            ) {
+                val otd = shippingCourierUiModel
+                    .productData.features.ontimeDeliveryGuarantee
+                otdLabel.visibility = if (otd.available) View.VISIBLE else View.GONE
             }
+
+            if (shippingCourierUiModel.productData.features.dynamicPriceData == null ||
+                shippingCourierUiModel.productData.features.dynamicPriceData.textLabel.isEmpty()
+            ) {
+                dynamicPriceLabel.visibility = View.GONE
+            } else {
+                dynamicPriceLabel.visibility = View.VISIBLE
+                dynamicPriceLabel.text =
+                    shippingCourierUiModel.productData.features.dynamicPriceData.textLabel
+            }
+
+            if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null && shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == 1) {
+                layoutMvc.visibility = View.VISIBLE
+                flDisableContainer.foreground = ContextCompat.getDrawable(
+                    flDisableContainer.context,
+                    R.drawable.fg_enabled_item
+                )
+                ImageHandler.LoadImage(
+                    imgMvc,
+                    shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo
+                )
+                tvMvc.setText(R.string.tv_mvc_text)
+                tvMvcError.visibility = View.GONE
+            } else if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null && shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == -1) {
+                layoutMvc.visibility = View.VISIBLE
+                flDisableContainer.foreground = ContextCompat.getDrawable(
+                    flDisableContainer.context,
+                    R.drawable.fg_disabled_item
+                )
+                ImageHandler.LoadImage(
+                    imgMvc,
+                    shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo
+                )
+                tvMvc.setText(R.string.tv_mvc_text)
+                tvMvcError.visibility = View.VISIBLE
+                tvMvcError.text =
+                    shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcErrorMessage
+            } else {
+                layoutMvc.visibility = View.GONE
+                tvMvcError.visibility = View.GONE
+            }
+
+            setTextAndContentDescription(
+                tvCourier,
+                shippingCourierUiModel.productData.shipperName,
+                tvCourier.context.getString(R.string.content_desc_tv_courier)
+            )
+
+            if (shippingCourierUiModel.productData.error != null &&
+                shippingCourierUiModel.productData.error.errorMessage.isNotEmpty()
+            ) {
+                setTextAndContentDescription(
+                    tvCourier,
+                    shippingCourierUiModel.productData.shipperName,
+                    tvCourier.context.getString(R.string.content_desc_tv_courier)
+                )
+                if (shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                    tvPriceOrDuration.text = shippingCourierUiModel.productData.error.errorMessage
+                    tvPriceOrDuration.setTextColor(
+                        ContextCompat.getColor(
+                            tvCourier.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                        )
+                    )
+                    tvCourier.setTextColor(
+                        ContextCompat.getColor(
+                            tvCourier.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                        )
+                    )
+                    itemView.setOnClickListener {
+                        shippingCourierAdapterListener?.onCourierChoosen(
+                            shippingCourierUiModel,
+                            cartPosition,
+                            true
+                        )
+                    }
+                } else {
+                    tvPriceOrDuration.text = shippingCourierUiModel.productData.error.errorMessage
+                    tvPriceOrDuration.setTextColor(
+                        ContextCompat.getColor(
+                            tvCourier.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_R600
+                        )
+                    )
+                    tvCourier.setTextColor(
+                        ContextCompat.getColor(
+                            tvCourier.context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_N700_44
+                        )
+                    )
+                    itemView.setOnClickListener(null)
+                }
+            } else {
+                /*ETA*/
+                if (shippingCourierUiModel.productData.estimatedTimeArrival != null && shippingCourierUiModel.productData.estimatedTimeArrival.errorCode == 0) {
+                    if (shippingCourierUiModel.productData.estimatedTimeArrival.textEta.isNotEmpty()) {
+                        tvPriceOrDuration.text =
+                            shippingCourierUiModel.productData.estimatedTimeArrival.textEta
+                    } else {
+                        tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia)
+                    }
+                    val shipperNameEta =
+                        shippingCourierUiModel.productData.shipperName + " " + "(" + shippingCourierUiModel.productData.price.formattedPrice + ")"
+                    setTextAndContentDescription(
+                        tvCourier,
+                        shipperNameEta,
+                        tvCourier.context.getString(R.string.content_desc_tv_courier)
+                    )
+                    codLabel.visibility = View.GONE
+                    codLabelEta.text = shippingCourierUiModel.productData.codProductData.codText
+                    codLabelEta.visibility =
+                        if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
+                } else {
+                    setTextAndContentDescription(
+                        tvCourier,
+                        shippingCourierUiModel.productData.shipperName,
+                        tvCourier.context.getString(R.string.content_desc_tv_courier)
+                    )
+                    tvPriceOrDuration.text = shippingCourierUiModel.productData.price.formattedPrice
+                    codLabelEta.visibility = View.GONE
+                    codLabel.text = shippingCourierUiModel.productData.codProductData.codText
+                    codLabel.visibility =
+                        if (shippingCourierUiModel.productData.codProductData.isCodAvailable == COD_ENABLE_VALUE) View.VISIBLE else View.GONE
+                }
+                tvPriceOrDuration.setTextColor(
+                    ContextCompat.getColor(
+                        tvCourier.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                    )
+                )
+                tvCourier.setTextColor(
+                    ContextCompat.getColor(
+                        tvCourier.context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+                    )
+                )
+                itemView.setOnClickListener {
+                    shippingCourierAdapterListener?.onCourierChoosen(
+                        shippingCourierUiModel, cartPosition, false
+                    )
+                }
+            }
+
         }
 
         imgCheck.visibility = if (shippingCourierUiModel.isSelected) View.VISIBLE else View.GONE

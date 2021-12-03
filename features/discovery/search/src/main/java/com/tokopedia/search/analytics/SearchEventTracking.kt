@@ -46,7 +46,6 @@ interface SearchEventTracking {
             const val REMOVE_WISHLIST = "remove wishlist"
             const val CLICK_CART_BUTTON_SEARCH_RESULT = "click cart button - search result"
             const val CLICK_HOME_BUTTON_SEARCH_RESULT = "click home button - search result"
-            const val CLICK_SEARCH_BOX = "click search box"
             const val MODULE = "module"
             const val LOGIN = "login"
             const val NON_LOGIN = "nonlogin"

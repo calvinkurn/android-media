@@ -381,4 +381,8 @@
 
     <string name="title_image_picker_insta_df">Media Picker</string>
     <string name="title_feed_create_post">Create Post</string>
+    <string name="swd_activity_withdraw">Penarikan Saldo</string>
+    <string name="swd_activity_auto_withdraw_settings">Pengaturan Saldo</string>
+    <string name="gallery_top_bar_title">Foto dari Pembeli</string>
+    <string name="cu_surey_layana">Survey Layana</string>
 </resources>

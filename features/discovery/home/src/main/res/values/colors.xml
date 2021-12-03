@@ -1,49 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black_70">@color/Unify_N700_68</color>
-    <color name="tab_indicator_beli">@color/Unify_G500</color>
-    <color name="tab_indicator_bayar">@color/Unify_Y300</color>
-    <color name="tab_indicator_pesan">@color/Unify_Y500</color>
-    <color name="tab_indicator_ajukan">@color/Unify_T400</color>
-    <color name="tab_indicator_jual">@color/Unify_G500</color>
-    <color name="tab_text_unselected">@color/Unify_N700_44</color>
-    <color name="green_80">@color/Unify_G600</color>
     <color name="grey_hint">@color/Unify_N100</color>
     <color name="medium_green">@color/Unify_G500</color>
     <color name="black_54">@color/Unify_N700_44</color>
     <color name="tkpd_dark_gray">@color/Unify_N200</color>
-    <color name="fab_background_tint">@color/Unify_N50</color>
     <color name="orange_red">@color/Unify_Y500</color>
     <color name="countdown_background">@color/Unify_Y500</color>
-    <color name="home_ticker_background">@color/Unify_Y100</color>
-    <color name="home_ticker_text_color">@color/Unify_N700_68</color>
-    <color name="home_ticker_info_lengkap_color">@color/Unify_G500</color>
-    <color name="home_banner_lihat_semua_color">@color/Unify_G500</color>
-    <color name="label_yellow">@color/Unify_Y400</color>
-    <color name="label_pink">@color/Unify_R500</color>
-    <color name="label_green">@color/Unify_G500</color>
-    <color name="label_blue">@color/Unify_B500</color>
-    <color name="label_grey">@color/Unify_N200</color>
-    <color name="bg_label_yellow">@color/Unify_Y100</color>
-    <color name="bg_label_pink">@color/Unify_R100</color>
-    <color name="bg_label_green">@color/Unify_G100</color>
-    <color name="bg_label_blue">@color/Unify_B200</color>
-    <color name="bg_label_grey">@color/Unify_N50</color>
-    <color name="font_title_bu_widget">@color/Unify_N700_96</color>
-    <color name="font_subtitle_bu_widget">@color/Unify_N700_68</color>
-    <color name="shadow_6">@color/Unify_N400_32</color>
-    <color name="sticky_bg_color">@color/Unify_G100_96</color>
     <color name="grey_hint_full">@color/Unify_N100</color>
 
     <color name="home_beauty_fest_light_dms">#FF70A6</color>
     <color name="home_beauty_fest_dark_dms">#D74B83</color>
-    <color name="home_hpb_indicator_active">@color/Unify_N0</color>
-    <color name="home_hpb_indicator_inactive">@color/Unify_N0</color>
 
     <color name="home_dms_gradient_action_play">#00000000</color>
     <color name="home_dms_color_pending_tokocash">#B3000000</color>
     <color name="home_dms_color_pending_tokocash_disabled">#61000000</color>
     <color name="home_dms_color_banner_label_type">#31353b</color>
-    <color name="home_dms_gradient_category_top">#00000000</color>
-    <color name="home_dms_gradient_category_bottom">#80000000</color>
 </resources>
