@@ -13,6 +13,14 @@ import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetReminder
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirProduct
@@ -49,6 +57,8 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1609,6 +1619,241 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         Assert.assertTrue(viewModel.atcRecomTokonow.value is Fail)
+    }
+
+    @Test
+    fun `get play widget data success`(){
+        val productIds = emptyList<String>()
+        val categoryIds = emptyList<String>()
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(productIds, categoryIds)
+
+        val expectedResponse = PlayWidget()
+        val expectedUiModel = PlayWidgetUiModel.Medium(
+            "title",
+            "action title",
+            "applink",
+            true,
+            PlayWidgetConfigUiModel(
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
+            ),
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+            listOf()
+        )
+
+
+        coEvery { playWidgetTools.getWidgetFromNetwork(
+            widgetType = widgetType
+        ) } returns expectedResponse
+
+        coEvery { playWidgetTools.mapWidgetToModel(
+            expectedResponse
+        ) } returns expectedUiModel
+
+        viewModel.getPlayWidgetData(productIds, categoryIds)
+
+        viewModel.playWidgetModel.verifySuccessEquals(Success(expectedUiModel))
+    }
+
+    @Test
+    fun `get play widget data error cause by get widget from network`(){
+        val productIds = emptyList<String>()
+        val categoryIds = emptyList<String>()
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(productIds, categoryIds)
+
+        val expectedThrowable = Throwable()
+
+        coEvery {
+            playWidgetTools.getWidgetFromNetwork(widgetType)
+        } throws expectedThrowable
+
+        viewModel.getPlayWidgetData(productIds, categoryIds)
+
+        viewModel.playWidgetModel.verifyErrorEquals(Fail(expectedThrowable))
+    }
+
+    @Test
+    fun `get play widget data error cause by map widget to model`(){
+        val productIds = emptyList<String>()
+        val categoryIds = emptyList<String>()
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(productIds, categoryIds)
+
+        val expectedResponse = PlayWidget()
+        val expectedThrowable = Throwable()
+
+        coEvery { playWidgetTools.getWidgetFromNetwork(
+            widgetType = widgetType
+        ) } returns expectedResponse
+
+        coEvery { playWidgetTools.mapWidgetToModel(
+            expectedResponse
+        ) } throws expectedThrowable
+
+        viewModel.getPlayWidgetData(productIds, categoryIds)
+
+        viewModel.playWidgetModel.verifyErrorEquals(Fail(expectedThrowable))
+    }
+
+    @Test
+    fun `play widget toggle reminder success`(){
+
+        val fakeUiModel = PlayWidgetUiModel.Medium(
+            "title",
+            "action title",
+            "applink",
+            true,
+            PlayWidgetConfigUiModel(
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
+            ),
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+            listOf()
+        )
+        val fakeChannelId = "123"
+        val fakeReminderType = PlayWidgetReminderType.Reminded
+
+        val expectedReminder = PlayWidgetReminder()
+        val expectedMapReminder = true
+
+        coEvery {
+            playWidgetTools.updateActionReminder(
+                fakeUiModel, fakeChannelId, fakeReminderType
+            )
+        } returns fakeUiModel
+
+        coEvery {
+            playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
+        } returns expectedReminder
+
+        coEvery {
+            playWidgetTools.mapWidgetToggleReminder(expectedReminder)
+        } returns expectedMapReminder
+
+        viewModel.updatePlayWidgetToggleReminder(
+            fakeUiModel,
+            fakeChannelId,
+            fakeReminderType
+        )
+
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetReminderSwitch.verifySuccessEquals(Success(fakeReminderType))
+    }
+
+    @Test
+    fun `play widget toggle reminder fail cause by map reminder return false`(){
+
+        val fakeUiModel = PlayWidgetUiModel.Medium(
+            "title",
+            "action title",
+            "applink",
+            true,
+            PlayWidgetConfigUiModel(
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
+            ),
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+            listOf()
+        )
+        val fakeChannelId = "123"
+        val fakeReminderType = PlayWidgetReminderType.Reminded
+
+        val expectedReminder = PlayWidgetReminder()
+        val expectedMapReminder = false
+
+        coEvery {
+            playWidgetTools.updateActionReminder(
+                fakeUiModel, fakeChannelId, fakeReminderType
+            )
+        } returns fakeUiModel
+
+        coEvery {
+            playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
+        } returns expectedReminder
+
+        coEvery {
+            playWidgetTools.mapWidgetToggleReminder(expectedReminder)
+        } returns expectedMapReminder
+
+        coEvery {
+            playWidgetTools.updateActionReminder(
+                fakeUiModel, fakeChannelId, fakeReminderType.switch()
+            )
+        } returns fakeUiModel
+
+        viewModel.updatePlayWidgetToggleReminder(
+            fakeUiModel,
+            fakeChannelId,
+            fakeReminderType
+        )
+
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(Throwable()))
+    }
+
+    @Test
+    fun `play widget toggle reminder fail cause by exception`(){
+
+        val fakeUiModel = PlayWidgetUiModel.Medium(
+            "title",
+            "action title",
+            "applink",
+            true,
+            PlayWidgetConfigUiModel(
+                true,
+                1000,
+                true,
+                1,
+                1,
+                2,
+                1
+            ),
+            PlayWidgetBackgroundUiModel("", "", "", listOf(), ""),
+            listOf()
+        )
+        val fakeChannelId = "123"
+        val fakeReminderType = PlayWidgetReminderType.Reminded
+
+        val expectedThrowable = Throwable()
+
+        coEvery {
+            playWidgetTools.updateActionReminder(
+                fakeUiModel, fakeChannelId, fakeReminderType
+            )
+        } returns fakeUiModel
+
+        coEvery {
+            playWidgetTools.updateToggleReminder(fakeChannelId, fakeReminderType)
+        } throws expectedThrowable
+
+        coEvery {
+            playWidgetTools.updateActionReminder(
+                fakeUiModel, fakeChannelId, fakeReminderType.switch()
+            )
+        } returns fakeUiModel
+
+        viewModel.updatePlayWidgetToggleReminder(
+            fakeUiModel,
+            fakeChannelId,
+            fakeReminderType
+        )
+
+        viewModel.playWidgetModel.verifySuccessEquals(Success(fakeUiModel))
+        viewModel.playWidgetReminderSwitch.verifyErrorEquals(Fail(expectedThrowable))
     }
 
 

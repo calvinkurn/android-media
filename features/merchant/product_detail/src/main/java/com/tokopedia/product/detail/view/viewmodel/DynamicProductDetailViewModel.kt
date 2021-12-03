@@ -1170,10 +1170,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
                 productIds, categoryIds
             )
-            val response = playWidgetTools.getWidgetFromNetwork(
-                widgetType = widgetType,
-                coroutineContext = dispatcher.io
-            )
+            val response = playWidgetTools.getWidgetFromNetwork(widgetType)
             val uiModel = playWidgetTools.mapWidgetToModel(response)
             _playWidgetModel.value = Success(uiModel)
         }, onError = {
@@ -1186,18 +1183,13 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         channelId: String,
         reminderType: PlayWidgetReminderType
     ) {
-
-        val updatedUi = playWidgetTools.updateActionReminder(
-            playWidgetUiModel, channelId, reminderType
-        )
-        _playWidgetModel.value = Success(updatedUi)
-
         launchCatchError(block = {
-            val response = playWidgetTools.updateToggleReminder(
-                channelId,
-                reminderType,
-                dispatcher.io
+            val updatedUi = playWidgetTools.updateActionReminder(
+                playWidgetUiModel, channelId, reminderType
             )
+            _playWidgetModel.value = Success(updatedUi)
+
+            val response = playWidgetTools.updateToggleReminder(channelId, reminderType)
             if (playWidgetTools.mapWidgetToggleReminder(response)) {
                 _playWidgetReminderSwitch.value = Success(reminderType)
             } else {
