@@ -1698,7 +1698,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     @SuppressLint("AnnotateVersionCheck")
     private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
         try {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
                 callback()
             } else {
                 Handler(Looper.getMainLooper()).post {
