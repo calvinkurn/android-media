@@ -45,7 +45,6 @@ class TravelCalendarBottomSheet : BottomSheets(), TravelCalendarContract.View {
     }
 
     private fun initInjector() {
-        GraphqlClient.init(activity!!)
         val travelCalendarComponent = TravelCalendarComponentInstance
                 .getComponent(activity!!.application)
         travelCalendarComponent.inject(this)

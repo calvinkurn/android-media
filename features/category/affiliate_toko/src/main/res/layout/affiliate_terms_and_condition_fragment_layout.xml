@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/affiliate_terms_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_is_show_shadow="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_title="@string/daftar_affiliate"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_terms_toolbar"
+        android:background="@color/Unify_G500"
+        />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:enabled="false"
+        android:id="@+id/terms_accept_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/affiliate_accept_terms"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unifyButtonSize="medium" />
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/checkbox_terms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/affiliate_read_and_agree"
+        android:layout_marginBottom="@dimen/dp_34"
+        app:layout_constraintBottom_toTopOf="@+id/terms_accept_btn"
+        app:layout_constraintStart_toStartOf="@+id/terms_accept_btn" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        app:typographyType="heading_5"
+        android:layout_marginStart="32dp"
+        android:textColor="@color/Unify_G500"
+        android:text="@string/terms_and_condition_upper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/checkbox_terms"
+        app:layout_constraintTop_toBottomOf="@+id/checkbox_terms" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/terms_condition_rv"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toTopOf="@+id/checkbox_terms"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/affiliate_terms_toolbar" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/affiliate_progress_bar"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_type="circular" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
