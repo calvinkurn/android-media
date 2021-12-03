@@ -61,7 +61,7 @@
                 },
                 {
                   "id": 2,
-                  "count": 1
+                  "count": 2
                 },
                 {
                   "id": 3,
@@ -476,7 +476,7 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
+                  "is_highlighted": false,
                   "group_id": 1,
                   "is_group_header": false,
                   "promo_infos": [
@@ -510,7 +510,11 @@
               "coupon_groups": [
                 {
                   "id": 1,
-                  "count": 2
+                  "count": 1
+                },
+                {
+                  "id": 2,
+                  "count": 1
                 }
               ],
               "coupons": [
@@ -554,7 +558,7 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
+                  "is_highlighted": false,
                   "group_id": 1,
                   "is_group_header": true,
                   "promo_infos": [
@@ -615,9 +619,9 @@
                     "title": "",
                     "content": ""
                   },
-                  "is_highlighted": true,
-                  "group_id": 1,
-                  "is_group_header": false,
+                  "is_highlighted": false,
+                  "group_id": 2,
+                  "is_group_header": true,
                   "promo_infos": [
                     {
                       "type": "coupon_info",

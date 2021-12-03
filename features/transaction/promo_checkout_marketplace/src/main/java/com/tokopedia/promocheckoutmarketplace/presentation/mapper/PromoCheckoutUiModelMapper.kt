@@ -147,9 +147,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     }
                     errorMessage = if (tmpErrorMessage.isNotBlank()) tmpErrorMessage.toString() else ""
                     promoInfos = couponItem.promoInfos
-                    remainingPromoCount = couponSubSection.coupons.filter {
-                        it.groupId == couponItem.groupId
-                    }.size
+                    remainingPromoCount = couponSubSection.couponGroups.filter {
+                        it.id == couponItem.groupId
+                    }.firstOrNull()?.count ?: 0
                     tabId = if (couponSubSection.isEnabled) {
                         couponSubSection.id
                     } else {
