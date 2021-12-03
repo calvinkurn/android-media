@@ -40,15 +40,18 @@ object FeatureRecommendationMapper {
         if (engineData.featureEngineItem.isNullOrEmpty())
             return null
 
+        // For gyro section header will be equivalent to title of first element
         getGyroRecommendationItemList(engineData.featureEngineItem).also {
-            val firstGyroItem = (it.getOrNull(0) as GyroRecommendationListItem)
-            return GyroRecommendation(
-                firstGyroItem.sectionTitle ?: "",
-                firstGyroItem.sectionDescription ?: "",
-                it
-            )
+            val firstGyroItem = (it.getOrNull(0) as GyroRecommendationListItem?)
+            firstGyroItem?.let { gyroItem ->
+                return GyroRecommendation(
+                    gyroItem.sectionTitle ?: "",
+                    gyroItem.sectionDescription ?: "",
+                    it
+                )
+            }
         }
-
+        return null
     }
 
     private fun getGyroRecommendationItemList(featureEngineItems: ArrayList<FeatureEngineItem>): ArrayList<Visitable<*>> {
