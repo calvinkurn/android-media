@@ -191,7 +191,7 @@ class CMHomeWidget @JvmOverloads constructor(
                         it.campaignId,
                         it.notificationId,
                         it.messageId,
-                        null,
+                        dataItem.id,
                         dataItem.name,
                         dataItem.currentPrice,
                         dataItem.cmHomeWidgetShop?.id,

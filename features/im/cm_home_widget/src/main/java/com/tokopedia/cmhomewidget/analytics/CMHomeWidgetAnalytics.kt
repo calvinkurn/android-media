@@ -41,14 +41,14 @@ class CMHomeWidgetAnalytics @Inject constructor(
         campaignId: Long,
         notificationId: Long,
         messageId: String,
-        productId: Long?,
+        productId: Long,
         productName: String?,
         productPrice: String?,
         shopId: Long?,
         shopName: String?,
     ) {
         val map = TrackAppUtils.gtmData(
-            CMHomeWidgetAnalyticsConstants.Event.WIDGET_CLICKED,
+            CMHomeWidgetAnalyticsConstants.Event.ADD_TO_CART,
             CMHomeWidgetAnalyticsConstants.Category.HOME_TO_DO_WIDGET,
             CMHomeWidgetAnalyticsConstants.Action.CLICK_CTA,
             getLabel(parentId, campaignId)
@@ -60,13 +60,14 @@ class CMHomeWidgetAnalytics @Inject constructor(
         map[CMHomeWidgetAnalyticsConstants.Key.MESSAGE_ID] = messageId
         val itemsList = ArrayList<Map<String, Any>>()
         val itemMap = HashMap<String, Any>()
-        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_ID] = productId.toString()
+        itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_ID] = productId
         itemMap[CMHomeWidgetAnalyticsConstants.Key.ITEM_NAME] = productName.toString()
         itemMap[CMHomeWidgetAnalyticsConstants.Key.PRICE] = productPrice.toString()
         itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_ID] = shopId.toString()
         itemMap[CMHomeWidgetAnalyticsConstants.Key.SHOP_NAME] = shopName.toString()
         itemsList.add(itemMap)
-        map[CMHomeWidgetAnalyticsConstants.Key.ECOMMERCE] = mapOf(CMHomeWidgetAnalyticsConstants.Key.ITEMS to itemsList)
+        map[CMHomeWidgetAnalyticsConstants.Key.ECOMMERCE] =
+            mapOf(CMHomeWidgetAnalyticsConstants.Key.ITEMS to itemsList)
         sendEnhancedEcommerceEvent(map)
     }
 
