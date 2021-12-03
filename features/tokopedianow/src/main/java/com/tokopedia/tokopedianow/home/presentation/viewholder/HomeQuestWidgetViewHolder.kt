@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
@@ -36,6 +35,7 @@ class HomeQuestWidgetViewHolder(
                 setProgress(result)
                 setProgressWidth(PROGRESS_WIDTH)
                 setRounded(true)
+                setImageResId(R.drawable.tokopedianow_ic_quest)
                 setProgressColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 setProgressBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_circle_progressbar_background_dms_color))
             }
