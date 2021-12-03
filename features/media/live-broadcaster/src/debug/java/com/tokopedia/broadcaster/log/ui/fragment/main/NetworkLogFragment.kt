@@ -64,7 +64,7 @@ class NetworkLogFragment : BaseDaggerFragment(), StatsNerdItemListener {
 
     override fun initInjector() {
         DaggerNetworkLogComponent.builder()
-            .statsNerdModule(NetworkLogModule(requireContext()))
+            .networkLogModule(NetworkLogModule(requireContext()))
             .build()
             .inject(this)
     }
