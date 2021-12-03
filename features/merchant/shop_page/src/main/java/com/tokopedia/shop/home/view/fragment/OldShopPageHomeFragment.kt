@@ -33,7 +33,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -64,8 +63,6 @@ import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
@@ -288,9 +285,6 @@ class OldShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTy
     private var initialProductListData: ShopProduct.GetShopProduct? = null
     private var globalErrorShopPage: GlobalError? = null
     private val viewBinding: FragmentShopPageHomeBinding? by viewBinding()
-
-    private var remoteConfigInstance: RemoteConfigInstance? = null
-    private val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (isShopHomeTabSelected())

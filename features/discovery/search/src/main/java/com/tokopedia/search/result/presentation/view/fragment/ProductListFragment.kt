@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkConst.NEW_WISHLIST
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -71,11 +70,8 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.RecommendationTracking
@@ -214,8 +210,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private var searchSortFilter: SortFilter? = null
     private var shimmeringView: LinearLayout? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
-    private var remoteConfig: RemoteConfig? = null
-    private var remoteConfigInstance: RemoteConfigInstance? = null
     private val filterTrackingData by lazy {
         FilterTrackingData(
                 FilterEventTracking.Event.CLICK_SEARCH_RESULT,

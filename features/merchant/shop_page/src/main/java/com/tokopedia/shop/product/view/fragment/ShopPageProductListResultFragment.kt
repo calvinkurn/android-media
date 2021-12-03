@@ -33,7 +33,6 @@ import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -50,9 +49,6 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -78,7 +74,6 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.shop.databinding.FragmentShopProductListResultNewBinding
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
@@ -160,7 +155,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var isEmptyState = false
     private var isAlreadyCheckRestrictionInfo = false
     private var remoteConfig: RemoteConfig? = null
-    private var remoteConfigInstance: RemoteConfigInstance? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var partialShopNplFollowersViewLayout: View? = null

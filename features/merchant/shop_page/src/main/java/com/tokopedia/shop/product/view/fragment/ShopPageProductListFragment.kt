@@ -27,7 +27,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
@@ -47,9 +46,6 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -79,7 +75,6 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.viewmodel.ShopChangeProductGridSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
-import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.product.util.StaggeredGridLayoutManagerWrapper
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.InterfaceShopPageHeader
@@ -235,7 +230,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var initialProductListData : ShopProduct.GetShopProduct? = null
     private var staggeredGridLayoutManager: StaggeredGridLayoutManager? = null
     private var remoteConfig: RemoteConfig? = null
-    private var remoteConfigInstance: RemoteConfigInstance? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private val shopProductAdapter: ShopProductAdapter
         get() = adapter as ShopProductAdapter
