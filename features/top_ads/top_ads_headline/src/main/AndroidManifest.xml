@@ -6,12 +6,12 @@
         android:allowBackup="true"
         android:label="@string/topads_headline_app_name"
         android:supportsRtl="true">
-
         <activity
             android:name=".view.activity.HeadlineStepperActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -24,13 +24,13 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.activity.EditFormHeadlineActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:label="@string/topads_headline_edit_form_label"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -43,21 +43,17 @@
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.activity.TopAdsProductListActivity"
             android:label="@string/topads_headline_product_list_label"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".view.activity.EditTopAdsHeadlineKeywordActivity"
             android:label="@string/topads_headline_product_list_label"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
-
     </application>
-
 </manifest>

@@ -1,7 +1,9 @@
 package com.tokopedia.digital.home.old.domain
 
 import com.tokopedia.digital.home.model.RechargeHomepageSections
+import com.tokopedia.digital.home.model.Tracking
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper.mapItemsToSearchCategoryModels
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageQueries
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
@@ -13,7 +15,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 
 class DigitalHomepageSearchByDynamicIconUseCase(graphqlRepository: GraphqlRepository) : GraphqlUseCase<RechargeHomepageSections.Response>(graphqlRepository) {
-    suspend fun searchCategoryList(mapParams: Map<String, Any>, searchQuery: String): List<DigitalHomePageSearchCategoryModel> {
+    suspend fun searchCategoryList(mapParams: Map<String, Any>, searchQuery: String): DigitalHomePageSearchNewModel {
         setGraphqlQuery(RechargeHomepageQueries.SECTION_QUERY)
         setTypeClass(RechargeHomepageSections.Response::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
@@ -27,7 +29,7 @@ class DigitalHomepageSearchByDynamicIconUseCase(graphqlRepository: GraphqlReposi
             item.searchQuery = searchQuery
             return@map item
         }
-        return filteredData
+        return DigitalHomePageSearchNewModel(isFromAutoComplete = false, searchQuery = searchQuery, listSearchResult = filteredData)
     }
 
     companion object {

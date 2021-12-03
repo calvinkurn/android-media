@@ -46,7 +46,7 @@ public class EmptySearchResultView extends BaseCustomView {
     public void setSearchCategory(String searchCategory) {
         if (titleView != null) {
             String titleTemplate
-                    = titleView.getContext().getResources().getString(R.string.empty_search_result_title_template);
+                    = titleView.getContext().getResources().getString(com.tokopedia.design.R.string.empty_search_result_title_template);
 
             titleView.setText(titleTemplate.replace("$1", searchCategory.toLowerCase()));
         }
@@ -55,7 +55,7 @@ public class EmptySearchResultView extends BaseCustomView {
     public void setSearchQuery(String searchQuery) {
         if (contentView != null) {
             String contentTemplate
-                    = contentView.getContext().getResources().getString(R.string.empty_search_result_content_template);
+                    = contentView.getContext().getResources().getString(com.tokopedia.design.R.string.empty_search_result_content_template);
 
             contentView.setText(contentTemplate.replace("$1", searchQuery.toLowerCase()));
         }

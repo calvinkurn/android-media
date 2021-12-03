@@ -151,6 +151,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+    private val productTagView by viewComponent { ProductTagViewComponent(it) }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
@@ -275,6 +276,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
+        observeProductTag()
     }
 
     override fun onDestroy() {
@@ -660,6 +662,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                 }
             }
+        }
+    }
+
+    private fun observeProductTag() {
+        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
+            productTagView.setProducts(it)
         }
     }
     //endregion

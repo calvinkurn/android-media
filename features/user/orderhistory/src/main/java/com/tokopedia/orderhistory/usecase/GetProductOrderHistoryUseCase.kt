@@ -38,6 +38,10 @@ open class GetProductOrderHistoryUseCase @Inject constructor(
               categoryId
               shopId
               playstoreStatus
+              freeOngkir {
+                isActive
+                imageUrl
+              }
             }
             hasNext
           }

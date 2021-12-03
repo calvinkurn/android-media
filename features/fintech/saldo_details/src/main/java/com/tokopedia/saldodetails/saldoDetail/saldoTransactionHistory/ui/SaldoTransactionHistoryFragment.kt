@@ -22,17 +22,15 @@ import com.tokopedia.saldodetails.commom.design.SaldoHistoryTabItem
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponent
 import com.tokopedia.saldodetails.commom.listener.setSafeOnClickListener
 import com.tokopedia.saldodetails.commom.utils.SaldoDateUtil
-import com.tokopedia.saldodetails.commom.utils.SaldoRollence
+import com.tokopedia.saldodetails.commom.utils.TransactionTitle
 import com.tokopedia.saldodetails.saldoDetail.SaldoDepositFragment
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.adapter.SaldoHistoryPagerAdapter
 import com.tokopedia.saldodetails.saldoDetail.saldoTransactionHistory.viewmodel.TransactionHistoryViewModel
-import com.tokopedia.saldodetails.commom.utils.TransactionTitle
 import com.tokopedia.unifycomponents.getCustomText
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
 import kotlinx.android.synthetic.main.fragment_saldo_history.*
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -93,7 +91,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         transactionHistoryViewModel.refreshAllTabsData(
             selectedDateFrom,
             selectedDateTo,
-            isSalesTabEnabled()
         )
     }
 
@@ -121,11 +118,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
         })
 
         //penjualan tab
-        if (isSalesTabEnabled())
-            saldoTabItems.add(SaldoHistoryTabItem().apply {
-                title = TransactionTitle.SALDO_SALES
-                fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
-            })
+        saldoTabItems.add(SaldoHistoryTabItem().apply {
+            title = TransactionTitle.SALDO_SALES
+            fragment = SaldoTransactionListFragment.getInstance(TransactionTitle.SALDO_SALES)
+        })
 
         //Saldo Refund
         saldoTabItems.add(SaldoHistoryTabItem().apply {
@@ -176,8 +172,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
     fun onRefresh() {
         transactionHistoryViewModel.refreshAllTabsData(
             selectedDateFrom,
-            selectedDateTo,
-            isSalesTabEnabled()
+            selectedDateTo
         )
     }
 
@@ -258,8 +253,6 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), BaseEmptyViewHolde
             )
         }
     }
-
-    private fun isSalesTabEnabled() = SaldoRollence.isSaldoRevampEnabled()
 
     companion object {
         const val X_OFFSET = -70
