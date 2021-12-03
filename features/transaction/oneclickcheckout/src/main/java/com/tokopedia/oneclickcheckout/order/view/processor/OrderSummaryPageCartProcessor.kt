@@ -93,7 +93,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccMultiE
                             UpdateCartOccCartRequest(
                                     it.cartId,
                                     it.orderQuantity,
-                                    Utils.getHtmlFormat(it.notes),
+                                    it.notes,
                                     it.productId.toString()
                             )
                     )
