@@ -149,7 +149,7 @@ class SrwFrameLayout : FrameLayout {
     private fun initBackground() {
         bgExpanded = ViewUtil.generateBackgroundWithShadow(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                com.tokopedia.unifyprinciples.R.color.Unify_Background,
                 R.dimen.dp_topchat_20,
                 R.dimen.dp_topchat_0,
                 R.dimen.dp_topchat_20,

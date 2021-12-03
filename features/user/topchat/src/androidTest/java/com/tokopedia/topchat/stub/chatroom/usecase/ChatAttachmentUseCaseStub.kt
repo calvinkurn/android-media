@@ -29,10 +29,25 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     private val sellerSrwPromptPath =
         "seller/success_get_chat_attachment_srw_reply_prompt.json"
+    private val defaultChatAttachmentResponsePath =
+        "success_get_chat_attachments.json"
     private val shippingLocationPath =
         "seller/chat_attachment_shipping_location_reply.json"
     private val upcomingCampaignPath =
         "buyer/chat_attachment_upcoming_campaign.json"
+
+    val chatAttachmentNoVariant: ChatAttachmentResponse
+        get() = alterResponseOf(defaultChatAttachmentResponsePath) {
+            alterAttachmentAttributesAt(
+                position = 2,
+                responseObj = it,
+                attachmentAltercation = { },
+                attributesAltercation = { attr ->
+                    attr.getAsJsonObject(product_profile)
+                        .addProperty(is_variant, false)
+                }
+            )
+        }
 
     /**
      * <!--- Start Start OOS label --->
@@ -248,6 +263,7 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val attributes = "attributes"
     private val id = "id"
     private val product_profile = "product_profile"
+    private val is_variant = "is_variant"
     private val location_stock = "location_stock"
     private val district_name_full_text = "district_name_full_text"
     private val is_upcoming_campaign_product = "is_upcoming_campaign_product"

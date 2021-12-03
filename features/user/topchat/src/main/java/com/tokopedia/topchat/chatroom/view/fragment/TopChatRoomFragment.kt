@@ -143,6 +143,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -278,7 +279,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initSrw() {
         rvSrw?.initialize(this, object : SrwFrameLayout.Listener {
             override fun onRetrySrw() {
-                presenter.getSmartReplyWidget(messageId)
+                reloadSrw()
             }
 
             override fun trackViewSrw() {
@@ -383,6 +384,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         replyCompose?.clearReferredComposedMsg()
     }
 
+    override fun notifyPreviewRemoved(model: SendablePreview) {
+        if (model is SendableProductPreview && hasProductPreviewShown()) {
+            reloadSrw()
+        }
+    }
+
     override fun removeSrwBubble() {
         adapter.removeSrwBubble()
     }
@@ -408,7 +415,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initTextComposeBackground() {
         val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
             view = composeArea,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
             topLeftRadius = R.dimen.dp_topchat_20,
             topRightRadius = R.dimen.dp_topchat_20,
             bottomLeftRadius = R.dimen.dp_topchat_20,
@@ -698,6 +705,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (chatRoomFlexModeListener?.isFlexMode() == true) {
             chatRoomFlexModeListener?.onSuccessGetMessageId(msgId = messageId)
         }
+        reloadSrw()
     }
 
     private fun onSuccessGetExistingChatFirstTime(
@@ -740,8 +748,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         replyCompose?.setReplyListener(this)
         if (isSeller()) {
             setupFirstTimeForSeller()
-        } else {
-            setupFirstTimeForBuyer()
         }
         interlocutorShopType = chatRoom.shopType
     }
@@ -753,8 +759,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    private fun setupFirstTimeForBuyer() {
-        presenter.getSmartReplyWidget(messageId)
+    private fun reloadSrw() {
+        if (!isSeller() && messageId.isNotBlank() &&
+            topchatViewState?.hasProductPreviewShown() == true
+        ) {
+            val productIdCommaSeparated = presenter.getProductIdPreview()
+                .joinToString(separator = ",")
+            presenter.getSmartReplyWidget(messageId, productIdCommaSeparated)
+        }
     }
 
     private fun setupFirstPage(chatRoom: ChatroomViewModel, chat: ChatReplies) {
@@ -1507,7 +1519,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
-        analytics.eventClickBuyProductAttachment(element)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else if (isOCCActive() && element.isEligibleOCC()) {
@@ -1531,7 +1542,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
-        analytics.eventClickAddToCartProductAttachment(element, session)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else {
@@ -1818,6 +1828,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>) {
         topchatViewState?.showAttachmentPreview(attachmentPreview)
         adapter.collapseSrwBubble()
+        reloadSrw()
     }
 
     override fun onEmptyProductPreview() {
