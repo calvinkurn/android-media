@@ -42,6 +42,7 @@ object AccountConstants {
         const val PASSWORD = "password"
         const val TOKOCASH = "tokocash"
         const val BALANCE = "balance"
+        const val GOPAY = "gopay"
         const val ACCOUNT_BANK = "account bank"
         const val CREDIT_CARD = "credit card"
         const val SCREEN_NAME = "screenName"

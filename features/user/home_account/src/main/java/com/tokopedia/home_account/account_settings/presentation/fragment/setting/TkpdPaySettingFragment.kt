@@ -13,6 +13,7 @@ import com.tokopedia.home_account.R
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.ACTIVITY_NAME_SALDO_DEPOSIT
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.BALANCE
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CREDIT_CARD
+import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.GOPAY
 import com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOCASH
 import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics
 import com.tokopedia.home_account.account_settings.constant.SettingConstant
@@ -171,6 +172,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
             }
 
             SettingConstant.SETTING_GOPAY -> {
+                accountAnalytics.eventClickPaymentSetting(GOPAY)
                 RouteManager.route(
                     activity,
                     SettingConstant.Url.BASE_WEBVIEW_APPLINK + gopayUrl
