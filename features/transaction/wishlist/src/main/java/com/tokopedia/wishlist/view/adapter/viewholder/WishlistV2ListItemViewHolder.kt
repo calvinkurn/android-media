@@ -18,10 +18,10 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         binding.wishlistItem.setProductModel(item.dataObject as ProductCardModel)
 
         val footerLayout = binding.wishlistItem.findViewById<View>(RProductCard.id.productCardFooterLayout)
-        val buttonSecondary = footerLayout.findViewById<FrameLayout>(RProductCard.id.buttonSecondary)
+        val buttonSecondary = footerLayout.findViewById<FrameLayout>(RProductCard.id.buttonThreeDotsWishlist)
         val rlPrimaryButton = footerLayout.findViewById<RelativeLayout>(RProductCard.id.rlPrimaryButtonWishlist)
-        val buttonAtc = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonTambahKeranjang)
-        val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonLihatBarangSerupa)
+        val buttonAtc = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonAddToCartWishlist)
+        val buttonSeeSimilarProduct = footerLayout.findViewById<UnifyButton>(RProductCard.id.buttonSeeSimilarProductWishlist)
 
         if (isShowCheckbox) {
             binding.wishlistCheckbox.setOnCheckedChangeListener(null)
@@ -50,7 +50,7 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
             }
         }
 
-        if (item.dataObject.tambahKeranjangButton) {
+        if (item.dataObject.hasAddToCartWishlist) {
             buttonSeeSimilarProduct.gone()
             buttonAtc.visible()
             buttonAtc.setOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }

@@ -22,14 +22,17 @@ internal fun View.renderProductCardFooter(
         buttonRemoveFromWishlist?.hide()
         renderSimilarProductButton(productCardModel)
     }
-
-    buttonSecondary?.showWithCondition(productCardModel.hasSecondaryButton)
-    rlPrimaryButtonWishlist?.showWithCondition(productCardModel.tambahKeranjangButton || productCardModel.lihatBarangSerupaButton)
-    buttonTambahKeranjang?.showWithCondition(productCardModel.tambahKeranjangButton)
-    buttonLihatBarangSerupa?.showWithCondition(productCardModel.lihatBarangSerupaButton)
+    renderWishlistComponents(productCardModel)
 }
 
 private fun View.renderSimilarProductButton(productCardModel: ProductCardModel) {
     val buttonSimilarProduct = findViewById<UnifyButton?>(R.id.buttonSeeSimilarProduct)
     buttonSimilarProduct?.showWithCondition(productCardModel.hasSimilarProductButton)
+}
+
+private fun View.renderWishlistComponents(productCardModel: ProductCardModel) {
+    buttonThreeDotsWishlist?.showWithCondition(productCardModel.hasButtonThreeDotsWishlist)
+    rlPrimaryButtonWishlist?.showWithCondition(productCardModel.willShowPrimaryButtonWishlist())
+    buttonAddToCartWishlist?.showWithCondition(productCardModel.hasAddToCartWishlist)
+    buttonSeeSimilarProductWishlist?.showWithCondition(productCardModel.hasSimilarProductWishlist)
 }
