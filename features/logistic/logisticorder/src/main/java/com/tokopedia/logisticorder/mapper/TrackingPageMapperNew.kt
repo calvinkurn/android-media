@@ -91,7 +91,7 @@ class TrackingPageMapperNew @Inject constructor() {
         return LastDriverModel().apply {
             phone = lastDriver.phone
             name = lastDriver.name
-            phone = lastDriver.phone
+            photo = lastDriver.photo
             licenseNumber = lastDriver.licenseNumber
             isChanged = lastDriver.isChanged
         }

@@ -212,7 +212,7 @@ class TrackingPageFragment: BaseDaggerFragment(), TrackingHistoryAdapter.OnImage
                 imgDriver.setImageUrl(tippingData.lastDriver.photo)
 
                 driverName.text = tippingData.lastDriver.name
-                driverPhone.text = tippingData.lastDriver.phone + "•" + tippingData.lastDriver.licenseNumber
+                driverPhone.text = tippingData.lastDriver.phone + " • " + tippingData.lastDriver.licenseNumber
             }
 
             btnTipping.text = when (tippingData.status) {
