@@ -192,11 +192,6 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
-    fun openFind(url: String, context: Context): Boolean {
-        return openIfExist(context, getFindIntent(context, url))
-    }
-
-    @JvmStatic
     fun openCatalog(url: String, context: Context): Boolean {
         return openIfExist(context, getCatalogIntent(context, url))
     }
@@ -237,16 +232,6 @@ object DeepLinkChecker {
         val query = if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""
         query.replace("-","+")
         return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.DISCOVERY_SEARCH + "?q=" + query))
-    }
-
-    private fun getFindIntent(context: Context, url: String): Intent {
-        val uri = Uri.parse(url)
-        val segments = uri.pathSegments
-        val searchKeyword = if (segments.size > 1) segments[1] else ""
-        val city = if (segments.indexOf("c") == 2) "-di-" + segments[segments.lastIndex] else ""
-        val query = searchKeyword + city
-
-        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + query))
     }
 
     private fun getCatalogIntent(context: Context, url: String): Intent {
