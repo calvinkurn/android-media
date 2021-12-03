@@ -1,4 +1,4 @@
-package com.tokopedia.home_account.stub.di
+package com.tokopedia.home_account.stub.di.user
 
 import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter

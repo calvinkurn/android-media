@@ -1,10 +1,8 @@
-package com.tokopedia.home_account.stub.di
+package com.tokopedia.home_account.stub.di.user
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
+import com.tokopedia.home_account.stub.di.user.FakeAppModule
 import dagger.Component
 
 @ApplicationScope
