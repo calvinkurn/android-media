@@ -10,7 +10,6 @@ public interface UserSessionInterface {
 
     String LOGIN_METHOD_EMAIL = "email";
     String LOGIN_METHOD_GOOGLE = "google";
-    String LOGIN_METHOD_FACEBOOK = "facebook";
     String LOGIN_METHOD_PHONE = "phone";
     String LOGIN_METHOD_EMAIL_SMART_LOCK = "email_smartlock";
 

@@ -8,7 +8,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 internal fun Activity?.setBackgroundToWhite() {
     this?.apply {
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 }
 

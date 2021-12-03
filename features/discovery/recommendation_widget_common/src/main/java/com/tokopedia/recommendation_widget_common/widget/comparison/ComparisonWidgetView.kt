@@ -8,8 +8,10 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.recommendation_widget_common.R
@@ -18,12 +20,6 @@ import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTr
 import com.tokopedia.recommendation_widget_common.widget.comparison.compareditem.ComparedItemAdapter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.view_comparison_widget.view.*
-import kotlinx.android.synthetic.main.view_comparison_widget.view.btn_see_more
-import kotlinx.android.synthetic.main.view_comparison_widget.view.comparison_widget_container
-import kotlinx.android.synthetic.main.view_comparison_widget.view.rv_compared_item
-import kotlinx.android.synthetic.main.view_comparison_widget.view.rv_comparison_widget
-import kotlinx.android.synthetic.main.view_comparison_widget.view.tv_header_title
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -45,11 +41,26 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    private var rv_comparison_widget: RecyclerView? = null
+    private var rv_compared_item: RecyclerView? = null
+    private var tv_header_title: TextView? = null
+    private var btn_see_more: TextView? = null
+    private var btn_collapse: LinearLayout? = null
+    private var comparison_widget_container: LinearLayout? = null
     init {
         LayoutInflater.from(context).inflate(R.layout.view_comparison_widget, this)
-        if (rootView.rv_comparison_widget.itemDecorationCount == 0) {
-            rootView.rv_comparison_widget.addItemDecoration(ComparisonWidgetDecoration())
-            rootView.rv_compared_item.addItemDecoration(ComparisonWidgetDecoration())
+        rv_comparison_widget = rootView.findViewById(R.id.rv_comparison_widget)
+        rv_compared_item = rootView.findViewById(R.id.rv_compared_item)
+        tv_header_title = rootView.findViewById(R.id.tv_header_title)
+        btn_see_more = rootView.findViewById(R.id.btn_see_more)
+        btn_collapse = rootView.findViewById(R.id.btn_collapse)
+        comparison_widget_container = rootView.findViewById(R.id.comparison_widget_container)
+
+
+
+        if (rv_comparison_widget?.itemDecorationCount == 0) {
+            rv_comparison_widget?.addItemDecoration(ComparisonWidgetDecoration())
+            rv_compared_item?.addItemDecoration(ComparisonWidgetDecoration())
         }
         switchToCollapsedState(resources.getDimensionPixelSize(R.dimen.comparison_widget_collapsed_height))
     }
@@ -66,11 +77,11 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
                         ComparisonWidgetMapper.mapToComparisonWidgetModel(recommendationWidget, context)
                 if (this@ComparisonWidgetView.adapter == null) {
                     launch(Dispatchers.Main) {
-                        rootView.tv_header_title.text = comparisonListModel.recommendationWidget?.title
+                        tv_header_title?.text = comparisonListModel.recommendationWidget?.title
                         if (comparisonListModel.recommendationWidget.seeMoreAppLink.isNotEmpty()) {
-                            rootView.btn_see_more.visible()
+                            btn_see_more?.visible()
                         } else {
-                            rootView.btn_see_more.gone()
+                            btn_see_more?.gone()
                         }
 
                         this@ComparisonWidgetView.comparisonListModel = comparisonListModel
@@ -81,9 +92,9 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
                                 userSessionInterface = userSessionInterface,
                                 recommendationTrackingModel = recommendationTrackingModel,
                         )
-                        rootView.rv_comparison_widget.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                        rootView.rv_comparison_widget.adapter = adapter
-                        rootView.btn_collapse.setOnClickListener {
+                        rv_comparison_widget?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                        rv_comparison_widget?.adapter = adapter
+                        btn_collapse?.setOnClickListener {
                             ProductRecommendationTracking.getClickSpecDetailTracking(
                                     eventClick = recommendationTrackingModel.eventClick,
                                     eventCategory = recommendationTrackingModel.eventCategory,
@@ -94,7 +105,7 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
                             )
                             onSpecDetailsClick(comparisonListModel)
                         }
-                        rootView.comparison_widget_container.layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
+                        comparison_widget_container?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING);
                     }
                 }
                 if (this@ComparisonWidgetView.comparedAdapter == null) {
@@ -108,8 +119,8 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
                             userSessionInterface = userSessionInterface,
                             recommendationTrackingModel = recommendationTrackingModel
                         )
-                        rootView.rv_compared_item.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                        rootView.rv_compared_item.adapter = comparedAdapter
+                        rv_compared_item?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                        rv_compared_item?.adapter = comparedAdapter
                     }
                 }
             } catch (e: NullPointerException) {
@@ -128,14 +139,14 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
 
     private fun switchToCollapsedState(collapsedHeight: Int) {
         if (isExpandingState()) {
-            val layoutParams = rootView.rv_comparison_widget.layoutParams
-            layoutParams.height = collapsedHeight
-            rootView.rv_comparison_widget.layoutParams = layoutParams
+            val layoutParams = rv_comparison_widget?.layoutParams
+            layoutParams?.height = collapsedHeight
+            rv_comparison_widget?.layoutParams = layoutParams
             adapter?.notifyDataSetChanged()
 
-            val layoutParamsComparedItem = rootView.rv_compared_item.layoutParams
-            layoutParamsComparedItem.height = collapsedHeight
-            rootView.rv_compared_item.layoutParams = layoutParamsComparedItem
+            val layoutParamsComparedItem = rv_compared_item?.layoutParams
+            layoutParamsComparedItem?.height = collapsedHeight
+            rv_compared_item?.layoutParams = layoutParamsComparedItem
             comparedAdapter?.notifyDataSetChanged()
         }
     }
@@ -145,21 +156,21 @@ class ComparisonWidgetView: FrameLayout, CoroutineScope  {
             val layoutParams = ConstraintLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT)
-            rootView.rv_comparison_widget.layoutParams = layoutParams
+            rv_comparison_widget?.layoutParams = layoutParams
             adapter?.notifyDataSetChanged()
 
             val layoutParamsComparedItem = ConstraintLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
-            rootView.rv_compared_item.layoutParams = layoutParamsComparedItem
-            rootView.btn_collapse.visibility = View.GONE
+            rv_compared_item?.layoutParams = layoutParamsComparedItem
+            btn_collapse?.visibility = View.GONE
             comparedAdapter?.notifyDataSetChanged()
         }
     }
 
     private fun isExpandingState(): Boolean {
-        return rootView.rv_comparison_widget.layoutParams.width == LinearLayout.LayoutParams.MATCH_PARENT &&
-                rootView.rv_comparison_widget.layoutParams.height == LinearLayout.LayoutParams.WRAP_CONTENT
+        return rv_comparison_widget?.layoutParams?.width == LinearLayout.LayoutParams.MATCH_PARENT &&
+                rv_comparison_widget?.layoutParams?.height == LinearLayout.LayoutParams.WRAP_CONTENT
     }
 
     override fun onDetachedFromWindow() {
