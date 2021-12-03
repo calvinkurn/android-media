@@ -16,7 +16,6 @@ import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking
 import com.tokopedia.product.addedit.tracking.ProductEditEditImageTracking
 import com.tokopedia.user.session.UserSession
 
-
 object ImagePickerAddEditNavigation {
     fun getIntent(context: Context, imageUrlOrPathList: List<String>, maxImageCount: Int, isAdding: Boolean): Intent {
         val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList), maxImageCount)
@@ -38,7 +37,7 @@ object ImagePickerAddEditNavigation {
                     this.maxFileSizeInKB = AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB
                     this.imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder().apply {
                         belowMinResolutionErrorMessage = context.getString(R.string.error_image_under_x_resolution, DEFAULT_MIN_RESOLUTION, DEFAULT_MIN_RESOLUTION)
-                        imageTooLargeErrorMessage = context.getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
+                        imageTooLargeErrorMessage = context.getString(R.string.error_image_too_large, AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_MB)
                         convertToWebp = true
                     }
                     this.imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(

@@ -106,7 +106,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        GraphqlClient.init(requireContext())
         super.onCreate(savedInstanceState)
         shopId = userSession.shopId
     }
