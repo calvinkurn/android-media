@@ -2,8 +2,8 @@ package com.tokopedia.broadcaster.tracker
 
 import android.content.Context
 import com.tokopedia.broadcaster.lib.LarixStreamer
-import com.tokopedia.broadcaster.statsnerd.data.StatsNerdDataSource
-import com.tokopedia.broadcaster.statsnerd.data.mapper.mapToData
+import com.tokopedia.broadcaster.log.data.NetworkLogDataSource
+import com.tokopedia.broadcaster.log.data.mapper.mapToData
 import com.tokopedia.broadcaster.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.mediator.LivePusherStatistic
@@ -120,7 +120,7 @@ class LiveBroadcasterLogger : LivePusherStatistic {
         )
 
         if (GlobalConfig.DEBUG) {
-            StatsNerdDataSource
+            NetworkLogDataSource
                 .instance(context.applicationContext)
                 .logChucker(dataUIModel.mapToData())
         }

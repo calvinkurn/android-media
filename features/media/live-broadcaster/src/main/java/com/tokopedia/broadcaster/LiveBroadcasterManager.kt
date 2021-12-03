@@ -17,7 +17,7 @@ import com.tokopedia.broadcaster.lib.LarixStreamerFactory
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
-import com.tokopedia.broadcaster.statsnerd.ui.notification.LogDebugNotification
+import com.tokopedia.broadcaster.log.ui.notification.NotificationBuilder
 import com.tokopedia.broadcaster.tracker.LiveBroadcasterLogger
 import com.tokopedia.broadcaster.utils.BroadcasterUtil
 import com.tokopedia.broadcaster.utils.BroadcasterUtil.getCameraConfig
@@ -120,7 +120,7 @@ class LiveBroadcasterManager constructor(
 
         if (GlobalConfig.DEBUG) {
             mContext?.let {
-                LogDebugNotification.build(it, url)
+                NotificationBuilder.build(it, url)
             }
         }
 
