@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.affiliate.model.AffiliateSearchData
+import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.usecase.AffiliateSearchUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError

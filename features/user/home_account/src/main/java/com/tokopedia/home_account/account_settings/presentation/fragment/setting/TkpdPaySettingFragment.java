@@ -25,7 +25,7 @@ import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics;
 import com.tokopedia.home_account.account_settings.constant.SettingConstant;
 import com.tokopedia.home_account.account_settings.di.component.DaggerTkpdPaySettingComponent;
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel;
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemUIModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -77,19 +77,19 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     }
 
     @Override
-    protected List<SettingItemViewModel> getSettingItems() {
-        List<SettingItemViewModel> settingItems = new ArrayList<>();
+    protected List<SettingItemUIModel> getSettingItems() {
+        List<SettingItemUIModel> settingItems = new ArrayList<>();
 
         WalletModel walletModel = walletPref.retrieveWallet();
         if (walletModel != null) {
-            settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TOKOCASH_ID, walletModel.getText()));
+            settingItems.add(new SettingItemUIModel(SettingConstant.SETTING_TOKOCASH_ID, walletModel.getText()));
         }
 
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SALDO_ID,
+        settingItems.add(new SettingItemUIModel(SettingConstant.SETTING_SALDO_ID,
                 getString(R.string.title_saldo_setting)));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_CREDIT_CARD_ID,
+        settingItems.add(new SettingItemUIModel(SettingConstant.SETTING_CREDIT_CARD_ID,
                 getString(R.string.title_credit_card_setting)));
-        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_DEBIT_INSTANT,
+        settingItems.add(new SettingItemUIModel(SettingConstant.SETTING_DEBIT_INSTANT,
                 getString(R.string.title_debit_instant_setting)));
 
         return settingItems;

@@ -48,6 +48,8 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
         setImageAttachment(data, productReplyUiModel)
         setReplyView(data)
         showKejarUlasanLabel(data.isKejarUlasan)
+        setBadRatingReason(data.badRatingReason)
+        setBadRatingReasonDisclaimer(data.badRatingDisclaimer)
     }
 
     private fun setReplyView(data: FeedbackUiModel) {
@@ -95,6 +97,14 @@ class FeedbackItemReply : BaseCustomView, ReviewReplyListener {
 
     private fun showKejarUlasanLabel(isKejarUlasan: Boolean) {
         binding.kejarUlasanLabel.showWithCondition(isKejarUlasan)
+    }
+
+    private fun setBadRatingReason(reason: String) {
+        binding.badRatingReasonReview.showBadRatingReason(reason)
+    }
+
+    private fun setBadRatingReasonDisclaimer(disclaimer: String) {
+        binding.badRatingReasonDisclaimer.setDisclaimer(disclaimer)
     }
 
     override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>,

@@ -9,7 +9,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:layout_marginBottom="@dimen/layout_lvl4"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
-        
+
         <com.tokopedia.unifyprinciples.Typography
           android:id="@+id/text_title"
           android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
           app:typographyWeight="bold"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintLeft_toLeftOf="parent"/>
-  
+
         <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
           android:id="@+id/imgIdCard"
           android:layout_width="match_parent"
@@ -48,7 +48,7 @@
           app:layout_constraintTop_toBottomOf="@+id/text_title"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintRight_toRightOf="parent"/>
-  
+
         <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
           android:id="@+id/imgSelfie"
           android:layout_width="match_parent"
@@ -58,7 +58,7 @@
           app:layout_constraintTop_toBottomOf="@+id/imgIdCard"
           app:layout_constraintLeft_toLeftOf="parent"
           app:layout_constraintRight_toRightOf="parent"/>
-  
+
         <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
           android:id="@+id/imgSavingBook"
           android:layout_width="match_parent"
@@ -161,7 +161,7 @@
     android:id="@+id/loader"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
