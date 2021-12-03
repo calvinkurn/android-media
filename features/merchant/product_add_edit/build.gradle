@@ -40,8 +40,9 @@ android {
         multiDexEnabled true
     }
 
-    viewBinding {
-        enabled true
+    buildFeatures {
+        viewBinding true
+        buildConfig true
     }
 }
 
