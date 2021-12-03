@@ -45,6 +45,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMappe
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
+import com.tokopedia.tokopedianow.home.domain.model.WidgetPageDetail
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -185,10 +186,17 @@ object HomeLayoutMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapQuestData(
         item: HomeQuestSequenceWidgetUiModel,
-        questList: List<HomeQuestWidgetUiModel>
+        questList: List<HomeQuestWidgetUiModel>,
+        widgetPageDetail: WidgetPageDetail
     ) {
         updateItemById(item.visitableId) {
-            val quest = HomeQuestSequenceWidgetUiModel(id = MAIN_QUEST, questList = questList)
+            val quest = HomeQuestSequenceWidgetUiModel(
+                id = MAIN_QUEST,
+                questList = questList,
+                title = widgetPageDetail.title,
+                seeAll = widgetPageDetail.cta.text,
+                appLink = widgetPageDetail.cta.appLink
+            )
             HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }
     }

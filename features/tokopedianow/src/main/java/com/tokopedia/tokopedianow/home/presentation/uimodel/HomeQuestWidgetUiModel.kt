@@ -9,6 +9,7 @@ data class HomeQuestWidgetUiModel (
     val status: String,
     val currentProgress: Float,
     val totalProgress: Float,
+    val appLink: String
 ) : HomeLayoutUiModel(id)  {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

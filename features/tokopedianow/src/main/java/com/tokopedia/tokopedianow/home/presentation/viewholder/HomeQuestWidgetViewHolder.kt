@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
@@ -26,6 +27,7 @@ class HomeQuestWidgetViewHolder(
         setCircularProgressBar(element.currentProgress, element.totalProgress)
         setTitle(element.title)
         setDesc(element.desc)
+        setContainer(element.appLink)
     }
 
     private fun setCircularProgressBar(currentProgress: Float, totalProgress: Float) {
@@ -48,5 +50,11 @@ class HomeQuestWidgetViewHolder(
 
     private fun setDesc(desc: String) {
         binding?.desc?.text = desc
+    }
+
+    private fun setContainer(appLink: String) {
+        binding?.container?.setOnClickListener {
+            RouteManager.route(itemView.context, appLink)
+        }
     }
 }

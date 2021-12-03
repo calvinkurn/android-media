@@ -82,7 +82,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private val getRecommendationUseCase: GetRecommendationUseCase,
     private val getChooseAddressWarehouseLocUseCase: GetChosenAddressWarehouseLocUseCase,
     private val getRepurchaseWidgetUseCase: GetRepurchaseWidgetUseCase,
-    private val getQuestListUseCase: GetQuestListUseCase,
+    private val getQuestWidgetListUseCase: GetQuestWidgetListUseCase,
     private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers,
 ) : BaseViewModel(dispatchers.io) {
@@ -475,9 +475,9 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getQuestListAsync(item: HomeQuestSequenceWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val questListResponse = getQuestListUseCase.execute().questList
-            val questData = QuestMapper.mapQuestData(questListResponse)
-            homeLayoutItemList.mapQuestData(item, questData)
+            val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
+            val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
+            homeLayoutItemList.mapQuestData(item, questData, questListResponse.widgetPageDetail)
         }) {
             homeLayoutItemList.removeItem(item.id)
         }

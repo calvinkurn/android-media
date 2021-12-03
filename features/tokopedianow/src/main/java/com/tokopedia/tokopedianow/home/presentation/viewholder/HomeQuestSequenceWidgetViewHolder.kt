@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestSequenceWidgetBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
@@ -46,7 +47,7 @@ class HomeQuestSequenceWidgetViewHolder(
 
     override fun bind(element: HomeQuestSequenceWidgetUiModel) {
         setTitle(element.title)
-        setSeeAll(element.seeAll)
+        setSeeAll(element.seeAll, element.appLink)
         setQuestWidget(element.questList)
     }
 
@@ -74,7 +75,12 @@ class HomeQuestSequenceWidgetViewHolder(
         stubBinding?.channelTitle?.text = title
     }
 
-    private fun setSeeAll(seeAll: String) {
-        binding?.tvSeeAll?.text = seeAll
+    private fun setSeeAll(seeAll: String, appLink: String) {
+        binding?.tvSeeAll?.apply {
+            text = seeAll
+            setOnClickListener {
+                RouteManager.route(itemView.context, appLink)
+            }
+        }
     }
 }
