@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment
 import com.tokopedia.home_account.test.R
-import com.tokopedia.home_account.HomeAccountNewTopAdsVerificationTest
+import com.tokopedia.home_account.topads.HomeAccountNewTopAdsVerificationTest
 
 class InstrumentationNewHomeAccountTestActivity : AppCompatActivity(), HasComponent<HomeAccountUserComponents> {
 

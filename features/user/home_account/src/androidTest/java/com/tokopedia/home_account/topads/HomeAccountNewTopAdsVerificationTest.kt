@@ -1,4 +1,4 @@
-package com.tokopedia.home_account
+package com.tokopedia.home_account.topads
 
 import android.Manifest
 import android.app.Activity
@@ -18,6 +18,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.di.HomeAccountUserQueryModules
 import com.tokopedia.home_account.di.HomeAccountUserUsecaseModules
 import com.tokopedia.home_account.pref.AccountPreference
@@ -125,7 +126,7 @@ class HomeAccountNewTopAdsVerificationTest {
         val viewHolder = recyclerView.findViewHolderForAdapterPosition(index)
         if (viewHolder is ProductItemViewHolder) {
             val item = recyclerView.getItemAdapter().getItem(index) as RecommendationItem
-            if(item.isTopAds) {
+            if (item.isTopAds) {
                 Espresso.onView(ViewMatchers.withId(recyclerView.id))
                         .perform(RecyclerViewActions.actionOnItemAtPosition<ProductItemViewHolder>(index, ViewActions.click()))
                 topAdsCount++
