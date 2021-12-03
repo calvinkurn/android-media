@@ -565,7 +565,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         }
 
         when (requestCode) {
-            ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE,
             ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> {
                 data?.let {
                     val deviceId = data.getStringExtra(TradeInParams.PARAM_DEVICE_ID) ?: ""
@@ -1218,13 +1217,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onAccept() {
-        val usedPrice = viewModel.p2Data.value?.validateTradeIn?.usedPrice.toDoubleOrZero()
-        if (usedPrice > 0) {
-            goToHargaFinal()
-        } else {
-            viewModel.clearCacheP2Data()
-            goToTradeInHome()
-        }
+        viewModel.clearCacheP2Data()
+        goToTradeInHome()
     }
 
     override fun onDecline() {}
@@ -3264,19 +3258,6 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun assignDeviceId() {
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
                 ?: viewModel.userSessionInterface.deviceId ?: ""
-    }
-
-    private fun goToHargaFinal() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
-        val tradeinParam = viewModel.tradeInParams
-        viewModel.getDynamicProductInfoP1?.let {
-            tradeinParam.setPrice(it.data.price.value.roundToIntOrZero())
-            tradeinParam.productId = it.basic.productID
-            tradeinParam.productName = it.data.name
-        }
-
-        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
-        startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
     }
 
     private fun goToTradeInHome() {
