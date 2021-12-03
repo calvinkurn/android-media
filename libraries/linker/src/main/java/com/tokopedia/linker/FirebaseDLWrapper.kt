@@ -290,6 +290,9 @@ class FirebaseDLWrapper {
             LinkerData.HOTEL_TYPE.equals(data.type, ignoreCase = true) -> {
                 deeplinkPath = data.deepLink
             }
+            LinkerData.ENTERTAINMENT_TYPE.equals(data.type, ignoreCase = true) -> {
+                deeplinkPath = data.deepLink
+            }
         }
         if (deeplinkPath != null) {
             if (!deeplinkPath.contains(LinkerConstants.UTM_SOURCE)) {
