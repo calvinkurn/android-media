@@ -359,7 +359,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             showBannerView()
             binding?.flightHomepageAllPromo?.setOnClickListener { onAllBannerClicked() }
             binding?.flightHomepageBanner?.apply {
-                timer = Timer()
                 freeMode = false
                 centerMode = true
                 slideToScroll = 1
