@@ -33,11 +33,10 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
         if (item.dataObject.hasAddToCartWishlist) {
             renderButtonPrimaryAtc(buttonAtc, buttonSeeSimilarProduct, item)
         } else {
-            renderButtonSeeSimilarProduct(buttonSeeSimilarProduct, item)
+            renderButtonSeeSimilarProduct(buttonAtc, buttonSeeSimilarProduct, item)
         }
 
-        buttonSecondary.setOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
-
+        binding.wishlistItem.setThreeDotsWishlistOnClickListener { actionListener?.onThreeDotsMenuClicked(item.wishlistItem) }
         actionListener?.onViewProductCard(item.wishlistItem, position)
     }
 
@@ -72,11 +71,13 @@ class WishlistV2ListItemViewHolder(private val binding: WishlistV2ListItemBindin
     private fun renderButtonPrimaryAtc(buttonAtc: UnifyButton, buttonSeeSimilarProduct: UnifyButton, item: WishlistV2TypeLayoutData) {
         buttonSeeSimilarProduct.gone()
         buttonAtc.visible()
-        buttonAtc.setOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }
+        binding.wishlistItem.setAddToCartWishlistOnClickListener { actionListener?.onAtc(item.wishlistItem, position) }
     }
 
-    private fun renderButtonSeeSimilarProduct(buttonSeeSimilarProduct: UnifyButton, item: WishlistV2TypeLayoutData) {
-        buttonSeeSimilarProduct.setOnClickListener {
+    private fun renderButtonSeeSimilarProduct(buttonAtc: UnifyButton, buttonSeeSimilarProduct: UnifyButton, item: WishlistV2TypeLayoutData) {
+        buttonAtc.gone()
+        buttonSeeSimilarProduct.visible()
+        binding.wishlistItem.setSeeSimilarProductWishlistOnClickListener {
             actionListener?.onCheckSimilarProduct(
                     item.wishlistItem.buttons.primaryButton.url
             )

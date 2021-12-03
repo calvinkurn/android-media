@@ -185,8 +185,8 @@
 
     <RelativeLayout
         android:id="@+id/rlPrimaryButtonWishlist"
-        android:layout_width="@dimen/product_card_button_primary_width"
-        android:layout_height="@dimen/product_card_button_primary_height"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/product_card_button_primary_margin"
         android:layout_marginTop="@dimen/product_card_button_primary_margin"
         android:visibility="visible"
@@ -198,7 +198,7 @@
             android:id="@+id/buttonAddToCartWishlist"
             android:contentDescription="@string/content_desc_buttonAddToCart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/product_card_button_primary_height"
             android:text="@string/product_card_text_add_to_cart_grid"
             android:foreground="?attr/selectableItemBackground"
             android:visibility="gone"
@@ -215,7 +215,7 @@
             android:id="@+id/buttonSeeSimilarProductWishlist"
             android:contentDescription="@string/content_desc_buttonSeeSimilarProduct"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/product_card_button_primary_height"
             android:text="@string/product_card_text_similar_product_grid"
             android:foreground="?attr/selectableItemBackground"
             android:visibility="gone"
