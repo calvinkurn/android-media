@@ -68,7 +68,7 @@ object VariantMapper {
             isActive = isActive,
             remainingStock = productInfo?.getFinalStock()?.toIntOrNull() ?: 1,
             isSupportVariant = productInfo?.data?.variant?.isVariant ?: false,
-            campaignId = productInfo?.data?.campaign?.campaignID?.toLongOrNull() ?: 0,
+            campaignId = productInfo?.data?.campaign?.campaignID.toLongOrZero(),
             isPreorder = isPreorder,
             priceInt = productInfo?.finalPrice?.toLong() ?: 0,
             categoryId = productInfo?.basic?.category?.id.toLongOrZero()

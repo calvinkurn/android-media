@@ -15,10 +15,13 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.base.blockPromo
 import com.tokopedia.topchat.chatroom.view.activity.base.setFollowing
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult
-import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductBuyButtonWithText
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasProductCarouselBuyButtonWithText
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
 import com.tokopedia.topchat.chatroom.view.fragment.TopChatRoomFragment
-import com.tokopedia.topchat.matchers.withRecyclerView
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -61,11 +64,8 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         //When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(4, R.id.tv_buy)
-        ).perform(ViewActions.click())
+        doScrollChatToPosition(0)
+        clickBuyButtonAt(4)
 
         //Then
         val intent = RouteManager.getIntent(
@@ -73,7 +73,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
             ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT,
             "1160424090"
         )
-        Intents.intended(IntentMatchers.hasData(intent.data))
+        openPageWithIntent(intent)
     }
 
     @Test
@@ -88,11 +88,11 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         //When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        ProductCardRobot.clickBuyButtonAt(position = 4)
+        doScrollChatToPosition(0)
+        clickBuyButtonAt(position = 4)
 
         //Then
-        ProductCardResult.hasFailedToasterWithMsg(msg = expectedErrorMessage)
+        hasFailedToasterWithMsg(msg = expectedErrorMessage)
     }
 
     @Test
@@ -106,15 +106,11 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         //When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(4, R.id.tv_buy)
-        ).perform(ViewActions.click())
+        doScrollChatToPosition(0)
+        clickBuyButtonAt(4)
 
         //Then
-        onView(withSubstring("Oops!"))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        hasFailedToasterWithMsg("Oops!")
     }
 
     @Test
@@ -133,11 +129,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(
-            withRecyclerView(R.id.rv_product_carousel)
-                .atPositionOnView(0, R.id.tv_buy)
-        )
-            .check(matches(withText(context.getString(R.string.action_buy))))
+        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
     }
 
     @Test
@@ -156,11 +148,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(
-            withRecyclerView(R.id.rv_product_carousel)
-                .atPositionOnView(0, R.id.tv_buy)
-        )
-            .check(matches(withText(context.getString(R.string.action_buy))))
+        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
     }
 
     @Test
@@ -179,11 +167,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(
-            withRecyclerView(R.id.rv_product_carousel)
-                .atPositionOnView(0, R.id.tv_buy)
-        )
-            .check(matches(withText(context.getString(R.string.action_buy))))
+        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
     }
 
     @Test
@@ -202,11 +186,7 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         )
 
         //Then
-        onView(
-            withRecyclerView(R.id.rv_product_carousel)
-                .atPositionOnView(0, R.id.tv_buy)
-        )
-            .check(matches(withText(context.getString(R.string.action_buy))))
+        hasProductCarouselBuyButtonWithText(context.getString(R.string.action_buy), 0)
     }
 
     @Test
@@ -221,19 +201,11 @@ class TopchatRoomOCCTest : BaseBuyerTopchatRoomTest() {
         //When
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(1, R.id.tv_buy)
-        ).perform(ViewActions.click())
+        doScrollChatToPosition(0)
+        clickBuyButtonAt(1)
 
         //Then
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom)
-                .atPositionOnView(1, R.id.tv_buy)
-        )
-            .check(matches(withText(context.getString(R.string.title_topchat_pre_order_camel))))
-
+        hasProductBuyButtonWithText(context.getString(R.string.title_topchat_pre_order_camel), 1)
         Intents.intended(IntentMatchers.hasData(ApplinkConst.CART))
     }
 

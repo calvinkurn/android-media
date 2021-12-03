@@ -5,7 +5,6 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.intent.Intents.intended
@@ -23,10 +22,19 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ChatAttachmentResponse
 import com.tokopedia.topchat.chatroom.view.activity.base.BaseBuyerTopchatRoomTest
 import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.SOURCE_TOPCHAT
-import com.tokopedia.topchat.matchers.withRecyclerView
 import com.tokopedia.topchat.matchers.withTotalItem
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.topchat.AndroidFileUtil
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithApplink
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.openPageWithIntent
+import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralRobot.doScrollChatToPosition
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasFailedToasterWithMsg
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasToasterWithMsg
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardResult.hasVariantLabel
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickATCButtonAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickBuyButtonAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductCardRobot.clickWishlistButtonAt
+import com.tokopedia.topchat.chatroom.view.activity.robot.product.ProductPreviewResult.hasVariantLebelPreview
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
@@ -234,10 +242,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         }
 
         //When
-        scrollChatToPosition(0)
+        doScrollChatToPosition(0)
 
         // Then
-        assertVariantProductPreview()
+        hasVariantLebelPreview(R.id.tv_variant_color, testVariantColor, 0)
+        hasVariantLebelPreview(R.id.tv_variant_size, testVariantSize, 0)
     }
 
     @Test
@@ -248,10 +257,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         //When
-        scrollChatToPosition(0)
+        doScrollChatToPosition(0)
 
         // Then
-        assertVariant()
+        hasVariantLabel(R.id.tv_variant_color, testVariantColor, 1)
+        hasVariantLabel(R.id.tv_variant_size, testVariantSize, 1)
     }
 
     @Test
@@ -263,13 +273,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         //When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(4)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(4, R.id.tv_atc)).perform(click())
+        doScrollChatToPosition(4)
+        clickATCButtonAt(4)
 
         // Then
-        onView(withText(context.getString(R.string.title_topchat_see_cart)))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        hasToasterWithMsg(context.getString(R.string.title_topchat_see_cart))
     }
 
     @Test
@@ -281,12 +289,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         //When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(4)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(4, R.id.tv_buy)).perform(click())
+        doScrollChatToPosition(4)
+        clickBuyButtonAt(4)
 
         // Then
-        intended(hasData(ApplinkConst.CART))
+        openPageWithApplink(ApplinkConst.CART)
     }
 
     @Test
@@ -298,15 +305,14 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         //When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_buy)).perform(click())
+        doScrollChatToPosition(0)
+        clickBuyButtonAt(1)
 
         // Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
             "1160424090", "6115659", AtcVariantHelper.TOPCHAT_PAGESOURCE, "false", "") //Product from firstPageChatAsBuyer
-        intended(hasData(intent.data))
+        openPageWithIntent(intent)
     }
 
     @Test
@@ -318,15 +324,14 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         //When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_atc)).perform(click())
+        doScrollChatToPosition(0)
+        clickATCButtonAt(1)
 
         // Then
         val intent = RouteManager.getIntent(context,
             ApplinkConstInternalMarketplace.ATC_VARIANT,
             "1160424090", "6115659", AtcVariantHelper.TOPCHAT_PAGESOURCE, "false", "") //Product from firstPageChatAsBuyer
-        intended(hasData(intent.data))
+        openPageWithIntent(intent)
     }
 
     @Test
@@ -337,13 +342,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         //When
-        scrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
+        doScrollChatToPosition(0)
+        clickWishlistButtonAt(1)
 
         // Then
-        onView(withText(context.getString(R.string.title_topchat_success_atw)))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        hasToasterWithMsg(context.getString(R.string.title_topchat_success_atw))
     }
 
     @Test
@@ -355,13 +358,11 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         launchChatRoomActivity()
 
         //When
-        scrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
+        doScrollChatToPosition(0)
+        clickWishlistButtonAt(1)
 
         // Then
-        onView(withText("Oops!"))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        hasFailedToasterWithMsg("Oops!")
     }
 
     @Test
@@ -373,11 +374,9 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
 
         //When
         intending(anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        scrollChatToPosition(0)
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_wishlist)).perform(click())
+        doScrollChatToPosition(0)
+        clickWishlistButtonAt(1) //click wishlist
+        clickWishlistButtonAt(1) //click go to wishlist
 
         //Then
         intended(hasData(ApplinkConst.NEW_WISHLIST))
@@ -389,24 +388,6 @@ class TopchatRoomBuyerProductAttachmentTest : BaseBuyerTopchatRoomTest() {
         val productPreviews = listOf(productPreview)
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
         intent.putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
-    }
-
-    private fun assertVariant() {
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_variant_color))
-            .check(matches(withText(testVariantColor)))
-        onView(withRecyclerView(R.id.recycler_view_chatroom)
-            .atPositionOnView(1, R.id.tv_variant_size))
-            .check(matches(withText(testVariantSize)))
-    }
-
-    private fun assertVariantProductPreview() {
-        onView(withRecyclerView(R.id.rv_attachment_preview)
-            .atPositionOnView(0, R.id.tv_variant_color))
-            .check(matches(withText(testVariantColor)))
-        onView(withRecyclerView(R.id.rv_attachment_preview)
-            .atPositionOnView(0, R.id.tv_variant_size))
-            .check(matches(withText(testVariantSize)))
     }
 
     private fun getZeroStockAttachment(): ChatAttachmentResponse {

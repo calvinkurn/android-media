@@ -5,8 +5,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -15,9 +20,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.common.*
+import com.tokopedia.imagepicker.common.ImagePickerBuilder
+import com.tokopedia.imagepicker.common.ImagePickerPageSource
+import com.tokopedia.imagepicker.common.ImagePickerResultExtractor
+import com.tokopedia.imagepicker.common.putImagePickerBuilder
+import com.tokopedia.imagepicker.common.putParamPageSource
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.reputation.common.constant.ReputationCommonConstants
 import com.tokopedia.reputation.common.view.AnimatedRatingPickerCreateReviewView
 import com.tokopedia.review.BuildConfig
@@ -29,24 +40,35 @@ import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTracking
 import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrackingConstants
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
+import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
+import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewBadRatingCategoriesAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewTemplatesAdapter
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
+import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewBadRatingCategoryListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewTemplateListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
-import com.tokopedia.review.feature.createreputation.presentation.widget.*
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAddPhoto
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAnonymousOption
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewProductCard
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewProgressBar
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
+import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.widget.ReviewBadRatingItemDecoration
+import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoBottomSheetBuilder
 import com.tokopedia.review.feature.ovoincentive.presentation.IncentiveOvoListener
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -58,12 +80,17 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAreaListener,
-    ImageClickListener, ReviewTemplateListener {
+    ImageClickListener, ReviewTemplateListener, ReviewBadRatingCategoryListener {
 
     companion object {
         const val GOOD_RATING_THRESHOLD = 2
         const val CREATE_REVIEW_TEXT_AREA_BOTTOM_SHEET_TAG = "CreateReviewTextAreaBottomSheet"
         const val TEMPLATES_ROW_COUNT = 2
+        const val BAD_RATING_OTHER_ID = "6"
+        const val BAD_RATING_FLOW_EXPERIMENT_KEY = "Bad_ReviewForm_AB"
+        const val OLD_FORM_VARIANT = "old_form"
+        const val BAD_RATING_FORM_VARIANT = "bad_rating_form"
+
         fun createInstance(
             rating: Int,
             productId: String,
@@ -81,6 +108,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     @Inject
     lateinit var createReviewViewModel: CreateReviewViewModel
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     // View Elements
     private var reviewFormCoordinatorLayout: View? = null
@@ -100,6 +130,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var loadingView: View? = null
     private var ovoIncentiveBottomSheet: BottomSheetUnify? = null
     private var thankYouBottomSheet: BottomSheetUnify? = null
+    private var badRatingCategoryRecyclerView: RecyclerView? = null
 
     private var rating: Int = 0
     private var productId: String = ""
@@ -122,6 +153,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         ReviewTemplatesAdapter(this)
     }
 
+    private val badRatingCategoriesAdapter: ReviewBadRatingCategoriesAdapter by lazy {
+        ReviewBadRatingCategoriesAdapter(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
@@ -132,7 +167,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = View.inflate(context, R.layout.bottomsheet_create_review, null)
+        val view = View.inflate(context, com.tokopedia.review.R.layout.bottomsheet_create_review, null)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -150,6 +185,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setRatingInitialState()
         setOnTouchListenerToHideKeyboard()
         setOnTouchOutsideListener()
+        if (shouldShowBadRatingReasons()) setUpBadRatingCategoriesRecyclerView()
         observeLiveDatas()
     }
 
@@ -177,7 +213,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onClickReviewAnother() {
         dismiss()
-        goToReviewPending()
+        if (utmSource != ReviewPendingFragment.INBOX_SOURCE) {
+            goToReviewPending()
+        }
     }
 
     override fun onExpandButtonClicked(text: String) {
@@ -191,7 +229,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             text,
             incentiveHelper,
             isUserEligible(),
-            getTemplatesForTextArea()
+            getTemplatesForTextArea(),
+            textArea?.getPlaceHolder() ?: ""
         )
         (textAreaBottomSheet as BottomSheetUnify).setTitle(textAreaTitle?.text.toString())
         fragmentManager?.let {
@@ -279,6 +318,51 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         handleOnBackPressed()
     }
 
+    override fun onImpressBadRatingCategory(title: String) {
+        CreateReviewTracking.eventViewBadRatingReason(
+            trackingQueue,
+            getOrderId(),
+            productId,
+            title,
+            getUserId()
+        )
+    }
+
+    override fun onBadRatingCategoryClicked(
+        title: String,
+        isSelected: Boolean,
+        badRatingCategoryId: String,
+        shouldRequestFocus: Boolean
+    ) {
+        CreateReviewTracking.eventClickBadRatingReason(
+            getOrderId(),
+            productId,
+            createReviewViewModel.getUserId(),
+            title,
+            isSelected
+        )
+        if (isSelected) {
+            createReviewViewModel.addBadRatingCategory(badRatingCategoryId)
+            if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
+                textArea?.setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
+            }
+            if (shouldRequestFocus) {
+                textArea?.requestFocusForEditText()
+            } else {
+                textArea?.clearFocus()
+            }
+        } else {
+            if (badRatingCategoryId == BAD_RATING_OTHER_ID) {
+                textArea?.apply {
+                    setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                    clearFocus()
+                }
+            }
+            createReviewViewModel.removeBadRatingCategory(badRatingCategoryId.toString())
+        }
+        updateButtonState(isGoodRating(), textArea?.isEmpty()?.not() ?: false)
+    }
+
     private fun initInjector() {
         activity?.let {
             DaggerCreateReviewComponent
@@ -304,6 +388,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         progressBar = view?.findViewById(R.id.review_form_progress_bar_widget)
         submitButton = view?.findViewById(R.id.review_form_submit_button)
         loadingView = view?.findViewById(R.id.shimmering_create_review_form)
+        badRatingCategoryRecyclerView =
+            view?.findViewById(R.id.review_form_bad_rating_categories_rv)
     }
 
     private fun setRatingClickListener() {
@@ -316,10 +402,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 val isGoodRating = isGoodRating()
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
-                if (isGoodRating && !isUserEligible()) {
-                    showTemplates()
+                if (isGoodRating) {
+                    if (!isUserEligible()) {
+                        showTemplates()
+                    }
+                    if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.hide()
                 } else {
                     hideTemplates()
+                    if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.show()
                 }
                 clearFocusAndHideSoftInput(view)
             }
@@ -347,6 +437,10 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun getTemplates() {
         createReviewViewModel.getReviewTemplates(productId)
+    }
+
+    private fun getBadRatingCategories() {
+        createReviewViewModel.getBadRatingCategories()
     }
 
     private fun observeGetForm() =
@@ -400,7 +494,20 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun observeProgressBarState() {
         createReviewViewModel.progressBarState.observe(this, {
-            progressBar?.setProgressBarValue(it)
+            if (shouldShowBadRatingReasons()) {
+                progressBar?.setProgressBarValue(it)
+                return@observe
+            }
+            progressBar?.setProgressBarValueForOldFlow(it)
+        })
+    }
+
+    private fun observeBadRatingCategories() {
+        createReviewViewModel.badRatingCategories.observe(this, {
+            when (it) {
+                is Success -> onSuccessGetBadRatingCategories(it.data)
+                is Fail -> onFailGetBadRatingCategories(it.throwable)
+            }
         })
     }
 
@@ -509,7 +616,8 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onFailSubmitReview(throwable: Throwable) {
         stopButtonLoading()
-        showToasterError(throwable.message ?: getString(R.string.review_create_fail_toaster))
+        showToasterError(context?.let { ErrorHandler.getErrorMessage(it, throwable) }
+            ?: getString(R.string.review_create_fail_toaster))
         logToCrashlytics(throwable)
     }
 
@@ -537,6 +645,18 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun onFailGetTemplate(throwable: Throwable) {
         logToCrashlytics(throwable)
         hideTemplates()
+    }
+
+    private fun onSuccessGetBadRatingCategories(categories: List<BadRatingCategory>) {
+        badRatingCategoriesAdapter.setData(categories)
+        if (!isGoodRating()) {
+            badRatingCategoryRecyclerView?.show()
+        }
+    }
+
+    private fun onFailGetBadRatingCategories(throwable: Throwable) {
+        logToCrashlytics(throwable)
+        badRatingCategoryRecyclerView?.hide()
     }
 
     private fun setProductDetail(data: ProductData) {
@@ -594,19 +714,33 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun onErrorGetReviewForm(throwable: Throwable) {
         logToCrashlytics(throwable)
-        finishIfRoot(false, throwable.message ?: getString(R.string.review_toaster_page_error))
+        finishIfRoot(
+            false,
+            context?.let { ErrorHandler.getErrorMessage(it, throwable) }
+                ?: getString(R.string.review_toaster_page_error))
     }
 
     private fun updateTitleBasedOnSelectedRating(position: Int) {
         when (position) {
             CreateReviewFragment.RATING_1 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_create_worst_title)
-                textArea?.setPlaceHolder(resources.getString(R.string.review_form_worst_helper))
+                textArea?.apply {
+                    if (createReviewViewModel.isOtherCategoryOnly()) {
+                        setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
+                    } else {
+                        setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                    }
+                }
             }
             CreateReviewFragment.RATING_2 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_form_bad_title)
-
-                textArea?.setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                textArea?.apply {
+                    if (createReviewViewModel.isOtherCategoryOnly()) {
+                        setPlaceHolder(getString(R.string.review_form_bad_helper_must_fill))
+                    } else {
+                        setPlaceHolder(resources.getString(R.string.review_form_bad_helper))
+                    }
+                }
             }
             CreateReviewFragment.RATING_3 -> {
                 textAreaTitle?.text = resources.getString(R.string.review_form_neutral_title)
@@ -840,7 +974,13 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         if (isGoodRating) {
             createReviewViewModel.updateButtonState(isGoodRating)
         } else {
-            createReviewViewModel.updateButtonState(isTextAreaNotEmpty)
+            createReviewViewModel.updateButtonState(
+                if (shouldShowBadRatingReasons()) {
+                    createReviewViewModel.isBadRatingReasonSelected(isTextAreaNotEmpty)
+                } else {
+                    isTextAreaNotEmpty
+                }
+            )
         }
     }
 
@@ -1011,12 +1151,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         observeTemplates()
         observeButtonState()
         observeProgressBarState()
+        if (shouldShowBadRatingReasons()) observeBadRatingCategories()
     }
 
     private fun getData() {
         getForm()
         getIncentiveOvoData(productId, reputationId)
         getTemplates()
+        if (shouldShowBadRatingReasons()) getBadRatingCategories()
     }
 
     private fun setOnTouchListenerToHideKeyboard() {
@@ -1132,6 +1274,25 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
             showTemplates()
         } else {
             hideTemplates()
+        }
+    }
+
+    private fun setUpBadRatingCategoriesRecyclerView() {
+        badRatingCategoryRecyclerView?.apply {
+            layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
+            adapter = badRatingCategoriesAdapter
+            addItemDecoration(ReviewBadRatingItemDecoration())
+        }
+    }
+
+    private fun shouldShowBadRatingReasons(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                BAD_RATING_FLOW_EXPERIMENT_KEY,
+                OLD_FORM_VARIANT
+            ) == BAD_RATING_FORM_VARIANT
+        } catch (t: Throwable) {
+            false
         }
     }
 }

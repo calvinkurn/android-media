@@ -56,7 +56,9 @@ data class ProductData(
         @SerializedName("has_reminder")
         var hasReminder: Boolean = false,
         @SerializedName("is_variant")
-        var isVariant: Boolean = false
+        var isVariant: Boolean = false,
+        @SerializedName("is_preorder")
+        var isPreorder: Boolean = false
 ) {
     var loadingReminderState: Boolean = false
 
