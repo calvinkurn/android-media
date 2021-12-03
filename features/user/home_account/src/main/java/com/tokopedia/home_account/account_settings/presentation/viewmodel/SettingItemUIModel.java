@@ -1,18 +1,18 @@
 package com.tokopedia.home_account.account_settings.presentation.viewmodel;
 
-public class SettingItemViewModel {
+public class SettingItemUIModel {
     private int id = -1;
     private String title = "";
     private String subtitle;
     private int iconResource = -1;
     private boolean hideArrow = false;
 
-    public SettingItemViewModel(int id, String title) {
+    public SettingItemUIModel(int id, String title) {
         this.id = id;
         this.title = title;
     }
 
-    public SettingItemViewModel(int id, String title, String subtitle) {
+    public SettingItemUIModel(int id, String title, String subtitle) {
         this.id = id;
         this.title = title;
         this.subtitle = subtitle;

@@ -1,8 +1,8 @@
 package com.tokopedia.home_account.account_settings.presentation.viewmodel.base;
 
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel;
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemUIModel;
 
-public class SwitchSettingItemViewModel extends SettingItemViewModel {
+public class SwitchSettingItemUIModel extends SettingItemUIModel {
     private boolean useOnClick = false;
     private String labelType = "";
 
@@ -22,16 +22,16 @@ public class SwitchSettingItemViewModel extends SettingItemViewModel {
         return useOnClick;
     }
 
-    public SwitchSettingItemViewModel(int id, String title) {
+    public SwitchSettingItemUIModel(int id, String title) {
         super(id, title);
     }
 
-    public SwitchSettingItemViewModel(int id, String title, String subtitle, boolean isUseOnClick) {
+    public SwitchSettingItemUIModel(int id, String title, String subtitle, boolean isUseOnClick) {
         super(id, title, subtitle);
         this.useOnClick = isUseOnClick;
     }
 
-    public SwitchSettingItemViewModel(
+    public SwitchSettingItemUIModel(
             int id, String title, String subtitle, boolean isUseOnClick, String labelType) {
         super(id, title, subtitle);
         this.useOnClick = isUseOnClick;
