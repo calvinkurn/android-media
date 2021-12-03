@@ -26,8 +26,12 @@ class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlR
                 this.setGraphqlQuery(GetCMHomeWidgetGQLQuery())
                 this.execute(
                     { result ->
-                        updatePreviousRefreshTime()
-                        onSuccess(result.cmHomeWidgetDataResponse)
+                        if (result.cmHomeWidgetDataResponse.status == STATUS_SUCCESS_CODE) {
+                            updatePreviousRefreshTime()
+                            onSuccess(result.cmHomeWidgetDataResponse)
+                        } else {
+                            onError(Throwable())
+                        }
                     }, { error ->
                         onError(error)
                     }
@@ -48,5 +52,6 @@ class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlR
 
     companion object {
         const val REFRESH_INTERVAL_MILLIS = 60000L //60 sec
+        const val STATUS_SUCCESS_CODE = 200
     }
 }
