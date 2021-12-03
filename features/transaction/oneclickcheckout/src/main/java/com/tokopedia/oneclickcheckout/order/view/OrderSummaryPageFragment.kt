@@ -299,7 +299,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun initViews() {
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderShopCardListener(), getOrderProductCardListener(), getOrderPreferenceCardListener(),
                 getOrderInsuranceCardListener(), getOrderPromoCardListener(), getOrderTotalPaymentCardListener())

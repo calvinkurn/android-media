@@ -294,7 +294,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun setupBackgroundColor() {
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(
-                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
     }

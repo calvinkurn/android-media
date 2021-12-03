@@ -160,6 +160,6 @@ fun TextFieldUnify2?.updateText(text: String) {
 fun Fragment.setFragmentToUnifyBgColor() {
     if (activity != null && context != null) {
         activity!!.window.decorView.setBackgroundColor(ContextCompat.getColor(
-                context!!, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                context!!, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 }
