@@ -44,7 +44,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                     partnerInfo = mapPartnerInfo(it.partner),
                     likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
                     channelReportInfo = mapChannelReportInfo(it.id, extraParams),
-                    cartInfo = mapCartInfo(it.config),
                     pinnedInfo = mapPinnedInfo(it.pinnedMessage, it.partner, it.config),
                     quickReplyInfo = mapQuickReply(it.quickReplies),
                     videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
@@ -70,10 +69,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     )
 
     private fun mapPartnerInfo(partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PlayPartnerInfo(
-            id = partnerResponse.id.toLongOrZero(),
-            name = htmlTextTransformer.transform(partnerResponse.name),
-            type = PartnerType.getTypeByValue(partnerResponse.type),
-            status = PlayPartnerFollowStatus.Unknown,
+        id = partnerResponse.id.toLongOrZero(),
+        name = htmlTextTransformer.transform(partnerResponse.name),
+        type = PartnerType.getTypeByValue(partnerResponse.type),
+        status = PlayPartnerFollowStatus.Unknown,
+        iconUrl = partnerResponse.thumbnailUrl,
+        badgeUrl = partnerResponse.badgeUrl,
     )
 
     private fun mapLikeInfo(
@@ -133,10 +134,6 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return multipleLikesMapper.mapMultipleLikeConfig(configs)
     }
 
-    private fun mapCartInfo(configResponse: ChannelDetailsWithRecomResponse.Config) = PlayCartInfoUiModel(
-            shouldShow = configResponse.showCart
-    )
-
     private fun mapPinnedInfo(
             pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage,
             partnerResponse: ChannelDetailsWithRecomResponse.Partner,
@@ -159,8 +156,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapPinnedMessage(pinnedMessageResponse: ChannelDetailsWithRecomResponse.PinnedMessage, partnerResponse: ChannelDetailsWithRecomResponse.Partner) = PinnedMessageUiModel(
             id = pinnedMessageResponse.id,
-            applink = pinnedMessageResponse.redirectUrl,
-            partnerName = htmlTextTransformer.transform(partnerResponse.name),
+            appLink = pinnedMessageResponse.redirectUrl,
             title = pinnedMessageResponse.title,
     )
 

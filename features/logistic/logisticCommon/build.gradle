@@ -4,6 +4,12 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'io.hansel.preprocessor.module'
 
+android {
+    buildFeatures {
+        viewBinding true
+    }
+}
+
 kapt {
     correctErrorTypes = true
     useBuildCache = true
