@@ -71,6 +71,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 interlocutor.shopId,
                 interlocutor.isOfficial,
                 interlocutor.isGold,
+                interlocutor.shopType,
                 interlocutor.badge
         )
     }

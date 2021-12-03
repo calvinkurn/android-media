@@ -558,8 +558,17 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             }
         }
 
-        override fun onClickAutoComplete() {
+        override fun onClickAutoComplete(isFavoriteContact: Boolean) {
             inputNumberActionType = InputNumberActionType.AUTOCOMPLETE
+            if (isFavoriteContact) {
+                topupAnalytics.clickFavoriteContactAutoComplete(
+                    categoryId, operatorName, userSession.userId
+                )
+            } else {
+                topupAnalytics.clickFavoriteNumberAutoComplete(
+                    categoryId, operatorName, userSession.userId
+                )
+            }
         }
     }
 

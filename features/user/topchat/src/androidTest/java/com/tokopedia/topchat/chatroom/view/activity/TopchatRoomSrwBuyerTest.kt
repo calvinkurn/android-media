@@ -1252,10 +1252,70 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertComposedTextValue(typedMsg)
     }
 
+    @Test
+    fun should_re_render_SRW_preview_question_everytime_user_attach_new_preview_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity()
+
+        // When
+        intendingAttachProduct(1)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
+        intendingAttachProduct(3)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(3)
+    }
+
+    @Test
+    fun should_re_render_SRW_preview_question_when_user_remove_one_of_the_preview_product() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity()
+
+        // When
+        intendingAttachProduct(3)
+        clickPlusIconMenu()
+        clickAttachProductMenu()
+        chatSrwUseCase.response = chatSrwUseCase.multipleQuestions
+        clickCloseAttachmentPreview(0)
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(3)
+    }
+
+    /**
+     * Simulate when messageId is empty
+     */
+    @Test
+    fun should_render_srw_question_when_product_coming_from_chat_entry_point_such_as_pdp() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity {
+            it.putExtra(ApplinkConst.Chat.MESSAGE_ID, "")
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(1)
+    }
+
     // TODO: SRW should hide broadcast handler if visible
     // TODO: SRW bubble should send delayed when user is in the middle of the page (from chat search)
     // TODO: SRW bubble should removed when user receive voucher event from ws.
-
 
     private fun getAttachInvoiceResult(): Instrumentation.ActivityResult {
         val intent = Intent().apply {
@@ -1286,7 +1346,6 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         )
     }
 
-    // TODO: identify why not pointing to `Hari Ini`
     private fun today(): Long {
         val stringDate = SendableUiModel.generateStartTime()
         return RfcDateTimeParser.parseDateString(
