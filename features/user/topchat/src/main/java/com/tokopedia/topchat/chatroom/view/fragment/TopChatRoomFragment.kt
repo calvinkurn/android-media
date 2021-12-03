@@ -1519,7 +1519,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
-        analytics.eventClickBuyProductAttachment(element)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else if (isOCCActive() && element.isEligibleOCC()) {
@@ -1543,7 +1542,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
-        analytics.eventClickAddToCartProductAttachment(element, session)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else {
