@@ -285,6 +285,9 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
             AffiliatePromoFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 PROMO_MENU
             )
+            AffiliateIncomeFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
+                    INCOME_MENU
+            )
             BaseSessionWebViewFragment::class.java.name -> affiliateBottomNavigation?.selectBottomTab(
                 HELP_MENU
             )
