@@ -12,7 +12,7 @@ import org.junit.Test
 class AtcBuyCassavaTest: TopchatRoomTest() {
 
     @get:Rule
-    var cassavaTestRule = CassavaTestRule(true, false)
+    var cassavaTestRule = CassavaTestRule(true, true)
 
     @Test
     fun product_card_atc_and_buy_tracker_test() {
