@@ -85,6 +85,7 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
@@ -1426,10 +1427,8 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     private fun observePlayWidget() {
         viewModel.playWidgetModel.observe(viewLifecycleOwner, {
             when (it) {
-                is Success -> pdpUiUpdater?.updatePlayWidget(it.data)
-                is Fail -> {
-                    pdpUiUpdater?.removeComponent(ProductDetailConstant.PLAY_CAROUSEL)
-                }
+                is Success -> handlePlayWidgetUiModel(it.data)
+                is Fail -> pdpUiUpdater?.removeComponent(ProductDetailConstant.PLAY_CAROUSEL)
             }
             updateUi()
         })
@@ -1445,6 +1444,12 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                 )
             }
         })
+    }
+
+    private fun handlePlayWidgetUiModel(playWidgetUiModel: PlayWidgetUiModel){
+        if(playWidgetUiModel is PlayWidgetUiModel.Medium && playWidgetUiModel.items.size < 3){
+            pdpUiUpdater?.removeComponent(ProductDetailConstant.PLAY_CAROUSEL)
+        }else pdpUiUpdater?.updatePlayWidget(playWidgetUiModel)
     }
 
     private fun onSuccessUpdateAddress() {
