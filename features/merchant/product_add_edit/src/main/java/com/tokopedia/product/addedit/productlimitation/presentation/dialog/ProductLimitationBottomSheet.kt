@@ -13,12 +13,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.customview.TabletAdaptiveBottomSheet
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.productlimitation.domain.constant.AddEditProductUrlConstants.Companion.URL_PRODUCT_LIMITATION_EDU
 import com.tokopedia.product.addedit.productlimitation.presentation.adapter.ProductLimitationItemAdapter
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationActionItemModel
 import com.tokopedia.product.addedit.tracking.ProductLimitationTracking
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 
@@ -26,7 +26,7 @@ class ProductLimitationBottomSheet(
         private val actionItems: List<ProductLimitationActionItemModel> = emptyList(),
         private val isEligible: Boolean = false,
         private val limitAmount: Int = 0
-) : BottomSheetUnify() {
+) : TabletAdaptiveBottomSheet() {
 
     companion object {
         const val TAG = "Tag Product Limitation Bottom Sheet"
