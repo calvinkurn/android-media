@@ -64,6 +64,7 @@ class PdpCheckoutThankyouJourneyTest {
         }
         thankYou {
             mockPayAndNavigateThankYou(activity)
+            waitForData()
         }
         MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ID), hasAllSuccess())
     }
