@@ -6,6 +6,7 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.dg_transaction.testing.di.DaggerStubEmoneyPdpComponent
@@ -18,6 +19,9 @@ import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.utils.PdpCheckou
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.thankyou_native.presentation.activity.ARG_MERCHANT
+import com.tokopedia.thankyou_native.presentation.activity.ARG_PAYMENT_ID
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
@@ -55,8 +59,15 @@ class PdpCheckoutThankyouJourneyTest {
         digitalCheckout {
             waitForData()
             clickCheckout()
+            waitForData()
+            mockPayAndNavigateThankYou()
+            waitForData()
         }
         MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ID), hasAllSuccess())
+    }
+
+    private fun mockPayAndNavigateThankYou() {
+        RouteManager.route(activity, "tokopedia://payment/thankyou?payment_id=0000&merchant=tokopedia")
     }
 
     private fun setUpLaunchActivity() {
