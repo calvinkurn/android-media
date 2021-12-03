@@ -1,6 +1,6 @@
 package com.tokopedia.broadcaster.tracker
 
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.*

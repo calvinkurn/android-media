@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.log.util.timeFormat
 import com.tokopedia.broadcaster.databinding.ItemChuckerLogBinding
 

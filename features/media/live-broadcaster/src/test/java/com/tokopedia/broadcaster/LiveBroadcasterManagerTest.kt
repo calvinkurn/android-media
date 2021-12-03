@@ -5,7 +5,7 @@ import android.os.Handler
 import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.state.BroadcasterState
-import com.tokopedia.broadcaster.utils.BroadcasterUtil
+import com.tokopedia.broadcaster.utils.BroadcasterUtils
 import com.wmspanel.libstream.Streamer
 import io.mockk.mockkObject
 import io.mockk.unmockkAll
@@ -19,7 +19,7 @@ class LiveBroadcasterManagerTest : BaseLiveBroadcasterManagerTest() {
 
     @Before
     fun setUp() {
-        mockkObject(BroadcasterUtil)
+        mockkObject(BroadcasterUtils)
         mockkObject(CameraManager)
     }
 

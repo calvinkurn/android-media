@@ -9,7 +9,7 @@ import com.wmspanel.libstream.CameraConfig
 import com.wmspanel.libstream.Streamer
 import com.wmspanel.libstream.VideoConfig
 
-object BroadcasterUtil {
+object BroadcasterUtils {
 
     fun getCameraConfig(
         cameraInfo: CameraInfo,

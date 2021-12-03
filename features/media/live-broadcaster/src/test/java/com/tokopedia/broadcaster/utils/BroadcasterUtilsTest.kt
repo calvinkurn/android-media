@@ -7,14 +7,14 @@ import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class BroadcasterUtilTest {
+class BroadcasterUtilsTest {
 
     @Test
     fun `should be able change audio config`() {
         // given
         val audioRate = 123
         // when
-        val result = BroadcasterUtil.getAudioConfig(BroadcasterConfig(
+        val result = BroadcasterUtils.getAudioConfig(BroadcasterConfig(
             audioRate = audioRate
         ))
 
@@ -31,7 +31,7 @@ class BroadcasterUtilTest {
         every { mediaCodecList.codecInfos } returns arrayOf()
 
         // when
-        val result = BroadcasterUtil.getVideoConfig(
+        val result = BroadcasterUtils.getVideoConfig(
             config = BroadcasterConfig(videoBitrate = videoBitrate),
             mediaCodecList = mediaCodecList
         )

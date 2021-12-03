@@ -12,15 +12,16 @@ import com.tokopedia.broadcaster.camera.CameraManager
 import com.tokopedia.broadcaster.camera.CameraType
 import com.tokopedia.broadcaster.lib.BroadcasterConnection
 import com.tokopedia.broadcaster.data.BroadcasterConfig
+import com.tokopedia.broadcaster.data.consts.*
 import com.tokopedia.broadcaster.lib.LarixStreamer
 import com.tokopedia.broadcaster.lib.LarixStreamerFactory
 import com.tokopedia.broadcaster.listener.BroadcasterListener
 import com.tokopedia.broadcaster.state.BroadcasterState
 import com.tokopedia.broadcaster.state.isError
 import com.tokopedia.broadcaster.log.ui.notification.NotificationBuilder
-import com.tokopedia.broadcaster.tracker.LiveBroadcasterLogger
-import com.tokopedia.broadcaster.utils.BroadcasterUtil
-import com.tokopedia.broadcaster.utils.BroadcasterUtil.getCameraConfig
+import com.tokopedia.broadcaster.tracker.BroadcasterStatistic
+import com.tokopedia.broadcaster.utils.BroadcasterUtils
+import com.tokopedia.broadcaster.utils.BroadcasterUtils.getCameraConfig
 import com.tokopedia.broadcaster.utils.DeviceInfo
 import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
@@ -37,7 +38,7 @@ class LiveBroadcasterManager constructor(
     var streamer: LarixStreamer? = null,
     var mConfig: BroadcasterConfig = BroadcasterConfig(),
     var mConnection: BroadcasterConnection = BroadcasterConnection(),
-    val logger: LiveBroadcasterLogger = LiveBroadcasterLogger(),
+    val statistic: BroadcasterStatistic = BroadcasterStatistic(),
 ) : LiveBroadcaster, Streamer.Listener, CoroutineScope {
 
     private var mListener: BroadcasterListener? = null
@@ -74,16 +75,16 @@ class LiveBroadcasterManager constructor(
         this.mContext = context
 
         if (!DeviceInfo.isDeviceSupported()) {
-            throw IllegalAccessException("please use device with armeabi-v7a or arm64-v8a")
+            throw IllegalAccessException(THROW_DEVICE_NOT_SUPPORTED)
         }
 
         if (!isDeviceHaveCameraAvailable(context)) {
-            throw IllegalAccessException("unable to live stream as no camera available")
+            throw IllegalAccessException(THROW_NO_CAMERA_AVAILABLE)
         }
     }
 
     override fun prepare(config: BroadcasterConfig?) {
-        if (hasPrepared) throw IllegalAccessException("the streamer already prepared")
+        if (hasPrepared) throw IllegalAccessException(THROW_STREAMER_ALREADY_PREPARED)
         if (config != null) mConfig = config
 
         configureStreamer(mConfig)
@@ -114,9 +115,7 @@ class LiveBroadcasterManager constructor(
     }
 
     override fun start(url: String) {
-        if (mContext == null) {
-            throw IllegalAccessException("you have to initialize first with call init()")
-        }
+        if (mContext == null) throw IllegalAccessException(THROW_FORGET_TO_INIT)
 
         if (GlobalConfig.DEBUG) {
             mContext?.let {
@@ -164,7 +163,7 @@ class LiveBroadcasterManager constructor(
     }
 
     override fun getHandler(): Handler {
-        return mHandler ?: throw IllegalStateException("LiveBroadcasterManager is not initialized.")
+        return mHandler ?: throw IllegalStateException(THROW_FORGET_TO_INIT)
     }
 
     override fun onConnectionStateChanged(
@@ -184,14 +183,14 @@ class LiveBroadcasterManager constructor(
             Streamer.STATUS.CONN_FAIL -> broadcastState(
                 BroadcasterState.Error(
                     if (isPushStarted) {
-                        "network: network fail"
+                        ERROR_NETWORK_FAIL
                     } else {
-                        "connect fail: Can not connect to server"
+                        ERROR_CONNECTION_FAIL
                     }
                 )
             )
             Streamer.STATUS.AUTH_FAIL -> broadcastState(
-                BroadcasterState.Error("connect fail: Can not connect to server authentication failure, please check stream credentials.")
+                BroadcasterState.Error(ERROR_AUTH_FAIL)
             )
             Streamer.STATUS.UNKNOWN_FAIL -> {
                 if (state == Streamer.CONNECTION_STATE.DISCONNECTED
@@ -201,11 +200,11 @@ class LiveBroadcasterManager constructor(
 
                 if (info?.length().orZero() > 0) {
                     broadcastState(
-                        BroadcasterState.Error("network: reason ${info?.toString()}")
+                        BroadcasterState.Error("network: ${info?.toString()}")
                     )
                 } else {
                     broadcastState(
-                        BroadcasterState.Error("network: unknown network fail")
+                        BroadcasterState.Error(ERROR_UNKNOWN_FAIL)
                     )
                 }
             }
@@ -215,7 +214,7 @@ class LiveBroadcasterManager constructor(
                     Streamer.CONNECTION_STATE.INITIALIZED,
                     Streamer.CONNECTION_STATE.SETUP,
                     Streamer.CONNECTION_STATE.DISCONNECTED -> {} // ignored
-                    Streamer.CONNECTION_STATE.CONNECTED -> logger.init(streamer, connectionId)
+                    Streamer.CONNECTION_STATE.CONNECTED -> statistic.init(streamer, connectionId)
                     Streamer.CONNECTION_STATE.RECORD -> {
                         when {
                             lastState.isError -> broadcastState(BroadcasterState.Recovered)
@@ -234,8 +233,12 @@ class LiveBroadcasterManager constructor(
     override fun onVideoCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         if (state == null) return
         when(state) {
-            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(BroadcasterState.Error("system: Video encoding failure, try to change video resolution"))
-            Streamer.CAPTURE_STATE.FAILED -> broadcastState(BroadcasterState.Error("system: Video capture failure"))
+            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(
+                BroadcasterState.Error(ERROR_VIDEO_ENCODING_FAIL)
+            )
+            Streamer.CAPTURE_STATE.FAILED -> broadcastState(
+                BroadcasterState.Error(ERROR_VIDEO_CAPTURE_FAIL)
+            )
             Streamer.CAPTURE_STATE.STARTED,
             Streamer.CAPTURE_STATE.STOPPED -> {
                 // ignored
@@ -246,8 +249,12 @@ class LiveBroadcasterManager constructor(
     override fun onAudioCaptureStateChanged(state: Streamer.CAPTURE_STATE?) {
         if (state == null) return
         when(state) {
-            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(BroadcasterState.Error("system: Audio encoding failure"))
-            Streamer.CAPTURE_STATE.FAILED -> broadcastState(BroadcasterState.Error("system: Audio capture failure"))
+            Streamer.CAPTURE_STATE.ENCODER_FAIL -> broadcastState(
+                BroadcasterState.Error(ERROR_AUDIO_ENCODING_FAIL)
+            )
+            Streamer.CAPTURE_STATE.FAILED -> broadcastState(
+                BroadcasterState.Error(ERROR_AUDIO_CAPTURE_FAIL)
+            )
             Streamer.CAPTURE_STATE.STARTED,
             Streamer.CAPTURE_STATE.STOPPED -> {
                 // ignored
@@ -280,7 +287,7 @@ class LiveBroadcasterManager constructor(
         builder.setListener(this)
 
         // configure audio
-        builder.setAudioConfig(BroadcasterUtil.getAudioConfig(mConfig))
+        builder.setAudioConfig(BroadcasterUtils.getAudioConfig(mConfig))
 
         // configure camera
         builder.setCamera2(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -295,7 +302,7 @@ class LiveBroadcasterManager constructor(
 
         // configure video
         val cameraSize = CameraManager.getVideoSize(activeCamera) ?: mConfig.getVideoSize()
-        val videoConfig = BroadcasterUtil.getVideoConfig(mConfig, cameraSize)
+        val videoConfig = BroadcasterUtils.getVideoConfig(mConfig, cameraSize)
         builder.setVideoConfig(videoConfig)
 
         mAvailableCameras.forEach {
@@ -355,8 +362,8 @@ class LiveBroadcasterManager constructor(
     }
 
     private fun configureStreamer(config: BroadcasterConfig) {
-        streamer?.changeAudioConfig(BroadcasterUtil.getAudioConfig(config))
-        streamer?.changeVideoConfig(BroadcasterUtil.getVideoConfig(config))
+        streamer?.changeAudioConfig(BroadcasterUtils.getAudioConfig(config))
+        streamer?.changeVideoConfig(BroadcasterUtils.getVideoConfig(config))
     }
 
     private fun setMirrorFrontCamera() {
@@ -402,8 +409,8 @@ class LiveBroadcasterManager constructor(
         statisticUpdateTimer?.schedule(object : TimerTask() {
             override fun run() {
                 mHandler?.post {
-                    mContext?.let { logger.update(it, mConnection.uri, mConfig) }
-                    mListener?.onUpdateLivePusherStatistic(logger)
+                    mContext?.let { statistic.update(it, mConnection.uri, mConfig) }
+                    mListener?.onUpdateLivePusherStatistic(statistic)
                 }
             }
 
@@ -414,7 +421,7 @@ class LiveBroadcasterManager constructor(
         try {
             statisticUpdateTimer?.cancel()
             statisticUpdateTimer = null
-            logger.tracker.stopTrack()
+            statistic.tracker.stopTrack()
         } catch (ignored: Exception) { }
     }
 

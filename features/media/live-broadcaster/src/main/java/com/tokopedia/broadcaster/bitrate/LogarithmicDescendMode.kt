@@ -10,7 +10,7 @@ class LogarithmicDescendMode : BitrateAdapter() {
 
     override fun start(streamer: LarixStreamer, bitrate: Long, connectionId: Int) {
         mFullBitrate = bitrate
-        mMinBitrate = bitrate / 4
+        mMinBitrate = bitrate / LOST_TOLERANCE
         super.start(streamer, bitrate, connectionId)
     }
 

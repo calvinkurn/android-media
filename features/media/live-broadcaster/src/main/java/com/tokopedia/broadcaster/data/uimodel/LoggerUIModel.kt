@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.uimodel
+package com.tokopedia.broadcaster.data.uimodel
 
 import android.os.Parcelable
 import com.tokopedia.broadcaster.data.AudioType

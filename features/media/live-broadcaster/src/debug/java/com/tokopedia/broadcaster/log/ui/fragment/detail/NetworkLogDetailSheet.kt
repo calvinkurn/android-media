@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.broadcaster.R
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.databinding.DialogBroadcasterChuckerDetailBinding
 import com.tokopedia.utils.htmltags.HtmlUtil
 

@@ -1,7 +1,7 @@
 package com.tokopedia.broadcaster.log.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 
 class DiffUtilCallback constructor(
     private val oldData: MutableList<LoggerUIModel>,

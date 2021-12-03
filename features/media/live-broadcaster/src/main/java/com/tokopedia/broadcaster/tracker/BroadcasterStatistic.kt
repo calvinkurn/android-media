@@ -4,14 +4,14 @@ import android.content.Context
 import com.tokopedia.broadcaster.lib.LarixStreamer
 import com.tokopedia.broadcaster.log.data.NetworkLogDataSource
 import com.tokopedia.broadcaster.log.data.mapper.mapToData
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.data.BroadcasterConfig
 import com.tokopedia.broadcaster.mediator.LivePusherStatistic
 import com.tokopedia.config.GlobalConfig
 import java.util.*
 import kotlin.math.ceil
 
-class LiveBroadcasterLogger : LivePusherStatistic {
+class BroadcasterStatistic : LivePusherStatistic {
 
     private var mStreamer: LarixStreamer? = null
     private var mConnectionId: Int? = null

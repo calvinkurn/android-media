@@ -1,7 +1,7 @@
 package com.tokopedia.broadcaster.log.data.mapper
 
 import com.tokopedia.broadcaster.log.data.entity.NetworkLog
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 
 fun List<NetworkLog>.mapToUI(): MutableList<LoggerUIModel> {
     return map {

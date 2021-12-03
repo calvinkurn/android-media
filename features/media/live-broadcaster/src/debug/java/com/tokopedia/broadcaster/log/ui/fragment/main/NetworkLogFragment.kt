@@ -11,7 +11,7 @@ import com.tokopedia.broadcaster.log.di.module.NetworkLogModule
 import com.tokopedia.broadcaster.log.ui.adapter.ChuckerAdapter
 import com.tokopedia.broadcaster.log.ui.adapter.StatsNerdItemListener
 import com.tokopedia.broadcaster.log.ui.fragment.detail.NetworkLogDetailSheet
-import com.tokopedia.broadcaster.uimodel.LoggerUIModel
+import com.tokopedia.broadcaster.data.uimodel.LoggerUIModel
 import com.tokopedia.broadcaster.log.ui.viewmodel.NetworkLogViewModel
 import com.tokopedia.broadcaster.databinding.FragmentChuckerBroadcasterBinding
 import com.tokopedia.utils.view.binding.viewBinding
