@@ -303,41 +303,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun goToWishlist() {
-        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
-            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
-        } else {
-            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        }
-    }
-
-    private fun getRemoteConfig(): RemoteConfig? {
-        activity?.let {
-            remoteConfig = FirebaseRemoteConfigImpl(it)
-        }
-        return remoteConfig
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        return remoteConfigInstance?.abTestPlatform
-    }
-
-    private fun isEligibleForWishlistRevamp(): Boolean {
-        return try {
-            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
-        return try {
-            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, false) == true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+        RouteManager.route(context, NEW_WISHLIST)
     }
 
     private fun loadNewProductData() {

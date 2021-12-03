@@ -10,11 +10,11 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperPurchasePlatform {
     fun getRegisteredNavigationWishlist(context: Context): String {
-        var returnedDeeplink: String
-        if (useWishlistV2(context)) {
-            returnedDeeplink = ApplinkConstInternalPurchasePlatform.WISHLIST_V2
+        val returnedDeeplink: String
+        returnedDeeplink = if (useWishlistV2(context)) {
+            ApplinkConstInternalPurchasePlatform.WISHLIST_V2
         } else {
-            returnedDeeplink = ApplinkConsInternalHome.HOME_WISHLIST
+            ApplinkConsInternalHome.HOME_WISHLIST
         }
         return returnedDeeplink
     }
@@ -25,7 +25,7 @@ object DeeplinkMapperPurchasePlatform {
 
             val remoteConfig = FirebaseRemoteConfigInstance.get(context)
             val remoteConfigFirebase: Boolean = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_WISHLIST_REVAMP_v2)
-            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_V2_REVAMP && remoteConfigFirebase)
+            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_V2_VARIANT && remoteConfigFirebase)
 
         } catch (e: Exception) {
             true

@@ -22,11 +22,10 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.NEW_WISHLIST
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -1989,40 +1988,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun goToWishlistPage() {
-        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
-            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
-        } else {
-            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        }
-    }
-
-    private fun getRemoteConfig(): RemoteConfig? {
-        activity?.let {
-            remoteConfig = FirebaseRemoteConfigImpl(it)
-        }
-        return remoteConfig
-    }
-
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        return remoteConfigInstance?.abTestPlatform
-    }
-
-    private fun isEligibleForWishlistRevamp(): Boolean {
-        return try {
-            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
-        return try {
-            getRemoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, false) == true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+        RouteManager.route(context, NEW_WISHLIST)
     }
 }

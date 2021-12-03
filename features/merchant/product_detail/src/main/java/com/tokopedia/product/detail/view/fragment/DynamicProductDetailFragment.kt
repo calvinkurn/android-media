@@ -26,15 +26,14 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.NEW_WISHLIST
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
@@ -3116,29 +3115,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToWishlist() {
-        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
-            RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_V2)
-        } else {
-            RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
-        }
-    }
-
-    private fun isEligibleForWishlistRevamp(): Boolean {
-        return try {
-            getAbTestPlatform()?.getString(RollenceKey.WISHLIST_V2_REVAMP, "") == RollenceKey.WISHLIST_V2_REVAMP
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
-
-    private fun isRemoteConfigWishlistV2Revamp(): Boolean {
-        return try {
-            remoteConfig()?.getBoolean(ENABLE_REVAMP_WISHLIST_V2, false) == true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
+        RouteManager.route(context, NEW_WISHLIST)
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {
