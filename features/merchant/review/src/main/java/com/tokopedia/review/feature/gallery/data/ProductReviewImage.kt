@@ -97,7 +97,10 @@ data class ReviewDetail(
     val totalLike: Int = 0,
     @SerializedName("userStats")
     @Expose
-    val userStats: List<UserReviewStats> = listOf()
+    val userStats: List<UserReviewStats> = listOf(),
+    @SerializedName("badRatingReasonFmt")
+    @Expose
+    val badRatingReasonFmt: String = ""
 )
 
 data class ReviewGalleryImage(

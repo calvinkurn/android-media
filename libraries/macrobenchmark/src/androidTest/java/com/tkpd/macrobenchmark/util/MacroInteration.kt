@@ -6,14 +6,11 @@ import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiDevice
 
 object MacroInteration {
-    fun basicRecyclerviewInteraction(rvResourceId: String) {
+    fun basicRecyclerviewInteraction(packageName: String, rvResourceId: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
-        val recycler = device.findObject(
-            By.res(MacroIntent.TKPD_PACKAGE_NAME,
-                rvResourceId
-            ))
+        val recycler = device.findObject(By.res(packageName, rvResourceId))
         // Set gesture margin to avoid triggering gesture navigation
         // with input events from automation.
         recycler.setGestureMargin(device.displayWidth / 5)

@@ -20,6 +20,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.view.contract.PlayFullscreenManager
@@ -31,6 +32,7 @@ import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewcomponent.FragmentErrorViewComponent
+import com.tokopedia.play.view.viewcomponent.FragmentUpcomingViewComponent
 import com.tokopedia.play.view.viewcomponent.LoadingViewComponent
 import com.tokopedia.play.view.viewcomponent.SwipeContainerViewComponent
 import com.tokopedia.play.view.viewmodel.PlayParentViewModel
@@ -102,6 +104,10 @@ class PlayActivity : BaseActivity(),
         FragmentErrorViewComponent(startChannelId, it, R.id.fl_global_error, supportFragmentManager)
     }
 
+    private val fragmentUpcomingView by viewComponent {
+        FragmentUpcomingViewComponent(it, R.id.fcv_upcoming, supportFragmentManager)
+    }
+
     /**
      * Applink
      */
@@ -114,12 +120,12 @@ class PlayActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
-
-        CastContext.getSharedInstance(applicationContext)
         
         startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
+
+        PlayCastHelper.getCastContext(this)
 
         removePip()
 
@@ -261,8 +267,16 @@ class PlayActivity : BaseActivity(),
                     ivLoading.hide()
                     fragmentErrorViewOnStateChanged(shouldShow = false)
                 }
+                is PageResultState.Upcoming -> {
+                    ivLoading.hide()
+                    fragmentUpcomingView.safeInit((it.state as PageResultState.Upcoming).channelId)
+                }
             }
-            swipeContainerView.setChannelIds(it.currentValue)
+
+            if(it.state !is PageResultState.Upcoming) {
+                fragmentUpcomingView.safeRelease()
+                swipeContainerView.setChannelIds(it.currentValue)
+            }
         }
     }
 
@@ -279,16 +293,27 @@ class PlayActivity : BaseActivity(),
                 if (isSystemBack && orientation.isLandscape) onOrientationChanged(ScreenOrientation.Portrait, false)
                 else {
                     if (isTaskRoot) {
-                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                        startActivity(intent)
-                        finish()
+                        gotoHome()
                     } else {
                         fragment.setResultBeforeFinish()
                         supportFinishAfterTransition()
                     }
                 }
             }
-        } else super.onBackPressed()
+        } else {
+            if (isTaskRoot) {
+                gotoHome()
+            } else {
+                fragmentUpcomingView.getActiveFragment()?.setResultBeforeFinish()
+                supportFinishAfterTransition()
+            }
+        }
+    }
+
+    private fun gotoHome() {
+        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        startActivity(intent)
+        finish()
     }
 
     override fun requestEnableNavigation() {

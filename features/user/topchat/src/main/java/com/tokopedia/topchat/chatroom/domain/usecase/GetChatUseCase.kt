@@ -206,6 +206,7 @@ open class GetChatUseCase @Inject constructor(
               domain
               isOfficial
               isGold
+              shopType
               badge
               status {
                 timestamp

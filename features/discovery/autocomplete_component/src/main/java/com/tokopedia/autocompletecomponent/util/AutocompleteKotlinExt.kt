@@ -2,6 +2,9 @@ package com.tokopedia.autocompletecomponent.util
 
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst.Component.INITIAL_STATE_MANUAL_ENTER
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.SRP_COMPONENT_ID
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -40,4 +43,20 @@ internal fun Map<String, String>.getWithDefault(key: String, defaultValue: Strin
 
 internal fun MutableMap<String, String>.removeKeys(vararg keys: String) {
     keys.forEach { this.remove(it) }
+}
+
+internal fun MutableMap<String, String>.addComponentId() {
+    val query = get(SearchApiConst.Q) ?: ""
+
+    if (query.isEmpty())
+        put(SRP_COMPONENT_ID, INITIAL_STATE_MANUAL_ENTER)
+}
+
+internal fun MutableMap<String, String>.addQueryIfEmpty() {
+    val query = get(SearchApiConst.Q) ?: ""
+
+    if (query.isEmpty()) {
+        val hint = get(SearchApiConst.HINT) ?: ""
+        put(SearchApiConst.Q, hint)
+    }
 }

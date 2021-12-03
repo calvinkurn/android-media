@@ -6,49 +6,55 @@
         <activity
             android:name=".view.activity.CreateAutoAdsActivity"
             android:theme="@style/Theme.WhiteUnify"
-            android:label="@string/auto_ads_creation" >
+            android:label="@string/auto_ads_creation"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
-                    android:path="@string/path_topads_autoads_create"/>
+                    android:path="@string/path_topads_autoads_create" />
             </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.EditBudgetAutoAdsActivity"
             android:label="@string/autoads_pengaturan_iklan"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify" >
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
-                    android:path="@string/path_topads_edit_autoads"/>
+                    android:path="@string/path_topads_edit_autoads" />
             </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.AutoAdsOnboardingActivity"
             android:label="@string/auto_ads_creation"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
-        <intent-filter>
-            <action android:name="com.tokopedia.internal.VIEW" />
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data
-                android:scheme="@string/internal_scheme"
-                android:host="@string/host_topads"
-                android:path="@string/path_autoads_onboarding"/>
-        </intent-filter></activity>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_topads"
+                    android:path="@string/path_autoads_onboarding" />
+            </intent-filter>
+        </activity>
     </application>
-
 </manifest>

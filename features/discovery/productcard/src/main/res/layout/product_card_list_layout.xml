@@ -62,7 +62,7 @@
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
             android:text="@string/product_card_topads"
-            android:textColor="@color/Unify_N0"
+            android:textColor="@color/product_card_dms_ad_color"
             android:visibility="gone"
             android:shadowColor="@color/Unify_N700_44"
             android:shadowDy="1"

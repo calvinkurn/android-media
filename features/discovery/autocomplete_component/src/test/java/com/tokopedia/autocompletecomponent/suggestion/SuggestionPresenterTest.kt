@@ -31,11 +31,13 @@ private const val suggestionCampaignAtTopResponse = "autocomplete/suggestion/loc
 
 internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
 
+    private val keyword: String = "asus"
     private val searchProductPageTitle = "Waktu Indonesia Belanja"
     private val searchParameter = mapOf(
-            SearchApiConst.NAVSOURCE to "clp",
-            SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
-            SearchApiConst.SRP_PAGE_ID to "1234"
+        SearchApiConst.Q to keyword,
+        SearchApiConst.NAVSOURCE to "clp",
+        SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
+        SearchApiConst.SRP_PAGE_ID to "1234"
     )
     private val expectedDefaultDimension90 = SearchConstant.CustomDimension.DEFAULT_VALUE_CUSTOM_DIMENSION_90_GLOBAL
     private val expectedLocalDimension90 =
@@ -100,7 +102,9 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
     }
 
     private fun `when presenter get suggestion data`(
-        searchParameter: Map<String, String> = mapOf(),
+        searchParameter: Map<String, String> = mapOf(
+            SearchApiConst.Q to keyword,
+        ),
     ) {
         suggestionPresenter.getSuggestion(searchParameter)
     }
@@ -132,7 +136,11 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
         assertVisitableListData(visitableList, suggestionUniverse, expectedDefaultDimension90)
     }
 
-    private fun assertVisitableListData(visitableList: List<Visitable<*>>, suggestionUniverse: SuggestionUniverse, dimension90: String = "") {
+    private fun assertVisitableListData(
+        visitableList: List<Visitable<*>>,
+        suggestionUniverse: SuggestionUniverse,
+        dimension90: String = ""
+    ) {
         var expectedPosition = 0
         visitableList.forEach { visitable ->
             val expectedItem = suggestionUniverse.data.items[expectedPosition]
@@ -146,15 +154,30 @@ internal class SuggestionPresenterTest: SuggestionPresenterTestFixtures() {
                     expectedPosition++
                 }
                 is SuggestionSingleLineDataDataView -> {
-                    visitable.assertBaseSuggestionDataView(SUGGESTION_SINGLE_LINE, expectedItem, dimension90)
+                    visitable.data.assertBaseSuggestionDataView(
+                        SUGGESTION_SINGLE_LINE,
+                        expectedItem,
+                        dimension90,
+                        keyword,
+                    )
                     expectedPosition++
                 }
                 is SuggestionDoubleLineDataDataView -> {
-                    visitable.assertBaseSuggestionDataView(SUGGESTION_DOUBLE_LINE, expectedItem, dimension90)
+                    visitable.data.assertBaseSuggestionDataView(
+                        SUGGESTION_DOUBLE_LINE,
+                        expectedItem,
+                        dimension90,
+                        keyword,
+                    )
                     expectedPosition++
                 }
                 is SuggestionChipWidgetDataView -> {
-                    visitable.assertBaseSuggestionDataView(SUGGESTION_CHIP_WIDGET, expectedItem, dimension90)
+                    visitable.data.assertBaseSuggestionDataView(
+                        SUGGESTION_CHIP_WIDGET,
+                        expectedItem,
+                        dimension90,
+                        keyword,
+                    )
                     visitable.assertSuggestionChipWidgetDataView(expectedItem.suggestionChildItems)
                     expectedPosition++
                 }

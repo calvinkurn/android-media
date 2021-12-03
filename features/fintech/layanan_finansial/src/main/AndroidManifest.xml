@@ -1,22 +1,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.layanan_finansial" >
+    package="com.tokopedia.layanan_finansial">
 
     <application>
-        <activity android:name=".view.acitivity.LayananAcitivity"
+        <activity
+            android:name=".view.acitivity.LayananAcitivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
-            >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_layanan_finansial"
-                    android:path="/"/>
+                    android:path="/" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
