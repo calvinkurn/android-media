@@ -36,7 +36,7 @@ class InactivePhoneViewModelTest {
     val observerGetStatusInactivePhoneNumber = mockk<Observer<Result<StatusInactivePhoneNumberDataModel>>>(relaxed = true)
 
     private var viewModel: InactivePhoneViewModel? = null
-    private val inactivePhoneUserDataModel = InactivePhoneUserDataModel(
+    private var inactivePhoneUserDataModel = InactivePhoneUserDataModel(
         email = "rivaldy.firmansyah@gmail.com",
         oldPhoneNumber = "084444123123",
         newPhoneNumber = "084444123456",
@@ -44,6 +44,8 @@ class InactivePhoneViewModelTest {
         userIdEnc = "#EncryptedUserId",
         validateToken = "#UserToken"
     )
+
+    private val mockThrowable = Throwable("Opps!")
 
     @Before
     fun setup() {
@@ -160,6 +162,37 @@ class InactivePhoneViewModelTest {
     }
 
     @Test
+    fun `Phone Validate - Fail`() {
+        coEvery {
+            phoneValidationUseCase(any())
+        }.throws(mockThrowable)
+
+        viewModel?.userValidation(inactivePhoneUserDataModel)
+
+        coVerify {
+            observerPhoneValidation.onChanged(any())
+        }
+
+        assert(viewModel?.phoneValidation?.value is Fail)
+    }
+
+    @Test
+    fun `Phone Validate - empty params`() {
+        inactivePhoneUserDataModel = InactivePhoneUserDataModel(
+                email = "",
+                oldPhoneNumber = ""
+        )
+
+        viewModel?.userValidation(inactivePhoneUserDataModel)
+
+        coVerify {
+            observerPhoneValidation.onChanged(any())
+        }
+
+        assert(viewModel?.phoneValidation?.value is Fail)
+    }
+
+    @Test
     fun `Get Status Inactive Phone Validate - Success`() {
         val mockResponse = StatusInactivePhoneNumberDataModel(GetStatusInactivePhoneNumber(
             isSuccess = true,
@@ -209,5 +242,20 @@ class InactivePhoneViewModelTest {
         val result = viewModel?.getStatusPhoneNumber?.value as Success
         assert(!result.data.statusInactivePhoneNumber.isSuccess)
         assert(!result.data.statusInactivePhoneNumber.isAllowed)
+    }
+
+    @Test
+    fun `Get Status Inactive Phone Validate - Fail`() {
+        coEvery {
+            getStatusInactivePhoneNumberUseCase(any())
+        }.throws(mockThrowable)
+
+        viewModel?.getStatusPhoneNumber(inactivePhoneUserDataModel)
+
+        coVerify {
+            observerGetStatusInactivePhoneNumber.onChanged(any())
+        }
+
+        assert(viewModel?.getStatusPhoneNumber?.value is Fail)
     }
 }

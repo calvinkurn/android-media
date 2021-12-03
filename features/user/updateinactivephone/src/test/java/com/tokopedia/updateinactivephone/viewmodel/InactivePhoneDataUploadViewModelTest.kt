@@ -124,6 +124,21 @@ class InactivePhoneDataUploadViewModelTest {
         assert(!result.data.validation.isSuccess)
     }
 
+    @Test
+    fun `phone validation - Fail`() {
+        coEvery {
+            phoneValidationUseCase(any())
+        }.throws(mockThrowable)
+
+        viewmodel?.userValidation(inactivePhoneUserDataModel)
+
+        verify {
+            observerPhoneValidation.onChanged(any())
+        }
+
+        assert(viewmodel?.phoneValidation?.value is Fail)
+    }
+
 
     /** Upload Image */
     @Test
@@ -159,13 +174,93 @@ class InactivePhoneDataUploadViewModelTest {
     }
 
     @Test
+    fun `Image Upload - Failed upload image - with error`() {
+        val mockResponse = ImageUploadDataModel(
+                errors = mutableListOf("Opps!"),
+                data = ImageUploadDataModel.PictureObjectDataModel(pictureObject = "data sample")
+        )
+
+        every {
+            imageUploadUseCase.execute(any(), any())
+        } answers {
+            firstArg<(ImageUploadDataModel) -> Unit>().invoke(mockResponse)
+        }
+
+        viewmodel?.uploadImage(
+            inactivePhoneUserDataModel.email,
+            inactivePhoneUserDataModel.newPhoneNumber,
+            inactivePhoneUserDataModel.userIndex,
+            "pathFile",
+            "source"
+        )
+
+        verify {
+            observerImageUpload.onChanged(any())
+        }
+
+        assert(viewmodel?.imageUpload?.value is Fail)
+    }
+
+    @Test
     fun `Image Upload - Failed upload image`() {
+        val mockResponse = ImageUploadDataModel(
+                errors = mutableListOf(),
+                data = ImageUploadDataModel.PictureObjectDataModel(pictureObject = "")
+        )
+
+        every {
+            imageUploadUseCase.execute(any(), any())
+        } answers {
+            firstArg<(ImageUploadDataModel) -> Unit>().invoke(mockResponse)
+        }
+
+        viewmodel?.uploadImage(
+            inactivePhoneUserDataModel.email,
+            inactivePhoneUserDataModel.newPhoneNumber,
+            inactivePhoneUserDataModel.userIndex,
+            "pathFile",
+            "source"
+        )
+
+        verify {
+            observerImageUpload.onChanged(any())
+        }
+
+        assert(viewmodel?.imageUpload?.value is Fail)
+    }
+
+    @Test
+    fun `Image Upload - Fail`() {
         every {
             imageUploadUseCase.execute(any(), any())
         } answers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
         
+        viewmodel?.uploadImage(
+            inactivePhoneUserDataModel.email,
+            inactivePhoneUserDataModel.newPhoneNumber,
+            inactivePhoneUserDataModel.userIndex,
+            "pathFile",
+            "source"
+        )
+
+        verify {
+            observerImageUpload.onChanged(any())
+        }
+
+        assert(viewmodel?.imageUpload?.value is Fail)
+
+        val result = viewmodel?.imageUpload?.value as Fail
+        assertEquals(result.throwable, mockThrowable)
+    }
+
+    @Test
+    fun `Image Upload - Fail throwable`() {
+        every {
+            imageUploadUseCase.execute(any(), any())
+        }.throws(mockThrowable)
+
         viewmodel?.uploadImage(
             inactivePhoneUserDataModel.email,
             inactivePhoneUserDataModel.newPhoneNumber,
@@ -226,6 +321,21 @@ class InactivePhoneDataUploadViewModelTest {
     }
 
     @Test
+    fun `Submit Data - Fail`() {
+        coEvery {
+            submitDataUseCase(any())
+        }.throws(mockThrowable)
+
+        viewmodel?.submitForm(submitDataModel)
+
+        verify {
+            observerSubmitData.onChanged(any())
+        }
+
+        assert(viewmodel?.submitData?.value is Fail)
+    }
+
+    @Test
     fun `Submit Expedited Data - Success`() {
         val mockResponse = SubmitExpeditedDataModel(SubmitExpeditedDataModel.SubmitDataModel(
             errorMessage = mutableListOf(),
@@ -276,6 +386,21 @@ class InactivePhoneDataUploadViewModelTest {
     }
 
     @Test
+    fun `Submit Expedited Data - Fail`() {
+        coEvery {
+            submitExpeditedInactivePhoneUseCase(any())
+        }.throws(mockThrowable)
+
+        viewmodel?.submitNewPhoneNumber(inactivePhoneUserDataModel)
+
+        coVerify {
+            observerSubmitExpeditedData.onChanged(any())
+        }
+
+        assert(viewmodel?.submitDataExpedited?.value is Fail)
+    }
+
+    @Test
     fun `verify new phone - success`() {
         val mockResponse = VerifyNewPhoneDataModel(VerifyNewPhoneDataModel.VerifyDataModel(
             isSuccess = true,
@@ -323,5 +448,20 @@ class InactivePhoneDataUploadViewModelTest {
 
         val result = viewmodel?.verifyNewPhone?.value as Success
         assert(!result.data.verify.isSuccess)
+    }
+
+    @Test
+    fun `verify new phone - fail`() {
+        coEvery {
+            verifyNewPhoneUseCase(any())
+        }.throws(mockThrowable)
+
+        viewmodel?.verifyNewPhone(inactivePhoneUserDataModel)
+
+        coVerify {
+            observerVerifyNewPhone.onChanged(any())
+        }
+
+        assert(viewmodel?.verifyNewPhone?.value is Fail)
     }
 }

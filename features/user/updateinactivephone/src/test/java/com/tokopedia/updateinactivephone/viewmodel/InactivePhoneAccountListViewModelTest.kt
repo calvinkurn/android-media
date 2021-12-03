@@ -6,6 +6,7 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
 import com.tokopedia.updateinactivephone.domain.usecase.GetAccountListUseCase
 import com.tokopedia.updateinactivephone.features.accountlist.InactivePhoneAccountListViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -77,6 +78,24 @@ class InactivePhoneAccountListViewModelTest {
 
         val result = viewmodel.accountList.value as Success
         assert(result.data.accountList.userDetailDataModels.isNotEmpty())
+    }
+
+    @Test
+    fun `get account list - fail`() {
+        val phonenumber = "62800000000000"
+        val throwable = Throwable("Opps!")
+
+        coEvery {
+            getAccountListUseCase(any())
+        }.throws(throwable)
+
+        viewmodel.getAccountList(phonenumber)
+
+        verify {
+            observer.onChanged(Fail(throwable))
+        }
+
+        assert(viewmodel.accountList.value is Fail)
     }
 
     @After
