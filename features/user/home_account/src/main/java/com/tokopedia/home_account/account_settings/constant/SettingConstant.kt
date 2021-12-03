@@ -15,6 +15,7 @@ object SettingConstant {
     const val SETTING_DEBIT_INSTANT = 35
     const val SETTING_PUSH_NOTIF= 37
     const val SETTING_BIOMETRIC = 39
+    const val SETTING_GOPAY = 40
 
     object Url {
         const val BASE_WEBVIEW_APPLINK = "tokopedia://webview?url="
