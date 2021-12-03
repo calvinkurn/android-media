@@ -3,7 +3,7 @@ package com.tokopedia.test.application.graphql
 import org.junit.Assert.*
 import org.junit.Test
 
-class GraphqlMockUtilKtTest {
+class GqlMockUtilKtTest {
 
     @Test
     fun `toGqlPair returns correct pair`() {

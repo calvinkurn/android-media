@@ -4,7 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import java.lang.reflect.Type
 
-object GraphqlMockUtil {
+object GqlMockUtil {
 
     inline fun <reified T : Any> createSuccessResponse(vararg obj: T): GraphqlResponse {
         val success = hashMapOf<Type, Any>(T::class.java to obj)
