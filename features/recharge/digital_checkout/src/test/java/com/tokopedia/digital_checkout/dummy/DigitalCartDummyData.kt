@@ -4,7 +4,6 @@ import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.response.AttributesCheckout
 import com.tokopedia.common_digital.cart.data.entity.response.Parameter
 import com.tokopedia.digital_checkout.data.response.getcart.AutoApplyVoucher
-import com.tokopedia.digital_checkout.data.response.getcart.CrossSellingConfig
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
 
 /**
