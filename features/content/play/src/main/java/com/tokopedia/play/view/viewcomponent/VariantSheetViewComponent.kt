@@ -165,7 +165,7 @@ class VariantSheetViewComponent(
 
                 tvProductStock.shouldShowWithAction(stock != null){
                     val stockInString = stock?.stock.toString()
-                    tvProductStock.text = getString(R.string.play_product_item_stock, stockInString)
+                    tvProductStock.text = getString(R.string.play_product_item_stock, ": $stockInString")
                 }
                 setProduct(product)
 

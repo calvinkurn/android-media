@@ -28,12 +28,11 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
         when (item.stock) {
             OutOfStock -> {
                 tvProductStock.gone()
-                btnProductBuy.isEnabled = false
-                ivProductAtc.isEnabled = false
-
                 ivProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
                 )
+                btnProductBuy.isEnabled = false
+                ivProductAtc.isEnabled = false
             }
 
             is StockAvailable -> {
@@ -41,8 +40,6 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
                 tvProductStock.text = getString(R.string.play_product_item_stock, item.stock.stock)
                 btnProductBuy.isEnabled = true
                 ivProductAtc.isEnabled = true
-                btnProductBuy.text = getString(R.string.play_product_buy)
-                ivProductAtc.text = getString(R.string.play_product_atc)
                 ivProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
