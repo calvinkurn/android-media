@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
@@ -29,6 +30,7 @@ import com.tokopedia.topads.dashboard.view.adapter.insight.TopAdsInsightTabAdapt
 import com.tokopedia.topads.dashboard.view.fragment.insightbottomsheet.TopAdsInsightAdsTypeBottomSheet
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_fragment_recommendation_layout.*
 import kotlinx.android.synthetic.main.topads_dash_group_empty_state.view.*
@@ -58,6 +60,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     private var countProduct = 0
     private var countBid = 0
     private var index = 0
+    private lateinit var emptyView: ConstraintLayout
+    private lateinit var loderRecom: LoaderUnify
 
     companion object {
         private const val ADTYPE_PRODUK = 0
@@ -94,11 +98,14 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(
+        val view = inflater.inflate(
             R.layout.topads_dash_fragment_recommendation_layout,
             container,
             false
         )
+        emptyView = view.findViewById(R.id.empty_view)
+        loderRecom = view.findViewById(R.id.loderRecom)
+        return view
     }
 
     override fun getScreenName(): String {
@@ -134,7 +141,8 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun loadShopData() {
+    fun loadShopData() {
+        loderRecom?.visibility = View.VISIBLE
         viewModel.getShopKeywords("480396", arrayOf())
     }
 
@@ -168,21 +176,21 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             return
         if (!isAdTypeProdukSelected && recommendedKeywordData == null) return
         (activity as TopAdsDashboardActivity?)?.hideButton(countProduct == 0)
-        if (countProduct == 0 && countBid == 0 && countKey == 0) {
+        if (isAdTypeProdukSelected && countProduct == 0 && countBid == 0 && countKey == 0) {
             setEmptyView()
         } else {
             showViews()
             initInsightTabAdapter()
             renderViewPager()
-            topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, countKey)
+            topAdsInsightTabAdapter?.setTabTitles(resources, countProduct, countBid, countKey,isAdTypeProdukSelected)
         }
     }
 
     private fun setEmptyView() {
         loderRecom?.visibility = View.GONE
         rvTabInsight?.visibility = View.GONE
-        empty_view?.visibility = View.VISIBLE
-        empty_view?.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+        emptyView.visibility = View.VISIBLE
+        emptyView.image_empty?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
         view_pager?.visibility = View.GONE
     }
 
@@ -305,13 +313,11 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             bundle.putParcelable(BUDGET_RECOM, dailyBudgetRecommendData)
             list.add(FragmentTabItem("", TopAdsInsightBaseBidFragment.createInstance(bundle)))
         }
-        if (countKey != 0) {
-            if(isAdTypeProdukSelected)
-                list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
-            else {
-                val instance = TopAdsInsightShopKeywordRecommendationFragment.createInstance(recommendedKeywordData)
-                list.add(FragmentTabItem("", instance))
-            }
+        if(isAdTypeProdukSelected) {
+            if(countKey != 0)list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
+        } else {
+            val instance = TopAdsInsightShopKeywordRecommendationFragment.createInstance(recommendedKeywordData)
+            list.add(FragmentTabItem("", instance))
         }
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
 

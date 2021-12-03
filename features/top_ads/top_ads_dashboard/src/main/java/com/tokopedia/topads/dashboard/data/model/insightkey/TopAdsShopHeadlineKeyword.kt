@@ -21,10 +21,10 @@ data class TopadsHeadlineKeywordSuggestion(
 
 data class RecommendedKeywordData(
     val shopID: String? = null,
-    val recommendedKeywordCount: Int = 0,
+    var recommendedKeywordCount: Int = 0,
     val groupCount: Int = 0,
     val totalImpressionCount: String? = "",
-    val recommendedKeywordDetails: List<RecommendedKeywordDetail>? = null,
+    val recommendedKeywordDetails: MutableList<RecommendedKeywordDetail>? = null,
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
@@ -61,25 +61,25 @@ data class RecommendedKeywordData(
 
 data class RecommendedKeywordDetail(
     val keywordTag: String = "",
-    val groupId: Int = 0,
+    val groupID: Int = 0,
     val groupName: String = "",
     val totalHits: Int = 0,
-    val recommendedBid: Double = 0.0,
-    val minBid: Int = 0,
-    val maxBid: Int = 0,
+    val recommendedBid: Float = 0f,
+    val minBid: Float = 0f,
+    val maxBid: Float = 0f,
     val impressionCount: Int = 0
 ) : Parcelable {
     var isChecked: Boolean = true
-    var priceBid: Double = 0.0
+    var priceBid: Int = 0
 
     constructor(parcel: Parcel) : this(
         parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readString() ?: "",
         parcel.readInt(),
-        parcel.readDouble(),
-        parcel.readInt(),
-        parcel.readInt(),
+        parcel.readFloat(),
+        parcel.readFloat(),
+        parcel.readFloat(),
         parcel.readInt()
     ) {
         isChecked = parcel.readByte() != 0.toByte()
@@ -87,12 +87,12 @@ data class RecommendedKeywordDetail(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(keywordTag)
-        parcel.writeInt(groupId)
+        parcel.writeInt(groupID)
         parcel.writeString(groupName)
         parcel.writeInt(totalHits)
-        parcel.writeDouble(recommendedBid)
-        parcel.writeInt(minBid)
-        parcel.writeInt(maxBid)
+        parcel.writeFloat(recommendedBid)
+        parcel.writeFloat(minBid)
+        parcel.writeFloat(maxBid)
         parcel.writeInt(impressionCount)
         parcel.writeByte(if (isChecked) 1 else 0)
     }

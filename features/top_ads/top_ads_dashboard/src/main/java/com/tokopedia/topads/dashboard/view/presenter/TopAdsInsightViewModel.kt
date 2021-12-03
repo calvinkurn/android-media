@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topads.dashboard.data.model.insightkey.ErrorsItem
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput2
+import com.tokopedia.top_ads_headline.usecase.CreateHeadlineAdsUseCase
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordData
 import com.tokopedia.topads.dashboard.data.model.insightkey.TopAdsShopHeadlineKeyword
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopKeywordSuggestionUseCase
@@ -13,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class TopAdsInsightViewModel @Inject constructor(
+    private val createHeadlineAdsUseCase: CreateHeadlineAdsUseCase,
     private val shopKeywordSuggestionUseCase: TopAdsShopKeywordSuggestionUseCase
 ) : BaseViewModel(Dispatchers.Main) {
 
@@ -22,29 +25,43 @@ class TopAdsInsightViewModel @Inject constructor(
     private val _applyKeyword = MutableLiveData<Int>()
     val applyKeyword : LiveData<Int> = _applyKeyword
 
-    val error = MutableLiveData<ErrorsItem>()
+    private val _error = MutableLiveData<String>()
+    val error : LiveData<String> = _error
 
     fun getShopKeywords(shopID: String, groupIds: Array<String>) {
-
         launchCatchError(block = {
-            val gqlResponse = shopKeywordSuggestionUseCase.getKeywordRecommendation(
-                    shopKeywordSuggestionUseCase.getParams(shopID, groupIds))
-            val keyword = gqlResponse
-                    .getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
+            val gqlResponse = shopKeywordSuggestionUseCase.getKeywordRecommendation(shopKeywordSuggestionUseCase.getParams(shopID, groupIds))
+            val keyword = gqlResponse.getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
 
             keyword?.suggestion?.recommendedKeywordData?.let {
                 _recommendedKeyword.postValue(it)
             }
             keyword?.suggestion?.errors?.let {
-                //todo add error callback
+                _error.postValue(it[0]?.detail)
             }
         }, onError = {
+            _error.postValue(it.message)
             it.printStackTrace()
         })
     }
 
-    fun applyRecommendedKeywords() {
-
+    fun applyRecommendedKeywords(input: TopAdsManageHeadlineInput2) {
+        launchCatchError(
+            block = {
+                createHeadlineAdsUseCase.setParams(input)
+                val response = createHeadlineAdsUseCase.executeOnBackground()
+                if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
+                    _applyKeyword.postValue(input.operation.group.keywordOperations.size)
+                }
+                if(response.topadsManageHeadlineAd.errors.isNotEmpty()) {
+                    _error.postValue(response.topadsManageHeadlineAd.errors[0].detail)
+                }
+            },
+            onError = {
+                _error.postValue(it.message)
+                it.printStackTrace()
+            }
+        )
     }
 
     companion object {

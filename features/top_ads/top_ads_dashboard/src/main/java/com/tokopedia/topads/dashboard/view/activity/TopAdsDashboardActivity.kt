@@ -431,4 +431,6 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
         multiActionBtn.isEnabled = count > 0
     }
+
+    fun disableMultiActionButton() { multiActionBtn.isEnabled = false}
 }

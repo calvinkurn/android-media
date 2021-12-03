@@ -3,14 +3,16 @@ package com.tokopedia.topads.dashboard.view.adapter.insight
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.common.data.internal.ParamObject.PARAM_EDIT_OPTION
-import com.tokopedia.topads.common.data.response.KeywordEditInput
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput2
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
 import com.tokopedia.topads.dashboard.view.adapter.viewholder.TopAdsInsightShopKeywordViewHolder
 
 class TopAdsShopKeywordRecommendationAdapter(
-    private val list: List<RecommendedKeywordDetail>,
+    private var list: MutableList<RecommendedKeywordDetail>,
     private val type: Int,
     private val lstnr: (Int) -> Unit
 ) : RecyclerView.Adapter<TopAdsInsightShopKeywordViewHolder>() {
@@ -24,39 +26,57 @@ class TopAdsShopKeywordRecommendationAdapter(
 
     override fun onBindViewHolder(holder: TopAdsInsightShopKeywordViewHolder, position: Int) {
         val item = list[holder.adapterPosition]
+        if(item.priceBid == 0) item.priceBid = item.recommendedBid.toInt()
         holder.initView(type, item)
 
         holder.bindData(type)
 
-        holder.addListeners { checkBox ->
+        holder.addListeners { checkBox, edtBid ->
             checkBox.setOnClickListener {
-                item.isChecked = !item.isChecked
-                if (item.isChecked) selectedItemsCount++ else selectedItemsCount--
-                lstnr.invoke(selectedItemsCount)
+                onCheckBoxClicked(item, holder.adapterPosition)
+            }
+            edtBid.textFieldInput.afterTextChanged {
+                val inputBudget = it.toIntOrZero()
+                holder.updateRecommBudget(inputBudget)
+                item.priceBid = inputBudget
             }
         }
     }
 
-    fun getSelectedList(): List<KeywordEditInput> {
-        val selectedList = mutableListOf<KeywordEditInput>()
+    private fun onCheckBoxClicked(item: RecommendedKeywordDetail, index: Int) {
+        item.isChecked = !item.isChecked
+        if (item.isChecked) selectedItemsCount++ else selectedItemsCount--
+        lstnr.invoke(selectedItemsCount)
+        notifyItemChanged(index)
+    }
 
-        list.forEach {
+    fun getSelectedKeywords(): MutableMap<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>? {
+        val groupMap = mutableMapOf<Pair<Int,String>,MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>()
+        list.forEachIndexed { index, it ->
             if (it.isChecked) {
-                selectedList.add(KeywordEditInput(
-                    PARAM_EDIT_OPTION,
-                    KeywordEditInput.Keyword(
-                        it.groupId.toString(),
-                        "",
-                        "",
-                        it.keywordTag,
-                        it.priceBid,
-                        ""
-                    ))
+                if(it.priceBid < it.minBid || it.priceBid % 50  != 0) {
+                    onCheckBoxClicked(it, index)
+                    return null
+                }
+
+                val keyword = TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation(
+                    action = ACTION_CREATE,
+                    TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation.Keyword(
+                        type = "positive_phrase",
+                        status = "active",
+                        tag = it.keywordTag,
+                        priceBid = it.priceBid.toLong()
+                    )
                 )
+                val pair = it.groupID to it.groupName
+                if (groupMap.containsKey(pair)) {
+                    groupMap[pair]!!.add(keyword)
+                } else {
+                    groupMap[pair] = mutableListOf(keyword)
+                }
             }
         }
-
-        return selectedList
+        return groupMap
     }
 
     fun checkAllItems() {
@@ -77,7 +97,7 @@ class TopAdsShopKeywordRecommendationAdapter(
         private val layout = R.layout.topads_insight_keyword_recomm_item
 
         fun createInstance(
-            list: List<RecommendedKeywordDetail>,
+            list: MutableList<RecommendedKeywordDetail>,
             type: Int,
             lstnr: (Int) -> Unit
         ) = TopAdsShopKeywordRecommendationAdapter(list, type, lstnr)

@@ -97,6 +97,9 @@ class TopAdsInsightShopKeywordRecommendationView(
         lstnr.invoke(type, selectedItems)
     }
 
+    fun selectedItemsCount() = mAdapter.selectedItemsCount
+    fun getKeywords() = mAdapter.getSelectedKeywords()
+
     companion object {
         private val layout = R.layout.topads_insight_keywords_layout
         fun createInstance(

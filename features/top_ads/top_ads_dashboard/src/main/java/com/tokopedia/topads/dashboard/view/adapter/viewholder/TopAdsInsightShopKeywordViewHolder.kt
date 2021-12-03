@@ -4,15 +4,13 @@ import android.text.Html
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.BID_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEGATIVE_KEYWORD
 import com.tokopedia.topads.dashboard.data.constant.TopAdsInsightConstants.NEW_KEYWORD
 import com.tokopedia.topads.dashboard.data.model.insightkey.RecommendedKeywordDetail
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.topads_insight_keyword_recomm_item.view.*
@@ -31,42 +29,35 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
             String.format(resources.getString(R.string.no_of_searches), item.totalHits)
         )
 
-        updateSubTitle2Value(item.recommendedBid)
-        edtBid.textFieldInput.setText("${item.recommendedBid}")
-        txtRecommendedBudget.text = String.format(
-            view.resources.getString(R.string.keyword_recommended_budget),
-            item.recommendedBid
-        )
+        updateSubTitle2Value(item.priceBid)
+        edtBid.textFieldInput.setText("${item.priceBid}")
+        updateRecommBudget(item.priceBid)
 
         txtFooter.attributedString(
             String.format(resources.getString(R.string.max_times_month), item.impressionCount)
         )
     }
 
-    fun addListeners(lstr: (CheckboxUnify) -> Unit) = with(view) {
-        edtBid.textFieldInput.afterTextChanged(::editTextValueChanged)
+    fun addListeners(lstr: (CheckboxUnify,TextFieldUnify) -> Unit) = with(view) {
         btnEditFee.setOnClickListener {
             openEditTextFee()
         }
         setOnClickListener {
             closeEditTextFee()
         }
-        lstr.invoke(checkBox)
+        lstr.invoke(checkBox,edtBid)
     }
 
-    private fun editTextValueChanged(text: String) {
-        val inputBudget = text.toDouble()
-        view.txtRecommendedBudget.text =
-            if (inputBudget <= item.recommendedBid && inputBudget > item.minBid) {
-                String.format(view.resources.getString(R.string.keyword_recommended_budget), item.recommendedBid)
-            } else if(inputBudget > item.recommendedBid && inputBudget < item.maxBid) {
-                view.resources.getString(R.string.biaya_optimal)
-            } else if(inputBudget < item.minBid) {
-                String.format(view.resources.getString(R.string.min_bid_error_new), item.minBid)
-            } else if(inputBudget > item.maxBid) {
-                String.format(view.resources.getString(R.string.max_bid_error_new), item.maxBid)
-            } else ""
-        item.priceBid = inputBudget
+    fun updateRecommBudget(inputBudget: Int) {
+        view.txtRecommendedBudget.text = if (inputBudget <= item.recommendedBid && inputBudget > item.minBid) {
+            String.format(view.resources.getString(R.string.keyword_recommended_budget), item.recommendedBid.toInt())
+        } else if(inputBudget > item.recommendedBid && inputBudget < item.maxBid) {
+            view.resources.getString(R.string.biaya_optimal)
+        } else if(inputBudget < item.minBid) {
+            String.format(view.resources.getString(R.string.min_bid_error_new), item.minBid.toInt())
+        } else if(inputBudget > item.maxBid) {
+            String.format(view.resources.getString(R.string.max_bid_error_new), item.maxBid.toInt())
+        } else ""
     }
 
     private fun View.closeEditTextFee() {
@@ -74,10 +65,9 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
             txtSubTitle2Value.show()
             btnEditFee.show()
             edtBid.hide()
-            val edtBidText = edtBid.textFieldInput.text.toString()
-            if (edtBidText.toDouble() > item.recommendedBid)
+            if (item.priceBid > item.recommendedBid)
                 txtRecommendedBudget.hide()
-            updateSubTitle2Value(edtBidText.toDouble())
+            updateSubTitle2Value(item.priceBid)
         }
     }
 
@@ -88,7 +78,7 @@ class TopAdsInsightShopKeywordViewHolder(private val view: View) : RecyclerView.
         edtBid.show()
     }
 
-    private fun updateSubTitle2Value(value: Double) {
+    private fun updateSubTitle2Value(value: Int) {
         view.txtSubTitle2Value.attributedString(
             String.format(
                 view.resources.getString(R.string.per_click_bold_value), value
