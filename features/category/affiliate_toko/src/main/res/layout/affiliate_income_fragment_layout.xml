@@ -207,8 +207,31 @@
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/affiliate_transaction_history_item_layout"
                 tools:orientation="vertical" />
-
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                android:id="@+id/affiliate_no__default_transaction_iv"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_220"
+                android:background="@color/Unify_N0"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp_40"
+                android:visibility="gone"
+                app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction.png"
+                app:imageDpiSupportType="singleDpi"
+                tools:visibility="gone" />
+            <com.tkpd.remoteresourcerequest.view.DeferredImageView
+                android:layout_below="@+id/affiliate_no__default_transaction_iv"
+                android:id="@+id/affiliate_no_transaction_iv"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_220"
+                android:background="@color/Unify_N0"
+                android:gravity="center"
+                android:paddingTop="@dimen/dp_40"
+                android:visibility="gone"
+                app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_transaction_for_filter.png"
+                app:imageDpiSupportType="singleDpi"
+                tools:visibility="gone" />
             <com.tokopedia.globalerror.GlobalError
+                android:layout_below="@+id/affiliate_no_transaction_iv"
                 android:id="@+id/withdrawal_global_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

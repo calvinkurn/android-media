@@ -118,4 +118,7 @@
     <string name="affiliate_saldo_withdrawal_amount">Jumlah Penarikan</string>
     <string name="affiliate_saldo_withdrawal_fee">Biaya Penarikan</string>
     <string name="affiliate_saldo_transferred_amount">Jumlah yang Ditransfer</string>
+    <string name="affiliate_default_no_transaction">Kamu belum punya transaksi</string>
+    <string name="affiliate_default_no_transaction_description">Yuk, promosikan produk affiliate di sosial media supaya kamu bisa mulai bertransaksi.</string>
+    <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
 </resources>

@@ -20,7 +20,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
 
     private var affiliateBalanceData = MutableLiveData<AffiliateBalance.AffiliateBalance.Data>()
     private var shimmerVisibility = MutableLiveData<Boolean>()
-    private var errorMessage = MutableLiveData<String>()
+    private var errorMessage = MutableLiveData<Throwable>()
     private var affiliateDataList = MutableLiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>>()
     private var rangeChanged = MutableLiveData<Boolean>()
     var hasNext = true
@@ -49,7 +49,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
         }, onError = {
             shimmerVisibility.value = false
             it.printStackTrace()
-            errorMessage.value = it.toString()
+            errorMessage.value = it
         })
     }
 
@@ -81,6 +81,6 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     fun getAffiliateBalanceData(): LiveData<AffiliateBalance.AffiliateBalance.Data> = affiliateBalanceData
     fun getShimmerVisibility(): LiveData<Boolean> = shimmerVisibility
     fun getAffiliateDataItems() : LiveData<ArrayList<Visitable<AffiliateAdapterTypeFactory>>> = affiliateDataList
-    fun getErrorMessage(): LiveData<String> = errorMessage
+    fun getErrorMessage(): LiveData<Throwable> = errorMessage
     fun getRangeChange() :LiveData<Boolean> = rangeChanged
 }
