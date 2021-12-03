@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/affiliate_no_product_iv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_220"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_40"
+        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_no_product.png"
+        app:imageDpiSupportType="singleDpi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/home_global_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
+        android:gravity="center"
+        app:globalerrors_type="SERVER_ERROR"
+        app:layout_constraintTop_toBottomOf="@+id/affiliate_no_product_iv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+         />
+</androidx.constraintlayout.widget.ConstraintLayout>

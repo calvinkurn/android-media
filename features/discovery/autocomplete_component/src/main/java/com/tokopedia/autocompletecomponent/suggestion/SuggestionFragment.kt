@@ -14,6 +14,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.autocompletecomponent.R
 import com.tokopedia.autocompletecomponent.suggestion.analytics.SuggestionTracking
+import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipListener
 import com.tokopedia.autocompletecomponent.suggestion.di.SuggestionComponent
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopCardDataView
 import com.tokopedia.autocompletecomponent.suggestion.topshop.SuggestionTopShopListener
@@ -29,7 +30,8 @@ class SuggestionFragment :
     TkpdBaseV4Fragment(),
     SuggestionContract.View,
     SuggestionListener,
-    SuggestionTopShopListener {
+    SuggestionTopShopListener,
+    SuggestionChipListener {
 
     companion object {
         const val SUGGESTION_FRAGMENT_TAG = "SUGGESTION_FRAGMENT_TAG"
@@ -57,6 +59,7 @@ class SuggestionFragment :
     private val suggestionTypeFactory = SuggestionAdapterTypeFactory(
         suggestionListener = this,
         suggestionTopShopListener = this,
+        suggestionChipListener = this,
     )
     private val suggestionAdapter = SuggestionAdapter(suggestionTypeFactory)
 
@@ -98,8 +101,7 @@ class SuggestionFragment :
 
     override fun showSuggestionResult(list: List<Visitable<*>>) {
         stopTracePerformanceMonitoring()
-        suggestionAdapter.clearData()
-        suggestionAdapter.addAll(list)
+        suggestionAdapter.replaceData(list)
 
         suggestionViewUpdateListener?.showSuggestionView()
     }
@@ -145,8 +147,15 @@ class SuggestionFragment :
         presenter?.onSuggestionItemClicked(item)
     }
 
-    override fun onChipClicked(item: BaseSuggestionDataView.ChildItem) {
-        presenter?.onSuggestionChipClicked(item)
+    override fun onChipImpressed(item: BaseSuggestionDataView) {
+        suggestionTracking?.eventImpressionSuggestion(item)
+    }
+
+    override fun onChipClicked(
+        baseSuggestionDataView: BaseSuggestionDataView,
+        childItem: BaseSuggestionDataView.ChildItem
+    ) {
+        presenter?.onSuggestionChipClicked(baseSuggestionDataView, childItem)
     }
 
     override fun onItemImpressed(item: BaseSuggestionDataView) {
@@ -174,24 +183,49 @@ class SuggestionFragment :
         suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
-    override fun trackEventClickKeyword(eventLabel: String, dimension90: String) {
-        suggestionTracking?.eventClickKeyword(eventLabel, dimension90)
+    override fun trackEventClickKeyword(
+        eventLabel: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView,
+    ) {
+        suggestionTracking?.eventClickKeyword(eventLabel, dimension90, baseSuggestionDataView)
     }
 
-    override fun trackEventClickCurated(eventLabel: String, campaignCode: String, dimension90: String) {
-        suggestionTracking?.eventClickCurated(eventLabel, campaignCode, dimension90)
+    override fun trackEventClickCurated(
+        eventLabel: String,
+        campaignCode: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView,
+    ) {
+        suggestionTracking?.eventClickCurated(
+            eventLabel,
+            campaignCode,
+            dimension90,
+            baseSuggestionDataView
+        )
     }
 
-    override fun trackEventClickShop(eventLabel: String, dimension90: String) {
-        suggestionTracking?.eventClickShop(eventLabel, dimension90)
+    override fun trackEventClickShop(
+        eventLabel: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView,
+    ) {
+        suggestionTracking?.eventClickShop(eventLabel, dimension90, baseSuggestionDataView)
     }
 
-    override fun trackEventClickProfile(eventLabel: String) {
-        suggestionTracking?.eventClickProfile(eventLabel)
+    override fun trackEventClickProfile(
+        eventLabel: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
+        suggestionTracking?.eventClickProfile(eventLabel, baseSuggestionDataView)
     }
 
-    override fun trackEventClickRecentKeyword(eventLabel: String, dimension90: String) {
-        suggestionTracking?.eventClickRecentKeyword(eventLabel, dimension90)
+    override fun trackEventClickRecentKeyword(
+        eventLabel: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
+        suggestionTracking?.eventClickRecentKeyword(eventLabel, dimension90, baseSuggestionDataView)
     }
 
     override fun onTopShopCardClicked(topShopData: SuggestionTopShopCardDataView) {
@@ -210,12 +244,32 @@ class SuggestionFragment :
         suggestionTracking?.eventClickTopShopSeeMore(eventLabel)
     }
 
-    override fun trackEventClickLocalKeyword(eventLabel: String, userId: String, dimension90: String) {
-        suggestionTracking?.eventClickLocalKeyword(eventLabel, userId, dimension90)
+    override fun trackEventClickLocalKeyword(
+        eventLabel: String,
+        userId: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
+        suggestionTracking?.eventClickLocalKeyword(
+            eventLabel,
+            userId,
+            dimension90,
+            baseSuggestionDataView,
+        )
     }
 
-    override fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String) {
-        suggestionTracking?.eventClickGlobalKeyword(eventLabel, userId, dimension90)
+    override fun trackEventClickGlobalKeyword(
+        eventLabel: String,
+        userId: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
+        suggestionTracking?.eventClickGlobalKeyword(
+            eventLabel,
+            userId,
+            dimension90,
+            baseSuggestionDataView,
+        )
     }
 
     override fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String) {
@@ -232,20 +286,52 @@ class SuggestionFragment :
             }
         } ?: ChooseAddressConstant.emptyAddress
 
-    override fun trackTokoNowEventClickCurated(eventLabel: String) {
-        suggestionTracking?.eventClickTokoNowCurated(eventLabel)
+    override fun trackTokoNowEventClickCurated(
+        eventLabel: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
+        suggestionTracking?.eventClickTokoNowCurated(eventLabel, baseSuggestionDataView)
     }
 
-    override fun trackTokoNowEventClickKeyword(eventLabel: String) {
-        suggestionTracking?.eventClickTokoNowKeyword(eventLabel)
+    override fun trackTokoNowEventClickKeyword(
+        eventLabel: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
+        suggestionTracking?.eventClickTokoNowKeyword(eventLabel, baseSuggestionDataView)
     }
 
-    override fun trackClickChip(eventLabel: String, dimension90: String) {
-        suggestionTracking?.eventClickChipSuggestion(eventLabel, dimension90)
+    override fun trackClickChip(
+        eventLabel: String,
+        dimension90: String,
+        baseSuggestionDataView: BaseSuggestionDataView,
+    ) {
+        suggestionTracking?.eventClickChipSuggestion(
+            eventLabel,
+            dimension90,
+            baseSuggestionDataView,
+        )
     }
 
-    override fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String) {
-        suggestionTracking?.eventImpressCurated(label, campaignCode, pageSource)
+    override fun trackEventImpressCurated(
+        label: String,
+        campaignCode: String,
+        pageSource: String,
+        baseSuggestionDataView: BaseSuggestionDataView
+    ) {
+        suggestionTracking?.eventImpressCurated(
+            label,
+            campaignCode,
+            pageSource,
+            baseSuggestionDataView,
+        )
+    }
+
+    override fun trackEventImpression(item: BaseSuggestionDataView) {
+        suggestionTracking?.eventImpressionSuggestion(item)
+    }
+
+    override fun trackEventClick(item: BaseSuggestionDataView) {
+        suggestionTracking?.eventClickSuggestion(item)
     }
 
     interface SuggestionViewUpdateListener {
