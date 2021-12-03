@@ -108,6 +108,9 @@ class SrwFrameLayout : FrameLayout {
             Status.SUCCESS -> {
                 updateSrwList(latestState.data)
             }
+            Status.ERROR -> {
+                resetSrw()
+            }
             else -> {
             }
         }
@@ -177,6 +180,11 @@ class SrwFrameLayout : FrameLayout {
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
     }
 
+    private fun resetSrw() {
+        chatSmartReplyQuestion = ChatSmartReplyQuestion()
+        rvAdapter.resetSrwQuestions()
+    }
+
     fun renderSrwState() {
         show()
         when {
@@ -200,6 +208,7 @@ class SrwFrameLayout : FrameLayout {
 
     private fun renderLoadingState() {
         hideSrwContent()
+        resetSrw()
     }
 
     private fun renderSrwContent() {
@@ -208,6 +217,7 @@ class SrwFrameLayout : FrameLayout {
 
     private fun renderErrorState() {
         hideSrwContent()
+        resetSrw()
     }
 
     fun hideSrw() {
@@ -257,6 +267,11 @@ class SrwAdapter(
     fun updateSrwList(chatSmartReplyQuestion: ChatSmartReplyQuestion) {
         visitables.clear()
         visitables.addAll(chatSmartReplyQuestion.questions)
+        notifyDataSetChanged()
+    }
+
+    fun resetSrwQuestions() {
+        visitables.clear()
         notifyDataSetChanged()
     }
 
