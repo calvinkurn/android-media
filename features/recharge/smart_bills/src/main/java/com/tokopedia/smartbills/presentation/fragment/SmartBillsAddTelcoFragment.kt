@@ -204,18 +204,20 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
             when(it){
                 is Fail -> {
                     val throwable = it.throwable
-                    commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
-                    view?.let {
-                        Toaster.build(it, ErrorHandler.getErrorMessage(context, throwable), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                    val (message, key) = ErrorHandler.getErrorMessagePair(context, throwable, ErrorHandler.Builder())
+                    message?.let {
+                        commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId),  message)
+                        view?.let {
+                            Toaster.build(it, String.format("%s. Kode Error: (%s)", message, key), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+                        }
                     }
-
                 }
                 is Success -> {
                     val errorMessage = it.data.rechargeSBMAddBill.errorMessage
                     val message = it.data.rechargeSBMAddBill.message
                     if(!errorMessage.isNullOrEmpty()){
-                        commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
+                        commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), errorMessage)
                         view?.let {
                             val errorHandler = ErrorHandler.getErrorMessage(context, MessageErrorException(message))
                             Toaster.build(it, errorHandler, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,

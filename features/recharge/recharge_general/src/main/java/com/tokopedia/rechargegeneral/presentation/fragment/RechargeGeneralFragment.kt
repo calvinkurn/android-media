@@ -264,7 +264,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     val errorMessage = it.data.rechargeSBMAddBill.errorMessage
                     val message = it.data.rechargeSBMAddBill.message
                     if (!errorMessage.isNullOrEmpty()) {
-                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
+                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
                         view?.let {
                             Toaster.build(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -281,7 +281,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
 
                 is Fail -> {
                     view?.let { v ->
-                        commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName)
+
                         val (errorMessage, _) = ErrorHandler.getErrorMessagePair(
                             requireContext(),
                             it.throwable,
@@ -289,6 +289,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                                 .className(this::class.java.simpleName)
                                 .build()
                         )
+                        errorMessage?.let {
+                            commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
+                        }
                         Toaster.build(v, errorMessage.orEmpty(),
                                 Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
@@ -1071,6 +1074,12 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             )
             Toaster.build(v, errorMessage.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                     getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
+
+            if (isAddSBM){
+                errorMessage?.let {
+                    commonTopupBillsAnalytics.clickViewErrorToasterTelcoAddBills(categoryName, errorMessage)
+                }
+            }
         }
     }
 
