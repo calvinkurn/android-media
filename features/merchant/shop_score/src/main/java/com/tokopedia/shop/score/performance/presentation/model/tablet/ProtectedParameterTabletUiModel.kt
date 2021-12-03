@@ -9,11 +9,13 @@ data class ProtectedParameterTabletUiModel(
     override val titleParameterRelief: Int? = null,
     override val descParameterRelief: Int? = null,
     override val descParameterReliefBottomSheet: Int? = null,
+    override val protectedParameterDaysDate: String = ""
 ) : BaseProtectedParameterSectionUiModel(
     itemProtectedParameterList,
     titleParameterRelief,
     descParameterRelief,
-    descParameterReliefBottomSheet
+    descParameterReliefBottomSheet,
+    protectedParameterDaysDate
 ), BaseParameterDetail {
     override fun type(typeFactory: DetailPerformanceAdapterTabletTypeFactory): Int {
         return typeFactory.type(this)

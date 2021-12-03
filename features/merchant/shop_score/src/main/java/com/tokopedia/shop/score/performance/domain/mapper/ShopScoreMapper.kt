@@ -621,7 +621,8 @@ class ShopScoreMapper @Inject constructor(
             itemProtectedParameterList = protectedParameterSection.itemProtectedParameterList,
             titleParameterRelief = protectedParameterSection.titleParameterRelief,
             descParameterRelief = protectedParameterSection.descParameterRelief,
-            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet
+            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet,
+            protectedParameterDaysDate = protectedParameterSection.protectedParameterDaysDate
         )
     }
 
@@ -637,7 +638,8 @@ class ShopScoreMapper @Inject constructor(
             itemProtectedParameterList = protectedParameterSection.itemProtectedParameterList,
             titleParameterRelief = protectedParameterSection.titleParameterRelief,
             descParameterRelief = protectedParameterSection.descParameterRelief,
-            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet
+            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet,
+            protectedParameterDaysDate = protectedParameterSection.protectedParameterDaysDate
         )
     }
 
