@@ -116,6 +116,7 @@ private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
  *Do not manipulate this value unless Lihat Produk text change
  **/
 private const val LIHAT_PRODUK_EXPANDED_WIDTH_INDP = 100
+private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 90
 private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 24
 
 class PostDynamicViewNew @JvmOverloads constructor(
@@ -991,7 +992,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             }
                                         }
                                         if (tagProducts.isNotEmpty()) {
-                                            if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH_INDP && !productTagBubbleShowing  ) {
+                                            if (layoutLihatProdukParent.width.toDp() < LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
                                             } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
@@ -1106,7 +1107,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         )
                         if (media[current].type == TYPE_IMAGE) {
                             videoPlayer?.pause()
-                            bindImage(feedXCard.tags, feedXCard.media[current])
+                            bindImage(feedXCard.tags, feedXCard.media[current], current)
                         } else {
                             detach(true)
                             media[current].canPlay = true
@@ -1865,7 +1866,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
                     feedXCard.currentCarouselIndex = current
                     pageControl.setCurrentIndicator(current)
-                    bindImage(feedXCard.products, feedXCard.media[current])
+                    bindImage(feedXCard.products, feedXCard.media[current], current)
 
                 }
             }
@@ -2123,7 +2124,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             videoPlayer?.pause()
     }
 
-    fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia) {
+    fun bindImage(cardProducts: List<FeedXProduct>, media: FeedXMedia, index: Int) {
+        pageControl.setCurrentIndicator(index)
         val imageItem = media.imageView
         val tags = media.tagging
         val tagProducts = mutableListOf<FeedXProduct>()

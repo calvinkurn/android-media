@@ -66,7 +66,8 @@ open class DynamicPostNewViewHolder(
             PAYLOAD_FRAGMENT_GONE -> postDynamicView.setVideo(false)
             PAYLOAD_POST_VISIBLE -> postDynamicView.bindImage(
                 element.feedXCard.tags,
-                element.feedXCard.media[element.feedXCard.currentCarouselIndex]
+                element.feedXCard.media[element.feedXCard.currentCarouselIndex],
+                element.feedXCard.currentCarouselIndex
             )
         }
     }

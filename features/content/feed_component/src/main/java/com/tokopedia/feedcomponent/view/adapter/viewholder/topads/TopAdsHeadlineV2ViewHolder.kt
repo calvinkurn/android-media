@@ -101,7 +101,8 @@ open class TopAdsHeadlineV2ViewHolder(
         when (payloads.firstOrNull() as Int) {
             PAYLOAD_POST_VISIBLE -> topadsPostDynamic.bindImage(
                     element.feedXCard.tags,
-                    element.feedXCard.media[element.feedXCard.currentCarouselIndex]
+                    element.feedXCard.media[element.feedXCard.currentCarouselIndex],
+                    element.feedXCard.currentCarouselIndex
             )
             PAYLOAD_ANIMATE_FOLLOW -> topadsPostDynamic.bindFollow(element.feedXCard)
         }
