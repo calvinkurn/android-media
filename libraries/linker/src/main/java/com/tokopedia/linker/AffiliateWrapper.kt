@@ -3,6 +3,7 @@ package com.tokopedia.linker
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.linker.LinkerConstants.*
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -16,6 +17,22 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class AffiliateWrapper {
+
+    companion object{
+        const val labelWhatsapp = "whatsapp"
+        const val labelFbfeed = "fbfeed"
+        const val labelFbstory = "fbstory"
+        const val labelIgfeed = "igfeed"
+        const val labelIgMessage = "igmessage"
+        const val labelIgstory = "igstory"
+        const val labelLine = "line"
+        const val labelTwitter = "twitter"
+        const val labelTelegram = "telegram"
+        const val labelSalinLink = "salinlink"
+        const val labelSms = "sms"
+        const val labelEmail = "email"
+        const val labelOthers = "lainnya"
+    }
 
     private var handler: Handler? = null
     private var remoteConfig: RemoteConfig? = null
@@ -94,7 +111,7 @@ class AffiliateWrapper {
         val affiliateGenerateLinkInput = AffiliateGenerateLinkInput()
         affiliateGenerateLinkInput.source = LABEL_SHARING
         affiliateGenerateLinkInput.channel = ArrayList()
-        affiliateGenerateLinkInput.channel?.add(13)
+        affiliateGenerateLinkInput.channel?.add(getAffiliateChannelCode(data.channel))
         affiliateGenerateLinkInput.link = ArrayList()
         val linkData = Link()
         linkData.uRL = data.uri
@@ -114,5 +131,20 @@ class AffiliateWrapper {
         additionalParam.key = key
         additionalParam.value = value
         linkData.additionalParams?.add(additionalParam)
+    }
+
+    private fun getAffiliateChannelCode(channel:String?) : Int{
+        if(TextUtils.isEmpty(channel)) return 0
+        return when(channel){
+            labelOthers -> 0
+            labelFbfeed, labelFbstory -> 1
+            labelIgMessage, labelIgfeed, labelIgstory -> 3
+            labelLine -> 4
+            labelSms -> 6
+            labelTelegram -> 8
+            labelTwitter -> 10
+            labelWhatsapp -> 12
+            else -> 0
+        }
     }
 }
