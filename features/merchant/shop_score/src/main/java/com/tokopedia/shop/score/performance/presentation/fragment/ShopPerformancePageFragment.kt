@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -117,6 +118,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        splitCompatInstall()
         binding = FragmentShopPerformanceBinding.inflate(inflater, container, false)
         return binding?.root
     }
@@ -985,6 +987,12 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
         val cal = Calendar.getInstance()
         cal.timeInMillis = System.currentTimeMillis()
         return cal.get(Calendar.HOUR_OF_DAY) >= SIX_HOURS_OF_DAY
+    }
+
+    private fun splitCompatInstall() {
+        activity?.let{
+            SplitCompat.installActivity(it)
+        }
     }
 
     companion object {
