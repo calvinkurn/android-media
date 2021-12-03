@@ -742,7 +742,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToSectionPeriodDetailPerformanceUiModel(
+    fun mapToSectionPeriodDetailPerformanceUiModel(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         isNewSeller: Boolean
     ): PeriodDetailPerformanceUiModel {
@@ -1001,7 +1001,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun getProtectedParameterSection(
+    fun getProtectedParameterSection(
         shopScoreLevelList:
         List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Int

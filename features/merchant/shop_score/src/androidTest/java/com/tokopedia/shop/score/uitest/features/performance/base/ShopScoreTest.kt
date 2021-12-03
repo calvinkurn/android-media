@@ -15,6 +15,7 @@ import com.tokopedia.shop.score.performance.domain.model.ShopScoreLevelResponse
 import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
+import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.uitest.stub.common.UserSessionStub
 import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
 import com.tokopedia.shop.score.uitest.stub.common.util.AndroidTestUtil
@@ -50,6 +51,15 @@ abstract class ShopScoreTest {
     protected val getShopPerformanceComponentStub by lazy {
         ShopPerformanceComponentStubInstance.getShopPerformanceComponentStub(
             applicationContext
+        )
+    }
+
+    protected val headerShopPerformanceUiModel by lazy {
+        getHeaderPerformanceUiModel(
+            existingSellerOsResponse.shopScoreLevel.result,
+            existingSellerOsResponse.goldGetPMOSStatus.data,
+            existingSellerOsResponse.goldGetPMShopInfoResponse,
+            shopInfoPeriodResponse
         )
     }
 
@@ -97,7 +107,7 @@ abstract class ShopScoreTest {
     )
 
     @Before
-    fun setup() {
+    open fun setup() {
         applicationContext = ApplicationProvider.getApplicationContext()
         graphqlRepositoryStub =
             getShopPerformanceComponentStub.graphQlRepository() as GraphqlRepositoryStub
@@ -116,6 +126,17 @@ abstract class ShopScoreTest {
 
     protected fun getShopPerformancePageIntent(): Intent {
         return Intent(context, ShopPerformanceActivityStub::class.java)
+    }
+
+    protected fun getShopInfoPeriod(
+        shopInfoPeriodResponseStub: ShopInfoPeriodResponseStub
+    ): ShopInfoPeriodUiModel {
+        return shopScoreCommonMapperStub.mapToGetShopInfo(
+            ShopInfoPeriodWrapperResponse(
+                shopInfoByIDResponse = shopInfoPeriodResponseStub.shopInfoByIDResponse,
+                goldGetPMSettingInfo = shopInfoPeriodResponseStub.goldGetPMSettingInfo
+            )
+        )
     }
 
     protected fun getHeaderPerformanceUiModel(
@@ -148,7 +169,6 @@ abstract class ShopScoreTest {
     protected fun getFaqList(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         goldGetPMShopInfoResponse: GoldGetPMShopInfoResponse.GoldGetPMShopInfo?,
-        shopInfoPeriodResponseStub: ShopInfoPeriodResponseStub,
         pmData: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data.PowerMerchant
     ): List<ItemFaqUiModel> {
         return shopScoreMapperStub.mapToItemFaqUiModel(
@@ -161,14 +181,12 @@ abstract class ShopScoreTest {
         )
     }
 
-    protected fun getShopInfoPeriod(
-        shopInfoPeriodResponseStub: ShopInfoPeriodResponseStub
-    ): ShopInfoPeriodUiModel {
-        return shopScoreCommonMapperStub.mapToGetShopInfo(
-            ShopInfoPeriodWrapperResponse(
-                shopInfoByIDResponse = shopInfoPeriodResponseStub.shopInfoByIDResponse,
-                goldGetPMSettingInfo = shopInfoPeriodResponseStub.goldGetPMSettingInfo
-            )
+    protected fun getSectionPeriodDetailPerformanceUiModel(
+        shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
+        isNewSeller: Boolean
+    ): PeriodDetailPerformanceUiModel {
+        return shopScoreMapperStub.mapToSectionPeriodDetailPerformanceUiModel(
+            shopScoreLevelResponse, isNewSeller
         )
     }
 }
