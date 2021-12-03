@@ -118,14 +118,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     if (!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
-//                    createRecommendationListCarouselComponent(channel, position, isCache)
+                    createRecommendationListCarouselComponent(channel, position, isCache)
                 }
-//                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-//                    createMixLeftComponent(channel, position, isCache)
-//                }
-              /*  DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
+                    createMixLeftComponent(channel, position, isCache)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createProductHighlightComponent(channel, position, isCache)
-                }*/
+                }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {
                     createPopularKeywordChannel(channel = channel)
                 }
@@ -181,13 +181,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_CATEGORY_ICON -> {
                     createCategoryIconComponent(channel, position, isCache)
                 }
-//                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
-//                    createBestSellingWidget(channel)
-//                }
+                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
+                    createBestSellingWidget(channel)
+                }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_BEST_SELLING -> {
+                DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
                     createQuestChannel(channel, position , questData = QuestData())
                 }
             }

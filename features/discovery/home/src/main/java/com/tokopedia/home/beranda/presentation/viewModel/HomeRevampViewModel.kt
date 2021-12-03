@@ -1649,7 +1649,6 @@ open class HomeRevampViewModel @Inject constructor(
         getTopAdsBannerData()
         getRechargeRecommendation()
         getSalamWidget()
-        getQuestWidgetData()
     }
 
     private fun getTopAdsBannerData() {
@@ -1676,32 +1675,6 @@ open class HomeRevampViewModel @Inject constructor(
                 deleteWidget(topAdsModel, index)
             }
         }
-    }
-
-    private fun getQuestWidgetData() {
-//        if(getQuestWidgetDataJob?.isActive == true) return
-//        findWidget<QuestWidgetModel> { questModel, index ->
-//            getQuestWidgetDataJob = launchCatchError(coroutineContext, {
-//                val results = getQuestWidgetUsecase.get().getQuestData(
-//                    getQuestWidgetUsecase.get().getQueryParams(
-//                        0,
-//                        "",
-//                        QuestWidgetLocations.MY_REWARD
-//                )
-//                )
-//                if (results.widgetData?.questWidgetList?.questWidgetList?.isNotEmpty() == true) {
-//                    val newQuestModel = questModel.copy(questData = results)
-//                    updateWidget(newQuestModel, index)
-//                } else {
-//                    if (userSession.get().isLoggedIn) {
-//                        deleteWidget(questModel, index)
-//                    }
-//                }
-//            }){
-//                it.printStackTrace()
-//                deleteWidget(questModel, index)
-//            }
-//        }
     }
 
     fun getBeautyFest(data: List<Visitable<*>>) {

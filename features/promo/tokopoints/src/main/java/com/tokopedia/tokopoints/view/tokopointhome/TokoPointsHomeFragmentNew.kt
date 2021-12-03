@@ -27,6 +27,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -55,7 +56,6 @@ import com.tokopedia.tokopoints.view.tokopointhome.column.SectionVerticalColumnV
 import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
-import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
@@ -73,7 +73,7 @@ typealias SectionItemBinder = SectionItemViewBinder<Any, RecyclerView.ViewHolder
  * Dynamic layout params are applied via
  * function setLayoutParams() because configuration in statusBarHeight
  * */
-class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener {
+class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener, TopSectionVH.CardRuntimeHeightListener, QuestWidgetCallbacks {
     private var mContainerMain: ViewFlipper? = null
     private var mPagerPromos: RecyclerView? = null
 
@@ -455,14 +455,15 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
             }*/
 
            // if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
-                val sectionRecomViewBinder =
-                    recommList?.let { SectionTopQuestViewBinder(it, listener!!) }
+                val sectionRecomViewBinder = SectionTopQuestViewBinder(this)
+
                 @Suppress("UNCHECKED_CAST")
                 viewBinders.put(
                     CommonConstant.SectionLayoutType.RECOMM,
                     sectionRecomViewBinder as SectionItemBinder
                 )
                 recommList?.let { sectionList.add(it) }
+
           //  }
 
             adapter = SectionAdapter(viewBinders)
@@ -491,6 +492,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun onResume() {
         super.onResume()
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
+        adapter?.notifyItemChanged(sectionList.indexOfFirst { it is RewardsRecommendation })
     }
 
 
@@ -713,4 +715,13 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun setCardLayoutHeight(height: Int) {
         setLayoutParams(height)
     }
+
+    override fun deleteQuestWidget() {
+        // delete widget
+    }
+
+    override fun questLogin(){
+
+    }
+
 }

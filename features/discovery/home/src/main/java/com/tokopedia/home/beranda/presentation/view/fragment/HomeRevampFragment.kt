@@ -127,6 +127,7 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
+import com.tokopedia.quest_widget.constants.QuestUrls.QUEST_URL
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -2325,7 +2326,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 activity?.let {
                     val intentQuestWidget = RouteManager.getIntent(
                         context,
-                        "tokopedia://webview?need_login=true&url=https://tokopedia.com/seru/topquest"
+                        QUEST_URL
                     )
 
                     val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)

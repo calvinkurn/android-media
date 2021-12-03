@@ -25,5 +25,4 @@ data class QuestWidgetModel(
     override fun type(typeFactory: HomeComponentTypeFactory): Int {
         return typeFactory.type(this)
     }
-    /// maintain different state like loaded , loading , nonlogin
 }
