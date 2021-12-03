@@ -278,10 +278,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun initSrw() {
         rvSrw?.initialize(this, object : SrwFrameLayout.Listener {
-            override fun onRetrySrw() {
-                reloadSrw()
-            }
-
             override fun trackViewSrw() {
                 analytics.eventViewSrw(shopId, session.userId)
             }
@@ -401,7 +397,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun shouldShowSrw(): Boolean {
         return !isSeller() && hasProductPreviewShown() &&
                 rvSrw?.isAllowToShow() == true ||
-                (rvSrw?.isErrorState() == true && hasProductPreviewShown()) ||
                 (rvSrw?.isLoadingState() == true && hasProductPreviewShown())
     }
 
@@ -1519,7 +1514,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
-        analytics.eventClickBuyProductAttachment(element)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else if (isOCCActive() && element.isEligibleOCC()) {
@@ -1543,7 +1537,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
-        analytics.eventClickAddToCartProductAttachment(element, session)
         if (element.isSupportVariant) {
             showAtcVariantHelper(element.productId, element.shopId.toString())
         } else {
