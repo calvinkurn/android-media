@@ -12,10 +12,7 @@ object DeepLinkMapperFind {
         if (segments.joinToString("/").startsWith(context.getString(R.string.host_find), false) ||
                 segments.joinToString("/").startsWith(context.getString(R.string.host_amp_find), false)) {
 
-            val indexOfFindSegment = segments.indexOf("find")
-            val searchSegments = segments.filterIndexed { index, _ ->
-                index > indexOfFindSegment
-            }
+            val searchSegments = getPathAfter(segments, "find")
             var query = ""
             if (searchSegments.isNotEmpty()) {
                 val city = if (searchSegments.indexOf("c") == 1) "-di-" + searchSegments[searchSegments.lastIndex] else ""
@@ -41,5 +38,12 @@ object DeepLinkMapperFind {
             return ApplinkConstInternalDiscovery.SEARCH_RESULT + queryString
         }
         return deepLink
+    }
+
+    private fun getPathAfter(segments: List<String>, path: String): List<String> {
+        val indexOfFindSegment = segments.indexOf(path)
+        return segments.filterIndexed { index, _ ->
+            index > indexOfFindSegment
+        }
     }
 }
