@@ -54,7 +54,8 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
         tabsViewModel.getUnifyTabLiveData().observe(fragment.viewLifecycleOwner, {
             tabsHolder.hasRightArrow = tabsViewModel.getArrowVisibilityStatus()
             tabsHolder.tabLayout.removeAllTabs()
-            tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
+            if((fragment.activity as DiscoveryActivity).isFromCategory())
+                tabsHolder.customTabMode = TabLayout.MODE_SCROLLABLE
             tabsHolder.getUnifyTabLayout().setSelectedTabIndicator(tabsHolder.getUnifyTabLayout().tabSelectedIndicator)
             var selectedPosition = 0
             it.forEachIndexed { index, tabItem ->
@@ -69,7 +70,7 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) :
             tabsHolder.viewTreeObserver
                 .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
-                        if(selectedPosition>=0) {
+                        if(selectedPosition>=0 && (fragment.activity as DiscoveryActivity).isFromCategory()) {
                             tabsHolder.gone()
                             tabsHolder.tabLayout.getTabAt(selectedPosition)?.select()
                             Handler().postDelayed({
