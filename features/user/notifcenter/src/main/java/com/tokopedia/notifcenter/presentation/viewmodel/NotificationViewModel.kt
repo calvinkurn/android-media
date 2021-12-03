@@ -70,7 +70,8 @@ class NotificationViewModel @Inject constructor(
             cancelAllUseCase()
         }
 
-    private val _mutateNotificationItems = MutableLiveData<Result<NotificationDetailResponseModel>>()
+    private val _mutateNotificationItems =
+        MutableLiveData<Result<NotificationDetailResponseModel>>()
     val notificationItems: LiveData<Result<NotificationDetailResponseModel>>
         get() = _mutateNotificationItems
 
@@ -298,7 +299,22 @@ class NotificationViewModel @Inject constructor(
         if (model.isTopAds) {
             addWishListTopAds(model, callback)
         } else {
-            addWishListNormal(model, callback)
+            addWishListNormal(model.productId.toString(), object : WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    callback.invoke(true, null)
+                }
+
+                override fun onErrorRemoveWishlist(
+                    errorMessage: String?, productId: String?
+                ) {
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {}
+            })
         }
     }
 
@@ -357,29 +373,11 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    private fun addWishListNormal(
-        model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)
+    fun addWishListNormal(
+        productId: String,
+        wishListActionListener: WishListActionListener
     ) {
-        addWishListUseCase.createObservable(
-            model.productId.toString(),
-            userSessionInterface.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    callback.invoke(false, Throwable(errorMessage))
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    callback.invoke(true, null)
-                }
-
-                override fun onErrorRemoveWishlist(
-                    errorMessage: String?, productId: String?
-                ) {
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-            }
-        )
+        addWishListUseCase.createObservable(productId, userSessionInterface.userId, wishListActionListener)
     }
 
     private fun loadTopAdsBannerData() {
