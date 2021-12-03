@@ -225,6 +225,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (wishlistV2.hasNextPage) {
                             currPage += 1
                         }
+
+                        if (wishlistV2.errorMessage.isNotEmpty()) {
+                            showToaster(wishlistV2.errorMessage, "", Toaster.TYPE_ERROR)
+                        }
                     }
 
                 }
@@ -437,6 +441,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
                             doRefresh()
+
+                        } else {
+                            context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
                         }
                     }
                 }
