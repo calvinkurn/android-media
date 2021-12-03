@@ -53,11 +53,9 @@ class ShopPerformanceViewModel @Inject constructor(
 
     private val _shopInfoPeriod = MutableLiveData<Result<ShopInfoPeriodUiModel>>()
 
-    fun getShopInfoPeriod(isFirstLoad: Boolean) {
+    fun getShopInfoPeriod() {
         launchCatchError(block = {
             val dataShopInfo = withContext(dispatchers.io) {
-                shopInfoPeriodUseCase.get()
-                    .setCacheStrategy(shopInfoPeriodUseCase.get().getCacheStrategy(isFirstLoad))
                 shopInfoPeriodUseCase.get().requestParams =
                     GetShopInfoPeriodUseCase.createParams(userSession.shopId.toLongOrZero())
                 shopInfoPeriodUseCase.get().executeOnBackground()

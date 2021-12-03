@@ -149,7 +149,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
     }
 
     override fun onBtnErrorStateClicked() {
-        loadData(false)
+        loadData()
         showPenaltyBadge()
     }
 
@@ -843,7 +843,7 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
                 }
             }
         }
-        loadData(true)
+        loadData()
     }
 
     private fun observeShopPerformancePage() {
@@ -916,15 +916,15 @@ class ShopPerformancePageFragment : BaseDaggerFragment(),
 
     private fun onSwipeRefreshShopPerformance() {
         binding?.shopPerformanceSwipeRefresh?.setOnRefreshListener {
-            loadData(false)
+            loadData()
             showPenaltyBadge()
             coachMark?.dismissCoachMark()
         }
     }
 
-    private fun loadData(isFirstLoad: Boolean) {
+    private fun loadData() {
         showLoading()
-        viewModel.getShopInfoPeriod(isFirstLoad)
+        viewModel.getShopInfoPeriod()
     }
 
     private fun showLoading() {
