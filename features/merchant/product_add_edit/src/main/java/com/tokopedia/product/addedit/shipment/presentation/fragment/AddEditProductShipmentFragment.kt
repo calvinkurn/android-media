@@ -688,7 +688,7 @@ class AddEditProductShipmentFragment:
         }
         bottomSheet.setIsSavingToDraft(true)
         bottomSheet.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
-        bottomSheet.show(childFragmentManager)
+        bottomSheet.show(childFragmentManager, context)
     }
 
     private fun showUnitWeightOption() {

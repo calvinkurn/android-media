@@ -403,7 +403,7 @@ class AddEditProductPreviewFragment :
             } else if (isAddingOrDuplicating && !isProductLimitEligible) {
                 productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button_draft))
                 productLimitationBottomSheet?.setIsSavingToDraft(true)
-                productLimitationBottomSheet?.show(childFragmentManager)
+                productLimitationBottomSheet?.show(childFragmentManager, context)
             } else {
                 viewModel.productInputModel.value?.detailInputModel?.productName?.let {
                     viewModel.validateProductNameInput(it)
@@ -1655,7 +1655,7 @@ class AddEditProductPreviewFragment :
     private fun showProductLimitationBottomSheet() {
         productLimitationBottomSheet?.setSubmitButtonText(getString(R.string.label_product_limitation_bottomsheet_button))
         productLimitationBottomSheet?.setIsSavingToDraft(false)
-        productLimitationBottomSheet?.show(childFragmentManager)
+        productLimitationBottomSheet?.show(childFragmentManager, context)
     }
 
     private fun setupProductLimitationViews() {

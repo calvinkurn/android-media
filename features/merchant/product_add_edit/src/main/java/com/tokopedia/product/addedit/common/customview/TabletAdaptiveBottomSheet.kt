@@ -18,13 +18,16 @@ open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
 
     companion object {
         const val MODAL_WIDTH = 900
+        const val MODAL_WIDE_WIDTH_MARGIN = 200
         const val MODAL_MARGIN_PERCENTAGE = 0.4f
     }
+
+    var useWideModal = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         try {
-            val bsLayout by lazy { view as LinearLayout }
+            val bsLayout = view as LinearLayout
             val isTablet = DeviceScreenInfo.isTablet(requireContext())
             if (isTablet) {
                 changeToModalLayout(bsLayout)
@@ -50,7 +53,8 @@ open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
     }
 
     private fun changeToModalLayout(bsLayout: LinearLayout) {
-        bsLayout.layoutParams.width = MODAL_WIDTH
+        bsLayout.layoutParams.width = if (useWideModal) getScreenWidth() - MODAL_WIDE_WIDTH_MARGIN
+                                        else MODAL_WIDTH
         bsLayout.background = requireContext().getDrawable(R.drawable.product_add_edit_modal_bg)
         bsLayout.requestLayout()
     }
@@ -59,7 +63,7 @@ open class TabletAdaptiveBottomSheet: BottomSheetUnify() {
         val fontSize = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl5).toDp()
         bottomSheetTitle.apply {
             setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
-            textAlignment = if (isTablet) View.TEXT_ALIGNMENT_CENTER else View.TEXT_ALIGNMENT_TEXT_START
+            textAlignment = if (isTablet && !useWideModal) View.TEXT_ALIGNMENT_CENTER else View.TEXT_ALIGNMENT_TEXT_START
             if (isTablet) {
                 (layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.LEFT_OF)
                 (layoutParams as RelativeLayout.LayoutParams).removeRule(RelativeLayout.RIGHT_OF)
