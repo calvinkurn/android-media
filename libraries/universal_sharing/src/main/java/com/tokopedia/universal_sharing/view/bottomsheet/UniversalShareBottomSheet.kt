@@ -330,9 +330,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 }
             }
         }, onError = {
-            it.printStackTrace()
+             clearLoader()
+             removeHandlerTimeout()
+             it.printStackTrace()
         })
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler = Handler(Looper.getMainLooper())
+        handler?.postDelayed({
             clearLoader()
             if(job.isActive) {
                 job.cancel()
@@ -345,6 +348,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
         clearLoader()
+        removeHandlerTimeout()
         if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
             && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
             && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true) {
@@ -772,7 +776,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
-        if(affiliateQueryData != null){
+        if(affiliateQueryData != null &&
+            affiliateCommissionTextView?.visibility == View.VISIBLE){
             shareModel.isAffiliate = true
         }
         bottomSheetListener?.onShareOptionClicked(shareModel)

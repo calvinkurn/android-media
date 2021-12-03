@@ -13,6 +13,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -36,6 +37,7 @@ class AffiliateWrapper {
 
     private var handler: Handler? = null
     private var remoteConfig: RemoteConfig? = null
+    private var linkGeneratorJob: Job? = null
     private val APP_AFFILIATE_CALLBACK_TIMEOUT_KEY = "android_affiliate_callback_timeout_key"
 
 
@@ -46,7 +48,7 @@ class AffiliateWrapper {
             getRemoteConfigTimeOutValue(context, APP_AFFILIATE_CALLBACK_TIMEOUT_KEY)
         )
 
-        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+        linkGeneratorJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateLinkGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
                 val affiliateShortUrl = affiliateUseCase.apply {
@@ -87,6 +89,9 @@ class AffiliateWrapper {
         handler = Handler(Looper.getMainLooper())
         handler?.postDelayed(
             {
+                if(linkGeneratorJob != null && linkGeneratorJob?.isActive == true){
+                    linkGeneratorJob?.cancel()
+                }
                 shareCallback.urlCreated(
                     LinkerUtils.createShareResult(
                         data.textContent,
@@ -126,10 +131,10 @@ class AffiliateWrapper {
         return affiliateGenerateLinkInput
     }
 
-    private fun addAdditionalParamToLinkData(key: String, value: String, linkData: Link){
+    private fun addAdditionalParamToLinkData(key: String, value: String?, linkData: Link){
         var additionalParam = AdditionalParam()
         additionalParam.key = key
-        additionalParam.value = value
+        additionalParam.value = value ?: ""
         linkData.additionalParams?.add(additionalParam)
     }
 
