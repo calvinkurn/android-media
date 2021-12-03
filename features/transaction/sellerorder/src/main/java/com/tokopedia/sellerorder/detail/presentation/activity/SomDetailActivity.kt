@@ -17,6 +17,7 @@ import com.tokopedia.sellerorder.detail.analytic.performance.SomDetailLoadTimeMo
 import com.tokopedia.sellerorder.detail.di.DaggerSomDetailComponent
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
+import com.tokopedia.sellerorder.orderextension.di.SomOrderExtensionModule
 
 /**
  * Created by fwidjaja on 2019-09-30.
@@ -61,10 +62,10 @@ class SomDetailActivity : BaseSomActivity(), HasComponent<SomDetailComponent> {
         finish()
     }
 
-    override fun getComponent(): SomDetailComponent =
-            DaggerSomDetailComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(application))
-                    .build()
+    override fun getComponent(): SomDetailComponent = DaggerSomDetailComponent.builder()
+        .somComponent(SomComponentInstance.getSomComponent(application))
+        .somOrderExtensionModule(SomOrderExtensionModule(this))
+        .build()
 
     private fun initSOMDetailPlt() {
         somDetailLoadTimeMonitoring = SomDetailLoadTimeMonitoring()
