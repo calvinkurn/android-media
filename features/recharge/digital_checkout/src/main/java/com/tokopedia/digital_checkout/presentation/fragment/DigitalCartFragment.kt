@@ -472,8 +472,13 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         viewModel.onSubscriptionChecked(isChecked)
     }
 
-    override fun onSubscriptionImpression(isChecked: Boolean) {
-        digitalAnalytics.eventImpressionSubscription(userSession.userId, isChecked)
+    override fun onSubscriptionImpression(fintechProduct: FintechProduct) {
+        digitalAnalytics.eventImpressionSubscription(
+            userSession.userId,
+            fintechProduct.checkBoxDisabled,
+            getCategoryName(),
+            getOperatorName()
+        )
     }
 
     override fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int) {

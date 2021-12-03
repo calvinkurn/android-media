@@ -66,12 +66,13 @@ class DigitalAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
     }
 
-    fun eventImpressionSubscription(userId: String, isChecked: Boolean) {
+    fun eventImpressionSubscription(userId: String, isChecked: Boolean, categoryName: String, operatorName: String) {
+        val autoDebitStatus = if (isChecked) "disabled" else "enabled"
         TrackApp.getInstance().gtm.sendGeneralEvent(DataLayer.mapOf(
             TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.VIEW_CHECKOUT_IRIS,
             TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
             TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.IMPRESSION_AUTODEBIT,
-            TrackAppUtils.EVENT_LABEL, if (isChecked) "enabled" else "disabled",
+            TrackAppUtils.EVENT_LABEL, "$autoDebitStatus - $categoryName - $operatorName",
             DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
             DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
             DigitalCheckoutTrackingConst.Label.USER_ID, userId

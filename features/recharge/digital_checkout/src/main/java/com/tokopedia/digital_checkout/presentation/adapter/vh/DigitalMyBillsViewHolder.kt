@@ -16,7 +16,7 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
         with(itemView) {
             if (subscription.info.title.isNotEmpty()) {
                 itemView.show()
-                listener.onSubscriptionImpression(subscription.optIn)
+                listener.onSubscriptionImpression(subscription)
 
                 widgetMyBills.hasMoreInfo(false)
                 widgetMyBills.setTitle(subscription.info.title)
@@ -90,7 +90,7 @@ class DigitalMyBillsViewHolder(view: View, val listener: MyBillsActionListener) 
 
 interface MyBillsActionListener {
     fun onSubscriptionChecked(fintechProduct: FintechProduct, isChecked: Boolean)
-    fun onSubscriptionImpression(isChecked: Boolean)
+    fun onSubscriptionImpression(fintechProduct: FintechProduct)
     fun onTebusMurahImpression(fintechProduct: FintechProduct, position: Int)
     fun onCrossellImpression(fintechProduct: FintechProduct, position: Int)
     fun onTebusMurahChecked(fintechProduct: FintechProduct, position: Int, isChecked: Boolean)
