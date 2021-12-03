@@ -53,8 +53,8 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
 
     //featured shop OS
-    fun onFeaturedShopDCClicked(grid: ChannelGrid, position: Int, applink: String)
-    fun onFeaturedShopDCImpressed(grid: ChannelGrid, position: Int)
+    fun onFeaturedShopDCClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
+    fun onFeaturedShopDCImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int)
     fun onSeeAllFeaturedShopDCClicked(channel: ChannelModel, position: Int, applink: String)
     fun goToApplink(applink: String)
     

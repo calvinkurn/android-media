@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -38,6 +40,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXT
 import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
 import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
 import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
@@ -69,17 +72,13 @@ import com.tokopedia.product.addedit.variant.presentation.widget.VariantDataValu
 import com.tokopedia.product.addedit.variant.presentation.widget.VariantUnitPicker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.add_edit_product_variant_photo_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_sizechart_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_type_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_value_level1_layout.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_value_level2_layout.*
-import kotlinx.android.synthetic.main.fragment_add_edit_product_variant.*
 import javax.inject.Inject
 
 class AddEditProductVariantFragment :
@@ -119,7 +118,26 @@ class AddEditProductVariantFragment :
     private var variantUnitPicker: BottomSheetUnify? = null
     private var customVariantValueInputForm: BottomSheetUnify? = null
     private var cancellationDialog: DialogUnify? = null
+
     private var tvDeleteAll: TextView? = null
+    private var recyclerViewVariantType: RecyclerView? = null
+    private var recyclerViewVariantValueLevel1: RecyclerView? = null
+    private var recyclerViewVariantValueLevel2: RecyclerView? = null
+    private var linkAddVariantValueLevel1: Typography? = null
+    private var linkAddVariantValueLevel2: Typography? = null
+    private var variantValueLevel1Layout: ViewGroup? = null
+    private var variantValueLevel2Layout: ViewGroup? = null
+    private var typographyVariantValueLevel1Title: Typography? = null
+    private var typographyVariantValueLevel2Title: Typography? = null
+    private var variantPhotoLayout: ViewGroup? = null
+    private var ivSizechart: ImageView? = null
+    private var ivSizechartAddSign: ImageView? = null
+    private var ivSizechartEditSign: ImageView? = null
+    private var layoutSizechart: ViewGroup? = null
+    private var typographySizechartDescription: Typography? = null
+    private var recyclerViewVariantPhoto: RecyclerView? = null
+    private var cardSizechart: LinearLayout? = null
+    private var buttonSave: UnifyButton? = null
 
     private var userSession: UserSessionInterface? = null
     private var isLoggedin = ""
@@ -168,18 +186,20 @@ class AddEditProductVariantFragment :
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        setFragmentToUnifyBgColor()
+
+        setupViews(view)
 
         variantTypeAdapter = VariantTypeAdapter(this)
         variantValueAdapterLevel1 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_ONE_POSITION)
         variantValueAdapterLevel2 = VariantValueAdapter(this, VARIANT_VALUE_LEVEL_TWO_POSITION)
         variantPhotoAdapter = VariantPhotoAdapter(this)
 
-        recyclerViewVariantType.adapter = variantTypeAdapter
-        recyclerViewVariantValueLevel1.adapter = variantValueAdapterLevel1
-        recyclerViewVariantValueLevel2.adapter = variantValueAdapterLevel2
-        recyclerViewVariantPhoto.addItemDecoration(RecyclerViewItemDecoration(requireContext()))
-        recyclerViewVariantPhoto.adapter = variantPhotoAdapter
+        recyclerViewVariantType?.adapter = variantTypeAdapter
+        recyclerViewVariantValueLevel1?.adapter = variantValueAdapterLevel1
+        recyclerViewVariantValueLevel2?.adapter = variantValueAdapterLevel2
+        recyclerViewVariantPhoto?.addItemDecoration(RecyclerViewItemDecoration(requireContext()))
+        recyclerViewVariantPhoto?.adapter = variantPhotoAdapter
         setRecyclerViewToFlex(recyclerViewVariantType)
         setRecyclerViewToFlex(recyclerViewVariantValueLevel1)
         setRecyclerViewToFlex(recyclerViewVariantValueLevel2)
@@ -205,12 +225,12 @@ class AddEditProductVariantFragment :
         observeIsEditMode()
         observeisRemovingVariant()
 
-        cardSizechart.setOnClickListener {
+        cardSizechart?.setOnClickListener {
             onSizechartClicked()
         }
 
         // button "tambah" variant values level 1 on click listener
-        linkAddVariantValueLevel1.setOnClickListener {
+        linkAddVariantValueLevel1?.setOnClickListener {
             if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_ONE_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
@@ -226,7 +246,7 @@ class AddEditProductVariantFragment :
         }
 
         // button "tambah" variant values level 2 on click listener
-        linkAddVariantValueLevel2.setOnClickListener {
+        linkAddVariantValueLevel2?.setOnClickListener {
             if (variantDataValuePicker?.isVisible == true) return@setOnClickListener
             val variantData: VariantDetail = viewModel.getVariantData(VARIANT_VALUE_LEVEL_TWO_POSITION)
             val selectedVariantUnitValues = mutableListOf<UnitValue>()
@@ -242,7 +262,7 @@ class AddEditProductVariantFragment :
         }
 
         // button save on click listener
-        buttonSave.setOnClickListener {
+        buttonSave?.setOnClickListener {
             // track click action on continue button
             viewModel.isEditMode.value?.let { isEditMode ->
                 if (isEditMode) ProductEditVariantTracking.continueToVariantDetailPage(shopId)
@@ -261,6 +281,27 @@ class AddEditProductVariantFragment :
         setupToolbarActions()
         // stop PLT prepare monitoring
         stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun setupViews(view: View) {
+        recyclerViewVariantType = view.findViewById(R.id.recyclerViewVariantType)
+        recyclerViewVariantValueLevel1 = view.findViewById(R.id.recyclerViewVariantValueLevel1)
+        recyclerViewVariantValueLevel2 = view.findViewById(R.id.recyclerViewVariantValueLevel2)
+        linkAddVariantValueLevel1 = view.findViewById(R.id.linkAddVariantValueLevel1)
+        linkAddVariantValueLevel2 = view.findViewById(R.id.linkAddVariantValueLevel2)
+        variantValueLevel1Layout = view.findViewById(R.id.variantValueLevel1Layout)
+        variantValueLevel2Layout = view.findViewById(R.id.variantValueLevel2Layout)
+        typographyVariantValueLevel1Title = view.findViewById(R.id.typographyVariantValueLevel1Title)
+        typographyVariantValueLevel2Title = view.findViewById(R.id.typographyVariantValueLevel2Title)
+        variantPhotoLayout = view.findViewById(R.id.variantPhotoLayout)
+        ivSizechart = view.findViewById(R.id.ivSizechart)
+        ivSizechartAddSign = view.findViewById(R.id.ivSizechartAddSign)
+        ivSizechartEditSign = view.findViewById(R.id.ivSizechartEditSign)
+        layoutSizechart = view.findViewById(R.id.layoutSizechart)
+        typographySizechartDescription = view.findViewById(R.id.typographySizechartDescription)
+        recyclerViewVariantPhoto = view.findViewById(R.id.recyclerViewVariantPhoto)
+        cardSizechart = view.findViewById(R.id.cardSizechart)
+        buttonSave = view.findViewById(R.id.buttonSave)
     }
 
     override fun onVariantTypeSelected(adapterPosition: Int, variantDetail: VariantDetail) {
@@ -431,15 +472,15 @@ class AddEditProductVariantFragment :
     private fun setupVariantValueSection(layoutPosition: Int, variantTypeDetail: VariantDetail, selectedVariantUnitValues: List<UnitValue>) {
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                variantValueLevel1Layout.show()
+                variantValueLevel1Layout?.show()
                 variantValueAdapterLevel1?.setData(selectedVariantUnitValues)
-                typographyVariantValueLevel1Title.text = variantTypeDetail.name
+                typographyVariantValueLevel1Title?.text = variantTypeDetail.name
                 viewModel.updateVariantDataMap(VARIANT_VALUE_LEVEL_ONE_POSITION, variantTypeDetail)
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                variantValueLevel2Layout.show()
+                variantValueLevel2Layout?.show()
                 variantValueAdapterLevel2?.setData(selectedVariantUnitValues)
-                typographyVariantValueLevel2Title.text = variantTypeDetail.name
+                typographyVariantValueLevel2Title?.text = variantTypeDetail.name
                 viewModel.updateVariantDataMap(VARIANT_VALUE_LEVEL_TWO_POSITION, variantTypeDetail)
             }
         }
@@ -472,7 +513,7 @@ class AddEditProductVariantFragment :
         }
 
         if (variantData.variantID == COLOUR_VARIANT_TYPE_ID) {
-            variantPhotoLayout.show()
+            variantPhotoLayout?.show()
             selectedVariantUnitValues.forEach {
                 variantPhotoAdapter?.addDataIfNotExist(VariantPhoto(it.value, ""))
             }
@@ -577,7 +618,7 @@ class AddEditProductVariantFragment :
         if (variantId == COLOUR_VARIANT_TYPE_ID) {
             variantPhotoAdapter?.removeData(position)
             if (variantPhotoAdapter?.getData()?.size == 0) {
-                variantPhotoLayout.hide()
+                variantPhotoLayout?.hide()
                 variantPhotoAdapter?.setData(emptyList())
             }
         }
@@ -594,10 +635,10 @@ class AddEditProductVariantFragment :
     private fun resetVariantValueSection(layoutPosition: Int) {
         when (layoutPosition) {
             VARIANT_VALUE_LEVEL_ONE_POSITION -> {
-                variantValueLevel1Layout.hide()
+                variantValueLevel1Layout?.hide()
             }
             VARIANT_VALUE_LEVEL_TWO_POSITION -> {
-                variantValueLevel2Layout.hide()
+                variantValueLevel2Layout?.hide()
             }
         }
     }
@@ -667,11 +708,11 @@ class AddEditProductVariantFragment :
 
     override fun startRenderPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
-        recyclerViewVariantType.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+        recyclerViewVariantType?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 stopRenderPerformanceMonitoring()
                 stopPerformanceMonitoring()
-                recyclerViewVariantType.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                recyclerViewVariantType?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
             }
         })
     }
@@ -843,19 +884,19 @@ class AddEditProductVariantFragment :
     private fun observeSizechartUrl() {
         viewModel.variantSizechart.observe(viewLifecycleOwner, Observer {
             if (it.urlOriginal.isEmpty()) {
-                ivSizechartAddSign.visible()
-                ivSizechartEditSign.gone()
-                ivSizechart.gone()
-                typographySizechartDescription.text = getString(R.string.label_variant_sizechart_description)
+                ivSizechartAddSign?.visible()
+                ivSizechartEditSign?.gone()
+                ivSizechart?.gone()
+                typographySizechartDescription?.text = getString(R.string.label_variant_sizechart_description)
             } else {
-                ivSizechartAddSign.gone()
-                ivSizechartEditSign.visible()
-                ivSizechart.visible()
-                typographySizechartDescription.text = getString(R.string.label_variant_sizechart_edit_description)
+                ivSizechartAddSign?.gone()
+                ivSizechartEditSign?.visible()
+                ivSizechart?.visible()
+                typographySizechartDescription?.text = getString(R.string.label_variant_sizechart_edit_description)
             }
 
             // display sizechart image (use server image if exist)
-            ivSizechart.setImage(it.urlOriginal, 0F)
+            ivSizechart?.setImage(it.urlOriginal, 0F)
         })
     }
 
@@ -863,9 +904,9 @@ class AddEditProductVariantFragment :
         viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
             tvDeleteAll?.isEnabled = it
             if (viewModel.isRemovingVariant.value == true) {
-                buttonSave.isEnabled = true // always enable save button if removing variant activated
+                buttonSave?.isEnabled = true // always enable save button if removing variant activated
             } else {
-                buttonSave.isEnabled = it
+                buttonSave?.isEnabled = it
             }
         })
     }
@@ -880,20 +921,20 @@ class AddEditProductVariantFragment :
 
     private fun observeVariantPhotosVisibility() {
         viewModel.isVariantPhotosVisible.observe(viewLifecycleOwner, Observer { isVisible ->
-            if (isVisible) variantPhotoLayout.show()
-            else variantPhotoLayout.hide()
+            if (isVisible) variantPhotoLayout?.show()
+            else variantPhotoLayout?.hide()
         })
     }
 
     private fun observeSizechartVisibility() {
         viewModel.isVariantSizechartVisible.observe(viewLifecycleOwner, Observer {
-            layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
+            layoutSizechart?.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 
     private fun observeisRemovingVariant() {
         viewModel.isRemovingVariant.observe(viewLifecycleOwner, Observer {
-            buttonSave.text = if (it) {
+            buttonSave?.text = if (it) {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_save)
             } else {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_next)
@@ -1067,10 +1108,10 @@ class AddEditProductVariantFragment :
         variantValueAdapterLevel1?.setData(emptyList())
         variantValueAdapterLevel2?.setData(emptyList())
         variantPhotoAdapter?.setData(emptyList())
-        variantValueLevel1Layout.hide()
-        variantValueLevel2Layout.hide()
+        variantValueLevel1Layout?.hide()
+        variantValueLevel2Layout?.hide()
         removeSizechart()
-        layoutSizechart.hide()
+        layoutSizechart?.hide()
     }
 
     private fun removeSizechart() {
@@ -1136,17 +1177,17 @@ class AddEditProductVariantFragment :
         }
     }
 
-    private fun setRecyclerViewToFlex(recyclerView: RecyclerView) {
+    private fun setRecyclerViewToFlex(recyclerView: RecyclerView?) {
         val flexboxLayoutManager = FlexboxLayoutManager(context)
         flexboxLayoutManager.alignItems = AlignItems.FLEX_START
-        recyclerView.apply {
+        recyclerView?.apply {
             layoutManager = flexboxLayoutManager
             addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         }
     }
 
-    private fun setRecyclerViewToHorizontal(recyclerView: RecyclerView) {
-        recyclerView.apply {
+    private fun setRecyclerViewToHorizontal(recyclerView: RecyclerView?) {
+        recyclerView?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             addItemDecoration(HorizontalItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)))
         }

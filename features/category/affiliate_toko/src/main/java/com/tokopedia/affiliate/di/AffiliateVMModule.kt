@@ -75,4 +75,10 @@ abstract class AffiliateVMModule {
 //    @ViewModelKey(AffiliateIncomeViewModel::class)
 //    internal abstract fun affiliateIncomeViewModel(affiliateIncomeViewModel: AffiliateIncomeViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @AffiliateScope
+    @ViewModelKey(AffiliatePromotionHistoryViewModel::class)
+    internal abstract fun affiliatePromotionHistoryViewModel(viewModel: AffiliatePromotionHistoryViewModel): ViewModel
+
 }

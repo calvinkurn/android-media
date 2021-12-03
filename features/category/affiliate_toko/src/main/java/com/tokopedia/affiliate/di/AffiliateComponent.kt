@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.fragment.*
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
@@ -23,6 +24,8 @@ interface AffiliateComponent {
 
     fun injectTransactionDetailActivity(affiliateTransactionDetailActivity: AffiliateTransactionDetailActivity)
 
+    fun injectComponentActivity(affiliateComponentActivity : AffiliateComponentActivity)
+
     fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
 
     fun injectPromoFragment(affiliatePromoFragment: AffiliatePromoFragment)
@@ -39,6 +42,6 @@ interface AffiliateComponent {
 
     fun injectRecommendedProductFragment(viewModel: AffiliateRecommendedProductFragment)
 
-    fun injectIncomeFragment(affiliateIncomeFragment: AffiliateIncomeFragment)
+    fun injectPromotionHistoryFragment(viewModel: AffiliatePromotionHistoryFragment)
 
 }

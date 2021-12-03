@@ -24,6 +24,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
+import com.tokopedia.home_recom.databinding.FragmentProductInfoBinding
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
 import com.tokopedia.home_recom.model.entity.ProductDetailData
@@ -58,7 +59,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.android.synthetic.main.fragment_product_info.*
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -88,6 +89,8 @@ import javax.inject.Inject
  */
 @SuppressLint("SyntheticAccessor")
 open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener, TitleListener, RecommendationErrorListener, ProductInfoViewHolder.ProductInfoListener {
+
+    private var productCardBinding: FragmentProductInfoBinding? by viewBinding()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var trackingQueue: TrackingQueue? = null
@@ -380,7 +383,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     }
                 }
                 else -> {
-                    add_to_cart?.isEnabled = true
+                    productCardBinding?.addToCart?.isEnabled = true
                     activity?.run {
                         showToastError(response.exception)
                     }
@@ -403,7 +406,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     }
                 }
                 else -> {
-                    buy_now?.isEnabled = true
+                    productCardBinding?.buyNow?.isEnabled = true
                     activity?.run {
                         showToastError(response.exception)
                     }
