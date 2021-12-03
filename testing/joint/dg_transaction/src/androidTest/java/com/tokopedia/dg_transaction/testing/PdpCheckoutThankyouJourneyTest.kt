@@ -16,6 +16,7 @@ import com.tokopedia.dg_transaction.testing.digital_checkout.robot.digitalChecko
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.presentation.activity.EmoneyPdpActivityStub
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.robot.emoneyPdp
 import com.tokopedia.dg_transaction.testing.recharge_pdp_emoney.utils.PdpCheckoutThankyouResponseConfig
+import com.tokopedia.dg_transaction.testing.thankyou_native.robot.thankYou
 import com.tokopedia.recharge_pdp_emoney.presentation.fragment.EmoneyPdpFragment
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -60,14 +61,11 @@ class PdpCheckoutThankyouJourneyTest {
             waitForData()
             clickCheckout()
             waitForData()
-            mockPayAndNavigateThankYou()
-            waitForData()
+        }
+        thankYou {
+            mockPayAndNavigateThankYou(activity)
         }
         MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_ID), hasAllSuccess())
-    }
-
-    private fun mockPayAndNavigateThankYou() {
-        RouteManager.route(activity, "tokopedia://payment/thankyou?payment_id=0000&merchant=tokopedia")
     }
 
     private fun setUpLaunchActivity() {
