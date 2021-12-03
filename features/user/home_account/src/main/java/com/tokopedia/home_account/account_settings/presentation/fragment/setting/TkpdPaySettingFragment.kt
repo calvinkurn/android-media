@@ -19,7 +19,7 @@ import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics
 import com.tokopedia.home_account.account_settings.constant.SettingConstant
 import com.tokopedia.home_account.account_settings.di.component.DaggerTkpdPaySettingComponent
 import com.tokopedia.home_account.account_settings.di.module.TkpdPaySettingModule
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemUIModel
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -60,13 +60,13 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
         )
     }
 
-    override fun getSettingItems(): List<SettingItemViewModel> {
-        val settingItems: MutableList<SettingItemViewModel> = ArrayList<SettingItemViewModel>()
+    override fun getSettingItems(): List<SettingItemUIModel> {
+        val settingItems: MutableList<SettingItemUIModel> = ArrayList<SettingItemUIModel>()
         val walletModel = walletPref.retrieveWallet()
 
         if(walletModel != null) {
             settingItems.add(
-                SettingItemViewModel(
+                SettingItemUIModel(
                     SettingConstant.SETTING_TOKOCASH_ID,
                     walletModel.text
                 )
@@ -74,19 +74,19 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
         }
 
         settingItems.add(
-            SettingItemViewModel(
+            SettingItemUIModel(
                 SettingConstant.SETTING_SALDO_ID,
                 getString(R.string.title_saldo_setting)
             )
         )
         settingItems.add(
-            SettingItemViewModel(
+            SettingItemUIModel(
                 SettingConstant.SETTING_CREDIT_CARD_ID,
                 getString(R.string.title_credit_card_setting)
             )
         )
         settingItems.add(
-            SettingItemViewModel(
+            SettingItemUIModel(
                 SettingConstant.SETTING_DEBIT_INSTANT,
                 getString(R.string.title_debit_instant_setting)
             )
@@ -94,7 +94,7 @@ class TkpdPaySettingFragment : BaseGeneralSettingFragment() {
 
         if(settingItems.isNotEmpty()) {
             settingItems.add(0,
-                SettingItemViewModel(
+                SettingItemUIModel(
                     SettingConstant.SETTING_GOPAY,
                     getString(R.string.title_gopay_setting)
                 )
