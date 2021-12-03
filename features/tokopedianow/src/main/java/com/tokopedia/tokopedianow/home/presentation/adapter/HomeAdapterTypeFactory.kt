@@ -59,6 +59,7 @@ class HomeAdapterTypeFactory(
     override fun type(uiModel: HomeProgressBarUiModel): Int = HomeProgressBarViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestSequenceWidgetUiModel): Int = HomeQuestSequenceWidgetViewHolder.LAYOUT
     override fun type(uiModel: HomeQuestWidgetUiModel): Int = HomeQuestWidgetViewHolder.LAYOUT
+    override fun type(uiModel: HomeQuestTitleUiModel): Int = HomeQuestTitleViewHolder.LAYOUT
     // endregion
 
     // region Global Home Component
@@ -97,6 +98,7 @@ class HomeAdapterTypeFactory(
             HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
             HomeQuestSequenceWidgetViewHolder.LAYOUT -> HomeQuestSequenceWidgetViewHolder(view)
             HomeQuestWidgetViewHolder.LAYOUT -> HomeQuestWidgetViewHolder(view)
+            HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view)
             // endregion
 
             // region Global Home Component

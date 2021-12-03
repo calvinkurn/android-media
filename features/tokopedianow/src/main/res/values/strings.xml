@@ -91,6 +91,9 @@
     <string name="tokopedianow_repurchase_category_filter_chip_format">%1$d Kategori</string>
     <string name="tokopedianow_repurchase_date_filter_chip_title">Semua Tanggal</string>
 
+    <string name="tokopedianow_quest_shop_again_and_get_gift">Belanja lagi, dapatin hadiah!</string>
+    <string name="tokopedianow_quest_get_gift">Kumpulin hadiahnya</string>
+
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
     <string name="tokopedianow_sharing_education_background_content_description">sharing education background</string>

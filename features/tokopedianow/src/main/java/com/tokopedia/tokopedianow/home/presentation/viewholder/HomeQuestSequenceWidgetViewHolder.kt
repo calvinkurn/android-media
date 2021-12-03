@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestSequenceWidgetBinding
@@ -11,6 +12,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -53,7 +55,19 @@ class HomeQuestSequenceWidgetViewHolder(
             adapter = this@HomeQuestSequenceWidgetViewHolder.adapter
             layoutManager = LinearLayoutManager(itemView.context,  LinearLayoutManager.HORIZONTAL, false)
         }
-        adapter.submitList(questList)
+        addWidgets(questList)
+    }
+
+    private fun addWidgets(questList: List<HomeQuestWidgetUiModel>) {
+        val widgets = mutableListOf<Visitable<*>>()
+        widgets.add(
+            HomeQuestTitleUiModel(
+                currentQuestFinished = questList.filter { it.currentProgress == it.totalProgress }.size,
+                totalQuestTarget = questList.size
+            )
+        )
+        widgets.addAll(questList)
+        adapter.submitList(widgets)
     }
 
     private fun setTitle(title: String) {
