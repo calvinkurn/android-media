@@ -178,11 +178,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        flightHomepageViewModel.fetchBannerData(true)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
         return binding?.root
