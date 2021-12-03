@@ -9,18 +9,19 @@ import tokopedia.applink.R
 object DeepLinkMapperFind {
     fun getRegisteredNavigationFindFromHttp(context: Context, uri: Uri): String {
         val segments = uri.pathSegments
-        val indexOfFindSegment = segments.indexOf("find")
-        val searchSegments = segments.filterIndexed { index, _ ->
-            index > indexOfFindSegment
-        }
-        var query = ""
-        if (searchSegments.isNotEmpty()) {
-            val city = if (searchSegments.indexOf("c") == 1) "-di-" + searchSegments[searchSegments.lastIndex] else ""
-            query = searchSegments[0] + city
-        }
-
         if (segments.joinToString("/").startsWith(context.getString(R.string.host_find), false) ||
                 segments.joinToString("/").startsWith(context.getString(R.string.host_amp_find), false)) {
+
+            val indexOfFindSegment = segments.indexOf("find")
+            val searchSegments = segments.filterIndexed { index, _ ->
+                index > indexOfFindSegment
+            }
+            var query = ""
+            if (searchSegments.isNotEmpty()) {
+                val city = if (searchSegments.indexOf("c") == 1) "-di-" + searchSegments[searchSegments.lastIndex] else ""
+                query = searchSegments[0] + city
+            }
+
             return getRegisteredFind(ApplinkConst.FIND + "/" + query)
         }
 
