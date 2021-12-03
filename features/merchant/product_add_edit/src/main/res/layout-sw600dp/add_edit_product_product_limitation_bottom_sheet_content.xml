@@ -25,7 +25,7 @@
         android:layout_width="16dp"
         android:layout_height="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         app:icon_color_light_enable="@color/Unify_N700"
         app:icon_color_night_enable="@color/Unify_N700"
         app:icon_name="LIGHT_BULB"
