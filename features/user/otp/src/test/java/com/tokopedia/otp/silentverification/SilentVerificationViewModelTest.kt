@@ -66,7 +66,7 @@ class SilentVerificationViewModelTest {
 
         coEvery { requestSilentVerificationOtpUseCase.invoke(any()) } returns response
 
-        viewModel.requestSilentVerification("112", "silent_verif", "082241231231", "abc")
+        viewModel.requestSilentVerification("112", "silent_verif", "082241231231", "abc", "123")
 
         /* Then */
         verify { requestObserver.onChanged(Success(responseData)) }
@@ -77,7 +77,7 @@ class SilentVerificationViewModelTest {
         /* When */
         coEvery { requestSilentVerificationOtpUseCase.invoke(any()) } throws throwable
 
-        viewModel.requestSilentVerification("112", "silent_verif", "082241231231", "abc")
+        viewModel.requestSilentVerification("112", "silent_verif", "082241231231", "abc", "123")
 
         /* Then */
         verify { requestObserver.onChanged(Fail(throwable)) }
@@ -89,17 +89,9 @@ class SilentVerificationViewModelTest {
         val responseData = OtpValidateData()
         val response = OtpValidatePojo(data = responseData)
 
-        val params = mapOf(
-            ValidateSilentVerificationUseCase.PARAM_OTP_TYPE to "112",
-            ValidateSilentVerificationUseCase.PARAM_MODE to "silent_verif",
-            ValidateSilentVerificationUseCase.PARAM_USERID to "12345",
-            ValidateSilentVerificationUseCase.PARAM_MSISDN to "082241231231",
-            ValidateSilentVerificationUseCase.PARAM_TOKEN_ID to "abc123"
-        )
+        coEvery { validateSilentVerificationUseCase.invoke(any()) } returns response
 
-        coEvery { validateSilentVerificationUseCase.invoke(params) } returns response
-
-        viewModel.validate("112", "082241231231", "silent_verif", 0, "abc123", "abc")
+        viewModel.validate("112", "082241231231", "silent_verif", 0, "abc123", "123123", "abc")
 
         /* Then */
         verify {
@@ -112,7 +104,7 @@ class SilentVerificationViewModelTest {
         /* When */
         coEvery { validateSilentVerificationUseCase.invoke(any()) } throws throwable
 
-        viewModel.validate("112", "082241231231", "silent_verif", 0, "abc123", "abc")
+        viewModel.validate("112", "082241231231", "silent_verif", 0, "abc123", "abc", "abc")
 
         /* Then */
         verify { validationObserver.onChanged(Fail(throwable)) }
