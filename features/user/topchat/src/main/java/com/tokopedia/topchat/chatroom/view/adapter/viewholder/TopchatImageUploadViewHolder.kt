@@ -41,7 +41,7 @@ class TopchatImageUploadViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
-        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
         topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
         bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -50,7 +50,7 @@ class TopchatImageUploadViewHolder(
         elevation = R.dimen.dp_topchat_2,
         shadowRadius = R.dimen.dp_topchat_1,
         shadowGravity = Gravity.CENTER,
-        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+        strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
         strokeWidth = getStrokeWidthSenderDimenRes()
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
@@ -136,7 +136,7 @@ class TopchatImageUploadViewHolder(
     }
 
     override fun bindImageAttachment(element: ImageUploadUiModel) {
-        changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        changeHourColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         attachment?.scaleType = ImageView.ScaleType.CENTER_CROP
         if (element.isDummy) {
             setVisibility(progressBarSendImage, View.VISIBLE)

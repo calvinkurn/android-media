@@ -23,6 +23,7 @@ class AffiliatePerformanceUseCase @Inject constructor(
         )
     }
 
+
     companion object {
         private const val PARAM_PAGE = "page"
         private const val PARAM_LIMIT = "limit"

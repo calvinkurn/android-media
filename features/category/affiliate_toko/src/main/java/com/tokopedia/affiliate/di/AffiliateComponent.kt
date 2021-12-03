@@ -4,14 +4,12 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateComponentActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
-import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
+import com.tokopedia.affiliate.ui.fragment.*
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateLoginFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliatePromoFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliatePortfolioFragment
 import com.tokopedia.affiliate.ui.fragment.registration.AffiliateTermsAndConditionFragment
-import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import dagger.Component
 
 @AffiliateScope
@@ -22,6 +20,8 @@ interface AffiliateComponent {
     val context: Context
 
     fun injectActivity(affiliateActivity : AffiliateActivity)
+
+    fun injectComponentActivity(affiliateComponentActivity : AffiliateComponentActivity)
 
     fun injectHomeFragment(affiliateHomeFragment: AffiliateHomeFragment)
 
@@ -38,5 +38,7 @@ interface AffiliateComponent {
     fun injectTermAndConditionFragment(affiliateTermsAndConditionFragment: AffiliateTermsAndConditionFragment)
 
     fun injectRecommendedProductFragment(viewModel: AffiliateRecommendedProductFragment)
+
+    fun injectRecommendedProductFragment(viewModel: AffiliatePromotionHistoryFragment)
 
 }

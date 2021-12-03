@@ -2,33 +2,17 @@ package com.tokopedia.home_account.account_settings.analytics;
 
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.BUSINESS_UNIT;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CATEGORY_NOTIF_CENTER;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CATEGORY_SETTING_PAGE;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CLICK_SETTING;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.CURRENT_SITE;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EMPTY;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_ACTION;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_ACTION_CLICK_SCREEN_RECORDER;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_ACTION_TS_USR_MENU;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_CATEGORY;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_LABEL;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.EVENT_NAME_CLICK_NOTIF_CENTER;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.FIELD_SHOP_ID;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.FIELD_USER_ID;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.FINGERPRINT;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.HOME_AND_BROWSE;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SETTING;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.SHOP;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.TOKOPEDIA_MARKETPLACE;
-import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.USER;
 import static com.tokopedia.home_account.account_settings.AccountConstants.Analytics.USER_PLATFORM;
 
 import android.content.Context;
 
-import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
@@ -64,64 +48,10 @@ public class AccountAnalytics {
         userSessionInterface = new UserSession(context);
     }
 
-    public void eventTroubleshooterClicked() {
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        Map<String, Object> map = DataLayer.mapOf(
-                EVENT, EVENT_NAME_CLICK_NOTIF_CENTER,
-                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
-                EVENT_ACTION, EVENT_ACTION_TS_USR_MENU,
-                EVENT_LABEL, EMPTY,
-                FIELD_USER_ID, userSessionInterface.getUserId(),
-                FIELD_SHOP_ID, userSessionInterface.getShopId()
-
-        );
-
-        analytics.sendEnhanceEcommerceEvent(map);
-    }
-
     public void homepageSaldoClick(Context context, String landingScreen) {
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         TrackAnalytics.sendEvent(FirebaseEvent.Home.HAMBURGER_SALDO, map, context);
-    }
-
-    public void eventClickSetting(String item) {
-
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_HOME_PAGE,
-                String.format("%s %s", USER, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-    }
-
-    public void eventClickAdvancedSetting(String item) {
-        Analytics analytics = TrackApp.getInstance().getGTM();
-
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_SETTING,
-                String.format("%s %s", USER, SETTING),
-                String.format("%s %s", AccountConstants.Analytics.CLICK, item),
-                ""
-        ));
-
-    }
-
-    public void eventClickScreenRecorder() {
-        final Analytics analytics = TrackApp.getInstance().getGTM();
-
-        Map<String, Object> eventTracking = new HashMap<>();
-        eventTracking.put(EVENT, CLICK_SETTING);
-        eventTracking.put(EVENT_CATEGORY, CATEGORY_SETTING_PAGE);
-        eventTracking.put(EVENT_ACTION, EVENT_ACTION_CLICK_SCREEN_RECORDER);
-        eventTracking.put(EVENT_LABEL, "");
-        eventTracking.put(CURRENT_SITE, TOKOPEDIA_MARKETPLACE);
-        eventTracking.put(BUSINESS_UNIT, HOME_AND_BROWSE);
-
-        analytics.sendGeneralEvent(eventTracking);
     }
 
     public void eventClickAccountSetting(String item) {
@@ -217,48 +147,6 @@ public class AccountAnalytics {
                 AccountConstants.Analytics.EVENT_CATEGORY_SAMPAI,
                 AccountConstants.Analytics.EVENT_ACTION_SAMPAI,
                 ""
-        ));
-    }
-
-    public void eventClickToggleOnGeolocation(Context context) {
-        final Analytics analytics = TrackApp.getInstance().getGTM();
-
-        if (analytics != null) {
-            analytics.sendGeneralEvent(
-                    "clickHomePage",
-                    "homepage",
-                    "click toggle on geolocation",
-                    ""
-            );
-        }
-    }
-
-    public void eventClickToggleOffGeolocation(Context context) {
-        final Analytics analytics = TrackApp.getInstance().getGTM();
-
-        if (analytics != null) {
-            analytics.sendGeneralEvent(
-                    "clickHomePage",
-                    "homepage",
-                    "click toggle off geolocation",
-                    ""
-            );
-        }
-    }
-
-    public void eventClickThemeSetting(boolean isDarkMode) {
-        String label;
-        if(isDarkMode) {
-            label = "dark";
-        } else {
-            label = "light";
-        }
-        final Analytics analytics = TrackApp.getInstance().getGTM();
-        analytics.sendGeneralEvent(TrackAppUtils.gtmData(
-                AccountConstants.Analytics.CLICK_SETTING,
-                AccountConstants.Analytics.CATEGORY_SETTING_PAGE,
-                AccountConstants.Analytics.ACTION_SIMPAN_THEME_SELECTION,
-                label
         ));
     }
 }
