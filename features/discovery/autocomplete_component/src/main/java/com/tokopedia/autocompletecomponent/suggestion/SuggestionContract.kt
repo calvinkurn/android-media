@@ -10,33 +10,82 @@ interface SuggestionContract {
     interface View : CustomerView {
         fun showSuggestionResult(list: List<Visitable<*>>)
 
-        fun trackEventClickKeyword(eventLabel: String, dimension90: String)
+        fun trackEventClickKeyword(
+            eventLabel: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackEventClickCurated(eventLabel: String, campaignCode: String, dimension90: String)
+        fun trackEventClickCurated(
+            eventLabel: String,
+            campaignCode: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackEventClickShop(eventLabel: String, dimension90: String)
+        fun trackEventClickShop(
+            eventLabel: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackEventClickProfile(eventLabel: String)
+        fun trackEventClickProfile(
+            eventLabel: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackEventClickRecentKeyword(eventLabel: String, dimension90: String)
+        fun trackEventClickRecentKeyword(
+            eventLabel: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
         fun trackEventClickTopShopCard(eventLabel: String)
 
         fun trackEventClickTopShopSeeMore(eventLabel: String)
 
-        fun trackEventClickLocalKeyword(eventLabel: String, userId: String, dimension90: String)
+        fun trackEventClickLocalKeyword(
+            eventLabel: String,
+            userId: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackEventClickGlobalKeyword(eventLabel: String, userId: String, dimension90: String)
+        fun trackEventClickGlobalKeyword(
+            eventLabel: String,
+            userId: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
         fun trackEventClickProductLine(item: BaseSuggestionDataView, eventLabel: String, userId: String)
 
-        fun trackTokoNowEventClickKeyword(eventLabel: String)
+        fun trackTokoNowEventClickKeyword(
+            eventLabel: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackTokoNowEventClickCurated(eventLabel: String)
+        fun trackTokoNowEventClickCurated(
+            eventLabel: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackClickChip(eventLabel: String, dimension90: String)
+        fun trackClickChip(
+            eventLabel: String,
+            dimension90: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
 
-        fun trackEventImpressCurated(label: String, campaignCode: String, pageSource: String)
+        fun trackEventImpressCurated(
+            label: String,
+            campaignCode: String,
+            pageSource: String,
+            baseSuggestionDataView: BaseSuggestionDataView,
+        )
+
+        fun trackEventImpression(item: BaseSuggestionDataView)
+
+        fun trackEventClick(item: BaseSuggestionDataView)
 
         fun dropKeyBoard()
 
@@ -60,6 +109,9 @@ interface SuggestionContract {
 
         fun onTopShopCardClicked(cardData: SuggestionTopShopCardDataView)
 
-        fun onSuggestionChipClicked(item: BaseSuggestionDataView.ChildItem)
+        fun onSuggestionChipClicked(
+            baseSuggestionDataView: BaseSuggestionDataView,
+            item: BaseSuggestionDataView.ChildItem,
+        )
     }
 }
