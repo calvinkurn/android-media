@@ -1,5 +1,7 @@
-package com.tokopedia.home_account.di
+package com.tokopedia.home_account.stub.di.topads
 
+import com.tokopedia.home_account.di.HomeAccountUserContext
+import com.tokopedia.home_account.di.HomeAccountUserScope
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
@@ -9,33 +11,32 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
-import com.tokopedia.home_account.stub.domain.FakeUserSession
 import com.tokopedia.home_account.view.helper.StaticMenuGenerator
 import com.tokopedia.home_account.view.mapper.DataViewMapper
 import com.tokopedia.navigation_common.model.WalletPref
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import java.lang.reflect.Array.setBoolean
 
 /**
  * @author by nisie on 10/10/18.
  */
 @Module
-class FakeHomeAccountUserModules(val context: Context) {
+class FakeHomeAccountTopAdsModules(val context: Context) {
 
     @Provides
     @HomeAccountUserContext
     fun provideContext(): Context = context
 
     @Provides
-    fun provideUserSessionInterface(@HomeAccountUserContext context: Context): UserSessionInterface {
-        return FakeUserSession(context)
+    fun provideUserSessionInterface(@HomeAccountUserContext context: Context?): UserSessionInterface {
+        return UserSession(context)
     }
 
     @Provides
