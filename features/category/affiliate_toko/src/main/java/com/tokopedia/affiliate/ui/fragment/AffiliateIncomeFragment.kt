@@ -32,7 +32,12 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import androidx.lifecycle.ViewModelProviders
+import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.custom.AffiliateBottomNavBarInterface
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeChangeInterface{
 
@@ -43,12 +48,14 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     private var listVisitable: List<Visitable<AffiliateAdapterTypeFactory>> = arrayListOf()
     private var listSize = 0
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
+    private var bottomNavBarClickListener : AffiliateBottomNavBarInterface? = null
 
     companion object {
-        fun getFragmentInstance(userNameParam : String, profilePictureParam : String): Fragment {
+        fun getFragmentInstance(userNameParam : String, profilePictureParam : String, affiliateBottomNavBarClickListener: AffiliateBottomNavBarInterface): Fragment {
             return AffiliateIncomeFragment().apply {
                 userName = userNameParam
                 profilePicture = profilePictureParam
+                bottomNavBarClickListener = affiliateBottomNavBarClickListener
             }
         }
     }
@@ -100,7 +107,27 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
             }
         })
         affiliateIncomeViewModel.getErrorMessage().observe(this, { error ->
-            setErrorState(error.toString())
+            view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.run {
+                when(error) {
+                    is UnknownHostException, is SocketTimeoutException -> {
+                        setType(GlobalError.NO_CONNECTION)
+                        show()
+                    }
+                    is IllegalStateException -> {
+                        setType(GlobalError.PAGE_FULL)
+                        show()
+                    }
+                    else -> {
+                        setErrorState(error.message)
+                    }
+                }
+                setActionClickListener {
+                    hide()
+                    affiliateIncomeViewModel.getAffiliateBalance()
+                    affiliateIncomeViewModel.getAffiliateTransactionHistory(PAGE_ZERO)
+                }
+            }
+
         })
         affiliateIncomeViewModel.getRangeChange().observe(this,{changed ->
             if(changed) {
@@ -111,7 +138,9 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun hideGlobalErrorEmptyState() {
+        view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.hide()
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.hide()
+        view?.findViewById<DeferredImageView>(R.id.affiliate_no__default_transaction_iv)?.hide()
     }
 
     private fun resetItems() {
@@ -123,21 +152,26 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
     }
 
     private fun showGlobalErrorEmptyState() {
+        val defaultSelected = affiliateIncomeViewModel.getSelectedDate() == AffiliateBottomDatePicker.SEVEN_DAYS
+        if(defaultSelected) view?.findViewById<DeferredImageView>(R.id.affiliate_no__default_transaction_iv)?.show()
+        else view?.findViewById<DeferredImageView>(R.id.affiliate_no_transaction_iv)?.show()
+
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.apply {
             show()
-            errorTitle.text = getString(R.string.affiliate_empty_transaction)
-            errorDescription.text = getString(R.string.affiliate_empty_transaction_description)
+            errorIllustration.hide()
+            errorTitle.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction) else getString(R.string.affiliate_default_no_transaction)
+            errorDescription.text = if(!defaultSelected) getString(R.string.affiliate_empty_transaction_description) else getString(R.string.affiliate_default_no_transaction_description)
             setButtonFull(true)
             errorSecondaryAction.gone()
-            errorAction.text = getString(R.string.affiliate_choose_date)
+            errorAction.text = if(!defaultSelected) getString(R.string.affiliate_choose_date) else getString(R.string.affiliate_promote_product_cta)
             setActionClickListener {
-                hide()
-                AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY,this@AffiliateIncomeFragment).show(childFragmentManager, "")
+                if (!defaultSelected) AffiliateBottomDatePicker.newInstance(AffiliateBottomDatePicker.TODAY,this@AffiliateIncomeFragment).show(childFragmentManager, "")
+                else bottomNavBarClickListener?.selectItem(AffiliateActivity.PROMO_MENU,R.id.menu_promo_affiliate)
             }
         }
     }
 
-    private fun setErrorState(message: String) {
+    private fun setErrorState(message: String?) {
         view?.findViewById<GlobalError>(R.id.withdrawal_global_error)?.apply {
             show()
             errorTitle.text = message

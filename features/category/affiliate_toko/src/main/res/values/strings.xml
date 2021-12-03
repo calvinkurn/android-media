@@ -112,4 +112,7 @@
     <string name="affiliate_total_harga_s_barang">Total Harga (%s barang)</string>
     <string name="affiliate_komisi">Komisi</string>
     <string name="affiliate_total_diterima">Total Diterima</string>
+    <string name="affiliate_default_no_transaction">Kamu belum punya transaksi</string>
+    <string name="affiliate_default_no_transaction_description">Yuk, promosikan produk affiliate di sosial media supaya kamu bisa mulai bertransaksi.</string>
+    <string name="affiliate_promote_product_cta">Promosikan Produk Affiliate</string>
 </resources>
