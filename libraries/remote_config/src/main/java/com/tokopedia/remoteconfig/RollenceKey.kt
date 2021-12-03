@@ -66,5 +66,6 @@ object RollenceKey {
 
     // Purchase Platform
     const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"
+    const val WISHLIST_OLD_VARIANT = "control_variant"
     const val WISHLIST_V2_VARIANT = "experiment_variant"
 }

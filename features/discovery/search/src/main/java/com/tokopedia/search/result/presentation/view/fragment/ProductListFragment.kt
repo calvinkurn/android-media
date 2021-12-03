@@ -24,6 +24,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkConst.NEW_WISHLIST
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
@@ -1988,6 +1989,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     private fun goToWishlistPage() {
-        RouteManager.route(context, NEW_WISHLIST)
+        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
 }

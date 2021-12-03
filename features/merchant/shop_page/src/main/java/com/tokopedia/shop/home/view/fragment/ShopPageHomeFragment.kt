@@ -2128,7 +2128,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun goToWishlist() {
-        RouteManager.route(context, NEW_WISHLIST)
+        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
     }
 
     private fun onErrorAddWishlist(errorMessage: String?) {
