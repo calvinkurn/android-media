@@ -172,17 +172,28 @@ class ShopScoreMapper @Inject constructor(
                 }
             }
 
-            //start
-            if (context != null) {
-                if (DeviceScreenInfo.isTablet(context)) {
-                    addHeaderDetailParameterTabletMode(
-                        shopScoreWrapperResponse,
-                        shopInfoPeriodUiModel,
-                        powerMerchantData,
-                        shopScore,
-                        shopAge,
-                        isNewSeller
-                    )
+            try {
+                if (context != null) {
+                    if (DeviceScreenInfo.isTablet(context)) {
+                        addHeaderDetailParameterTabletMode(
+                            shopScoreWrapperResponse,
+                            shopInfoPeriodUiModel,
+                            powerMerchantData,
+                            shopScore,
+                            shopAge,
+                            isNewSeller
+                        )
+                    } else {
+                        addDetailParameterMobileMode(
+                            shopScoreWrapperResponse,
+                            shopInfoPeriodUiModel,
+                            powerMerchantData,
+                            shopScoreResult,
+                            shopScore,
+                            shopAge,
+                            isNewSeller
+                        )
+                    }
                 } else {
                     addDetailParameterMobileMode(
                         shopScoreWrapperResponse,
@@ -194,7 +205,7 @@ class ShopScoreMapper @Inject constructor(
                         isNewSeller
                     )
                 }
-            } else {
+            } catch (e: Exception) {
                 addDetailParameterMobileMode(
                     shopScoreWrapperResponse,
                     shopInfoPeriodUiModel,
@@ -205,8 +216,6 @@ class ShopScoreMapper @Inject constructor(
                     isNewSeller
                 )
             }
-
-            //end
 
             val recommendationTools =
                 shopScoreWrapperResponse.getRecommendationToolsResponse?.recommendationTools

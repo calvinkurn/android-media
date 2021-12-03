@@ -121,6 +121,7 @@
         android:textColor="@color/Unify_Static_White"
         app:layout_constraintStart_toEndOf="@id/barrierProgressBar"
         app:layout_constraintTop_toTopOf="@id/tvTitleShopPerformance"
+        app:layout_constraintBottom_toBottomOf="@id/barrierProgressBar"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         tools:text="@string/example_score_performance" />
