@@ -28,7 +28,21 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     private val sellerSrwPromptPath =
         "seller/success_get_chat_attachment_srw_reply_prompt.json"
+    private val defaultChatAttachmentResponsePath =
+        "success_get_chat_attachments.json"
 
+    val chatAttachmentNoVariant: ChatAttachmentResponse
+        get() = alterResponseOf(defaultChatAttachmentResponsePath) {
+            alterAttachmentAttributesAt(
+                position = 2,
+                responseObj = it,
+                attachmentAltercation = { },
+                attributesAltercation = { attr ->
+                    attr.getAsJsonObject(product_profile)
+                        .addProperty(is_variant, false)
+                }
+            )
+        }
 
     /**
      * <!--- Start SRW Prompt --->
@@ -153,6 +167,8 @@ class ChatAttachmentUseCaseStub @Inject constructor(
     private val list = "list"
     private val attributes = "attributes"
     private val id = "id"
+    private val product_profile = "product_profile"
+    private val is_variant = "is_variant"
 
     // broadcast attributes
     private val start_date = "start_date"
