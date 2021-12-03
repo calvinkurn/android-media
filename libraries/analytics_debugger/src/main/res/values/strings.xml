@@ -21,4 +21,6 @@
     <string name="sse_log_gc_token_label">GC Token</string>
 
     <string name="websocket_log_no_data">No Data</string>
+    <string name="websocket_log_channel_id_label">Channel ID</string>
+    <string name="websocket_log_gc_token_label">GC Token</string>
 </resources>

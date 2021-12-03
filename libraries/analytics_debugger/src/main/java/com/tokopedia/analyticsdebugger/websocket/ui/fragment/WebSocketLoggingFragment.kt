@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.websocket.ui.adapter.WebSocketLogAdapter
 
 /**
  * Created By : Jonathan Darwin on December 03, 2021
  */
 class WebSocketLoggingFragment: Fragment() {
+
+    private val adapter: WebSocketLogAdapter by lazy { WebSocketLogAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater,
