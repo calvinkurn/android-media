@@ -1274,6 +1274,25 @@ class TopchatRoomSrwBuyerTest : BaseBuyerTopchatRoomTest() {
         assertSrwTotalQuestion(3)
     }
 
+    /**
+     * Simulate when messageId is empty
+     */
+    @Test
+    fun should_render_srw_question_when_product_coming_from_chat_entry_point_such_as_pdp() {
+        // Given
+        getChatUseCase.response = firstPageChatAsBuyer
+        chatAttachmentUseCase.response = chatAttachmentResponse
+        chatSrwUseCase.response = chatSrwResponse
+        launchChatRoomActivity {
+            it.putExtra(ApplinkConst.Chat.MESSAGE_ID, "")
+            putProductAttachmentIntent(it)
+        }
+
+        // Then
+        assertSrwPreviewContentIsVisible()
+        assertSrwTotalQuestion(1)
+    }
+
     @Test
     fun should_show_template_chat_if_first_success_load_srw_then_fail_the_second_time() {
         // Given

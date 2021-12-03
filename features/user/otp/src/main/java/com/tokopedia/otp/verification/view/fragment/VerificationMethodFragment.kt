@@ -125,7 +125,7 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
 
     private fun setBackground() {
         context?.let {
-            viewBound.parentContainerView?.setBackgroundColor(ContextCompat.getColor(it, RUnify.color.Unify_N0))
+            viewBound.parentContainerView?.setBackgroundColor(ContextCompat.getColor(it, RUnify.color.Unify_Background))
         }
     }
 
@@ -133,6 +133,8 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
         adapter = VerificationMethodAdapter.createInstance(object : VerificationMethodAdapter.ClickListener {
             override fun onModeListClick(modeList: ModeListData, position: Int) {
                 viewmodel.done = true
+                analytics.trackClickMethodOtpButton(otpData.otpType, modeList.modeText)
+
                 if (modeList.modeText == OtpConstant.OtpMode.MISCALL) {
                     (activity as VerificationActivity).goToOnboardingMiscallPage(modeList)
                 } else {

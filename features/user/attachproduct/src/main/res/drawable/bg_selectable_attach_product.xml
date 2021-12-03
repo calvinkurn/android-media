@@ -5,5 +5,5 @@
     <item android:state_pressed="true" android:drawable="@color/Unify_G100" />
     <!--<item android:drawable="@android:color/transparent" />-->
     <item android:state_selected="true" android:drawable="@color/Unify_G100"/>
-    <item android:state_selected="false" android:drawable="@color/Unify_N0" />
+    <item android:state_selected="false" android:drawable="@color/Unify_Background" />
 </selector>

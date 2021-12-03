@@ -3,7 +3,7 @@
     android:id="@+id/container_recharge_order_detail_action_button"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:elevation="@dimen/unify_space_8"
     android:orientation="vertical"
     android:paddingLeft="@dimen/unify_space_16"

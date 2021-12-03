@@ -33,7 +33,7 @@ abstract class BaseOtpToolbarFragment : BaseOtpFragment() {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
                 elevation = 0f
-                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, RUnify.color.Unify_N0)))
+                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, RUnify.color.Unify_Background)))
             }
         }
     }

@@ -60,6 +60,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_SOURCE
 import com.tokopedia.product.manage.common.feature.list.constant.ProductManageCommonConstant.EXTRA_UPDATE_MESSAGE
@@ -144,6 +145,9 @@ import kotlin.math.abs
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 
 /**
@@ -187,6 +191,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
 
+    @Inject
+    lateinit var abTestPlatform: AbTestPlatform
+
     private lateinit var fpm: PerformanceMonitoring
     private lateinit var customMessage: String
     private lateinit var adapter: TopChatRoomAdapter
@@ -199,6 +206,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
     private var delaySendSrw: QuestionUiModel? = null
+    private var interlocutorShopType: String = ""
 
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
@@ -402,7 +410,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun initTextComposeBackground() {
         val bgComposeArea = ViewUtil.generateBackgroundWithShadow(
             view = composeArea,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
             topLeftRadius = R.dimen.dp_topchat_20,
             topRightRadius = R.dimen.dp_topchat_20,
             bottomLeftRadius = R.dimen.dp_topchat_20,
@@ -583,6 +591,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun setupAnalytic() {
         analytics.setSourcePage(sourcePage)
+        TopChatAnalyticsKt.sourcePage = sourcePage
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -642,6 +651,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun trackClickUpdateStock(product: ProductAttachmentUiModel) {
         analytics.trackClickUpdateStock(product)
+    }
+
+    override fun isOCCActive(): Boolean {
+        return abTestPlatform.getString(AB_TEST_OCC, AB_TEST_NON_OCC) == AB_TEST_OCC
     }
 
     private fun initFireBase() {
@@ -731,6 +744,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (isSeller()) {
             setupFirstTimeForSeller()
         }
+        interlocutorShopType = chatRoom.shopType
     }
 
     private fun setupFirstTimeForSeller() {
@@ -1501,10 +1515,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickBuyProductAttachment(element)
-        val addToCartParam = AddToCartParam.mapUiModelToParam(
-            element, AddToCartParam.SOURCE_ACTION_BUY
-        )
-        viewModel.addProductToCart(addToCartParam)
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else if (isOCCActive() && element.isEligibleOCC()) {
+            doOCC(element)
+        } else {
+            val addToCartParam = AddToCartParam.mapUiModelToParam(
+                element, AddToCartParam.SOURCE_ACTION_BUY
+            )
+            viewModel.addProductToCart(addToCartParam)
+        }
     }
 
     private fun onSuccessClickBuyFromProductAttachment(element: AddToCartParam) {
@@ -1513,15 +1533,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             topchatViewState?.chatRoomViewModel?.shopName ?: "",
             element.getBuyEventAction()
         )
-        RouteManager.route(context, ApplinkConst.CART)
+        val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+        startActivity(intent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentUiModel) {
         analytics.eventClickAddToCartProductAttachment(element, session)
-        val addToCartParam = AddToCartParam.mapUiModelToParam(
-            element, AddToCartParam.SOURCE_ACTION_ATC
-        )
-        viewModel.addProductToCart(addToCartParam)
+        if (element.isSupportVariant) {
+            showAtcVariantHelper(element.productId, element.shopId.toString())
+        } else {
+            val addToCartParam = AddToCartParam.mapUiModelToParam(
+                element, AddToCartParam.SOURCE_ACTION_ATC
+            )
+            viewModel.addProductToCart(addToCartParam)
+        }
     }
 
     private fun onSuccessClickATCFromProductAttachment(element: AddToCartParam) {
@@ -1542,6 +1567,28 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 analytics.eventClickSeeButtonOnAtcSuccessToaster()
                 RouteManager.route(context, ApplinkConst.CART)
             }.show()
+        }
+    }
+
+    private fun doOCC(element: ProductAttachmentUiModel) {
+        viewModel.occProduct(getUserSession().userId, element)
+    }
+
+    private fun showAtcVariantHelper(
+        productId: String,
+        shopId: String
+    ) {
+        context?.let { ctx ->
+            AtcVariantHelper.goToAtcVariant(
+                context = ctx,
+                productId = productId,
+                pageSource = AtcVariantHelper.TOPCHAT_PAGESOURCE,
+                isTokoNow = interlocutorShopType == SHOP_TYPE_TOKONOW,
+                shopId = shopId,
+                startActivitResult = { intent, requestCode ->
+                    startActivityForResult(intent, requestCode)
+                }
+            )
         }
     }
 
@@ -1857,11 +1904,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAddToWishList(product: ProductAttachmentUiModel, success: () -> Unit) {
-        val productId = product.productId.toString()
-        analytics.eventClickAddToWishList(productId)
+        val productId = product.productId
         if (product.isWishListed()) {
-            showSuccessToastWishListCta(R.string.title_topchat_already_success_atw)
+            goToWishList()
         } else {
+            analytics.eventClickAddToWishList(productId)
             requestNetworkAddToWishList(productId, success)
         }
     }
@@ -1872,7 +1919,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             override fun onSuccessRemoveWishlist(productId: String?) {}
             override fun onSuccessAddWishlist(productId: String?) {
                 success()
-                showSuccessToastWishListCta(R.string.title_topchat_success_atw)
+                showSuccessToastWishList(R.string.title_topchat_success_atw)
             }
 
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -1884,23 +1931,21 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
     }
 
-    private fun showSuccessToastWishListCta(@StringRes successMessageRes: Int) {
+    private fun showSuccessToastWishList(@StringRes successMessageRes: Int) {
         view?.let {
             val successMessage = it.context.getString(successMessageRes)
-            val ctaText = it.context.getString(R.string.cta_topchat_success_atw)
-            Toaster.make(
+            Toaster.build(
                 it,
                 successMessage,
                 Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                ctaText,
-                View.OnClickListener { goToWishList() }
-            )
+                Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
     private fun goToWishList() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
+        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
+        startActivity(intent)
     }
 
     override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) {
@@ -2451,6 +2496,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 is Success -> onSuccessGetTickerReminder(it.data)
             }
         })
+
+        viewModel.occProduct.observe(viewLifecycleOwner, {
+            when(it) {
+                is Success -> {
+                    topchatViewState?.chatRoomViewModel?.let { chatData ->
+                        TopChatAnalyticsKt.eventClickOCCButton(
+                            it.data, chatData, getUserSession().userId)
+                    }
+                    goToOCC()
+                }
+                is Fail -> onError(it.throwable)
+            }
+        })
     }
 
     private fun onSuccessGetTickerReminder(
@@ -2568,6 +2626,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         adapter.removeViewHolder(element, position)
     }
 
+    private fun goToOCC() {
+        val intent = RouteManager.getIntent(
+            context,
+            ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
+        )
+        startActivity(intent)
+    }
+
     companion object {
         const val PARAM_RATING = "rating"
         const val PARAM_UTM_SOURCE = "utmSource"
@@ -2588,6 +2654,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         private const val ELLIPSIZE_MAX_CHAR = 20
         private const val SECOND_DIVIDER = 1000
+
+        const val AB_TEST_OCC = "chat_occ_exp"
+        const val AB_TEST_NON_OCC = "chat_occ_control"
 
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
