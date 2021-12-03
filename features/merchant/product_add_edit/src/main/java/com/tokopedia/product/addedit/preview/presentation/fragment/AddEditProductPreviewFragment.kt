@@ -750,6 +750,7 @@ class AddEditProductPreviewFragment :
                     // show dialog
                     DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                         setTitle(getString(R.string.label_title_on_dialog))
+                        setDefaultMaxWidth()
                         setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
                         setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
                         if ((isEditing() || dataBackPressedLoss()) && !isDrafting()) {
@@ -1525,6 +1526,7 @@ class AddEditProductPreviewFragment :
             setTitle(getString(R.string.label_for_dialog_title_that_shop_has_no_location))
             setDescription(getString(R.string.label_for_dialog_desc_that_shop_has_no_location))
             setPrimaryCTAText(getString(R.string.label_for_dialog_primary_cta_that_shop_has_no_location))
+            setDefaultMaxWidth()
             setPrimaryCTAClickListener {
                 moveToLocationPicker()
                 dismiss()

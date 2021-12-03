@@ -329,6 +329,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         context?.let {
             categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
+            categoryAlertDialog?.setDefaultMaxWidth()
             categoryAlertDialog?.setDescription(getString(R.string.immutable_category_message))
             categoryAlertDialog?.setPrimaryCTAText(getString(R.string.action_close_category_dialog))
             categoryAlertDialog?.setPrimaryCTAClickListener {
@@ -1671,6 +1672,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.message_variant_price_wholesale_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.message_variant_price_wholesale))
             setPrimaryCTAText(getString(R.string.action_variant_price_wholesale_negative))
             setPrimaryCTAClickListener {
@@ -1690,6 +1692,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.message_change_category_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.message_change_category))
             setSecondaryCTAText(getString(R.string.action_change_category_positive))
             setSecondaryCTAClickListener {
@@ -1973,6 +1976,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         context?.run {
             productPriceBulkEditDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             productPriceBulkEditDialog?.setTitle(getString(R.string.label_change_price_dialog_title))
+            productPriceBulkEditDialog?.setDefaultMaxWidth()
             productPriceBulkEditDialog?.setDescription(getString(R.string.label_change_price_dialog_message))
             productPriceBulkEditDialog?.setPrimaryCTAText(getString(R.string.action_cancel))
             productPriceBulkEditDialog?.setSecondaryCTAText(getString(R.string.action_change_price))

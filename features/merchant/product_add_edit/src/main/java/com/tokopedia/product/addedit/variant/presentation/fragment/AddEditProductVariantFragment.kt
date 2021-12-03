@@ -37,10 +37,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
-import com.tokopedia.product.addedit.common.util.AddEditProductUploadErrorHandler
-import com.tokopedia.product.addedit.common.util.HorizontalItemDecoration
-import com.tokopedia.product.addedit.common.util.RecyclerViewItemDecoration
-import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
@@ -210,6 +207,7 @@ class AddEditProductVariantFragment :
             cancellationDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             cancellationDialog?.setPrimaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_cancel_cancellation))
             cancellationDialog?.setSecondaryCTAText(getString(com.tokopedia.product.addedit.R.string.action_confirm_cancellation))
+            cancellationDialog?.setDefaultMaxWidth()
             cancellationDialog?.setPrimaryCTAClickListener {
                 cancellationDialog?.dismiss()
             }
@@ -1036,6 +1034,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.label_variant_exit_dialog_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.label_variant_exit_dialog_desc))
             setPrimaryCTAText(getString(R.string.action_cancel_exit))
             setPrimaryCTAClickListener {
@@ -1054,6 +1053,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(getString(R.string.label_variant_delete_all_title))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.label_variant_delete_all_description))
             setPrimaryCTAText(getString(R.string.action_variant_delete_all_negative))
             setPrimaryCTAClickListener {
@@ -1084,6 +1084,7 @@ class AddEditProductVariantFragment :
         val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.apply {
             setTitle(dialogTitle)
+            setDefaultMaxWidth()
             setDescription(dialogDesc)
             setPrimaryCTAText(getString(R.string.action_cancel_replacement))
             setPrimaryCTAClickListener {

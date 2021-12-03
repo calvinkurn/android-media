@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -496,6 +495,7 @@ class AddEditProductShipmentFragment:
     private fun showDialogStandardShipment() {
         DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
             setTitle(getString(R.string.title_standard_shipment))
+            setDefaultMaxWidth()
             setDescription(getString(R.string.description_standard_shipment))
             setPrimaryCTAText(getString(R.string.primary_button_standard_shipment))
             setSecondaryCTAText(getString(R.string.secondary_button_standard_shipment))

@@ -6,21 +6,25 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
+
+private const val DIALOG_MAX_WIDTH = 900
+private const val DIALOG_MARGIN_TOP = 8
 
 fun TextAreaUnify?.setText(text: String) = this?.textAreaInput?.setText(text)
 
@@ -153,6 +157,33 @@ fun TextFieldUnify2?.updateText(text: String) {
         if (focused) {
             requestFocus()
         }
+    }
+}
+
+fun DialogUnify.setDefaultMaxWidth(adjustButtonOrientation: Boolean = true) {
+    dialogMaxWidth = DIALOG_MAX_WIDTH
+
+    val isTablet = DeviceScreenInfo.isTablet(context)
+    if (adjustButtonOrientation && isTablet) {
+        setDialogOrientationToVertical()
+    }
+}
+
+fun DialogUnify.setDialogOrientationToVertical() {
+    val paramSecondary = (dialogSecondaryLongCTA.layoutParams as LinearLayout.LayoutParams).apply {
+        setMargins(Int.ZERO, DIALOG_MARGIN_TOP, Int.ZERO, Int.ZERO)
+    }
+
+    dialogSecondaryCTA.gone()
+    dialogSecondaryLongCTA.show()
+    dialogSecondaryLongCTA.layoutParams = paramSecondary
+    dialogCTAContainer.orientation = LinearLayout.VERTICAL
+    dialogCTAContainer.requestLayout()
+
+    dialogSecondaryLongCTA.post {
+        dialogPrimaryCTA.layoutParams = paramSecondary
+        dialogPrimaryCTA.layoutParams.width = dialogSecondaryLongCTA.measuredWidth
+        dialogPrimaryCTA.requestLayout()
     }
 }
 
