@@ -89,8 +89,10 @@ data class ThanksPageData(
         @SerializedName("fee_details")
         val feeDetailList : ArrayList<FeeDetail>?,
         //created and used locally
-        var paymentMethodCount: Int
-) : Parcelable
+        var paymentMethodCount: Int,
+        // parse config flag json
+        var configFlagData: ConfigFlag? = null,
+        ) : Parcelable
 
 @Parcelize
 data class FeeDetail (
@@ -465,10 +467,23 @@ data class ThanksCustomization(
         @SerializedName("custom_title_home_button")
         val customHomeButtonTitle: String?) : Parcelable
 
+@Parcelize
 data class ConfigFlag(
         @SerializedName("enable_thanks_widget")
-        val isThanksWidgetEnabled : Boolean
-)
+        val isThanksWidgetEnabled : Boolean,
+        @SerializedName("hide_search_bar")
+        val shouldHideSearchBar: Boolean?,
+        @SerializedName("hide_global_menu")
+        val shouldHideGlobalMenu: Boolean?,
+        @SerializedName("hide_home_button")
+        val shouldHideHomeButton: Boolean?,
+        @SerializedName("hide_feature_recom")
+        val shouldHideFeatureRecom: Boolean?,
+        @SerializedName("hide_pg_recom")
+        val shouldHideProductRecom: Boolean?,
+        @SerializedName("hide_dg_recom")
+        val shouldHideDigitalRecom: Boolean?
+): Parcelable
 
 data class Tickers(
         @SerializedName("tickers")

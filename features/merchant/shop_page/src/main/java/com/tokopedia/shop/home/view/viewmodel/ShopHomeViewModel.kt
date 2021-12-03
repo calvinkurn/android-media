@@ -124,9 +124,17 @@ class ShopHomeViewModel @Inject constructor(
         get() = _campaignNplRemindMeStatusData
     private val _campaignNplRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
 
+    val campaignFlashSaleStatusData: LiveData<Result<GetCampaignNotifyMeUiModel>>
+        get() = _campaignFlashSaleRemindMeStatusData
+    private val _campaignFlashSaleRemindMeStatusData = MutableLiveData<Result<GetCampaignNotifyMeUiModel>>()
+
     val checkCampaignNplRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
         get() = _checkCampaignNplRemindMeStatusData
     private val _checkCampaignNplRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
+
+    val checkCampaignFlashSaleRemindMeStatusData: LiveData<Result<CheckCampaignNotifyMeUiModel>>
+        get() = _checkCampaignFlashSaleRemindMeStatusData
+    private val _checkCampaignFlashSaleRemindMeStatusData = MutableLiveData<Result<CheckCampaignNotifyMeUiModel>>()
 
     val bottomSheetFilterLiveData : LiveData<Result<DynamicFilterModel>>
         get() = _bottomSheetFilterLiveData
@@ -391,6 +399,18 @@ class ShopHomeViewModel @Inject constructor(
         }) {}
     }
 
+    fun getCampaignFlashSaleRemindMeStatus(campaignId: String) {
+        launchCatchError(block = {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                getCampaignNotifyMe(campaignId)
+            }
+            val getCampaignNotifyMeUiModel = ShopPageHomeMapper.mapToGetCampaignNotifyMeUiModel(
+                getCampaignNotifyMeModel
+            )
+            _campaignFlashSaleRemindMeStatusData.value = Success(getCampaignNotifyMeUiModel)
+        }) {}
+    }
+
     private suspend fun getCampaignNotifyMe(campaignId: String): GetCampaignNotifyMeModel {
         val useCase = getCampaignNotifyMeUseCase.get()
         useCase.params = GetCampaignNotifyMeUseCase.createParams(campaignId)
@@ -415,6 +435,28 @@ class ShopHomeViewModel @Inject constructor(
                     it.cause,
                     it.message,
                     campaignId
+            )))
+        }
+    }
+
+    fun clickFlashSaleReminder(campaignId: String, action: String) {
+        launchCatchError(block = {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
+                checkCampaignNotifyMe(campaignId, action)
+            }
+            val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
+                checkCampaignNotifyMeModel.campaignId,
+                checkCampaignNotifyMeModel.success,
+                checkCampaignNotifyMeModel.message,
+                checkCampaignNotifyMeModel.errorMessage,
+                action
+            )
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Success(checkCampaignNotifyMeUiModel))
+        }) {
+            _checkCampaignFlashSaleRemindMeStatusData.postValue(Fail(CheckCampaignNplException(
+                it.cause,
+                it.message,
+                campaignId
             )))
         }
     }

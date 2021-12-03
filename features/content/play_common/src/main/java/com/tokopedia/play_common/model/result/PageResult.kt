@@ -16,6 +16,7 @@ data class PageResult<T>(
 
 sealed class PageResultState {
     data class Success(val pageInfo: PageInfo) : PageResultState()
+    data class Upcoming(val channelId: String) : PageResultState()
     object Loading : PageResultState()
     data class Fail(val error: Throwable) : PageResultState()
 }

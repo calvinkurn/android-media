@@ -4,14 +4,18 @@ import android.content.Context
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.recommendation_widget_common.databinding.ItemComparisonWidgetBinding
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.item_comparison_widget.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+
+    private var binding: ItemComparisonWidgetBinding? by viewBinding()
+
     companion object {
         private const val CLASS_NAME = "com.tokopedia.recommendation_widget_common.widget.comparison.ComparisonWidgetItemViewHolder.kt"
     }
@@ -25,10 +29,10 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
             trackingQueue: TrackingQueue?,
             userSession: UserSessionInterface
     ) {
-        view.specsView.setSpecsInfo(comparisonModel.specsModel)
-        view.productCardView.setProductModel(comparisonModel.productCardModel)
+        binding?.specsView?.setSpecsInfo(comparisonModel.specsModel)
+        binding?.productCardView?.setProductModel(comparisonModel.productCardModel)
         if (!comparisonModel.isCurrentItem) {
-            view.productCardView.setOnClickListener {
+            binding?.productCardView?.setOnClickListener {
                 if (comparisonModel.recommendationItem.isTopAds) {
                     val product = comparisonModel.recommendationItem
                     TopAdsUrlHitter(context).hitClickUrl(
@@ -53,7 +57,7 @@ class ComparisonWidgetItemViewHolder(val view: View): RecyclerView.ViewHolder(vi
                 comparisonWidgetInterface.onProductCardClicked(comparisonModel.recommendationItem, comparisonListModel, adapterPosition)
             }
         }
-        view.productCardView.addOnImpressionListener(comparisonModel) {
+        binding?.productCardView?.addOnImpressionListener(comparisonModel) {
             if (comparisonModel.recommendationItem.isTopAds) {
                 val product = comparisonModel.recommendationItem
                 TopAdsUrlHitter(context).hitImpressionUrl(

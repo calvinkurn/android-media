@@ -11,8 +11,6 @@ import com.tokopedia.deals.common.model.response.SearchData
 import com.tokopedia.deals.common.ui.dataview.DealsBaseItemDataView
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.deals.search.model.response.CuratedData
-import io.mockk.coEvery
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,6 +20,12 @@ import com.tokopedia.deals.DealsJsonMapper
 import com.tokopedia.deals.common.domain.DealsSearchUseCase
 import com.tokopedia.deals.common.ui.dataview.DealsBrandsDataView
 import com.tokopedia.deals.location_picker.model.response.Location
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.verify
+import io.mockk.mockk
+import io.mockk.just
+import io.mockk.runs
 import junit.framework.Assert.assertEquals
 
 @RunWith(JUnit4::class)
@@ -139,6 +143,44 @@ class DealsCategoryViewModelTest {
     }
 
     @Test
+    fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryProductEmpty() {
+        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("product_empty_page.json"), SearchData::class.java)
+        val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
+        // given
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockEvent)
+        }
+        // when
+        viewModel.getCategoryBrandData("", "", "", 1, true)
+
+        // then
+        assertEquals(viewModel.observableDealsCategoryLayout.value, mockResult)
+    }
+
+    @Test
+    fun getCategoryBrandData_fetchSuccessOnPageOne_dealsCategoryProductEmptyandBrandEmpty() {
+        val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("product_and_brand_empty_page.json"), SearchData::class.java)
+        val mockResult = mapper.mapCategoryLayout(mockEvent, 1, "")
+        // given
+        coEvery {
+            dealsSearchUseCase.getDealsSearchResult(
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
+            )
+        } coAnswers {
+            firstArg<(SearchData) -> Unit>().invoke(mockEvent)
+        }
+        // when
+        viewModel.getCategoryBrandData("", "", "", 1, true)
+
+        // then
+        assertEquals(viewModel.observableDealsCategoryLayout.value, mockResult)
+    }
+
+    @Test
     fun getCategoryBrandData_fetchSuccessOnPageGreaterThanOne_productsShouldContainsData() {
         val mockEvent = Gson().fromJson(DealsJsonMapper.getJson("brandproduct.json"), SearchData::class.java)
         val mockResult = mapper.mapProducttoLayout(mockEvent, 2)
@@ -187,5 +229,16 @@ class DealsCategoryViewModelTest {
 
         // then
         assertEquals(viewModel.observableDealsCategoryLayout.value, mockResult)
+    }
+
+    @Test
+    fun onClearedViewModel(){
+        every { dealsSearchUseCase.cancelJobs() } just runs
+
+        val method = viewModel::class.java.getDeclaredMethod("onCleared")
+        method.isAccessible = true
+        method.invoke(viewModel)
+
+        verify { dealsSearchUseCase.cancelJobs() }
     }
 }

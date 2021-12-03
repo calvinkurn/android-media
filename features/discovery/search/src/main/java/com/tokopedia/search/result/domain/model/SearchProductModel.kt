@@ -89,7 +89,11 @@ data class SearchProductModel(
 
             @SerializedName("keywordProcess")
             @Expose
-            val keywordProcess: String = "0"
+            val keywordProcess: String = "0",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
     )
 
     data class SearchProductData(
@@ -143,7 +147,15 @@ data class SearchProductModel(
 
             @SerializedName("typeId")
             @Expose
-            val typeId: Int = 0
+            val typeId: Int = 0,
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Related(
@@ -276,7 +288,15 @@ data class SearchProductModel(
 
             @SerializedName("text")
             @Expose
-            val text: String = ""
+            val text: String = "",
+
+            @SerializedName("componentId")
+            @Expose
+            val componentId: String = "",
+
+            @SerializedName("trackingOption")
+            @Expose
+            val trackingOption: Int = 0,
     )
 
     data class Banner(
