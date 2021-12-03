@@ -3,7 +3,7 @@ package com.tokopedia.promocheckoutmarketplace.data.response
 import com.google.gson.annotations.SerializedName
 
 data class GetPromoSuggestionResponse(
-        @SerializedName("GetPromoHistory")
+        @SerializedName("GetPromoSuggestion")
         val promoSuggestion: GetPromoSuggestion = GetPromoSuggestion()
 )
 

@@ -313,7 +313,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeClickBottomSheet() {
-        viewBinding?.promoSuggestionBottomSheet?.bottomSheetClose?.let { bottomsheetCloseButton ->
+        viewBinding?.promoSuggestionBottomSheet?.buttonClose?.let { bottomsheetCloseButton ->
             bottomsheetCloseButton.setOnClickListener {
                 analytics.eventDismissLastSeen(viewModel.getPageSource())
                 hidePromoCheckoutSuggestionBottomsheet()
@@ -663,14 +663,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
                 // Determine total space, in pixel, needed to show all promo last seen item
                 val headerPromoSuggestionHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
-                val itemPromoSuggestionHeight = resources.getDimensionPixelSize(R.dimen.dp_52)
+                val itemPromoSuggestionHeight = resources.getDimensionPixelSize(R.dimen.dp_68)
                 val totalSpaceNeededForPromoSuggestionItems = (data.uiData.promoSuggestionItemUiModelList.size * itemPromoSuggestionHeight) + headerPromoSuggestionHeight
 
                 // If available space is not sufficient to show all promo item, then set max available height for the bottomsheet
                 val isAvailableSpaceSufficient = availableSpaceHeight - totalSpaceNeededForPromoSuggestionItems >= 0
                 if (!isAvailableSpaceSufficient) {
                     promoCheckoutSuggestionBottomSheet?.peekHeight = availableSpaceHeight.toInt()
-                    viewBinding?.promoSuggestionBottomSheet?.rvPromoSuggestion?.layoutParams?.height = (availableSpaceHeight - (viewBinding?.promoSuggestionBottomSheet?.bottomSheetClose?.height
+                    viewBinding?.promoSuggestionBottomSheet?.rvPromoSuggestion?.layoutParams?.height = (availableSpaceHeight - (viewBinding?.promoSuggestionBottomSheet?.buttonClose?.height
                             ?: 0)).toInt()
                 } else {
                     promoCheckoutSuggestionBottomSheet?.peekHeight = totalSpaceNeededForPromoSuggestionItems
