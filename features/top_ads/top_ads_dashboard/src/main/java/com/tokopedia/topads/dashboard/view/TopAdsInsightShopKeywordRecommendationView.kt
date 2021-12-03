@@ -71,7 +71,6 @@ class TopAdsInsightShopKeywordRecommendationView(
                 )
             }
         }
-        //todo checkbox dash icon
         checkBox.isChecked = true
     }
 
@@ -93,7 +92,18 @@ class TopAdsInsightShopKeywordRecommendationView(
     }
 
     private fun onKeywordSelected(selectedItems: Int) {
-        checkBox.isChecked = selectedItems == mAdapter.itemCount
+        when (selectedItems) {
+            mAdapter.itemCount -> {
+                checkBox.setIndeterminate(false)
+                checkBox.isChecked = true
+            }
+            0 -> checkBox.isChecked = false
+            else -> {
+                checkBox.isChecked = true
+                checkBox.setIndeterminate(true)
+            }
+        }
+
         lstnr.invoke(type, selectedItems)
     }
 

@@ -22,6 +22,7 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsInsightViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_topads_insight_shop_keyword.*
 import javax.inject.Inject
 
@@ -29,10 +30,12 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
     private lateinit var newKeywordRecommView : TopAdsInsightShopKeywordRecommendationView
     private val typeToPosiMap = mutableMapOf<Int, Int>()
-    private var recommendedKeywordData: RecommendedKeywordData? = null
 
     @Inject
     lateinit var viewModel: TopAdsInsightViewModel
+
+    @Inject
+    lateinit var userSession : UserSessionInterface
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,11 +55,11 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
     }
 
     private fun getDataFromArgument() {
-        recommendedKeywordData = arguments?.getParcelable(BUNDLE_NEW_KEYWORD)
-        if(recommendedKeywordData == null || recommendedKeywordData!!.recommendedKeywordCount == 0) {
+        val recommendedKeywordData = arguments?.getParcelable<RecommendedKeywordData>(BUNDLE_NEW_KEYWORD)
+        if(recommendedKeywordData == null || recommendedKeywordData.recommendedKeywordCount == 0) {
             empty_view.show()
         } else {
-            addNewKeywordAccordion(recommendedKeywordData!!)
+            addNewKeywordAccordion(recommendedKeywordData)
         }
     }
 
@@ -120,7 +123,7 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
                     group = TopAdsManageHeadlineInput2.Operation.Group(
                         id = key.first.toString(),
                         name= key.second,
-                        shopID = recommendedKeywordData?.shopID.toString(),
+                        shopID = userSession.shopId,
                         keywordOperations = value,
                         status = "published"
                     )

@@ -143,7 +143,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     fun loadShopData() {
         loderRecom?.visibility = View.VISIBLE
-        viewModel.getShopKeywords("480396", arrayOf())
+        viewModel.getShopKeywords(userSession.shopId, arrayOf())
     }
 
     private fun loadProductData() {
