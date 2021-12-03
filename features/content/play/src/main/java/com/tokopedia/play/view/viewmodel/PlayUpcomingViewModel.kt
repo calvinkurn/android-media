@@ -69,7 +69,7 @@ class PlayUpcomingViewModel @Inject constructor(
     private val _upcomingState = MutableStateFlow<PlayUpcomingState>(PlayUpcomingState.Unknown)
 
     private val _partnerUiState = _partnerInfo.map {
-        PlayPartnerUiState(it.name, it.status)
+        PlayUpcomingPartnerUiState(it.name, it.status)
     }.flowOn(dispatchers.computation)
 
     private val _upcomingInfoUiState = combine(
@@ -87,7 +87,7 @@ class PlayUpcomingViewModel @Inject constructor(
     }.flowOn(dispatchers.computation)
 
     private val _shareUiState = _channelDetail.map {
-        PlayShareUiState(shouldShow = it.shareInfo.shouldShow)
+        PlayUpcomingShareUiState(shouldShow = it.shareInfo.shouldShow)
     }.flowOn(dispatchers.computation)
 
 

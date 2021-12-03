@@ -26,7 +26,7 @@ public class TemplateChatActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         toolbar.setTitle(getString(R.string.title_template_chat));
-        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        toolbar.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background));
     }
 
     @Override

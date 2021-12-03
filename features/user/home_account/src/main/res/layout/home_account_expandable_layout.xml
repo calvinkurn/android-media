@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical"
     android:paddingLeft="@dimen/padding_dp_16"
     android:paddingRight="@dimen/padding_dp_16"

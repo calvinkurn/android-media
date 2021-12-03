@@ -273,7 +273,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupBackground() {
         window.decorView.setBackgroundColor(
-            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
     }
 

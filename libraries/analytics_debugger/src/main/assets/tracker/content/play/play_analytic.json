@@ -130,13 +130,6 @@
       "sessionIris": ".*"
     },
     {
-      "eventAction": "click cart icon",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*"
-    },
-    {
       "eventAction": "scroll merchant voucher",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",

@@ -981,11 +981,8 @@ class ModelBuilder {
 
     fun buildProduct(): Product = gson.fromJson(product, Product::class.java)
 
-    fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
-    fun buildAddToCartModelResponseFail() = AddToCartDataModel(
-            errorMessage = arrayListOf("error message"),
-            data = DataModel(cartId = "", success = 0)
-    )
+    fun buildAddToCartModelResponseSuccess() =  CartFeedbackResponseModel(isSuccess = true, errorMessage = "", cartId = "123")
+    fun buildAddToCartModelResponseFail() = CartFeedbackResponseModel(isSuccess = false, errorMessage = "error message ", cartId = "")
 
     fun buildCartUiModel(
             product: PlayProductUiModel.Product,
