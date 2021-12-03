@@ -30,6 +30,8 @@ import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
@@ -84,7 +86,7 @@ public class MyApplication extends BaseMainApplication
 
         upgradeSecurityProvider();
 
-        GraphqlClient.init(this);
+        GraphqlClient.init(this, getAuthenticator());
         NetworkClient.init(this);
         registerActivityLifecycleCallbacks(new ActivityFrameMetrics.Builder().build());
         TrackApp.initTrackApp(this);
@@ -116,6 +118,9 @@ public class MyApplication extends BaseMainApplication
         FirebaseApp.initializeApp(this);
     }
 
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return new TkpdAuthenticatorGql(this, this, new UserSession(this), new RefreshTokenGql());
+    }
 
     private void upgradeSecurityProvider() {
         try {

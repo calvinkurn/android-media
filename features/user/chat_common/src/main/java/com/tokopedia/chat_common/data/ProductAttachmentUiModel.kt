@@ -61,9 +61,10 @@ open class ProductAttachmentUiModel protected constructor(
     val hasDiscount: Boolean
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
+                    && priceBefore != productPrice && dropPercentage != "0"
         }
     val stringBlastId: String get() = blastId.toString()
-    var campaignId: Long = 0
+    var campaignId: Long = builder.campaignId
     var isFulfillment: Boolean = false
     var urlTokocabang: String = ""
     var parentId: String = "0"
@@ -73,6 +74,8 @@ open class ProductAttachmentUiModel protected constructor(
     var colorHexVariant: String = ""
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
+    var isSupportVariant: Boolean = builder.isSupportVariant
+    var cartId: String = ""
 
     var isUpcomingCampaign: Boolean = false
         private set
@@ -119,6 +122,7 @@ open class ProductAttachmentUiModel protected constructor(
             }
             this.isLoading = false
             parentId = attribute.productProfile.parentId
+            isSupportVariant = attribute.productProfile.isSupportVariant
             isUpcomingCampaign = attribute.productProfile.isUpcomingCampaign
             locationStock = attribute.productProfile.locationStock
         }
@@ -192,7 +196,7 @@ open class ProductAttachmentUiModel protected constructor(
     }
 
     fun hasEmptyStock(): Boolean {
-        return status != statusActive
+        return status != statusActive || remainingStock == 0
     }
 
     fun isWishListed(): Boolean {
@@ -212,16 +216,27 @@ open class ProductAttachmentUiModel protected constructor(
         this.isError = false
     }
 
+    fun getAtcDimension40(sourcePage: String): String {
+        return when (sourcePage) {
+            ApplinkConst.Chat.SOURCE_CHAT_SEARCH -> "/chat - search chat"
+            else -> getField()
+        }
+    }
+
+    private fun getField(): String {
+        return if (blastId > 0) {
+            "/broadcast"
+        } else {
+            "/chat"
+        }
+    }
+
     fun hasReview(): Boolean {
         return rating.count > 0
     }
 
     fun fromBroadcast(): Boolean {
         return blastId != 0L
-    }
-
-    fun isEligibleOcc(): Boolean {
-        return !isPreOrder && !isFlashSaleProduct()
     }
 
     fun isFlashSaleProduct(): Boolean {
@@ -259,6 +274,11 @@ open class ProductAttachmentUiModel protected constructor(
         return "$role - $productId - $isWarehouse - $isCampaign"
     }
 
+    //not a variant, not product campaign, not broadcast, & not pre-order
+    fun isEligibleOCC(): Boolean {
+        return !isSupportVariant && !isProductCampaign() && !fromBroadcast() && !isPreOrder
+    }
+
     companion object {
         const val statusDeleted = 0
         const val statusActive = 1
@@ -293,6 +313,8 @@ open class ProductAttachmentUiModel protected constructor(
         internal var isPreOrder: Boolean = false
         internal var images: List<String> = emptyList()
         internal var needSync: Boolean = true
+        internal var isSupportVariant: Boolean = false
+        internal var campaignId: Long = 0
 
         fun withProductAttributesResponse(product: ProductAttachmentAttributes): Builder {
             withProductId(product.productId)
@@ -316,6 +338,9 @@ open class ProductAttachmentUiModel protected constructor(
             withWishList(product.productProfile.wishList)
             withImages(product.productProfile.images)
             withRating(product.productProfile.rating)
+            withIsSupportVariant(product.productProfile.isSupportVariant)
+            withCampaignId(product.productProfile.campaignId)
+            withIsPreOrder(product.productProfile.isPreOrder)
             return self()
         }
 
@@ -436,6 +461,16 @@ open class ProductAttachmentUiModel protected constructor(
 
         fun withNeedSync(needSync: Boolean): Builder {
             this.needSync = needSync
+            return self()
+        }
+
+        fun withIsSupportVariant(isSupportVariant: Boolean): Builder {
+            this.isSupportVariant = isSupportVariant
+            return self()
+        }
+
+        fun withCampaignId(campaignId: Long): Builder {
+            this.campaignId = campaignId
             return self()
         }
 

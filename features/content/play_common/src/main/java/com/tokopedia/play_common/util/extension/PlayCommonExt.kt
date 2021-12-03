@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
+import android.text.SpannableStringBuilder
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -298,6 +299,21 @@ val List<GraphqlError>.defaultErrorMessage: String
 
 fun dismissToaster() {
     try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+}
+
+fun SpannableStringBuilder.append(
+    text: CharSequence,
+    flags: Int,
+    vararg spans: Any,
+): SpannableStringBuilder {
+    val start = length
+    append(text)
+
+    spans.forEach { span ->
+        setSpan(span, start, length, flags)
+    }
+
+    return this
 }
 
 fun Activity.hideKeyboard() {
