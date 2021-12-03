@@ -256,38 +256,6 @@ class CatalogFragmentTest
     }
 
     @Test
-    fun check_comparison_section_opening() {
-        actionTest {
-            Thread.sleep(3000)
-            onView(withId(R.id.catalog_detail_rv))
-                    .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
-                            ViewMatchers.hasDescendant(AllOf.allOf(withId(R.id.catalog_comparision_rv))),
-                            ViewActions.scrollTo()))
-            Thread.sleep(3000)
-            onView(CommonMatcher.firstView(AllOf.allOf(
-                    withId(R.id.second_catalog_image),
-                    ViewMatchers.isDisplayed())))
-            onView(CommonMatcher.firstView(AllOf.allOf(
-                    withId(R.id.comparision_card),
-                    ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-            Thread.sleep(3000)
-            onView(CommonMatcher.firstView(AllOf.allOf(
-                    withId(R.id.product_name),
-                    ViewMatchers.isDisplayed())))
-        }.assertTest {
-            val query = listOf(
-                mapOf(
-                        Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                        Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                        Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.CLICK_COMPARISION_CATALOG,
-                        Event.LABEL_KEY to Event.ALL_STAR
-                )
-            )
-            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
-        }
-    }
-
-    @Test
     fun check_product_listing_section() {
         onView(withId(R.id.catalog_detail_rv))
                 .perform(RecyclerViewActions.actionOnItem<RecyclerView.ViewHolder>(
