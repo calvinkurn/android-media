@@ -264,7 +264,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        setupBackgroundColor()
         setupToolbar()
         prepareLayout()
         observingDetail()
@@ -651,8 +651,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     private fun renderPayment() {
         val paymentData = SomDetailPayments.PaymentDataUiModel(
                 label = dynamicPriceResponse?.paymentData?.label.orEmpty(),
-                value = dynamicPriceResponse?.paymentData?.value.orEmpty(),
-                textColor = dynamicPriceResponse?.paymentData?.textColor.orEmpty())
+                value = dynamicPriceResponse?.paymentData?.value.orEmpty())
 
         val paymentMethodList = mutableListOf<SomDetailPayments.PaymentMethodUiModel>()
         dynamicPriceResponse?.paymentMethod?.map {
@@ -1245,6 +1244,10 @@ open class SomDetailFragment : BaseDaggerFragment(),
         }
         setLoadingIndicator(false)
         refreshHandler?.finishRefresh()
+    }
+
+    private fun setupBackgroundColor() {
+        activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     private fun setupToolbar() {

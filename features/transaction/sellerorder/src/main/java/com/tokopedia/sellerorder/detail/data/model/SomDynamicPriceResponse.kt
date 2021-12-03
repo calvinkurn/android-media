@@ -33,9 +33,6 @@ data class SomDynamicPriceResponse(
                 @SerializedName("label")
                 val label: String = "",
                 @Expose
-                @SerializedName("text_color")
-                val textColor: String = "",
-                @Expose
                 @SerializedName("value")
                 val value: String = ""
         )
@@ -44,9 +41,6 @@ data class SomDynamicPriceResponse(
                 @Expose
                 @SerializedName("label")
                 val label: String = "",
-                @Expose
-                @SerializedName("text_color")
-                val textColor: String = "",
                 @Expose
                 @SerializedName("value")
                 val value: String = ""
