@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -1132,7 +1133,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        recyclerView?.post {
+        notifyWidgetWithSdkChecking {
             updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
         }
 
@@ -1478,7 +1479,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         binding?.root?.addOneTimeGlobalLayoutListener {
             recyclerView?.post {
                 checkLoadingWidgets()
@@ -1556,7 +1559,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             extras = widgetErrorExtraMap
         )
 
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         showErrorToaster()
         view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
@@ -1573,7 +1578,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 it
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         checkLoadingWidgets()
     }
 
@@ -1670,7 +1677,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 else -> widget
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         checkLoadingWidgets()
     }
 
@@ -1684,6 +1693,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)
+    }
+
+    @SuppressLint("AnnotateVersionCheck")
+    private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                callback()
+            } else {
+                Handler(Looper.getMainLooper()).post {
+                    callback()
+                }
+            }
+        } catch (e: Exception) {
+            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+        }
     }
 
     private fun checkLoadingWidgets() {
