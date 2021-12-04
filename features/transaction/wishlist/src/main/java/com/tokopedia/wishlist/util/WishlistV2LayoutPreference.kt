@@ -22,14 +22,7 @@ class WishlistV2LayoutPreference  @Inject constructor(val context: Context) {
         sharedPrefs?.edit()?.putInt(USER_LAYOUT_WISHLIST_TYPE, type)?.apply()
     }
 
-    // do not delete : for phase 2 will use grid layout
     fun getTypeLayout(): String {
         return TYPE_LIST
-        /*val typeLayout = sharedPrefs?.getInt(USER_LAYOUT_WISHLIST_TYPE, 0)
-        return if (typeLayout == 0) {
-            TYPE_LIST
-        } else {
-            TYPE_GRID
-        }*/
     }
 }

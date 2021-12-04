@@ -35,7 +35,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.globalerror.GlobalError
@@ -59,11 +58,6 @@ import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBuilder
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -121,9 +115,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
     private var buttonText = ""
     private var alreadyHitQtyTrack = false
     private var shouldSetActivityResult = true
-    private var remoteConfig: RemoteConfig? = null
-    private var remoteConfigInstance: RemoteConfigInstance? = null
-    private val ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

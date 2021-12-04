@@ -35,7 +35,6 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
             val buttonVariantSectionHeight = productCardModel.getVariantSectionHeight(context)
             val buttonNotifyMeSectionHeight = productCardModel.getButtonNotifyMeSectionHeight(context)
             val buttonSimilarProductHeight = productCardModel.getButtonSimilarProductHeight(context)
-            val buttonThreeDotsWishlistHeight = productCardModel.getButtonThreeDotsWishlistHeight(context)
             val buttonPrimaryWishlistHeight = productCardModel.getButtonPrimaryWishlistHeight(context)
 
             productCardHeightList.add(
@@ -51,7 +50,6 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
                             buttonVariantSectionHeight +
                             buttonNotifyMeSectionHeight +
                             buttonSimilarProductHeight +
-                            buttonThreeDotsWishlistHeight +
                             buttonPrimaryWishlistHeight
             )
         }
@@ -505,17 +503,8 @@ private fun ProductCardModel.getButtonSimilarProductHeight(context: Context): In
     else 0
 }
 
-private fun ProductCardModel.getButtonThreeDotsWishlistHeight(context: Context): Int {
-    return if (hasButtonThreeDotsWishlist) {
-        val buttonThreeDotsWishlistHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_secondary_height)
-
-        buttonThreeDotsWishlistHeight
-    }
-    else 0
-}
-
 private fun ProductCardModel.getButtonPrimaryWishlistHeight(context: Context): Int {
-    return if (hasAddToCartWishlist || hasSimilarProductWishlist) {
+    return if (willShowPrimaryButtonWishlist()) {
         val buttonPrimaryWishlistMarginTop = context.resources.getDimensionPixelOffset(R.dimen.product_card_button_primary_margin)
         val buttonPrimaryWishlistHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_button_primary_height)
 

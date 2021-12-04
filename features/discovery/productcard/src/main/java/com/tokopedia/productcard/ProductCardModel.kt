@@ -59,7 +59,7 @@ data class ProductCardModel (
         val hasSimilarProductButton: Boolean = false,
         val hasButtonThreeDotsWishlist: Boolean = false,
         val hasAddToCartWishlist: Boolean = false,
-        val hasSimilarProductWishlist: Boolean = false
+        val hasSimilarProductWishlist: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false
