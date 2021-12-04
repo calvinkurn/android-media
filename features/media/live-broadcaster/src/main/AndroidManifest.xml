@@ -12,7 +12,6 @@
         <activity
             android:name=".log.ui.activity.NetworkLogActivity"
             android:label="@string/live_broadcaster_label"
-            android:theme="@style/Theme.White"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
