@@ -3,4 +3,5 @@
     <string name="str_dot">•</string>
     <string name="lihat_semua">Lihat Semua</string>
     <string name="quest_label">Hadiah misi menantimu</string>
+    <string name="finished_desc">Cek hadiah kamu, yuk!</string>
 </resources>

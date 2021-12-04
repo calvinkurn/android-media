@@ -101,10 +101,6 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
-import com.tokopedia.home.databinding.FragmentHomeRevampBinding
-import com.tokopedia.home.databinding.HomeHeaderOvoBinding
-import com.tokopedia.home.databinding.LayoutItemWidgetBalanceWidgetBinding
-import com.tokopedia.home.databinding.ViewOnboardingNavigationBinding
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -112,6 +108,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -172,7 +169,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -290,6 +286,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var questWidgetPosition = -1
     private var isGopayActivated: Boolean = false
     private var isNeedToRotateTokopoints: Boolean = true
     private var errorToaster: Snackbar? = null
@@ -1242,6 +1239,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getHomeViewModel().isFirstLoad = false
         }
         manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
+
+        refreshQuestWidget()
+
+    }
+
+    private fun refreshQuestWidget() {
+
+        if(questWidgetPosition != -1 && adapter?.currentList?.any { it is QuestWidgetModel} == true) {
+            adapter?.notifyItemChanged(questWidgetPosition)
+        }
+
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
@@ -2184,6 +2192,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh() {
+        refreshQuestWidget()
         coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
@@ -3245,5 +3254,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun deleteQuestWidget() {
         viewModel.get().deleteQuestWidget()
+    }
+
+    override fun updateQuestWidget(position: Int) {
+        this.questWidgetPosition = position
     }
 }

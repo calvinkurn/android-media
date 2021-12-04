@@ -85,13 +85,7 @@ class QuestWidgetViewModel @Inject constructor(@Named(IO) workerDispatcher: Coro
                 }
             }
             else {
-                questWidgetListLiveData.postValue(
-                    LiveDataResult.error(
-                        Exception(
-                            ERROR_NULL_RESPONSE
-                        )
-                    )
-                )
+                questWidgetListLiveData.postValue(LiveDataResult.emptyData())
             }
         }, onError = {
             questWidgetListLiveData.postValue(LiveDataResult.error(it))

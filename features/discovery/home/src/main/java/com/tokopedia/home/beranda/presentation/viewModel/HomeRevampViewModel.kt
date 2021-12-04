@@ -70,13 +70,6 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
-import com.tokopedia.quest_widget.constants.QuestWidgetLocations
-import com.tokopedia.quest_widget.data.QuestData
-import com.tokopedia.quest_widget.domain.QuestWidgetUseCase
-import com.tokopedia.quest_widget.domain.RetrieveQuestData
-import com.tokopedia.quest_widget.util.LiveDataResult
-import com.tokopedia.quest_widget.view.ERROR_NULL_RESPONSE
-import com.tokopedia.quest_widget.view.LOCATION_NOT_ALLOWED
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.recharge_component.model.WidgetSource
@@ -88,7 +81,6 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import dagger.Lazy
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
@@ -1693,6 +1685,12 @@ open class HomeRevampViewModel @Inject constructor(
     fun deleteQuestWidget() {
         findWidget<QuestWidgetModel> { questWidgetModel, index ->
             deleteWidget(questWidgetModel, index)
+        }
+    }
+    fun updateQuestWidget(mutableList: MutableList<Visitable<Any>>) {
+
+        findWidget<QuestWidgetModel> { questWidgetModel, index ->
+            updateWidget(questWidgetModel, index)
         }
     }
 }

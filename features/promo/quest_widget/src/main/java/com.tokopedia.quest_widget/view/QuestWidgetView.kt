@@ -38,7 +38,7 @@ class QuestWidgetView @JvmOverloads constructor(
         const val ERROR = 2
         const val LOGIN = 3
     }
-
+    private var position: Int = -1
     private val DIRECTION_RIGHT = "right"
     private val DIRECTION_LEFT = "left"
     val questTracker = QuestTracker()
@@ -97,6 +97,7 @@ class QuestWidgetView @JvmOverloads constructor(
             }
         })
 
+        viewModel.questWidgetListLiveData.removeObservers(context as AppCompatActivity)
         viewModel.questWidgetListLiveData.observe(context as AppCompatActivity, Observer {
             when (it.status) {
                 LiveDataResult.STATUS.LOADING -> {
@@ -191,6 +192,7 @@ class QuestWidgetView @JvmOverloads constructor(
 
             //tracker event
             questTracker.clickLihatButton(source)
+            questWidgetCallbacks.updateQuestWidget(position)
 
             data?.widgetData?.questWidgetList?.pageDetail?.cta?.applink?.let {
                 try {
@@ -211,7 +213,9 @@ class QuestWidgetView @JvmOverloads constructor(
                 data.widgetData.questWidgetList.questWidgetList,
                 data.config,
                 questTracker,
-                source
+                source,
+                questWidgetCallbacks,
+                this.position
             )
             rvQuestWidget.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -249,11 +253,14 @@ class QuestWidgetView @JvmOverloads constructor(
         channel: Int = 0,
         channelSlug: String = "",
         page: String,
-        @QuestSource source: Int = QuestSource.DEFAULT
+        @QuestSource source: Int = QuestSource.DEFAULT,
+        position: Int = -1
     ) {
+        this.position = position
         this.source = source
         this.page = page
         val userSession = UserSession(context)
+
         viewModel.getWidgetList(channel, channelSlug, page, userSession)
     }
 

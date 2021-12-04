@@ -2,9 +2,14 @@ package com.tokopedia.tokopoints.view.tokopointhome.topquest
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.view.QuestWidgetView
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.homeresponse.RewardsRecommendation
 import com.tokopedia.tokopoints.view.tokopointhome.RewardsRecomListener
@@ -14,9 +19,17 @@ class SectionTopQuestVH(
     var questWidgetCallbacks: QuestWidgetCallbacks
 ) : RecyclerView.ViewHolder(view) {
 
-    fun bind(data: RewardsRecommendation) {
-         val view:QuestWidgetView = view.findViewById(R.id.topquest)
-         view.setupListeners(questWidgetCallbacks)
-         view.getQuestList(0,"","myreward", QuestSource.REWARDS)
+    fun bind() {
+        val view: QuestWidgetView = view.findViewById(R.id.topquest)
+
+        val config: RemoteConfig = FirebaseRemoteConfigImpl(view.context)
+        if(config.getBoolean(RemoteConfigKey.ENABLE_QUEST_WIDGET, true)) {
+            view.show()
+            view.setupListeners(questWidgetCallbacks)
+            view.getQuestList(0, "", "myreward", QuestSource.REWARDS)
+        }
+        else{
+            view.hide()
+        }
     }
 }

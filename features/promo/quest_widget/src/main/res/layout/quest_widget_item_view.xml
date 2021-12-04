@@ -86,10 +86,26 @@
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_banner_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dim_2dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN950"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_banner_desc_sisa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Sisa 2 Hari"
                 android:layout_marginTop="@dimen/dim_2dp"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"
@@ -97,7 +113,7 @@
                 android:textColor="@color/Unify_NN950"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler" />
-
+            </LinearLayout>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

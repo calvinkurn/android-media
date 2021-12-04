@@ -57,10 +57,12 @@ import com.tokopedia.tokopoints.view.tokopointhome.coupon.SectionHorizontalViewB
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionVH
 import com.tokopedia.tokopoints.view.tokopointhome.header.TopSectionViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.merchantvoucher.MerchantVoucherViewBinder
+import com.tokopedia.tokopoints.view.tokopointhome.recommendation.SectionRecomViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topquest.SectionTopQuestViewBinder
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.QUEST
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.user.session.UserSession
@@ -99,6 +101,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var sectionListViewBinder: SectionHorizontalViewBinder
     var listener: RewardsRecomListener? = null
     lateinit var mUsersession: UserSession
+    private var questWidgetPosition = -1
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -389,7 +393,23 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    when (sectionContent.layoutBannerAttr.bannerType) {
+                    if (sectionContent.layoutQuestWidgetAttr != null && sectionContent.layoutQuestWidgetAttr.jsonQuestWidgetDisplayParam != null) {
+                        // add Quest View binder here
+                        val sectionTopQuestViewBinder = SectionTopQuestViewBinder(this)
+                        @Suppress("UNCHECKED_CAST")
+                        if(sectionList.any { it is SectionContent }){
+                            if(sectionContent.layoutType == QUEST) {
+                                viewBinders.put(
+                                    sectionContent.layoutType,
+                                    sectionTopQuestViewBinder as SectionItemBinder
+                                )
+                                sectionList.add(sectionContent)
+                            }
+                        }
+                    }
+
+
+                        when (sectionContent.layoutBannerAttr.bannerType) {
                         CommonConstant.BannerType.BANNER_2_1 -> {
                             val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
                             @Suppress("UNCHECKED_CAST")
@@ -443,7 +463,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                 }
             }
 
-       /*     if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
+            if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
                 val sectionRecomViewBinder =
                     recommList?.let { SectionRecomViewBinder(it, listener!!) }
                 @Suppress("UNCHECKED_CAST")
@@ -452,19 +472,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     sectionRecomViewBinder as SectionItemBinder
                 )
                 recommList?.let { sectionList.add(it) }
-            }*/
-
-           // if (recommList?.recommendationWrapper?.isNotEmpty() == true) {
-                val sectionRecomViewBinder = SectionTopQuestViewBinder(this)
-
-                @Suppress("UNCHECKED_CAST")
-                viewBinders.put(
-                    CommonConstant.SectionLayoutType.RECOMM,
-                    sectionRecomViewBinder as SectionItemBinder
-                )
-                recommList?.let { sectionList.add(it) }
-
-          //  }
+            }
 
             adapter = SectionAdapter(viewBinders)
             adapter?.addItem(sectionList)
@@ -492,9 +500,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun onResume() {
         super.onResume()
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
-        adapter?.notifyItemChanged(sectionList.indexOfFirst { it is RewardsRecommendation })
-    }
 
+        if(this.questWidgetPosition != -1 && this.questWidgetPosition != sectionList.size - 1
+            && this.questWidgetPosition != 0 && sectionList.any { (it as SectionContent).layoutType == QUEST }){
+            adapter?.notifyItemChanged(this.questWidgetPosition)
+        }
+    }
 
     private fun getRecommendationListener(): RewardsRecomListener {
 
@@ -718,6 +729,10 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun deleteQuestWidget() {
         // delete widget
+    }
+
+    override fun updateQuestWidget(position: Int) {
+        this.questWidgetPosition = position
     }
 
     override fun questLogin(){

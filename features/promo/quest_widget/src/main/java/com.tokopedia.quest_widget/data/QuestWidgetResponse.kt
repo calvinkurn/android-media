@@ -122,7 +122,7 @@ data class Label(
     val description: String? = null,
 
     @SerializedName("title")
-    val title: String? = null,
+    var title: String? = null,
 
     @SerializedName("type")
     val type: String? = null,

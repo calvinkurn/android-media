@@ -12,16 +12,16 @@ import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
 class SectionTopQuestViewBinder(
     var questWidgetCallbacks: QuestWidgetCallbacks,
     )
-    : SectionItemViewBinder<RewardsRecommendation, SectionTopQuestVH>(
-        RewardsRecommendation::class.java) {
+    : SectionItemViewBinder<Any, SectionTopQuestVH>(
+        Any::class.java) {
 
     override fun createViewHolder(parent: ViewGroup): SectionTopQuestVH {
         return SectionTopQuestVH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false ), questWidgetCallbacks)
     }
 
-    override fun bindViewHolder(model:RewardsRecommendation, viewHolder: SectionTopQuestVH) {
-        viewHolder.bind(model)
+    override fun bindViewHolder(model:Any, viewHolder: SectionTopQuestVH) {
+        viewHolder.bind()
     }
 
     override fun getSectionItemType() = R.layout.tp_topquest_container

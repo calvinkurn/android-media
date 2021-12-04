@@ -7,13 +7,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
+ import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
  import com.tokopedia.quest_widget.tracker.QuestTracker
 
 class QuestWidgetAdapter(
     val data: List<QuestWidgetListItem>,
     val configList: ArrayList<Config>?,
     val questTracker: QuestTracker,
-    val source: Int
+    val source: Int,
+    var questWidgetCallbacks: QuestWidgetCallbacks,
+    var questWidgetPosition: Int
 ) : RecyclerView.Adapter<QuestWidgetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuestWidgetViewHolder {
@@ -22,7 +25,7 @@ class QuestWidgetAdapter(
     }
 
     override fun onBindViewHolder(holder: QuestWidgetViewHolder, position: Int) {
-        configList?.get(position)?.let { holder.questWidgetItemView.setData(data[position], it, questTracker, source, position) }
+        configList?.get(position)?.let { holder.questWidgetItemView.setData(data[position], it, questTracker, source, position, questWidgetCallbacks, questWidgetPosition) }
     }
 
     override fun getItemCount(): Int {

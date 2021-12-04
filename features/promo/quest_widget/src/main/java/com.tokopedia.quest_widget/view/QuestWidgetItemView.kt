@@ -7,6 +7,10 @@ import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Color
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -22,6 +26,7 @@ import com.tokopedia.quest_widget.constants.QuestUserStatus
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.Progress
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.tracker.QuestTracker
 import com.tokopedia.unifycomponents.CardUnify
@@ -38,14 +43,17 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
     private lateinit var status: String
     private var position = 0
+    private var questWidgetPosition = -1
     private lateinit var questTracker: QuestTracker
     private var questId = ""
     private var source = QuestSource.HOME
+    private var questWidgetCallbacks: QuestWidgetCallbacks? = null
 
     private val durationScale: Long = 350
     private var showBox = false
     private var tvBannerTitle: Typography
     private var tvBannerDesc: Typography
+    private var tvBannerDescSisa: Typography
     private var ivBannerIcon: ImageUnify
     private var ivBannerIconSecond: ImageUnify
     private var progressBar: QuestProgressBar
@@ -58,6 +66,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         tvBannerTitle = findViewById(R.id.tv_banner_title)
         tvBannerDesc = findViewById(R.id.tv_banner_desc)
+        tvBannerDescSisa = findViewById(R.id.tv_banner_desc_sisa)
         ivBannerIcon = findViewById(R.id.iv_banner_icon)
         ivBannerIconSecond = findViewById(R.id.iv_banner_icon_second)
         progressBar = findViewById(R.id.progressBar)
@@ -77,13 +86,16 @@ class QuestWidgetItemView @JvmOverloads constructor(
         config: Config,
         questTracker: QuestTracker,
         source: Int,
-        position: Int
+        position: Int,
+        questWidgetCallbacks: QuestWidgetCallbacks,
+        questWidgetPosition: Int
     ) {
-
+        this.questWidgetCallbacks = questWidgetCallbacks
         this.questTracker = questTracker
         this.source = source
         this.questId = item.id.toString()
         this.position = position
+        this.questWidgetPosition = questWidgetPosition
 
         var appLink = ""
 
@@ -97,14 +109,14 @@ class QuestWidgetItemView @JvmOverloads constructor(
             QuestUserStatus.IDLE -> {
 
                 status = QuestUserStatus.IDLE
-                appLink = QuestUrls.QUEST_URL_STAGING + questId
+                appLink = QuestUrls.QUEST_DETAIL_URL + questId
 
                 startTranslationAnimation()
                 item.questUser.status = QuestUserStatus.ANIMATED
             }
 
             QuestUserStatus.ON_PROGRESS -> {
-                appLink = QuestUrls.QUEST_URL_STAGING + questId
+                appLink = QuestUrls.QUEST_DETAIL_URL + questId
 
                 scaleUpIconProgress(ivBannerIcon, iconContainer) { setProgressBarvalue(progress) }
                 item.questUser.status = QuestUserStatus.ANIMATED
@@ -136,6 +148,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
             this.questTracker.clickQuestCard(source, item.id.toString())
 
             try {
+                questWidgetCallbacks.updateQuestWidget(this.questWidgetPosition)
                 RouteManager.route(context, appLink)
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -150,11 +163,25 @@ class QuestWidgetItemView @JvmOverloads constructor(
         })
 
         if (item.questUser?.status == QuestUserStatus.CLAIMED || progress == 100F) {
-            tvBannerDesc.text = "Cek hadiah kamu, yuk!"
+            tvBannerDesc.text = context.resources.getString(R.string.finished_desc)
         } else {
-            tvBannerDesc.text =
-                desc + LAGITEXT + context.resources.getString(R.string.str_dot) + " " + item.label?.title
+            tvBannerDesc.text = desc + LAGITEXT + context.resources.getString(R.string.str_dot) + " "
+            tvBannerDescSisa.text = item.label?.title
+            val showRed = checkIfLessThan5Days(item.label?.title)
+            if (showRed) {
+                tvBannerDescSisa.setTextColor(Color.RED)
+            }
         }
+    }
+
+    private fun checkIfLessThan5Days(title: String?): Boolean {
+        var num = ""
+        title?.toCharArray()?.forEach {
+            if(it.isDigit()){
+                num += it
+            }
+        }
+        return num.toInt() < 5
     }
 
     private fun calculateProgress(progress: Progress?): Float {

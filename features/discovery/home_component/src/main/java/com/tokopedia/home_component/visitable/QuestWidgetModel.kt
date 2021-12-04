@@ -7,11 +7,11 @@ import com.tokopedia.quest_widget.data.QuestData
 import java.util.*
 
 data class QuestWidgetModel(
-    val channelModel: ChannelModel,
-    val questData : QuestData?,
+    val channelModel: ChannelModel? = null,
+    val questData : QuestData? = null,
 ): HomeComponentVisitable {
     override fun visitableId(): String? {
-        return channelModel.id
+        return channelModel?.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
