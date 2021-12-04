@@ -105,7 +105,6 @@
                 android:id="@+id/tv_banner_desc_sisa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=" Sisa 2 Hari"
                 android:layout_marginTop="@dimen/dim_2dp"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:ellipsize="end"

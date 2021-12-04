@@ -1687,10 +1687,4 @@ open class HomeRevampViewModel @Inject constructor(
             deleteWidget(questWidgetModel, index)
         }
     }
-    fun updateQuestWidget(mutableList: MutableList<Visitable<Any>>) {
-
-        findWidget<QuestWidgetModel> { questWidgetModel, index ->
-            updateWidget(questWidgetModel, index)
-        }
-    }
 }

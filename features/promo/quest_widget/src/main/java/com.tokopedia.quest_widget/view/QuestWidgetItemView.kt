@@ -8,9 +8,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -32,8 +29,7 @@ import com.tokopedia.quest_widget.tracker.QuestTracker
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 
 const val LAGITEXT = "x lagi "
 

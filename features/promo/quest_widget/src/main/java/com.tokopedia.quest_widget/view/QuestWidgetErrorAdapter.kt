@@ -1,14 +1,11 @@
 package com.tokopedia.quest_widget.view
 
  import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
-import com.example.quest_widget.R
-import com.tokopedia.quest_widget.data.Config
-import com.tokopedia.quest_widget.data.QuestWidgetListItem
+ import android.view.View
+ import android.view.ViewGroup
+ import androidx.recyclerview.widget.RecyclerView
+ import com.example.quest_widget.R
  import com.tokopedia.unifycomponents.ImageUnify
- import com.tokopedia.unifycomponents.Toaster
 
 class QuestWidgetErrorAdapter(var handleError: HandleError) : RecyclerView.Adapter<QuestWidgetErrorViewHolder>() {
 

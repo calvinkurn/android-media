@@ -1,14 +1,14 @@
 package com.tokopedia.quest_widget.view
 
- import android.view.LayoutInflater
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.quest_widget.R
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestWidgetListItem
- import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
- import com.tokopedia.quest_widget.tracker.QuestTracker
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
+import com.tokopedia.quest_widget.tracker.QuestTracker
 
 class QuestWidgetAdapter(
     val data: List<QuestWidgetListItem>,

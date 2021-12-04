@@ -4,4 +4,6 @@
     <string name="lihat_semua">Lihat Semua</string>
     <string name="quest_label">Hadiah misi menantimu</string>
     <string name="finished_desc">Cek hadiah kamu, yuk!</string>
+    <string name="gagal_memuat">Gagal Memuat</string>
+    <string name="klik_iconnya_untuk_muat_ulang">Klik iconnya untuk muat ulang</string>
 </resources>

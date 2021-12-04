@@ -12,7 +12,6 @@ import android.animation.ValueAnimator
 import com.tokopedia.kotlin.extensions.view.hide
 import kotlin.math.min
 
-
 class QuestProgressBar
     : View {
     constructor(context: Context) : super(context)

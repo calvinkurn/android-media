@@ -29,15 +29,9 @@ import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class QuestWidgetView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs), HandleError {
 
-    companion object {
-        const val LOADING = 0
-        const val DATA = 1
-        const val ERROR = 2
-        const val LOGIN = 3
-    }
     private var position: Int = -1
     private val DIRECTION_RIGHT = "right"
     private val DIRECTION_LEFT = "left"
@@ -46,7 +40,6 @@ class QuestWidgetView @JvmOverloads constructor(
     @QuestSource
     private var source = QuestSource.DEFAULT
 
-    private val REQUEST_CODE_LOGIN_QUEST_WIDGET = 132
     private lateinit var viewModel: QuestWidgetViewModel
     private var tvLabel: Typography
     private var tvLihat: Typography
@@ -196,7 +189,6 @@ class QuestWidgetView @JvmOverloads constructor(
 
             data?.widgetData?.questWidgetList?.pageDetail?.cta?.applink?.let {
                 try {
-//                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, it)
                     RouteManager.route(context, it)
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -262,13 +254,6 @@ class QuestWidgetView @JvmOverloads constructor(
         val userSession = UserSession(context)
 
         viewModel.getWidgetList(channel, channelSlug, page, userSession)
-    }
-
-    fun setQuestData(questData: QuestData, @QuestSource source: Int) {
-        this.source = source
-        shimmerQuestWidget.hide()
-        constraintLayoutQuestWidget.show()
-        setData(questData)
     }
 
     override fun retry() {
