@@ -719,6 +719,26 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check wishlist appLink then should return tokopedia internal wishlist_v2 in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns true
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
+        assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST, expectedDeepLink)
+    }
+
+    @Test
+    fun `check new wishlist appLink then should return tokopedia internal wishlist_v2 in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns true
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
+        assertEqualsDeepLinkMapper(ApplinkConst.NEW_WISHLIST, expectedDeepLink)
+    }
+
+    @Test
     fun `check recently viewed appLink then should return tokopedia internal recently viewed in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/recentlyviewed"
         assertEqualsDeepLinkMapper(ApplinkConst.RECENT_VIEW, expectedDeepLink)
