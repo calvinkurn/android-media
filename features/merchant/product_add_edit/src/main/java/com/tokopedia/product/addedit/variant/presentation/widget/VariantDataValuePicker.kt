@@ -106,7 +106,11 @@ class VariantDataValuePicker : LinearLayout {
         }
 
         // add the add custom button at the last index
-        val addCustomValueTitle = context.getString(R.string.action_variant_add_button, variantData.name)
+        val addCustomValueTitle = if (variantUnitValues.isEmpty()) {
+            context.getString(R.string.action_variant_add_button_nodata, variantData.name)
+        } else {
+            context.getString(R.string.action_variant_add_button, variantData.name)
+        }
         val addCustomVariantUnitValueButton = ListItemUnify(addCustomValueTitle, "")
         listItemUnifyList.add(addCustomVariantUnitValueButton)
 
