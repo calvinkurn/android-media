@@ -961,7 +961,6 @@ class AddEditProductPreviewFragment :
             if (it) {
                 toolbar?.headerTitle = getString(R.string.label_title_edit_product)
                 doneButton?.show()
-                enablePhotoEdit()
             } else {
                 stopPerformanceMonitoring()
             }
@@ -1021,6 +1020,7 @@ class AddEditProductPreviewFragment :
 
     private fun observeProductInputModel() {
         viewModel.productInputModel.observe(viewLifecycleOwner, Observer {
+            enablePhotoEdit()
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
             showEmptyVariantState(it.variantInputModel.products.isEmpty())
@@ -1526,7 +1526,6 @@ class AddEditProductPreviewFragment :
             setTitle(getString(R.string.label_for_dialog_title_that_shop_has_no_location))
             setDescription(getString(R.string.label_for_dialog_desc_that_shop_has_no_location))
             setPrimaryCTAText(getString(R.string.label_for_dialog_primary_cta_that_shop_has_no_location))
-            setDefaultMaxWidth()
             setPrimaryCTAClickListener {
                 moveToLocationPicker()
                 dismiss()
