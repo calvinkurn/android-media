@@ -60,4 +60,5 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="driver_description_template">%1$s • %2$s</string>
     <string name="info_driver_title">Driver bisa berganti\nsewaktu-waktu</string>
     <string name="info_driver_detail">Jika driver berganti, tip akan diberikan\nke driver yang mengantar pesanan</string>
+    <string name="tipping_layout_description">Pilih atau tulis sendiri jumlah tip</string>
 </resources>
