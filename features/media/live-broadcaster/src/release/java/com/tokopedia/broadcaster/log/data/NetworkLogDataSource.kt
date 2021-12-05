@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.statsnerd.data
+package com.tokopedia.broadcaster.log.data
 
 import android.content.Context
 import com.tokopedia.broadcaster.statsnerd.data.entity.NetworkLog

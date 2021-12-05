@@ -1,4 +1,4 @@
-package com.tokopedia.broadcaster.statsnerd.ui.notification
+package com.tokopedia.broadcaster.log.ui.notification
 
 import android.content.Context
 

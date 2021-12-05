@@ -1,3 +1,3 @@
-package com.tokopedia.broadcaster.statsnerd.data.entity
+package com.tokopedia.broadcaster.log.data.entity
 
 class NetworkLog
