@@ -312,7 +312,7 @@
     <string name="action_variant_custom_type_add">Tambah Varian</string>
     <string name="action_variant_custom_type_edit">Simpan Varian</string>
     <string name="label_variant_type">Tipe Varian</string>
-    <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian.</string>
+    <string name="label_variant_type_desc">Pilih maksimum 2 tipe varian produk.</string>
     <string name="label_variant_photo">Foto Varian</string>
     <string name="label_variant_sizechart">Panduan Ukuran</string>
     <string name="label_variant_sizechart_description">Tambah panduan ukuran produk dalam format JPG atau PNG.</string>
