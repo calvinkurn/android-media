@@ -1,7 +1,7 @@
 package com.tokopedia.broadcaster.log.data
 
 import android.content.Context
-import com.tokopedia.broadcaster.statsnerd.data.entity.NetworkLog
+import com.tokopedia.broadcaster.log.data.entity.NetworkLog
 
 class NetworkLogDataSource {
 
