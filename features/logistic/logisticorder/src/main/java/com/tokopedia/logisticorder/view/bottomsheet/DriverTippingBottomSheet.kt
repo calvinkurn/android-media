@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
+import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -129,8 +130,8 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
                 val chipsLayoutManagerTipping = ChipsLayoutManager.newBuilder(binding.root.context)
                         .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                        .setRowStrategy(ChipsLayoutManager.STRATEGY_FILL_SPACE)
-                        .setMaxViewsInRow(3)
+                        .setRowStrategy(ChipsLayoutManager.STRATEGY_FILL_VIEW)
+                        .withLastRow(true)
                         .build()
 
                 ViewCompat.setLayoutDirection(binding.rvChipsTip, ViewCompat.LAYOUT_DIRECTION_LTR)
@@ -140,6 +141,13 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                 binding.rvChipsTip.apply {
                     layoutManager = chipsLayoutManagerTipping
                     adapter = tippingValueAdapter
+                    addItemDecoration( object : SpacingItemDecoration(8,8) {
+                        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                            super.getItemOffsets(outRect, view, parent, state)
+                            val itemWidth = parent.measuredWidth / 4
+                            view.layoutParams.width = itemWidth
+                        }
+                    })
                 }
 
 
