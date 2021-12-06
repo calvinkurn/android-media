@@ -2,6 +2,7 @@ package com.tokopedia.wishlist.util
 
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -16,7 +17,10 @@ object WishlistV2Analytics {
     private const val SELECT_CONTENT = "select_content"
     private const val ADD_TO_CART = "add_to_cart"
     private const val VIEW_ITEM_LIST = "view_item_list"
+    private const val SCREEN_NAME = "screenName"
     private const val PRODUCT_VIEW = "productView"
+    private const val PROMO_VIEW = "promoView"
+    private const val PROMO_CLICK = "promoClick"
     private const val ITEM_LIST = "item_list"
     private const val ITEM_NAME = "item_name"
     private const val ITEM_BRAND = "item_brand"
@@ -28,6 +32,7 @@ object WishlistV2Analytics {
     private const val SHOP_NAME = "shop_name"
     private const val SHOP_TYPE = "shop_type"
     private const val ECOMMERCE = "ecommerce"
+    private const val PROMOTIONS = "promotions"
     private const val IMPRESSIONS = "impressions"
     private const val CURRENCY_CODE = "currencyCode"
     private const val IDR = "IDR"
@@ -50,6 +55,7 @@ object WishlistV2Analytics {
     private const val PURCHASE_PLATFORM = "purchase platform"
     private const val CURRENT_SITE = "currentSite"
     private const val BUSINESS_UNIT = "businessUnit"
+    private const val EVENT_WISHLIST_PAGE = "wishlist page"
     private const val SUBMIT_SEARCH_FROM_CARI_PRODUK = "submit search from cari produk"
     private const val VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE = "view product card on wishlist page"
     private const val CLICK_URUTKAN_FILTER_CHIPS = "click urutkan filter chips"
@@ -74,6 +80,14 @@ object WishlistV2Analytics {
     private const val CLICK_CARI_BARANG_ON_EMPTY_STATE_NO_ITEMS = "click cari barang on empty state no items"
     private const val CLICK_CARI_DI_TOKOPEDIA_ON_EMPTY_STATE_NO_SEARCH_RESULT = "click cari di tokopedia on empty state no search result"
     private const val CLICK_RESET_FILTER_ON_EMPTY_STATE_NO_FILTER_RESULT = "click reset filter on empty state no filter result"
+    private const val EVENT_ACTION_IMPRESSION_BANNER_ADS = "impression - banner ads"
+    private const val FIELD_PROMOTION_ID = "id"
+    private const val FIELD_PROMOTION_NAME = "name"
+    private const val FIELD_PROMOTION_CREATIVE = "creative"
+    private const val FIELD_PROMOTION_CREATIVE_URL = "creative_url"
+    private const val FIELD_PROMOTION_POSITION = "position"
+    private const val IMPRESSION_TOPADS_LIST = "/wishlist - p%s - banner ads"
+    private const val EVENT_ACTION_CLICK_BANNER_ADS = "click - banner ads"
 
     fun submitSearchFromCariProduk(keyword: String) {
         val event = TrackAppUtils.gtmData(
@@ -380,5 +394,62 @@ object WishlistV2Analytics {
         event[BUSINESS_UNIT] = PURCHASE_PLATFORM
 
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
+    }
+
+    fun impressTopAdsBanner(userId: String, topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
+        val map = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_BANNER_ADS,
+                EVENT_LABEL, "",
+                SCREEN_NAME, WISHLIST,
+                BUSINESS_UNIT, PURCHASE_PLATFORM,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_VIEW, DataLayer.mapOf(
+                PROMOTIONS, DataLayer.listOf(
+                            convertBannerTopAdsToDataTrackingObject(
+                                    item = topAdsImageViewModel,
+                                    position = position)
+                        )
+                    )
+                )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
+    }
+
+    fun clickTopAdsBanner(item: TopAdsImageViewModel, userId: String, position: Int){
+        val map = DataLayer.mapOf(
+                EVENT, PROMO_CLICK,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, EVENT_ACTION_CLICK_BANNER_ADS,
+                EVENT_LABEL, "",
+                SCREEN_NAME, WISHLIST,
+                BUSINESS_UNIT, PURCHASE_PLATFORM,
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, userId,
+                ECOMMERCE, DataLayer.mapOf(
+                    PROMO_CLICK, DataLayer.mapOf(
+                        PROMOTIONS, DataLayer.listOf(
+                        convertBannerTopAdsToDataTrackingObject(
+                                item = item,
+                                position = position)
+                        )
+                    )
+                )
+        )
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map as HashMap<String, Any>)
+    }
+
+    private fun convertBannerTopAdsToDataTrackingObject(item: TopAdsImageViewModel,
+                                                        position: Int): Any {
+        return DataLayer.mapOf(
+                FIELD_PROMOTION_ID, item.bannerId ?: "0",
+                FIELD_PROMOTION_NAME, IMPRESSION_TOPADS_LIST.format((position + 1).toString()),
+                FIELD_PROMOTION_CREATIVE, item.imageUrl,
+                FIELD_PROMOTION_CREATIVE_URL, item.imageUrl,
+                FIELD_PROMOTION_POSITION, "1"
+        )
     }
 }
