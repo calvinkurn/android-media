@@ -2,11 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/spacing_lvl2"
+    android:paddingLeft="@dimen/spacing_lvl2"
+    android:paddingEnd="@dimen/spacing_lvl2"
+    android:paddingRight="@dimen/spacing_lvl2">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/flightHomepagePromoImageCarousel"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/banner_width"/>
 </LinearLayout>
