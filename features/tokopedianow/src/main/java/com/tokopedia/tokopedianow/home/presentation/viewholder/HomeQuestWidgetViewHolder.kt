@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
@@ -29,6 +31,7 @@ class HomeQuestWidgetViewHolder(
     private var binding: ItemTokopedianowQuestWidgetBinding? by viewBinding()
 
     override fun bind(element: HomeQuestWidgetUiModel) {
+        hideShimmering()
         if (element.isErrorState) {
             setTitle(getString(R.string.tokopedianow_quest_error_title))
             setDesc(getString(R.string.tokopedianow_quest_error_desc))
@@ -85,5 +88,14 @@ class HomeQuestWidgetViewHolder(
         binding?.container?.setOnClickListener {
             RouteManager.route(itemView.context, appLink)
         }
+    }
+
+    private fun hideShimmering() {
+        binding?.questWidgetShimmering?.root?.hide()
+        showQuestWidget()
+    }
+
+    private fun showQuestWidget() {
+        binding?.questWidget?.show()
     }
 }

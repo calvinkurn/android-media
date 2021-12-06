@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestTitleWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
@@ -21,7 +23,21 @@ class HomeQuestTitleViewHolder(
     private var binding: ItemTokopedianowQuestTitleWidgetBinding? by viewBinding()
 
     override fun bind(element: HomeQuestTitleUiModel) {
-        binding?.iuGift?.setImage(newIconId = IconUnify.GIFT)
-        binding?.tpCounter?.text = String.format("${element.currentQuestFinished}/${element.totalQuestTarget}")
+        hideShimmering()
+        if (element.isErrorState) {
+            // not yet
+        } else {
+            binding?.iuGift?.setImage(newIconId = IconUnify.GIFT)
+            binding?.tpCounter?.text = String.format("${element.currentQuestFinished}/${element.totalQuestTarget}")
+        }
+    }
+
+    private fun hideShimmering() {
+        binding?.questTitleWidgetShimmering?.root?.hide()
+        showQuestWidget()
+    }
+
+    private fun showQuestWidget() {
+        binding?.questTitleWidget?.show()
     }
 }
