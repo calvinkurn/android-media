@@ -187,28 +187,17 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapQuestData(
         item: HomeQuestSequenceWidgetUiModel,
         questList: List<HomeQuestWidgetUiModel>,
+        state: HomeLayoutItemState,
         widgetPageDetail: WidgetPageDetail
     ) {
         updateItemById(item.visitableId) {
             val quest = HomeQuestSequenceWidgetUiModel(
                 id = MAIN_QUEST,
-                state = HomeLayoutItemState.LOADED,
+                state = state,
                 questList = questList,
                 title = widgetPageDetail.title,
                 seeAll = widgetPageDetail.cta.text,
                 appLink = widgetPageDetail.cta.appLink
-            )
-            HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
-        }
-    }
-
-    fun MutableList<HomeLayoutItemUiModel>.mapQuestErrorData(
-        item: HomeQuestSequenceWidgetUiModel
-    ) {
-        updateItemById(item.visitableId) {
-            val quest = HomeQuestSequenceWidgetUiModel(
-                id = MAIN_QUEST,
-                state = HomeLayoutItemState.NOT_LOADED
             )
             HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }

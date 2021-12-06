@@ -47,7 +47,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
-import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestErrorData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
@@ -482,9 +481,19 @@ class TokoNowHomeViewModel @Inject constructor(
             if (!questListResponse.isEligible && questListResponse.resultStatus.code == SUCCESS_CODE) {
                 homeLayoutItemList.removeItem(item.id)
             } else if (questListResponse.resultStatus.code != SUCCESS_CODE){
-                homeLayoutItemList.mapQuestErrorData(item)
+                homeLayoutItemList.mapQuestData(
+                    item = item,
+                    questList = emptyList(),
+                    state = HomeLayoutItemState.NOT_LOADED,
+                    widgetPageDetail = questListResponse.widgetPageDetail
+                )
             } else {
-                homeLayoutItemList.mapQuestData(item, questData, questListResponse.widgetPageDetail)
+                homeLayoutItemList.mapQuestData(
+                    item = item,
+                    questList = questData,
+                    state = HomeLayoutItemState.LOADED,
+                    widgetPageDetail = questListResponse.widgetPageDetail
+                )
             }
         }) {
             homeLayoutItemList.removeItem(item.id)

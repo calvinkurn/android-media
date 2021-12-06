@@ -49,21 +49,19 @@ class HomeQuestSequenceWidgetViewHolder(
 
     override fun bind(element: HomeQuestSequenceWidgetUiModel) {
         setAdapter()
+        setTitle(element.title)
+        setSeeAll(element.seeAll, element.appLink)
         when(element.state) {
-            HomeLayoutItemState.LOADING -> {}
             HomeLayoutItemState.LOADED -> questLoaded(element)
-            HomeLayoutItemState.NOT_LOADED -> questNotLoaded()
+            else -> questNotLoaded()
         }
     }
 
     private fun questLoaded(element: HomeQuestSequenceWidgetUiModel) {
-        setTitle(element.title)
-        setSeeAll(element.seeAll, element.appLink)
         addWidgets(element.questList)
     }
 
     private fun questNotLoaded() {
-        setTitle(getString(R.string.tokopedianow_quest_widget_error_title))
         addErrorWidgets()
     }
 
