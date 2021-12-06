@@ -36,7 +36,6 @@ class IssueRegistry : IssueRegistry() {
                 DimenResourceValueDetector.ISSUE,
                 DeprecatedResourceDetector.ISSUE,
                 ResponseFieldAnnotationDetector.ISSUE,
-                HANSEL_REQUIRED,
                 AndroidExportedDetector.ISSUE
         )
 
