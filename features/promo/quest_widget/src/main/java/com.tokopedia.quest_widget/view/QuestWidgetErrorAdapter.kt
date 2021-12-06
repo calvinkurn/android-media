@@ -4,7 +4,7 @@ package com.tokopedia.quest_widget.view
  import android.view.View
  import android.view.ViewGroup
  import androidx.recyclerview.widget.RecyclerView
- import com.example.quest_widget.R
+ import com.tokopedia.quest_widget.R
  import com.tokopedia.unifycomponents.ImageUnify
 
 class QuestWidgetErrorAdapter(var handleError: HandleError) : RecyclerView.Adapter<QuestWidgetErrorViewHolder>() {

@@ -13,11 +13,11 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
-import com.example.quest_widget.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.quest_widget.R
 import com.tokopedia.quest_widget.constants.QuestUrls
 import com.tokopedia.quest_widget.constants.QuestUserStatus
 import com.tokopedia.quest_widget.data.Config
@@ -159,9 +159,9 @@ class QuestWidgetItemView @JvmOverloads constructor(
         })
 
         if (item.questUser?.status == QuestUserStatus.CLAIMED || progress == 100F) {
-            tvBannerDesc.text = context.resources.getString(R.string.finished_desc)
+            tvBannerDesc.text = context.resources.getString(R.string.quest_widget_finished_desc)
         } else {
-            tvBannerDesc.text = desc + LAGITEXT + context.resources.getString(R.string.str_dot) + " "
+            tvBannerDesc.text = desc + LAGITEXT + context.resources.getString(R.string.quest_widget_finished_desc) + " "
             tvBannerDescSisa.text = item.label?.title
             val showRed = checkIfLessThan5Days(item.label?.title)
             if (showRed) {

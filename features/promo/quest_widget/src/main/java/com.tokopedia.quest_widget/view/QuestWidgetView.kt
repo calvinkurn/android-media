@@ -10,11 +10,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.quest_widget.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.quest_widget.R
 import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.quest_widget.di.DaggerQuestComponent
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -127,8 +127,8 @@ class QuestWidgetView @JvmOverloads constructor(
         constraintLayoutQuestWidget.show()
         rvQuestWidget.hide()
         questWidgetLogin.show()
-        tvLihat.text = context.getString(R.string.lihat_semua)
-        tvLabel.text = context.getString(R.string.quest_label)
+        tvLihat.text = context.getString(R.string.quest_widget_lihat_semua)
+        tvLabel.text = context.getString(R.string.quest_widget_quest_label)
         setupNonLoginClickListeners()
     }
 
@@ -148,8 +148,8 @@ class QuestWidgetView @JvmOverloads constructor(
         rvError.show()
         rvError.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         rvError.adapter = QuestWidgetErrorAdapter(this)
-        tvLihat.text = context.getString(R.string.lihat_semua)
-        tvLabel.text = context.getString(R.string.quest_label)
+        tvLihat.text = context.getString(R.string.quest_widget_lihat_semua)
+        tvLabel.text = context.getString(R.string.quest_widget_quest_label)
     }
 
     fun isConnectedToInternet(): Boolean {

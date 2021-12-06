@@ -1,7 +1,6 @@
 package com.tokopedia.quest_widget.data
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.quest_widget.util.LiveDataResult
 
 data class QuestWidgetResponse(
 

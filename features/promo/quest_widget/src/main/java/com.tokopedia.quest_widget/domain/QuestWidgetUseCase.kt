@@ -5,20 +5,13 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.quest_widget.constants.GQLQueryQuestWidget
 import com.tokopedia.quest_widget.data.Config
 import com.tokopedia.quest_widget.data.QuestData
-import com.tokopedia.quest_widget.data.QuestWidgetResponse
 import com.tokopedia.quest_widget.data.WidgetData
-import com.tokopedia.quest_widget.util.LiveDataResult
 import javax.inject.Inject
 
 open class QuestWidgetUseCase @Inject constructor(var gqlWrapper: QuestGqlWrapper) {
 
     suspend fun getResponse(map: HashMap<String, Any>): WidgetData? {
         return gqlWrapper.getResponse(getResponseClass(), getQuery(), map)
-    }
-
-    suspend fun getQuestData(map: HashMap<String, Any>): QuestData {
-        val response = gqlWrapper.getResponse(getResponseClass(), getQuery(), map)
-        return RetrieveQuestData.getQuestData(response)
     }
 
     fun getQueryParams(channel: Int, channelSlug: String, page: String): HashMap<String, Any> {
