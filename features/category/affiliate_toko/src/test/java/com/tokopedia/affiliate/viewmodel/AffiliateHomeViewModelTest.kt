@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.affiliate.model.response.AffiliateAnnouncementData
 import com.tokopedia.affiliate.model.response.AffiliatePerformanceData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.usecase.*
@@ -45,6 +46,27 @@ class AffiliateHomeViewModelTest{
     @Throws(Exception::class)
     fun tearDown() {
         Dispatchers.resetMain()
+    }
+    /**************************** getAnnouncementInformation() *******************************************/
+    @Test
+    fun getAnnouncementInformation(){
+        val affiliateAnnouncementData : AffiliateAnnouncementData = mockk(relaxed = true)
+        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } returns affiliateAnnouncementData
+
+        affiliateHomeViewModel.getAnnouncementInformation()
+
+        assertEquals(affiliateHomeViewModel.getAffiliateAnnouncement().value,affiliateAnnouncementData)
+    }
+
+    @Test
+    fun getAnnouncementValidateException() {
+        val throwable = Throwable("Validate Data Exception")
+        coEvery { affiliateAffiliateAnnouncementUseCase.getAffiliateAnnouncement() } throws throwable
+
+        affiliateHomeViewModel.getAnnouncementInformation()
+
+        assertEquals(affiliateHomeViewModel.getAffiliateErrorMessage().value, throwable)
+        assertEquals(affiliateHomeViewModel.progressBar().value, false)
     }
 
     /**************************** getAffiliateValidateUser() *******************************************/
