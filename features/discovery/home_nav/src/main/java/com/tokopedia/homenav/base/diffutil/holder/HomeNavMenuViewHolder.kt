@@ -21,11 +21,25 @@ class HomeNavMenuViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_home_nav_menu
+        private const val ID_CATEGORY = 26
+        private const val ID_TOP_UP_AND_BILL = 47
+        private const val ID_TRAVEL_AND_ENTERTAINMENT = 50
+        private const val ID_FINANCE = 49
+        private const val ID_HALAL_CORNER = 48
+        private const val ID_OTHER_SERVICES = 51
+    }
+
+    /*
+        This function used for hardcode all category icon to using unify icon
+     */
+    private fun setAllCategoryIconToUnify() {
+
     }
 
     override fun bind(element: HomeNavMenuDataModel) {
         binding?.menuTitle?.text = element.itemTitle
         binding?.menuTitle?.tag = element.id
+//        setAllCategoryIcon()
         if (element.srcIconId != null) {
             binding?.menuImage?.visible()
             binding?.menuImageUnify?.gone()
@@ -35,7 +49,8 @@ class HomeNavMenuViewHolder(
             binding?.menuImage?.gone()
             binding?.menuImageUnify?.visible()
 
-            binding?.menuImageUnify?.loadImage(element.srcImage, R.drawable.grey_button_rounded)
+            binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.homenav.R.drawable.grey_button_rounded)
+
         }
         itemView.setOnClickListener {
             listener.onMenuClick(element)
