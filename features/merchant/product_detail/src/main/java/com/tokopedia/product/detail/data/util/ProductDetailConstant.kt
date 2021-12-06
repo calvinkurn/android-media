@@ -164,6 +164,4 @@ object ProductDetailConstant {
 
     const val REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING = "android_enable_pdp_custom_sharing"
     const val REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING = true
-
-    const val PLAY_WIDGET_MINIMUM_CARD = 3
 }
