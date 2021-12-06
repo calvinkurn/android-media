@@ -163,7 +163,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
         if (item.questUser?.status == QuestUserStatus.CLAIMED || progress == 100F) {
             tvBannerDesc.text = context.resources.getString(R.string.quest_widget_finished_desc)
         } else {
-            tvBannerDesc.text = desc + LAGITEXT + context.resources.getString(R.string.quest_widget_finished_desc) + " "
+            tvBannerDesc.text = desc + LAGITEXT + context.resources.getString(R.string.quest_widget_str_dot) + " "
             tvBannerDescSisa.text = item.label?.title
             val showRed = checkIfLessThan5Days(item.label?.title)
             if (showRed) {
