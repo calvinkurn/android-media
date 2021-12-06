@@ -28,6 +28,7 @@ internal const val KEY_TRACK_VIEW_EVENT = "viewSellerBroadcastIris"
 internal const val KEY_TRACK_CLICK = "click"
 internal const val KEY_TRACK_VIEW = "view"
 internal const val KEY_TRACK_SCROLL = "scroll"
+internal const val KEY_TRACK_IMPRESSION = "impression"
 
 val currentSite: String
     get() = if (GlobalConfig.isSellerApp()) {

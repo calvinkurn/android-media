@@ -498,7 +498,7 @@ class PlayBroadcastAnalytic(
      * Impress Product Tag Carousel
      */
     fun impressProductTag(channelId: String) {
-        viewGeneralEvent(
+        impressionGeneralEvent(
             "- product tag carousel",
             "- $channelId"
         )
@@ -758,6 +758,21 @@ class PlayBroadcastAnalytic(
                 event = KEY_TRACK_CLICK_EVENT,
                 action = eventAction.toString(),
                 label = label
+        )
+    }
+
+    private fun impressionGeneralEvent(action: String, label: String =  "") {
+        val eventAction = StringBuilder()
+        eventAction.append(KEY_TRACK_IMPRESSION)
+        if (action.isNotBlank()) {
+            eventAction.append(" ")
+            eventAction.append(action)
+        }
+
+        sendGeneralEvent(
+            event = KEY_TRACK_CLICK_EVENT,
+            action = eventAction.toString(),
+            label = label
         )
     }
 
