@@ -427,7 +427,15 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindShippingLocation(product: ProductAttachmentUiModel) {
-        // TODO: implement this
+        if (commonListener?.isSeller() == true &&
+            product.locationStock.districtFullName.isNotEmpty() &&
+            !product.isFulfillment
+        ) {
+            shippingLocation?.show()
+            shippingLocation?.text = product.locationStock.districtFullName
+        } else {
+            shippingLocation?.hide()
+        }
     }
 
     private fun bindMargin(product: ProductAttachmentUiModel) {
@@ -562,7 +570,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindEmptyStockLabel(product: ProductAttachmentUiModel) {
         label?.apply {
-            if (product.hasEmptyStock()) {
+            if (product.hasEmptyStock() && !product.isUpcomingCampaign) {
                 show()
                 setText(R.string.title_topchat_empty_stock)
                 unlockFeature = true
@@ -588,7 +596,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindBuy(product: ProductAttachmentUiModel) {
         btnBuy?.let {
-            if (product.hasEmptyStock()) {
+            if (product.hasEmptyStock() || product.isUpcomingCampaign) {
                 it.hide()
             } else {
                 it.show()
@@ -611,7 +619,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
 
     private fun bindAtc(product: ProductAttachmentUiModel) {
         btnAtc?.let {
-            if (product.hasEmptyStock()) {
+            if (product.hasEmptyStock() || product.isUpcomingCampaign) {
                 it.hide()
             } else {
                 it.show()
@@ -623,7 +631,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun bindWishList(product: ProductAttachmentUiModel) {
-        if (product.hasEmptyStock()) {
+        if (product.hasEmptyStock() || product.isUpcomingCampaign) {
             btnWishList?.show()
             setupWishlistButton(product)
         } else {

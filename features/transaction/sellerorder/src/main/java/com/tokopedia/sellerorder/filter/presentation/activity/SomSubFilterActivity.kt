@@ -131,14 +131,10 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun setToolbarSubFilter() {
+        supportActionBar?.hide()
         setSupportActionBar(binding.somSubFilterToolbar)
-        supportActionBar?.apply {
-            title = "$ALL_FILTER $idFilter"
-            setDisplayShowHomeEnabled(true)
-        }
         binding.somSubFilterToolbar.apply {
-            isShowBackButton = true
-            isShowShadow = false
+            title = "$ALL_FILTER $idFilter"
             setNavigationOnClickListener {
                 onBackPressed()
             }

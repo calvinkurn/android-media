@@ -11,7 +11,6 @@ import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
 import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceRequest
 import com.tokopedia.sellerorder.detail.data.model.SomDynamicPriceResponse
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -285,12 +284,10 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 payment_data {
                   label
                   value
-                  text_color
                 }
                 pricing_data{
                   label
                   value
-                  text_color
                 }
             }
         }

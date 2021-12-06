@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.powermerchant.PowerMerchantDeepLinkMapper
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -218,15 +219,39 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check amp find appLink then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result"
+        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND, expectedDeepLink)
+    }
+
+    @Test
     fun `check find appLink then should return tokopedia internal home find in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://find"
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result"
         assertEqualsDeepLinkMapper(ApplinkConst.FIND, expectedDeepLink)
     }
 
     @Test
-    fun `check amp find appLink then should return tokopedia internal home find in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://find"
-        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND, expectedDeepLink)
+    fun `check find appLink with search query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker&navsource=find"
+        assertEqualsDeepLinkMapper(ApplinkConst.FIND + "/3-ply-masker", expectedDeepLink)
+    }
+
+    @Test
+    fun `check find appLink with search and city query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker%20di%20dki%20jakarta&navsource=find"
+        assertEqualsDeepLinkMapper(ApplinkConst.FIND + "/3-ply-masker-di-dki-jakarta", expectedDeepLink)
+    }
+
+    @Test
+    fun `check amp find appLink with search query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker&navsource=find"
+        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND + "/3-ply-masker", expectedDeepLink)
+    }
+
+    @Test
+    fun `check amp find appLink with search and city query then should return tokopedia internal home find in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://discovery/search-result?q=3%20ply%20masker%20di%20dki%20jakarta&navsource=find"
+        assertEqualsDeepLinkMapper(ApplinkConst.AMP_FIND + "/3-ply-masker-di-dki-jakarta", expectedDeepLink)
     }
 
     @Test
@@ -699,13 +724,41 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     @Test
     fun `check wishlist appLink then should return tokopedia internal wish list in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns false
+
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/wishlist"
         assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST, expectedDeepLink)
     }
 
     @Test
     fun `check new wishlist appLink then should return tokopedia internal new wish list in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns false
+
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/wishlist"
+        assertEqualsDeepLinkMapper(ApplinkConst.NEW_WISHLIST, expectedDeepLink)
+    }
+
+    @Test
+    fun `check wishlist appLink then should return tokopedia internal wishlist_v2 in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns true
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
+        assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST, expectedDeepLink)
+    }
+
+    @Test
+    fun `check new wishlist appLink then should return tokopedia internal wishlist_v2 in customerapp`() {
+        every {
+            DeeplinkMapperPurchasePlatform.isWishlistV2(context)
+        } returns true
+
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist"
         assertEqualsDeepLinkMapper(ApplinkConst.NEW_WISHLIST, expectedDeepLink)
     }
 
@@ -1680,9 +1733,8 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check pm benefit packagee appLink then should return tokopedia internal pm benefit package in customerapp`() {
-        val expectedDeepLink =
-            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/pm-benefit-package"
+    fun `check pm benefit package appLink then should return tokopedia internal pm benefit package in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/pm-benefit-package"
         assertEqualsDeepLinkMapper(ApplinkConst.PM_BENEFIT_PACKAGE, expectedDeepLink)
     }
 
@@ -1944,6 +1996,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-detail?order_id=$orderId"
         assertEqualsDeepLinkMapper("${ApplinkConst.MARKETPLACE_ORDER}/$orderId", expectedDeepLink)
+    }
+
+    @Test
+    fun `check marketplace buyer order extension appLink then should return tokopedia internal marketplace buyer order extension in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/buyer-order-extension"
+        assertEqualsDeepLinkMapper(ApplinkConst.BUYER_ORDER_EXTENSION, expectedDeepLink)
     }
 
     @Test
