@@ -1,13 +1,12 @@
 package com.tokopedia.linter.detectors
 
 import com.android.SdkConstants.*
-import com.android.tools.lint.checks.ManifestDetector
 import com.android.tools.lint.detector.api.*
 import com.android.utils.XmlUtils.getFirstSubTagByName
 import com.android.utils.XmlUtils.getSubTagsAsList
 import org.w3c.dom.Element
 
-class AndroidExportedDetector: XmlScanner, ManifestDetector() {
+class AndroidExportedDetector: XmlScanner, Detector() {
 
     companion object {
         val ISSUE = Issue.create(
