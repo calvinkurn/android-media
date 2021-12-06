@@ -92,6 +92,8 @@ object ProductDetailConstant {
     const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
     const val PRODUCT_BUNDLING = "product_bundling"
+    const val CONTENT_WIDGET = "content_widget"
+    const val PLAY_CAROUSEL = "play_carousel"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

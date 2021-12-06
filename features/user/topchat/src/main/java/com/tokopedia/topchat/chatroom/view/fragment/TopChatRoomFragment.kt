@@ -2541,6 +2541,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     ) {
         if (!data.enable) return
         val eligiblePosition = adapter.findSrwTickerPosition(data.regexMessage)
+        if (eligiblePosition == RecyclerView.NO_POSITION) return
         adapter.addElement(eligiblePosition, data)
         viewModel.removeTicker()
     }
