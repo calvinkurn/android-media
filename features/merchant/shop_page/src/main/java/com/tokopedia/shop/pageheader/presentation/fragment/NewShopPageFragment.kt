@@ -122,7 +122,6 @@ import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerA
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.component.*
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderPlayWidgetViewHolder
-import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopOperationalHoursListBottomSheet
 import com.tokopedia.shop.pageheader.presentation.bottomsheet.ShopRequestUnmoderateBottomSheet
 import com.tokopedia.shop.pageheader.presentation.holder.NewShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentViewHolderListener
@@ -298,7 +297,6 @@ class NewShopPageFragment :
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenShotDetector: ScreenshotDetector? = null
     private var shopUnmoderateBottomSheet: ShopRequestUnmoderateBottomSheet? = null
-    private var shopOperationalHoursListBottomSheet: ShopOperationalHoursListBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
@@ -370,7 +368,6 @@ class NewShopPageFragment :
         shopViewModel?.shopSellerPLayWidgetData?.removeObservers(this)
         shopViewModel?.shopPageTickerData?.removeObservers(this)
         shopViewModel?.shopPageShopShareData?.removeObservers(this)
-        shopViewModel?.shopOperationalHoursListData?.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
         shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel?.flush()
@@ -678,18 +675,6 @@ class NewShopPageFragment :
             }
         })
 
-        shopViewModel?.shopOperationalHoursListData?.observe(owner, Observer { result ->
-            if (result is Success) {
-                val opsHoursList = result.data.getShopOperationalHoursList?.data
-                opsHoursList?.let { hourList ->
-                    if (hourList.isNotEmpty()) {
-                        shopOperationalHoursListBottomSheet = ShopOperationalHoursListBottomSheet.createInstance()
-                        shopOperationalHoursListBottomSheet?.updateShopHoursDataSet(hourList)
-                    }
-                }
-            }
-        })
-
     }
 
     private fun onSuccessUpdateFollowStatus(followShop: FollowShop) {
@@ -808,7 +793,6 @@ class NewShopPageFragment :
         getShopInfoData()
         getFollowStatus()
         getSellerPlayWidget()
-        getShopOperationalHoursData()
     }
 
     private fun getShopInfoData() {
@@ -826,10 +810,6 @@ class NewShopPageFragment :
             shopPageFragmentHeaderViewHolder?.setLoadingFollowButton(true)
             shopViewModel?.getFollowStatusData(shopId, shopFollowButtonVariantType)
         }
-    }
-
-    private fun getShopOperationalHoursData() {
-        shopViewModel?.getShopOperationalHoursList(shopId)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -1009,7 +989,7 @@ class NewShopPageFragment :
     private fun getShopPageP1Data() {
         if (shopId.toIntOrZero() == 0 && shopDomain.orEmpty().isEmpty()) return
         shopViewModel?.getShopPageTabData(
-                shopId.toIntOrZero(),
+                shopId,
                 shopDomain.orEmpty(),
                 START_PAGE,
                 ShopUtil.getProductPerPage(context),
@@ -2127,7 +2107,7 @@ class NewShopPageFragment :
         // check type for non applink component
         if (componentName == BaseShopHeaderComponentUiModel.ComponentName.SHOP_OPERATIONAL_HOUR) {
             // show shop operational hour bottomsheet
-            shopOperationalHoursListBottomSheet?.show(fragmentManager)
+            RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET, shopId)
         }
         RouteManager.route(context, appLink)
     }

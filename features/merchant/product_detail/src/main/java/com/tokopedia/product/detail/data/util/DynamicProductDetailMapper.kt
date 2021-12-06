@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
+import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -50,6 +51,7 @@ import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.model.review.ImageReview
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
@@ -103,7 +105,7 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_LIST -> {
                     when (component.componentName) {
-                        PDP_7 ->
+                        PDP_7, PDP_9_TOKONOW ->
                             listOfComponent.add(ProductRecomWidgetDataModel(type = component.type, name = component.componentName, position = index))
                         SHOPADS_CAROUSEL -> {
                             listOfComponent.add(TopadsHeadlineUiModel(type = component.type, name = component.componentName))
@@ -172,6 +174,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_BUNDLING -> {
                     listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.CONTENT_WIDGET -> {
+                    listOfComponent.add(
+                        ContentWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
             }
         }

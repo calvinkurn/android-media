@@ -84,6 +84,14 @@ class ReviewImagePreviewViewModelTest : ReviewImagePreviewViewModelTestFixture()
         Assert.assertEquals(expectedUserId, actualUserId)
     }
 
+    @Test
+    fun `when getProductId should return expected product ID`() {
+        val expectedUserId = ""
+        val actualProductId = viewModel.getProductId()
+
+        Assert.assertEquals(expectedUserId, actualProductId)
+    }
+
     private fun onToggleLikeReviewSuccess_thenReturn(expectedResponse: ToggleLikeReviewResponse) {
         coEvery { toggleLikeReviewUseCase.executeOnBackground() } returns expectedResponse
     }

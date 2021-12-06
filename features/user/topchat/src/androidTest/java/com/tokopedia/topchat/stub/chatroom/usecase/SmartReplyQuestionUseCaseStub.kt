@@ -37,4 +37,14 @@ class SmartReplyQuestionUseCaseStub(
     val defaultResponse: ChatSmartReplyQuestionResponse
         get() = alterResponseOf(replyBubbleResponsePath) { }
 
+    val multipleQuestions: ChatSmartReplyQuestionResponse
+        get() = alterResponseOf(replyBubbleResponsePath) {
+            val questions = it.getAsJsonObject(chatSmartReplyQuestion)
+                .getAsJsonArray(list)
+            questions.add(questions.get(0))
+            questions.add(questions.get(0))
+        }
+
+    private val chatSmartReplyQuestion = "chatSmartReplyQuestion"
+    private val list = "list"
 }

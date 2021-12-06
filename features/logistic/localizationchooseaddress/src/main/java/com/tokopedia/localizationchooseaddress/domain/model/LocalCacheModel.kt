@@ -21,4 +21,18 @@ data class LocalCacheModel (
         val shop_id: String = "",
         @SerializedName("warehouse_id")
         val warehouse_id: String = ""
-)
+) {
+
+    /**
+     * @return String of formatted "{latitude},{longitude}" if both value is not empty,
+     * return empty String otherwise.
+     */
+    val latLong: String
+        get() {
+            return if (lat.isNotBlank() && long.isNotBlank()) {
+                "$lat,$long"
+            } else {
+                ""
+            }
+        }
+}
