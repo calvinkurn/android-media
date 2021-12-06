@@ -7,6 +7,7 @@ import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.databinding.HolderHomeNavMenuBinding
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -31,27 +32,43 @@ class HomeNavMenuViewHolder(
 
     /*
         This function used for hardcode all category icon to using unify icon
-     */
-    private fun setAllCategoryIconToUnify() {
+    */
+    private fun setAllCategoryIconToUnify(element: HomeNavMenuDataModel) {
+        when(element.id) {
+            ID_CATEGORY -> element.srcIconId = IconUnify.DISCOVERY_BELANJA
+            ID_TOP_UP_AND_BILL -> element.srcIconId = IconUnify.DISCOVERY_TOPUP_TAGIHAN
+            ID_TRAVEL_AND_ENTERTAINMENT -> element.srcIconId = IconUnify.DISCOVERY_TRAVEL_ENTERTAINMENT
+            ID_FINANCE -> element.srcIconId = IconUnify.DISCOVERY_KEUANGAN
+            ID_HALAL_CORNER -> element.srcIconId = IconUnify.DISCOVERY_HALAL_CORNER
+            ID_OTHER_SERVICES -> element.srcIconId = IconUnify.DISCOVERY_LAINNYA
+        }
+    }
 
+    private fun setImageByIconUnify(element: HomeNavMenuDataModel) {
+        binding?.menuImage?.visible()
+        binding?.menuImageUnify?.gone()
+
+        binding?.menuImage?.setImage(newIconId = element.srcIconId)
     }
 
     override fun bind(element: HomeNavMenuDataModel) {
         binding?.menuTitle?.text = element.itemTitle
         binding?.menuTitle?.tag = element.id
-//        setAllCategoryIcon()
+
         if (element.srcIconId != null) {
-            binding?.menuImage?.visible()
-            binding?.menuImageUnify?.gone()
-
-            binding?.menuImage?.setImage(newIconId = element.srcIconId)
+            setImageByIconUnify(element)
         } else {
-            binding?.menuImage?.gone()
-            binding?.menuImageUnify?.visible()
+            setAllCategoryIconToUnify(element)
+            if (element.srcIconId != null) {
+                setImageByIconUnify(element)
+            } else {
+                binding?.menuImage?.gone()
+                binding?.menuImageUnify?.visible()
 
-            binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.homenav.R.drawable.grey_button_rounded)
-
+                binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.homenav.R.drawable.grey_button_rounded)
+            }
         }
+
         itemView.setOnClickListener {
             listener.onMenuClick(element)
         }
