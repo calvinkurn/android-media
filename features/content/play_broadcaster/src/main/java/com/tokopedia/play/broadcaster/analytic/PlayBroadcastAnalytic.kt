@@ -770,7 +770,7 @@ class PlayBroadcastAnalytic(
         }
 
         sendGeneralEvent(
-            event = KEY_TRACK_CLICK_EVENT,
+            event = KEY_TRACK_VIEW_EVENT,
             action = eventAction.toString(),
             label = label
         )
