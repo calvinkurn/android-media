@@ -22,12 +22,12 @@ class ProductTagViewHolder(
     itemView: View
 ): BaseViewHolder(itemView) {
 
-    private val ivProductTag: ImageUnify = itemView.findViewById(R.id.iv_product_tag)
-    private val ivProductTagCover: ImageUnify = itemView.findViewById(R.id.iv_product_tag_cover)
-    private val tvDiscount: Typography = itemView.findViewById(R.id.tv_product_tag_discount)
-    private val tvProductTagStock: Typography = itemView.findViewById(R.id.tv_product_tag_stock)
-    private val tvProductTagPrice: Typography = itemView.findViewById(R.id.tv_product_tag_price)
-    private val tvProductTagPriceOriginal: Typography = itemView.findViewById(R.id.tv_product_tag_normal_price)
+    private val ivProductTag: ImageUnify = itemView.findViewById(playCommonR.id.iv_product_tag)
+    private val ivProductTagCover: ImageUnify = itemView.findViewById(playCommonR.id.iv_product_tag_cover)
+    private val tvDiscount: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_discount)
+    private val tvProductTagStock: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_stock)
+    private val tvProductTagPrice: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_price)
+    private val tvProductTagPriceOriginal: Typography = itemView.findViewById(playCommonR.id.tv_product_tag_normal_price)
 
     init {
         tvProductTagPriceOriginal.paintFlags = tvProductTagPriceOriginal.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
