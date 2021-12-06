@@ -40,7 +40,9 @@ class BankPrivacyPolicyBottomSheet : BottomSheetUnify() {
             javaScriptEnabled = true
             domStorageEnabled = true
         }
-        privacyWebview.loadUrl("https://www.tokopedia.com/privacy")
+        context?.let{
+            privacyWebview.loadUrl(it.getString(R.string.sbank_privacy_url))
+        }
 
     }
 

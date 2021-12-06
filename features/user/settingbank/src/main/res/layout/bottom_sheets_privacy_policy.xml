@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <WebView
+    <com.tokopedia.webview.TkpdWebView
         android:id="@+id/privacyWebview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/sbank_webview_16"
+        android:layout_marginTop="@dimen/sbank_webview_16"
+        android:layout_marginEnd="@dimen/sbank_webview_16"
         android:background="@android:color/transparent"
-        android:paddingBottom="16dp" />
+        android:paddingBottom="@dimen/sbank_webview_16" />
 </LinearLayout>
