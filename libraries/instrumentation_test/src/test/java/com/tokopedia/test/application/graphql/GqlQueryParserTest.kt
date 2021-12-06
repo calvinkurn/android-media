@@ -7,11 +7,7 @@ import org.junit.Test
 class GqlQueryParserTest {
 
     @Test
-    fun parse() {
-    }
-
-    @Test
-    fun `regex test`() {
+    fun `parse multiple query test`() {
         val cases = listOf(
             """
             query fetchAnnouncementWidgetData(${'$'}dataKeys: [dataKey!]!) {
