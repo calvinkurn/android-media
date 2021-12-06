@@ -37,5 +37,4 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
     implementation projectOrAar(rootProject.ext.features.travelCountryCode)
-    implementation projectOrAar(rootProject.ext.features.travelPassenger)
 }
