@@ -170,13 +170,10 @@ import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.Serializable
 import java.net.URLDecoder
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INDEX
-import timber.log.Timber
-import java.text.ParseException
 
 /**
  * Created by fwidjaja on 29/06/20.
