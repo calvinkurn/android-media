@@ -13,13 +13,6 @@ object CMHomeWidgetAnalyticsConstants {
             const val NOTIFICATION_ID = "notification_id"
             const val MESSAGE_ID = "message_id"
             const val IS_SILENT = "is_silent"
-            const val ITEMS = "items"
-            const val ITEM_ID = "item_id"
-            const val ITEM_NAME = "item_name"
-            const val PRICE = "price"
-            const val SHOP_ID = "shop_id"
-            const val SHOP_NAME = "shop_name"
-            const val ECOMMERCE = "ecommerce"
         }
     }
 

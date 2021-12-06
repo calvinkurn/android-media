@@ -125,8 +125,8 @@ open class HomeRevampViewModel @Inject constructor(
     private val playWidgetTools: Lazy<PlayWidgetTools>,
     private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
     private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
-    private val getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase,
-    private val dismissCMHomeWidgetUseCase: DismissCMHomeWidgetUseCase
+    private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
+    private val dismissCMHomeWidgetUseCase: Lazy<DismissCMHomeWidgetUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -1678,7 +1678,7 @@ open class HomeRevampViewModel @Inject constructor(
         if (getCMHomeWidgetDataJob?.isActive == true) return
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             getCMHomeWidgetDataJob = launchCatchError(coroutineContext, {
-                getCMHomeWidgetDataUseCase.getCMHomeWidgetData(
+                getCMHomeWidgetDataUseCase.get().getCMHomeWidgetData(
                     {
                         val newCMHomeWidgetDataModel =
                             cmHomeWidgetDataModel.copy(cmHomeWidgetData = it.cmHomeWidgetData)
@@ -1701,7 +1701,7 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             dismissCMHomeWidgetJob = launchCatchError(coroutineContext, {
                 cmHomeWidgetDataModel.cmHomeWidgetData?.let { it ->
-                    dismissCMHomeWidgetUseCase.deleteCMHomeWidgetData(
+                    dismissCMHomeWidgetUseCase.get().deleteCMHomeWidgetData(
                         {
                             deleteWidget(cmHomeWidgetDataModel, index)
                         }, {

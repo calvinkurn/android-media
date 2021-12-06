@@ -4,6 +4,8 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.DismissCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
@@ -72,7 +74,9 @@ fun createHomeViewModel(
         bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
         dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
         getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true),
-        getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true)
+        getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true),
+        getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
+        dismissCMHomeWidgetUseCase: DismissCMHomeWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeRevampViewModel(
@@ -105,7 +109,9 @@ fun createHomeViewModel(
             playWidgetTools = Lazy { playWidgetTools },
             bestSellerMapper = Lazy { bestSellerMapper },
             getWalletAppBalanceUseCase = Lazy { getWalletAppBalanceUseCase },
-            getWalletEligibilityUseCase = Lazy { getWalletEligibilityUseCase }
+            getWalletEligibilityUseCase = Lazy { getWalletEligibilityUseCase },
+            getCMHomeWidgetDataUseCase = Lazy { getCMHomeWidgetDataUseCase },
+            dismissCMHomeWidgetUseCase = Lazy { dismissCMHomeWidgetUseCase }
     )
 }
 
