@@ -5,16 +5,12 @@ import com.tokopedia.attachproduct.test.R
 import com.tokopedia.attachproduct.utils.FileUtils
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.test.application.graphql.GqlMockUtil
-import java.lang.reflect.Type
 import javax.inject.Inject
 
 class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
-
-    private var errorData: MutableMap<Type, List<GraphqlError>> = hashMapOf()
 
     var state: TestState = TestState.DEFAULT
 
