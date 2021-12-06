@@ -129,7 +129,9 @@
         android:layout_below="@+id/tv_mvc_error"
         android:layout_marginTop="4dp"
         android:text="@string/jaminan_tepat_waktu"
-        app:labelType="general_light_green" />
+        app:labelType="general_light_green"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/lbl_dynamic_pricing"

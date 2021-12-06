@@ -103,6 +103,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ONE_CLICK_
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
@@ -363,6 +364,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE, R.string.title_shop_page))
+            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE, R.string.title_shop_page))
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
@@ -566,7 +568,11 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(TRACK) }, DF_BASE, R.string.title_order_management_history))
 
             // Revamped buyer order detail (features/ordermanagement/buyer_order_detail)
-            add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) }, DF_BASE, R.string.title_revamped_buyer_order_detail))
+            add(DFP({ it.startsWith(MARKETPLACE_INTERNAL_BUYER_ORDER_DETAIL) ||
+                    it.startsWith(BUYER_ORDER_EXTENSION) ||
+                    it.startsWith(ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION)
+                    }, DF_BASE, R.string.title_revamped_buyer_order_detail)
+            )
 
             // Tokopedia NOW!
             add(DFP({
@@ -648,6 +654,7 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWithPattern(SHOP_HOME) ||
                         it.startsWith(SHOP_SETTINGS_NOTE)
             }, DF_BASE_SELLER_APP, R.string.title_shop_page))
+            add(DFP({ it.startsWithPattern(SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET) }, DF_BASE_SELLER_APP, R.string.title_shop_page))
             add(DFP({ it.startsWith(MERCHANT_STATISTIC_DASHBOARD) }, DF_BASE_SELLER_APP, R.string.title_statistic))
 
             add(DFP({

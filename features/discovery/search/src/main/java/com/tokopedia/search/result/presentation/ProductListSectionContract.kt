@@ -21,8 +21,7 @@ import com.tokopedia.search.result.presentation.model.InspirationCarouselDataVie
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 interface ProductListSectionContract {
     interface View : CustomerView {
@@ -35,7 +34,6 @@ interface ProductListSectionContract {
         fun setEmptyProduct(globalNavDataView: GlobalNavDataView?, emptySearchProductDataView: EmptySearchProductDataView)
         fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
         fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
-        fun trackEventImpressionTicker(typeId: Int)
         fun backToTop()
         fun addLoading()
         fun removeLoading()
@@ -96,11 +94,6 @@ interface ProductListSectionContract {
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
-        fun trackSuccessAddToCartEvent(isAds: Boolean, addToCartDataLayer: Any)
-        fun showAddToCartSuccessMessage()
-        fun showAddToCartFailedMessage(errorMessage: String)
-        fun routeToShopPage(shopId: String?)
-        fun trackEventGoToShopPage(dataLayer: Any)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
         fun trackEventSearchResultChangeView(viewType: String)
         fun switchSearchNavigationLayoutTypeToListView(position: Int)
@@ -111,16 +104,29 @@ interface ProductListSectionContract {
         fun getIsLocalizingAddressHasUpdated(currentChooseAddressData: LocalCacheModel): Boolean
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
-        fun trackDynamicProductCarouselImpression(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackDynamicProductCarouselClick(dynamicProductCarousel: BroadMatchItemDataView, type: String)
-        fun trackEventClickSeeMoreBroadMatch(broadMatchItemDataView: BroadMatchDataView)
-        fun trackEventClickSeeMoreDynamicProductCarousel(dynamicProductCarousel: BroadMatchDataView, type: String)
+        fun trackDynamicProductCarouselImpression(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackDynamicProductCarouselClick(
+            dynamicProductCarousel: BroadMatchItemDataView,
+            type: String,
+            inspirationCarouselProduct: InspirationCarouselDataView.Option.Product,
+        )
+        fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView)
+        fun trackEventClickSeeMoreDynamicProductCarousel(
+            dynamicProductCarousel: BroadMatchDataView,
+            type: String,
+            inspirationCarouselOption: InspirationCarouselDataView.Option,
+        )
         fun modifyApplinkToSearchResult(applink: String): String
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
+        val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
         val deviceId: String

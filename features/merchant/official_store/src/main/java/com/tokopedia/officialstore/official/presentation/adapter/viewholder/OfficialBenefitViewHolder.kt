@@ -6,21 +6,21 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.databinding.ViewmodelOfficialBenefitBinding
 import com.tokopedia.officialstore.official.data.model.Benefit
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
 import com.tokopedia.officialstore.official.presentation.widget.BenefitAdapter
-import com.tokopedia.officialstore.official.presentation.widget.GridSpacingItemDecoration
-import kotlinx.android.synthetic.main.viewmodel_official_benefit.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class OfficialBenefitViewHolder(view: View) : AbstractViewHolder<OfficialBenefitDataModel>(view) {
 
     private var adapter: BenefitAdapter? = null
+    private var binding: ViewmodelOfficialBenefitBinding? by viewBinding()
 
     override fun bind(element: OfficialBenefitDataModel) {
         if(adapter == null){
             adapter = BenefitAdapter(itemView.context)
-            itemView.recyclerview_official_benefit?.addItemDecoration(GridSpacingItemDecoration(3, 0))
-            itemView.recyclerview_official_benefit?.adapter = adapter
+            binding?.recyclerviewOfficialBenefit?.adapter = adapter
         }
         element.benefit.let {
             adapter?.benefitList = it

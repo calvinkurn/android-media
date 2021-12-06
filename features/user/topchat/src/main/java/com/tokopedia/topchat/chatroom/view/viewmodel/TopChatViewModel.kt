@@ -4,12 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
@@ -46,6 +50,7 @@ class TopChatViewModel @Inject constructor(
     private var orderProgressUseCase: OrderProgressUseCase,
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
+    private var addToCartOccUseCase: AddToCartOccMultiUseCase,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
@@ -83,6 +88,10 @@ class TopChatViewModel @Inject constructor(
     private val _srwTickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
     val srwTickerReminder: LiveData<Result<ReminderTickerUiModel>>
         get() = _srwTickerReminder
+
+    private val _occProduct = MutableLiveData<Result<ProductAttachmentUiModel>>()
+    val occProduct: LiveData<Result<ProductAttachmentUiModel>>
+        get() = _occProduct
 
     private val _chatDeleteStatus = MutableLiveData<Result<ChatDeleteStatus>>()
     val chatDeleteStatus: LiveData<Result<ChatDeleteStatus>>
@@ -228,6 +237,47 @@ class TopChatViewModel @Inject constructor(
 
     }
 
+    fun occProduct(
+        userId: String,
+        product: ProductAttachmentUiModel
+    ) {
+        launchCatchError(block = {
+            val params = getAddToCartOccMultiRequestParams(userId, product)
+            addToCartOccUseCase.setParams(params)
+            val result = addToCartOccUseCase.executeOnBackground()
+            if(result.isStatusError()) {
+                _occProduct.value = Fail(MessageErrorException(result.getAtcErrorMessage()))
+            } else {
+                if(!result.data.cart.isNullOrEmpty()) {
+                    product.cartId = result.data.cart.first().cartId
+                }
+                _occProduct.value = Success(product)
+            }
+        }, onError = {
+            _occProduct.value = Fail(it)
+        })
+    }
+
+    private fun getAddToCartOccMultiRequestParams(
+        userId: String,
+        product: ProductAttachmentUiModel
+    ): AddToCartOccMultiRequestParams {
+        return AddToCartOccMultiRequestParams(
+            carts = listOf(
+                AddToCartOccMultiCartParam(
+                productId = product.productId,
+                shopId = product.shopId.toString(),
+                quantity = product.minOrder.toString(),
+                //analytics data
+                productName = product.productName,
+                category = product.category,
+                price = product.productPrice
+            )
+            ),
+            userId = userId
+        )
+    }
+
     fun deleteChat(messageId: String) {
         launchCatchError(block = {
             val result = moveChatToTrashUseCase(messageId)
@@ -244,5 +294,4 @@ class TopChatViewModel @Inject constructor(
             _chatDeleteStatus.value = Fail(it)
         })
     }
-
 }

@@ -758,7 +758,7 @@ open class TopChatRoomPresenter @Inject constructor(
         if (resultProducts.isNotEmpty()) clearAttachmentPreview()
         for (resultProduct in resultProducts) {
             val productPreview = ProductPreview(
-                id = resultProduct.productId.toString(),
+                id = resultProduct.productId,
                 imageUrl = resultProduct.productImageThumbnail,
                 name = resultProduct.name,
                 price = resultProduct.price,
@@ -767,8 +767,12 @@ open class TopChatRoomPresenter @Inject constructor(
                 dropPercentage = resultProduct.dropPercentage,
                 productFsIsActive = resultProduct.isFreeOngkirActive,
                 productFsImageUrl = resultProduct.imgUrlFreeOngkir,
-                remainingStock = resultProduct.stock
-
+                remainingStock = resultProduct.stock,
+                isSupportVariant = resultProduct.isSupportVariant,
+                campaignId = resultProduct.campaignId,
+                isPreorder = resultProduct.isPreorder,
+                priceInt = resultProduct.priceInt,
+                categoryId = resultProduct.categoryId
             )
             if (productPreview.notEnoughRequiredData()) continue
             val sendAbleProductPreview = SendableProductPreview(productPreview)
@@ -869,10 +873,17 @@ open class TopChatRoomPresenter @Inject constructor(
         onGoingStockUpdate[productId] = result
     }
 
-    override fun getSmartReplyWidget(msgId: String) {
+    override fun getSmartReplyWidget(msgId: String, productIds: String) {
         launchCatchError(dispatchers.io,
             {
-                chatSrwUseCase.getSrwList(msgId).collect {
+                chatSrwUseCase.getSrwList(
+                    msgId = msgId,
+                    productIds = productIds,
+                    addressId = userLocationInfo.address_id,
+                    districtId = userLocationInfo.district_id,
+                    postalCode = userLocationInfo.postal_code,
+                    latLon = userLocationInfo.latLong
+                ).collect {
                     _srw.postValue(it)
                 }
             },

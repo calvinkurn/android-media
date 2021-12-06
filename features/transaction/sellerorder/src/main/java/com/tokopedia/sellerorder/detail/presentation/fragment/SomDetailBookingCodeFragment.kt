@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.MultiFormatWriter
@@ -21,6 +23,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.databinding.FragmentSomBookingCodeBinding
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 
@@ -72,6 +75,10 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
     }
 
     private fun initLayout() {
+        setupHeader()
+        binding?.barcodeLabel?.run {
+            text = HtmlLinkHelper(context, getString(R.string.barcode_label_one)).spannedString
+        }
         binding?.bookingCode?.text = bookingCode
         somBookingCodeMsgAdapter = SomDetailBookingCodeMessageAdapter()
         binding?.rvMessage?.apply {
@@ -84,10 +91,23 @@ class SomDetailBookingCodeFragment: BaseDaggerFragment() {
         generateBarcode(bookingCode, barcodeType)?.let { showBarcode(it) }
     }
 
+    private fun setupHeader() {
+        (activity as? AppCompatActivity)?.run {
+            binding?.headerSomBookingCode?.let { header ->
+                supportActionBar?.hide()
+                setSupportActionBar(header)
+                header.navigationIcon = ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_som_booking_code_close
+                )
+            }
+        }
+    }
+
     private fun initListeners() {
         binding?.run {
-            llCode.setOnClickListener { copyCode() }
-            textTapBarcode.setOnClickListener { zoomBarcode() }
+            icCopyBookingCode.setOnClickListener { copyCode() }
+            barcodeLabel.setOnClickListener { zoomBarcode() }
             cardBarcode.setOnClickListener { zoomBarcode() }
         }
     }
