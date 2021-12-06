@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -54,6 +56,7 @@ import com.tokopedia.buyerorder.detail.view.adapter.typefactory.BuyerProductBund
 import com.tokopedia.buyerorder.detail.view.adapter.uimodel.BuyerNormalProductUiModel
 import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -187,6 +190,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupHeader()
         activity?.let { BuyerAnalytics.sendScreenName(BUYER_CANCEL_REASON_SCREEN_NAME) }
         observingCancelReasons()
         observingInstantCancel()
@@ -200,7 +204,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
         tf_choose_sub_reason?.setOnClickListener {}
 
         reasonBottomSheetAdapter = GetCancelReasonBottomSheetAdapter(this)
-        label_shop_name?.text = shopName
+        label_shop_name?.text = MethodChecker.fromHtml(shopName)
         label_invoice?.text = invoiceNum
 
         when {
@@ -215,6 +219,19 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             }
         }
 
+    }
+
+    private fun setupHeader() {
+        view?.findViewById<HeaderUnify>(R.id.header_buyer_request_cancel)?.let { header ->
+            activity.run {
+                if (this is AppCompatActivity) {
+                    supportActionBar?.hide()
+                    setSupportActionBar(header)
+                } else {
+                    header.gone()
+                }
+            }
+        }
     }
 
     private fun setLayoutCancelAlreadyRequested() {
@@ -448,7 +465,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
 
         // list product
         if (listProduct.isNotEmpty() && !isBundlingProduct) {
-            label_product_name?.text = listProduct.first().productName
+            label_product_name?.text = MethodChecker.fromHtml(listProduct.first().productName)
             label_price?.text = listProduct.first().productPrice
             iv_product?.loadImage(listProduct.first().picture)
 
@@ -650,7 +667,7 @@ class BuyerRequestCancelFragment: BaseDaggerFragment(),
             isBundlingProduct = normalProductList != null
             normalProductList?.let { products ->
                 if (products.isNotEmpty()) {
-                    label_product_name?.text = products.firstOrNull()?.productName.orEmpty()
+                    label_product_name?.text = MethodChecker.fromHtml(products.firstOrNull()?.productName.orEmpty())
                     label_price?.text = products.firstOrNull()?.productPrice.orEmpty()
                     iv_product?.loadImage(products.firstOrNull()?.productThumbnailUrl.orEmpty())
                 }

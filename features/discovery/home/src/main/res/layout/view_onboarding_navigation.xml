@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:paddingBottom="16dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:src="@drawable/image_onboarding_navigation"
+        android:contentDescription="@string/content_desc_image_on_boarding"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintStart_toEndOf="parent"/>
@@ -17,7 +18,7 @@
         android:layout_marginTop="8dp"
         android:id="@+id/onboarding_title"
         android:text="@string/onboarding_navigation_title"
-        android:textSize="@dimen/sp_20"
+        android:textSize="20sp"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         android:layout_marginStart="16dp"
@@ -34,7 +35,7 @@
         android:gravity="center"
         android:id="@+id/onboarding_description"
         android:text="@string/onboarding_navigation_description"
-        android:textSize="@dimen/sp_20"
+        android:textSize="20sp"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
         android:layout_marginStart="16dp"

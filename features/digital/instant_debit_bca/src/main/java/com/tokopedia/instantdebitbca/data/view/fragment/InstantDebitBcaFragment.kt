@@ -73,7 +73,6 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
 
     override fun initInjector() {
         activity?.let {
-            GraphqlClient.init(it)
             val instantDebitBcaComponent = InstantDebitBcaInstance.getComponent(it.application)
             instantDebitBcaComponent.inject(this)
             presenter.attachView(this)

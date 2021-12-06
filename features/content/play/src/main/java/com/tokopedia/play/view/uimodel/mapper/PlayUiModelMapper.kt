@@ -1,9 +1,7 @@
 package com.tokopedia.play.view.uimodel.mapper
 
-import com.tokopedia.play.data.ChannelStatusResponse
-import com.tokopedia.play.data.Product
-import com.tokopedia.play.data.ShopInfo
-import com.tokopedia.play.data.Voucher
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -27,6 +25,7 @@ class PlayUiModelMapper @Inject constructor(
         private val channelStatusMapper: PlayChannelStatusMapper,
         private val channelInteractiveMapper: PlayChannelInteractiveMapper,
         private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
+        private val cartMapper: PlayCartMapper,
 ) {
 
     fun mapProductTags(input: List<Product>): List<PlayProductUiModel> {
@@ -45,6 +44,10 @@ class PlayUiModelMapper @Inject constructor(
         return channelStatusMapper.mapStatusFromResponse(input)
     }
 
+    fun mapWaitingDuration(input: ChannelStatusResponse): Int {
+        return channelStatusMapper.mapWaitingDurationResponse(input)
+    }
+
     fun mapPartnerInfo(input: ShopInfo): Boolean {
         return input.favoriteData.alreadyFavorited == 1
     }
@@ -55,5 +58,9 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapInteractiveLeaderboard(input: GetInteractiveLeaderboardResponse): PlayLeaderboardInfoUiModel {
         return interactiveLeaderboardMapper.mapLeaderboard(input) { false }
+    }
+
+    fun mapAddToCartFeedback(input: AddToCartDataModel): CartFeedbackResponseModel {
+        return cartMapper.mapCartFeedbackResponse(input)
     }
 }

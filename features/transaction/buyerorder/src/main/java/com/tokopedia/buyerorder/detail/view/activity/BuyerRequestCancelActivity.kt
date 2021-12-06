@@ -6,6 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.buyerorder.common.util.BuyerConsts
 import com.tokopedia.buyerorder.detail.di.DaggerOrderDetailsComponent
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent
@@ -18,6 +19,11 @@ import java.lang.reflect.Type
  */
 @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetailsComponent> {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupBackground()
+    }
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -63,6 +69,14 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetai
                 is Boolean -> putBoolean(it.key, value)
                 is Int -> putInt(it.key, value)
             }
+        }
+    }
+
+    private fun setupBackground() {
+        window?.run {
+            val backgroundColor = MethodChecker.getColor(this@BuyerRequestCancelActivity, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            decorView.setBackgroundColor(backgroundColor)
+            statusBarColor = backgroundColor
         }
     }
 }

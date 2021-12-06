@@ -56,38 +56,10 @@
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         app:typographyType="body_3"
-        android:text="Produk ditemukan."
-        />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/error_group"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="promo_global_error,affiliate_no_product_bought_iv"
-        />
-
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
-        android:id="@+id/affiliate_no_product_bought_iv"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_220"
-        android:background="@color/Unify_N0"
-        android:gravity="center"
-        android:paddingTop="40dp"
+        android:text="@string/affiliate_produk_ditemukan"
         android:visibility="gone"
-        app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/affiliate_never_bought_product.png"
-        app:imageDpiSupportType="singleDpi"
-        app:layout_constraintTop_toBottomOf="@id/product_link_et"
-        tools:visibility="visible" />
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/promo_global_error"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/Unify_N0"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/affiliate_no_product_bought_iv"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/promo_affiliate_progress_view"
@@ -99,8 +71,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/promo_affiliate_progress_bar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -117,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/promo_affiliate_progress_bar"
-        android:text="Tunggu, ya. Produknya lagi dicari"
+        android:text="@string/affiliate_tunggu_ya_produknya_lagi_dicari"
         />
 
     <FrameLayout
@@ -138,6 +110,39 @@
             tools:listitem="@layout/affiliate_promotion_product_card_item_layout"
             tools:visibility="gone"
             />
+
+        <RelativeLayout
+            android:id="@+id/recommended_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="blocksDescendants"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            >
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout_recommended"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/dp_4"
+                app:tabBackground="@color/Unify_N0"
+                app:tabIndicatorColor="@color/Unify_G500"
+                app:tabIndicatorFullWidth="true"
+                app:tabMode="fixed"
+                app:tabSelectedTextColor="@color/Unify_G500"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                app:tabTextColor="@color/Unify_N700_68" />
+
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/view_pager_recommended"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/tab_layout_recommended" />
+        </RelativeLayout>
+
     </FrameLayout>
 
     <View

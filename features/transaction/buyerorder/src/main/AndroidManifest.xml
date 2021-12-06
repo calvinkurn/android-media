@@ -8,7 +8,8 @@
             android:name=".detail.view.activity.SeeInvoiceActivity"
             android:configChanges="uiMode"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -31,7 +32,14 @@
             android:label="@string/title_order_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".recharge.presentation.activity.RechargeOrderDetailActivity"
+            android:label="@string/title_order_detail"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -53,7 +61,8 @@
             android:name=".detail.view.activity.BuyerRequestCancelActivity"
             android:label="@string/title_buyer_request_cancel"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -67,5 +76,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

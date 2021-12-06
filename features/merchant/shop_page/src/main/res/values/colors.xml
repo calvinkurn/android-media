@@ -15,7 +15,7 @@
     <color name="etalase_chip_selected_border">#4fd15a</color>
     <color name="tab_layout_shop_page_background_color">#e5e7e9</color>
     <color name="color3f454c">#3f454c</color>
-    <color name="clr_31353B">#31353B</color>
+    <color name="clr_dms_31353B">#31353B</color>
     <color name="clr_AD31353B">#AD31353B</color>
     <color name="color_chips_etalase_text_selected">#03AC0E</color>
     <color name="color_chips_etalase_text_not_selected">#ae31353b</color>
@@ -23,10 +23,13 @@
     <color name="color_gray_shop_tab">#9FA6B0</color>
     <color name="color_green_shop_tab_new">#00AA5B</color>
     <color name="color_gray_shop_tab_new">#525A67</color>
+    <color name="fs_toko_bg_end_dms_gradient_color">#00AA5B</color>
+    <color name="fs_toko_bg_start_dms_gradient_color">#008849</color>
 
     <color name="clr_00AC47">#00AC47</color>
     <color name="clr_9FA6B0">#9FA6B0</color>
-    <color name="clr_EF144A">#EF144A</color>
+    <color name="clr_dms_EF144A">#EF144A</color>
+    <color name="clr_dms_AD31353B">#AD31353B</color>
     <color name="clr_03AC0E">#03AC0E</color>
     <color name="clr_transparent_black">#8000</color>
     <color name="clr_transparent">#00000000</color>

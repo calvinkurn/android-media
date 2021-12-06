@@ -73,4 +73,6 @@ https://phab.tokopedia.com/XXXXX
 - **approved for dark mode** - send along with the approval to cast the magic
 *(more info: @tokopedia/android-gatekeeper-dark-mode)*
 
+- **approved for rollence** - send along with the approval to cast the magic
+*(more info: @tokopedia/android-gatekeeper-risk-analysis)*
 

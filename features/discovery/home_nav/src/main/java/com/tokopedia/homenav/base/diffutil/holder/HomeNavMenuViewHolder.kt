@@ -6,34 +6,36 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.diffutil.HomeNavListener
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
+import com.tokopedia.homenav.databinding.HolderHomeNavMenuBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.NotificationUnify
-import kotlinx.android.synthetic.main.holder_home_nav_menu.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeNavMenuViewHolder(
         itemView: View,
         private val listener: HomeNavListener
 ): AbstractViewHolder<HomeNavMenuDataModel>(itemView) {
+    private var binding: HolderHomeNavMenuBinding? by viewBinding()
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_home_nav_menu
     }
 
     override fun bind(element: HomeNavMenuDataModel) {
-        itemView.menu_title?.text = element.itemTitle
-        itemView.menu_title?.tag = element.id
+        binding?.menuTitle?.text = element.itemTitle
+        binding?.menuTitle?.tag = element.id
         if (element.srcIconId != null) {
-            itemView.menu_image.visible()
-            itemView.menu_image_unify.gone()
+            binding?.menuImage?.visible()
+            binding?.menuImageUnify?.gone()
 
-            itemView.menu_image.setImage(newIconId = element.srcIconId)
+            binding?.menuImage?.setImage(newIconId = element.srcIconId)
         } else {
-            itemView.menu_image.gone()
-            itemView.menu_image_unify.visible()
+            binding?.menuImage?.gone()
+            binding?.menuImageUnify?.visible()
 
-            itemView.menu_image_unify.loadImage(element.srcImage, R.drawable.grey_button_rounded)
+            binding?.menuImageUnify?.loadImage(element.srcImage, R.drawable.grey_button_rounded)
         }
         itemView.setOnClickListener {
             listener.onMenuClick(element)
@@ -41,19 +43,19 @@ class HomeNavMenuViewHolder(
 
         if (element.notifCount.isNotEmpty()) {
             if(listener.getReviewCounterAbIsUnify()) {
-                itemView.menu_notification.setNotification(
+                binding?.menuNotification?.setNotification(
                         notif = element.notifCount,
                         notificationType = NotificationUnify.COUNTER_TYPE,
                         colorType = NotificationUnify.COLOR_PRIMARY
                 )
-                itemView.menu_notification.visibility = View.VISIBLE
+                binding?.menuNotification?.visibility = View.VISIBLE
             } else {
-                itemView.menu_notification_typography.setNotification(element.notifCount, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
-                itemView.menu_notification_typography.visibility = View.VISIBLE
+                binding?.menuNotificationTypography?.setNotification(element.notifCount, NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_PRIMARY)
+                binding?.menuNotificationTypography?.visibility = View.VISIBLE
             }
         } else {
-            itemView.menu_notification_typography.visibility = View.GONE
-            itemView.menu_notification.visibility = View.GONE
+            binding?.menuNotificationTypography?.visibility = View.GONE
+            binding?.menuNotification?.visibility = View.GONE
         }
     }
 }

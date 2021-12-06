@@ -308,7 +308,7 @@ class DigitalRecommendationUseCaseTest {
             assertEquals(fourthData.beforePrice, "")
             assertEquals(fourthData.price, "Rp10.000")
             assertEquals(fourthData.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(fourthData.categoryName, "")
+            assertEquals(fourthData.categoryName, "product title")
 
             // when
             val data1 = usecase.execute(
@@ -361,7 +361,7 @@ class DigitalRecommendationUseCaseTest {
             assertEquals(fourthData1.beforePrice, "")
             assertEquals(fourthData1.price, "Rp10.000")
             assertEquals(fourthData1.applink, "tokopediatest://dummy_product_applink")
-            assertEquals(fourthData1.categoryName, "")
+            assertEquals(fourthData1.categoryName, "product title")
         }
     }
 }

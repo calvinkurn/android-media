@@ -34,6 +34,9 @@ dependencies {
     }
     implementation rootProject.ext.firebase.dynamicLink
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 }
 
 project.ext {

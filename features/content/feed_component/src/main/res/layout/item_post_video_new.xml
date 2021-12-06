@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -52,8 +53,8 @@
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/loader"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="@dimen/unify_space_48"
+            android:layout_height="@dimen/unify_space_48"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -88,8 +89,8 @@
         android:id="@+id/timer_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
         android:textColor="@color/Unify_N50"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@id/layout_main"
@@ -97,58 +98,30 @@
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/product_tagging_parent"
-        android:layout_width="wrap_content"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/video_lihat_product"
+        android:layout_width="@dimen/unify_space_24"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        android:minWidth="@dimen/layout_lvl3"
-        app:cardBackgroundColor="@color/Unify_NN900"
-        app:cardCornerRadius="12dp"
+        android:background="@drawable/feed_bg_lihat_produk"
+        android:drawablePadding="@dimen/unify_space_4"
+        android:drawableTint="@color/Unify_N0"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:minWidth="@dimen/unify_space_24"
+        android:paddingStart="@dimen/feed_component_dp_6"
+        android:paddingTop="@dimen/unify_space_2"
+        android:paddingBottom="@dimen/unify_space_2"
+        android:singleLine="true"
+        android:text="@string/feed_post_tag_text"
+        android:textColor="@color/Unify_N0"
+        app:drawableLeftCompat="@drawable/feed_ic_product"
         app:layout_constraintBottom_toBottomOf="@id/layout_main"
-        app:layout_constraintStart_toStartOf="@id/layout_main">
+        app:layout_constraintStart_toStartOf="@id/layout_main"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/lihat_video_parent_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical">
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/video_tag_button"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="4dp"
-                app:icon_color_light_enable="@color/Unify_N0"
-                app:icon_color_night_enable="@color/Unify_N0"
-                app:icon_name="PRODUCT"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/video_tag_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:unify_image_type="circle" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/video_tag_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_3"
-                android:paddingEnd="8dp"
-                android:paddingBottom="5dp"
-                android:text="@string/feed_post_tag_text"
-                android:textColor="@color/Unify_N0"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/video_tag_button"
-                app:layout_constraintBottom_toBottomOf="@id/video_tag_button"
-                app:layout_constraintTop_toTopOf="@id/video_tag_button"
-                app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:visibility="visible"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/volumeIcon"
