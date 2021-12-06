@@ -135,6 +135,18 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
+    fun setThreeDotsWishlistOnClickListener(threeDotsClickListener: (View) -> Unit) {
+        buttonThreeDotsWishlist?.setOnClickListener(threeDotsClickListener)
+    }
+
+    fun setAddToCartWishlistOnClickListener(addToCartWishlistClickListener: (View) -> Unit) {
+        buttonAddToCartWishlist?.setOnClickListener(addToCartWishlistClickListener)
+    }
+
+    fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
+        buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
+    }
+
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
     override fun getCardRadius() = cardViewProductCard?.radius ?: 0f

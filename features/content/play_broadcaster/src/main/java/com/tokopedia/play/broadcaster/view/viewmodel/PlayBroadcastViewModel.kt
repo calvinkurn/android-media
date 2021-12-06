@@ -5,6 +5,8 @@ import android.os.Handler
 import androidx.lifecycle.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.broadcaster.mediator.LivePusherStatistic
+import com.tokopedia.broadcaster.widget.SurfaceAspectRatioView
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
@@ -22,6 +24,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.pusher.*
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
@@ -41,6 +44,10 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
+import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
+import com.tokopedia.play.broadcaster.view.state.isRecovered
+import com.tokopedia.play.broadcaster.view.state.isStarted
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
 import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -71,7 +78,7 @@ import javax.inject.Inject
  * Created by mzennis on 24/05/20.
  */
 internal class PlayBroadcastViewModel @Inject constructor(
-    private val livePusherMediator: PlayLivePusherMediator,
+    private val livePusherMediator: PusherMediator,
     private val mDataStore: PlayBroadcastDataStore,
     private val hydraConfigStore: HydraConfigStore,
     private val sharedPref: HydraSharedPreferences,
@@ -155,7 +162,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         get() = getCurrentSetupDataStore().getSelectedInteractiveDuration()
     val interactiveDurations: List<Long>
         get() = findSuitableInteractiveDurations()
-    val observableLivePusherStatistic: LiveData<PlayLivePusherStatistic>
+    val observableLivePusherStatistic: LiveData<LivePusherStatistic>
         get() = _observableLivePusherStats
     val observableLivePusherInfo: LiveData<PlayLiveLogState>
         get() = _observableLivePusherInfo
@@ -179,7 +186,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
     private val _observableLeaderboardInfo = MutableLiveData<NetworkResult<PlayLeaderboardInfoUiModel>>()
     private val _observableCreateInteractiveSession = MutableLiveData<NetworkResult<InteractiveSessionUiModel>>()
-    private val _observableLivePusherStats = MutableLiveData<PlayLivePusherStatistic>()
+    private val _observableLivePusherStats = MutableLiveData<LivePusherStatistic>()
     private val _observableLivePusherInfo = MutableLiveData<PlayLiveLogState>()
 
     private val _configInfo = MutableStateFlow<ConfigurationUiModel?>(null)
@@ -247,7 +254,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     }
 
     private val livePusherStatisticListener = object : PlayLivePusherMediatorListener {
-        override fun onLivePusherStatsUpdated(statistic: PlayLivePusherStatistic) {
+        override fun onLivePusherStatsUpdated(statistic: LivePusherStatistic) {
             sendLivePusherStats(statistic)
         }
     }
@@ -660,7 +667,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
             val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
-            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) { livePusherMediator.state.isStopped }
+            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) {
+                livePusherMediator.getLivePusherState().isStopped
+            }
             _observableLeaderboardInfo.value = NetworkResult.Success(leaderboard)
             null
         } catch (err: Throwable) {
@@ -678,7 +687,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         return getCurrentSetupDataStore().getInteractiveDurations()
     }
 
-    private fun sendLivePusherStats(stats: PlayLivePusherStatistic) {
+    private fun sendLivePusherStats(stats: LivePusherStatistic) {
         viewModelScope.launch(dispatcher.main) {
             _observableLivePusherStats.value = stats
         }
