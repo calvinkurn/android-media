@@ -3,7 +3,6 @@ package com.tokopedia.digital_checkout.utils
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
-import com.tokopedia.digital_checkout.data.DigitalCartCrossSellingType
 import com.tokopedia.digital_checkout.data.DigitalCheckoutConst
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData
 import com.tokopedia.digital_checkout.data.model.AttributesDigitalData.PostPaidPopupAttribute
@@ -128,29 +127,10 @@ object DigitalCheckoutMapper {
             }
 
             responseRechargeGetCart.response.run {
-                cartDigitalInfoData.crossSellingType = crossSellingType
-                cartDigitalInfoData.showSubscriptionsView = crossSellingType == DigitalCartCrossSellingType.MYBILLS.id ||
-                        crossSellingType == DigitalCartCrossSellingType.SUBSCRIBED.id
-                crossSellingConfig.run {
-                    val crossSellingConfig = CartDigitalInfoData.CrossSellingConfig()
-                    crossSellingConfig.isSkipAble = canBeSkipped
-                    crossSellingConfig.isChecked = isChecked
-
-                    val crossSellingWording = if (cartDigitalInfoData.crossSellingType
-                            == DigitalCartCrossSellingType.SUBSCRIBED.id) {
-                        wordingIsSubscribe
-                    } else {
-                        wording
-                    }
-                    crossSellingWording.run {
-                        crossSellingConfig.headerTitle = headerTitle
-                        crossSellingConfig.bodyTitle = bodyTitle
-                        crossSellingConfig.bodyContentBefore = bodyContentBefore
-                        crossSellingConfig.bodyContentAfter = bodyContentAfter
-                        crossSellingConfig.checkoutButtonText = checkoutButtonText
-                        cartDigitalInfoData.crossSellingConfig = crossSellingConfig
-                    }
+                val subscriptions = fintechProduct.filter {
+                    it.transactionType == DigitalCheckoutConst.FintechProduct.AUTO_DEBIT
                 }
+                cartDigitalInfoData.isSubscribed = subscriptions.isNotEmpty() && subscriptions[0].checkBoxDisabled
                 attributesDigital.fintechProduct = fintechProduct
             }
 

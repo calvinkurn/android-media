@@ -104,7 +104,7 @@ class VerificationViewModelTest {
         viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
         coEvery { getVerificationMethodUseCase.getData(any()) } returns successGetVerificationMethodResponse
 
-        viewmodel.getVerificationMethod("", "", "", "")
+        viewmodel.getVerificationMethod("", "", "", "", "", "")
 
         verify { getVerificationMethodResultObserver.onChanged(any<Success<OtpModeListData>>()) }
         assert(viewmodel.getVerificationMethodResult.value is Success)
@@ -121,7 +121,7 @@ class VerificationViewModelTest {
         viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
         coEvery { getVerificationMethodUseCase.getData(any()) } returns successGetVerificationMethodResponse
 
-        viewmodel.getVerificationMethod("", "", "", "")
+        viewmodel.getVerificationMethod("", "", "", "", "", "")
 
         verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.getVerificationMethodResult.value is Fail)
@@ -135,7 +135,7 @@ class VerificationViewModelTest {
         viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
         coEvery { getVerificationMethodUseCase.getData(any()) } returns successGetVerificationMethodResponse
 
-        viewmodel.getVerificationMethod("", "", "", "")
+        viewmodel.getVerificationMethod("", "", "", "", "", "")
 
         verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.getVerificationMethodResult.value is Fail)
@@ -146,7 +146,7 @@ class VerificationViewModelTest {
         viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
         coEvery { getVerificationMethodUseCase.getData(any()) } coAnswers { throw throwable }
 
-        viewmodel.getVerificationMethod("", "", "", "")
+        viewmodel.getVerificationMethod("", "", "", "", "", "")
 
         verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.getVerificationMethodResult.value is Fail)

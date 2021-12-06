@@ -21,6 +21,7 @@ import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavig
 import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
+import com.tokopedia.applink.find.DeepLinkMapperFind
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
@@ -229,6 +230,12 @@ object DeeplinkMapper {
             return applinkDigital
         }
 
+        val applinkFind =
+                DeepLinkMapperFind.getRegisteredNavigationFindFromHttp(context, uri)
+        if (applinkFind.isNotEmpty()) {
+            return applinkFind
+        }
+
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {
             return DeeplinkMapperAccount.getLoginByQr(uri)
         }
@@ -249,6 +256,7 @@ object DeeplinkMapper {
             DLP.host(ApplinkConst.HOTEL_HOST) { ctx, _, deeplink, _ -> DeeplinkMapperTravel.getRegisteredNavigationTravel(ctx, deeplink) },
             DLP(DLPLogic { _, _, deeplink -> DeeplinkMapperUohOrder.isNavigationUohOrder(deeplink) },
                     targetDeeplink = { ctx, _, deeplink, _ -> DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(ctx, deeplink) }),
+            DLP.startWith(ApplinkConst.BUYER_ORDER_EXTENSION, ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION),
             DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
             DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },

@@ -12,8 +12,7 @@ import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home_account.common.idling.FragmentTransactionIdle
 import com.tokopedia.home_account.di.*
 import com.tokopedia.home_account.stub.data.GraphqlRepositoryStub
-import com.tokopedia.home_account.stub.di.DaggerFakeBaseAppComponent
-import com.tokopedia.home_account.stub.di.FakeAppModule
+import com.tokopedia.home_account.stub.di.user.*
 import com.tokopedia.home_account.stub.view.activity.HomeAccountUserActivityStub
 import com.tokopedia.home_account.view.activity.HomeAccountUserActivity
 import com.tokopedia.home_account.view.fragment.HomeAccountUserFragment

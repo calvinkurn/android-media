@@ -470,12 +470,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         )
         val successFlow = flow { emit(expectedValue) }
         every {
-            chatSrwUseCase.getSrwList(exMessageId)
+            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
         } returns successFlow
 
         // When
         presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
+        presenter.getSmartReplyWidget(exMessageId, "1")
 
         // Then
         verify(exactly = 1) {
@@ -492,12 +492,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
             throwable, null
         )
         every {
-            chatSrwUseCase.getSrwList(exMessageId)
+            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
         } throws throwable
 
         // When
         presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
+        presenter.getSmartReplyWidget(exMessageId, "1")
 
         // Then
         verify(exactly = 1) {
