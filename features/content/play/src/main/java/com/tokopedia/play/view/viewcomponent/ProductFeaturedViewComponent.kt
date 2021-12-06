@@ -89,8 +89,7 @@ class ProductFeaturedViewComponent(
     }
 
     private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-//        return products.take(maxProducts)
-        return products.take(30)
+        return products.take(maxProducts)
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
