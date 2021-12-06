@@ -48,6 +48,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.product_ar)
+
     implementation project(rootProject.ext.app.customerapp)
 
     //Base

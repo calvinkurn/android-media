@@ -287,7 +287,8 @@ ext {
             embraceSwazzler       : "io.embrace:embrace-swazzler:$embraceVersion",
             window                : "androidx.window:window:$windowVersion",
             mp4Composer           : "com.github.MasayukiSuda:Mp4Composer-android:v0.4.1",
-            localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion"
+            localBroadcastManager : "androidx.localbroadcastmanager:localbroadcastmanager:$localBroadcastManagerVersion",
+            modifaceMakeUpKit     : "com.tokopedia.modiface:mfemakeupkit-r17.0.0:0.0.1@aar"
     ]
 
     testDependencies = [

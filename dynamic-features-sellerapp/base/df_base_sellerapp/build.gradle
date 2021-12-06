@@ -55,6 +55,8 @@ android {
 }
 
 dependencies {
+	implementation projectOrAar(rootProject.ext.features.product_ar)
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.sellerapp)
 
