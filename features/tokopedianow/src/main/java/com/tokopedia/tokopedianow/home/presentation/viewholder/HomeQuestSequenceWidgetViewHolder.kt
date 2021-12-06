@@ -21,7 +21,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiMod
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestSequenceWidgetViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: HomeQuestSequenceWidgetListener? = null
 ): AbstractViewHolder<HomeQuestSequenceWidgetUiModel>(itemView) {
 
     companion object {
@@ -34,8 +35,8 @@ class HomeQuestSequenceWidgetViewHolder(
 
     private val adapter by lazy {
         HomeAdapter(
-            typeFactory = HomeAdapterTypeFactory(),
-            differ = HomeListDiffer()
+            typeFactory = HomeAdapterTypeFactory(homeQuestSequenceWidgetListener = listener),
+            differ = HomeListDiffer(),
         )
     }
 
@@ -116,5 +117,9 @@ class HomeQuestSequenceWidgetViewHolder(
                 visibility = View.INVISIBLE
             }
         }
+    }
+
+    interface HomeQuestSequenceWidgetListener {
+        fun onClickRefreshQuestWidget()
     }
 }

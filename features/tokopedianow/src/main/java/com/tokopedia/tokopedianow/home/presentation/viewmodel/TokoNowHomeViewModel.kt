@@ -390,6 +390,21 @@ class TokoNowHomeViewModel @Inject constructor(
         return repurchase?.productList.orEmpty()
     }
 
+    fun getQuestList(item: HomeQuestSequenceWidgetUiModel) {
+        launchCatchError(block = {
+            getQuestListData(item)
+
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.UPDATE
+            )
+
+            _homeLayoutList.postValue(Success(data))
+        }) {
+            homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
     /**
      * Get layout content data from external query.
      * Example: Category Grid get its data from TokonowCategoryTree.
@@ -476,27 +491,31 @@ class TokoNowHomeViewModel @Inject constructor(
 
     private suspend fun getQuestListAsync(item: HomeQuestSequenceWidgetUiModel): Deferred<Unit?> {
         return asyncCatchError(block = {
-            val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
-            val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
-            if (!questListResponse.isEligible && questListResponse.resultStatus.code == SUCCESS_CODE) {
-                homeLayoutItemList.removeItem(item.id)
-            } else if (questListResponse.resultStatus.code != SUCCESS_CODE){
-                homeLayoutItemList.mapQuestData(
-                    item = item,
-                    questList = emptyList(),
-                    state = HomeLayoutItemState.NOT_LOADED,
-                    widgetPageDetail = questListResponse.widgetPageDetail
-                )
-            } else {
-                homeLayoutItemList.mapQuestData(
-                    item = item,
-                    questList = questData,
-                    state = HomeLayoutItemState.LOADED,
-                    widgetPageDetail = questListResponse.widgetPageDetail
-                )
-            }
+            getQuestListData(item)
         }) {
             homeLayoutItemList.removeItem(item.id)
+        }
+    }
+
+    private suspend fun getQuestListData(item: HomeQuestSequenceWidgetUiModel) {
+        val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
+        val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
+        if (!questListResponse.isEligible && questListResponse.resultStatus.code == SUCCESS_CODE) {
+            homeLayoutItemList.removeItem(item.id)
+        } else if (questListResponse.resultStatus.code != SUCCESS_CODE){
+            homeLayoutItemList.mapQuestData(
+                item = item,
+                questList = emptyList(),
+                state = HomeLayoutItemState.NOT_LOADED,
+                widgetPageDetail = questListResponse.widgetPageDetail
+            )
+        } else {
+            homeLayoutItemList.mapQuestData(
+                item = item,
+                questList = questData,
+                state = HomeLayoutItemState.LOADED,
+                widgetPageDetail = questListResponse.widgetPageDetail
+            )
         }
     }
 

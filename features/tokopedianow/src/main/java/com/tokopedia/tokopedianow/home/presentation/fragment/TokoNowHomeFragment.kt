@@ -103,7 +103,9 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CAT
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.analytic.HomePageLoadTimeMonitoring
 import com.tokopedia.tokopedianow.home.presentation.activity.TokoNowHomeActivity
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeProductRecomViewHolder
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestSequenceWidgetViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeSharingEducationWidgetViewHolder.*
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
@@ -137,7 +139,8 @@ class TokoNowHomeFragment: Fragment(),
         ScreenShotListener,
         HomeSharingEducationListener,
         HomeEducationalInformationListener,
-        ServerErrorListener
+        ServerErrorListener,
+        HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener
 {
 
     companion object {
@@ -184,7 +187,8 @@ class TokoNowHomeFragment: Fragment(),
                 homeSharingEducationListener = this,
                 homeEducationalInformationListener = this,
                 serverErrorListener = this,
-                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener()
+                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
+                homeQuestSequenceWidgetListener = this
             ),
             differ = HomeListDiffer()
         )
@@ -1364,6 +1368,13 @@ class TokoNowHomeFragment: Fragment(),
             override fun onGetFragmentManager(): FragmentManager = parentFragmentManager
 
             override fun onGetEventCategory(): String = EVENT_CATEGORY_HOME_PAGE
+        }
+    }
+
+    override fun onClickRefreshQuestWidget() {
+        val item = adapter.getItem(HomeQuestSequenceWidgetUiModel::class.java)
+        if (item is HomeQuestSequenceWidgetUiModel) {
+            viewModelTokoNow.getQuestList(item)
         }
     }
 

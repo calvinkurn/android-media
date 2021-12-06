@@ -15,7 +15,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiMod
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestWidgetViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener? = null
 ): AbstractViewHolder<HomeQuestWidgetUiModel>(itemView) {
 
     companion object {
@@ -73,6 +74,10 @@ class HomeQuestWidgetViewHolder(
     private fun setCircularRefreshButton() {
         binding?.circularProgressBar?.apply {
             setImageResId(getIconUnifyDrawable(context, IconUnify.RELOAD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), true)
+            setOnClickListener {
+                listener?.onClickRefreshQuestWidget()
+                showShimmering()
+            }
         }
     }
 
@@ -92,10 +97,11 @@ class HomeQuestWidgetViewHolder(
 
     private fun hideShimmering() {
         binding?.questWidgetShimmering?.root?.hide()
-        showQuestWidget()
+        binding?.questWidget?.show()
     }
 
-    private fun showQuestWidget() {
-        binding?.questWidget?.show()
+    private fun showShimmering() {
+        binding?.questWidgetShimmering?.root?.show()
+        binding?.questWidget?.hide()
     }
 }

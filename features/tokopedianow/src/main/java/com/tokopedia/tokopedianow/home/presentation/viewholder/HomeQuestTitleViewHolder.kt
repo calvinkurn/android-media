@@ -15,7 +15,8 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiMode
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestTitleViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: HomeQuestSequenceWidgetViewHolder.HomeQuestSequenceWidgetListener? = null
 ): AbstractViewHolder<HomeQuestTitleUiModel>(itemView) {
 
     companion object {
@@ -30,7 +31,7 @@ class HomeQuestTitleViewHolder(
         if (element.isErrorState) {
             setErrorState()
         } else {
-            setCounter(element)
+            setLoadState(element)
         }
     }
 
@@ -38,7 +39,13 @@ class HomeQuestTitleViewHolder(
         binding?.questTitleWidgetShimmering?.root?.hide()
     }
 
-    private fun setCounter(element: HomeQuestTitleUiModel) {
+    private fun showShimmering() {
+        binding?.questTitleWidgetShimmering?.root?.show()
+        binding?.questTitleWidgetErrorState?.root?.hide()
+        binding?.questTitleWidget?.hide()
+    }
+
+    private fun setLoadState(element: HomeQuestTitleUiModel) {
         binding?.questTitleWidgetErrorState?.root?.hide()
         binding?.questTitleWidget?.show()
         binding?.iuGift?.setImage(newIconId = IconUnify.GIFT)
@@ -46,13 +53,14 @@ class HomeQuestTitleViewHolder(
     }
 
     private fun setErrorState() {
-        binding?.questTitleWidgetErrorState?.root?.show()
         binding?.questTitleWidget?.hide()
         binding?.questTitleWidgetErrorState?.apply {
+            root.show()
             val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
             sivRefresh.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
             sivRefresh.setOnClickListener {
-
+                listener?.onClickRefreshQuestWidget()
+                showShimmering()
             }
         }
     }
