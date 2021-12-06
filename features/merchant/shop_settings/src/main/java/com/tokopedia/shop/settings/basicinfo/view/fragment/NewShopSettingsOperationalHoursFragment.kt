@@ -34,8 +34,6 @@ import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
 import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsOperationalHoursActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsSetOperationalHoursActivity
 import com.tokopedia.shop.settings.basicinfo.view.adapter.ShopSettingsOperationalHoursListAdapter
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsOperationalHoursViewModel
@@ -51,7 +49,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -63,12 +60,7 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     companion object {
 
         @JvmStatic
-        fun createInstance(
-        ): NewShopSettingsOperationalHoursFragment = NewShopSettingsOperationalHoursFragment().apply {
-            arguments = Bundle().apply {
-                putString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, cacheIdForOldFragment)
-            }
-        }
+        fun createInstance(): NewShopSettingsOperationalHoursFragment = NewShopSettingsOperationalHoursFragment()
 
         @LayoutRes
         val FRAGMENT_LAYOUT = R.layout.fragment_shop_settings_operational_hours
@@ -125,7 +117,6 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private var isActionEdit: Boolean = false
     private var isChooseStartDate: Boolean = true
     private var isDateChanged: Boolean = false
-    private var cacheIdForOldFragment: String = "0"
     private var setShopHolidayScheduleStatusMessage: String = ""
     private var setShopHolidayScheduleStatusType: Int = 0
     private var startHolidayDateMilliseconds: Long = 0L
@@ -138,7 +129,6 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getArgumentsData()
         checkAbTestRollenceVariant()
     }
 
@@ -185,12 +175,6 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         component?.inject(this)
     }
 
-    private fun getArgumentsData() {
-        arguments?.let {
-            cacheIdForOldFragment = it.getString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, "0")
-        }
-    }
-
     private fun checkAbTestRollenceVariant() {
         shopAbTestPlatform = ShopAbTestPlatform(requireContext()).apply {
             requestParams = ShopAbTestPlatform.createRequestParam(
@@ -210,8 +194,7 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                             if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
                                 // user not get the experiment yet,
                                 // redirect to old shop ops hour settings
-                                sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_production)
-                                startActivity(ShopEditScheduleActivity.createIntent(requireContext(), cacheIdForOldFragment))
+                                RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE)
                                 activity?.finish()
                             }
                             else {

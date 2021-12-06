@@ -142,9 +142,9 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                             AB_TEST_OPERATIONAL_HOURS_NO_KEY, AB_TEST_OPERATIONAL_HOURS_KEY -> {
                                 // user get new ops hour experience
                                 isGetNewOperationalHours = true
-                                loadShopBasicData()
                             }
                         }
+                        loadShopBasicData()
                     }
                 }
 

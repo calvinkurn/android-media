@@ -65,19 +65,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     companion object {
 
         @JvmStatic
-        fun createInstance(
-                isCloseNow: Boolean,
-                isActionEdit: Boolean,
-                isOpenSchBottomSheet: Boolean,
-                cacheIdForOldFragment: String
-        ): ShopSettingsOperationalHoursFragment = ShopSettingsOperationalHoursFragment().apply {
-            arguments = Bundle().apply {
-//                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, isCloseNow)
-//                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, isActionEdit)
-//                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, isOpenSchBottomSheet)
-                putString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, cacheIdForOldFragment)
-            }
-        }
+        fun createInstance(): ShopSettingsOperationalHoursFragment = ShopSettingsOperationalHoursFragment()
 
         @LayoutRes
         val FRAGMENT_LAYOUT = R.layout.fragment_shop_settings_operational_hours
@@ -151,7 +139,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getArgumentsData()
         checkAbTestRollenceVariant()
     }
 
@@ -196,15 +183,6 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     override fun initInjector() {
         component?.inject(this)
-    }
-
-    private fun getArgumentsData() {
-        arguments?.let {
-//            isCloseNow = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, false)
-//            isActionEdit = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, false)
-//            isAutoOpenSchBottomSheet = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, false)
-            cacheIdForOldFragment = it.getString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, "0")
-        }
     }
 
     private fun checkAbTestRollenceVariant() {
