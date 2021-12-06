@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.loginregister.FileUtil
 import com.tokopedia.loginregister.shopcreation.domain.pojo.*
 import com.tokopedia.loginregister.shopcreation.domain.usecase.*
+import com.tokopedia.sessioncommon.data.Error
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
@@ -25,6 +26,8 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.hamcrest.CoreMatchers
+import org.hamcrest.MatcherAssert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -111,6 +114,9 @@ class ShopCreationViewModelTest {
 
     @Test
     fun `Success add name`() {
+        successAddNameResponse.data.isSuccess = 1
+        successAddNameResponse.data.errors = listOf()
+
         viewmodel.addNameResponse.observeForever(addNameObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
 
@@ -121,6 +127,35 @@ class ShopCreationViewModelTest {
 
         val result = viewmodel.addNameResponse.value as Success<UserProfileUpdate>
         assert(result.data == successAddNameResponse.data)
+    }
+
+    @Test
+    fun `Success add name has errors`() {
+        successAddNameResponse.data.errors = errors
+        viewmodel.addNameResponse.observeForever(addNameObserver)
+        coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
+
+        viewmodel.addName("")
+
+        verify { addNameObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.addNameResponse.value is Fail)
+
+        val result = viewmodel.addNameResponse.value as Fail
+        assert(result.throwable.message == errors[0])
+    }
+
+    @Test
+    fun `Success add name has other errors`() {
+        val errors = listOf("")
+        successAddNameResponse.data.errors = errors
+        viewmodel.addNameResponse.observeForever(addNameObserver)
+        coEvery { updateUserProfileUseCase(any()) } returns successAddNameResponse
+
+        viewmodel.addName("")
+
+        verify { addNameObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.addNameResponse.value is Fail)
+        MatcherAssert.assertThat((viewmodel.addNameResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
     }
 
     @Test
@@ -139,17 +174,47 @@ class ShopCreationViewModelTest {
 
     @Test
     fun `Success add phone`() {
+        successAddPhoneResponse.data.isSuccess = 1
+
         viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
         coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
 
         viewmodel.addPhone("")
 
         verify { addPhoneObserver.onChanged(any<Success<UserProfileUpdate>>()) }
-        assert(viewmodel.addPhoneResponse.value is Success)
-
-        val result = viewmodel.addPhoneResponse.value as Success<UserProfileUpdate>
-        assert(result.data == successAddPhoneResponse.data)
     }
+
+    @Test
+    fun `Success add phone has errors`() {
+        successAddPhoneResponse.data.errors = errors
+
+        viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
+        coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
+
+        viewmodel.addPhone("")
+
+        verify { addPhoneObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.addPhoneResponse.value is Fail)
+
+        val result = viewmodel.addPhoneResponse.value as Fail
+        assert(result.throwable.message == errors[0])
+    }
+
+    @Test
+    fun `Success add phone has other errors`() {
+        val errors = listOf("")
+        successAddPhoneResponse.data.errors = errors
+
+        viewmodel.addPhoneResponse.observeForever(addPhoneObserver)
+        coEvery { updateUserProfileUseCase(any()) } returns successAddPhoneResponse
+
+        viewmodel.addPhone("")
+
+        verify { addPhoneObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.addPhoneResponse.value is Fail)
+        MatcherAssert.assertThat((viewmodel.addPhoneResponse.value as Fail).throwable, CoreMatchers.instanceOf(RuntimeException::class.java))
+    }
+
 
     @Test
     fun `Failed add phone`() {
@@ -167,6 +232,8 @@ class ShopCreationViewModelTest {
 
     @Test
     fun `Success register check`() {
+        successRegisterCheckResponse.data.errors = arrayListOf()
+
         viewmodel.registerCheckResponse.observeForever(registerCheckObserver)
         coEvery { registerCheckUseCase(any()) } returns successRegisterCheckResponse
 
@@ -177,6 +244,20 @@ class ShopCreationViewModelTest {
 
         val result = viewmodel.registerCheckResponse.value as Success<RegisterCheckData>
         assert(result.data == successRegisterCheckResponse.data)
+    }
+
+    @Test
+    fun `Success register check has errors`() {
+        successRegisterCheckResponse.data.errors = ArrayList(errors)
+
+        viewmodel.registerCheckResponse.observeForever(registerCheckObserver)
+        coEvery { registerCheckUseCase(any()) } returns successRegisterCheckResponse
+
+        viewmodel.registerCheck("")
+
+        verify { registerCheckObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.registerCheckResponse.value is Fail)
+        MatcherAssert.assertThat((viewmodel.registerCheckResponse.value as Fail).throwable, CoreMatchers.instanceOf(com.tokopedia.network.exception.MessageErrorException::class.java))
     }
 
     @Test
@@ -223,6 +304,10 @@ class ShopCreationViewModelTest {
 
     @Test
     fun `Success register phone and name`() {
+        successRegisterPhoneAndNameResponse.register.accessToken = "abc123"
+        successRegisterPhoneAndNameResponse.register.refreshToken = "abc123"
+        successRegisterPhoneAndNameResponse.register.userId = "123"
+
         viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
 
         every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
@@ -234,6 +319,29 @@ class ShopCreationViewModelTest {
         viewmodel.registerPhoneAndName("", "")
 
         verify { registerPhoneAndNameObserver.onChanged(any<Success<RegisterInfo>>()) }
+    }
+
+    @Test
+    fun `Success register phone and name has errors`() {
+        val errors = arrayListOf(Error("error", "msg"))
+        successRegisterPhoneAndNameResponse.register.accessToken = ""
+        successRegisterPhoneAndNameResponse.register.refreshToken = ""
+        successRegisterPhoneAndNameResponse.register.userId = ""
+        successRegisterPhoneAndNameResponse.register.errors = errors
+
+        viewmodel.registerPhoneAndName.observeForever(registerPhoneAndNameObserver)
+
+        every { graphqlResponse.getData<RegisterPojo>(any()) } returns successRegisterPhoneAndNameResponse
+
+        coEvery { registerUseCase.execute(any(), any()) } coAnswers {
+            secondArg<Subscriber<GraphqlResponse>>().onNext(graphqlResponse)
+        }
+
+        viewmodel.registerPhoneAndName("", "")
+
+        verify { registerPhoneAndNameObserver.onChanged(any<Fail>()) }
+        assert((viewmodel.registerPhoneAndName.value as Fail).throwable.message == "msg")
+        MatcherAssert.assertThat((viewmodel.registerPhoneAndName.value as Fail).throwable, CoreMatchers.instanceOf(com.tokopedia.network.exception.MessageErrorException::class.java))
     }
 
     @Test
@@ -385,5 +493,6 @@ class ShopCreationViewModelTest {
                 RegisterPojo::class.java
         )
         private val throwable = Throwable()
+        private val errors = listOf("errors")
     }
 }

@@ -5,7 +5,7 @@
     android:id="@+id/ll_shop_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:orientation="vertical">
 
     <include

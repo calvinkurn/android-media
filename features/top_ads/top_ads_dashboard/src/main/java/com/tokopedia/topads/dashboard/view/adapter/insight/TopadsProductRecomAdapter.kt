@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.model.InsightProductRecommendationModel
 import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
@@ -62,7 +63,7 @@ class TopadsProductRecomAdapter(private val userSession: UserSessionInterface, v
         with(items[holder.adapterPosition]) {
             holder.view.productName.text = productName
             holder.view.img_folder.loadImage(imgUrl)
-            val totalSearch = Html.fromHtml(String.format(holder.view.context.getString(R.string.topads_dash_total_search_pattern), "$searchPercentage%", searchCount.thousandFormatted()))
+            val totalSearch = Html.fromHtml(String.format(holder.view.context.getString(R.string.topads_dash_total_search_pattern), "$searchPercentage%", searchCount.toIntOrZero().thousandFormatted()))
             holder.view.totalSearch.text = totalSearch
             val recommendationBid = "Rp" + convertToCurrency(recomBid.toLong()) + holder.view.context.getString(com.tokopedia.topads.common.R.string.topads_common_klik_)
             holder.view.recommendedBid.text = recommendationBid
@@ -79,7 +80,7 @@ class TopadsProductRecomAdapter(private val userSession: UserSessionInterface, v
                     var insightProductRecommendationModel = InsightProductRecommendationModel().apply {
                         id = productId
                         name = productName
-                        searchNumber = searchCount
+                        searchNumber = searchCount.toIntOrZero()
                         searchPercent = searchPercentage
                         recommendedBid = recomBid
                     }

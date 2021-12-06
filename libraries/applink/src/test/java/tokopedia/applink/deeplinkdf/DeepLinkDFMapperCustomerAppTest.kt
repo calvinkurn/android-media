@@ -554,6 +554,12 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     }
 
     @Test
+    fun `check shop operational hour bottom sheet appLink then should return DF_BASE in customerapp`() {
+        val internalAppLink = "${ApplinkConstInternalMarketplace.INTERNAL_MARKETPLACE}/shop/widget/operational-hour/12345/"
+        assertEqualDeepLinkCustomerApp(internalAppLink, DeeplinkDFMapper.DF_BASE)
+    }
+
+    @Test
     fun `check contact us native appLink then should return DF_OPERATIONAL_CONTACT_US in customerapp`() {
         val appLink = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://contactus"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US)
@@ -784,12 +790,6 @@ class DeepLinkDFMapperCustomerAppTest: DeepLinkDFMapperTestFixture() {
     @Test
     fun `check change phone number appLink then should return DF_BASE in customerapp`() {
         val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/change-phone-number"
-        assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
-    }
-
-    @Test
-    fun `check change password appLink then should return DF_BASE in customerapp`() {
-        val appLink = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/change-password"
         assertEqualDeepLinkCustomerApp(appLink, DeeplinkDFMapper.DF_BASE)
     }
 

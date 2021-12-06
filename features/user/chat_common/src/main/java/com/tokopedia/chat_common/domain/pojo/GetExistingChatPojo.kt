@@ -26,7 +26,7 @@ data class ChatReplies(
         val contacts: List<Contact> = ArrayList(),
         @Expose
         @SerializedName("list")
-        val list: List<ChatRepliesItem> = ArrayList(),
+        var list: List<ChatRepliesItem> = ArrayList(),
         @Expose
         @SerializedName("hasNext")
         val hasNext: Boolean = false,
@@ -85,6 +85,9 @@ data class Contact(
         @Expose
         @SerializedName("isGold")
         val isGold: Boolean = false,
+        @Expose
+        @SerializedName("shopType")
+        val shopType: Int = 0,
         @Expose
         @SerializedName("badge")
         val badge: String = "",

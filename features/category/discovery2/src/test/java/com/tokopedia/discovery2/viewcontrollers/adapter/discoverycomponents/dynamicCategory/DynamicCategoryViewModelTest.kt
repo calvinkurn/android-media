@@ -45,4 +45,9 @@ class DynamicCategoryViewModelTest {
         unmockkObject(DiscoveryDataMapper)
 
     }
+
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
+    }
 }

@@ -22,11 +22,7 @@ import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommend
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowTypeFactory
-import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowLayoutUiModel
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOMEPAGE_TOKONOW
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.*
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -390,10 +386,6 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     object UnknownHomeLayout: HomeLayoutUiModel("1") {
         override fun type(typeFactory: HomeTypeFactory?) = 0
-    }
-
-    object UnknownTokoNowLayout: TokoNowLayoutUiModel("1") {
-        override fun type(typeFactory: TokoNowTypeFactory?) = 0
     }
 
     object UnknownLayout: HomeComponentVisitable {

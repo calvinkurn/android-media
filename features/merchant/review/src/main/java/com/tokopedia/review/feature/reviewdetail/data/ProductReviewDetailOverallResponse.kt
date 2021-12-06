@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reviewdetail.data
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductReviewDetailOverallResponse(
@@ -14,6 +15,9 @@ data class ProductReviewDetailOverallResponse(
             @SerializedName("ratingAverage")
             val ratingAverage: Float? = 0.0F,
             @SerializedName("ratingCount")
-            val ratingCount: Int? = 0
+            val ratingCount: Int? = 0,
+            @SerializedName("ratingDisclaimer")
+            @Expose
+            val ratingDisclaimer: String = ""
     )
 }

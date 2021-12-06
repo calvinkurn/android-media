@@ -7,15 +7,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.*
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.addedit.R
@@ -25,6 +29,7 @@ import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitori
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_TRACE
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringListener
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.util.setFragmentToUnifyBgColor
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
@@ -45,9 +50,11 @@ import com.tokopedia.product.addedit.variant.presentation.model.OptionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantDetailInputLayoutModel
 import com.tokopedia.product.addedit.variant.presentation.viewmodel.AddEditProductVariantDetailViewModel
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_edit_product_variant_detail.*
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -79,10 +86,18 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
+
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    // fragment views
+    private var recyclerViewVariantDetailFields: RecyclerView? = null
+    private var switchUnifySku: SwitchUnify? = null
+    private var tickerVariantWholesale: Ticker? = null
     private var multiLocationTicker: Ticker? = null
+    private var imageViewMultipleEdit: ImageView? = null
+    private var variantListButton: Typography? = null
+    private var buttonSave: UnifyButton? = null
 
     override fun getScreenName(): String {
         return ""
@@ -121,11 +136,10 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         sendTrackerTrackScreenData()
 
         // set bg color programatically, to reduce overdraw
-        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
+        setFragmentToUnifyBgColor()
 
+        setupViews(view)
         viewModel.setupMultiLocationValue()
-
-        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
         multiLocationTicker?.showWithCondition(viewModel.isMultiLocationShop)
 
         val multipleVariantEditSelectBottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
@@ -138,24 +152,24 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
                 this,
                 this,
                 this))
-        recyclerViewVariantDetailFields.adapter = variantDetailFieldsAdapter
-        recyclerViewVariantDetailFields.layoutManager = LinearLayoutManager(context)
+        recyclerViewVariantDetailFields?.adapter = variantDetailFieldsAdapter
+        recyclerViewVariantDetailFields?.layoutManager = LinearLayoutManager(context)
 
-        switchUnifySku.setOnClickListener {
-            val isChecked = switchUnifySku.isChecked
+        switchUnifySku?.setOnClickListener {
+            val isChecked = switchUnifySku?.isChecked.orFalse()
             viewModel.updateSkuVisibilityStatus(isVisible = isChecked)
             sendTrackerClickSKUToggleData(isChecked)
         }
 
-        imageViewMultipleEdit.setOnClickListener {
+        imageViewMultipleEdit?.setOnClickListener {
             showMultipleEditBottomSheet()
         }
 
-        variantListButton.setOnClickListener {
+        variantListButton?.setOnClickListener {
             showSelectPrimaryBottomSheet()
         }
 
-        buttonSave.setOnClickListener {
+        buttonSave?.setOnClickListener {
             submitVariantInput()
             sendTrackerSaveVariantDetailData()
         }
@@ -305,24 +319,34 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private fun observeHasWholesale() {
         viewModel.hasWholesale.observe(viewLifecycleOwner, Observer {
             variantDetailFieldsAdapter?.updatePriceEditingStatus(viewModel.getAvailableFields(), !it)
-            tickerVariantWholesale.visibility = if (it) View.VISIBLE else View.GONE
+            tickerVariantWholesale?.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 
     private fun observeInputStatus() {
         viewModel.errorCounter.observe(viewLifecycleOwner, Observer {
-            buttonSave.isEnabled = it.orZero() <= 0
+            buttonSave?.isEnabled = it.orZero() <= 0
         })
     }
 
     private fun enableSku() {
-        switchUnifySku.isChecked = true
+        switchUnifySku?.isChecked = true
+    }
+
+    private fun setupViews(view: View) {
+        recyclerViewVariantDetailFields = view.findViewById(R.id.recyclerViewVariantDetailFields)
+        switchUnifySku = view.findViewById(R.id.switchUnifySku)
+        tickerVariantWholesale = view.findViewById(R.id.tickerVariantWholesale)
+        imageViewMultipleEdit = view.findViewById(R.id.imageViewMultipleEdit)
+        variantListButton = view.findViewById(R.id.variantListButton)
+        buttonSave = view.findViewById(R.id.buttonSave)
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_variant_multi_location)
     }
 
     private fun setupVariantDetailFields(selectedUnitValues: List<OptionInputModel>) {
         // without variant unit values combination
         selectedUnitValues.forEachIndexed { productVariantIndex, unitValue ->
-            val isSkuVisible = switchUnifySku.isChecked // get last visibility
+            val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
             val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
                     productVariantIndex, 0, unitValue.value, isSkuVisible)
             val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
@@ -349,7 +373,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             viewModel.updateCurrentHeaderPositionMap(headerVisitablePosition, headerVisitablePosition)
             // render variant unit value fields
             unitValueLevel2.forEach { level2Value ->
-                val isSkuVisible = switchUnifySku.isChecked // get last visibility
+                val isSkuVisible = switchUnifySku?.isChecked.orFalse() // get last visibility
                 val variantDetailInputModel = viewModel.generateVariantDetailInputModel(
                         productVariantIndex, headerVisitablePosition, level2Value.value, isSkuVisible)
                 val fieldVisitablePosition = variantDetailFieldsAdapter?.addVariantDetailField(variantDetailInputModel)
@@ -366,7 +390,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
         val bottomSheet = MultipleVariantEditSelectBottomSheet(this, viewModel.isMultiLocationShop)
         val hasWholesale = viewModel.hasWholesale.value ?: false
         bottomSheet.setData(variantInputModel)
-        bottomSheet.setEnableEditSku(switchUnifySku.isChecked)
+        bottomSheet.setEnableEditSku(switchUnifySku?.isChecked.orFalse())
         bottomSheet.setEnableEditPrice(!hasWholesale)
         bottomSheet.setTrackerShopId(userSession.shopId)
         bottomSheet.setTrackerIsEditMode(viewModel.isEditMode)
@@ -459,7 +483,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupToolbarActions() {
-        activity?.findViewById<HeaderUnify>(com.tokopedia.product.addedit.R.id.toolbar_variant_detail)?.apply {
+        activity?.findViewById<HeaderUnify>(R.id.toolbar_variant_detail)?.apply {
             headerTitle = getString(com.tokopedia.product.addedit.R.string.title_variant_activity)
             setNavigationOnClickListener {
                 activity?.onBackPressed()

@@ -110,9 +110,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.brandlist)
     implementation projectOrAar(rootProject.ext.features.productDetail)
     implementation projectOrAar(rootProject.ext.features.atcVariant)
-    implementation projectOrAar(rootProject.ext.features.reviewProduct)
     implementation projectOrAar(rootProject.ext.features.shopPage)
-    implementation projectOrAar(rootProject.ext.features.reviewShop)
+    implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     //Operational
 
     //Payment

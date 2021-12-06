@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorderdetail.presentation.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.core.content.ContextCompat
@@ -18,19 +17,7 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailModule
 import com.tokopedia.buyerorderdetail.di.DaggerBuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.presentation.fragment.BuyerOrderDetailFragment
 
-class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
-    companion object {
-        @JvmStatic
-        fun createIntent(
-                context: Context,
-                cartString: String,
-                orderId: String,
-                paymentId: String) = Intent(context, BuyerOrderDetailActivity::class.java).apply {
-            putExtra(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, cartString)
-            putExtra(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, orderId)
-            putExtra(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, paymentId)
-        }
-    }
+open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDetailComponent> {
 
     var buyerOrderDetailLoadMonitoring: BuyerOrderDetailLoadMonitoring? = null
 
@@ -49,7 +36,7 @@ class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOrderDe
         * tokopedia-android-internal://marketplace//buyer-order-detail?payment_id={paymentID}&cart_string={cartString}
         * tokopedia-android-internal://marketplace//buyer-order-detail?order_id={orderID}
      */
-    private fun createIntentExtrasFromAppLink(): Bundle? {
+    protected fun createIntentExtrasFromAppLink(): Bundle? {
         return intent.data?.let {
             Bundle().apply {
                 val params = UriUtil.uriQueryParamsToMap(it)

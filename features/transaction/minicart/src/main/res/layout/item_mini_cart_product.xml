@@ -119,16 +119,17 @@
         app:layout_constraintTop_toBottomOf="@+id/text_product_price"
         tools:visibility="gone" />
 
-    <com.tokopedia.unifycomponents.TextFieldUnify
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/text_field_notes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="16dp"
         android:visibility="gone"
-        app:text_field_label="@string/mini_cart_label_product_notes_editable"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/image_product"
+        app:unify_text_field_label="@string/mini_cart_label_product_notes_editable"
         tools:layout_height="32dp"
         tools:visibility="visible" />
 

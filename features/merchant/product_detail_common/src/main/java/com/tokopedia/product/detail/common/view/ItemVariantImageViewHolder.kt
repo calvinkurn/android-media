@@ -2,10 +2,10 @@ package com.tokopedia.product.detail.common.view
 
 import android.view.View
 import android.widget.FrameLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.product.detail.common.R
 import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -33,7 +33,7 @@ class ItemVariantImageViewHolder(val view: View,
     }
 
     override fun bind(element: VariantOptionWithAttribute) = with(view) {
-        ImageHandler.LoadImage(variantImg, element.image100)
+        variantImg?.loadImageFitCenter(element.image100)
         setState(element)
     }
 

@@ -2333,14 +2333,9 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
             UnknownHomeLayout,
             HomeLayoutItemState.NOT_LOADED
         )
-        val unknownTokoNowLayout = HomeLayoutItemUiModel(
-            UnknownTokoNowLayout,
-            HomeLayoutItemState.NOT_LOADED
-        )
 
         addHomeLayoutItem(unknownLayout)
         addHomeLayoutItem(unknownHomeLayout)
-        addHomeLayoutItem(unknownTokoNowLayout)
 
         getLayoutComponentData(warehouseId = "1")
 

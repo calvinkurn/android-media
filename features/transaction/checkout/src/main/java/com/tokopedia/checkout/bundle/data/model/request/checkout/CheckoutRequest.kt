@@ -2,6 +2,7 @@ package com.tokopedia.checkout.bundle.data.model.request.checkout
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.checkout.bundle.data.model.request.checkout.cross_sell.CrossSellRequest
 import com.tokopedia.checkout.bundle.data.model.request.checkout.old.*
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
@@ -25,6 +26,8 @@ data class Carts(
         var tokopediaCorner: TokopediaCorner? = null,
         @SerializedName("feature_type")
         var featureType: Int = 0,
+        @SerializedName("cross_sell")
+        var crossSell: CrossSellRequest? = null,
 
         @SerializedName("data")
         var data: List<Data> = emptyList()
@@ -165,6 +168,7 @@ object CheckoutRequestMapper {
             hasPromoStacking = checkoutRequest.hasPromoStacking
             leasingId = checkoutRequest.leasingId
             featureType = checkoutRequest.featureType
+            crossSell = checkoutRequest.crossSell
         }
     }
 

@@ -6,16 +6,19 @@ import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.model.DynamicOnboardingResponseDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import com.tokopedia.onboarding.util.FileUtil
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.CoFunctionAnswer
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -143,6 +146,7 @@ class DynamicOnboardingViewModelTest {
         //THEN
         coVerify(timeout = 3000) {
             observer.onChanged(any())
+            viewModel.cancel()
         }
     }
 }

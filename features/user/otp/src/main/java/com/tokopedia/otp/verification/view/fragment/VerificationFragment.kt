@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
@@ -518,10 +519,11 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
                         sendOtp()
                         viewBound.pin?.value = ""
+                        analytics.trackClickResendOtp(otpData, modeListData)
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -541,7 +543,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -561,7 +563,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },

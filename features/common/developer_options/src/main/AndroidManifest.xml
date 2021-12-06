@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".presentation.activity.DeveloperOptionActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:taskAffinity="com.tokopedia.developer_options"
@@ -21,7 +21,6 @@
                     android:host="@string/host_setting"
                     android:pathPrefix="@string/path_dev_opt"
                     android:scheme="@string/tokopedia_scheme" />
-
                 <data
                     android:host="@string/host_setting"
                     android:pathPrefix="@string/path_dev_opt"
@@ -38,11 +37,9 @@
             android:label="@string/shared_pref_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
-
         <activity
             android:name=".sharedpref.SharedPrefActivity"
             android:theme="@style/Theme.Green" />
-
         <activity
             android:name=".ab_test_rollence.AbTestRollenceConfigFragmentActivity"
             android:label="@string/ab_test_rollence_title"
@@ -53,10 +50,9 @@
             android:label="@string/pdp_dev_option_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
+
         <service
             android:name=".presentation.service.DeleteFirebaseTokenService"
             android:exported="false" />
-
     </application>
-
 </manifest>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="@color/Unify_N700_32">
+
+    <LinearLayout
+        android:id="@+id/ll_captured_image_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/unify_space_16"
+        android:visibility="gone"
+        android:weightSum="2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/retake_photo"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/unify_space_8"
+            android:layout_weight="1"
+            android:background="@drawable/bg_rounded_corner_white"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
+            android:text="@string/kyc_hc_camera_recapture_text"
+            android:textColor="@color/Unify_Static_White"
+            app:typographyType="body_2" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/continue_upload"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_weight="1"
+            android:background="@drawable/kyc_white_button_rounded"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/unify_space_12"
+            android:paddingBottom="@dimen/unify_space_12"
+            android:text="@string/kyc_hc_image_upload"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_2" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_camera_actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/unify_space_16">
+
+        <ImageView
+            android:id="@+id/iv_capture_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@color/transparent"
+            android:padding="@dimen/unify_space_4"
+            android:src="@drawable/ic_capture_image_kyc" />
+
+
+        <ImageView
+            android:id="@+id/iv_reverse_camera"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/unify_space_24"
+            android:layout_toEndOf="@+id/iv_capture_image"
+            android:padding="@dimen/unify_space_4"
+            android:src="@drawable/ic_reverse_camera_kyc" />
+
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_flash_control"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/unify_space_24"
+            android:layout_toStartOf="@+id/iv_capture_image"
+            android:padding="@dimen/unify_space_4" />
+
+    </RelativeLayout>
+</FrameLayout>

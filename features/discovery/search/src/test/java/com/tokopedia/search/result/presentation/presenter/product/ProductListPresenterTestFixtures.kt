@@ -72,7 +72,6 @@ internal open class ProductListPresenterTestFixtures {
         productListPresenter.attachView(productListView)
 
         verify {
-            productListView.abTestRemoteConfig
             productListView.isChooseAddressWidgetEnabled
         }
     }
@@ -131,7 +130,11 @@ internal open class ProductListPresenterTestFixtures {
         productItem.position shouldBe position
     }
 
-    protected fun Visitable<*>.assertOrganicProduct(organicProduct: SearchProductModel.Product, position: Int) {
+    protected fun Visitable<*>.assertOrganicProduct(
+        organicProduct: SearchProductModel.Product,
+        position: Int,
+        expectedPageTitle: String = "",
+    ) {
         val productItem = this as ProductItemDataView
 
         productItem.isOrganicAds shouldBe organicProduct.isOrganicAds()
@@ -154,6 +157,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productName shouldBe organicProduct.name
         productItem.price shouldBe organicProduct.price
         productItem.minOrder shouldBe organicProduct.minOrder
+        productItem.pageTitle shouldBe expectedPageTitle
     }
 
     @Suppress("UNCHECKED_CAST")
