@@ -136,6 +136,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
 
                             sendOtp()
                             viewBound.pin?.value = ""
+                            analytics.trackClickResendOtp(otpData, modeListData)
                         }
 
                         override fun updateDrawState(ds: TextPaint) {

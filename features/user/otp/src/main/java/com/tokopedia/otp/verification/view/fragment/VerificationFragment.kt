@@ -521,6 +521,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
                         sendOtp()
                         viewBound.pin?.value = ""
+                        analytics.trackClickResendOtp(otpData, modeListData)
                     }
 
                     override fun updateDrawState(ds: TextPaint) {

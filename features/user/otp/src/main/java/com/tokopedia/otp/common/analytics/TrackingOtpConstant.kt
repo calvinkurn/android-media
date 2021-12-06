@@ -56,6 +56,8 @@ object TrackingOtpConstant{
         const val CATEGORY_PUSH_NOTIF_RECEIVE_FAILED_OTP_EXPIRED_PAGE = "otp push notif - receive failed otp expired page"
         const val CATEGORY_PUSH_NOTIF_SETTING_PAGE = "otp push notif - setting page"
         const val CATEGORY_LOGIN_WITH_QR_CODE = "login with qr code"
+        const val CATEGORY_SILENT_VERIF_REMINDER = "silent verif reminder page"
+        const val CATEGORY_SILENT_VERIF_OTP_PAGE = "silent verif otp page"
     }
 
     object Action{
@@ -104,6 +106,10 @@ object TrackingOtpConstant{
         const val ACTION_EXPIRED_CLICK_ON_BUTTON_CLOSE = "expired - click on button close"
         const val ACTION_VIEW_CHOOSE_OTP_PAGE = "view choose otp page"
         const val ACTION_AUTO_SUBMIT_OTP = "auto submit otp page"
+        const val ACION_CLICK_SILENT_VERIF = "click on masuk dengan silent verif"
+        const val ACION_CLICK_TRY_AGAIN = "click on coba lagi"
+        const val ACION_CLICK_CHOOSE_OTHER_METHOD = "click gunakan metode lain"
+
     }
 
     object Label{
@@ -113,6 +119,8 @@ object TrackingOtpConstant{
         const val LABEL_FAILED = "failed - "
         const val LABEL_ON = "on"
         const val LABEL_OFF = "off"
+        const val LABEL_MENGERTI = "mengerti"
+        const val LABEL_BATAL = "batal"
     }
 
     object BusinessUnit {
