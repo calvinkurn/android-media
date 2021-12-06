@@ -47,6 +47,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeCat
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapProductPurchaseData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestData
+import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapQuestErrorData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapSharingEducationData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.mapTickerData
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.removeItem
@@ -61,6 +62,7 @@ import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.usecase.*
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.CATEGORY_LEVEL_DEPTH
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.DEFAULT_QUANTITY
+import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SUCCESS_CODE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -477,7 +479,13 @@ class TokoNowHomeViewModel @Inject constructor(
         return asyncCatchError(block = {
             val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
             val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
-            homeLayoutItemList.mapQuestData(item, questData, questListResponse.widgetPageDetail)
+            if (!questListResponse.isEligible && questListResponse.resultStatus.code == SUCCESS_CODE) {
+                homeLayoutItemList.removeItem(item.id)
+            } else if (questListResponse.resultStatus.code != SUCCESS_CODE){
+                homeLayoutItemList.mapQuestErrorData(item)
+            } else {
+                homeLayoutItemList.mapQuestData(item, questData, questListResponse.widgetPageDetail)
+            }
         }) {
             homeLayoutItemList.removeItem(item.id)
         }

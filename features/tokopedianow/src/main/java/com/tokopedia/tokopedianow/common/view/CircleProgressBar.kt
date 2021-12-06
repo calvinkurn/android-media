@@ -2,10 +2,14 @@ package com.tokopedia.tokopedianow.common.view
 
 import android.content.Context
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.FloatRange
-import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import android.graphics.BlurMaskFilter
 import com.tokopedia.kotlin.extensions.view.toBitmap
 
 class CircularProgressView : View {
@@ -22,9 +26,13 @@ class CircularProgressView : View {
     private val imagePaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
     }
+    private val imageShadowPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+    }
 
     private val circleRect = RectF()
     private val imageRect = RectF()
+    private val imageShadowRect = RectF()
     private val startAngle = -80f
     private val maxAngle = 360f
     private val maxProgress = 100
@@ -36,8 +44,10 @@ class CircularProgressView : View {
 
     override fun onDraw(canvas: Canvas) {
         drawImage(canvas)
-        drawCircle(maxAngle, canvas, backgroundPaint)
-        drawCircle(angle, canvas, progressPaint)
+        if (!isImageShadowShowed) {
+            drawCircle(maxAngle, canvas, backgroundPaint)
+            drawCircle(angle, canvas, progressPaint)
+        }
     }
 
     override fun onSizeChanged(width: Int, height: Int, oldWidth: Int, oldHeight: Int) {
@@ -51,34 +61,42 @@ class CircularProgressView : View {
     }
 
     private fun drawImage(canvas: Canvas) {
-        val strokeWidth = backgroundPaint.strokeWidth
-        imageRect.set(strokeWidth, strokeWidth, diameter - strokeWidth + 3, diameter - strokeWidth + 3)
-
-        // show shadow of image
         if (isImageShadowShowed) {
-            imagePaint.color = Color.GRAY
-            imagePaint.maskFilter = BlurMaskFilter(
-                2f /* shadowRadius */,
-                BlurMaskFilter.Blur.OUTER
-            )
-            canvas.drawArc(imageRect, startAngle, maxAngle, false, imagePaint)
+            setLayerType(LAYER_TYPE_SOFTWARE, imagePaint)
+            imageRect.set(25f, 25f, diameter - 25f, diameter - 25f)
+            imageShadowRect.set(5f, 5f, diameter - 5f, diameter - 5f)
+            imageShadowPaint.color = Color.WHITE
+            imageShadowPaint.setShadowLayer(4f, 0f, 2f, Color.GRAY)
+            imageShadowPaint.maskFilter = BlurMaskFilter(1f, BlurMaskFilter.Blur.OUTER)
+            canvas.drawArc(imageShadowRect, startAngle, maxAngle, false, imageShadowPaint)
+        } else {
+            val strokeWidth = backgroundPaint.strokeWidth
+            imageRect.set(strokeWidth + strokeWidth, strokeWidth + strokeWidth, diameter - strokeWidth - strokeWidth, diameter - strokeWidth - strokeWidth)
         }
 
-        // show image
-        imagePaint.maskFilter = null
         imageBitmap?.apply { canvas.drawBitmap(this, null, imageRect, imagePaint) }
     }
 
     private fun calculateAngle(progress: Float) = maxAngle / maxProgress * progress
 
-    fun setImageShadowShowed(isShowed: Boolean) {
-        isImageShadowShowed = isShowed
+    fun setImageResId(drawable: Drawable?, isShadowShowed: Boolean) {
+        imageBitmap = drawable?.toBitmap()
+        isImageShadowShowed = isShadowShowed
         invalidate()
     }
 
-    fun setImageResId(resId: Int) {
-        imageBitmap = ContextCompat.getDrawable(context, resId)?.toBitmap()
-        invalidate()
+    fun setImageUrl(url: String, isShadowShowed: Boolean) {
+        Glide.with(this)
+            .asBitmap()
+            .load(url)
+            .into(object : CustomTarget<Bitmap>(){
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    imageBitmap = resource
+                    isImageShadowShowed = isShadowShowed
+                    invalidate()
+                }
+                override fun onLoadCleared(placeholder: Drawable?) { /* no need to implement */ }
+            })
     }
 
     fun setProgress(@FloatRange(from = 0.0, to = 100.0) progress: Float) {

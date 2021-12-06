@@ -23,6 +23,7 @@ internal object GetQuestWidgetList {
                 }
               }
               actionButton {
+                shortText
                 cta {
                   url
                   applink
@@ -33,6 +34,7 @@ internal object GetQuestWidgetList {
               code
               reason
             }
+            isEligible
             widgetPageDetail {
               title
               cta {

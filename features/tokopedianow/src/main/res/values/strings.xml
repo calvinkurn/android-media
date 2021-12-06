@@ -91,6 +91,9 @@
     <string name="tokopedianow_repurchase_category_filter_chip_format">%1$d Kategori</string>
     <string name="tokopedianow_repurchase_date_filter_chip_title">Semua Tanggal</string>
 
+    <string name="tokopedianow_quest_error_title">Gagal Memuat</string>
+    <string name="tokopedianow_quest_error_desc">Click iconnya untuk muat ulang</string>
+    <string name="tokopedianow_quest_widget_error_title">Penawaran spesial untukmu</string>
     <string name="tokopedianow_quest_shop_again_and_get_gift">Belanja lagi, dapatin hadiah!</string>
     <string name="tokopedianow_quest_get_gift">Kumpulin hadiahnya</string>
 

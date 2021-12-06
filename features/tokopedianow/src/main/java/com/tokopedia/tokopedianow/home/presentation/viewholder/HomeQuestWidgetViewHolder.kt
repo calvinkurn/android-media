@@ -5,6 +5,8 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestWidgetBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
@@ -17,6 +19,9 @@ class HomeQuestWidgetViewHolder(
     companion object {
         private const val PROGRESS_WIDTH = 15F
         private const val PERCENT_MULTIPLIER = 100
+        private const val STATUS_IDLE = "Idle"
+        private const val STATUS_ON_PROGRESS = "On Progress"
+
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_widget
     }
@@ -24,23 +29,47 @@ class HomeQuestWidgetViewHolder(
     private var binding: ItemTokopedianowQuestWidgetBinding? by viewBinding()
 
     override fun bind(element: HomeQuestWidgetUiModel) {
-        setCircularProgressBar(element.currentProgress, element.totalProgress)
-        setTitle(element.title)
-        setDesc(element.desc)
-        setContainer(element.appLink)
+        if (element.isErrorState) {
+            setTitle(getString(R.string.tokopedianow_quest_error_title))
+            setDesc(getString(R.string.tokopedianow_quest_error_desc))
+            setCircularRefreshButton()
+        } else {
+            setCircularProgressBar(element)
+            setTitle(element.title)
+            setDesc(element.desc)
+            setContainer(element.appLink)
+        }
     }
 
-    private fun setCircularProgressBar(currentProgress: Float, totalProgress: Float) {
-        val result = (currentProgress / totalProgress) * PERCENT_MULTIPLIER
-        if (!result.isNaN()) {
-            binding?.circularProgressBar?.apply {
-                setProgress(result)
-                setProgressWidth(PROGRESS_WIDTH)
-                setRounded(true)
-                setImageResId(R.drawable.tokopedianow_ic_quest)
-                setProgressColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                setProgressBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_circle_progressbar_background_dms_color))
+    private fun setCircularProgressBar(element: HomeQuestWidgetUiModel) {
+        binding?.circularProgressBar?.apply {
+            when(element.status) {
+                STATUS_IDLE -> {
+                    setImageUrl(element.iconUrl, true)
+                    binding?.let {
+                        it.container.setCardBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
+                        it.title.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                        it.desc.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+                    }
+                }
+                STATUS_ON_PROGRESS -> {
+                    val result = (element.currentProgress / element.totalProgress) * PERCENT_MULTIPLIER
+                    if (!result.isNaN()) {
+                        setImageUrl(element.iconUrl, false)
+                        setProgress(result)
+                        setProgressWidth(PROGRESS_WIDTH)
+                        setRounded(true)
+                        setProgressColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        setProgressBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_circle_progressbar_background_dms_color))
+                    }
+                }
             }
+        }
+    }
+
+    private fun setCircularRefreshButton() {
+        binding?.circularProgressBar?.apply {
+            setImageResId(getIconUnifyDrawable(context, IconUnify.RELOAD, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), true)
         }
     }
 

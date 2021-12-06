@@ -6,9 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowQuestSequenceWidgetBinding
 import com.tokopedia.tokopedianow.databinding.PartialTokopedianowViewStubDcTitleBinding
+import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
@@ -46,17 +48,30 @@ class HomeQuestSequenceWidgetViewHolder(
     }
 
     override fun bind(element: HomeQuestSequenceWidgetUiModel) {
-        setTitle(element.title)
-        setSeeAll(element.seeAll, element.appLink)
-        setQuestWidget(element.questList)
+        setAdapter()
+        when(element.state) {
+            HomeLayoutItemState.LOADING -> {}
+            HomeLayoutItemState.LOADED -> questLoaded(element)
+            HomeLayoutItemState.NOT_LOADED -> questNotLoaded()
+        }
     }
 
-    private fun setQuestWidget(questList: List<HomeQuestWidgetUiModel>) {
+    private fun questLoaded(element: HomeQuestSequenceWidgetUiModel) {
+        setTitle(element.title)
+        setSeeAll(element.seeAll, element.appLink)
+        addWidgets(element.questList)
+    }
+
+    private fun questNotLoaded() {
+        setTitle(getString(R.string.tokopedianow_quest_widget_error_title))
+        addErrorWidgets()
+    }
+
+    private fun setAdapter() {
         binding?.rvQuest?.apply {
             adapter = this@HomeQuestSequenceWidgetViewHolder.adapter
             layoutManager = LinearLayoutManager(itemView.context,  LinearLayoutManager.HORIZONTAL, false)
         }
-        addWidgets(questList)
     }
 
     private fun addWidgets(questList: List<HomeQuestWidgetUiModel>) {
@@ -71,15 +86,26 @@ class HomeQuestSequenceWidgetViewHolder(
         adapter.submitList(widgets)
     }
 
+    private fun addErrorWidgets() {
+        val widgets = mutableListOf(
+            HomeQuestTitleUiModel(isErrorState = true),
+            HomeQuestWidgetUiModel(isErrorState = true)
+        )
+        adapter.submitList(widgets)
+    }
+
     private fun setTitle(title: String) {
         stubBinding?.channelTitle?.text = title
     }
 
     private fun setSeeAll(seeAll: String, appLink: String) {
-        binding?.tvSeeAll?.apply {
-            text = seeAll
-            setOnClickListener {
-                RouteManager.route(itemView.context, appLink)
+        if (seeAll.isNotBlank()) {
+            binding?.tvSeeAll?.apply {
+                show()
+                text = seeAll
+                setOnClickListener {
+                    RouteManager.route(itemView.context, appLink)
+                }
             }
         }
     }

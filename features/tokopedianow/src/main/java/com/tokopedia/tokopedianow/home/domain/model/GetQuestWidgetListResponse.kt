@@ -15,7 +15,13 @@ data class QuestWidgetListResponse(
     val questWidgetList: List<QuestWidgetList>,
     @SerializedName("widgetPageDetail")
     @Expose
-    val widgetPageDetail: WidgetPageDetail
+    val widgetPageDetail: WidgetPageDetail,
+    @SerializedName("resultStatus")
+    @Expose
+    val resultStatus: ResultStatus,
+    @SerializedName("isEligible")
+    @Expose
+    val isEligible: Boolean,
 )
 
 data class QuestWidgetList(
@@ -76,6 +82,9 @@ data class Progress(
 )
 
 data class ActionButton(
+    @SerializedName("shortText")
+    @Expose
+    val shortText: String,
     @SerializedName("cta")
     @Expose
     val cta: CtaActionButton
@@ -104,4 +113,14 @@ data class CtaWidgetPageDetail(
     @Expose
     val text: String
 )
+
+data class ResultStatus(
+    @SerializedName("code")
+    @Expose
+    val code: String,
+    @SerializedName("reason")
+    @Expose
+    val reason: String
+)
+
 
