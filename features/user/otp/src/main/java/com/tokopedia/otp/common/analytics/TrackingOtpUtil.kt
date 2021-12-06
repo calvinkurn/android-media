@@ -637,6 +637,15 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         ))
     }
 
+    fun trackClickResendOtp(otpData: OtpData, modeListData: ModeListData) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_OTP_PAGE,
+                Action.ACTION_CLICK_RESEND_OTP,
+                "click - ${otpData.otpType} - ${modeListData.modeText}"
+        ))
+    }
+
 
     /* Auto Submit Tracker */
     fun trackAutoSubmitVerification(otpData: OtpData, modeListData: ModeListData, isSuccess: Boolean, message: String = "") {
@@ -752,4 +761,24 @@ class TrackingOtpUtil @Inject constructor(val userSession: UserSessionInterface)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
+    /**
+     * For Inactive Phone
+     **/
+    fun trackClickRequestChangePhoneNumberOnModeList() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_MODE_LIST
+        )
+    }
+
+    fun trackClickRequestChangePhoneNumberOnPin() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            Event.EVENT_CLICK_OTP,
+            Category.CATEGORY_OTP_PAGE,
+            Action.ACTION_CLICK_ON_REQUEST_CHANGE_PHONE_NUMBER,
+            Label.LABEL_OTP_PAGE
+        )
+    }
 }

@@ -41,7 +41,7 @@ class ThumbnailFileView @JvmOverloads constructor(
             val typedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.ThumbnailFileView, 0, 0)
             typedArray?.let {
                 val imageAttr = it.getInteger(R.styleable.ThumbnailFileView_image, 0)
-                val titleAttr = it.getString(R.styleable.ThumbnailFileView_title) ?: ""
+                val titleAttr = it.getString(R.styleable.ThumbnailFileView_title).orEmpty()
 
                 textTitle.text = titleAttr
                 if (imageAttr != 0) {

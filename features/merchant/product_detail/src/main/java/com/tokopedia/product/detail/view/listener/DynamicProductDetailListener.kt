@@ -7,6 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.mvcwidget.trackers.MvcSource
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
@@ -124,6 +125,8 @@ interface DynamicProductDetailListener {
      */
     fun loadTopads(pageName: String)
 
+    fun loadPlayWidget()
+
     /**
      * ProductDefaultErrorViewHolder
      */
@@ -192,4 +195,12 @@ interface DynamicProductDetailListener {
     fun onClickCheckBundling(bundleId: String, bundleType: String, componentTrackDataModel: ComponentTrackDataModel)
     fun onClickProductInBundling(bundleId: String, bundleProductId: String, componentTrackDataModel: ComponentTrackDataModel)
 
+    /**
+     * ContentWidgetViewHolder
+     */
+    fun onImpressChannelCard(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel)
+    fun onClickChannelCard(componentTrackDataModel: ComponentTrackDataModel, item:PlayWidgetMediumChannelUiModel)
+    fun onClickBannerCard(componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickViewAll(componentTrackDataModel: ComponentTrackDataModel)
+    fun onClickToggleReminderChannel(componentTrackDataModel: ComponentTrackDataModel, item: PlayWidgetMediumChannelUiModel, isRemindMe: Boolean)
 }
