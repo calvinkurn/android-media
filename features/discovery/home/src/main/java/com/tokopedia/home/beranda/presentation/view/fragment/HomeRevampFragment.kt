@@ -2197,11 +2197,10 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
         observeHomeNotif()
+        adapter?.currentList?.let {
+            showCoachmarkWithDataValidation(it)
+        }
         pageLoadTimeCallback?.invalidate()
-    }
-
-    private fun remoteConfigIsShowOnboarding(): Boolean {
-        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
     }
 
     private fun remoteConfigIsNewBalanceWidget(): Boolean {
