@@ -180,6 +180,16 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                     adapter.setList(list)
                 }
             }
+            INACTIVE_PHONE_CODE -> {
+                if (resultCode == Activity.RESULT_CANCELED) {
+                    val message = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY).orEmpty()
+                    if (message.isNotEmpty()) {
+                        view?.let {
+                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                        }
+                    }
+                }
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
@@ -379,24 +389,6 @@ open class VerificationMethodFragment : BaseOtpToolbarFragment(), IOnBackPressed
                 intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, otpData.email)
             }
             startActivityForResult(intent, INACTIVE_PHONE_CODE)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        when(requestCode) {
-            INACTIVE_PHONE_CODE -> {
-                if (resultCode == Activity.RESULT_CANCELED) {
-                    val message = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY).orEmpty()
-                    if (message.isNotEmpty()) {
-                        view?.let {
-                            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
-                        }
-                    }
-                }
-            }
-            else -> {
-                super.onActivityResult(requestCode, resultCode, data)
-            }
         }
     }
 
