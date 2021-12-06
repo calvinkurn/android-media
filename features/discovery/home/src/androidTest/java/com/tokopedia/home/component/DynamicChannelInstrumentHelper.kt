@@ -21,7 +21,6 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
@@ -60,7 +59,6 @@ private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
  */
 
 fun disableCoachMark(context: Context){
-    disableOnboarding(context)
     disableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, true)
@@ -73,7 +71,6 @@ fun disableCoachMark(context: Context){
 }
 
 fun enableCoachMark(context: Context){
-    enableOnboarding(context)
     enableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, false)
@@ -108,18 +105,6 @@ fun enableChooseAddressCoachmark(context: Context) {
     val sharedPrefs = context.getSharedPreferences(CHOOSE_ADDRESS_PREFERENCE_NAME, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(
         CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, true).apply()
-}
-
-fun disableOnboarding(context: Context) {
-    val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-    sharedPrefs.edit().putBoolean(
-            NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
-}
-
-fun enableOnboarding(context: Context) {
-    val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-    sharedPrefs.edit().putBoolean(
-        NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true).apply()
 }
 
 fun waitForData() {

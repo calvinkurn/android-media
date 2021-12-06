@@ -209,11 +209,6 @@ class HomeFragmentNonLoginUiTest {
             titleRes = R.string.onboarding_coachmark_inbox_title,
             descRes = R.string.onboarding_coachmark_inbox_description
         )
-
-        assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_title,
-            descRes = R.string.onboarding_coachmark_description
-        )
     }
 
     private fun assertCoachmarkAndNext(
