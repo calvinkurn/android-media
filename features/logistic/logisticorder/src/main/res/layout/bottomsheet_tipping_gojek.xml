@@ -47,7 +47,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_tipping_gojek" />
 
-        <com.tokopedia.unifycomponents.TextFieldUnify
+        <com.tokopedia.unifycomponents.TextFieldUnify2
             android:id="@+id/et_nominal_tip"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -57,9 +57,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
             app:layout_constraintEnd_toEndOf="parent"
-            app:text_field_input_type="number"
-            app:text_field_label="@string/nominal_tip_label"
-            app:text_field_message="@string/nominal_tip_message"/>
+            app:unify_text_field_input_type="number"
+            app:unify_text_field_label="@string/nominal_tip_label"
+            app:unify_text_field_message="@string/nominal_tip_message"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

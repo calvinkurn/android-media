@@ -155,10 +155,10 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     setHtmlDescription(String.format(getString(R.string.driver_tipping_ticker_new), logisticDriverModel.prepayment.info.first(), logisticDriverModel.prepayment.info.last()))
                 }
 
-                binding.etNominalTip.textFieldInput.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textFieldWrapper))
+                binding.etNominalTip.editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout))
 
                 binding.btnTipping.setOnClickListener {
-                    val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.textFieldInput.text.toString())
+                    val paymentApplink = logisticDriverModel.prepayment.paymentLink.replace("{{amount}}", binding.etNominalTip.editText.text.toString())
 
                     RouteManager.route(
                         context,
@@ -207,7 +207,7 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                val text = binding.etNominalTip.textFieldInput.text.toString()
+                val text = binding.etNominalTip.editText.text.toString()
                 if (s.isNotEmpty() && text.toInt() < 1000) {
                     setWrapperError(wrapper, getString(com.tokopedia.logisticorder.R.string.minimum_tipping))
                     binding.btnTipping.isEnabled = false
@@ -229,15 +229,15 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
     private fun setWrapperError(wrapper: TextInputLayout, s: String?) {
         if (s.isNullOrBlank()) {
             wrapper.error = s
-            wrapper.setErrorEnabled(false)
+            wrapper.isErrorEnabled = false
         } else {
-            wrapper.setErrorEnabled(true)
+            wrapper.isErrorEnabled = true
             wrapper.error = s
         }
     }
 
     override fun onTippingValueClicked(tippingValue: Int) {
-        binding.etNominalTip.textFieldInput.setText(tippingValue.toString())
+        binding.etNominalTip.editText.setText(tippingValue.toString())
     }
 
 
