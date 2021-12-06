@@ -9,7 +9,6 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -357,66 +356,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 
         // Then
         assertTrue(presenter.newUnreadMessage == 0)
-    }
-
-    @Test
-    fun `check requestBlockPromo`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.requestBlockPromo(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.blockPromo(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check requestAllowPromo`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.requestAllowPromo(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.allowPromo(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check blockChat`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.blockChat(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.blockChat(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check unBlockChat`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.unBlockChat(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.unBlockChat(exMessageId, onSuccess, onError)
-        }
     }
 
     @Test

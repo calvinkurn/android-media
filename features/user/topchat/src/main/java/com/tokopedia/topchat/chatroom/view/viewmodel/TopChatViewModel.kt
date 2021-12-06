@@ -20,16 +20,15 @@ import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
+import com.tokopedia.topchat.chatroom.domain.pojo.param.BlockType
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
+import com.tokopedia.topchat.chatroom.domain.pojo.param.ToggleBlockChatParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -48,6 +47,7 @@ class TopChatViewModel @Inject constructor(
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
     private var addToCartOccUseCase: AddToCartOccMultiUseCase,
+    private val chatToggleBlockChat: ChatToggleBlockChatUseCaseNew,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.main) {
@@ -88,6 +88,10 @@ class TopChatViewModel @Inject constructor(
     private val _occProduct = MutableLiveData<Result<ProductAttachmentUiModel>>()
     val occProduct: LiveData<Result<ProductAttachmentUiModel>>
         get() = _occProduct
+
+    private val _toggleBlock = MutableLiveData<WrapperChatSetting>()
+    val toggleBlock : LiveData<WrapperChatSetting>
+        get() = _toggleBlock
 
     fun getMessageId(
         toUserId: String,
@@ -268,5 +272,54 @@ class TopChatViewModel @Inject constructor(
             ),
             userId = userId
         )
+    }
+
+    fun toggleBlockChatPromo(
+        messageId: String,
+        actionType: ActionType,
+        element: BroadcastSpamHandlerUiModel? = null
+    ) {
+        launchCatchError(block = {
+            val param = generateToggleBlockChatParam(messageId, actionType)
+            val response = chatToggleBlockChat(param)
+            val result = WrapperChatSetting(
+                actionType = actionType,
+                response = Success(response),
+                element = element
+            )
+            _toggleBlock.value = result
+        }, onError = {
+            _toggleBlock.value = WrapperChatSetting(
+                actionType = actionType,
+                response = Fail(it)
+            )
+        })
+    }
+
+    private fun generateToggleBlockChatParam(
+        messageId: String,
+        actionType: ActionType
+    ): ToggleBlockChatParam {
+        return ToggleBlockChatParam().apply {
+            this.msgId = messageId
+            when (actionType) {
+                ActionType.BlockChat -> {
+                    this.blockType = BlockType.Personal.value
+                    this.isBlocked = true
+                }
+                ActionType.UnblockChat -> {
+                    this.blockType = BlockType.Personal.value
+                    this.isBlocked = false
+                }
+                ActionType.BlockPromo -> {
+                    this.blockType = BlockType.Promo.value
+                    this.isBlocked = true
+                }
+                ActionType.UnblockPromo -> {
+                    this.blockType = BlockType.Promo.value
+                    this.isBlocked = false
+                }
+            }
+        }
     }
 }

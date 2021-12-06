@@ -7,12 +7,7 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCas
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
@@ -55,6 +50,9 @@ abstract class BaseTopChatViewModelTest {
     lateinit var addToCartOccMultiUseCase: AddToCartOccMultiUseCase
 
     @RelaxedMockK
+    lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseNew
+
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -80,6 +78,7 @@ abstract class BaseTopChatViewModelTest {
             reminderTickerUseCase,
             closeReminderTicker,
             addToCartOccMultiUseCase,
+            chatToggleBlockChatUseCase,
             dispatchers,
             remoteConfig
         )
