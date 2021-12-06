@@ -124,7 +124,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.libraries.universal_sharing)
-	implementation project(rootProject.ext.features.campaignList)
-	implementation project(rootProject.ext.features.medialoader)
 }

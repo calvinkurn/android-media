@@ -5,6 +5,11 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class GetMerchantCampaignBannerGeneratorDataResponse(
+        @SerializedName("getMerchantCampaignBannerGeneratorData")
+        @Expose val getMerchantCampaignBannerGeneratorData: GetMerchantCampaignBannerGeneratorData = GetMerchantCampaignBannerGeneratorData()
+)
+
+data class GetMerchantCampaignBannerGeneratorData(
         @SerializedName("response_header")
         @Expose val responseHeader: ResponseHeader = ResponseHeader(),
         @SerializedName("campaign")

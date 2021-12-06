@@ -20,7 +20,7 @@ class GetCampaignListUseCase @Inject constructor(
         const val NPL_CAMPAIGN_TYPE = 73
         const val NPL_LIST_TYPE = 20
 
-        // sorting : berlangsung, akan datang, berakhir
+        // sorting : tesedia, akan datang, berlangsung
         val statusId = listOf(5, 6, 7)
 
         private var query = """

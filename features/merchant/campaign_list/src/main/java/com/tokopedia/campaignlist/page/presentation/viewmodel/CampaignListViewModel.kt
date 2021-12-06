@@ -10,9 +10,13 @@ import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companio
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase.Companion.NPL_LIST_TYPE
 import com.tokopedia.campaignlist.common.usecase.GetMerchantBannerUseCase
 import com.tokopedia.campaignlist.common.usecase.GetSellerMetaDataUseCase
+import com.tokopedia.campaignlist.common.util.ResourceProvider
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -21,13 +25,25 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CampaignListViewModel @Inject constructor(
+        private val resourceProvider: ResourceProvider,
         private val dispatchers: CoroutineDispatchers,
         private val getCampaignListUseCase: GetCampaignListUseCase,
         private val getMerchantBannerUseCase: GetMerchantBannerUseCase,
         private val getSellerMetaDataUseCase: GetSellerMetaDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        const val NPL_ICON_URL = "https://images.tokopedia.net/img/android/campaign_list/npl_icon.png"
+        const val SHARE_REDIRECTION_URL = "https://www.tokopedia.com/%s"
+        private const val ONGOING_STATUS_ID = "7"
+    }
+
+    private var campaignName = ""
+    private var campaignTypeId = NPL_CAMPAIGN_TYPE
+    private var campaignStatusId = GetCampaignListUseCase.statusId
+    private var selectedActiveCampaign : ActiveCampaign? = null
     private var selectedCampaignTypeSelection: CampaignTypeSelection? = null
+    private var merchantBannerData: GetMerchantCampaignBannerGeneratorData? = null
 
     private val getCampaignListResultLiveData = MutableLiveData<Result<GetCampaignListV2Response>>()
     val getCampaignListResult: LiveData<Result<GetCampaignListV2Response>> get() = getCampaignListResultLiveData
@@ -38,10 +54,37 @@ class CampaignListViewModel @Inject constructor(
     private val getSellerMetaDataResultLiveData = MutableLiveData<Result<GetSellerCampaignSellerAppMetaResponse>>()
     val getSellerMetaDataResult: LiveData<Result<GetSellerCampaignSellerAppMetaResponse>> get() = getSellerMetaDataResultLiveData
 
-    private var campaignName = ""
-    private var campaignTypeId = NPL_CAMPAIGN_TYPE
-    private var campaignStatusId = GetCampaignListUseCase.statusId
-    private var selectedCampaignId : String = ""
+    fun setCampaignName(campaignName : String) {
+        this.campaignName = campaignName
+    }
+
+    fun getCampaignName(): String {
+        return campaignName
+    }
+
+    fun setCampaignTypeId(campaignTypeId : Int) {
+        this.campaignTypeId = campaignTypeId
+    }
+
+    fun getCampaignTypeId(): Int {
+        return campaignTypeId
+    }
+
+    fun setCampaignStatusId(campaignStatusId : List<Int>) {
+        this.campaignStatusId = campaignStatusId
+    }
+
+    fun getCampaignStatusId(): List<Int> {
+        return campaignStatusId
+    }
+
+    fun setSelectedActiveCampaign(activeCampaign: ActiveCampaign) {
+        this.selectedActiveCampaign = activeCampaign
+    }
+
+    fun getSelectedActiveCampaign(): ActiveCampaign? {
+        return selectedActiveCampaign
+    }
 
     fun setDefaultCampaignTypeSelection(campaignTypeSelections: List<CampaignTypeSelection>) {
         selectedCampaignTypeSelection = campaignTypeSelections.find { campaignTypeSelection ->
@@ -51,6 +94,14 @@ class CampaignListViewModel @Inject constructor(
 
     fun getSelectedCampaignTypeSelection(): CampaignTypeSelection? {
         return selectedCampaignTypeSelection
+    }
+
+    fun setMerchantBannerData(merchantBannerData: GetMerchantCampaignBannerGeneratorData) {
+        this.merchantBannerData = merchantBannerData
+    }
+
+    fun getMerchantBannerData(): GetMerchantCampaignBannerGeneratorData? {
+        return merchantBannerData
     }
 
     fun getCampaignList(campaignName: String = "",
@@ -137,36 +188,69 @@ class CampaignListViewModel @Inject constructor(
         }
     }
 
-
-    fun setCampaignName(campaignName : String) {
-        this.campaignName = campaignName
+    fun getShareBottomSheetTitle(shopName: String): String {
+        return String.format(resourceProvider.getShareTitle() ?: "", shopName)
     }
 
-    fun setCampaignTypeId(campaignTypeId : Int) {
-        this.campaignTypeId = campaignTypeId
+    fun getShareDescriptionWording(
+            shopData: ShopData,
+            campaignData: Campaign,
+            shareUri: String?,
+            campaignStatusId: String?
+    ): String {
+        return when (campaignStatusId ?: "") {
+            ONGOING_STATUS_ID -> {
+                val template = resourceProvider.getShareCampaignDescriptionWording() ?: ""
+                val startDate = campaignData.startDate.split(" ").first()
+                val startTime = campaignData.startDate.split(" ").last()
+                String.format(template, campaignData.name, shopData.name, startDate, startTime).plus(" $shareUri")
+            }
+            else -> {
+                val template = resourceProvider.getShareOngoingCampaignDescriptionWording() ?: ""
+                val endDate = campaignData.endDate.split(" ").first()
+                val endTime = campaignData.endDate.split(" ").last()
+                String.format(template, campaignData.name, shopData.name, endDate, endTime).plus(" $shareUri")
+            }
+        }
     }
 
-    fun setCampaignStatusId(campaignStatusId : List<Int>) {
-        this.campaignStatusId = campaignStatusId
+    fun generateLinkerShareData(
+            shopData: ShopData,
+            campaignData: Campaign,
+            shareModel: ShareModel,
+            campaignStatusId: String?
+    ): LinkerShareData {
+        val linkerData = LinkerData()
+        linkerData.apply {
+            feature = shareModel.feature
+            channel = shareModel.channel
+            campaign = shareModel.campaign
+            id = shopData.shopId
+            name = getShareOgTitle(campaignData.name, shopData.name)
+            uri = shopData.url
+            description = getShareOgDescription(campaignStatusId, shopData.name)
+            isThrowOnError = true
+        }
+        val linkerShareData = LinkerShareData()
+        linkerShareData.linkerData = linkerData
+        return linkerShareData
     }
 
-    fun setSelectedCampaignId(selectedCampaignId: String) {
-        this.selectedCampaignId = selectedCampaignId
+    private fun getShareOgTitle(campaignName: String, shopName: String): String {
+        val template = resourceProvider.getShareOgTitle() ?: ""
+        return String.format(template, campaignName, shopName)
     }
 
-    fun getCampaignName(): String {
-        return campaignName
-    }
-
-    fun getCampaignTypeId(): Int {
-        return campaignTypeId
-    }
-
-    fun getCampaignStatusId(): List<Int> {
-        return campaignStatusId
-    }
-
-    fun getSelectedCampaignId(): String {
-        return selectedCampaignId
+    private fun getShareOgDescription(campaignStatusId: String?, shopName: String): String {
+        return when (campaignStatusId ?: "") {
+            ONGOING_STATUS_ID -> {
+                val template = resourceProvider.getShareOngoingCampaignDescriptionWording() ?: ""
+                String.format(template, shopName)
+            }
+            else -> {
+                val template = resourceProvider.getShareOgDescription() ?: ""
+                String.format(template, shopName)
+            }
+        }
     }
 }

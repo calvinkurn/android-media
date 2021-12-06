@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
-import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
+import com.tokopedia.campaignlist.common.data.model.response.ShopData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
@@ -25,9 +25,16 @@ import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelectio
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel.Companion.NPL_ICON_URL
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -49,7 +56,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var tracker : CampaignListTracker
+    lateinit var tracker: CampaignListTracker
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -64,7 +71,6 @@ class CampaignListFragment : BaseDaggerFragment(),
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var adapter: ActiveCampaignListAdapter? = null
     private var binding: FragmentCampaignListBinding? = null
-
     private var campaignTypeFilter: SortFilterItem? = null
     private var campaignStatusFilter: SortFilterItem? = null
 
@@ -106,21 +112,17 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onShareButtonClicked(activeCampaign: ActiveCampaign) {
-        viewModel.setSelectedCampaignId(activeCampaign.campaignId)
-
-        tracker.sendShareButtonClickEvent(
-            activeCampaign.campaignType,
-            activeCampaign.campaignId,
-            userSession.shopId,
-            userSession.userId,
-        )
-
-        try {
-            val campaignId = activeCampaign.campaignId.toInt()
-            viewModel.getSellerBanner(campaignId)
-        } catch (e: Exception) {
+        viewModel.setSelectedActiveCampaign(activeCampaign)
+        try { viewModel.getSellerBanner(activeCampaign.campaignId.toInt()) }
+        catch (e: Exception) {
             // TODO log invalid campaign id
         }
+        tracker.sendShareButtonClickEvent(
+                activeCampaign.campaignType,
+                activeCampaign.campaignId,
+                userSession.shopId,
+                userSession.userId,
+        )
     }
 
     override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
@@ -129,11 +131,10 @@ class CampaignListFragment : BaseDaggerFragment(),
         try {
             campaignTypeId = selectedCampaignType.campaignTypeId.toInt()
         } catch (e: java.lang.Exception) {
-        } // TODO handle exception
-
+            // TODO handle exception
+        }
         viewModel.setCampaignTypeId(campaignTypeId)
         viewModel.getCampaignList(campaignTypeId = campaignTypeId)
-
         tracker.sendSelectCampaignTypeFilterClickEvent(selectedCampaignType.campaignTypeName, userSession.shopId)
     }
 
@@ -141,7 +142,6 @@ class CampaignListFragment : BaseDaggerFragment(),
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
         viewModel.setCampaignStatusId(listOf(selectedCampaignStatus.statusId))
         viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
-
         tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
     }
 
@@ -205,7 +205,6 @@ class CampaignListFragment : BaseDaggerFragment(),
         adapter?.setCampaignImpression { campaign ->
             tracker.sendCampaignImpressionEvent(campaign.campaignId, userSession.shopId)
         }
-
         binding?.rvCampaignList?.let {
             it.adapter = adapter
             it.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -220,9 +219,13 @@ class CampaignListFragment : BaseDaggerFragment(),
         campaignStatusBottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, this)
     }
 
-    private fun setupUniversalShareBottomSheet(data: GetMerchantCampaignBannerGeneratorDataResponse) {
+    private fun setupUniversalShareBottomSheet(shopData: ShopData) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CampaignListFragment)
+            setMetaData(
+                    tnTitle = viewModel.getShareBottomSheetTitle(shopData.name),
+                    tnImage = NPL_ICON_URL
+            )
             setUtmCampaignData(
                     pageName = this@CampaignListFragment.getString(R.string.active_campaign_list),
                     userId = userSession.userId,
@@ -252,10 +255,22 @@ class CampaignListFragment : BaseDaggerFragment(),
         viewModel.getMerchantBannerResult.observe(viewLifecycleOwner, { result ->
             when (result) {
                 is Success -> {
-                    sendBottomSheetDisplayedTracker()
                     if (UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
-                        setupUniversalShareBottomSheet(result.data)
+                        // show share bottom sheet
+                        val merchantBannerData = result.data.getMerchantCampaignBannerGeneratorData
+                        viewModel.setMerchantBannerData(merchantBannerData)
+                        val shopData = merchantBannerData.shopData
+                        setupUniversalShareBottomSheet(shopData)
                         universalShareBottomSheet?.show(childFragmentManager, this)
+                        val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
+                        selectedActiveCampaign?.run {
+                            tracker.sendShareBottomSheetDisplayedEvent(
+                                    viewModel.getCampaignTypeId(),
+                                    this.campaignId,
+                                    userSession.userId,
+                                    userSession.shopId
+                            )
+                        }
                     }
                 }
                 is Fail -> {
@@ -287,58 +302,74 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
-        tracker.sendSelectShareChannelClickEvent(
-            shareModel.channel.orEmpty(),
-            viewModel.getCampaignTypeId(),
-            viewModel.getSelectedCampaignId(),
-            userSession.userId,
-            userSession.shopId
-        )
+        val merchantBannerData = viewModel.getMerchantBannerData()
+        merchantBannerData?.run {
+            val shopData = merchantBannerData.shopData
+            val campaignData = merchantBannerData.campaign
+            val campaignStatusId = viewModel.getSelectedActiveCampaign()?.campaignStatus
+            val linkerShareData = viewModel.generateLinkerShareData(shopData, campaignData, shareModel, campaignStatusId)
+            LinkerManager.getInstance().executeShareRequest(
+                    LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                        override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                            val shareWording = viewModel.getShareDescriptionWording(shopData, campaignData, linkerShareData?.shareUri, campaignStatusId)
+                            SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareWording)
+                            universalShareBottomSheet?.dismiss()
+                        }
+
+                        override fun onError(linkerError: LinkerError?) {}
+                    })
+            )
+        }
+        val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
+        selectedActiveCampaign?.run {
+            tracker.sendSelectShareChannelClickEvent(
+                    shareModel.channel.orEmpty(),
+                    viewModel.getCampaignTypeId(),
+                    this.campaignId,
+                    userSession.userId,
+                    userSession.shopId
+            )
+
+        }
     }
 
     override fun onCloseOptionClicked() {
-        tracker.sendShareBottomSheetDismissClickEvent(
-            viewModel.getCampaignTypeId(),
-            viewModel.getSelectedCampaignId(),
-            userSession.userId,
-            userSession.shopId
-        )
+        val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
+        selectedActiveCampaign?.run {
+            tracker.sendShareBottomSheetDismissClickEvent(
+                    viewModel.getCampaignTypeId(),
+                    this.campaignId,
+                    userSession.userId,
+                    userSession.shopId
+            )
+        }
     }
 
-    private fun displayGetCampaignListError(@StringRes stringResourceId : Int) {
+    private fun displayGetCampaignListError(@StringRes stringResourceId: Int) {
         Toaster.build(
-            view = binding?.root ?: return,
-            text = getString(stringResourceId),
-            actionText = getString(R.string.retry),
-            duration = Toaster.LENGTH_LONG,
-            type = Toaster.TYPE_ERROR,
-            clickListener = {
-                //Retry to get campaign list data with currently selected filter and search bar query
-                viewModel.getCampaignList(
-                    campaignName = viewModel.getCampaignName(),
-                    campaignTypeId = viewModel.getCampaignTypeId(),
-                    statusId = viewModel.getCampaignStatusId()
-                )
-            }
+                view = binding?.root ?: return,
+                text = getString(stringResourceId),
+                actionText = getString(R.string.retry),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                clickListener = {
+                    //Retry to get campaign list data with currently selected filter and search bar query
+                    viewModel.getCampaignList(
+                            campaignName = viewModel.getCampaignName(),
+                            campaignTypeId = viewModel.getCampaignTypeId(),
+                            statusId = viewModel.getCampaignStatusId()
+                    )
+                }
         ).show()
     }
 
     private fun displayGetDataError() {
         Toaster.build(
-            view = binding?.root ?: return,
-            text = getString(R.string.campaign_error_fetch_metadata),
-            actionText = getString(R.string.ok),
-            duration = Toaster.LENGTH_LONG,
-            type = Toaster.TYPE_ERROR
+                view = binding?.root ?: return,
+                text = getString(R.string.campaign_error_fetch_metadata),
+                actionText = getString(R.string.ok),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR
         ).show()
-    }
-
-    private fun sendBottomSheetDisplayedTracker() {
-        tracker.sendShareBottomSheetDisplayedEvent(
-            viewModel.getCampaignTypeId(),
-            viewModel.getSelectedCampaignId(),
-            userSession.userId,
-            userSession.shopId
-        )
     }
 }
