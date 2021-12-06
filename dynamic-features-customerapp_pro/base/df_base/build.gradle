@@ -155,4 +155,7 @@ dependencies {
     //Order Management
     implementation projectOrAar(rootProject.ext.features.ordermanagementhistory)
     implementation projectOrAar(rootProject.ext.features.buyerorderdetail)
+
+    //Media
+    implementation projectOrAar(rootProject.ext.features.mediaPicker)
 }
