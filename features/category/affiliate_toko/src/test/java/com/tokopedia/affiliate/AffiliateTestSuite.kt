@@ -9,7 +9,8 @@ import org.junit.runners.Suite
         AffiliateHomeViewModelTest::class,
         AffiliatePromotionBSViewModelTest::class,
         AffiliatePromoViewModelTest::class,
-        AffiliatePromotionHistoryViewModelTest::class
+        AffiliatePromotionHistoryViewModelTest::class,
+        AffiliateRecommendedProductViewModelTest::class
 )
 class AffiliateTestSuite
 {
