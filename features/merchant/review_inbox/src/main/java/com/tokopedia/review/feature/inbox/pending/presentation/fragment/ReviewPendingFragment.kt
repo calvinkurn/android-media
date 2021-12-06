@@ -41,11 +41,13 @@ import com.tokopedia.review.common.presentation.InboxUnifiedRemoteConfig
 import com.tokopedia.review.common.util.ReviewInboxUtil
 import com.tokopedia.review.feature.inbox.container.presentation.listener.ReviewInboxListener
 import com.tokopedia.review.feature.inbox.pending.analytics.ReviewPendingTracking
+import com.tokopedia.review.feature.inbox.pending.data.ProductrevWaitForFeedbackLabelAndImage
 import com.tokopedia.review.feature.inbox.pending.data.mapper.ReviewPendingMapper
 import com.tokopedia.review.feature.inbox.pending.di.DaggerReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.di.ReviewPendingComponent
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapter
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingAdapterTypeFactory
+import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
@@ -309,9 +311,12 @@ class ReviewPendingFragment :
         )
     }
 
-    override fun onReviewCredibilityWidgetClicked() {
-        goToCredibility()
-        ReviewPendingTracking.trackOnCredibilityClicked(viewModel.getUserId())
+    override fun onReviewCredibilityWidgetClicked(appLink: String) {
+        if (appLink.isBlank()) {
+            goToCredibility()
+        } else {
+            RouteManager.route(context, appLink)
+        }
     }
 
     override fun onSwipeRefresh() {
@@ -453,9 +458,7 @@ class ReviewPendingFragment :
                     hideError()
                     hideLoading()
                     if (it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE && shouldShowCredibility()) {
-                        with(it.data.credibilityWidget) {
-                            addCredibilityWidget(imageURL, labelTitle, labelSubtitle)
-                        }
+                        addCredibilityCarouselWidget(it.data.banners)
                     }
                     if (it.data.list.isEmpty() && it.page == ReviewInboxConstants.REVIEW_INBOX_INITIAL_PAGE) {
                         with(it.data.emptyState) {
@@ -594,14 +597,20 @@ class ReviewPendingFragment :
             viewModel.getUserId(),
             INBOX_SOURCE
         )
+        ReviewPendingTracking.trackOnCredibilityClicked(viewModel.getUserId())
     }
 
-    private fun addCredibilityWidget(imageUrl: String, title: String, subtitle: String) {
-        (adapter as? ReviewPendingAdapter)?.insertCredibilityWidget(
-            ReviewPendingCredibilityUiModel(
-                imageUrl,
-                title,
-                subtitle
+    private fun addCredibilityCarouselWidget(banners: List<ProductrevWaitForFeedbackLabelAndImage>) {
+        (adapter as? ReviewPendingAdapter)?.insertCredibilityCarouselWidget(
+            ReviewPendingCredibilityCarouselUiModel(
+                banners.map {
+                    ReviewPendingCredibilityUiModel(
+                        it.imageURL,
+                        it.labelTitle,
+                        it.labelSubtitle,
+                        it.appLink
+                    )
+                }
             )
         )
     }

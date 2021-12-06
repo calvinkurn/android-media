@@ -33,7 +33,7 @@ class ReviewPendingCredibilityViewHolder(view: View, private val reviewPendingIt
             credibilityTitle?.text = title
             credibilitySubtitle?.text = subtitle
             itemView.setOnClickListener {
-                reviewPendingItemListener.onReviewCredibilityWidgetClicked()
+                reviewPendingItemListener.onReviewCredibilityWidgetClicked(element.appLink)
             }
             if (reviewPendingItemListener.shouldShowCoachMark()) {
                 coachMark = CoachMark2(itemView.context)
