@@ -1002,7 +1002,13 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        super.processMenuDetail(data)
+        if (!isAddSBM) {
+            super.processMenuDetail(data)
+        } else {
+            onLoadingMenuDetail(false)
+            isExpressCheckout = data.isExpressCheckout
+            categoryName = data.catalog.label
+        }
         with(data.catalog) {
             // if using isAddSBM then we use title from sbm
             (activity as? BaseSimpleActivity)?.updateTitle(
