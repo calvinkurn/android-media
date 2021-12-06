@@ -356,13 +356,7 @@ class AffiliateHomeFragment : BaseViewModelFragment<AffiliateHomeViewModel>(), P
                 }
                 ANNOUNCEMENT__TYPE_NO_ANNOUNCEMENT -> {
                     affiliateHomeViewModel.getAffiliateValidateUser()
-                    view?.findViewById<CardView>(R.id.affiliate_announcement_ticker_cv)?.show()
-                    setupTickerView(
-                            announcementData.getAffiliateAnnouncement.data.announcementTitle,
-                            "Hi hello <a href> Click Me </a>",
-                            Ticker.TYPE_ANNOUNCEMENT,
-                            "https://affiliate.tokopedia.com/help"
-                    )
+                    view?.findViewById<CardView>(R.id.affiliate_announcement_ticker_cv)?.hide()
                 }
             }
         } else{
