@@ -14,7 +14,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/shop_operational_hour_edit_holiday_text"
+            android:text="@string/shop_operational_hour_set_holiday_schedule_title"
             android:layout_marginTop="@dimen/dp_16"
             />
 

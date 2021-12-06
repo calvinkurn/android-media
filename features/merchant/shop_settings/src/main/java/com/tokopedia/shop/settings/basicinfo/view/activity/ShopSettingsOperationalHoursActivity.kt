@@ -6,6 +6,7 @@ import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.basicinfo.view.fragment.NewShopSettingsOperationalHoursFragment
 import com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsOperationalHoursFragment
 
 /**
@@ -39,7 +40,7 @@ class ShopSettingsOperationalHoursActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return ShopSettingsOperationalHoursFragment.createInstance(
+        return NewShopSettingsOperationalHoursFragment.createInstance(
                 isCloseNow,
                 isActionEdit,
                 isOpenSchBottomSheet,

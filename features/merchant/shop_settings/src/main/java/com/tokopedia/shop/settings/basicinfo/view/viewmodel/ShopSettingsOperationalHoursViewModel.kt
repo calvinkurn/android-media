@@ -14,14 +14,11 @@ import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursLis
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHour
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
-import com.tokopedia.shop.settings.basicinfo.data.SetShopOperationalHours
-import com.tokopedia.shop.settings.basicinfo.domain.SetShopOperationalHoursUseCase
 import com.tokopedia.shop.settings.basicinfo.view.model.ShopSettingsOperationalHoursListUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -31,7 +28,6 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
         @GqlGetShopCloseDetailInfoQualifier
         private val getShopCloseDetailInfoUseCase: Lazy<GQLGetShopInfoUseCase>,
         private val gqlGetShopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
-        private val setShopOperationalHoursUseCase: SetShopOperationalHoursUseCase,
         private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
         private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -47,10 +43,6 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
     private val _shopInfoAbortSchedule = MutableLiveData<Result<String>>()
     val shopInfoAbortSchedule: LiveData<Result<String>>
         get() = _shopInfoAbortSchedule
-
-    private val _setShopOperationalHoursData = MutableLiveData<Result<SetShopOperationalHours>>()
-    val setShopOperationalHoursData: LiveData<Result<SetShopOperationalHours>>
-        get() = _setShopOperationalHoursData
 
     fun getShopOperationalHoursInitialData(shopId: String) {
         val shopSettingsOperationalHoursListUiModel = ShopSettingsOperationalHoursListUiModel()
@@ -103,18 +95,6 @@ class ShopSettingsOperationalHoursViewModel @Inject constructor(
                 ShopScheduleActionDef.CLOSED -> _shopInfoCloseSchedule.postValue(Fail(it))
                 ShopScheduleActionDef.ABORT -> _shopInfoAbortSchedule.postValue(Fail(it))
             }
-        }
-    }
-
-    fun updateOperationalHoursList(shopId: String, newOpsHourList: List<ShopOperationalHour>) {
-        launchCatchError(block = {
-            withContext(dispatchers.io) {
-                setShopOperationalHoursUseCase.params = SetShopOperationalHoursUseCase.createRequestParams(shopId, newOpsHourList)
-                val response = setShopOperationalHoursUseCase.executeOnBackground()
-                _setShopOperationalHoursData.postValue(Success(response.setShopOperationalHours))
-            }
-        }) {
-            _setShopOperationalHoursData.postValue(Fail(it))
         }
     }
 
