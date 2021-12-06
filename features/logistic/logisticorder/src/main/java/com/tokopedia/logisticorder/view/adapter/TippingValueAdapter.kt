@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticorder.R
-import com.tokopedia.logisticorder.databinding.ChipsUnifyItemBinding
+import com.tokopedia.logisticorder.databinding.TippingValueItemBinding
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
@@ -19,7 +19,7 @@ class TippingValueAdapter(private var actionListener: ActionListener) : Recycler
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TippingValueViewHolder {
-        val binding = ChipsUnifyItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = TippingValueItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TippingValueViewHolder(binding)
     }
 
@@ -35,7 +35,7 @@ class TippingValueAdapter(private var actionListener: ActionListener) : Recycler
         return tippingValueList.size
     }
 
-    inner class TippingValueViewHolder(private val binding: ChipsUnifyItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class TippingValueViewHolder(private val binding: TippingValueItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(tippingValue: Int, onClick: () -> Unit) {
             binding.chipsItem.apply {
                 chipText = CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(tippingValue)
