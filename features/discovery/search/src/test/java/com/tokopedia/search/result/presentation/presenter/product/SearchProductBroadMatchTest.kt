@@ -139,6 +139,7 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         keyword shouldBe otherRelated.keyword
         applink shouldBe otherRelated.applink
         broadMatchItemDataViewList.size shouldBe otherRelated.productList.size
+        carouselOptionType shouldBe BroadMatch
 
         otherRelated.productList.forEachIndexed { index, otherRelatedProduct ->
             broadMatchItemDataViewList[index].assertBroadMatchItemViewModel(

@@ -3019,7 +3019,6 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             (this as? AppCompatActivity)?.run {
                 supportActionBar?.hide()
                 binding?.somListToolbar?.run {
-                    setBackgroundColor(getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     inflateMenu(R.menu.menu_som_list)
                     title = getString(getSomListResTitle())
                     isShowBackButton = showBackButton()

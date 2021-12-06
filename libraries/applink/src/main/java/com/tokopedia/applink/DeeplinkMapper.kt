@@ -21,6 +21,7 @@ import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavig
 import com.tokopedia.applink.entertaiment.DeeplinkMapperEntertainment.getRegisteredNavigationEvents
 import com.tokopedia.applink.etalase.DeepLinkMapperEtalase
 import com.tokopedia.applink.feed.DeepLinkMapperFeed.getRegisteredFeed
+import com.tokopedia.applink.find.DeepLinkMapperFind
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech
 import com.tokopedia.applink.fintech.DeeplinkMapperFintech.getRegisteredNavigationForFintech
@@ -228,6 +229,12 @@ object DeeplinkMapper {
             DeeplinkMapperDigital.getRegisteredNavigationFromHttpDigital(context, deeplink)
         if (applinkDigital.isNotEmpty()) {
             return applinkDigital
+        }
+
+        val applinkFind =
+                DeepLinkMapperFind.getRegisteredNavigationFindFromHttp(context, uri)
+        if (applinkFind.isNotEmpty()) {
+            return applinkFind
         }
 
         if (pathSize >= 1 && uri.pathSegments[0] == "qrcode-login") {

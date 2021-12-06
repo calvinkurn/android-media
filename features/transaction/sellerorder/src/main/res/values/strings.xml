@@ -131,8 +131,7 @@
     <string name="booking_code_copied">Kode booking berhasil disalin</string>
 
     <string name="barcode_image_content_description">Barcode Image</string>
-    <string name="barcode_label_one">Kode booking pengiriman</string>
-    <string name="barcode_label_two">(tap untuk perbesar)</string>
+    <string name="barcode_label_one">Kode booking pengiriman &lt;a href=\"#\"&gt;(tap untuk perbesar)&lt;/a&gt;</string>
     <string name="barcode_helper">Tunjukkan barcode atau kode booking kepada petugas di gerai kurir saat mengirim barang.</string>
     <string name="message_label">Informasi tambahan mengenai sistem kode booking</string>
 

@@ -20,6 +20,7 @@ object OtpConstant {
         const val EMAIL = "email"
         const val MISCALL = "misscall"
         const val PIN = "PIN"
+        const val SILENT_VERIFICATION = "silent_verif"
         const val GOOGLE_AUTH = "google_authenticator"
     }
 
