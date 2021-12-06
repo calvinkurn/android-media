@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -124,8 +123,7 @@ class PlayUserInteractionFragment @Inject constructor(
         InteractiveWinnerBadgeViewComponent.Listener,
         RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
-        ProductSeeMoreViewComponent.Listener,
-        LikeBubbleViewComponent.Listener
+        ProductSeeMoreViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -151,7 +149,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it, this) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
-        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage, this) }
+        it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
 
     /**
@@ -500,17 +498,6 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickFeaturedProductSeeMore()
     }
 
-    /**
-     * Like Bubble View Component Listener
-     */
-    override fun onBubbleShown(view: LikeBubbleViewComponent) {
-        productFeaturedView?.setShouldFadeEnd(true)
-    }
-
-    override fun onNoBubbleShown(view: LikeBubbleViewComponent) {
-        productFeaturedView?.setShouldFadeEnd(false)
-    }
-
     //endregion
 
     fun maxTopOnChatMode(maxTopPosition: Int) {
@@ -577,7 +564,7 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView?.hide()
 
         likeBubbleView.rootView.doOnLayout {
-            productFeaturedView?.setFadingWidth(3 * it.width)
+            productFeaturedView?.setFadingEndBounds(it.width)
         }
     }
 

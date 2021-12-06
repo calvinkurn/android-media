@@ -32,21 +32,14 @@ class ProductFeaturedRecyclerView : RecyclerView {
         xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_IN)
     }
 
-    private var mSize: Int = 0
-    private var mShouldFade: Boolean = false
+    private var mEndBounds: Int = 0
     private val mEndGradientRect = Rect(0, 0, 0, 0)
 
     override fun drawChild(canvas: Canvas, child: View?, drawingTime: Long): Boolean {
-        if (visibility == View.GONE || !mShouldFade) {
+        if (visibility == View.GONE) {
             return super.drawChild(canvas, child, drawingTime)
         }
 
-        mFadingEdgePaint.shader = getHorizontalGradientShader(
-            (width - mSize).toFloat(), width.toFloat()
-        )
-        mEndGradientRect.set(
-            width - mSize, 0, width + mSize, height
-        )
         val count = canvas.saveLayer(
             0.0f, 0.0f,
             width.toFloat(), height.toFloat(), null
@@ -61,28 +54,38 @@ class ProductFeaturedRecyclerView : RecyclerView {
         return drawChild
     }
 
-    fun setFadingEndWidth(size: Int) {
-        if (mSize == size) return
-
-        mSize = size
-        if (mShouldFade) invalidate()
-    }
-
-    fun setShouldFade(shouldFade: Boolean) {
-        if (mShouldFade == shouldFade) return
-
-        mShouldFade = shouldFade
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        invalidateEndGradientRect()
         invalidate()
     }
 
+    fun setFadingEndBounds(endBounds: Int) {
+        if (mEndBounds == endBounds) return
+
+        mEndBounds = endBounds
+        val startGradient = width - 3 * endBounds
+        mFadingEdgePaint.shader = getHorizontalGradientShader(
+            startGradient.toFloat(),
+            endBounds.toFloat()
+        )
+        invalidateEndGradientRect(startGradient)
+        invalidate()
+    }
+
+    private fun invalidateEndGradientRect(start: Int = mEndGradientRect.left) {
+        mEndGradientRect.set(start, 0, width, height)
+    }
+
     private fun getHorizontalGradientShader(
-        x0: Float = 0f,
-        x1: Float = 0f,
+        startGradient: Float,
+        endBounds: Float
     ): LinearGradient {
+        val endGradient = width - endBounds
         return LinearGradient(
-            x0,
+            startGradient,
             0f,
-            x1,
+            endGradient,
             0f,
             fadeColors,
             null,

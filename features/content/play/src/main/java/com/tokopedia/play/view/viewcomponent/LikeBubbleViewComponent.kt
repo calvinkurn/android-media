@@ -28,8 +28,7 @@ class LikeBubbleViewComponent(
     @IdRes idRes: Int,
     private val scope: CoroutineScope,
     private val iconCacheStorage: MultipleLikesIconCacheStorage,
-    private val listener: Listener,
-) : ViewComponent(container, idRes), PlayLikeBubblesManager.Listener {
+) : ViewComponent(container, idRes) {
 
     private val bubbleLikeView = findViewById<PlayLikeBubblesView>(R.id.bubble_like_view)
 
@@ -53,7 +52,7 @@ class LikeBubbleViewComponent(
         PlayLikeBubbleUiModel(it, bgColorList.map(this::getColor))
     }
 
-    private val manager = PlayLikeBubblesManager(scope, this)
+    private val manager = PlayLikeBubblesManager(scope)
 
     init {
         manager.setView(bubbleLikeView)
@@ -104,15 +103,6 @@ class LikeBubbleViewComponent(
             prioritize = !reduceOpacity,
             bubbleList = loadBubblesFromConfig(config),
         )
-    }
-
-    override fun onTimerTick(hasBubble: Boolean) {
-        if (hasBubble) listener.onBubbleShown(this)
-        else listener.onNoBubbleShown(this)
-    }
-
-    override fun onTimerStopped() {
-        listener.onNoBubbleShown(this)
     }
 
     private fun loadBubblesFromConfig(config: PlayLikeBubbleConfig): List<PlayLikeBubbleUiModel> {
@@ -173,10 +163,5 @@ class LikeBubbleViewComponent(
     private companion object {
         const val SHOT_PER_BATCH = 3
         const val SPAMMING_LIKE_DELAY = 200L
-    }
-
-    interface Listener {
-        fun onBubbleShown(view: LikeBubbleViewComponent)
-        fun onNoBubbleShown(view: LikeBubbleViewComponent)
     }
 }

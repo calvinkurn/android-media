@@ -47,11 +47,13 @@ class ProductFeaturedViewComponent(
 
     private var isProductsInitialized = false
 
+    private val defaultItemDecoration = ProductFeaturedItemDecoration(rvProductFeatured.context)
+
     init {
         rvProductFeatured.itemAnimator = null
         rvProductFeatured.layoutManager = layoutManager
         rvProductFeatured.adapter = adapter
-        rvProductFeatured.addItemDecoration(ProductFeaturedItemDecoration(rvProductFeatured.context))
+        rvProductFeatured.addItemDecoration(defaultItemDecoration)
         rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
@@ -78,16 +80,17 @@ class ProductFeaturedViewComponent(
         setFeaturedProducts(getPlaceholder(), TOTAL_PLACEHOLDER)
     }
 
-    fun setFadingWidth(width: Int) {
-        rvProductFeatured.setFadingEndWidth(width)
-    }
-
-    fun setShouldFadeEnd(shouldFade: Boolean) {
-        rvProductFeatured.setShouldFade(shouldFade)
+    fun setFadingEndBounds(width: Int) {
+        rvProductFeatured.removeItemDecoration(defaultItemDecoration)
+        rvProductFeatured.addItemDecoration(
+            ProductFeaturedItemDecoration(rvProductFeatured.context, extraEndMargin = width)
+        )
+        rvProductFeatured.setFadingEndBounds(width)
     }
 
     private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {
-        return products.take(maxProducts)
+//        return products.take(maxProducts)
+        return products.take(30)
     }
 
     private fun getPlaceholder() = List(TOTAL_PLACEHOLDER) { PlayProductUiModel.Placeholder }
