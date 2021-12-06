@@ -260,7 +260,6 @@ open class HomeRevampViewModel @Inject constructor(
     private var getRechargeBUWidgetJob: Job? = null
     private var injectCouponTimeBasedJob: Job? = null
     private var getTopAdsBannerDataJob: Job? = null
-    private var getQuestWidgetDataJob: Job? = null
     private var getTabRecommendationJob: Job? = null
     private var getHeaderDataJob: Job? = null
 
@@ -291,7 +290,6 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun getRecommendationWidget(){
-        findWidget<QuestWidgetModel> { t, i ->  }
         findWidget<BestSellerDataModel> { bestSellerDataModel, index ->
             launchCatchError(coroutineContext, block = {
                 val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()

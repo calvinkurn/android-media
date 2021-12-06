@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.viewholders
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
@@ -44,6 +45,10 @@ class QuestWidgetViewHolder(
             }
         }
         else{
+            val params: ViewGroup.LayoutParams = this.itemView.layoutParams
+            params.height = 0
+            params.width = 0
+            this.itemView.layoutParams = params
             questWidget?.hide()
         }
     }

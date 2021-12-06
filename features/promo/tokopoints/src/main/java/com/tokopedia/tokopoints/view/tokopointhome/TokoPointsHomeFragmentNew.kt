@@ -62,7 +62,9 @@ import com.tokopedia.tokopoints.view.tokopointhome.ticker.SectionTickerViewBinde
 import com.tokopedia.tokopoints.view.tokopointhome.topads.SectionTopadsViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.topquest.SectionTopQuestViewBinder
 import com.tokopedia.tokopoints.view.util.*
+import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.COUPON
 import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.QUEST
+import com.tokopedia.tokopoints.view.util.CommonConstant.SectionLayoutType.Companion.RECOMM
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.NotificationUnify
 import com.tokopedia.user.session.UserSession
@@ -502,7 +504,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
 
         if(this.questWidgetPosition != -1 && this.questWidgetPosition != sectionList.size - 1
-            && this.questWidgetPosition != 0 && sectionList.any { (it as SectionContent).layoutType == QUEST }){
+            && this.questWidgetPosition != 0 && (sectionList[questWidgetPosition] as SectionContent).layoutType == QUEST){
             adapter?.notifyItemChanged(this.questWidgetPosition)
         }
     }
