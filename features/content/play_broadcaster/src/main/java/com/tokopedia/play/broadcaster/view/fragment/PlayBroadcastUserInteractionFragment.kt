@@ -24,6 +24,7 @@ import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
+import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.BroadcastInteractiveInitState
@@ -153,7 +154,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
-    private val productTagView by viewComponent { ProductTagViewComponent(it) }
+    private val productTagView by viewComponent {
+        ProductTagViewComponent(it, object: ProductTagViewComponent.Listener {
+            override fun impressProductTag(product: ProductContentUiModel, position: Int) {
+                productTagAnalyticHelper.impressMostRightProduct(parentViewModel.channelId, product, position)
+            }
+        })
+    }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 

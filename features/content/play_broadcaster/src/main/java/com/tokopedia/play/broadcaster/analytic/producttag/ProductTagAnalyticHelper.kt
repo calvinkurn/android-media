@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic.producttag
 
+import android.util.Log
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 
@@ -24,7 +25,15 @@ class ProductTagAnalyticHelper(
 
     fun sendImpressionMostRightProduct() {
         product?.let {
+            Log.d("<LOG>", "Send Impression : $channelId | $product | $position")
             analytic.impressProductTag(channelId, it, position)
+            clearData()
         }
+    }
+
+    private fun clearData() {
+        product = null
+        channelId = ""
+        position = -1
     }
 }
