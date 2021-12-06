@@ -137,6 +137,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generat
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PLAY_WIDGET_MINIMUM_CARD
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
@@ -1061,15 +1062,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         viewModel.loadRecommendation(pageName)
     }
 
-    override fun loadPlayWidget() {
-        val productIds = viewModel.variantData?.let { variant ->
-            listOf(variant.parentId) + variant.children.map { it.productId }
-        } ?: emptyList()
-        val categoryIds = viewModel.getDynamicProductInfoP1?.basic?.category?.detail?.map {
-            it.id
-        } ?: emptyList()
-        viewModel.getPlayWidgetData(productIds, categoryIds)
-    }
+    override fun loadPlayWidget() { viewModel.getPlayWidgetData() }
 
     /**
      * PageErrorViewHolder
@@ -1446,10 +1439,11 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
         })
     }
 
-    private fun handlePlayWidgetUiModel(playWidgetUiModel: PlayWidgetUiModel){
-        if(playWidgetUiModel is PlayWidgetUiModel.Medium && playWidgetUiModel.items.size < 3){
+    private fun handlePlayWidgetUiModel(playWidgetUiModel: PlayWidgetUiModel) {
+        if (playWidgetUiModel is PlayWidgetUiModel.Medium && playWidgetUiModel.items.size < PLAY_WIDGET_MINIMUM_CARD) {
             pdpUiUpdater?.removeComponent(ProductDetailConstant.PLAY_CAROUSEL)
-        }else pdpUiUpdater?.updatePlayWidget(playWidgetUiModel)
+            updateUi()
+        } else pdpUiUpdater?.updatePlayWidget(playWidgetUiModel)
     }
 
     private fun onSuccessUpdateAddress() {

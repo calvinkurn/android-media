@@ -1622,10 +1622,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `get play widget data success`(){
-        val productIds = emptyList<String>()
-        val categoryIds = emptyList<String>()
-        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(productIds, categoryIds)
+    fun `get play widget data success`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
 
         val expectedResponse = PlayWidget()
         val expectedUiModel = PlayWidgetUiModel.Medium(
@@ -1647,24 +1645,26 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         )
 
 
-        coEvery { playWidgetTools.getWidgetFromNetwork(
-            widgetType = widgetType
-        ) } returns expectedResponse
+        coEvery {
+            playWidgetTools.getWidgetFromNetwork(
+                widgetType = widgetType
+            )
+        } returns expectedResponse
 
-        coEvery { playWidgetTools.mapWidgetToModel(
-            expectedResponse
-        ) } returns expectedUiModel
+        coEvery {
+            playWidgetTools.mapWidgetToModel(
+                expectedResponse
+            )
+        } returns expectedUiModel
 
-        viewModel.getPlayWidgetData(productIds, categoryIds)
+        viewModel.getPlayWidgetData()
 
         viewModel.playWidgetModel.verifySuccessEquals(Success(expectedUiModel))
     }
 
     @Test
-    fun `get play widget data error cause by get widget from network`(){
-        val productIds = emptyList<String>()
-        val categoryIds = emptyList<String>()
-        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(productIds, categoryIds)
+    fun `get play widget data error cause by get widget from network`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
 
         val expectedThrowable = Throwable()
 
@@ -1672,35 +1672,37 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             playWidgetTools.getWidgetFromNetwork(widgetType)
         } throws expectedThrowable
 
-        viewModel.getPlayWidgetData(productIds, categoryIds)
+        viewModel.getPlayWidgetData()
 
         viewModel.playWidgetModel.verifyErrorEquals(Fail(expectedThrowable))
     }
 
     @Test
-    fun `get play widget data error cause by map widget to model`(){
-        val productIds = emptyList<String>()
-        val categoryIds = emptyList<String>()
-        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(productIds, categoryIds)
+    fun `get play widget data error cause by map widget to model`() {
+        val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(emptyList(), emptyList())
 
         val expectedResponse = PlayWidget()
         val expectedThrowable = Throwable()
 
-        coEvery { playWidgetTools.getWidgetFromNetwork(
-            widgetType = widgetType
-        ) } returns expectedResponse
+        coEvery {
+            playWidgetTools.getWidgetFromNetwork(
+                widgetType = widgetType
+            )
+        } returns expectedResponse
 
-        coEvery { playWidgetTools.mapWidgetToModel(
-            expectedResponse
-        ) } throws expectedThrowable
+        coEvery {
+            playWidgetTools.mapWidgetToModel(
+                expectedResponse
+            )
+        } throws expectedThrowable
 
-        viewModel.getPlayWidgetData(productIds, categoryIds)
+        viewModel.getPlayWidgetData()
 
         viewModel.playWidgetModel.verifyErrorEquals(Fail(expectedThrowable))
     }
 
     @Test
-    fun `play widget toggle reminder success`(){
+    fun `play widget toggle reminder success`() {
 
         val fakeUiModel = PlayWidgetUiModel.Medium(
             "title",
@@ -1750,7 +1752,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `play widget toggle reminder fail cause by map reminder return false`(){
+    fun `play widget toggle reminder fail cause by map reminder return false`() {
 
         val fakeUiModel = PlayWidgetUiModel.Medium(
             "title",
@@ -1806,7 +1808,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
-    fun `play widget toggle reminder fail cause by exception`(){
+    fun `play widget toggle reminder fail cause by exception`() {
 
         val fakeUiModel = PlayWidgetUiModel.Medium(
             "title",

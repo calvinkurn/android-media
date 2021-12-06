@@ -1165,8 +1165,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         p2Data.value?.upcomingCampaigns?.get(productId)?.notifyMe = selectedUpcoming?.notifyMe != true
     }
 
-    fun getPlayWidgetData(productIds: List<String>, categoryIds: List<String>) {
+    fun getPlayWidgetData() {
         launchCatchError(block = {
+            val productIds = variantData?.let { variant ->
+                listOf(variant.parentId) + variant.children.map { it.productId }
+            } ?: emptyList()
+            val categoryIds = getDynamicProductInfoP1?.basic?.category?.detail?.map {
+                it.id
+            } ?: emptyList()
+
             val widgetType = PlayWidgetUseCase.WidgetType.PDPWidget(
                 productIds, categoryIds
             )

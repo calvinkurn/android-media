@@ -220,12 +220,17 @@ class DynamicProductDetailAdapterFactoryImpl(
             ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(view, listener)
             TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
-            ContentWidgetViewHolder.LAYOUT -> ContentWidgetViewHolder(
-                view, listener, PlayWidgetViewHolder(
-                    itemView = view.findViewById(R.id.pdp_play_widget_view),
-                    coordinator = playWidgetCoordinator
-                )
-            )
+            ContentWidgetViewHolder.LAYOUT -> {
+                val playWidgetView: View? = view.findViewById(R.id.pdp_play_widget_view)
+                if (playWidgetView != null) {
+                    ContentWidgetViewHolder(
+                        view, listener, PlayWidgetViewHolder(
+                            itemView = playWidgetView,
+                            coordinator = playWidgetCoordinator
+                        )
+                    )
+                } else super.createViewHolder(view, type)
+            }
             else -> super.createViewHolder(view, type)
         }
     }

@@ -8,6 +8,9 @@ object ContentWidgetTracking {
 
     private const val ACTION_IMPRESSION_CHANNEL_CARD = "impression - play widget video card"
     private const val ACTION_CLICK_CHANNEL_CARD = "click - play widget video card"
+    private const val ACTION_CLICK_BANNER_CARD = "click - cek konten lainnya on play widget"
+    private const val ACTION_CLICK_VIEW_ALL = "click - lihat semua on play widget"
+    private const val ACTION_CLICK_TOGGLE_REMINDER = "click - reminder on play widget video card"
 
     fun impressChannelCard(
         trackingQueue: TrackingQueue,
@@ -18,13 +21,13 @@ object ContentWidgetTracking {
         val componentPosition = data.componentPosition
 
         val mapEvent = hashMapOf(
-            "event" to "promoView",
+            "event" to ProductTrackingConstant.Tracking.PROMO_VIEW,
             "eventAction" to ACTION_IMPRESSION_CHANNEL_CARD,
-            "eventCategory" to "product detail page",
+            "eventCategory" to ProductTrackingConstant.Category.PDP,
             "eventLabel" to "shop_id:${data.channelShopId};",
-            "businessUnit" to "product detail page",
+            "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
             "component" to "'comp:$componentName;temp:$componentType;elem:$ACTION_IMPRESSION_CHANNEL_CARD;cpos:$componentPosition;",
-            "currentSite" to "tokopediamarketplace",
+            "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
             "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
             "productId" to data.productId,
             "ecommerce" to mapOf(
@@ -82,13 +85,13 @@ object ContentWidgetTracking {
 
     fun clickBannerCard(data: ContentWidgetTracker) {
         val mapEvent = hashMapOf<String, Any>(
-            "event" to "clickPDP",
-            "eventAction" to "click - cek konten lainnya on play widget",
-            "eventCategory" to "product detail page",
+            "event" to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+            "eventAction" to ACTION_CLICK_BANNER_CARD,
+            "eventCategory" to ProductTrackingConstant.Category.PDP,
             "eventLabel" to "shop_id:${data.channelShopId};",
-            "businessUnit" to "product detail page",
+            "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
             "component" to "'comp:${data.componentName};temp:${data.componentType};elem:$ACTION_CLICK_CHANNEL_CARD;cpos:${data.componentPosition};",
-            "currentSite" to "tokopediamarketplace",
+            "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
             "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
             "productId" to data.productId,
             "shopId" to "${data.shopId};",
@@ -100,13 +103,13 @@ object ContentWidgetTracking {
 
     fun clickViewAll(data: ContentWidgetTracker) {
         val mapEvent = hashMapOf<String, Any>(
-            "event" to "clickPDP",
-            "eventAction" to "click - lihat semua on play widget",
-            "eventCategory" to "product detail page",
+            "event" to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+            "eventAction" to ACTION_CLICK_VIEW_ALL,
+            "eventCategory" to ProductTrackingConstant.Category.PDP,
             "eventLabel" to "shop_id:;",
-            "businessUnit" to "product detail page",
+            "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
             "component" to "'comp:${data.componentName};temp:${data.componentType};elem:$ACTION_CLICK_CHANNEL_CARD;cpos:${data.componentPosition};",
-            "currentSite" to "tokopediamarketplace",
+            "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
             "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
             "productId" to data.productId,
             "shopId" to "${data.shopId};",
@@ -118,13 +121,13 @@ object ContentWidgetTracking {
 
     fun clickToggleReminderChannel(data: ContentWidgetTracker) {
         val mapEvent = hashMapOf<String, Any>(
-            "event" to "clickPDP",
-            "eventAction" to "click - reminder on play widget video card",
-            "eventCategory" to "product detail page",
+            "event" to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+            "eventAction" to ACTION_CLICK_TOGGLE_REMINDER,
+            "eventCategory" to ProductTrackingConstant.Category.PDP,
             "eventLabel" to "shop_id:${data.channelShopId};channel_id:${data.channelId};is_active:${data.isRemindMe};",
-            "businessUnit" to "product detail page",
+            "businessUnit" to ProductTrackingConstant.Tracking.BUSINESS_UNIT_PDP,
             "component" to "'comp:${data.componentName};temp:${data.componentType};elem:$ACTION_CLICK_CHANNEL_CARD;cpos:${data.componentPosition};",
-            "currentSite" to "tokopediamarketplace",
+            "currentSite" to ProductTrackingConstant.Tracking.CURRENT_SITE,
             "layout" to "layout:${data.layoutName};catName:${data.categoryName};catId:${data.categoryId};",
             "productId" to data.productId,
             "shopId" to "${data.shopId};",
