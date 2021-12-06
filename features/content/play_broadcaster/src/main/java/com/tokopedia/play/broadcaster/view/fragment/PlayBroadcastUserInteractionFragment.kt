@@ -157,7 +157,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private val productTagView by viewComponent {
         ProductTagViewComponent(it, object: ProductTagViewComponent.Listener {
             override fun impressProductTag(product: ProductContentUiModel, position: Int) {
-                productTagAnalyticHelper.impressMostRightProduct(parentViewModel.channelId, product, position)
+                productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
             }
         })
     }
@@ -299,7 +299,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        productTagAnalyticHelper.sendImpressionMostRightProduct()
+        productTagAnalyticHelper.sendTrackingProduct()
     }
 
     override fun onDestroy() {

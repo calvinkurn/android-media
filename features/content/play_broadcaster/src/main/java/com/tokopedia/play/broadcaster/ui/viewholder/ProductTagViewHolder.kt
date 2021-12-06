@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.play_common.R as playCommonR
 import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.type.StockAvailable
@@ -65,6 +66,6 @@ class ProductTagViewHolder(
     }
 
     companion object {
-        val LAYOUT = R.layout.item_play_product_tag
+        val LAYOUT = playCommonR.layout.item_play_product_tag
     }
 }

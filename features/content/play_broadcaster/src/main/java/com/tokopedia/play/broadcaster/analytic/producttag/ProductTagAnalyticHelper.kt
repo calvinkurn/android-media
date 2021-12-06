@@ -15,7 +15,7 @@ class ProductTagAnalyticHelper(
     private var product: ProductContentUiModel? = null
     private var position: Int = -1
 
-    fun impressMostRightProduct(channelId: String, product: ProductContentUiModel, position: Int) {
+    fun trackScrollProduct(channelId: String, product: ProductContentUiModel, position: Int) {
         if(position > this.position) {
             this.channelId = channelId
             this.product = product
@@ -23,17 +23,15 @@ class ProductTagAnalyticHelper(
         }
     }
 
-    fun sendImpressionMostRightProduct() {
+    fun sendTrackingProduct() {
         product?.let {
             Log.d("<LOG>", "Send Impression : $channelId | $product | $position")
-            analytic.impressProductTag(channelId, it, position)
+//            analytic.scrollProductTag(channelId, it, position)
             clearData()
         }
     }
 
     private fun clearData() {
         product = null
-        channelId = ""
-        position = -1
     }
 }
