@@ -31,23 +31,11 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@string/tokopedianow_quest_shop_again_and_get_gift"
-                app:layout_constraintBottom_toTopOf="@+id/tp_desc"
+                app:layout_constraintBottom_toTopOf="@+id/iu_gift"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="heading_5" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tp_desc"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/tokopedianow_quest_get_gift"
-                app:layout_constraintEnd_toEndOf="@+id/tp_title"
-                app:layout_constraintStart_toStartOf="@+id/tp_title"
-                app:layout_constraintTop_toBottomOf="@+id/tp_title"
-                app:typographyType="small" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tp_counter"
@@ -64,11 +52,11 @@
                 android:id="@+id/iu_gift"
                 android:layout_width="13dp"
                 android:layout_height="13dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tp_desc" />
+                app:layout_constraintTop_toBottomOf="@+id/tp_title" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

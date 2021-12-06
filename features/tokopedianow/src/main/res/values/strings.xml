@@ -96,7 +96,6 @@
     <string name="tokopedianow_quest_title_widget_error_title">Gagal ditampilkan</string>
     <string name="tokopedianow_quest_title_widget_error_desc">Klik ikon buat refresh</string>
     <string name="tokopedianow_quest_shop_again_and_get_gift">Belanja lagi, dapatin hadiah!</string>
-    <string name="tokopedianow_quest_get_gift">Kumpulin hadiahnya</string>
 
     <!-- Content Description -->
     <string name="tokopedianow_header_background_content_description">Header Background</string>
