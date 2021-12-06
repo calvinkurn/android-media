@@ -89,7 +89,9 @@ class QuestWidgetItemView @JvmOverloads constructor(
         this.questWidgetCallbacks = questWidgetCallbacks
         this.questTracker = questTracker
         this.source = source
-        this.questId = item.id.toString()
+        item.id?.let {
+            this.questId = it
+        }
         this.position = position
         this.questWidgetPosition = questWidgetPosition
 
@@ -141,7 +143,7 @@ class QuestWidgetItemView @JvmOverloads constructor(
 
         this.setOnClickListener {
             //tracker event
-            this.questTracker.clickQuestCard(source, item.id.toString())
+            item.id?.let { it1 -> this.questTracker.clickQuestCard(source, it1) }
 
             try {
                 questWidgetCallbacks.updateQuestWidget(this.questWidgetPosition)

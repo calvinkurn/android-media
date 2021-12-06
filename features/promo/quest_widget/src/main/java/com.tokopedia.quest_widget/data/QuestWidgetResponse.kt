@@ -33,7 +33,7 @@ data class QuestWidgetList(
 data class QuestWidgetListItem(
 
     @SerializedName("id")
-    val id: Int? = null,
+    val id: String? = null,
 
     @SerializedName("title")
     val title: String? = null,
@@ -171,7 +171,7 @@ data class PrizeItem(
 data class QuestUser(
 
     @SerializedName("id")
-    val id: Int? = null,
+    val id: String? = null,
 
     @SerializedName("status")
     var status: String? = null
@@ -180,7 +180,7 @@ data class QuestUser(
 data class Category(
 
     @SerializedName("id")
-    val id: Int? = null,
+    val id: String? = null,
 
     @SerializedName("title")
     val title: String? = null
@@ -189,7 +189,7 @@ data class Category(
 data class TaskItem(
 
     @SerializedName("id")
-    val id: Int? = null,
+    val id: String? = null,
 
     @SerializedName("title")
     val title: String? = null,

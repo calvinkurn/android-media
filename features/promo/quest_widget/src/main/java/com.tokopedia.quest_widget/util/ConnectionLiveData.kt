@@ -68,7 +68,7 @@ class ConnectionLiveData(private val context: Context) : LiveData<Boolean>() {
             else -> context.registerReceiver(
                 networkReceiver,
                 IntentFilter("android.net.conn.CONNECTIVITY_CHANGE")
-            ) // android.net.ConnectivityManager.CONNECTIVITY_ACTION
+            )
         }
 
     }
