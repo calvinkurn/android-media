@@ -18,6 +18,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
@@ -30,6 +31,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.ToggleBlockChatParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
+import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,6 +51,7 @@ class TopChatViewModel @Inject constructor(
     private var closeReminderTicker: CloseReminderTicker,
     private var addToCartOccUseCase: AddToCartOccMultiUseCase,
     private val chatToggleBlockChat: ChatToggleBlockChatUseCaseNew,
+    private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.main) {
@@ -92,6 +96,10 @@ class TopChatViewModel @Inject constructor(
     private val _toggleBlock = MutableLiveData<WrapperChatSetting>()
     val toggleBlock : LiveData<WrapperChatSetting>
         get() = _toggleBlock
+
+    private val _chatDeleteStatus = MutableLiveData<Result<ChatDeleteStatus>>()
+    val chatDeleteStatus: LiveData<Result<ChatDeleteStatus>>
+        get() = _chatDeleteStatus
 
     fun getMessageId(
         toUserId: String,
@@ -321,5 +329,22 @@ class TopChatViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun deleteChat(messageId: String) {
+        launchCatchError(block = {
+            val result = moveChatToTrashUseCase(messageId)
+            if (result.chatMoveToTrash.list.isNotEmpty()) {
+                val deletedChat = result.chatMoveToTrash.list.first()
+                if (deletedChat.isSuccess == Constant.INT_STATUS_TRUE) {
+                    _chatDeleteStatus.value = Success(result)
+                } else {
+                    val error = MessageErrorException(deletedChat.detailResponse)
+                    _chatDeleteStatus.value = Fail(error)
+                }
+            }
+        }, onError = {
+            _chatDeleteStatus.value = Fail(it)
+        })
     }
 }

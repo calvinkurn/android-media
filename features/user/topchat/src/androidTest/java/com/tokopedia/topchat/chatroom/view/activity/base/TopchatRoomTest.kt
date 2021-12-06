@@ -69,6 +69,7 @@ import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub
 import com.tokopedia.topchat.stub.chatroom.websocket.RxWebSocketUtilStub.Companion.START_TIME_FORMAT
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
+import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -161,6 +162,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     protected lateinit var addToCartUseCase: AddToCartUseCaseStub
+
+    @Inject
+    protected lateinit var moveChatToTrashUseCase: MutationMoveChatToTrashUseCaseStub
 
     @Inject
     protected lateinit var cacheManager: TopchatCacheManager

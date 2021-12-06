@@ -9,6 +9,7 @@ import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatViewModel
+import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
@@ -53,6 +54,9 @@ abstract class BaseTopChatViewModelTest {
     lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseNew
 
     @RelaxedMockK
+    lateinit var mutationMoveChatToTrashUseCase: MutationMoveChatToTrashUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
     private val dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider
 
@@ -79,6 +83,7 @@ abstract class BaseTopChatViewModelTest {
             closeReminderTicker,
             addToCartOccMultiUseCase,
             chatToggleBlockChatUseCase,
+            mutationMoveChatToTrashUseCase,
             dispatchers,
             remoteConfig
         )

@@ -116,12 +116,6 @@ interface TopChatContract {
 
         fun isUploading(): Boolean
 
-        fun deleteChat(
-            messageId: String,
-            onError: (Throwable) -> Unit,
-            onSuccessDeleteConversation: () -> Unit
-        )
-
         fun sendAttachmentsAndMessage(
             sendMessage: String, referredMsg: ParentReply? = null
         )

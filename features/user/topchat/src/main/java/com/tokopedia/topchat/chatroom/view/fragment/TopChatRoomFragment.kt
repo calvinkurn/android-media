@@ -863,15 +863,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         adapter.addWidgetHeader(widgets)
     }
 
-    private fun onError(): (Throwable) -> Unit {
-        return { thr ->
-            hideLoading()
-            view?.let {
-                showSnackbarError(ErrorHandler.getErrorMessage(it.context, thr))
-            }
-        }
-    }
-
     private fun onError(throwable: Throwable) {
         hideLoading()
         view?.let {
@@ -1629,24 +1620,22 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onDeleteConversation() {
         showLoading()
-        presenter.deleteChat(messageId, onError(), onSuccessDeleteConversation())
+        viewModel.deleteChat(messageId)
     }
 
-    private fun onSuccessDeleteConversation(): () -> Unit {
-        return {
-            hideLoading()
-            activity?.let {
-                val intent = Intent()
-                val bundle = Bundle()
-                bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
-                bundle.putInt(
-                    TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX,
-                    indexFromInbox
-                )
-                intent.putExtras(bundle)
-                it.setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, intent)
-                it.finish()
-            }
+    private fun onSuccessDeleteConversation() {
+        hideLoading()
+        activity?.let {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
+            bundle.putInt(
+                TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX,
+                indexFromInbox
+            )
+            intent.putExtras(bundle)
+            it.setResult(TopChatInternalRouter.Companion.CHAT_DELETED_RESULT_CODE, intent)
+            it.finish()
         }
     }
 
@@ -2506,6 +2495,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.toggleBlock.observe(viewLifecycleOwner, {
             handleToggleBlock(it)
+        })
+
+        viewModel.chatDeleteStatus.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> onSuccessDeleteConversation()
+                is Fail -> onError(it.throwable)
+            }
         })
     }
 

@@ -9,8 +9,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplyPojo
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatlist.pojo.ChatDelete
-import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
@@ -676,73 +674,6 @@ class TopChatRoomPresenterTestCont : BaseTopChatRoomPresenterTest() {
         verify(exactly = 1) { RxWebSocket.send(paramSendAttachment, listInterceptor) }
         verify(exactly = 1) { RxWebSocket.send(paramStopTyping, listInterceptor) }
         verify(exactly = 1) { view.clearAttachmentPreviews() }
-    }
-
-    @Test
-    fun `on success delete chat`() {
-        // Given
-        val successDelete = ChatDelete(
-            isSuccess = 1, detailResponse = "", messageId = exMessageId.toLong())
-        val result = ChatDeleteStatus().apply {
-            this.chatMoveToTrash.list = listOf(successDelete)
-        }
-
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
-        coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
-        } returns result
-
-        // When
-        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
-
-        // Then
-        verify {
-            onSuccessDeleteConversation.invoke()
-        }
-    }
-
-    @Test
-    fun `on failed to delete chat`() {
-        // Given
-        val failedDelete = ChatDelete(
-            isSuccess = 0, detailResponse = "Error", messageId = exMessageId.toLong())
-        val result = ChatDeleteStatus().apply {
-            this.chatMoveToTrash.list = listOf(failedDelete)
-        }
-
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
-        coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
-        } returns result
-
-        // When
-        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
-
-        // Then
-        verify {
-            onError.invoke(any())
-        }
-    }
-
-    @Test
-    fun `on error delete chat`() {
-        // Given
-        val throwable = mockk<Throwable>(relaxed = true)
-        val onError: (Throwable) -> Unit = mockk(relaxed = true)
-        val onSuccessDeleteConversation: () -> Unit = mockk(relaxed = true)
-        coEvery {
-            moveChatToTrashUseCase.execute(exMessageId)
-        } throws throwable
-
-        // When
-        presenter.deleteChat(exMessageId, onError, onSuccessDeleteConversation)
-
-        // Then
-        verify {
-            onError.invoke(throwable)
-        }
     }
 
     @Test
