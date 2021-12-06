@@ -871,16 +871,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 containerDelete.visible()
                 deleteButton.apply {
                     isEnabled = true
-                    if (listBulkDelete.size > 1) {
+                    if (listBulkDelete.isNotEmpty()) {
                         text = getString(R.string.wishlist_v2_delete_text_counter, listBulkDelete.size)
                         setOnClickListener {
                             showPopupBulkDeleteConfirmation(listBulkDelete)
-                        }
-                    } else if (listBulkDelete.size == 1) {
-                        text = getString(R.string.wishlist_v2_delete_text)
-
-                        setOnClickListener {
-                            wishlistViewModel.deleteWishlistV2(listBulkDelete[0], userSession.userId)
                         }
                     }
                 }
