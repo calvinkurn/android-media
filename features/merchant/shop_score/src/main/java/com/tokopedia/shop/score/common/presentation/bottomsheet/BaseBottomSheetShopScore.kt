@@ -1,4 +1,4 @@
-package com.tokopedia.shop.score.common.presentation
+package com.tokopedia.shop.score.common.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater

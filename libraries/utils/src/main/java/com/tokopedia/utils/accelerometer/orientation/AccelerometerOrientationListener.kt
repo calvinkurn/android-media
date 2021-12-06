@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.common
+package com.tokopedia.utils.accelerometer.orientation
 
 import android.content.ContentResolver
 import android.database.ContentObserver
@@ -6,8 +6,8 @@ import android.os.Handler
 import android.provider.Settings
 
 class AccelerometerOrientationListener(
-        private val contentResolver: ContentResolver,
-        private val onAccelerometerOrientationSettingChange: (isEnabled: Boolean) -> Unit
+    private val contentResolver: ContentResolver,
+    private val onAccelerometerOrientationSettingChange: (isEnabled: Boolean) -> Unit
 ) {
 
     private val contentObserver: ContentObserver = object : ContentObserver(Handler()) {
