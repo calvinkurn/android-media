@@ -121,13 +121,11 @@ fun isHomeTokonowCoachmarkShown(context: Context): Boolean {
 
 fun isP1HomeCoachmarkDone(
     context: Context,
-    isUseInboxRollence: Boolean,
-    isUseNavigationRollence: Boolean
+    isUseInboxRollence: Boolean
 ): Boolean {
     var isDone = true
     if (
-        (isUseInboxRollence && !isInboxCoachmarkShown(context)) ||
-        (isUseNavigationRollence)) {
+        (isUseInboxRollence && !isInboxCoachmarkShown(context))){
         isDone = false
     }
     return isDone

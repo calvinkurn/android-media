@@ -268,7 +268,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private var beautyFestEvent = BEAUTY_FEST_NOT_SET
         private var counterBypassFirstNetworkHomeData = 0
         private var eligibleBeautyFest = false
-        private const val isNavRevamp = true
         private const val isPageRefresh = true
 
         @JvmStatic
@@ -830,8 +829,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     ) {
         if (isP1HomeCoachmarkDone(
                 context = ctx,
-                isUseInboxRollence = useNewInbox,
-                isUseNavigationRollence = isNavRevamp
+                isUseInboxRollence = useNewInbox
             )) {
             if (!isNewWalletAppCoachmarkShown(ctx)) {
                 showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
