@@ -131,5 +131,6 @@
     <string name="review_reminder_title">Pengingat Ulasan</string>
     <string name="review_reading_title">Ulasan Pembeli</string>
     <string name="review_gallery_title">Foto Pembeli</string>
+    <string name="reputation_history_set_date">Atur Tanggal</string>
 
 </resources>

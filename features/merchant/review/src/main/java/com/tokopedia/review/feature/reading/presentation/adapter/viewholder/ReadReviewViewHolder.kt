@@ -10,10 +10,15 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.R
 import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
 import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
-import com.tokopedia.review.feature.reading.data.*
+import com.tokopedia.review.feature.reading.data.LikeDislike
+import com.tokopedia.review.feature.reading.data.ProductReview
+import com.tokopedia.review.feature.reading.data.ProductReviewAttachments
+import com.tokopedia.review.feature.reading.data.ProductReviewResponse
+import com.tokopedia.review.feature.reading.data.UserReviewStats
 import com.tokopedia.review.feature.reading.presentation.adapter.uimodel.ReadReviewUiModel
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewAttachedImagesListener
 import com.tokopedia.review.feature.reading.presentation.listener.ReadReviewItemListener
@@ -30,7 +35,7 @@ class ReadReviewViewHolder(view: View,
 ) : AbstractViewHolder<ReadReviewUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_read_review
+        val LAYOUT = com.tokopedia.review.R.layout.item_read_review
         private const val MAX_CHAR = 140
         private const val ALLOW_CLICK = true
         private const val MAX_LINES_REVIEW = 3
@@ -50,11 +55,15 @@ class ReadReviewViewHolder(view: View,
     private var sellerResponse: ReadReviewSellerResponse? = null
     private var isProductReview = false
     private var shopId = ""
+    private var badRatingReason: ReviewBadRatingReasonWidget? = null
+
+    init {
+        bindViews()
+    }
 
     override fun bind(element: ReadReviewUiModel) {
         isProductReview = !element.isShopViewHolder
         shopId = element.shopId
-        bindViews()
         with(element.reviewData) {
             if (!isProductReview) {
                 setProductInfo(
@@ -85,6 +94,7 @@ class ReadReviewViewHolder(view: View,
             else
                 setShopReviewLikeButton(feedbackID, element.shopId, element.productId, likeDislike)
             setReply(element.shopName, reviewResponse, feedbackID, element.productId)
+            showBadRatingReason(badRatingReasonFmt)
         }
     }
 
@@ -101,6 +111,7 @@ class ReadReviewViewHolder(view: View,
             showResponseText = findViewById(R.id.read_review_show_response)
             showResponseChevron = findViewById(R.id.read_review_show_response_chevron)
             sellerResponse = findViewById(R.id.read_review_seller_response)
+            badRatingReason = findViewById(R.id.read_review_bad_rating_reason)
         }
     }
 
@@ -308,5 +319,9 @@ class ReadReviewViewHolder(view: View,
     private fun setBasicInfoDataAndListener(isAnonymous: Boolean, userId: String, feedbackId: String) {
         basicInfo?.setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
         basicInfo?.setListener(reviewBasicInfoListener)
+    }
+
+    private fun showBadRatingReason(reason: String) {
+        badRatingReason?.showBadRatingReason(reason)
     }
 }

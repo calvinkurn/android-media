@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.ui.custom
 
-import com.tokopedia.affiliate.model.AffiliateSearchData
+import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.productcard.ProductCardModel
 
 class AffiliatePromotionProductCard  {
@@ -61,7 +61,7 @@ class AffiliatePromotionProductCard  {
             return if (data?.isNotEmpty() == true){ data }else { "" }
         }
 
-        private fun getFooterDataFromType(item : AffiliateSearchData.SearchAffiliate.Data.Card.Item,type : FooterType) : AffiliateSearchData.SearchAffiliate.Data.Card.Item.Footer?{
+        private fun getFooterDataFromType(item : AffiliateSearchData.SearchAffiliate.Data.Card.Item, type : FooterType) : AffiliateSearchData.SearchAffiliate.Data.Card.Item.Footer?{
             return (item.footer?.find{ it?.footerType == type.type})
         }
 
