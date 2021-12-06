@@ -6,7 +6,7 @@ import java.lang.reflect.Type
 
 object GqlMockUtil {
 
-    inline fun <reified T : Any> createSuccessResponse(vararg obj: T): GraphqlResponse {
+    inline fun <reified T : Any> createSuccessResponse(obj: T): GraphqlResponse {
         val success = hashMapOf<Type, Any>(T::class.java to obj)
         return success.toSuccessGqlResponse()
     }

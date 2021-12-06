@@ -2,6 +2,7 @@ package com.tokopedia.test.application.graphql
 
 import org.junit.Assert.*
 import org.junit.Test
+import org.mockito.Mock
 
 class GqlMockUtilKtTest {
 
@@ -13,6 +14,15 @@ class GqlMockUtilKtTest {
         val actual = hashMapOf(example.toGqlPair())
 
         assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `get success response test`() {
+        val example = ExampleResponse(1, "Lorem")
+
+        val actual = GqlMockUtil.createSuccessResponse(example)
+
+        print(actual)
     }
 
     data class ExampleResponse(val id: Int, val title: String)

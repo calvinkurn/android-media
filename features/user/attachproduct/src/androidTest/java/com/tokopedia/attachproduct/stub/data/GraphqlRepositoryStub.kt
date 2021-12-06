@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.test.application.graphql.GqlMockUtil
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -24,20 +25,20 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
         when (state) {
             TestState.DEFAULT -> {
                 val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product, AceSearchProductResponse::class.java)
-                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+                return GqlMockUtil.createSuccessResponse(response)
             }
             TestState.EMPTY -> {
                 val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_empty, AceSearchProductResponse::class.java)
-                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+                return GqlMockUtil.createSuccessResponse(response)
             }
 
             TestState.FILTER -> {
                 val response = FileUtils.parseRaw<AceSearchProductResponse>(R.raw.example_ace_search_product_filter, AceSearchProductResponse::class.java)
-                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+                return GqlMockUtil.createSuccessResponse(response)
             }
             else -> {
                 val response = AceSearchProductResponse()
-                return GraphqlResponse(mapOf(AceSearchProductResponse::class.java to response), errorData, false)
+                return GqlMockUtil.createSuccessResponse(response)
             }
         }
 
