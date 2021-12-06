@@ -398,7 +398,10 @@ class PlayBeforeLiveFragment @Inject constructor(
                 err = state.error,
                 customErrMessage = getString(R.string.play_live_broadcast_connect_fail),
                 actionLabel = getString(R.string.play_broadcast_try_again),
-                actionListener = { parentViewModel.reconnectLiveStream() }
+                actionListener = {
+                    showCountdown(true)
+                    parentViewModel.reconnectLiveStream()
+                }
             )
             PlayLivePusherErrorType.SystemError -> showErrorToaster(
                 err = state.error,
@@ -406,7 +409,17 @@ class PlayBeforeLiveFragment @Inject constructor(
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { parentViewModel.stopLiveStream(shouldNavigate = true) }
             )
-            else -> {}
+            PlayLivePusherErrorType.NetworkLoss,
+            PlayLivePusherErrorType.NetworkPoor -> showErrorToaster(
+                err = state.error,
+                customErrMessage = getString(R.string.play_bro_error_network_problem),
+                actionLabel = getString(R.string.play_ok)
+            )
+            else -> showErrorToaster(
+                err = state.error,
+                customErrMessage = getString(R.string.play_broadcaster_default_error),
+                actionLabel = getString(R.string.play_ok)
+            )
         }
         analytic.viewErrorOnFinalSetupPage(state.error.reason)
         if (GlobalConfig.DEBUG) {

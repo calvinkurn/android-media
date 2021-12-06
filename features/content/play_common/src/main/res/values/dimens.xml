@@ -30,6 +30,9 @@
 
     <dimen name="play_leaderboard_winner_separator_height">1dp</dimen>
 
+    <dimen name="play_circle_separator_width">4dp</dimen>
+    <dimen name="play_circle_separator_height">4dp</dimen>
+
     <!-- Product Tag -->
     <dimen name="play_product_tag_width">120dp</dimen>
     <dimen name="play_product_tag_image_height">120dp</dimen>

@@ -10,9 +10,9 @@ interface PlayLivePusherMediatorListener {
 
     fun onLivePusherStatsUpdated(statistic: PlayLivePusherStatistic) { }
 
-    fun onLiveCountDownTimerActive(timeInMillis: Long) { }
+    fun onLiveTimerActive(timeInMillis: Long) { }
 
-    fun onLiveCountDownTimerFinish() { }
+    fun onLiveTimerFinish() { }
 
     fun onReachMaximumPausePeriod() { }
 }
