@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.presentation.adapter.setting.GeneralSettingAdapter;
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel;
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemUIModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -49,6 +49,6 @@ public abstract class BaseGeneralSettingFragment extends TkpdBaseV4Fragment
         recyclerView.setAdapter(adapter);
     }
 
-    protected abstract List<SettingItemViewModel> getSettingItems();
+    protected abstract List<SettingItemUIModel> getSettingItems();
 
 }

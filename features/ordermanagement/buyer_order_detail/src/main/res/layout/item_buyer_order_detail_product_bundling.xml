@@ -10,7 +10,8 @@
         android:id="@+id/container_bom_detail_bundling"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:background="?android:attr/selectableItemBackground">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_bom_detail_bundling_icon"

@@ -709,9 +709,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_sa" />
         <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_id_sa" />
-        <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/actions" />
         <meta-data
@@ -823,10 +820,6 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
-        <provider
-            android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider411083689235522"
-            android:exported="true" />
         <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
             android:screenOrientation="portrait">

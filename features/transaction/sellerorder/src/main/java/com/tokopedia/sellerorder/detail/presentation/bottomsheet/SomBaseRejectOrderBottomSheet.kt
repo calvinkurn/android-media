@@ -11,7 +11,7 @@ abstract class SomBaseRejectOrderBottomSheet<T : ViewBinding>(
     context: Context,
     childViewsLayoutResourceId: Int,
     bottomSheetTitle: String
-) : SomBottomSheet<T>(childViewsLayoutResourceId, true, true, false, bottomSheetTitle, context, true) {
+) : SomBottomSheet<T>(childViewsLayoutResourceId, true, true, false, false, false, bottomSheetTitle, context, true) {
 
     protected fun checkReasonRejectIsNotEmpty(reason: String?): Boolean {
         var isNotEmpty = true
