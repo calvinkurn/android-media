@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.producttag.ProductTagAnalyticHelper
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
@@ -163,6 +164,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private var toasterBottomMargin = 0
 
+    private lateinit var productTagAnalyticHelper: ProductTagAnalyticHelper
+
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -176,6 +179,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
         setupView()
         setupInsets()
         setupObserve()
@@ -193,6 +197,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     override fun getViewContainer(): FragmentViewContainer = fragmentViewContainer
+
+    private fun initAnalytic() {
+        productTagAnalyticHelper = ProductTagAnalyticHelper(analytic)
+    }
 
     private fun setupView() {
         actionBarLiveView.setTitle(parentViewModel.channelTitle)
@@ -280,6 +288,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeUiState()
         observeUiEvent()
         observeProductTag()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        productTagAnalyticHelper.sendImpressionMostRightProduct()
     }
 
     override fun onDestroy() {
