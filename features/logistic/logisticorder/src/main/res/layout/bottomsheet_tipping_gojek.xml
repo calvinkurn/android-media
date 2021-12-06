@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_tipping_gojek"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="132dp"
         android:layout_marginHorizontal="16dp"
         android:visibility="visible"
         tools:visibility="gone">
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             style="@style/HintTextInputLayout"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="24dp"
             android:layout_marginBottom="150dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_chips_tip"
@@ -108,15 +108,37 @@
             app:typographyType="heading_3"
             app:typographyWeight="bold" />
 
-        <com.tokopedia.unifycomponents.ChipsUnify
-            android:id="@+id/chips_payment"
-            android:padding="16dp"
+        <com.tokopedia.unifycomponents.CardUnify
             android:layout_marginTop="8dp"
+            android:paddingVertical="8dp"
+            android:paddingHorizontal="12dp"
+            android:id="@+id/card_tipping_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:card_type="border"
             app:layout_constraintTop_toBottomOf="@id/tv_tip_result"
             app:layout_constraintStart_toStartOf="@id/start"
-            app:layout_constraintEnd_toEndOf="@id/end" />
+            app:layout_constraintEnd_toEndOf="@id/end">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <com.tokopedia.unifycomponents.ImageUnify
+                    android:id="@+id/tipping_method"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:paddingEnd="6dp"
+                    android:paddingRight="6dp"/>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tipping_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="heading_4"
+                    />
+            </LinearLayout>
+
+        </com.tokopedia.unifycomponents.CardUnify>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_tip_result_desc"
@@ -128,7 +150,7 @@
             android:gravity="center"
             app:layout_constraintEnd_toEndOf="@id/end"
             app:layout_constraintStart_toStartOf="@id/start"
-            app:layout_constraintTop_toBottomOf="@id/chips_payment"
+            app:layout_constraintTop_toBottomOf="@id/card_tipping_value"
             app:typographyType="body_3" />
 
         <View

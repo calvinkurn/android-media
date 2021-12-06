@@ -187,10 +187,12 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
                     tvDriverNameValue.text = logisticDriverModel.lastDriver.name
                     tvPhoneNumberValue.text = logisticDriverModel.lastDriver.phone
                     tvLicenseValue.text = logisticDriverModel.lastDriver.licenseNumber
-
-                    chipsPayment.chip_image_icon.setImageUrl(logisticDriverModel.payment.methodIcon)
-                    chipsPayment.chip_text.run {
-                        setTextSize(TypedValue.COMPLEX_UNIT_SP,16F)
+                    if (logisticDriverModel.payment.methodIcon.isNotEmpty()) {
+                        tippingMethod.setImageUrl(logisticDriverModel.payment.methodIcon)
+                    } else {
+                        tippingMethod.visibility = View.GONE
+                    }
+                    tippingValue.run {
                         text = MethodChecker.fromHtml(String.format(getString(R.string.payment_value), logisticDriverModel.payment.method, logisticDriverModel.payment.amountFormatted))
                         setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                     }
