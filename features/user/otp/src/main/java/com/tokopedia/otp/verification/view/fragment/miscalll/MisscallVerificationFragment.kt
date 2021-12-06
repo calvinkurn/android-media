@@ -72,7 +72,11 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     }
 
     private fun setIcon() {
-        val height = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 270f, resources.displayMetrics)
+        val height = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            FLOAT_270,
+            resources.displayMetrics
+        )
         viewBound.methodIcon?.apply {
             setMargin(0, 0, 0, 0)
             scaleType = ImageView.ScaleType.FIT_CENTER
@@ -364,7 +368,7 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
             setSuccessImage()
 
             // show icon success 1s
-            Timer().schedule(1000) {
+            Timer().schedule(DELAY_1_SECOND) {
                 super.onSuccessOtpValidate(otpValidateData)
             }
         } else {
@@ -386,6 +390,9 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     }
 
     companion object {
+        private const val DELAY_1_SECOND = 1000L
+        private const val FLOAT_270 = 270f
+
         private const val REMOTE_CONFIG_KEY_DISABLE_AUTOREAD_MISSCALL = "android_disable_autoread_misscall"
         private const val DEFAULT_PREFIX_MISCALL = "000-00"
         private const val REGEX_PHONE_NUMBER = """[+()\-\s]"""

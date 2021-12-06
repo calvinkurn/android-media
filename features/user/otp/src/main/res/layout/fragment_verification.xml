@@ -33,9 +33,9 @@
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieMiscallAnimation"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="@dimen/otp_dp_210"
                 android:visibility="gone"
-                android:paddingBottom="16dp"
+                android:paddingBottom="@dimen/unify_space_16"
                 app:layout_constraintTop_toBottomOf="@id/method_icon"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -44,7 +44,7 @@
 
             <com.tokopedia.pin.PinUnify
                 android:id="@+id/pin"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl6"
                 android:layout_marginTop="@dimen/spacing_lvl4"
