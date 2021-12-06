@@ -20,8 +20,6 @@ import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.play.analytic.CastAnalyticHelper
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.util.PlayCastHelper
-import com.tokopedia.play_common.sse.PlayChannelSSE
-import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.play_common.websocket.PlayWebSocketImpl
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
@@ -29,6 +27,8 @@ import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.player.creator.DefaultExoPlayerCreator
 import com.tokopedia.play_common.player.creator.ExoPlayerCreator
+import com.tokopedia.play_common.sse.PlayChannelSSE
+import com.tokopedia.play_common.sse.PlayChannelSSEImpl
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
@@ -40,6 +40,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -155,10 +156,6 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun providePlayChannelSSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers)
-
-    @Provides
     @Nullable
     fun provideCastContext(@ApplicationContext context: Context): CastContext? = PlayCastHelper.getCastContext(context)
 
@@ -169,4 +166,13 @@ class PlayModule(val mContext: Context) {
     @PlayScope
     @Provides
     fun provideCastAnalyticHelper(playAnalytic: PlayAnalytic): CastAnalyticHelper = CastAnalyticHelper(playAnalytic)
+
+
+    /**
+     * SSE
+     */
+    @PlayScope
+    @Provides
+    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers, mContext)
 }

@@ -61,7 +61,7 @@ class ProfileRoleViewModelTest {
 
         /* Then */
         verify {
-            userProfileRoleUseCase.setGraphqlQuery(any())
+            userProfileRoleUseCase.setGraphqlQuery(any<String>())
             userProfileRoleUseCase.execute(any(), any())
         }
     }

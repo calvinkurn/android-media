@@ -16,7 +16,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/productName"
-                android:layout_width="@dimen/dp_50"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/unify_space_8"
                 android:layout_marginRight="@dimen/unify_space_8"
@@ -75,7 +75,7 @@
                     android:ellipsize="end"
                     android:textSize="10dp"
                     android:textColor="@color/Unify_N700_96"
-                    android:lineSpacingExtra="@dimen/sp_6"
+                    android:lineSpacingExtra="6sp"
                     android:visibility="gone"
                     tools:text="081234567890"
                     tools:visibility="visible" />
