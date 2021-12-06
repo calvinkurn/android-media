@@ -4,16 +4,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
+import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
@@ -24,6 +29,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ToggleBlockChatParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -38,6 +44,9 @@ class TopChatViewModel @Inject constructor(
     private var seamlessLoginUsecase: SeamlessLoginUsecase,
     private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
     private var orderProgressUseCase: OrderProgressUseCase,
+    private var reminderTickerUseCase: GetReminderTickerUseCase,
+    private var closeReminderTicker: CloseReminderTicker,
+    private var addToCartOccUseCase: AddToCartOccMultiUseCase,
     private val chatToggleBlockChat: ChatToggleBlockChatUseCaseNew,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
@@ -71,6 +80,14 @@ class TopChatViewModel @Inject constructor(
     private val _orderProgress = MutableLiveData<Result<OrderProgressResponse>>()
     val orderProgress: LiveData<Result<OrderProgressResponse>>
         get() = _orderProgress
+
+    private val _srwTickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
+    val srwTickerReminder: LiveData<Result<ReminderTickerUiModel>>
+        get() = _srwTickerReminder
+
+    private val _occProduct = MutableLiveData<Result<ProductAttachmentUiModel>>()
+    val occProduct: LiveData<Result<ProductAttachmentUiModel>>
+        get() = _occProduct
 
     private val _toggleBlock = MutableLiveData<WrapperChatSetting>()
     val toggleBlock : LiveData<WrapperChatSetting>
@@ -184,6 +201,77 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             _orderProgress.value = Fail(it)
         })
+    }
+
+    fun getTickerReminder() {
+        launchCatchError(
+            block = {
+                val existingMessageIdParam = GetReminderTickerUseCase.Param(
+                    featureId = SRW_TICKER
+                )
+                val result = reminderTickerUseCase(existingMessageIdParam)
+                _srwTickerReminder.value = Success(result.getReminderTicker)
+            },
+            onError = { }
+        )
+    }
+
+    fun removeTicker() {
+        _srwTickerReminder.value = null
+    }
+
+    fun closeTickerReminder(element: ReminderTickerUiModel) {
+        launchCatchError(
+            block = {
+                val existingMessageIdParam = GetReminderTickerUseCase.Param(
+                    featureId = element.featureId
+                )
+                closeReminderTicker(existingMessageIdParam)
+            },
+            onError = { }
+        )
+
+    }
+
+    fun occProduct(
+        userId: String,
+        product: ProductAttachmentUiModel
+    ) {
+        launchCatchError(block = {
+            val params = getAddToCartOccMultiRequestParams(userId, product)
+            addToCartOccUseCase.setParams(params)
+            val result = addToCartOccUseCase.executeOnBackground()
+            if(result.isStatusError()) {
+                _occProduct.value = Fail(MessageErrorException(result.getAtcErrorMessage()))
+            } else {
+                if(!result.data.cart.isNullOrEmpty()) {
+                    product.cartId = result.data.cart.first().cartId
+                }
+                _occProduct.value = Success(product)
+            }
+        }, onError = {
+            _occProduct.value = Fail(it)
+        })
+    }
+
+    private fun getAddToCartOccMultiRequestParams(
+        userId: String,
+        product: ProductAttachmentUiModel
+    ): AddToCartOccMultiRequestParams {
+        return AddToCartOccMultiRequestParams(
+            carts = listOf(
+                AddToCartOccMultiCartParam(
+                productId = product.productId,
+                shopId = product.shopId.toString(),
+                quantity = product.minOrder.toString(),
+                //analytics data
+                productName = product.productName,
+                category = product.category,
+                price = product.productPrice
+            )
+            ),
+            userId = userId
+        )
     }
 
     fun toggleBlockChatPromo(

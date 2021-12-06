@@ -1,0 +1,13 @@
+{
+  "walletappGetAccountBalance":{
+    "id":"ovo",
+    "icon":"https://ecs7.tokopedia.net/img/ovo/logo-ovo.png",
+    "title":"30.000",
+    "subtitle":"OVO",
+    "subtitle_color":"#03AC0E",
+    "applink":"tokopedia://ovo/introduction?tokocash=false\u0026tnc_applink=tokopedia%3A%2F%2Fwebview%3Furl%3Dhttps%3A%2F%2Fwww.tokopedia.com%2Fhelp%2Farticle%2Fa-0894\u0026help_applink=tokopedia%3A%2F%2Fwebview%3Furl%3Dhttps%3A%2F%2Fwww.tokopedia.com%2Fovo",
+    "weblink":"https://www.tokopedia.com/ovo/api/v1/activate?tokocash=false",
+    "is_active":true,
+    "is_show":true
+  }
+}

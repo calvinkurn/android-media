@@ -102,6 +102,7 @@ inline fun ImageView.loadIcon(
     call(url, Properties()
         .apply(properties)
         .overrideSize(Resize(300, 300))
+        .isIcon(true)
     )
 }
 

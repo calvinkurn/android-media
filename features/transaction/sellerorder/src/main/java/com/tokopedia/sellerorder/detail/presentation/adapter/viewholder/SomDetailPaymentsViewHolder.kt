@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -43,10 +42,6 @@ class SomDetailPaymentsViewHolder(itemView: View) : SomDetailAdapter.BaseViewHol
 
                 totalPriceValue.text = somDetailPayments.paymentDataUiModel.value
                 totalPriceLabel.text = somDetailPayments.paymentDataUiModel.label
-                if(somDetailPayments.paymentDataUiModel.textColor.isNotBlank()) {
-                    totalPriceLabel.setTextColor(Color.parseColor(somDetailPayments.paymentDataUiModel.textColor))
-                    totalPriceValue.setTextColor(Color.parseColor(somDetailPayments.paymentDataUiModel.textColor))
-                }
             }
         }
     }

@@ -41,4 +41,10 @@ class TextComponentViewModelTest {
         assert(viewModel.getTextComponentLiveData().value === item)
 
     }
+
+    @Test
+    fun `test for position passed`(){
+        var viewModel: TextComponentViewModel = spyk(TextComponentViewModel(application, componentsItem, 99))
+        assert(viewModel.position == 99)
+    }
 }

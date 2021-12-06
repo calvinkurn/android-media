@@ -105,6 +105,7 @@ class TelcoPostpaidLoginInstrumentTest {
 
 
     fun validate_pdp_client_number_widget_interaction() {
+        clientNumberWidget_clickClearBtn()
         clientNumberWidget_typeNumber(VALID_PHONE_NUMBER)
         Thread.sleep(2000)
         clientNumberWidget_validateText(VALID_PHONE_NUMBER)
@@ -114,6 +115,14 @@ class TelcoPostpaidLoginInstrumentTest {
         clientNumberWidget_typeNumber(PREFIX_PHONE_NUMBER)
         Thread.sleep(2000)
         onView(withText("Danur Kebab 2"))
+            .inRoot(RootMatchers.isPlatformPopup())
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        clientNumberWidget_clickClearBtn()
+        clientNumberWidget_typeNumber(PREFIX_PHONE_NUMBER)
+        Thread.sleep(2000)
+        onView(withText("081208120812"))
             .inRoot(RootMatchers.isPlatformPopup())
             .check(matches(isDisplayed()))
             .perform(click())

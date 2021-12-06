@@ -5,13 +5,11 @@ import android.graphics.Bitmap
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.common.factory.BitmapFactory
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.module.GlideRequest
-import com.tokopedia.media.loader.tracker.PerformanceTracker
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 
@@ -34,22 +32,16 @@ object MediaLoaderTarget {
     }
 
     private fun loadImageTarget(context: Context, properties: Properties): GlideRequest<Bitmap>? {
-        var tracker: PerformanceMonitoring?
-
         if (properties.data.toString().isEmpty()) return null
-
         if (properties.data !is String) return null
 
         GlideApp.with(context).asBitmap().also {
             // url builder
             val source = Loader.urlBuilder(properties.data.toString())
 
-            tracker = PerformanceTracker.preRender(source, context)
-
             return bitmap.build(
                 context = context,
                 properties = properties,
-                performanceMonitoring = tracker,
                 request = it
             ).load(source)
         }

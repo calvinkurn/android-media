@@ -1,4 +1,5 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:width="24dp"
     android:height="24dp"
     android:viewportWidth="24"
@@ -14,5 +15,6 @@
       android:strokeWidth=".2"
       android:fillColor="#666"
       android:strokeColor="#FFF"
-      android:fillType="evenOdd"/>
+      android:fillType="evenOdd"
+      tools:ignore="VectorPath" />
 </vector>

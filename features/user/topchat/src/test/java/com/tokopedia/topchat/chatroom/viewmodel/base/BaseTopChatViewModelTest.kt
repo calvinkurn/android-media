@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.viewmodel.base
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -40,6 +41,15 @@ abstract class BaseTopChatViewModelTest {
     lateinit var orderProgressUseCase: OrderProgressUseCase
 
     @RelaxedMockK
+    lateinit var reminderTickerUseCase: GetReminderTickerUseCase
+
+    @RelaxedMockK
+    lateinit var closeReminderTicker: CloseReminderTicker
+
+    @RelaxedMockK
+    lateinit var addToCartOccMultiUseCase: AddToCartOccMultiUseCase
+
+    @RelaxedMockK
     lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseNew
 
     @RelaxedMockK
@@ -65,6 +75,9 @@ abstract class BaseTopChatViewModelTest {
             seamlessLoginUsecase,
             getChatRoomSettingUseCase,
             orderProgressUseCase,
+            reminderTickerUseCase,
+            closeReminderTicker,
+            addToCartOccMultiUseCase,
             chatToggleBlockChatUseCase,
             dispatchers,
             remoteConfig

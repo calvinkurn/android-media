@@ -5,6 +5,9 @@ import androidx.lifecycle.Observer
 import com.tokopedia.home_account.AccountConstants
 import com.tokopedia.home_account.FileUtil
 import com.tokopedia.home_account.ResultBalanceAndPoint
+import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
+import com.tokopedia.home_account.account_settings.data.model.UserProfileSettingResponse
+import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
 import com.tokopedia.home_account.linkaccount.data.LinkStatusResponse
@@ -58,15 +61,16 @@ class HomeAccountUserViewModelTest {
         mockk<GetTokopointsBalanceAndPointUseCase>(relaxed = true)
     private val saldoBalanceUseCase = mockk<GetSaldoBalanceUseCase>(relaxed = true)
     private val coBrandCCBalanceAndPointUseCase = mockk<GetCoBrandCCBalanceAndPointUseCase>(relaxed = true)
-    private val walletEligibleUseCase = mockk<GetWalletEligibleUseCase>(relaxed = true)
     private val getLinkStatusUseCase = mockk<GetLinkStatusUseCase>(relaxed = true)
     private val getPhoneUseCase = mockk<GetUserProfile>(relaxed = true)
     private val topAdsImageViewUseCase = mockk<TopAdsImageViewUseCase>(relaxed = true)
+    private val userProfileSafeModeUseCase = mockk<UserProfileSafeModeUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
-    private val walletEligibleObserver = mockk<Observer<Result<WalletappWalletEligibility>>>(relaxed = true)
     private val balanceAndPointOvserver = mockk<Observer<ResultBalanceAndPoint<WalletappGetAccountBalance>>>(relaxed = true)
+
+    private val safeStatusResponse = mockk<Observer<Boolean>>(relaxed = true)
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val walletPref = mockk<WalletPref>(relaxed = true)
@@ -99,15 +103,16 @@ class HomeAccountUserViewModelTest {
             tokopointsBalanceAndPointUseCase,
             saldoBalanceUseCase,
             coBrandCCBalanceAndPointUseCase,
-            walletEligibleUseCase,
             getLinkStatusUseCase,
             getPhoneUseCase,
+            userProfileSafeModeUseCase,
             walletPref,
             dispatcher
         )
 
         viewModel.buyerAccountDataData.observeForever(buyerAccountObserver)
         viewModel.shortcutData.observeForever(shortCutResponse)
+        viewModel.safeModeStatus.observeForever(safeStatusResponse)
     }
 
     @Test
@@ -145,8 +150,8 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Execute getBuyerData Success`() {
         /* When */
-        coEvery { homeAccountUserUsecase.executeOnBackground() } returns responseResult
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { homeAccountUserUsecase(Unit) } returns responseResult
+        coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
 
         viewModel.getBuyerData()
@@ -163,8 +168,8 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `Execute getBuyerData Failed`() {
         /* When */
-        coEvery { homeAccountUserUsecase.executeOnBackground() } throws throwable.throwable
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwable.throwable
+        coEvery { homeAccountUserUsecase(Unit) } throws throwable.throwable
+        coEvery { homeAccountShortcutUseCase(Unit) } throws throwable.throwable
         coEvery { getLinkStatusUseCase.invoke(any()) } throws throwable.throwable
 
         viewModel.getBuyerData()
@@ -309,17 +314,101 @@ class HomeAccountUserViewModelTest {
     }
 
     @Test
+    fun `Get safe mode success`() {
+        val isActive = true
+        val data = UserProfileSetting(safeMode = isActive)
+        val setUserProfileResponse = UserProfileSettingResponse(data)
+
+        /* When */
+        every {
+            userProfileSafeModeUseCase.executeQuerySafeMode(
+                any(),
+                any()
+            )
+        } answers {
+            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
+        }
+
+        viewModel.getSafeModeValue()
+
+        verify {
+            accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+            safeStatusResponse.onChanged(isActive)
+        }
+    }
+
+    @Test
+    fun `Get safe mode success, return false`() {
+        val isActive = false
+        val data = UserProfileSetting(safeMode = isActive)
+        val setUserProfileResponse = UserProfileSettingResponse(data)
+
+        /* When */
+        every {
+            userProfileSafeModeUseCase.executeQuerySafeMode(
+                any(),
+                any()
+            )
+        } answers {
+            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
+        }
+
+        viewModel.getSafeModeValue()
+
+        verify {
+            accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
+            safeStatusResponse.onChanged(isActive)
+        }
+    }
+
+    @Test
+    fun `Get safe mode failed`() {
+        val isActive = true
+        val data = UserProfileSetting(safeMode = isActive)
+        val setUserProfileResponse = UserProfileSettingResponse(data)
+
+        /* When */
+        every {
+            userProfileSafeModeUseCase.executeQuerySafeMode(
+                any(),
+                any()
+            )
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(throwableMock)
+        }
+
+        viewModel.getSafeModeValue()
+
+        verify(atLeast = 1) {
+            throwableMock.printStackTrace()
+        }
+    }
+
+    @Test
     fun `Set safe mode success`() {
         val data = SetUserProfileSetting(isSuccess = true, error = "")
         val setUserProfileResponse = SetUserProfileSettingResponse(data)
 
         val isActive = true
+
+        val getData = UserProfileSetting(safeMode = isActive)
+        val getSafeModeData = UserProfileSettingResponse(getData)
+
         /* When */
+        every {
+            userProfileSafeModeUseCase.executeQuerySafeMode(
+                any(),
+                any()
+            )
+        } answers {
+            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(getSafeModeData)
+        }
+
         every {
             homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
                 any(),
                 any(),
-                any()
+                isActive
             )
         } answers {
             firstArg<(SetUserProfileSettingResponse) -> Unit>().invoke(setUserProfileResponse)
@@ -329,7 +418,7 @@ class HomeAccountUserViewModelTest {
 
         verify {
             accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
-            accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+            safeStatusResponse.onChanged(isActive)
         }
     }
 
@@ -361,6 +450,20 @@ class HomeAccountUserViewModelTest {
         val setUserProfileResponse = SetUserProfileSettingResponse(data)
 
         val isActive = false
+
+        val getData = UserProfileSetting(safeMode = isActive)
+        val getSafeModeData = UserProfileSettingResponse(getData)
+
+        /* When */
+        every {
+            userProfileSafeModeUseCase.executeQuerySafeMode(
+                any(),
+                any()
+            )
+        } answers {
+            firstArg<(UserProfileSettingResponse) -> Unit>().invoke(getSafeModeData)
+        }
+
         /* When */
         every {
             homeAccountSafeSettingProfileUseCase.executeQuerySetSafeMode(
@@ -376,7 +479,7 @@ class HomeAccountUserViewModelTest {
 
         verify {
             accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SAFE_SEARCH, isActive)
-            accountPref.saveSettingValue(AccountConstants.KEY.CLEAR_CACHE, isActive)
+            safeStatusResponse.onChanged(isActive)
         }
     }
 
@@ -405,7 +508,7 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `get shortcut data success`() {
         /* When */
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } returns shortcut
+        coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
 
         viewModel.getShortcutData()
 
@@ -417,7 +520,7 @@ class HomeAccountUserViewModelTest {
     @Test
     fun `get shortcut data fail`() {
         /* When */
-        coEvery { homeAccountShortcutUseCase.executeOnBackground() } throws throwableResponse
+        coEvery { homeAccountShortcutUseCase(Unit) } throws throwableResponse
 
         viewModel.getShortcutData()
 
@@ -635,35 +738,6 @@ class HomeAccountUserViewModelTest {
         assert(result.throwable is IllegalArgumentException)
     }
 
-
-    @Test
-    fun `Success get wallet eligible`() {
-        viewModel.walletEligible.observeForever(walletEligibleObserver)
-        coEvery { walletEligibleUseCase(any()) } returns successGetWalletEligibleResponse
-
-        viewModel.getGopayWalletEligible()
-
-        verify { walletEligibleObserver.onChanged(any<Success<WalletappWalletEligibility>>()) }
-        assert(viewModel.walletEligible.value is Success)
-
-        val result = viewModel.walletEligible.value as Success<WalletappWalletEligibility>
-        assert(result.data == successGetWalletEligibleResponse.data)
-    }
-
-    @Test
-    fun `Failed get wallet eligible`() {
-        viewModel.walletEligible.observeForever(walletEligibleObserver)
-        coEvery { walletEligibleUseCase(any()) } coAnswers { throw throwableResponse }
-
-        viewModel.getGopayWalletEligible()
-
-        verify { walletEligibleObserver.onChanged(any()) }
-        assert(viewModel.walletEligible.value is Fail)
-
-        val result = viewModel.walletEligible.value as Fail
-        assertEquals(throwableResponse, result.throwable)
-    }
-
     companion object {
         private val successGetCentralizedUserAssetConfigResponse: CentralizedUserAssetDataModel = FileUtil.parse(
             "/success_get_centralized_user_asset_config.json",
@@ -684,10 +758,6 @@ class HomeAccountUserViewModelTest {
         private val successGetCoBrandCCBalanceAndPointResponse: CoBrandCCBalanceDataModel = FileUtil.parse(
             "/success_get_cobrandcc_balance_and_point.json",
             CoBrandCCBalanceDataModel::class.java
-        )
-        private val successGetWalletEligibleResponse: WalletEligibleDataModel = FileUtil.parse(
-            "/success_get_wallet_eligible.json",
-            WalletEligibleDataModel::class.java
         )
         private val throwableResponse = Throwable()
     }
