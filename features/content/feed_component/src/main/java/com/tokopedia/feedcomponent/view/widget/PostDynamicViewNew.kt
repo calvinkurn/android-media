@@ -7,10 +7,7 @@ import android.graphics.Typeface
 import android.os.CountDownTimer
 import android.os.Handler
 import android.os.Looper
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.TextPaint
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
@@ -679,7 +676,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         spannableString.setSpan(
                             cs,
                             0,
-                            caption.author.name.length - 1,
+                            caption.author.name.length ,
                             Spannable.SPAN_INCLUSIVE_INCLUSIVE
                         )
                         captionText.text = spannableString
@@ -709,7 +706,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             spannableString.setSpan(
                 cs,
                 0,
-                caption.author.name.length - 1,
+                caption.author.name.length ,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
             captionText.text = spannableString
@@ -1247,7 +1244,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layoutLihatProdukParent.gone()
             } else {
                 layoutLihatProdukParent.visible()
-                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                 hideViewWithAnimation(layoutLihatProdukParent, context)
             }
 
 
@@ -1426,7 +1423,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layoutLihatProdukParent.gone()
             } else {
                 layoutLihatProdukParent.visible()
-                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                hideViewWithAnimation(layoutLihatProdukParent, context)
             }
             vod_frozen_view?.gone()
             vod_full_screen_icon?.visible()
@@ -1895,7 +1892,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             if (tagProducts.isEmpty()) {
                 layoutLihatProdukParent.gone()
             } else {
-                hideViewWithoutAnimation(layoutLihatProdukParent, context)
+                hideViewWithAnimation(layoutLihatProdukParent, context)
             }
 
             if (handlerAnim == null) {
