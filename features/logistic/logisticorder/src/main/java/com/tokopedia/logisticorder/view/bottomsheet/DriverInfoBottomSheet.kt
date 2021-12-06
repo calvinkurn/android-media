@@ -46,7 +46,7 @@ class DriverInfoBottomSheet : BottomSheetUnify() {
 
     private fun setupDriverInfoBottomSheet() {
         binding.apply {
-            imgInfoDriver.setImageDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_illus_tipping_retry) })
+            imgInfoDriver.urlSrc = "https://images.tokopedia.net/img/android/tipping/illus-tipping-retry.png"
             tvInfoDriver.text = getString(R.string.info_driver_title)
             tvInfoDriverDetail.text = getString(R.string.info_driver_detail)
             btnClose.setOnClickListener {
