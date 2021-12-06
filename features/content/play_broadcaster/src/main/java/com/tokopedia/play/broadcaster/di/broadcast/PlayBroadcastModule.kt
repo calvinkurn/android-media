@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.broadcaster.LiveBroadcaster
+import com.tokopedia.broadcaster.LiveBroadcasterManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
@@ -11,7 +13,10 @@ import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteract
 import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAnalytic
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusher
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
-import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.LiveBroadcasterMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.PlayLivePusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
+import com.tokopedia.play.broadcaster.pusher.mediator.rollence.AbTestBroadcaster
 import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
@@ -48,14 +53,13 @@ class PlayBroadcastModule(private val mContext: Context) {
         return LocalCacheHandler(mContext, KEY_GROUP_CHAT_PREFERENCES)
     }
 
-    @PlayBroadcastScope
     @Provides
-    fun providePlayLivePusher(): PlayLivePusher = PlayLivePusherImpl()
-
-    @PlayBroadcastScope
-    @Provides
-    fun providePlayLivePusherMediator(livePusher: PlayLivePusher, localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PlayLivePusherMediator {
-        return PlayLivePusherMediator(livePusher, localCacheHandler, playLivePusherTimer)
+    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler): PusherMediator {
+        return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
+            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler)
+        } else {
+            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler)
+        }
     }
 
     @PlayBroadcastScope

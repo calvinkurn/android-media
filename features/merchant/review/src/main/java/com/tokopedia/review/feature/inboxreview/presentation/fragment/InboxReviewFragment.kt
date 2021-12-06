@@ -666,7 +666,7 @@ class InboxReviewFragment : BaseListFragment<Visitable<*>, InboxReviewAdapterTyp
                 itemSortFilterList[positionRating].apply {
                     title = ratingOneSelected
                     refChipUnify.chip_image_icon.show()
-                    refChipUnify.chip_image_icon.setImage(R.drawable.ic_filter_rating, 0F)
+                    refChipUnify.chip_image_icon.setImage(com.tokopedia.review.R.drawable.ic_filter_rating, 0F)
                 }
             } else {
                 itemSortFilterList[positionRating].apply {

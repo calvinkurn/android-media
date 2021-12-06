@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.pusher.PlayLivePusherStatistic
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
@@ -260,7 +261,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun observeLiveStats() {
         parentViewModel.observableLivePusherStatistic.observe(viewLifecycleOwner) {
-            debugView.updateStats(it)
+            if (it is PlayLivePusherStatistic) {
+                debugView.updateStats(it)
+            }
         }
     }
 

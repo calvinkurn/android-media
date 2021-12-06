@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderExtensionConfirmedCancelledTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:gravity="center"
+        app:typographyType="heading_2"
+        tools:text="@string/order_extension_title_confirmed_order_cancelled" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvOrderExtensionConfirmedCancelledDesc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_N700_68"
+        android:gravity="center"
+        app:typographyType="body_2"
+        tools:text="@string/order_extension_desc_confirmed_order_cancelled" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnOrderExtensionDialogPrimaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        tools:text="Batalkan Pesanan"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnOrderExtensionDialogSecondaryButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
+        app:unifyButtonVariant="text"
+        tools:text="Perpanjang Pesanan"/>
+
+</LinearLayout>

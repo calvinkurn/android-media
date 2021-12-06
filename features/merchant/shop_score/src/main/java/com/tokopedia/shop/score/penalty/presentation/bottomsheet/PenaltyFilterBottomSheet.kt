@@ -13,7 +13,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.common.ShopScoreConstant
-import com.tokopedia.shop.score.common.presentation.BaseBottomSheetShopScore
+import com.tokopedia.shop.score.common.presentation.bottomsheet.BaseBottomSheetShopScore
 import com.tokopedia.shop.score.databinding.BottomsheetFilterPenaltyBinding
 import com.tokopedia.shop.score.penalty.di.component.PenaltyComponent
 import com.tokopedia.shop.score.penalty.presentation.adapter.FilterPenaltyBottomSheetListener

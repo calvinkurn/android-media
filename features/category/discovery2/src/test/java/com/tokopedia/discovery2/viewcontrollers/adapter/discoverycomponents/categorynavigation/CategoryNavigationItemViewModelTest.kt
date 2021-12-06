@@ -19,7 +19,7 @@ class CategoryNavigationItemViewModelTest {
     private val application: Application = mockk()
 
     private val viewModel: CategoryNavigationItemViewModel by lazy {
-        spyk(CategoryNavigationItemViewModel(application, componentsItem, 0))
+        spyk(CategoryNavigationItemViewModel(application, componentsItem, 99))
     }
 
     @Before
@@ -30,5 +30,10 @@ class CategoryNavigationItemViewModelTest {
     @Test
     fun `component value is present in live data`() {
         assert(viewModel.getComponentData().value == componentsItem)
+    }
+
+    @Test
+    fun `test for position passed`(){
+        assert(viewModel.position == 99)
     }
 }

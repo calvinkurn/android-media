@@ -16,6 +16,10 @@ android {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 buildscript {
@@ -47,6 +51,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.digitalRecommendation)
     implementation projectOrAar(rootProject.ext.features.logisticCommon)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
 
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -58,6 +63,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
 
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.empty_state

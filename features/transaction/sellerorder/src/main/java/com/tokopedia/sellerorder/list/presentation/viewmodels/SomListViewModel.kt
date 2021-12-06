@@ -140,10 +140,10 @@ class SomListViewModel @Inject constructor(
     val bulkAcceptOrderStatusResult = MediatorLiveData<Result<SomListBulkAcceptOrderStatusUiModel>>()
 
     private val _bulkAcceptOrderStatusResult = MediatorLiveData<Pair<Int, Result<SomListBulkAcceptOrderStatusUiModel>>>().apply {
-            addSource(_bulkAcceptOrderResult) {
-                if (it is Success) getBulkAcceptOrderStatus(Int.ZERO)
-            }
+        addSource(_bulkAcceptOrderResult) {
+            if (it is Success) getBulkAcceptOrderStatus(Int.ZERO)
         }
+    }
 
     val bulkRequestPickupFinalResultMediator = MediatorLiveData<BulkRequestPickupResultState>()
     val bulkRequestPickupFinalResult: LiveData<BulkRequestPickupResultState>
