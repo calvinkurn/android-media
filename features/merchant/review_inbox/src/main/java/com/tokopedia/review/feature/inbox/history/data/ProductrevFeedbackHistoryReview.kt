@@ -19,5 +19,8 @@ data class ProductrevFeedbackHistoryReview(
         val reviewText: String = "",
         @SerializedName("attachmentsURL")
         @Expose
-        val attachments: List<ProductrevReviewAttachment> = emptyList()
+        val attachments: List<ProductrevReviewAttachment> = emptyList(),
+        @SerializedName("badRatingReasonFmt")
+        @Expose
+        val badRatingReason: String = ""
 )

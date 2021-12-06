@@ -13,7 +13,7 @@ object BackgroundGenerator {
     ): Drawable? {
         return ViewUtil.generateBackgroundWithShadow(
                 view = view,
-                backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+                backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
                 topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 topRightRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
                 bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,

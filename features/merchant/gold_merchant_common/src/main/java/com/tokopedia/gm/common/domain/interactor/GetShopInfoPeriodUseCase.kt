@@ -11,13 +11,11 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import java.io.IOException
-import java.net.SocketTimeoutException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 class GetShopInfoPeriodUseCase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val shopScoreCommonMapper: ShopScoreCommonMapper
+    private val graphqlRepository: GraphqlRepository,
+    private val shopScoreCommonMapper: ShopScoreCommonMapper
 ) : BaseGqlUseCase<ShopInfoPeriodUiModel>() {
 
     companion object {
@@ -25,6 +23,7 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         const val SHOP_INFO_INPUT = "input"
         const val SHOP_ID_PM = "shopID"
         const val SOURCE = "source"
+        private const val SHOP_ID_DEFAULT = 0L
         val SHOP_INFO_ID_QUERY = """
             query shopInfoByID(${'$'}input: ParamShopInfoByID!) {
               shopInfoByID(input: ${'$'}input) {
@@ -57,41 +56,45 @@ class GetShopInfoPeriodUseCase @Inject constructor(
         }
     }
 
-    var requestParams: RequestParams = RequestParams.EMPTY
+    var requestParams: RequestParams = RequestParams.create()
 
     override suspend fun executeOnBackground(): ShopInfoPeriodUiModel {
         val shopInfoPeriodWrapperResponse = ShopInfoPeriodWrapperResponse()
-        val shopId = requestParams.getLong(SHOP_ID, 0)
+        val shopId = requestParams.getLong(SHOP_ID, SHOP_ID_DEFAULT)
 
         val shopInfoParam = mapOf(SHOP_INFO_INPUT to ParamShopInfoByID(shopIDs = listOf(shopId)))
         val periodTypeParam = mapOf(SHOP_ID_PM to shopId, SOURCE to GOLD_MERCHANT_SOURCE)
 
-        val shopInfoRequest = GraphqlRequest(SHOP_INFO_ID_QUERY, ShopInfoByIDResponse::class.java, shopInfoParam)
-        val periodTypeRequest = GraphqlRequest(PM_SETTING_INFO_QUERY, PMPeriodTypeResponse::class.java, periodTypeParam)
+        val shopInfoRequest =
+            GraphqlRequest(SHOP_INFO_ID_QUERY, ShopInfoByIDResponse::class.java, shopInfoParam)
+        val periodTypeRequest =
+            GraphqlRequest(PM_SETTING_INFO_QUERY, PMPeriodTypeResponse::class.java, periodTypeParam)
 
         val requests = mutableListOf(shopInfoRequest, periodTypeRequest)
         try {
             val gqlResponse = graphqlRepository.response(requests, cacheStrategy)
             if (gqlResponse.getError(ShopInfoByIDResponse::class.java).isNullOrEmpty()) {
-                shopInfoPeriodWrapperResponse.shopInfoByIDResponse = gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
+                shopInfoPeriodWrapperResponse.shopInfoByIDResponse =
+                    gqlResponse.getData<ShopInfoByIDResponse>(ShopInfoByIDResponse::class.java).shopInfoByID
             } else {
-                val dataError = gqlResponse.getError(ShopInfoByIDResponse::class.java).joinToString { it.message }
+                val dataError = gqlResponse.getError(ShopInfoByIDResponse::class.java)
+                    .joinToString { it.message }
                 throw MessageErrorException(dataError)
             }
 
             if (gqlResponse.getError(PMPeriodTypeResponse::class.java).isNullOrEmpty()) {
-                shopInfoPeriodWrapperResponse.goldGetPMSettingInfo = gqlResponse.getData<PMPeriodTypeResponse>(PMPeriodTypeResponse::class.java).goldGetPMSettingInfo
+                shopInfoPeriodWrapperResponse.goldGetPMSettingInfo =
+                    gqlResponse.getData<PMPeriodTypeResponse>(PMPeriodTypeResponse::class.java).goldGetPMSettingInfo
             } else {
-                val dataError = gqlResponse.getError(PMPeriodTypeResponse::class.java).joinToString { it.message }
+                val dataError = gqlResponse.getError(PMPeriodTypeResponse::class.java)
+                    .joinToString { it.message }
                 throw MessageErrorException(dataError)
             }
             return shopScoreCommonMapper.mapToGetShopInfo(shopInfoPeriodWrapperResponse)
+        } catch (e: IOException) {
+            throw IOException(e.message)
         } catch (e: Throwable) {
-            if (e is SocketTimeoutException || e is UnknownHostException) {
-                throw IOException(e.message)
-            } else {
-                throw Exception(e.message)
-            }
+            throw Exception(e.message)
         }
     }
 }
