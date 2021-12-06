@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.tokopedia.logisticorder.domain.response.GetLogisticTrackingResponse
+import com.tokopedia.logisticorder.mapper.DriverTipMapper
 import com.tokopedia.logisticorder.mapper.TrackingPageMapperNew
 import com.tokopedia.logisticorder.uimodel.TrackingDataModel
 import com.tokopedia.logisticorder.usecase.TrackingPageRepository
@@ -31,6 +32,7 @@ class TrackingPageViewModelTest {
 
     private val repo: TrackingPageRepository = mockk(relaxed = true)
     private val mapper = TrackingPageMapperNew()
+    private val driverTipMapper = DriverTipMapper()
 
     private val trackingPageRepository: TrackingPageRepository = mockk(relaxed = true)
 
@@ -45,7 +47,7 @@ class TrackingPageViewModelTest {
     @Before
     fun setup() {
         Dispatchers.setMain(TestCoroutineDispatcher())
-        trackingPageViewModel = TrackingPageViewModel(repo, mapper)
+        trackingPageViewModel = TrackingPageViewModel(repo, mapper, driverTipMapper)
         trackingPageViewModel.trackingData.observeForever(trackingDataObserver)
         trackingPageViewModel.retryBooking.observeForever(retryBookingObserver)
         trackingPageViewModel.retryAvailability.observeForever(retryAvailabilityObserver)
