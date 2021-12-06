@@ -870,6 +870,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             }
         }, onError = {
             it.printStackTrace()
+            executeSharingFlow(shareModel)
         })
     }
 
