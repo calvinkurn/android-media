@@ -39,13 +39,10 @@ import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
-import com.tokopedia.play.broadcaster.util.state.PlayLiveCountDownTimerStateListener
+import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.custom.SurfaceAspectRatioView
-import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
-import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
-import com.tokopedia.play.broadcaster.view.state.isRecovered
-import com.tokopedia.play.broadcaster.view.state.isStarted
+import com.tokopedia.play.broadcaster.view.state.*
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
@@ -120,8 +117,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
         get() = _observableTotalLike
     val observableLiveViewState: LiveData<PlayLiveViewState>
         get() = _observableLiveViewState
-    val observableLiveCountDownTimerState: LiveData<PlayLiveCountDownTimerState>
-        get() = _observableLiveCountDownTimerState
+    val observableLiveTimerState: LiveData<PlayLiveTimerState>
+        get() = _observableLiveTimerState
     val observableChatList: LiveData<out List<PlayChatUiModel>>
         get() = _observableChatList
     val observableNewChat: LiveData<Event<PlayChatUiModel>>
@@ -176,7 +173,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
     private val _observableLiveViewState = MutableLiveData<PlayLiveViewState>()
-    private val _observableLiveCountDownTimerState = MutableLiveData<PlayLiveCountDownTimerState>()
+    private val _observableLiveTimerState = MutableLiveData<PlayLiveTimerState>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableInteractiveConfig = MutableLiveData<InteractiveConfigUiModel>()
     private val _observableInteractiveState = MutableLiveData<BroadcastInteractiveState>()
@@ -255,16 +252,16 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private val liveCountDownTimerStateListener = object : PlayLiveCountDownTimerStateListener {
-        override fun onLiveCountDownTimerStateChanged(countDownTimerState: PlayLiveCountDownTimerState) {
-            if (countDownTimerState == PlayLiveCountDownTimerState.Finish) {
+    private val liveTimerStateListener = object : PlayLiveTimerStateListener {
+        override fun onLiveTimerStateChanged(timerState: PlayLiveTimerState) {
+            if (timerState == PlayLiveTimerState.Finish) {
                 val event = _observableEvent.value
                 if (event == null || (!event.freeze && !event.banned)) {
-                    _observableLiveCountDownTimerState.value = countDownTimerState
+                    _observableLiveTimerState.value = timerState
                     stopLiveStream()
                 }
             } else {
-                _observableLiveCountDownTimerState.value = countDownTimerState
+                _observableLiveTimerState.value = timerState
             }
         }
     }
@@ -286,7 +283,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         _observableChatList.value = mutableListOf()
         livePusherMediator.addListener(liveViewStateListener)
         livePusherMediator.addListener(liveChannelStateListener)
-        livePusherMediator.addListener(liveCountDownTimerStateListener)
+        livePusherMediator.addListener(liveTimerStateListener)
         if (GlobalConfig.DEBUG) livePusherMediator.addListener(livePusherStatisticListener)
         livePusherMediator.addListener(livePusherStateChangedListener)
     }
@@ -484,10 +481,10 @@ internal class PlayBroadcastViewModel @Inject constructor(
         reconnectJob()
     }
 
-    fun startLiveCountDownTimer() {
+    fun startLiveTimer() {
         viewModelScope.launch {
-            delay(START_COUNTDOWN_DELAY)
-            livePusherMediator.startLiveCountDownTimer()
+            delay(START_LIVE_TIMER_DELAY)
+            livePusherMediator.startLiveTimer()
         }
         // TODO("find the best way to trigger engagement tools")
         getInteractiveConfig()
@@ -750,7 +747,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
             is ProductTagging -> setSelectedProduct(playBroadcastMapper.mapProductTag(result))
             is Chat -> retrieveNewChat(playBroadcastMapper.mapIncomingChat(result))
             is Freeze -> {
-                if (_observableLiveCountDownTimerState.value !is PlayLiveCountDownTimerState.Finish) {
+                if (_observableLiveTimerState.value !is PlayLiveTimerState.Finish) {
                     val eventUiModel = playBroadcastMapper.mapFreezeEvent(result, _observableEvent.value)
                     if (eventUiModel.freeze) {
                         logger.logSocketType(result)
@@ -760,7 +757,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 }
             }
             is Banned -> {
-                if (_observableLiveCountDownTimerState.value !is PlayLiveCountDownTimerState.Finish) {
+                if (_observableLiveTimerState.value !is PlayLiveTimerState.Finish) {
                     val eventUiModel = playBroadcastMapper.mapBannedEvent(result, _observableEvent.value)
                     if (eventUiModel.banned) {
                         logger.logSocketType(result)
@@ -830,7 +827,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         viewModelScope.launchCatchError(block = {
             _configInfo.value?.durationConfig?.duration?.let {
                 val durationInMillis = TimeUnit.SECONDS.toMillis(duration.duration)
-                livePusherMediator.restartLiveCountDownTimer(durationInMillis, it)
+                livePusherMediator.restartLiveTimer(durationInMillis, it)
             }
         }) { }
     }
@@ -934,7 +931,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
 
-        private const val START_COUNTDOWN_DELAY = 1000L
+        private const val START_LIVE_TIMER_DELAY = 1000L
 
         private const val DEFAULT_BEFORE_LIVE_COUNT_DOWN = 5
     }

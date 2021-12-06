@@ -42,7 +42,7 @@ import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageFor
 import com.tokopedia.play.broadcaster.view.custom.pinnedmessage.PinnedMessageView
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.partial.*
-import com.tokopedia.play.broadcaster.view.state.PlayLiveCountDownTimerState
+import com.tokopedia.play.broadcaster.view.state.PlayLiveTimerState
 import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
@@ -151,6 +151,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
         })
     }
+    private val productTagView by viewComponent { ProductTagViewComponent(it) }
 
     private lateinit var productLiveBottomSheet: PlayProductLiveBottomSheet
 
@@ -178,8 +179,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         setupInsets()
         setupObserve()
 
-        if((requireActivity() as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false)
-            parentViewModel.startLiveCountDownTimer()
+        if((activity as? PlayBroadcastActivity)?.isDialogContinueLiveStreamOpen() == false)
+            parentViewModel.startLiveTimer()
 
         if (GlobalConfig.DEBUG) setupDebugView(view)
     }
@@ -275,6 +276,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         observeCreateInteractiveSession()
         observeUiState()
         observeUiEvent()
+        observeProductTag()
     }
 
     override fun onDestroy() {
@@ -308,7 +310,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
      * render to ui
      */
     private fun showCounterDuration(remainingInMs: Long) {
-        viewStatInfo.setCountDown(remainingInMs)
+        viewStatInfo.setTimerCounter(remainingInMs)
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
@@ -546,10 +548,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun observeLiveDuration() {
-        parentViewModel.observableLiveCountDownTimerState.observe(viewLifecycleOwner) {
+        parentViewModel.observableLiveTimerState.observe(viewLifecycleOwner) {
             when(it)  {
-                is PlayLiveCountDownTimerState.Active -> showCounterDuration(it.remainingInMs)
-                is PlayLiveCountDownTimerState.Finish -> {
+                is PlayLiveTimerState.Active -> showCounterDuration(it.remainingInMs)
+                is PlayLiveTimerState.Finish -> {
                     analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
                     showDialogWhenTimeout()
                 }
@@ -660,6 +662,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     is PlayBroadcastEvent.ShowError -> showErrorToaster(event.error)
                 }
             }
+        }
+    }
+
+    private fun observeProductTag() {
+        parentViewModel.observableProductList.observe(viewLifecycleOwner) {
+            productTagView.setProducts(it)
         }
     }
     //endregion

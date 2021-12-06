@@ -28,12 +28,12 @@ class PlayCountUpImpl @Inject constructor(
                 delay(DEFAULT_INTERVAL)
                 currentDuration += DEFAULT_INTERVAL
 
-                withContext(Dispatchers.Main) {
+                withContext(dispatcher.main) {
                     listener?.onTick(currentDuration)
                 }
             }
 
-            withContext(Dispatchers.Main) {
+            withContext(dispatcher.main) {
                 listener?.onFinish()
             }
         }

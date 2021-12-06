@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.analytic.tag.PlayBroadcastContentTaggingAn
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusher
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherImpl
 import com.tokopedia.play.broadcaster.pusher.PlayLivePusherMediator
-import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherCountDownTimer
+import com.tokopedia.play.broadcaster.pusher.timer.PlayLivePusherTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
@@ -54,8 +54,8 @@ class PlayBroadcastModule(private val mContext: Context) {
 
     @PlayBroadcastScope
     @Provides
-    fun providePlayLivePusherMediator(livePusher: PlayLivePusher, localCacheHandler: LocalCacheHandler, playLivePusherCountDownTimer: PlayLivePusherCountDownTimer): PlayLivePusherMediator {
-        return PlayLivePusherMediator(livePusher, localCacheHandler, playLivePusherCountDownTimer)
+    fun providePlayLivePusherMediator(livePusher: PlayLivePusher, localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PlayLivePusherMediator {
+        return PlayLivePusherMediator(livePusher, localCacheHandler, playLivePusherTimer)
     }
 
     @PlayBroadcastScope
