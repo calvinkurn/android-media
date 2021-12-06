@@ -89,6 +89,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
     protected var isMoreThanOneMethod = true
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
+    protected var isOnValidation = false
 
     private var handler: Handler = Handler()
 
@@ -242,6 +243,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
             }
         })
         viewModel.otpValidateResult.observe(viewLifecycleOwner, Observer {
+            isOnValidation = false
             when (it) {
                 is Success -> onSuccessOtpValidate(it.data)
                 is Fail -> onFailedOtpValidate(it.throwable)

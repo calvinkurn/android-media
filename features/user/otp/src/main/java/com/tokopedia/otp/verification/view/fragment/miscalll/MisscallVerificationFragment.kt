@@ -294,12 +294,15 @@ open class MisscallVerificationFragment : VerificationFragment(), PhoneCallBroad
     }
 
     private fun autoFillPhoneNumber(number: String) {
+        if (isOnValidation) return
+
         val phoneHint = replaceRegionPhoneCode(viewBound.pin?.pinPrefixText.toString())
         var phoneNumber = replaceRegionPhoneCode(number)
 
         if (phoneNumber.contains(phoneHint)) {
             phoneNumber = phoneNumber.substring(phoneNumber.length - modeListData.otpDigit, phoneNumber.length)
             viewBound.pin?.value = phoneNumber
+            isOnValidation = true
             validate(phoneNumber)
         }
     }
