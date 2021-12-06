@@ -24,7 +24,6 @@ class AndroidExportedDetector: XmlScanner, Detector() {
 
         /* whitelist */
         const val TAG_ACTION_ATTR_NAME_MAIN = "android.intent.action.MAIN"
-        const val TAG_ACTION_ATTR_NAME_VIEW = "android.intent.action.VIEW"
         const val TAG_CATEGORY_ATTR_NAME_DEFAULT = "android.intent.category.DEFAULT"
         const val TAG_CATEGORY_ATTR_NAME_LAUNCHER = "android.intent.category.LAUNCHER"
 
@@ -53,8 +52,7 @@ class AndroidExportedDetector: XmlScanner, Detector() {
 
                     when (childT2.tagName) {
                         TAG_ACTION -> {
-                            if (childT2Attr == TAG_ACTION_ATTR_NAME_MAIN ||
-                                childT2Attr == TAG_ACTION_ATTR_NAME_VIEW) {
+                            if (childT2Attr == TAG_ACTION_ATTR_NAME_MAIN) {
                                 isContainWhitelistSignature = true
                             }
                         }
