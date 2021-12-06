@@ -283,3 +283,36 @@
 
 # Window
 -keep class androidx.window.** { *; }
+
+# Modiface
+-keep class com.modiface.mfemakeupkit.** {*;}
+-keep enum com.modiface.mfemakeupkit.** {*;}
+-keep interface com.modiface.mfemakeupkit.** {*;}
+-keepclassmembers class com.modiface.mfemakeupkit.** {
+  private static native <methods>;
+  *;
+}
+-keepclassmembers class * {
+  private static native <methods>;
+  *;
+}
+-keepclassmembers class * {
+    native <methods>;
+    *;
+}
+-keepclassmembers class * {
+    public native <methods>;
+    *;
+}
+-keepclassmembers class * {
+    private native <methods>;
+    *;
+}
+-keepclassmembers class * {
+    protected native <methods>;
+    *;
+}
+-keepclassmembers class * {
+    native <methods>;
+    *;
+}
