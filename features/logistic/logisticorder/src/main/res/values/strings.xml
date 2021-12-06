@@ -61,4 +61,9 @@ setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="info_driver_title">Driver bisa berganti\nsewaktu-waktu</string>
     <string name="info_driver_detail">Jika driver berganti, tip akan diberikan\nke driver yang mengantar pesanan</string>
     <string name="tipping_layout_description">Pilih atau tulis sendiri jumlah tip</string>
+    <string name="nominal_tip_label">Tulis Nominal Tip</string>
+    <string name="btn_tipping_text">Pilih Pembayaran</string>
+    <string name="nominal_tip_message">Rp1.000 - Rp.20.000</string>
+    <string name="btn_driver_info_text">Mengerti</string>
+    <string name="card_tipping_btn_default_text">Beri Tip</string>
 </resources>
