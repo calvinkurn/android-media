@@ -73,6 +73,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include
+            android:id="@+id/quest_title_widget_error_state"
+            android:visibility="gone"
+            layout="@layout/partial_tokopedianow_quest_title_widget_error_state"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <include
             android:id="@+id/quest_title_widget_shimmering"
             layout="@layout/partial_tokopedianow_quest_title_shimmering"
             app:layout_constraintBottom_toBottomOf="parent"
