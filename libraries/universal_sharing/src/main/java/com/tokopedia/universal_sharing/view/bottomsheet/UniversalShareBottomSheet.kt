@@ -81,6 +81,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         //add remote config handling
         private const val GLOBAL_CUSTOM_SHARING_FEATURE_FLAG = "android_enable_custom_sharing"
         private const val GLOBAL_SCREENSHOT_SHARING_FEATURE_FLAG = "android_enable_screenshot_sharing"
+        private const val GLOBAL_AFFILIATE_FEATURE_FLAG = "android_enable_affiliate_universal_sharing"
         private var featureFlagRemoteConfigKey: String = ""
         //Optons Flag
         private var isImageOnlySharing: Boolean = false
@@ -235,6 +236,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var affiliateQueryData : AffiliatePDPInput? = null
     private var showLoader: Boolean = false
+    private var handler: Handler? = null
 
     //observer flag
     private var preserveImage: Boolean = false
@@ -275,7 +277,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     //call this method before show method if the request data is awaited
     fun affiliateRequestDataAwaited(){
        showLoader = true
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler = Handler(Looper.getMainLooper())
+        handler?.postDelayed({
             affiliateRequestDataReceived(false)
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
@@ -283,7 +286,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     //call this method if the request data is received
     fun affiliateRequestDataReceived(validRequest: Boolean) {
         val userSession = UserSession(LinkerManager.getInstance().context)
-        if(userSession.isLoggedIn && validRequest){
+        if(userSession.isLoggedIn && validRequest && isAffiliateEnabled()){
             executeAffiliateEligibilityUseCase()
             showLoader = true
             loaderUnify?.visibility = View.VISIBLE
@@ -294,12 +297,28 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun isAffiliateEnabled(): Boolean{
+        if(LinkerManager.getInstance().context != null) {
+            val remoteConfig = FirebaseRemoteConfigImpl(LinkerManager.getInstance().context)
+            return remoteConfig.getBoolean(GLOBAL_AFFILIATE_FEATURE_FLAG, true)
+        }else{
+            return false
+        }
+    }
+
     private fun clearLoader(){
         showLoader = false
         loaderUnify?.visibility = View.GONE
     }
 
+    private fun removeHandlerTimeout() {
+        if (handler != null) {
+            handler?.removeCallbacksAndMessages(null)
+        }
+    }
+
     private fun executeAffiliateEligibilityUseCase(){
+        removeHandlerTimeout()
          val job  = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
@@ -311,9 +330,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 }
             }
         }, onError = {
-            it.printStackTrace()
+             clearLoader()
+             removeHandlerTimeout()
+             it.printStackTrace()
         })
-        Handler(Looper.getMainLooper()).postDelayed({
+        handler = Handler(Looper.getMainLooper())
+        handler?.postDelayed({
             clearLoader()
             if(job.isActive) {
                 job.cancel()
@@ -326,14 +348,17 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
         clearLoader()
-        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true) {
+        removeHandlerTimeout()
+        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true
+            && generateAffiliateLinkEligibility.affiliateEligibility?.isEligible == true
+            && generateAffiliateLinkEligibility.affiliateEligibility?.isRegistered == true) {
             val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
             if (!TextUtils.isEmpty(commissionMessage)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
-                        Html.FROM_HTML_MODE_LEGACY).toString()
+                        Html.FROM_HTML_MODE_LEGACY)
                 } else {
-                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage).toString()
+                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
                 }
                 affiliateCommissionTextView?.visibility = View.VISIBLE
                 return
@@ -751,7 +776,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
-        if(affiliateQueryData != null){
+        if(affiliateQueryData != null &&
+            affiliateCommissionTextView?.visibility == View.VISIBLE){
             shareModel.isAffiliate = true
         }
         bottomSheetListener?.onShareOptionClicked(shareModel)

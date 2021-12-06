@@ -122,6 +122,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductManageMoreMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.product.manage.feature.list.view.layoutmanager.ProductManageLayoutManager
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
 import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
@@ -342,6 +343,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? = swipeRefreshLayout
 
     override fun getRecyclerView(view: View?): RecyclerView? = recyclerView
+
+    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager? {
+        return context?.let {
+            ProductManageLayoutManager(it)
+        }
+    }
 
     private fun initView() {
         setupInterceptor()
@@ -1406,14 +1413,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
-        productIds.forEach { productId ->
-            recyclerView?.post {
-                when (status) {
-                    DELETED -> productManageListAdapter.deleteProduct(productId)
-                    INACTIVE -> productManageListAdapter.setProductStatus(productId, status)
-                    else -> {
-                    }  // do nothing
-                }
+        recyclerView?.post {
+            when (status) {
+                DELETED -> productManageListAdapter.deleteProducts(productIds)
+                INACTIVE -> productManageListAdapter.setProductsStatuses(productIds, status)
+                else -> {
+                }  // do nothing
             }
         }
     }
