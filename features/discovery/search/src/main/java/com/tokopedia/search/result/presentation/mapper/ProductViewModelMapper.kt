@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.mapper
 
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.Banner
 import com.tokopedia.search.result.domain.model.SearchProductModel.GlobalNavItem
@@ -22,6 +23,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspira
 import com.tokopedia.search.result.domain.model.SearchProductModel.SearchProductData
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.BannerDataView
+import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
@@ -89,7 +91,8 @@ class ProductViewModelMapper {
         productDataView.pageComponentId = searchProductHeader.componentId
         productDataView.isQuerySafe = searchProductData.isQuerySafe
         productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
-            searchProductModel.searchInspirationCarousel
+            searchProductModel.searchInspirationCarousel,
+            dimension90,
         )
         productDataView.inspirationCardDataView = convertToInspirationCardViewModel(
             searchProductModel.searchInspirationWidget
@@ -165,6 +168,7 @@ class ProductViewModelMapper {
                 isLocalSearch,
                 broadMatchItemDataViewList,
                 dimension90,
+                BroadMatch,
         )
     }
 
@@ -339,7 +343,8 @@ class ProductViewModelMapper {
     }
 
     private fun convertToInspirationCarouselViewModel(
-            searchInspirationCarousel: SearchInspirationCarousel
+            searchInspirationCarousel: SearchInspirationCarousel,
+            dimension90: String,
     ): List<InspirationCarouselDataView> {
         return searchInspirationCarousel.data.map { data ->
             InspirationCarouselDataView(
@@ -347,13 +352,15 @@ class ProductViewModelMapper {
                     data.type,
                     data.position,
                     data.layout,
-                    convertToInspirationCarouselOptionViewModel(data),
+                    data.trackingOption.toIntOrZero(),
+                    convertToInspirationCarouselOptionViewModel(data, dimension90),
             )
         }
     }
 
     private fun convertToInspirationCarouselOptionViewModel(
-            data: InspirationCarouselData
+            data: InspirationCarouselData,
+            dimension90: String,
     ): List<InspirationCarouselDataView.Option> {
         val mapper = InspirationCarouselProductDataViewMapper()
 
@@ -369,12 +376,14 @@ class ProductViewModelMapper {
                     opt.bannerApplinkUrl,
                     opt.identifier,
                     mapper.convertToInspirationCarouselProductDataView(
-                            opt.inspirationCarouselProducts,
-                            position,
-                            data.type,
-                            data.layout,
-                            { it.mapToLabelGroupDataViewList() },
-                            opt.title
+                        opt.inspirationCarouselProducts,
+                        position,
+                        data.type,
+                        data.layout,
+                        { it.mapToLabelGroupDataViewList() },
+                        opt.title,
+                        data.title,
+                        dimension90,
                     ),
                     data.type,
                     data.layout,
@@ -384,6 +393,9 @@ class ProductViewModelMapper {
                     isChipsActive,
                     if (data.type == TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
                     if (data.type != TYPE_ANNOTATION_PRODUCT_COLOR_CHIPS) opt.meta else "",
+                    opt.componentId,
+                    data.trackingOption.toIntOrZero(),
+                    dimension90,
             )
         }
     }

@@ -83,11 +83,13 @@ open class VerificationViewModel @Inject constructor(
             otpType: String,
             userId: String,
             msisdn: String,
-            email: String
+            email: String,
+            timeUnix: String,
+            authenticity: String
     ) {
         launchCatchError(block = {
             TkpdIdlingResource.increment()
-            val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email)
+            val params = getVerificationMethodUseCase.getParams(otpType, userId, msisdn, email, timeUnix, authenticity)
             val data = getVerificationMethodUseCase.getData(params).data
             when {
                 data.success -> {

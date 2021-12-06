@@ -60,6 +60,7 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         addTickerSection(shipmentInfoUiModel.ticker)
         addCourierInfoSection(shipmentInfoUiModel.courierInfoUiModel)
         addCourierDriverInfoSection(shipmentInfoUiModel.courierDriverInfoUiModel)
+        addDriverTippingInfoSection(shipmentInfoUiModel.driverTippingInfoUiModel)
         addAwbInfoSection(shipmentInfoUiModel.awbInfoUiModel)
         addReceiverAddressInfoSection(shipmentInfoUiModel.receiverAddressInfoUiModel)
         addDropShipperInfoSection(shipmentInfoUiModel.dropShipperInfoUiModel)
@@ -159,6 +160,15 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
         }
     }
 
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDriverTippingInfoSection(
+        driverTippingInfoUiModel: ShipmentInfoUiModel.DriverTippingInfoUiModel
+    ) {
+        if (driverTippingInfoUiModel.shouldShow()) {
+            add(driverTippingInfoUiModel)
+            addThinDividerSection()
+        }
+    }
+
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addAwbInfoSection(
         awbInfoUiModel: ShipmentInfoUiModel.AwbInfoUiModel
     ) {
@@ -244,5 +254,13 @@ class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailTypeFacto
 
     fun removePgRecommendation() {
         removeRecommendationWidget<PGRecommendationWidgetUiModel>()
+    }
+
+    fun getItemPosition(uiModel: BaseVisitableUiModel?): Int {
+        return visitables.indexOf(uiModel)
+    }
+
+    fun getBaseVisitableUiModels(): List<BaseVisitableUiModel> {
+        return visitables.filterIsInstance<BaseVisitableUiModel>()
     }
 }

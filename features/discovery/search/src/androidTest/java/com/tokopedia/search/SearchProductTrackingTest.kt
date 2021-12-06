@@ -29,7 +29,7 @@ private const val ANALYTIC_VALIDATOR_QUERY_THANOS_ID = "7"
 
 internal class SearchProductTrackingTest {
 
-    private val isFromNetwork = false
+    private val isFromNetwork = true
     private val queryId
         get() =
             if (isFromNetwork) ANALYTIC_VALIDATOR_QUERY_THANOS_ID
