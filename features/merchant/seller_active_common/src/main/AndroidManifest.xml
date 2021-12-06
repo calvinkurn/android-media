@@ -1,13 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.seller.active.common">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <application>
         <service
             android:name="com.tokopedia.seller.active.common.service.UpdateShopActiveService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
-
 </manifest>

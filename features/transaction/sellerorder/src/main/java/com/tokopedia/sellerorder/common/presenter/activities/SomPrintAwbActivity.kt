@@ -1,8 +1,6 @@
 package com.tokopedia.sellerorder.common.presenter.activities
 
 import android.content.ActivityNotFoundException
-import android.os.Build
-import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintJob
 import android.print.PrintManager
@@ -38,17 +36,6 @@ class SomPrintAwbActivity : BaseSimpleWebViewActivity() {
 
     private var printJob: PrintJob? = null
     private var webView: TkpdWebView? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        with(window) {
-            statusBarColor = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                ContextCompat.getColor(this@SomPrintAwbActivity, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black)
-            } else {
-                ContextCompat.getColor(this@SomPrintAwbActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)
-            }
-        }
-    }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         configureWebView()

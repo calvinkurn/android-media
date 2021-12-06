@@ -1,19 +1,18 @@
 package com.tokopedia.universal_sharing.view.bottomsheet
 
-import android.Manifest
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Telephony
+import android.text.Html
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -22,10 +21,7 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.DefaultLifecycleObserver
@@ -34,11 +30,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
@@ -49,13 +47,17 @@ import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.GenerateAffiliateLinkEligibility
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.usecase.AffiliateEligibilityCheckUseCase
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -90,6 +92,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         private var screenShotImagePath: String = ""
 
         private const val DELAY_TIME_MILLISECOND = 500L
+        private const val DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK = 5000L
         private const val SCREENSHOT_TITLE = "Yay, screenshot & link tersimpan!"
         const val CUSTOM_SHARE_SHEET = 1
         const val SCREENSHOT_SHARE_SHEET = 2
@@ -216,6 +219,11 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var emailImage: ImageView? = null
     private var otherOptionsImage: ImageView? = null
 
+    //loader view
+    private var loaderUnify: LoaderUnify? = null
+    //affiliate commission view
+    private var affiliateCommissionTextView: Typography? = null
+
     private var thumbNailTitle = ""
     private var bottomSheetTitleRemoteConfKey = ""
     private var bottomSheetTitleStr = ""
@@ -229,6 +237,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var channelStr: String = ""
     private var ogImageUrl: String = ""
     private var savedImagePath: String = ""
+
+    private var affiliateQueryData : AffiliatePDPInput? = null
+    private var showLoader: Boolean = false
 
     //observer flag
     private var preserveImage: Boolean = false
@@ -274,6 +285,76 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             }
     }
 
+    //call this method before show method if the request data is awaited
+    fun affiliateRequestDataAwaited(){
+       showLoader = true
+        Handler(Looper.getMainLooper()).postDelayed({
+            affiliateRequestDataReceived(false)
+        }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
+    }
+
+    //call this method if the request data is received
+    fun affiliateRequestDataReceived(validRequest: Boolean) {
+        val userSession = UserSession(LinkerManager.getInstance().context)
+        if(userSession.isLoggedIn && validRequest){
+            executeAffiliateEligibilityUseCase()
+            showLoader = true
+            loaderUnify?.visibility = View.VISIBLE
+        }
+        else {
+            clearLoader()
+            affiliateQueryData = null
+        }
+    }
+
+    private fun clearLoader(){
+        showLoader = false
+        loaderUnify?.visibility = View.GONE
+    }
+
+    private fun executeAffiliateEligibilityUseCase(){
+         val job  = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+                val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUseCase.apply {
+                    params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
+                }.executeOnBackground()
+                withContext(Dispatchers.Main) {
+                    showAffiliateCommission(generateAffiliateLinkEligibility)
+                }
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
+        Handler(Looper.getMainLooper()).postDelayed({
+            clearLoader()
+            if(job.isActive) {
+                job.cancel()
+            }
+            if(affiliateCommissionTextView?.visibility != View.VISIBLE) {
+                affiliateQueryData = null
+            }
+        }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
+    }
+
+    private fun showAffiliateCommission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility){
+        clearLoader()
+        if(generateAffiliateLinkEligibility.eligibleCommission?.isEligible == true) {
+            val commissionMessage = generateAffiliateLinkEligibility.eligibleCommission?.message ?: ""
+            if (!TextUtils.isEmpty(commissionMessage)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage,
+                        Html.FROM_HTML_MODE_LEGACY).toString()
+                } else {
+                    affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage).toString()
+                }
+                affiliateCommissionTextView?.visibility = View.VISIBLE
+                return
+            }
+        }
+        affiliateQueryData = null
+    }
+
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
         parentFragmentContainer = fragment
         parentFragmentLifecycleObserver = object: DefaultLifecycleObserver {
@@ -315,6 +396,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             smsTxtv = findViewById(R.id.sms_link_txtv)
             emailImage = findViewById(R.id.email_img)
             emailImage?.setBackgroundResource(R.drawable.universal_sharing_ic_ellipse_49)
+            loaderUnify = findViewById(R.id.loader)
+            affiliateCommissionTextView = findViewById(R.id.affilate_commision)
             setFixedOptionsClickListeners()
 
             setUserVisualData()
@@ -592,6 +675,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         requestDataMap = requestPayLoad
     }
 
+    fun setAffiliateRequestHolder(affiliatePDPInput: AffiliatePDPInput){
+        if(UserSession(LinkerManager.getInstance().context).isLoggedIn) {
+            this.affiliateQueryData = affiliatePDPInput
+        }
+    }
+
+    fun getAffiliateRequestHolder(): AffiliatePDPInput? {
+        return affiliateQueryData
+    }
+
     fun setBottomSheetTitle(title: String){
         bottomSheetTitleStr = title
     }
@@ -635,6 +728,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             imageListViewGroup?.visibility = View.GONE
         }
 //        previewImage?.setImageUrl(previewImageUrl)
+        if(showLoader){
+            loaderUnify?.visibility = View.VISIBLE
+        }
     }
 
     fun updateThumbnailImage(imgUrl:String){
@@ -694,6 +790,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
+        if(affiliateQueryData != null){
+            shareModel.isAffiliate = true
+        }
         bottomSheetListener?.onShareOptionClicked(shareModel)
     }
 
@@ -789,5 +888,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun setMediaPageSourceId(pageSourceId: String){
         sourceId = pageSourceId
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.clear()
     }
 }

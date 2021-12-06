@@ -317,4 +317,7 @@
 
     <string name="title_time_adjustment_what_relief_for_reactivated_seller">Apa itu waktu penyesuaian (59 hari) dan keringanan apa yang saya dapatkan?</string>
     <string name="desc_time_adjustment_what_relief_for_reactivated_seller">Selama 59 hari, Seller akan mendapatkan keringanan untuk penilaian 2 parameter skor, yaitu parameter “Jumlah Pembeli” dan “Membuka Tokopedia Seller selama 90 hari”. Untuk kedua parameter tersebut, Seller akan mendapatkan nilai keringanan berupa nilai tengah, di mana nilai tersebut tidak akan berubah selama 59 hari masa penyesuaian. Setelah 59 hari masa penyesuaian, nilai keringanan pada kedua parameter tersebut akan digantikan oleh nilai sebenarnya.</string>
+
+    <!-- Shop Penalty Tablet -->
+    <string name="title_welcome_shop_penalty_tablet">Selamat datang di halaman penalti</string>
 </resources>

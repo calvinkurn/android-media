@@ -39,6 +39,8 @@ class ProductNotificationCardUnify(
     private var btnAtc: UnifyButton? = null
     private var btnReminder: UnifyButton? = null
     private var btnDeleteReminder: UnifyButton? = null
+    private var btnAddToWishlist: UnifyButton? = null
+    private var btnCheckWishlist: UnifyButton? = null
     private var btnEmptyStock: UnifyButton? = null
 
     private var listener: NotificationItemListener? = null
@@ -76,6 +78,8 @@ class ProductNotificationCardUnify(
         btnAtc = view.findViewById(R.id.btn_atc)
         btnReminder = view.findViewById(R.id.tv_reminder)
         btnDeleteReminder = view.findViewById(R.id.tv_delete_reminder)
+        btnAddToWishlist = view.findViewById(R.id.tv_add_to_wishlist)
+        btnCheckWishlist = view.findViewById(R.id.tv_check_wishlist)
         btnEmptyStock = view.findViewById(R.id.btn_empty_stock)
     }
 
@@ -100,6 +104,8 @@ class ProductNotificationCardUnify(
             bindAtcClick(product)
             bindReminder(product)
             bindDeleteReminder(product)
+            bindAddToWishlist(product)
+            bindCheckWishlist(product)
             bindEmptyStock(product)
             bindImpressionTrack(notification, product)
         } else {
@@ -137,8 +143,18 @@ class ProductNotificationCardUnify(
         bindDeleteReminder(product)
     }
 
+    fun updateWishlistState(product: ProductData?) {
+        product ?: return
+        bindAddToWishlist(product)
+        bindCheckWishlist(product)
+    }
+
     private fun bindThumbnailLabel(product: ProductData) {
-        if (product.hasEmptyStock() || product.isEmptyButton() || product.isReminderButton()) {
+        if (product.hasEmptyStock() ||
+            product.isEmptyButton() ||
+            product.isReminderButton() ||
+            product.isWishlistButton()
+        ) {
             thumbnailLabel?.show()
             thumbnailLabel?.unlockFeature = true
             thumbnailLabel?.setLabelType(colorString)
@@ -159,7 +175,7 @@ class ProductNotificationCardUnify(
         val notification = notification
         val adapterPosition = adapterPosition
         if (product.isReminderButton() && !product.hasReminder &&
-                notification != null && adapterPosition != null) {
+            notification != null && adapterPosition != null) {
             btnReminder?.show()
             bindBumpReminderState(product)
             btnReminder?.setOnClickListener {
@@ -179,7 +195,7 @@ class ProductNotificationCardUnify(
         val notification = notification
         val adapterPosition = adapterPosition
         if (product.isReminderButton() && product.hasReminder &&
-                notification != null && adapterPosition != null) {
+            notification != null && adapterPosition != null) {
             btnDeleteReminder?.show()
             bindDeleteReminderState(product)
             btnDeleteReminder?.setOnClickListener {
@@ -192,6 +208,35 @@ class ProductNotificationCardUnify(
             }
         } else {
             btnDeleteReminder?.hide()
+        }
+    }
+
+    private fun bindAddToWishlist(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
+        if (product.isWishlistButton() && !product.isWishlist) {
+            btnAddToWishlist?.show()
+        } else {
+            btnAddToWishlist?.hide()
+        }
+        btnAddToWishlist?.setOnClickListener {
+            if(notification != null && adapterPosition != null) {
+                listener?.addToWishlist(notification, product, adapterPosition)
+                product.isWishlist = true
+                btnAddToWishlist?.hide()
+                btnCheckWishlist?.show()
+            }
+        }
+    }
+
+    private fun bindCheckWishlist(product: ProductData) {
+        if (product.isWishlistButton() && product.isWishlist) {
+            btnCheckWishlist?.show()
+        } else {
+            btnCheckWishlist?.hide()
+        }
+        btnCheckWishlist?.setOnClickListener {
+            listener?.goToWishlist()
         }
     }
 
@@ -225,7 +270,12 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindProductVariant(product: ProductData) {
-        productVariant?.setupVariant(product.variant)
+        val showVariant = productVariant?.setupVariant(product.variant)?: false
+        if (showVariant) {
+            productVariant?.show()
+        } else {
+            productVariant?.hide()
+        }
     }
 
     private fun bindProductPrice(product: ProductData) {
@@ -259,11 +309,20 @@ class ProductNotificationCardUnify(
             btnCheckout?.hide()
         } else {
             btnCheckout?.show()
+            setupBuyButtonText(product.isPreorder)
             btnCheckout?.setOnClickListener {
                 notification?.let {
                     listener?.buyProduct(it, product)
                 }
             }
+        }
+    }
+
+    private fun setupBuyButtonText(isPreorder: Boolean) {
+        if (isPreorder) {
+            btnCheckout?.text = context.getText(R.string.notifcenter_btn_preorder)
+        } else {
+            btnCheckout?.text = context.getText(R.string.notifcenter_btn_buy)
         }
     }
 

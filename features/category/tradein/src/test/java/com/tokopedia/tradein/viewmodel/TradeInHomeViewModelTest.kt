@@ -275,7 +275,7 @@ class TradeInHomeViewModelTest {
         tradeInHomeViewModel.getMaxPrice(laku6TradeIn, tradeInType)
 
         assertEquals(tradeInHomeViewModel.tradeInType, tradeInType)
-        verify { laku6TradeIn.getMinMaxPrice(any()) }
+        verify { laku6TradeIn.getMinMaxPrice(any(), any()) }
         assertEquals(tradeInHomeViewModel.getProgBarVisibility().value, true)
     }
 

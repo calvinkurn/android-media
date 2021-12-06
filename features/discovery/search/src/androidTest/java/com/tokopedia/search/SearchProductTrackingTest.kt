@@ -14,9 +14,11 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductItemViewHolder
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,6 +29,12 @@ private const val ANALYTIC_VALIDATOR_QUERY_THANOS_ID = "7"
 
 internal class SearchProductTrackingTest {
 
+    private val isFromNetwork = true
+    private val queryId
+        get() =
+            if (isFromNetwork) ANALYTIC_VALIDATOR_QUERY_THANOS_ID
+            else ANALYTIC_VALIDATOR_QUERY_FILE_NAME
+
     @get:Rule
     val activityRule = IntentsTestRule(
         SearchActivity::class.java,
@@ -35,10 +43,7 @@ internal class SearchProductTrackingTest {
     )
 
     @get:Rule
-    val cassavaTestRule = CassavaTestRule(
-        isFromNetwork = true
-//        isFromNetwork = false
-    )
+    val cassavaTestRule = CassavaTestRule(isFromNetwork)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val recyclerViewId = R.id.recyclerview
@@ -77,10 +82,7 @@ internal class SearchProductTrackingTest {
     fun testTracking() {
         performUserJourney()
 
-        cassavaTestRule.validate(
-            ANALYTIC_VALIDATOR_QUERY_THANOS_ID,
-//            ANALYTIC_VALIDATOR_QUERY_FILE_NAME
-        )
+        assertThat(cassavaTestRule.validate(queryId), hasAllSuccess())
     }
 
     private fun performUserJourney() {
@@ -94,6 +96,9 @@ internal class SearchProductTrackingTest {
         recyclerView.perform(actionOnItemAtPosition<ProductItemViewHolder>(organicPosition, click()))
 
         activityRule.activity.finish()
+
+        // Wait for tracking queue
+        Thread.sleep(1_000)
     }
 
     @After

@@ -12,9 +12,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.ColorDrawableGenerator
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.topchat.common.util.ViewUtil.ellipsizeLongText
 import com.tokopedia.unifycomponents.toPx
 
 class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: AttachmentItemPreviewListener)
@@ -27,14 +27,13 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
 
     private val productVariantContainer = itemView.findViewById<LinearLayout>(R.id.ll_variant)
     private val productColorVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_color)
-    private val productColorVariantHex = itemView.findViewById<ImageView>(R.id.iv_variant_color)
     private val productColorVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_color)
     private val productSizeVariant = itemView.findViewById<LinearLayout>(R.id.ll_variant_size)
     private val productSizeVariantValue = itemView.findViewById<TextView>(R.id.tv_variant_size)
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             view = container,
-            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
             topLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             topRightRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
             bottomLeftRadius = com.tokopedia.unifyprinciples.R.dimen.unify_space_8,
@@ -72,18 +71,16 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
         productVariantContainer?.showWithCondition(model.hasVariant())
         if (model.hasColorVariant()) {
             productColorVariant.show()
-            val backgroundDrawable = ColorDrawableGenerator.generate(
-                    itemView.context, productPreview.colorHexVariant
-            )
-            productColorVariantHex?.background = backgroundDrawable
-            productColorVariantValue?.text = productPreview.colorVariant
+            productColorVariantValue?.text = ellipsizeLongText(
+                productPreview.colorVariant, MAX_VARIANT_LABEL_CHAR)
         } else {
             productColorVariant?.hide()
         }
 
         val productHasSizeVariant = model.hasSizeVariant()
         productSizeVariant?.shouldShowWithAction(productHasSizeVariant) {
-            productSizeVariantValue?.text = productPreview.sizeVariant
+            productSizeVariantValue?.text = ellipsizeLongText(
+                productPreview.sizeVariant, MAX_VARIANT_LABEL_CHAR)
         }
     }
 
@@ -96,6 +93,7 @@ class ProductPreviewViewHolder(itemView: View, attachmentItemPreviewListener: At
     }
 
     companion object {
+        private const val MAX_VARIANT_LABEL_CHAR = 5
         val LAYOUT = R.layout.item_product_preview
     }
 }

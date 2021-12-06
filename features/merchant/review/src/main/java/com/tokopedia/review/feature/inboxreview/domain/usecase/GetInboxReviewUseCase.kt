@@ -50,6 +50,8 @@ class GetInboxReviewUseCase @Inject constructor(
                     replyTime
                     isAutoReply
                     isKejarUlasan
+                    badRatingReasonFmt
+                    ratingDisclaimer
                 }
                 filterBy
                 remainder
