@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import javax.inject.Inject
 
 class ResourceProvider @Inject constructor(@ApplicationContext private val context: Context?) {
@@ -13,6 +14,37 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
         } catch (e: Resources.NotFoundException) {
             null
         }
+    }
+
+    private fun composeReceiverAddress(vararg chunks: String): String {
+        return StringBuilder().apply {
+            chunks.forEach {
+                appendSpaceIfNotBlank()
+                appendTextIfNotBlank(it)
+            }
+        }.toString()
+    }
+
+    private fun StringBuilder.appendTextIfNotBlank(text: String) {
+        if (text.isNotBlank()) append(text)
+    }
+
+    private fun StringBuilder.appendSpaceIfNotBlank() {
+        if (isNotBlank()) append(" ")
+    }
+
+    private fun StringBuilder.appendHtmlBreakLineIfNotBlank() {
+        if (isNotBlank()) appendTextIfNotBlank(getString(R.string.break_line_html_format).orEmpty())
+    }
+
+    private fun StringBuilder.appendHtmlBoldText(text: String) {
+        if (text.isNotBlank()) {
+            appendTextIfNotBlank(getString(R.string.bold_text_html_format, text).orEmpty())
+        }
+    }
+
+    private fun StringBuilder.appendHtmlLinkText(text: String, link: String) {
+        appendTextIfNotBlank(getString(R.string.link_text_html_format, link, text).orEmpty())
     }
 
     fun getProductListSectionHeader(): String {
@@ -57,5 +89,54 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
 
     fun getCopyLabelAwb(): String {
         return getString(R.string.copy_label_awb_number).orEmpty()
+    }
+
+    fun composeDriverTippingInfoDescription(
+        driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
+    ): String {
+        return if (driverTippingInfo == null) {
+            ""
+        } else {
+            StringBuilder().apply {
+                appendTextIfNotBlank(driverTippingInfo.subtitle)
+                if (driverTippingInfo.action.name.isNotBlank()) {
+                    appendSpaceIfNotBlank()
+                    if (driverTippingInfo.action.link.isNotBlank()) {
+                        appendHtmlLinkText(driverTippingInfo.action.name, driverTippingInfo.action.link)
+                    } else {
+                        append(driverTippingInfo.action.name)
+                    }
+                }
+            }.toString()
+        }
+    }
+
+    fun composeDropshipperValue(
+        dropshipper: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship
+    ): String {
+        return StringBuilder().apply {
+            appendHtmlBoldText(dropshipper.name)
+            if (dropshipper.phoneNumber.isNotBlank()) {
+                appendHtmlBreakLineIfNotBlank()
+                append(dropshipper.phoneNumber)
+            }
+        }.toString()
+    }
+
+    fun composeReceiverAddressValue(
+        receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver
+    ): String {
+        val receiverAddress = composeReceiverAddress(receiver.street, receiver.district, receiver.city, receiver.province, receiver.postal)
+        return StringBuilder().apply {
+            appendHtmlBoldText(receiver.name)
+            if (receiver.phone.isNotBlank()) {
+                appendHtmlBreakLineIfNotBlank()
+                append(receiver.phone)
+            }
+            if (receiverAddress.isNotBlank()) {
+                appendHtmlBreakLineIfNotBlank()
+                append(receiverAddress)
+            }
+        }.toString()
     }
 }

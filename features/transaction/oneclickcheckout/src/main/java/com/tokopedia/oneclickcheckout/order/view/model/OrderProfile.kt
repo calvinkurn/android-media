@@ -45,6 +45,7 @@ data class OrderProfileAddress(
 
     companion object {
         private const val STATUS_MAIN_ADDRESS = 2
+        const val STATE_OCC_ADDRESS_ID_NOT_MATCH = 211
     }
 }
 

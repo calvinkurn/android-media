@@ -32,7 +32,8 @@ object BuyerOrderDetailTrackerConstant {
     const val EVENT_ACTION_PARTIAL_CLICK = "click"
     const val EVENT_ACTION_PARTIAL_CLICK_ON_PRIMARY_BUTTON = "click on main button"
     const val EVENT_ACTION_PARTIAL_CLICK_ON_SECONDARY_BUTTON = "click on secondary button"
-    const val EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG = "on finished order confirmation"
+    const val EVENT_ACTION_PARTIAL_CLICK_ON_FINISH_ORDER_CONFIRMATION_DIALOG =
+        "on finished order confirmation"
     const val EVENT_ACTION_CLICK_SEE_ORDER_HISTORY_DETAIL = "click lihat detail"
     const val EVENT_ACTION_CLICK_SEE_ORDER_INVOICE = "click lihat invoice"
     const val EVENT_ACTION_CLICK_COPY_ORDER_INVOICE = "click copy invoice number"
@@ -77,4 +78,14 @@ object BuyerOrderDetailTrackerConstant {
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"
+
+    //buyer order extension
+    const val EVENT_ACTION_CONFIRMATION_ORDER_EXTENSION =
+        "click on confirmation order extension button"
+    const val EVENT_ACTION_REQUEST_ACTION_ORDER_EXTENSION =
+        "order extension request action"
+    const val EVENT_LABEL_ACCEPT_EXTENSION = "accept extension"
+    const val EVENT_LABEL_REJECT_EXTENSION = "reject extension"
+    const val UOH_SOURCE = "UOH"
+    const val BOM_SOURCE = "BOM"
 }

@@ -9,7 +9,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
@@ -81,6 +80,7 @@ interface TopChatContract {
         fun expandSrwBubble()
         fun showPreviewMsg(previewMsg: SendableUiModel)
         fun clearReferredMsg()
+        fun notifyPreviewRemoved(model: SendablePreview)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -156,30 +156,6 @@ interface TopChatContract {
 
         fun resetUnreadMessage()
 
-        fun requestBlockPromo(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
-        fun requestAllowPromo(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
-        fun blockChat(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
-        fun unBlockChat(
-            messageId: String,
-            onSuccess: (ChatSettingsResponse) -> Unit,
-            onError: (Throwable) -> Unit
-        )
-
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 
         fun hasEmptyAttachmentPreview(): Boolean
@@ -190,7 +166,7 @@ interface TopChatContract {
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
 
-        fun getSmartReplyWidget(msgId: String)
+        fun getSmartReplyWidget(msgId: String, productIds: String)
         fun initUserLocation(userLocation: LocalCacheModel?)
         fun getProductIdPreview(): List<String>
         fun getAttachmentsPreview(): List<SendablePreview>

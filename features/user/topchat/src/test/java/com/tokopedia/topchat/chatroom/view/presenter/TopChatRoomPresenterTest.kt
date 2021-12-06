@@ -5,7 +5,6 @@ import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -354,66 +353,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `check requestBlockPromo`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.requestBlockPromo(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.blockPromo(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check requestAllowPromo`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.requestAllowPromo(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.allowPromo(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check blockChat`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.blockChat(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.blockChat(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
-    fun `check unBlockChat`() {
-        // Given
-        val onSuccess: (ChatSettingsResponse) -> Unit = mockk()
-        val onError: (Throwable) -> Unit = mockk()
-
-        // When
-        presenter.unBlockChat(exMessageId, onSuccess, onError)
-
-        // Then
-        verify(exactly = 1) {
-            chatToggleBlockChat.unBlockChat(exMessageId, onSuccess, onError)
-        }
-    }
-
-    @Test
     fun `success load srw`() {
         // Given
         val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
@@ -422,12 +361,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         )
         val successFlow = flow { emit(expectedValue) }
         every {
-            chatSrwUseCase.getSrwList(exMessageId)
+            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
         } returns successFlow
 
         // When
         presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
+        presenter.getSmartReplyWidget(exMessageId, "1")
 
         // Then
         verify(exactly = 1) {
@@ -444,12 +383,12 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
             throwable, null
         )
         every {
-            chatSrwUseCase.getSrwList(exMessageId)
+            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
         } throws throwable
 
         // When
         presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId)
+        presenter.getSmartReplyWidget(exMessageId, "1")
 
         // Then
         verify(exactly = 1) {

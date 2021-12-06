@@ -142,4 +142,15 @@
 
     <dimen name="product_card_text_add_variant_quantity_margin_top">6dp</dimen>
     <dimen name="product_card_text_add_variant_quantity_height">14dp</dimen>
+
+    <dimen name="product_card_button_secondary_height">32dp</dimen>
+    <dimen name="product_card_button_secondary_width">32dp</dimen>
+    <dimen name="product_card_button_secondary_margin_start">8dp</dimen>
+    <dimen name="product_card_button_secondary_margin_end">8dp</dimen>
+    <dimen name="product_card_button_secondary_padding">6dp</dimen>
+    <dimen name="product_card_button_image_secondary_width">20dp</dimen>
+    <dimen name="product_card_button_image_secondary_height">20dp</dimen>
+
+    <dimen name="product_card_button_primary_height">32dp</dimen>
+    <dimen name="product_card_button_primary_margin">8dp</dimen>
 </resources>
