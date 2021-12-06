@@ -23,6 +23,9 @@ class HomeViewModelCMHomeWidgetTest {
     private val getCMHomeWidgetDataUseCase = mockk<GetCMHomeWidgetDataUseCase>(relaxed = true)
     private val dismissCMHomeWidgetUseCase = mockk<DismissCMHomeWidgetUseCase>(relaxed = true)
 
+    private val errorMessage = "Failed"
+    private val errorMockThrowable = Throwable(message = errorMessage)
+
     private lateinit var homeViewModel: HomeRevampViewModel
 
     @Test
@@ -58,35 +61,58 @@ class HomeViewModelCMHomeWidgetTest {
                 list = listOf(cmHomeWidgetDataModel)
             )
         )
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-
-        //initial data should be null
-        homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
-            assert((it as CMHomeWidgetDataModel).cmHomeWidgetData == null)
-        }
 
         val result = mockk<CMHomeWidgetDataResponse>(relaxed = true)
         coEvery { getCMHomeWidgetDataUseCase.getCMHomeWidgetData(any(), any(), any()) }
             .coAnswers {
                 firstArg<(CMHomeWidgetDataResponse) -> Unit>().invoke(result)
             }
-        homeViewModel.getCMHomeWidgetData()
-        //after calling api -> data should not be null
+
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            getCMHomeWidgetDataUseCase = getCMHomeWidgetDataUseCase
+        )
+
+        //initial data should be null -> Widget is showing without data
         homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
             assert((it as CMHomeWidgetDataModel).cmHomeWidgetData == null)
+        }
+
+        homeViewModel.getCMHomeWidgetData()
+
+        //API called -> Success -> Widget is showing with data
+        homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
+            assert((it as CMHomeWidgetDataModel).cmHomeWidgetData != null)
         }
     }
 
     @Test
-    fun `CMHomeWidget must be refresh only after 60 sec`() {
-        val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
+    fun `CMHomeWidget is visible and getCMHomeWidgetData Api result is failed then widget should be deleted`() {
+        val cmHomeWidgetDataModel = CMHomeWidgetDataModel(cmHomeWidgetData = null)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDataModel(
                 list = listOf(cmHomeWidgetDataModel)
             )
         )
-        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+
+        coEvery { getCMHomeWidgetDataUseCase.getCMHomeWidgetData(any(), any(), any()) }
+            .coAnswers {
+                secondArg<(Throwable) -> Unit>().invoke(errorMockThrowable)
+            }
+
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            getCMHomeWidgetDataUseCase = getCMHomeWidgetDataUseCase
+        )
+
+        //initial data should be null -> widget is showing without data
+        homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
+            assert((it as CMHomeWidgetDataModel).cmHomeWidgetData == null)
+        }
+
         homeViewModel.getCMHomeWidgetData()
-        homeViewModel.getCMHomeWidgetData(false)
+
+        //API called -> Failed -> Widget Deleted
+        assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } == null)
     }
 }
