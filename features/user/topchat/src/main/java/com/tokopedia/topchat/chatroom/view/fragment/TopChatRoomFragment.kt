@@ -2041,7 +2041,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun requestAllowPromo() {
-        viewModel.toggleBlockChatPromo(messageId, ActionType.BlockPromo)
+        viewModel.toggleBlockChatPromo(messageId, ActionType.UnblockPromo)
     }
 
     private fun onSuccessAllowPromoFromBcHandler() {
