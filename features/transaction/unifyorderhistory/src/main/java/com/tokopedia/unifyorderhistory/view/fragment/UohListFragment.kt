@@ -1737,14 +1737,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val detailUrl = order.metadata.detailURL
         var intent: Intent? = null
         if (detailUrl.appTypeLink == WEB_LINK_TYPE) {
-            intent = RouteManager.getIntentNoFallback(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
+            intent = RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8)))
         } else if (detailUrl.appTypeLink == APP_LINK_TYPE) {
-            intent = RouteManager.getIntentNoFallback(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
+            intent = RouteManager.getIntent(context, URLDecoder.decode(detailUrl.appURL, UohConsts.UTF_8))
         }
 
-        if (intent == null) {
-            return
-        }
         currIndexNeedUpdate = index
         orderIdNeedUpdated = order.orderUUID
 
