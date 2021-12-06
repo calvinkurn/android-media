@@ -25,17 +25,22 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
-import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isValidGlideContext
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_NO_KEY
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
+import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
+import com.tokopedia.shop.common.util.OperationalHoursUtil
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.analytics.ShopSettingsTracking
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActivity
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsOperationalHoursActivity
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
@@ -49,6 +54,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.text.currency.StringUtils.isEmptyNumber
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 
@@ -61,6 +69,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         const val EXTRA_SAVE_INSTANCE_CACHE_MANAGER_ID = "extra_save_instance_cache_manager_id"
         const val REQUEST_EDIT_BASIC_INFO = "request_edit_basic_info"
         const val REQUEST_EDIT_SCHEDULE = 782
+        private const val OPERATIONAL_HOUR_START_INDEX = 4
     }
 
     @Inject
@@ -75,7 +84,6 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentShopSettingsInfoBinding>()
 
     private var needReload: Boolean = false
-    private var extraIsActionEdit: Boolean = false
     private var shopBasicDataModel: ShopBasicDataModel? = null
     private var bottomSheet: MenuBottomSheet? = null
     private var snackbar: Snackbar? = null
@@ -104,6 +112,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     private var containerPowerMerchant: View? = null
     private var containerOfficialStore: View? = null
     private var tvRegularMerchantType: Typography? = null
+    private var isGetNewOperationalHours: Boolean = false
 
     override fun getScreenName(): String? {
         return null
@@ -112,6 +121,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shopId = userSession.shopId
+        checkNewOperationalHoursAbTest()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -119,23 +129,44 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         return binding?.root as View
     }
 
+    private fun checkNewOperationalHoursAbTest() {
+        ShopAbTestPlatform(requireContext()).apply {
+            requestParams = ShopAbTestPlatform.createRequestParam(
+                    listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
+                    shopId = shopId
+            )
+            fetch(object : RemoteConfig.Listener {
+                override fun onComplete(remoteConfig: RemoteConfig?) {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        when (getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)) {
+                            AB_TEST_OPERATIONAL_HOURS_NO_KEY, AB_TEST_OPERATIONAL_HOURS_KEY -> {
+                                // user get new ops hour experience
+                                isGetNewOperationalHours = true
+                                loadShopBasicData()
+                            }
+                        }
+                    }
+                }
+
+                override fun onError(e: java.lang.Exception?) {}
+            })
+        }
+    }
+
     private fun showShopStatusManageMenu() {
         shopBasicDataModel?.let { shopBasicDataModel ->
             val itemList = ArrayList<String>()
             if (shopBasicDataModel.isOpen) {
-                extraIsActionEdit = if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
+                if (isEmptyNumber(shopBasicDataModel.closeSchedule)) {
                     itemList.add(getString(R.string.schedule_your_shop_close))
-                    false
                 } else {
                     itemList.add(getString(R.string.change_schedule))
                     itemList.add(getString(R.string.remove_schedule))
-                    true
                 }
                 itemList.add(getString(R.string.label_close_shop_now))
             } else {
                 itemList.add(getString(R.string.change_schedule))
                 itemList.add(getString(R.string.label_open_shop_now))
-                extraIsActionEdit = true
             }
             bottomSheet = MenuBottomSheet.newInstance(itemList)
             bottomSheet?.setTitle(getString(R.string.shop_settings_manage_status))
@@ -155,13 +186,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         bottomSheet?.dismiss()
         when(text) {
             getString(R.string.label_close_shop_now) -> {
-                shopBasicDataModel?.let {
-                    moveToShopOpsHourSettings(
-                            shopBasicDataModel = it,
-                            isClosedNow = true,
-                            isActionEdit = extraIsActionEdit
-                    )
-                }
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, true) }
             }
             getString(R.string.remove_schedule) -> {
                 activity?.let { it ->
@@ -200,13 +225,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
 
             }
             else -> {
-                shopBasicDataModel?.let {
-                    moveToShopOpsHourSettings(
-                            shopBasicDataModel = it,
-                            isClosedNow = it.isClosed,
-                            isActionEdit = extraIsActionEdit
-                    )
-                }
+                shopBasicDataModel?.let { moveToShopEditScheduleFragment(it, shopBasicDataModel?.isClosed ?: false) }
             }
         }
     }
@@ -231,17 +250,20 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         }
 
         vgShopStatusContainer?.setOnClickListener {
-            showShopStatusManageMenu()
+            if (isGetNewOperationalHours) {
+                moveToNewShopOperationalHours()
+            } else {
+                showShopStatusManageMenu()
+            }
             ShopSettingsTracking.clickStatusToko(shopId, getShopType())
         }
 
-        loadShopBasicData()
         shopSettingsInfoViewModel.validateOsMerchantType(shopId.toInt())
 
         onFragmentResult()
 
         observeShopBadgeData()
-        observeShopOperationalHourStatusData()
+        observeShopOperationalHourList()
         observeShopBasicData()
         observeShopStatus()
         observeOsMerchantData()
@@ -285,19 +307,27 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun observeShopOperationalHourStatusData() {
-        shopSettingsInfoViewModel.shopOperationalHourStatus.observe(viewLifecycleOwner, Observer {
+    private fun observeShopOperationalHourList() {
+        shopSettingsInfoViewModel.shopOperationalHourList.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
-                val operationalHourStatus = it.data
-                shopBasicDataModel?.let { shopBasicData ->
-                    val isShopClosed = shopBasicData.isClosed
-                    val isShopActive = operationalHourStatus.statusActive
-                    val status = when {
-                        isShopClosed -> getString(R.string.shop_operational_hour_holiday)
-                        isShopActive -> getString(R.string.label_open)
-                        else -> getString(R.string.label_close)
+                var operationalHourList = it.data.getShopOperationalHoursList?.data
+                if (operationalHourList?.isEmpty().orTrue()) {
+                    operationalHourList = OperationalHoursUtil.generateDefaultOpsHourList()
+                }
+                val todayOrdinalDayOfWeek = OperationalHoursUtil.getOrdinalDate(Calendar.getInstance().get(Calendar.DAY_OF_WEEK))
+                operationalHourList?.get(todayOrdinalDayOfWeek-1)?.let { opsHour ->
+                    val opsHourText = OperationalHoursUtil.generateDatetime(
+                            opsHour.startTime,
+                            opsHour.endTime,
+                            opsHour.status
+                    )
+                    tvShopStatus?.text = if (opsHourText == OperationalHoursUtil.HOLIDAY_CAN_ATC || opsHourText == OperationalHoursUtil.HOLIDAY_CANNOT_ATC) {
+                        opsHourText
+                    } else {
+                        getString(R.string.shop_settings_info_operational_hours,
+                                opsHourText.substring(OPERATIONAL_HOUR_START_INDEX, opsHourText.length).trim()
+                        )
                     }
-                    tvShopStatus?.text = status
                 }
             }
         })
@@ -344,24 +374,17 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         NavigationController.navigate(this@ShopSettingsInfoFragment, destination)
     }
 
-    private fun moveToShopOpsHourSettings(
-            shopBasicDataModel: ShopBasicDataModel,
-            isClosedNow: Boolean,
-            isActionEdit: Boolean
-    ) {
+    private fun moveToShopEditScheduleFragment(shopBasicDataModel: ShopBasicDataModel, isClosedNow: Boolean) {
         val cacheManager = SaveInstanceCacheManager(requireContext(), true).apply {
             put(EXTRA_SHOP_BASIC_DATA_MODEL, shopBasicDataModel)
             put(EXTRA_IS_CLOSED_NOW, isClosedNow)
         }
-        startActivity(RouteManager.getIntent(requireContext(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS).apply {
-            putExtra(ShopSettingsOperationalHoursActivity.KEY_EXTRA_BUNDLE, Bundle().apply {
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, isActionEdit)
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, isClosedNow)
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, true)
-                putString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, cacheManager.id ?: "0")
-            })
-        })
-        activity?.finish()
+        val intent = ShopEditScheduleActivity.createIntent(requireContext(), cacheManager.id ?: "0")
+        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+    }
+
+    private fun moveToNewShopOperationalHours() {
+        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_OPERATIONAL_HOURS)
     }
 
     private fun observeUpdateScheduleData() {
@@ -537,7 +560,27 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                 tvShopDescription?.text = shopBasicData.description
             }
 
-            tvShopStatus?.text = if (shopBasicData.isOpen) getString(R.string.label_open) else getString(R.string.label_close)
+            if (isGetNewOperationalHours) {
+                // render shop status text
+                if (shopBasicData.isClosed) {
+                    if (shopBasicData.closeSchedule != "0") {
+                        // is ongoing scheduled holiday
+                        val startDate = Date(shopBasicData.closeSchedule.toLongOrZero() * 1000L)
+                        val endDate = Date(shopBasicData.closeUntil.toLongOrZero() * 1000L)
+                        tvShopStatus?.text = getString(
+                                R.string.shop_settings_info_holiday_text,
+                                OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate)
+                        )
+                    } else {
+                        shopSettingsInfoViewModel.getOperationalHoursList(shopId)
+                    }
+                } else {
+                    shopSettingsInfoViewModel.getOperationalHoursList(shopId)
+                }
+            } else {
+                // render old shop status
+                tvShopStatus?.text = if (shopBasicData.isOpen) getString(R.string.label_open) else getString(R.string.label_close)
+            }
         }
     }
 

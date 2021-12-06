@@ -35,7 +35,8 @@ object OperationalHoursUtil {
     private const val SUBSTRING_END_TIME_INDEX = 5
 
     // DateTime format
-    const val ALL_DAY = "Buka 24 Jam"
+    const val ALL_DAY_HOURS = "24 Jam"
+    const val ALL_DAY = "Buka $ALL_DAY_HOURS"
     const val HOLIDAY = "Libur rutin"
     const val CAN_ATC_TEXT = "Produkmu bisa dibeli"
     const val CANNOT_ATC_TEXT = "Produkmu tidak bisa dibeli"
@@ -79,6 +80,17 @@ object OperationalHoursUtil {
      */
     fun getDayName(dayId: Int): String {
         return daylistMap[dayId] ?: ""
+    }
+
+    /**
+     * Get day with format 1 - 7 from Monday to Sunday
+     * @return [Int]
+     */
+    fun getOrdinalDate(dayOfWeek: Int): Int {
+        return if (dayOfWeek == 1) {
+            dayOfWeek + 6
+        }
+        else dayOfWeek - 1
     }
 
     /**

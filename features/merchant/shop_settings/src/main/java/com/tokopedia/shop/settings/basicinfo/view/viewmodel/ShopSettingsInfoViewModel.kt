@@ -6,22 +6,22 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.di.GqlGetShopInfoUseCaseShopSettingsInfoQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopOperationalHourStatusUseCase
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBasicDataUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.common.domain.interactor.GqlGetIsShopOsUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlGetShopOperationalHoursListUseCase
 import com.tokopedia.shop.common.graphql.data.isshopofficial.GetIsShopOfficialStore
-import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOperationalHourStatus
+import com.tokopedia.shop.common.graphql.data.shopoperationalhourslist.ShopOperationalHoursListResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         private val checkOsMerchantUseCase: GqlGetIsShopOsUseCase,
         private val getShopBasicDataUseCase: GetShopBasicDataUseCase,
         private val getShopStatusUseCase: GetPMStatusUseCase,
-        private val getShopOperationalHourStatusUseCase: GQLGetShopOperationalHourStatusUseCase,
+        private val shopOperationalHoursListUseCase: GqlGetShopOperationalHoursListUseCase,
         private val updateShopScheduleUseCase: UpdateShopScheduleUseCase,
         @GqlGetShopInfoUseCaseShopSettingsInfoQualifier
         private val getShopInfoUseCase: GQLGetShopInfoUseCase,
@@ -45,9 +45,9 @@ class ShopSettingsInfoViewModel @Inject constructor (
     val shopBasicData: LiveData<Result<ShopBasicDataModel>>
         get() = _shopBasicData
 
-    private val _shopOperationalHourStatus = MutableLiveData<Result<ShopOperationalHourStatus>>()
-    val shopOperationalHourStatus: LiveData<Result<ShopOperationalHourStatus>>
-        get() = _shopOperationalHourStatus
+    private val _shopOperationalHourList = MutableLiveData<Result<ShopOperationalHoursListResponse>>()
+    val shopOperationalHourList: LiveData<Result<ShopOperationalHoursListResponse>>
+        get() = _shopOperationalHourList
 
     private val _shopStatusData = MutableLiveData<Result<PMStatusUiModel>>()
     val shopStatusData: LiveData<Result<PMStatusUiModel>>
@@ -67,7 +67,7 @@ class ShopSettingsInfoViewModel @Inject constructor (
         _shopStatusData.value = null
         _updateScheduleResult.value = null
         _shopBadgeData.value = null
-        _shopOperationalHourStatus.value = null
+        _shopOperationalHourList.value = null
     }
 
     fun getShopData(shopId: String, includeOS: Boolean) {
@@ -98,18 +98,17 @@ class ShopSettingsInfoViewModel @Inject constructor (
             })
     }
 
-//    private fun getShopOperationalHourStatusAsync(shopId: String): Deferred<ShopOperationalHourStatus> {
-//        return async(start = CoroutineStart.LAZY, context = dispatchers.io) {
-//            var operationalHourStatus = ShopOperationalHourStatus()
-//            try {
-//                getShopOperationalHourStatusUseCase.params = GQLGetShopOperationalHourStatusUseCase.createParams(shopIds = shopId)
-//                operationalHourStatus = getShopOperationalHourStatusUseCase.executeOnBackground()
-//            } catch (t: Throwable) {
-//                _shopOperationalHourStatus.postValue(Fail(t))
-//            }
-//            operationalHourStatus
-//        }
-//    }
+    fun getOperationalHoursList(shopId: String) {
+        launchCatchError(block = {
+            withContext(dispatchers.io) {
+                shopOperationalHoursListUseCase.params = GqlGetShopOperationalHoursListUseCase.createRequestParams(shopId)
+                val response = shopOperationalHoursListUseCase.executeOnBackground()
+                _shopOperationalHourList.postValue(Success(response))
+            }
+        }) {
+            _shopOperationalHourList.postValue(Fail(it))
+        }
+    }
 
     fun updateShopSchedule(
             @ShopScheduleActionDef action: Int,

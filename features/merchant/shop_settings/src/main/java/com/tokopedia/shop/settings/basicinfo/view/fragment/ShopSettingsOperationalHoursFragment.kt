@@ -72,9 +72,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 cacheIdForOldFragment: String
         ): ShopSettingsOperationalHoursFragment = ShopSettingsOperationalHoursFragment().apply {
             arguments = Bundle().apply {
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, isCloseNow)
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, isActionEdit)
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, isOpenSchBottomSheet)
+//                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, isCloseNow)
+//                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, isActionEdit)
+//                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, isOpenSchBottomSheet)
                 putString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, cacheIdForOldFragment)
             }
         }
@@ -200,9 +200,9 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
 
     private fun getArgumentsData() {
         arguments?.let {
-            isCloseNow = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, false)
-            isActionEdit = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, false)
-            isAutoOpenSchBottomSheet = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, false)
+//            isCloseNow = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, false)
+//            isActionEdit = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, false)
+//            isAutoOpenSchBottomSheet = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, false)
             cacheIdForOldFragment = it.getString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, "0")
         }
     }

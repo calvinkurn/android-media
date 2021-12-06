@@ -27,6 +27,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_KEY
+import com.tokopedia.remoteconfig.RollenceKey.AB_TEST_OPERATIONAL_HOURS_NO_KEY
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.remoteconfig.ShopAbTestPlatform
@@ -62,15 +64,8 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
         @JvmStatic
         fun createInstance(
-                isCloseNow: Boolean,
-                isActionEdit: Boolean,
-                isOpenSchBottomSheet: Boolean,
-                cacheIdForOldFragment: String
         ): NewShopSettingsOperationalHoursFragment = NewShopSettingsOperationalHoursFragment().apply {
             arguments = Bundle().apply {
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, isCloseNow)
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, isActionEdit)
-                putBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, isOpenSchBottomSheet)
                 putString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, cacheIdForOldFragment)
             }
         }
@@ -86,8 +81,6 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
         private const val NO_HOLIDAY_DATE = "0"
         private const val REQUEST_CODE_SET_OPS_HOUR = 100
-        private const val AB_TEST_EXPERIMENT_KEY_OPS_HOUR = "operational_hour"
-        private const val AB_TEST_EXPERIMENT_NO_KEY = "no_key"
         private const val WEBVIEW_APPLINK_FORMAT = "%s?url=%s"
     }
 
@@ -128,13 +121,10 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private var isNeedToShowOpenShopToaster: Boolean = false
     private var isShopClosed: Boolean = false
     private var isShopOnScheduledHoliday: Boolean = false
-    private var isShopOnOperationalHoliday: Boolean = false
     private var isShouldShowHolidaySchedule: Boolean = false
     private var isActionEdit: Boolean = false
-    private var isCloseNow: Boolean = false
     private var isChooseStartDate: Boolean = true
     private var isDateChanged: Boolean = false
-    private var isAutoOpenSchBottomSheet: Boolean = false
     private var cacheIdForOldFragment: String = "0"
     private var setShopHolidayScheduleStatusMessage: String = ""
     private var setShopHolidayScheduleStatusType: Int = 0
@@ -197,9 +187,6 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
 
     private fun getArgumentsData() {
         arguments?.let {
-            isCloseNow = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_CLOSE_NOW, false)
-            isActionEdit = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_ACTION_EDIT, false)
-            isAutoOpenSchBottomSheet = it.getBoolean(ShopSettingsOperationalHoursActivity.KEY_IS_OPEN_SCH_BOTTOMSHEET, false)
             cacheIdForOldFragment = it.getString(ShopSettingsOperationalHoursActivity.KEY_CACHE_ID, "0")
         }
     }
@@ -207,20 +194,20 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     private fun checkAbTestRollenceVariant() {
         shopAbTestPlatform = ShopAbTestPlatform(requireContext()).apply {
             requestParams = ShopAbTestPlatform.createRequestParam(
-                    listExperimentName = listOf(AB_TEST_EXPERIMENT_KEY_OPS_HOUR),
+                    listExperimentName = listOf(AB_TEST_OPERATIONAL_HOURS_KEY),
                     shopId = userSession.shopId
             )
             fetch(object : RemoteConfig.Listener {
                 override fun onComplete(remoteConfig: RemoteConfig?) {
                     CoroutineScope(Dispatchers.Main).launch {
-                        val variantType = getString(AB_TEST_EXPERIMENT_KEY_OPS_HOUR, AB_TEST_EXPERIMENT_NO_KEY)
-                        if (variantType == AB_TEST_EXPERIMENT_NO_KEY) {
+                        val variantType = getString(AB_TEST_OPERATIONAL_HOURS_KEY, AB_TEST_OPERATIONAL_HOURS_NO_KEY)
+                        if (variantType == AB_TEST_OPERATIONAL_HOURS_NO_KEY) {
                             // no experiment / successfully deleted, by default render new page
                             sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_production)
                             getInitialData()
                         }
                         else {
-                            if (variantType.isEmpty() || variantType != AB_TEST_EXPERIMENT_KEY_OPS_HOUR) {
+                            if (variantType.isEmpty() || variantType != AB_TEST_OPERATIONAL_HOURS_KEY) {
                                 // user not get the experiment yet,
                                 // redirect to old shop ops hour settings
                                 sellerEducationUrl = getString(R.string.shop_operational_hour_seller_edu_production)
@@ -326,7 +313,6 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         // set click listener for button add holiday schedule
         buttonAddHoliday?.setOnClickListener {
             isActionEdit = false
-            isCloseNow = false
             resetSelectedDates(isActionEdit)
             setupHolidayCalendarPickerBottomSheet()
             showHolidayBottomSheet()
