@@ -870,17 +870,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         })
     }
 
-    fun mockCallPdpImageGeneratorApi(){
-        var sourceId = "gFZoml"
-        addImageGeneratorData("product_image_url", "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/4/7/fd207246-a066-4dc0-9c32-db6a81e6b6c8.jpg")
-        addImageGeneratorData("product_price", "50000")
-        addImageGeneratorData("product_title", "Halo")
-        addImageGeneratorData("is_bebas_ongkir", "true")
-        addImageGeneratorData("platform", "wa")
-        addImageGeneratorData("product_rating", "4.1")
-//        imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it) }
-    }
-
     fun getImageFromMedia(getImageFromMediaFlag: Boolean){
         getImageFromMedia = getImageFromMediaFlag
     }
