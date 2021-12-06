@@ -2575,9 +2575,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
                         showLoadingUniversalShare()
                     },
                     postBuildImg = { hideProgressDialog() },
-                    screenshotDetector,
-                    !(TextUtils.isEmpty(viewModel.getBebasOngkirDataByProductId().imageURL)),
-                    viewModel.p2Data.value?.rating?.ratingScore?: ""
+                    screenshotDetector
             )
         }
     }
