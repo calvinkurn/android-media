@@ -19,6 +19,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.affiliate.AffiliateUIIDRequest
+import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -173,6 +174,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.PRODUCT_BUNDLING -> {
                     listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.CONTENT_WIDGET -> {
+                    listOfComponent.add(
+                        ContentWidgetDataModel(
+                            type = component.type,
+                            name = component.componentName
+                        )
+                    )
                 }
             }
         }
