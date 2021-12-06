@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.quest_widget.constants.QuestWidgetLocations
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.quest_widget.tracker.QuestSource
 import com.tokopedia.quest_widget.view.QuestWidgetView
@@ -27,7 +28,7 @@ class SectionTopQuestVH(
         if(config.getBoolean(RemoteConfigKey.ENABLE_QUEST_WIDGET, true)) {
             view.show()
             view.setupListeners(questWidgetCallbacks)
-            view.getQuestList(0, "", "myreward", QuestSource.REWARDS, position = adapterPosition)
+            view.getQuestList(0, "", QuestWidgetLocations.MY_REWARD, QuestSource.REWARDS, position = adapterPosition)
         }
         else{
             val params: ViewGroup.LayoutParams = this.itemView.layoutParams

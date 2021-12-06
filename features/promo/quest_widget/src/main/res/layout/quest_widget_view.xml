@@ -45,6 +45,7 @@
         android:id="@+id/rv_quest_widget"
         android:layout_marginTop="@dimen/dim_12dp"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
         app:layout_constraintTop_toBottomOf="@id/tv_label"
         app:layout_constraintStart_toStartOf="@id/tv_label" />
 

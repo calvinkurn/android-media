@@ -59,45 +59,6 @@ class QuestWidgetViewTest{
         assertEquals(questViewModel.questWidgetListLiveData.value?.status, LiveDataResult.STATUS.NON_LOGIN)
     }
 
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `get listdata success`() {
-        runBlockingTest {
-            coEvery { userSession.isLoggedIn } returns true
-            val questWidgetListItemMockk = listOf<QuestWidgetListItem>()
-            val data = mockk<WidgetData> {
-                every { questWidgetList } returns mockk {
-                    every { questWidgetList } returns questWidgetListItemMockk
-                    every { resultStatus } returns mockk()
-                    every { pageDetail } returns mockk()
-                    every { isEligible } returns true
-                }
-            }
-            coEvery { questWidgetUseCase.getResponse(any()) } returns data
-            questViewModel.getWidgetList(channel, channelSlug, page, userSession)
-            assertEquals(
-                questViewModel.questWidgetListLiveData.value?.status,
-                LiveDataResult.STATUS.SUCCESS
-            )
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    @Test
-    fun `get listdata null`() {
-        runBlockingTest {
-            coEvery { userSession.isLoggedIn } returns true
-            val data = null
-            coEvery { questWidgetUseCase.getResponse(any()) } returns data
-            questViewModel.getWidgetList(channel, channelSlug, page, userSession)
-            assertEquals(
-                questViewModel.questWidgetListLiveData.value?.status,
-                LiveDataResult.STATUS.ERROR
-            )
-        }
-    }
-
     @Test
     fun `location not allowed`(){
           questViewModel.page = "Some random page"
