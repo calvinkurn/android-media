@@ -68,24 +68,28 @@ class AndroidExportedDetector: XmlScanner, Detector() {
                 }
                 // if does not contain whitelist, check android:exported in activity bracket
                 if (!isContainWhitelistSignature) {
-                    val node = element.getAttributeNodeNS(ANDROID_URI, ATTR_EXPORTED)
-                    if (node != null) {
-                        val lintFix = LintFix.create()
-                            .set()
-                            .attribute(node.name)
-                            .value(VALUE_EXPORTED_FALSE)
-                            .build()
-
-                        context.report(
-                            ISSUE,
-                            node,
-                            context.getNameLocation(node),
-                            "${node.name} value should be false",
-                            lintFix
-                        )
-                    }
+                    reportExportedTrue(context, element)
                 }
             }
+        }
+    }
+
+    private fun reportExportedTrue(context: XmlContext, element: Element) {
+        val node = element.getAttributeNodeNS(ANDROID_URI, ATTR_EXPORTED)
+        if (node != null && node.value != VALUE_EXPORTED_FALSE) {
+            val lintFix = LintFix.create()
+                .set()
+                .attribute(node.name)
+                .value(VALUE_EXPORTED_FALSE)
+                .build()
+
+            context.report(
+                ISSUE,
+                node,
+                context.getNameLocation(node),
+                "${node.name} value should be false",
+                lintFix
+            )
         }
     }
 }
