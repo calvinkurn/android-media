@@ -54,6 +54,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
@@ -250,6 +251,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private lateinit var sourceId: String
     //Array to contain image generator API data
     private var imageGeneratorDataArray : ArrayList<ImageGeneratorRequestData>? = null
+    private var gqlJob: Job? = null
     //Flag to control Image generator option
     private var getImageFromMedia = false
     private lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
@@ -834,12 +836,14 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun dismiss() {
         clearData()
         removeLifecycleObserverAndSavedImage()
+        gqlJob?.cancel()
         super.dismiss()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         clearData()
         removeLifecycleObserverAndSavedImage()
+        gqlJob?.cancel()
         super.onDismiss(dialog)
     }
 
@@ -853,7 +857,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>,
                                              shareModel: ShareModel){
-        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+        gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
                 val mediaImageUrl = imageGeneratorUseCase.apply {
