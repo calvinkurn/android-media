@@ -762,7 +762,7 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
 
-        if (isEligibleForWishlistRevamp() && isRemoteConfigWishlistV2Revamp()) {
+        if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
             Bundle bundleWishlist = getIntent().getExtras();
             if (bundleWishlist == null) {
                 bundleWishlist = new Bundle();
@@ -788,12 +788,18 @@ public class MainParentActivity extends BaseActivity implements
         return fragmentList;
     }
 
-    private boolean isEligibleForWishlistRevamp() {
-        return getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, "").equals(RollenceKey.WISHLIST_V2_VARIANT);
+    private boolean useWishlistV2Rollence() {
+        boolean isWishlistV2;
+        try {
+            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_OLD_VARIANT).equals(RollenceKey.WISHLIST_V2_VARIANT);
+        } catch (Exception e) {
+            isWishlistV2 = true;
+        }
+        return isWishlistV2;
     }
 
-    private boolean isRemoteConfigWishlistV2Revamp() {
-        return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2, false);
+    private boolean useRemoteConfigWishlistV2Revamp() {
+        return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2);
     }
 
     private AbTestPlatform getAbTestPlatform() {
