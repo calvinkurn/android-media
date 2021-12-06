@@ -193,8 +193,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                     calendarDateAlpha.gone()
                     calendarDate.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.discovery2_dms_clr_2F89FC))
                 }
-                /**Commented code to be removed when backend is ready **/
-//                if (Utils.isFutureSaleOngoing(startDate ?: "", endDate ?: "", TIMER_DATE_FORMAT)) {
+                if (Utils.isFutureSaleOngoing(startDate ?: "", endDate ?: "", TIMER_DATE_FORMAT)) {
                     calendarButton.text =
                         itemView.context.getString(R.string.discovery_button_event_ongoing)
                     calendarButton.buttonType = UnifyButton.Type.MAIN
@@ -208,12 +207,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                                 )
                         }
                     }
-//                } else {
-//                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
-//                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
-//                    calendarWidgetItemViewModel.checkUserPushStatus(notifyCampaignId)
-//                    mNotifyCampaignId = notifyCampaignId
-//                }
+                } else {
+                    calendarButton.text = itemView.context.getString(R.string.discovery_button_event_reminder)
+                    calendarButton.buttonType = UnifyButton.Type.ALTERNATE
+                    calendarWidgetItemViewModel.checkUserPushStatus(notifyCampaignId)
+                    mNotifyCampaignId = notifyCampaignId
+                }
             }
             if(buttonApplink.isNullOrEmpty()){
                 calendarButtonParent.hide()
