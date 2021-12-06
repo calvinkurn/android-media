@@ -156,7 +156,15 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
     private val productTagView by viewComponent {
         ProductTagViewComponent(it, object: ProductTagViewComponent.Listener {
-            override fun impressProductTag(product: ProductContentUiModel, position: Int) {
+            override fun impressProductTag(view: ProductTagViewComponent) {
+                analytic.impressProductTag(parentViewModel.channelId)
+            }
+
+            override fun scrollProductTag(
+                view: ProductTagViewComponent,
+                product: ProductContentUiModel,
+                position: Int
+            ) {
                 productTagAnalyticHelper.trackScrollProduct(parentViewModel.channelId, product, position)
             }
         })

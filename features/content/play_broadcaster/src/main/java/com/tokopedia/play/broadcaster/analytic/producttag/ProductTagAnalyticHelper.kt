@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.analytic.producttag
 
-import android.util.Log
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.ui.model.ProductContentUiModel
 
@@ -25,8 +24,7 @@ class ProductTagAnalyticHelper(
 
     fun sendTrackingProduct() {
         product?.let {
-            Log.d("<LOG>", "Send Impression : $channelId | $product | $position")
-//            analytic.scrollProductTag(channelId, it, position)
+            analytic.scrollProductTag(channelId, it, position)
             clearData()
         }
     }

@@ -40,6 +40,8 @@ class ProductTagViewComponent(
     }
 
     init {
+        listener.impressProductTag(this)
+
         rvProductTag.layoutManager = layoutManager
         rvProductTag.adapter = adapter
         rvProductTag.addItemDecoration(ProductTagItemDecoration(rvProductTag.context))
@@ -65,7 +67,7 @@ class ProductTagViewComponent(
     private fun sendImpression() {
         getVisibleProduct()?.let {
             Log.d("<LOG>", "Impress : ${it.first} | position : ${it.second}")
-            listener.impressProductTag(it.first, it.second)
+            listener.scrollProductTag(this, it.first, it.second)
         }
     }
 
@@ -87,6 +89,7 @@ class ProductTagViewComponent(
     }
 
     interface Listener {
-        fun impressProductTag(product: ProductContentUiModel, position: Int)
+        fun impressProductTag(view: ProductTagViewComponent)
+        fun scrollProductTag(view: ProductTagViewComponent, product: ProductContentUiModel, position: Int)
     }
 }

@@ -497,7 +497,7 @@ class PlayBroadcastAnalytic(
     /**
      * Impress Product Tag Carousel
      */
-    fun impressProductTag(channelId: String, product: ProductContentUiModel) {
+    fun impressProductTag(channelId: String) {
         viewGeneralEvent(
             "- product tag carousel",
             "- $channelId"
