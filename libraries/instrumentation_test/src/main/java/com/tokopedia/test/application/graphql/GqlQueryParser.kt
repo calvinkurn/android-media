@@ -5,6 +5,8 @@ import java.util.*
 
 object GqlQueryParser {
 
+    val QUERY_PATTERN = Regex("""(\w+)\s*(\(.+\))""")
+
     fun parse(list: List<GraphqlRequest>): List<String> {
         val result = mutableListOf<String>()
         list.forEach {
@@ -12,9 +14,6 @@ object GqlQueryParser {
         }
         return result
     }
-
-
-    val QUERY_PATTERN = Regex("""(\w+)\s*(\(.+\))""")
 
     fun parse(query: String): List<String> {
         val result = mutableMapOf<String, Int>()
