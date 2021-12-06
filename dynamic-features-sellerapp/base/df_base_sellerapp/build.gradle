@@ -64,6 +64,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
+
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
 
