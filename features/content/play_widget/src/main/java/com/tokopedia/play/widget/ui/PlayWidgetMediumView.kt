@@ -91,7 +91,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                     view = this@PlayWidgetMediumView,
                     item = item,
                     channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                    isAutoPlay = mIsAutoPlay,
+                    recommendationType = item.recommendationType,
             )
         }
 
@@ -100,7 +101,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
                     view = this@PlayWidgetMediumView,
                     item = item,
                     channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                    isAutoPlay = mIsAutoPlay,
+                    recommendationType = item.recommendationType,
             )
             if (mWidgetListener != null
                     && (item.channelType == PlayWidgetChannelType.Live

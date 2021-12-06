@@ -31,7 +31,8 @@ interface PlayWidgetMediumAnalyticListener {
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
-            isAutoPlay: Boolean
+            isAutoPlay: Boolean,
+            recommendationType: String,
     ) {}
 
     fun onClickToggleReminderChannel(
@@ -57,7 +58,8 @@ interface PlayWidgetMediumAnalyticListener {
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumChannelUiModel,
             channelPositionInList: Int,
-            isAutoPlay: Boolean
+            isAutoPlay: Boolean,
+            recommendationType: String,
     ) {}
 
     fun onClickBannerCard(

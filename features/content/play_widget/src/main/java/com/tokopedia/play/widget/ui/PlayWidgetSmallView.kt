@@ -54,7 +54,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
                     view = this@PlayWidgetSmallView,
                     item = item,
                     channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                    isAutoPlay = mIsAutoPlay,
+                    recommendationType = item.recommendationType,
             )
         }
 
@@ -64,7 +65,8 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
                     view = this@PlayWidgetSmallView,
                     item = item,
                     channelPositionInList = position,
-                    isAutoPlay = mIsAutoPlay
+                    isAutoPlay = mIsAutoPlay,
+                    recommendationType = item.recommendationType,
             )
         }
     }

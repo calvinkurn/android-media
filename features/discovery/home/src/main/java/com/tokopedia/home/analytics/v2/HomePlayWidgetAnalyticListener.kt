@@ -88,7 +88,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
         val finalChannelPositionInList = channelPositionInList + 1
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = Event.PROMO_VIEW,
@@ -119,7 +119,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
         val finalChannelPositionInList = channelPositionInList + 1
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = Event.PROMO_CLICK,
