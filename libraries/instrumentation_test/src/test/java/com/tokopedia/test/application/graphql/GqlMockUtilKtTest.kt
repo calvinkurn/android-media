@@ -1,5 +1,6 @@
 package com.tokopedia.test.application.graphql
 
+import org.hamcrest.CoreMatchers.`is`
 import org.junit.Assert.*
 import org.junit.Test
 import org.mockito.Mock
@@ -22,7 +23,7 @@ class GqlMockUtilKtTest {
 
         val actual = GqlMockUtil.createSuccessResponse(example)
 
-        print(actual)
+        assertThat(actual.getData(ExampleResponse::class.java), `is`(example))
     }
 
     data class ExampleResponse(val id: Int, val title: String)
