@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
@@ -93,17 +94,26 @@ class HomeQuestSequenceWidgetViewHolder(
     }
 
     private fun setTitle(title: String) {
-        stubBinding?.channelTitle?.text = title
+        stubBinding?.channelTitle?.apply {
+            if (title.isNotBlank()) {
+                show()
+                text = title
+            } else {
+                hide()
+            }
+        }
     }
 
     private fun setSeeAll(seeAll: String, appLink: String) {
-        if (seeAll.isNotBlank()) {
-            binding?.tvSeeAll?.apply {
+        binding?.tvSeeAll?.apply {
+            if (seeAll.isNotBlank() && appLink.isNotBlank()) {
                 show()
                 text = seeAll
                 setOnClickListener {
                     RouteManager.route(itemView.context, appLink)
                 }
+            } else {
+                visibility = View.INVISIBLE
             }
         }
     }
