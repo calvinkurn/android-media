@@ -62,7 +62,6 @@
             android:orientation="horizontal"
             tools:itemCount="2"
             tools:listitem="@layout/quest_widget_error_card"
-            android:src="@drawable/quest_widget_non_login"
             app:layout_constraintStart_toStartOf="@id/tv_label"
             app:layout_constraintEnd_toEndOf="@id/tv_lihat"
             app:layout_constraintTop_toBottomOf="@id/tv_label"/>
@@ -77,7 +76,7 @@
             android:layout_marginTop="@dimen/quest_widget_dim_12dp"
             android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:src="@drawable/ic_quest_non_login"
+            android:src="@drawable/quest_widget_non_login"
             app:layout_constraintStart_toStartOf="@id/tv_label"
             app:layout_constraintEnd_toEndOf="@id/tv_lihat"
             app:layout_constraintTop_toBottomOf="@id/tv_label"/>
