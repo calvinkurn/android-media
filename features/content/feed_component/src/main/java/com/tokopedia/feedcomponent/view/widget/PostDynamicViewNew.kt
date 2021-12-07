@@ -1518,6 +1518,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                         vod_frozen_view?.visible()
                                         vod_full_screen_icon?.gone()
                                         vod_lihat_product?.gone()
+                                        vod_timer_view?.gone()
                                         isVODViewFrozen = true
 
                                     }
