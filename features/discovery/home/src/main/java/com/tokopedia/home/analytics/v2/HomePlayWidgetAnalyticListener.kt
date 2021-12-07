@@ -100,7 +100,7 @@ class HomePlayWidgetAnalyticListener(
                         "$mBusinessWidgetPosition - " +
                         "$isAutoPlay - " +
                         "${item.poolType} - " +
-                        if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo - " +
+                        if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo" + " - " +
                         recommendationType,
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
@@ -133,7 +133,7 @@ class HomePlayWidgetAnalyticListener(
                         "$mBusinessWidgetPosition - " +
                         "$isAutoPlay - " +
                         "${item.poolType} - " +
-                        if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo - " +
+                        if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo" + " - " +
                         recommendationType,
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
