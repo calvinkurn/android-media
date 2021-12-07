@@ -60,7 +60,7 @@ class TopChatViewModel @Inject constructor(
     private val chatToggleBlockChat: ChatToggleBlockChatUseCaseNew,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
     private val chatBackgroundUseCase: ChatBackgroundUseCaseNew,
-    private val chatAttachmentUseCase: ChatAttachmentUseCaseNew,
+    private val chatAttachmentUseCase: ChatAttachmentUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
     private val mapper: ChatAttachmentMapper

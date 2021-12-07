@@ -63,7 +63,7 @@ abstract class BaseTopChatViewModelTest {
     lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseNew
 
     @RelaxedMockK
-    lateinit var chatAttachmentUseCase: ChatAttachmentUseCaseNew
+    lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
 
     //Misc
     @RelaxedMockK
