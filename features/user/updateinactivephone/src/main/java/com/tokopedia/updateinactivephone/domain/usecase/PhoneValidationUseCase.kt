@@ -1,53 +1,44 @@
 package com.tokopedia.updateinactivephone.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.updateinactivephone.domain.data.InactivePhoneUserDataModel
 import com.tokopedia.updateinactivephone.domain.data.PhoneValidationDataModel
 import javax.inject.Inject
 
-class PhoneValidationUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<PhoneValidationDataModel>
-) {
-    private lateinit var params: Map<String, Any>
+open class PhoneValidationUseCase @Inject constructor(
+    @ApplicationContext private val repository: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) : CoroutineUseCase<InactivePhoneUserDataModel, PhoneValidationDataModel>(dispatcher.io) {
 
-    fun execute(onSuccess: (PhoneValidationDataModel) -> Unit, onError: (Throwable) -> Unit) {
-        graphqlUseCase.apply {
-            setTypeClass(PhoneValidationDataModel::class.java)
-            setGraphqlQuery(query)
-            setRequestParams(params)
-            execute(onSuccess = {
-                onSuccess(it)
-            }, onError = {
-                onError(it)
-            })
-        }
+    override suspend fun execute(params: InactivePhoneUserDataModel): PhoneValidationDataModel {
+        return repository.request(graphqlQuery(), createParams(params))
     }
 
-    fun setParam(phone: String, email: String, index: Int = 0) {
-        params = mapOf(
-                PARAM_PHONE to phone,
-                PARAM_EMAIL to email,
-                PARAM_INDEX to index
-        )
-    }
-
-    fun cancelJob() {
-        graphqlUseCase.cancelJobs()
-        graphqlUseCase.clearCache()
-    }
-
-    companion object {
-        private const val PARAM_PHONE = "phone"
-        private const val PARAM_EMAIL = "email"
-        private const val PARAM_INDEX = "index"
-
-        private val query = """
-            query validateInactivePhoneUser(${'$'}phone: String, ${'$'}email: String, ${'$'}index: Int) {
-                ValidateInactivePhoneUser(msisdn: ${'$'}phone, email: ${'$'}email, index: ${'$'}index) {
+    override fun graphqlQuery(): String {
+        return """
+            query validateInactivePhoneUser(${'$'}msisdn: String, ${'$'}email: String, ${'$'}index: Int) {
+                ValidateInactivePhoneUser(msisdn: ${'$'}msisdn, email: ${'$'}email, index: ${'$'}index) {
                     isSuccess
                     errorMessage
                     status
                 }
             }
         """.trimIndent()
+    }
+
+    private fun createParams(params: InactivePhoneUserDataModel): Map<String, Any> = mapOf(
+        PARAM_EMAIL to params.email,
+        PARAM_PHONE to params.oldPhoneNumber,
+        PARAM_INDEX to params.userIndex
+    )
+
+    companion object {
+        private const val PARAM_PHONE = "msisdn"
+        private const val PARAM_EMAIL = "email"
+        private const val PARAM_INDEX = "index"
     }
 }

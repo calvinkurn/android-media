@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.presentation.view.GeneralSettingMenuLabel;
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemViewModel;
-import com.tokopedia.home_account.account_settings.presentation.viewmodel.base.SwitchSettingItemViewModel;
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.SettingItemUIModel;
+import com.tokopedia.home_account.account_settings.presentation.viewmodel.base.SwitchSettingItemUIModel;
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -24,16 +24,16 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private static final int POSITION_UNDEFINED = -1;
 
-    private List<SettingItemViewModel> settingItems;
+    private List<SettingItemUIModel> settingItems;
     private OnSettingItemClicked listener;
     private SwitchSettingListener switchSettingListener;
 
-    public GeneralSettingAdapter(List<SettingItemViewModel> settingItems, OnSettingItemClicked listener) {
+    public GeneralSettingAdapter(List<SettingItemUIModel> settingItems, OnSettingItemClicked listener) {
         this.settingItems = settingItems;
         this.listener = listener;
     }
 
-    public void setSettingItems(List<SettingItemViewModel> settingItems) {
+    public void setSettingItems(List<SettingItemUIModel> settingItems) {
         this.settingItems = settingItems;
     }
 
@@ -49,9 +49,9 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         try {
             int position = findSwitchPosition(settingId);
             if (position != POSITION_UNDEFINED) {
-                SettingItemViewModel settingItemViewModel =
+                SettingItemUIModel settingItemUIModel =
                         settingItems.get(position);
-                if (settingItemViewModel instanceof SwitchSettingItemViewModel) {
+                if (settingItemUIModel instanceof SwitchSettingItemUIModel) {
                     notifyItemChanged(position);
                 }
             }
@@ -69,7 +69,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        if (settingItems.get(position) instanceof SwitchSettingItemViewModel){
+        if (settingItems.get(position) instanceof SwitchSettingItemUIModel){
             return TYPE_SWITCH;
         } else {
             return TYPE_GENERAL;
@@ -91,7 +91,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == TYPE_SWITCH){
-            ((SwitchSettingViewHolder) holder).bind((SwitchSettingItemViewModel) settingItems.get(position));
+            ((SwitchSettingViewHolder) holder).bind((SwitchSettingItemUIModel) settingItems.get(position));
         } else {
             ((GeneralSettingViewHolder) holder).bind(settingItems.get(position));
         }
@@ -126,7 +126,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             });
         }
 
-        public void bind(SettingItemViewModel item){
+        public void bind(SettingItemUIModel item){
             SpannableString title = GeneralSettingMenuLabel.INSTANCE.generateSpannableTitle(
                     itemView.getContext(), item, GeneralSettingMenuLabel.LABEL_NEW);
             titleView.setText(title);
@@ -157,7 +157,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             itemView.setOnClickListener(view -> aSwitch.toggle());
         }
 
-        public void bind(SwitchSettingItemViewModel item){
+        public void bind(SwitchSettingItemUIModel item){
             if(!item.labelType().isEmpty()) {
                 SpannableString title = GeneralSettingMenuLabel.INSTANCE.generateSpannableTitle(
                         itemView.getContext(), item, item.labelType());
