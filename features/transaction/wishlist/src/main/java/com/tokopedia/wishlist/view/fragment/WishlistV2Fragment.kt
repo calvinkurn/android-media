@@ -622,8 +622,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
             override fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean, titleCheckbox: String) {
                 paramWishlistV2.sortFilters.forEach { sortFilterParam ->
-                    listOptionIdSelected = sortFilterParam.selected
-                    nameSelected = FILTER_OFFERS
+                    if (sortFilterParam.name == FILTER_OFFERS) {
+                        listOptionIdSelected = sortFilterParam.selected
+                        nameSelected = FILTER_OFFERS
+                    }
                 }
                 if (isChecked) {
                     nameSelected = name
