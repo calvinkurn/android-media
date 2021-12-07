@@ -157,8 +157,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                     valid = false
                     it.setError(true)
                     it.setMessage(getString(R.string.shop_postal_code_required))
-                }
-                if (it.textFieldInput.text.length != 5) {
+                } else if (it.textFieldInput.text.length != 5) {
                     valid = false
                     it.setError(true)
                     it.setMessage(getString(R.string.shop_postal_code_invalid))
