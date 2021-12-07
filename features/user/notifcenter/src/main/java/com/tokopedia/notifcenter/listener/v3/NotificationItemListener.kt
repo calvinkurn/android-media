@@ -19,6 +19,8 @@ interface NotificationItemListener {
     fun deleteReminder(
             product: ProductData, notification: NotificationUiModel, adapterPosition: Int
     )
+    fun addToWishlist(notification: NotificationUiModel, product: ProductData, position: Int)
+    fun goToWishlist()
     fun trackProductImpression(
             notification: NotificationUiModel, product: ProductData, position: Int
     )

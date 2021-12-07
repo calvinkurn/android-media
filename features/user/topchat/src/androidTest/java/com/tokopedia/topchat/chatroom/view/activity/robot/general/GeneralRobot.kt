@@ -1,11 +1,15 @@
 package com.tokopedia.topchat.chatroom.view.activity.robot.general
 
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.matchers.withRecyclerView
 
 object GeneralRobot {
+
     fun doActionOnListItemAt(
         position: Int,
         viewId: Int,
@@ -16,5 +20,11 @@ object GeneralRobot {
                 position, viewId
             )
         ).perform(action)
+    }
+
+    fun doScrollChatToPosition(position: Int) {
+        onView(ViewMatchers.withId(R.id.recycler_view_chatroom)).perform(
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
+        )
     }
 }

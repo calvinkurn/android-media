@@ -64,6 +64,8 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                       videoUrl
                       appLink
                       webLink
+                      linkID
+                      Name
                     }
                     ... on ProductWidget {
                       productID
