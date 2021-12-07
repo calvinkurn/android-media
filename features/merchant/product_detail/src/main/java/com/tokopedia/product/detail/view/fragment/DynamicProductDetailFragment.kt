@@ -68,7 +68,6 @@ import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hasValue
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -1204,9 +1203,10 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     override fun onMainImageClicked(componentTrackDataModel: ComponentTrackDataModel?, position: Int) {
-        DynamicProductDetailTracking.Click.eventProductImageClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel
-                ?: ComponentTrackDataModel())
-        onImageClicked(position)
+//        DynamicProductDetailTracking.Click.eventProductImageClicked(viewModel.getDynamicProductInfoP1, componentTrackDataModel
+//                ?: ComponentTrackDataModel())
+//        onImageClicked(position)
+        RouteManager.route(requireContext(), ApplinkConst.PRODUCT_AR, "123")
     }
 
     override fun onImageClicked(position: Int) {
