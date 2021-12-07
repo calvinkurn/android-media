@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.partial
 
-import android.util.Log
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -29,19 +28,19 @@ class ProductTagViewComponent(
     private val layoutManager = object : LinearLayoutManager(rvProductTag.context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
-            sendImpression()
+            onScrollProduct()
         }
     }
 
     private val scrollListener = object: RecyclerView.OnScrollListener(){
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) onScrollProduct()
         }
     }
 
-    init {
-        listener.impressProductTag(this)
+    private var isProductInitialized = false
 
+    init {
         rvProductTag.layoutManager = layoutManager
         rvProductTag.adapter = adapter
         rvProductTag.addItemDecoration(ProductTagItemDecoration(rvProductTag.context))
@@ -64,14 +63,18 @@ class ProductTagViewComponent(
         return null
     }
 
-    private fun sendImpression() {
+    private fun onScrollProduct() {
         getVisibleProduct()?.let {
-            Log.d("<LOG>", "Impress : ${it.first} | position : ${it.second}")
             listener.scrollProductTag(this, it.first, it.second)
         }
     }
 
     fun setProducts(products: List<ProductUiModel>) {
+        if(!isProductInitialized && products.isNotEmpty()) {
+            listener.impressProductTag(this)
+            isProductInitialized = true
+        }
+
         adapter.setItemsAndAnimateChanges(products)
     }
 
