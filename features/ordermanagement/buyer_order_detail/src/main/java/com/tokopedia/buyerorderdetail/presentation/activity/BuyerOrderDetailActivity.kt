@@ -65,7 +65,7 @@ open class BuyerOrderDetailActivity : BaseSimpleActivity(), HasComponent<BuyerOr
     }
 
     private fun setupWindowColor() {
-        window.decorView.setBackgroundColor(ContextCompat.getColor(this, R.color.buyer_order_detail_dms_window_color))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     override fun onBackPressed() {
