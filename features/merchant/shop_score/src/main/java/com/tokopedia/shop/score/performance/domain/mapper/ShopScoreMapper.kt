@@ -872,7 +872,7 @@ open class ShopScoreMapper @Inject constructor(
 
     private fun mapToItemPMUiModel(): ItemStatusPMUiModel {
         return ItemStatusPMUiModel(
-            descPM = context?.getResString(R.string.desc_content_pm_not_eligible_pm_pro).orEmpty()
+            descPM = R.string.desc_content_pm_not_eligible_pm_pro
         )
     }
 
