@@ -39,6 +39,26 @@ class MoveChatToTrashUseCaseViewModelTest: BaseTopChatViewModelTest() {
     }
 
     @Test
+    fun should_get_delete_chat_status_when_success_delete_chat_but_empty() {
+        //Given
+        val expectedResult = ChatDeleteStatus().apply {
+            this.chatMoveToTrash.list = arrayListOf()
+        }
+        coEvery {
+            mutationMoveChatToTrashUseCase(any())
+        } returns expectedResult
+
+        //When
+        viewModel.deleteChat(testMessageId)
+
+        //Then
+        Assert.assertEquals(
+            null,
+            viewModel.chatDeleteStatus.value
+        )
+    }
+
+    @Test
     fun should_get_error_message_when_fail_to_delete_chat() {
         //Given
         val expectedResult = ChatDeleteStatus().apply {

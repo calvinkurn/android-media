@@ -13,20 +13,20 @@ class ToggleBlockChatViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun should_get_chat_setting_response_if_success_block_chat() {
-        test_success_toggle_block(ActionType.BlockChat,
+        test_success_toggle_block(BlockActionType.BlockChat,
             isBlocked = true, isPromoBlocked = false)
     }
 
     @Test
     fun should_get_chat_setting_response_if_success_unblock_chat() {
-        test_success_toggle_block(ActionType.UnblockChat,
+        test_success_toggle_block(BlockActionType.UnblockChat,
             isBlocked = false, isPromoBlocked = false)
     }
 
     @Test
     fun should_get_chat_setting_response_if_success_block_promo() {
         test_success_toggle_block(
-            ActionType.BlockPromo,
+            BlockActionType.BlockPromo,
             isBlocked = false, isPromoBlocked = true,
             BroadcastSpamHandlerUiModel()
         )
@@ -34,11 +34,17 @@ class ToggleBlockChatViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun should_get_chat_setting_response_if_success_unblock_promo() {
-        test_success_toggle_block(ActionType.UnblockPromo, isBlocked = false, isPromoBlocked = false)
+        test_success_toggle_block(BlockActionType.UnblockPromo, isBlocked = false, isPromoBlocked = false)
+    }
+
+    @Test
+    fun should_get_chat_setting_response_even_when_action_type_different() {
+        test_success_toggle_block(TestBlockActionType.TestBlock,
+            isBlocked = true, isPromoBlocked = false)
     }
 
     private fun test_success_toggle_block(
-        actionType: ActionType,
+        blockActionType: ActionType,
         isBlocked: Boolean,
         isPromoBlocked: Boolean,
         element: BroadcastSpamHandlerUiModel? = null
@@ -50,7 +56,7 @@ class ToggleBlockChatViewModelTest: BaseTopChatViewModelTest() {
             ))
         )
         val expectedResult = WrapperChatSetting(
-            actionType = actionType,
+            blockActionType = blockActionType,
             response = Success(expectedResponse)
         ).apply {
             if(element != null) {
@@ -62,7 +68,7 @@ class ToggleBlockChatViewModelTest: BaseTopChatViewModelTest() {
         } returns expectedResponse
 
         //When
-        viewModel.toggleBlockChatPromo(testMessageId, actionType)
+        viewModel.toggleBlockChatPromo(testMessageId, blockActionType)
 
         //Then
         Assert.assertEquals((expectedResult.response as Success).data,
@@ -72,28 +78,28 @@ class ToggleBlockChatViewModelTest: BaseTopChatViewModelTest() {
 
     @Test
     fun should_throw_error_if_fail_block_chat() {
-        test_error_toggle_block(ActionType.BlockChat)
+        test_error_toggle_block(BlockActionType.BlockChat)
     }
 
     @Test
     fun should_throw_error_if_fail_unblock_chat() {
-        test_error_toggle_block(ActionType.UnblockChat)
+        test_error_toggle_block(BlockActionType.UnblockChat)
     }
 
     @Test
     fun should_throw_error_if_fail_block_promo() {
-        test_error_toggle_block(ActionType.BlockPromo)
+        test_error_toggle_block(BlockActionType.BlockPromo)
     }
 
     @Test
     fun should_throw_error_if_fail_unblock_promo() {
-        test_error_toggle_block(ActionType.UnblockPromo)
+        test_error_toggle_block(BlockActionType.UnblockPromo)
     }
 
-    private fun test_error_toggle_block(actionType: ActionType) {
+    private fun test_error_toggle_block(blockActionType: BlockActionType) {
         //Given
         val expectedResult = WrapperChatSetting(
-            actionType = actionType,
+            blockActionType = blockActionType,
             response = Fail(expectedThrowable)
         )
         coEvery {
@@ -101,11 +107,15 @@ class ToggleBlockChatViewModelTest: BaseTopChatViewModelTest() {
         } throws expectedThrowable
 
         //When
-        viewModel.toggleBlockChatPromo(testMessageId, actionType)
+        viewModel.toggleBlockChatPromo(testMessageId, blockActionType)
 
         //Then
         Assert.assertEquals((expectedResult.response as Fail).throwable.message,
             (viewModel.toggleBlock.value?.response as Fail).throwable.message
         )
+    }
+
+    internal enum class TestBlockActionType: ActionType {
+        TestBlock()
     }
 }

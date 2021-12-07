@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTick
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
+import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
@@ -280,7 +281,7 @@ class TopChatViewModel @Inject constructor(
             if(result.isStatusError()) {
                 _occProduct.value = Fail(MessageErrorException(result.getAtcErrorMessage()))
             } else {
-                if(!result.data.cart.isNullOrEmpty()) {
+                if(result.data.cart.isNotEmpty()) {
                     product.cartId = result.data.cart.first().cartId
                 }
                 _occProduct.value = Success(product)
@@ -312,21 +313,21 @@ class TopChatViewModel @Inject constructor(
 
     fun toggleBlockChatPromo(
         messageId: String,
-        actionType: ActionType,
+        blockActionType: ActionType,
         element: BroadcastSpamHandlerUiModel? = null
     ) {
         launchCatchError(block = {
-            val param = generateToggleBlockChatParam(messageId, actionType)
+            val param = generateToggleBlockChatParam(messageId, blockActionType)
             val response = chatToggleBlockChat(param)
             val result = WrapperChatSetting(
-                actionType = actionType,
+                blockActionType = blockActionType,
                 response = Success(response),
                 element = element
             )
             _toggleBlock.value = result
         }, onError = {
             _toggleBlock.value = WrapperChatSetting(
-                actionType = actionType,
+                blockActionType = blockActionType,
                 response = Fail(it)
             )
         })
@@ -334,24 +335,24 @@ class TopChatViewModel @Inject constructor(
 
     private fun generateToggleBlockChatParam(
         messageId: String,
-        actionType: ActionType
+        blockActionType: ActionType
     ): ToggleBlockChatParam {
         return ToggleBlockChatParam().apply {
             this.msgId = messageId
-            when (actionType) {
-                ActionType.BlockChat -> {
+            when (blockActionType) {
+                BlockActionType.BlockChat -> {
                     this.blockType = BlockType.Personal.value
                     this.isBlocked = true
                 }
-                ActionType.UnblockChat -> {
+                BlockActionType.UnblockChat -> {
                     this.blockType = BlockType.Personal.value
                     this.isBlocked = false
                 }
-                ActionType.BlockPromo -> {
+                BlockActionType.BlockPromo -> {
                     this.blockType = BlockType.Promo.value
                     this.isBlocked = true
                 }
-                ActionType.UnblockPromo -> {
+                BlockActionType.UnblockPromo -> {
                     this.blockType = BlockType.Promo.value
                     this.isBlocked = false
                 }
