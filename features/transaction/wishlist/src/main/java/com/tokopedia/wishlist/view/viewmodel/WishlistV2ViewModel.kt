@@ -168,10 +168,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     mapToTopads(recommPosition, listData)
                 } else {
                     if (wishlistV2Response.items.size >= recommPosition && wishlistV2Response.page % 2 == 0) {
-                        mapToRecommendation(recommPosition, listData)
+                        mapToRecommendation(recommPositionNextPage, listData)
 
                     } else {
-                        mapToRecommendation(0, listData)
+                        mapToTopads(recommPositionNextPage, listData)
                     }
                 }
             }
@@ -202,7 +202,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
 
         if (index > 0) {
-            listData.add(index, WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
+            listData.add(index, WishlistV2TypeLayoutData(WishlistV2Consts.RECOMMENDED_FOR_YOU, TYPE_RECOMMENDATION_TITLE))
             listData.add(index+1, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
         } else {
             listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
@@ -323,6 +323,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
     companion object {
         private const val recommPosition = 4
+        private const val recommPositionNextPage = 6
         private const val WISHLIST_TOPADS_SOURCE = "6"
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
