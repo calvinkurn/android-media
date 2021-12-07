@@ -34,14 +34,14 @@ class GyroEngineRequestUseCase @Inject constructor(
     }
 
     private fun getRequestParams(thanksPageData: ThanksPageData): Map<String, Any> {
-        var mainGatewayCode : String = ""
+        var mainGatewayCode = ""
         thanksPageData.paymentDetails?.forEach {
             if(it.gatewayName.equals(thanksPageData.gatewayName, true)){
                 mainGatewayCode = it.gatewayCode
             }
         }
         return mapOf(PARAM_REQUEST to Gson().toJson(FeatureEngineRequest(
-                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 2,
+                thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
                 FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
                         mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
                         isDonation(thanksPageData).toString(), userSession.userId),
