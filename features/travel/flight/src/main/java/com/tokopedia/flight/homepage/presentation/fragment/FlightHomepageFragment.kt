@@ -74,8 +74,8 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private var applinkErrorTextResource = -1
     private var isSearchFromWidget: Boolean = false
     private var bannerWidthInPixels = 0
-    private var binding by autoClearedNullable<FragmentFlightHomepageBinding>()
-    private var timerFlight = Timer()
+    private var mbinding: FragmentFlightHomepageBinding? = null
+    private val binding get() = mbinding
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -178,7 +178,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
+        mbinding = FragmentFlightHomepageBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -370,14 +370,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
                 } else {
                     slideToShow = BANNER_SHOW_SIZE
-                    timerFlight.scheduleAtFixedRate(object : TimerTask() {
-                        override fun run() {
-                            Handler(Looper.getMainLooper()).post {
-                                nextSlide()
-                            }
-                        }
-                    }, autoplayDuration, autoplayDuration)
-                    autoplay = false
+                    autoplay = true
                     infinite = true
                 }
                 onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
@@ -593,9 +586,11 @@ class FlightHomepageFragment : BaseDaggerFragment(),
     private fun measureBannerHeightBasedOnRatio(): Int =
         (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
 
-    override fun onDestroy() {
-        timerFlight.cancel()
-        super.onDestroy()
+
+    override fun onDestroyView() {
+        binding?.flightHomepageBanner?.timer?.cancel()
+        super.onDestroyView()
+        mbinding = null
     }
 
     companion object {
