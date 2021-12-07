@@ -8,6 +8,7 @@ import com.tokopedia.shop_showcase.shop_showcase_tab.domain.model.GetFeaturedSho
 import com.tokopedia.shop_showcase.shop_showcase_tab.domain.model.ShopFeaturedShowcase
 import com.tokopedia.shop_showcase.shop_showcase_tab.domain.usecase.GetFeaturedShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.model.ShowcasesBuyerUiModel
+import com.tokopedia.shop_showcase.shop_showcase_tab.presentation.viewmodel.ShopPageShowcaseViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -40,7 +41,7 @@ class ShopPageShowcaseViewModelTest {
         CoroutineTestDispatchersProvider
     }
 
-    private var viewModel: com.tokopedia.shop_showcase.shop_showcase_tab.presentation.viewmodel.ShopPageShowcaseViewModel? = null
+    private var viewModel: ShopPageShowcaseViewModel? = null
 
     @Before
     fun setup() {

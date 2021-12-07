@@ -186,6 +186,12 @@ class NewShopPageFragment :
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        private const val FRAGMENT_SHOWCASE_KEY_SHOP_ID = "SHOP_ID"
+        private const val FRAGMENT_SHOWCASE_KEY_SHOP_REF = "SHOP_REF"
+        private const val FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
+        private const val FRAGMENT_SHOWCASE_KEY_IS_OS = "IS_OS"
+        private const val FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+
         const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
@@ -1585,11 +1591,11 @@ class NewShopPageFragment :
             activity as AppCompatActivity,
             FragmentConst.SHOP_SHOWCASE_TAB_FRAGMENT_CLASS_PATH,
             Bundle().apply {
-                putString("SHOP_ID", shopId)
-                putString("SHOP_REF", shopRef)
-                putString("SHOP_ATTRIBUTION", shopAttribution)
-                putBoolean("IS_OS", shopPageHeaderDataModel?.isOfficial ?: false)
-                putBoolean("IS_GOLD_MERCHANT", shopPageHeaderDataModel?.isGoldMerchant ?: false)
+                putString(FRAGMENT_SHOWCASE_KEY_SHOP_ID, shopId)
+                putString(FRAGMENT_SHOWCASE_KEY_SHOP_REF, shopRef)
+                putString(FRAGMENT_SHOWCASE_KEY_SHOP_ATTRIBUTION, shopAttribution)
+                putBoolean(FRAGMENT_SHOWCASE_KEY_IS_OS, shopPageHeaderDataModel?.isOfficial ?: false)
+                putBoolean(FRAGMENT_SHOWCASE_KEY_IS_GOLD_MERCHANT, shopPageHeaderDataModel?.isGoldMerchant ?: false)
             }
         )
         listShopPageTabModel.add(ShopPageTabModel(
