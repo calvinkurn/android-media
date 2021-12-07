@@ -6,7 +6,8 @@ import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiDevice
 
 object MacroInteration {
-    fun basicRecyclerviewInteraction(packageName: String, rvResourceId: String) {
+    fun basicRecyclerviewInteraction(packageName: String, rvResourceId: String, currentIteration: Int, delayBeforeTest: Long = 4000L) {
+        Thread.sleep(delayBeforeTest)
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
