@@ -14,7 +14,13 @@ import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.stub.features.home.presentation.SellerHomeActivityStub
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -245,14 +251,11 @@ class SellerHomeTrackerValidationTest {
         }
     }
 
-    /*@Test
+    @Test
     fun validatePostWidgetItemClick() {
         actionTest {
             clearQueries()
-            addQueriesToValidate(
-                context,
-                "tracker/seller_home/seller_home_post_widget_item_click.json"
-            )
+            addQueriesToValidate("tracker/seller_home/seller_home_post_widget_item_click.json")
             blockAllIntent()
 
             var postWidgetItemClickCount = 0
@@ -260,12 +263,12 @@ class SellerHomeTrackerValidationTest {
             clickAllItemInChildRecyclerView<PostListWidgetUiModel, PostItemUiModel>(
                 activityRule.activity,
                 R.id.recycler_view,
-                com.tokopedia.sellerhomecommon.R.id.rvPostList
+                com.tokopedia.sellerhomecommon.R.id.rvShcPostList
             )
 
-            validate(gtmLogDBSource, postWidgetItemClickCount)
+            validate(context, gtmLogDBSource, postWidgetItemClickCount)
         }
-    }*/
+    }
 
     @Test
     fun validateCarouselWidgetItemClick() {
