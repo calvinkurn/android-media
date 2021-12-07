@@ -150,6 +150,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onNoCampaignStatusSelected() {
+        binding?.sfCampaignList?.resetAllFilters()
         viewModel.getCampaignList(
             EMPTY_SEARCH_KEYWORD,
             viewModel.getCampaignTypeId(),
