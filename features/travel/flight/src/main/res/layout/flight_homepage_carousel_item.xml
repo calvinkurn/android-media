@@ -6,7 +6,7 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/flightHomepagePromoImageCarousel"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/banner_width"/>
 </LinearLayout>
