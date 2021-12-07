@@ -17,6 +17,10 @@ class ReviewPendingCredibilityCarouselViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_review_pending_credibility_carousel
+
+        private const val SLIDE_TO_SCROLL = 1
+        private const val SLIDE_TO_SHOW_SINGLE = 1f
+        private const val SLIDE_TO_SHOW_MULTIPLE = 1.04f
     }
 
     val binding by viewBinding<ItemReviewPendingCredibilityCarouselBinding>()
@@ -35,19 +39,20 @@ class ReviewPendingCredibilityCarouselViewHolder(
     private fun CarouselUnify.setupConfig(itemCount: Int) {
         freeMode = false
         centerMode = false
-        slideToScroll = 1
+        slideToScroll = SLIDE_TO_SCROLL
         indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
         infinite = false
         if (itemCount == 1) {
             autoplay = false
-            slideToShow = 1f
+            slideToShow = SLIDE_TO_SHOW_SINGLE
         } else {
             autoplay = true
-            slideToShow = 1.04f
+            slideToShow = SLIDE_TO_SHOW_MULTIPLE
         }
     }
 
     private fun CarouselUnify.setupContents(items: List<ReviewPendingCredibilityUiModel>) {
+        stage.removeAllViews()
         addItems(ReviewPendingCredibilityViewHolder.LAYOUT, ArrayList(items), ::bindItem)
     }
 
