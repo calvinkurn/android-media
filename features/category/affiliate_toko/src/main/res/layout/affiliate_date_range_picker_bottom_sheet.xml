@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/affiliate_parent_linear"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,8 +10,6 @@
         android:id="@+id/affiliate_filter_announcement_ticker_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
         android:visibility="gone"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardElevation="0dp">
@@ -37,7 +34,7 @@
         android:id="@+id/cnf_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_marginVertical="@dimen/dp_16"
         android:enabled="true"
         android:text="@string/affiliate_terapkan"
         app:unifyButtonSize="medium" />
