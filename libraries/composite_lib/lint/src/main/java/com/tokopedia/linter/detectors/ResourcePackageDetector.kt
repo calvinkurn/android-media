@@ -156,7 +156,7 @@ class ResourcePackageDetector : Detector(), SourceCodeScanner {
             context.report(
                 JAVA_ISSUE,
                 node,
-                context.getLocation(node),
+                context.getLocation(node!!),
                 ERROR_MESSAGE
             )
         }
