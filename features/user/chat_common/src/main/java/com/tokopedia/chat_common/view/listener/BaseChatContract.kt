@@ -25,7 +25,6 @@ interface BaseChatContract {
 
         fun showErrorWebSocket(isWebSocketError: Boolean)
 
-        fun sendInvoiceForArticle()
     }
 
     interface Presenter<V : CustomerView> : CustomerPresenter<V> {

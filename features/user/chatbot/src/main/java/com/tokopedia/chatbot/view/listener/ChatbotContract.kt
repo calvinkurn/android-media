@@ -60,6 +60,8 @@ interface ChatbotContract {
         fun uploadUsingSecureUpload(data: Intent)
 
         fun uploadUsingOldMechanism(data: Intent)
+
+        fun sendInvoiceForArticle()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
