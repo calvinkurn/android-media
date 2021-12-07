@@ -1077,7 +1077,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     } else {
                         setVideoCarouselView(
                             feedMedia,
-                            feedXCard.id,
+                            feedXCard,
                             tagProducts,
                             feedXCard.author.id,
                             feedXCard.typename,
@@ -1183,13 +1183,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun setVideoCarouselView(
         feedMedia: FeedXMedia,
-        postId: String,
+        feedXCard: FeedXCard,
         products: List<FeedXProduct>,
         id: String,
         type: String,
         isFollowed: Boolean,
         shopName: String
     ): View? {
+        val postId = feedXCard.id
         val videoItem = getVideoItem()
         feedMedia.canPlay = false
         feedMedia.videoView = videoItem
@@ -1213,11 +1214,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
 
             volumeIcon.setOnClickListener {
-                isMute = !isMute
-                if (isMute)
-                    listener?.muteUnmuteVideo(postId, isMute, id, isFollowed,false)
-                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
-                toggleVolume(videoPlayer?.isMute() != true)
+                changeMuteStateVideo(volumeIcon)
+                setMuteUnmuteVOD(volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
             }
         }
         return videoItem
@@ -1263,11 +1261,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     videoPlayer = FeedExoPlayer(context)
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
+                    changeMuteStateVideo(volumeIcon)
                     setMuteUnmuteVOD(volumeIcon, postId, feedXCard.followers.isFollowed, authorId, true, false)
+
                 }
 
-                videoPlayer?.start(feedMedia.mediaUrl, isMute)
-                volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
+                videoPlayer?.start(feedMedia.mediaUrl, GridPostAdapter.isMute)
+                volumeIcon?.setImageResource(if (!GridPostAdapter.isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
                 videoPlayer?.setVideoStateListener(object : VideoStateListener {
                     override fun onInitialStateLoading() {
                         showVideoLoading()
@@ -1350,8 +1350,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             vod_volumeIcon?.setOnClickListener {
+                changeMuteStateVideo(vod_volumeIcon)
                 setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, isFollowed, id,false, true)
-                changeMuteStateVideo()
+
             }
         }
         return vodItem
@@ -1367,11 +1368,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 volumeIcon?.gone()
             }
         }
-        listener?.muteUnmuteVideo(postId, isMute, activityId, isFollowed, isVOD)
+        listener?.muteUnmuteVideo(postId, GridPostAdapter.isMute, activityId, isFollowed, isVOD)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
-        volumeIcon?.setImageResource(if (!isMute) R.drawable.ic_feed_volume_up else R.drawable.ic_feed_volume_mute)
-        toggleVolume(videoPlayer?.isMute() != true)
         if (isVideoTap){
             if (countDownTimer != null) {
                 countDownTimer.cancel()
@@ -1383,13 +1382,13 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun changeMuteStateVideo() {
+    private fun changeMuteStateVideo(volumeIcon: ImageView) {
         GridPostAdapter.isMute = !GridPostAdapter.isMute
         toggleVolume(GridPostAdapter.isMute)
         if (GridPostAdapter.isMute) {
-            vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_mute)
         } else {
-            vod_volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
+            volumeIcon?.setImageResource(R.drawable.ic_feed_volume_up)
         }
     }
 
@@ -1447,8 +1446,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 vod_layout_video?.player = videoPlayer?.getExoPlayer()
                 vod_layout_video?.videoSurfaceView?.setOnClickListener {
                     if (feedMedia.mediaUrl.isNotEmpty() && !isVODViewFrozen) {
+                        changeMuteStateVideo(vod_volumeIcon)
                         setMuteUnmuteVOD(vod_volumeIcon, feedXCard.playChannelID, feedXCard.followers.isFollowed, authorId, isVideoTap = true, isVOD = true)
-                        changeMuteStateVideo()
                     }
                 }
                 vod_full_screen_icon?.setOnClickListener {
