@@ -41,13 +41,14 @@ object TopchatBottomSheetBuilder {
     fun getLongClickBubbleMenuBs(
         ctx: Context?,
         msg: BaseChatUiModel,
+        menus: List<Int>,
         onClick: (Int, BaseChatUiModel) -> Unit
     ): BottomSheetUnify {
         val longClickMenu = LongClickMenu()
         val title = ctx?.getString(R.string.title_topchat_bubble_long_click_menu) ?: ""
         return longClickMenu.apply {
             setTitle(title)
-            setItemMenuList(createBubbleLongClickMenu(ctx))
+            setItemMenuList(createBubbleLongClickMenu(ctx, menus))
             setOnItemMenuClickListener { itemMenus, _ ->
                 onClick(itemMenus.id, msg)
                 dismiss()
@@ -56,23 +57,29 @@ object TopchatBottomSheetBuilder {
     }
 
     private fun createBubbleLongClickMenu(
-        ctx: Context?
+        ctx: Context?,
+        menus: List<Int>
     ): MutableList<TopchatItemMenu> {
-        val menus = arrayListOf<TopchatItemMenu>()
-        val replyMenu = TopchatItemMenu(
-            title = ctx?.getString(R.string.title_topchat_reply) ?: "",
-            icon = R.drawable.ic_topchat_reply_reference,
-            id = MENU_ID_REPLY
-        )
-        val copyMenu = TopchatItemMenu(
-            title = ctx?.getString(R.string.title_topchat_copy) ?: "",
-            icon = com.tokopedia.iconunify.R.drawable.iconunify_copy,
-            id = MENU_ID_COPY_TO_CLIPBOARD
-        )
-        return menus.apply {
-            add(replyMenu)
-            add(copyMenu)
+        val topchatMenus = arrayListOf<TopchatItemMenu>()
+        menus.forEach { menuId ->
+            val menu = when (menuId) {
+                MENU_ID_REPLY -> TopchatItemMenu(
+                    title = ctx?.getString(R.string.title_topchat_reply) ?: "",
+                    icon = R.drawable.ic_topchat_reply_reference,
+                    id = MENU_ID_REPLY
+                )
+                MENU_ID_COPY_TO_CLIPBOARD -> TopchatItemMenu(
+                    title = ctx?.getString(R.string.title_topchat_copy) ?: "",
+                    icon = com.tokopedia.iconunify.R.drawable.iconunify_copy,
+                    id = MENU_ID_COPY_TO_CLIPBOARD
+                )
+                else -> null
+            }
+            menu?.let {
+                topchatMenus.add(it)
+            }
         }
+        return topchatMenus
     }
 
     const val MENU_ID_REPLY = 1

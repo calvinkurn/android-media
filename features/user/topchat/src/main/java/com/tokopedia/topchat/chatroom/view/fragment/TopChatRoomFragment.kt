@@ -2563,10 +2563,12 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         }
     }
 
-    override fun showMsgMenu(msg: BaseChatUiModel, text: CharSequence) {
+    override fun showMsgMenu(
+        msg: BaseChatUiModel, text: CharSequence, menus: List<Int>
+    ) {
         replyBubbleOnBoarding.dismiss()
         val bs = TopchatBottomSheetBuilder.getLongClickBubbleMenuBs(
-            context, msg
+            context, msg, menus
         ) { id, msg ->
             when (id) {
                 MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
