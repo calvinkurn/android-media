@@ -34,9 +34,8 @@ class TopAdsInsightViewModel @Inject constructor(
                 .getKeywordRecommendation(shopKeywordSuggestionUseCase.getParams(shopID, groupIds))
             val keyword = gqlResponse.getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
 
-            _recommendedKeyword.postValue(getShopAdsKeywordRecommendation().suggestion!!.recommendedKeywordData)
             keyword?.suggestion?.recommendedKeywordData?.let {
-                //_recommendedKeyword.postValue(it)
+                _recommendedKeyword.postValue(it)
             }
             keyword?.suggestion?.errors?.let {
                 _error.postValue(it[0]?.detail)
@@ -64,45 +63,5 @@ class TopAdsInsightViewModel @Inject constructor(
                 it.printStackTrace()
             }
         )
-    }
-
-    companion object {
-        fun getShopAdsKeywordRecommendation(): TopAdsShopHeadlineKeyword {
-            return Gson().fromJson(getResp(), TopAdsShopHeadlineKeyword::class.java)
-        }
-
-        private fun getResp() = "{\n" +
-                "    \"topadsHeadlineKeywordSuggestion\": {\n" +
-                "      \"data\": {\n" +
-                "        \"shopID\": \"479085\",\n" +
-                "        \"recommendedKeywordCount\": 2,\n" +
-                "        \"groupCount\": 1,\n" +
-                "        \"totalImpressionCount\": \"243\",\n" +
-                "        \"recommendedKeywordDetails\": [\n" +
-                "          {\n" +
-                "            \"keywordTag\": \"svj\",\n" +
-                "            \"groupID\": \"9254\",\n" +
-                "            \"groupName\": \"testing el\",\n" +
-                "            \"totalHits\": \"222\",\n" +
-                "            \"recommendedBid\": 12000,\n" +
-                "            \"minBid\": 12000,\n" +
-                "            \"maxBid\": 500000,\n" +
-                "            \"impressionCount\": \"243\"\n" +
-                "},\n" +
-                "{\n" +
-                "            \"keywordTag\": \"svj\",\n" +
-                "            \"groupID\": \"9254\",\n" +
-                "            \"groupName\": \"testing el\",\n" +
-                "            \"totalHits\": \"222\",\n" +
-                "            \"recommendedBid\": 12000,\n" +
-                "            \"minBid\": 12000,\n" +
-                "            \"maxBid\": 500000,\n" +
-                "            \"impressionCount\": \"243\"\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      \"errors\": []\n" +
-                "    }\n" +
-                "}"
     }
 }
