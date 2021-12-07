@@ -269,4 +269,8 @@ class TopChatViewModel @Inject constructor(
             userId = userId
         )
     }
+
+    fun deleteMsg(replyTimeNano: String) {
+
+    }
 }

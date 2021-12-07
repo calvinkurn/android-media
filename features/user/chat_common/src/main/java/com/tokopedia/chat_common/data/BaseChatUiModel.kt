@@ -23,7 +23,8 @@ open class BaseChatUiModel constructor(
     val blastId: Long = 0,
     val fraudStatus: Int = 0,
     val label: String = "",
-    val parentReply: ParentReply? = null
+    val parentReply: ParentReply? = null,
+    val bubbleStatus: Int = STATUS_NORMAL
 ) {
 
     constructor(builder: Builder<*, *>) : this(
@@ -41,7 +42,8 @@ open class BaseChatUiModel constructor(
         blastId = builder.blastId,
         fraudStatus = builder.fraudStatus,
         label = builder.label,
-        parentReply = builder.parentReply
+        parentReply = builder.parentReply,
+        bubbleStatus = builder.bubbleStatus
     )
 
     /**
@@ -74,6 +76,9 @@ open class BaseChatUiModel constructor(
         const val SOURCE_SMART_REPLY = "smart_reply"
         const val SOURCE_BLAST_SELLER = "blast_seller"
         const val SOURCE_REPLIED_BLAST = "replied_blast"
+
+        const val STATUS_NORMAL = 1
+        const val STATUS_DELETED = 5
     }
 
     /**
@@ -101,6 +106,7 @@ open class BaseChatUiModel constructor(
         internal var fraudStatus: Int = 0
         internal var label: String = ""
         internal var parentReply: ParentReply? = null
+        internal var bubbleStatus: Int = STATUS_NORMAL
 
         open fun withResponseFromGQL(
             reply: Reply
@@ -120,6 +126,7 @@ open class BaseChatUiModel constructor(
             withLabel(reply.label)
             withParentReply(reply.parentReply)
             withOrGenerateLocalId("")
+            withBubbleStatus(reply.status)
             return self()
         }
 
@@ -169,8 +176,38 @@ open class BaseChatUiModel constructor(
             return self()
         }
 
+        fun withBaseChatUiModel(msg: BaseChatUiModel): B {
+            withMsgId(msg.messageId)
+            withFromUid(msg.fromUid ?: "")
+            withFrom(msg.from)
+            withFromRole(msg.fromRole)
+            withAttachmentId(msg.attachmentId)
+            withAttachmentType(msg.attachmentType)
+            withReplyTime(msg.replyTime ?: "")
+            withMsg(msg.message)
+            withSource(msg.source)
+            withReplyId(msg.replyId)
+            withLocalId(msg.localId)
+            withBlastId(msg.blastId)
+            withFraudStatus(msg.fraudStatus)
+            withLabel(msg.label)
+            withParentReply(msg.parentReply)
+            return self()
+        }
+
+        fun withMarkAsDeleted(): B {
+            withMsg("Pesan ini telah dihapus.")
+            withBubbleStatus(STATUS_DELETED)
+            return self()
+        }
+
         fun withMsgId(messageId: String): B {
             this.messageId = messageId
+            return self()
+        }
+
+        fun withBubbleStatus(bubbleStatus: Int): B {
+            this.bubbleStatus = bubbleStatus
             return self()
         }
 

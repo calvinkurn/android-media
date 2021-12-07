@@ -147,6 +147,7 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_DELETE_BUBBLE
 import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 
 
@@ -2573,9 +2574,16 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             when (id) {
                 MENU_ID_REPLY -> replyCompose?.composeReplyData(msg, text, true)
                 MENU_ID_COPY_TO_CLIPBOARD -> copyToClipboard(text)
+                MENU_ID_DELETE_BUBBLE -> deleteBubble(msg)
             }
         }
         bs.show(childFragmentManager, BS_CHAT_BUBBLE_MENU)
+    }
+
+    private fun deleteBubble(msg: BaseChatUiModel) {
+        val replyTimeNano = msg.replyTime ?: return
+        viewModel.deleteMsg(replyTimeNano)
+        adapter.deleteMsg(replyTimeNano)
     }
 
     override fun getCommonShopId(): Long {
