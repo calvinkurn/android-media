@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddressAddEditView {
 
-    private var shopLocationOldUiModel: ShopLocationOldUiModel? = null
+    private var shopLocationOldUiModel: ShopLocationOldUiModel = ShopLocationOldUiModel()
     private var isAddNew = true
     private var selectedDistrictId = -1L
     private var selectedCityId = -1L
@@ -72,8 +72,11 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let { it ->
-            shopLocationOldUiModel = it.getParcelable(PARAM_EXTRA_SHOP_ADDRESS)
-            shopLocationOldUiModel?.let {
+            val model = it.getParcelable<ShopLocationOldUiModel>(PARAM_EXTRA_SHOP_ADDRESS)
+            if (model != null) {
+                shopLocationOldUiModel = model
+            }
+            shopLocationOldUiModel.let {
                 selectedProvinceId = it.stateId
                 selectedCityId = it.cityId
                 selectedDistrictId = it.districtId
@@ -97,7 +100,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     }
 
     private fun initializeFillData() {
-        shopLocationOldUiModel?.let {
+        shopLocationOldUiModel.let {
             binding?.run {
                 editTextName.textFieldInput.setText(it.name)
                 editTextAddress.textFieldInput.setText(it.address)
@@ -218,8 +221,7 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     }
 
     private fun populateData(): ShopLocationOldUiModel {
-        shopLocationOldUiModel = shopLocationOldUiModel ?: ShopLocationOldUiModel()
-        return shopLocationOldUiModel!!.apply {
+        return shopLocationOldUiModel.apply {
             name = binding?.editTextName?.textFieldInput?.text.toString()
             address = binding?.editTextAddress?.textFieldInput?.text.toString()
             districtId = selectedDistrictId
