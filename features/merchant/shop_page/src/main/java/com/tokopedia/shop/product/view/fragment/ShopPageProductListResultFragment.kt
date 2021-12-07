@@ -961,7 +961,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        RouteManager.route(context, NEW_WISHLIST)
     }
 
     private fun onSuccessGetSortFilterData(shopStickySortFilter: ShopStickySortFilter) {
