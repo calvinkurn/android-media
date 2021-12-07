@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
+import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
 
 data class OrderStatusUiModel(
@@ -28,6 +29,10 @@ data class OrderStatusUiModel(
         override fun shouldShow(): Boolean {
             return orderStatus.isNotBlank()
         }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
+        }
     }
 
     data class OrderStatusInfoUiModel(
@@ -54,6 +59,10 @@ data class OrderStatusUiModel(
 
         override fun shouldShow(): Boolean {
             return invoice.invoice.isNotBlank() || (deadline.label.isNotBlank() && deadline.value.isNotBlank()) || purchaseDate.isNotBlank()
+        }
+
+        override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
+            return null
         }
     }
 }

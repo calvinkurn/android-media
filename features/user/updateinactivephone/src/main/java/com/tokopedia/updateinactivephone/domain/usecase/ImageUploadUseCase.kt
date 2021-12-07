@@ -15,7 +15,7 @@ import okhttp3.RequestBody
 import java.io.File
 import javax.inject.Inject
 
-class ImageUploadUseCase @Inject constructor(
+open class ImageUploadUseCase @Inject constructor(
         private val inactivePhoneApi: InactivePhoneApiClient<InactivePhoneApi>
 ) : UseCase<ImageUploadDataModel>() {
 

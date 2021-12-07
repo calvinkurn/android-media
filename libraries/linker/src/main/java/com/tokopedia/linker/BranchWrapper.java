@@ -366,7 +366,7 @@ public class BranchWrapper implements WrapperInterface {
 
     private void generateAffiliateLink(final LinkerData data, final Context context,
                                       final ShareCallback shareCallback, final UserData userData) {
-        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback);
+        new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback, context);
     }
 
     private void generateBranchLink(final LinkerData data, final Context context,
@@ -475,6 +475,12 @@ public class BranchWrapper implements WrapperInterface {
             }
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
+            deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.ENTERTAINMENT_TYPE.equalsIgnoreCase(data.getType())){
+            if (!desktopUrl.isEmpty()) {
+                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+            }
             deeplinkPath = data.getDeepLink();
         }
 
