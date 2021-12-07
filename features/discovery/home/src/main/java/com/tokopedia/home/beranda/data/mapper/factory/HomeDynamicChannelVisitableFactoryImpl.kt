@@ -186,7 +186,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_HOME_TODO -> {
+                DynamicHomeChannel.Channels.LAYOUT_CM_HOME_TO_DO -> {
                     createHomeToDoWidget(channel)
                 }
             }

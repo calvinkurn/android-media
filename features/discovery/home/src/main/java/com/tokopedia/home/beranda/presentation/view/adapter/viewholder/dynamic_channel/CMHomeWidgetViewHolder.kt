@@ -15,21 +15,14 @@ class CMHomeWidgetViewHolder(
     val view: View,
     private val callback: CMHomeWidgetCallback
 ) :
-    AbstractViewHolder<CMHomeWidgetDataModel>(view) {
+    AbstractViewHolder<CMHomeWidgetDataModel>(view), CMHomeWidgetCloseClickListener {
 
     override fun bind(dataModel: CMHomeWidgetDataModel?) {
         dataModel?.let {
-            val cmHomeWidget = itemView.cm_home_widget
             it.cmHomeWidgetData?.let { cmHomeWidgetData ->
-                cmHomeWidget.visibility = View.VISIBLE
-                cmHomeWidget.setOnCMHomeWidgetCloseClickListener(object :
-                    CMHomeWidgetCloseClickListener {
-                    override fun onCMHomeWidgetDismissClick(parentId: Long, campaignId: Long) {
-                        cmHomeWidget.visibility = View.GONE
-                        callback.onCMHomeWidgetDismissClick()
-                    }
-                })
-                cmHomeWidget.loadCMHomeWidgetData(cmHomeWidgetData)
+                itemView.cm_home_widget.visibility = View.VISIBLE
+                itemView.cm_home_widget.setOnCMHomeWidgetCloseClickListener(this)
+                itemView.cm_home_widget.loadCMHomeWidgetData(cmHomeWidgetData)
             }
             setChannelDivider(it.channel)
         }
@@ -50,5 +43,10 @@ class CMHomeWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_dc_cm_home_widget_item
+    }
+
+    override fun onCMHomeWidgetDismissClick(parentId: Long, campaignId: Long) {
+        itemView.cm_home_widget.visibility = View.GONE
+        callback.onCMHomeWidgetDismissClick()
     }
 }
