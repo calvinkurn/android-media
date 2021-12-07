@@ -149,12 +149,22 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE_SET_OPS_HOUR && resultCode == Activity.RESULT_OK) {
-            setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_success_update_operational_hours)
-            setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
-            isNeedToShowToaster = true
-            showLoader()
-            getInitialData()
+        if (requestCode == REQUEST_CODE_SET_OPS_HOUR) {
+            when (resultCode) {
+                Activity.RESULT_OK -> {
+                    setShopHolidayScheduleStatusMessage = getString(R.string.shop_operational_success_update_operational_hours)
+                    setShopHolidayScheduleStatusType = Toaster.TYPE_NORMAL
+                    isNeedToShowToaster = true
+                    showLoader()
+                    getInitialData()
+                }
+                Activity.RESULT_CANCELED -> {
+                    isActionEdit = false
+                    resetSelectedDates(isActionEdit)
+                    setupHolidayCalendarPickerBottomSheet()
+                    showHolidayBottomSheet()
+                }
+            }
         }
     }
 

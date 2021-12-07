@@ -173,7 +173,8 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         secondaryCtaText = getString(R.string.label_back),
                         dialogAction = DialogUnify.VERTICAL_ACTION,
                         primaryCtaClickListener = {
-                            // TODO: Set navigation to calendar picker
+                            activity?.setResult(Activity.RESULT_CANCELED)
+                            activity?.finish()
                         }
                 )
             } else {
