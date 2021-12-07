@@ -6,6 +6,22 @@ import java.lang.reflect.Type
 
 object GqlMockUtil {
 
+    /**
+     * Convenient utils method to create success response when mocking GraphqlResponse (typically
+     * creating Test Double for GraphqlRepository)
+     *
+     * Example single request:
+     * val example = ExampleResponse(1, "Lorem")
+     *
+     * val mocked = GqlMockUtil.createSuccessResponse(example)
+     *
+     * Example multiple request:
+     * val example = ExampleResponse(1, "Lorem")
+     * val example2 = Example2Response(1, "Lorem")
+     * val maps = hashMapOf(example.toGqlPair(), example2.toGqlPair())
+     *
+     * val mocked = maps.toSuccessGqlResponse()
+     * */
     inline fun <reified T : Any> createSuccessResponse(obj: T): GraphqlResponse {
         val success = hashMapOf<Type, Any>(T::class.java to obj)
         return success.toSuccessGqlResponse()
