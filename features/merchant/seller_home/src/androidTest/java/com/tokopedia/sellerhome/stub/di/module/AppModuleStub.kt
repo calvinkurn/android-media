@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.sellerhome.stub.common.CoroutineAndroidTestDispatchersProvider
 import dagger.Module
 import dagger.Provides
 
@@ -25,6 +25,6 @@ class AppModuleStub(private val context: Context) {
     @ApplicationScope
     @Provides
     fun provideCoroutineDispatchers(): CoroutineDispatchers {
-        return CoroutineDispatchersProvider
+        return CoroutineAndroidTestDispatchersProvider
     }
 }
