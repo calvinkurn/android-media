@@ -41,7 +41,7 @@ class SellerHomeRobot {
         queriesToValidate.clear()
     }
 
-    fun addQueriesToValidate(context: Context, vararg queries: String) {
+    fun addQueriesToValidate(vararg queries: String) {
         queriesToValidate.addAll(queries)
     }
 
@@ -99,14 +99,15 @@ class SellerHomeRobot {
     }
 
     fun scrollThrough(activity: Activity, recyclerViewId: Int) {
-        onView(
-            allOf(
-                withId(recyclerViewId),
-                isAssignableFrom(RecyclerView::class.java),
-                isDisplayed()
-            )
-        )
-            .perform(
+        val recyclerView = activity.findViewById<RecyclerView>(recyclerViewId)
+        while (recyclerView.canScrollVertically(1)) {
+            onView(
+                allOf(
+                    withId(recyclerViewId),
+                    isAssignableFrom(RecyclerView::class.java),
+                    isDisplayed()
+                )
+            ).perform(
                 GeneralSwipeAction(
                     Swipe.SLOW,
                     GeneralLocation.BOTTOM_CENTER,
@@ -114,7 +115,8 @@ class SellerHomeRobot {
                     Press.FINGER
                 )
             )
-        Thread.sleep(2500)
+            Thread.sleep(2500)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

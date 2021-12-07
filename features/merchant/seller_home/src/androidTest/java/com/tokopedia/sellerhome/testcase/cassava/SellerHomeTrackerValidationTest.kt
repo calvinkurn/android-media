@@ -14,9 +14,7 @@ import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeIdlingResource
 import com.tokopedia.sellerhome.stub.features.home.presentation.SellerHomeActivityStub
-import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -83,12 +81,11 @@ class SellerHomeTrackerValidationTest {
         this.unregisterIdlingResources()
     }
 
-    /*@Test
+    @Test
     fun validateWidgetsImpression() {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_card_widget_impression.json",
                 "tracker/seller_home/seller_home_description_widget_impression.json",
                 "tracker/seller_home/seller_home_line_graph_widget_impression.json",
@@ -97,7 +94,11 @@ class SellerHomeTrackerValidationTest {
                 "tracker/seller_home/seller_home_carousel_widget_impression.json"
             )
             scrollThrough(activityRule.activity, R.id.recycler_view)
+
+            waitForTrackerSent()
+
             validate(
+                context,
                 gtmLogDBSource,
                 8,
                 1,
@@ -114,7 +115,6 @@ class SellerHomeTrackerValidationTest {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_line_graph_widget_cta_click.json"
             )
             blockAllIntent()
@@ -127,7 +127,9 @@ class SellerHomeTrackerValidationTest {
                 com.tokopedia.sellerhomecommon.R.id.btnLineGraphMore
             )
 
-            validate(gtmLogDBSource, clickCount)
+            waitForTrackerSent()
+
+            validate(context, gtmLogDBSource, clickCount)
         }
     }
 
@@ -136,10 +138,10 @@ class SellerHomeTrackerValidationTest {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_post_widget_cta_click.json"
             )
             blockAllIntent()
+
             var clickCount = 0
             mockRouteManager { clickCount++ }
 
@@ -149,7 +151,9 @@ class SellerHomeTrackerValidationTest {
                 com.tokopedia.sellerhomecommon.R.id.tvPostListSeeDetails
             )
 
-            validate(gtmLogDBSource, clickCount)
+            waitForTrackerSent()
+
+            validate(context, gtmLogDBSource, clickCount)
         }
     }
 
@@ -158,7 +162,6 @@ class SellerHomeTrackerValidationTest {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_progress_bar_widget_cta_click.json"
             )
             blockAllIntent()
@@ -171,16 +174,17 @@ class SellerHomeTrackerValidationTest {
                 com.tokopedia.sellerhomecommon.R.id.tvProgressSeeDetails
             )
 
-            validate(gtmLogDBSource, clickCount)
+            waitForTrackerSent()
+
+            validate(context, gtmLogDBSource, clickCount)
         }
-    }*/
+    }
 
     @Test
     fun validateDescriptionWidgetsCtaClick() {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_description_widget_click.json"
             )
             blockAllIntent()
@@ -204,7 +208,6 @@ class SellerHomeTrackerValidationTest {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_carousel_widget_cta_click.json"
             )
             blockAllIntent()
@@ -228,7 +231,6 @@ class SellerHomeTrackerValidationTest {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_card_widget_click.json"
             )
             blockAllIntent()
@@ -263,14 +265,13 @@ class SellerHomeTrackerValidationTest {
 
             validate(gtmLogDBSource, postWidgetItemClickCount)
         }
-    }
+    }*/
 
     @Test
     fun validateCarouselWidgetItemClick() {
         actionTest {
             clearQueries()
             addQueriesToValidate(
-                context,
                 "tracker/seller_home/seller_home_carousel_widget_item_click.json"
             )
             blockAllIntent()
@@ -283,9 +284,11 @@ class SellerHomeTrackerValidationTest {
                 com.tokopedia.sellerhomecommon.R.id.rvCarouselBanner
             )
 
-            validate(gtmLogDBSource, carouselWidgetItemClickCount)
+            waitForTrackerSent()
+
+            validate(context, gtmLogDBSource, carouselWidgetItemClickCount)
         }
-    }*/
+    }
 
     private fun markAsIdleIfPltIsSucceed() {
         val performanceData =
