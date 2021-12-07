@@ -121,7 +121,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    private suspend fun organizeWishlistV2Data(wishlistV2Response: WishlistV2Response.Data.WishlistV2, typeLayout: String?) : List<WishlistV2TypeLayoutData> {
+    suspend fun organizeWishlistV2Data(wishlistV2Response: WishlistV2Response.Data.WishlistV2, typeLayout: String?) : List<WishlistV2TypeLayoutData> {
         val currSizeList = wishlistV2Response.items.size
         sizeList += currSizeList
         val diffArray = arrayListOf<Int>()
@@ -179,7 +179,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return listData
     }
 
-    private suspend fun mapToEmptyState(wishlistV2Response: WishlistV2Response.Data.WishlistV2, listData: ArrayList<WishlistV2TypeLayoutData>, isFilterActive: Boolean): ArrayList<WishlistV2TypeLayoutData> {
+    suspend fun mapToEmptyState(wishlistV2Response: WishlistV2Response.Data.WishlistV2, listData: ArrayList<WishlistV2TypeLayoutData>, isFilterActive: Boolean): ArrayList<WishlistV2TypeLayoutData> {
         if (wishlistV2Response.query.isNotEmpty()) {
             listData.add(WishlistV2TypeLayoutData(wishlistV2Response.query, WishlistV2Consts.TYPE_EMPTY_NOT_FOUND))
 
@@ -198,7 +198,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return listData
     }
 
-    private suspend fun mapToRecommendation(index:Int, listData: ArrayList<WishlistV2TypeLayoutData>): ArrayList<WishlistV2TypeLayoutData> {
+    suspend fun mapToRecommendation(index:Int, listData: ArrayList<WishlistV2TypeLayoutData>): ArrayList<WishlistV2TypeLayoutData> {
         val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
 
         if (index > 0) {
@@ -212,7 +212,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return listData
     }
 
-    private suspend fun mapToTopads(index: Int, listData: ArrayList<WishlistV2TypeLayoutData>): ArrayList<WishlistV2TypeLayoutData> {
+    suspend fun mapToTopads(index: Int, listData: ArrayList<WishlistV2TypeLayoutData>): ArrayList<WishlistV2TypeLayoutData> {
         val topadsData = getTopAdsData("")
         if (topadsData != null) {
             if (index > 0) {
@@ -224,7 +224,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return listData
     }
 
-    private fun mapToProductCardList(items: List<WishlistV2Response.Data.WishlistV2.Item>, typeLayout: String?) : ArrayList<WishlistV2TypeLayoutData> {
+    fun mapToProductCardList(items: List<WishlistV2Response.Data.WishlistV2.Item>, typeLayout: String?) : ArrayList<WishlistV2TypeLayoutData> {
         val listItem = arrayListOf<WishlistV2TypeLayoutData>()
         items.forEach { item ->
             val listGroupLabel = arrayListOf<ProductCardModel.LabelGroup>()
@@ -266,7 +266,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return listItem
     }
 
-    private suspend fun getRecommendationWishlistV2(page: Int, productIds: List<String>, pageName: String): WishlistV2RecommendationDataModel {
+    suspend fun getRecommendationWishlistV2(page: Int, productIds: List<String>, pageName: String): WishlistV2RecommendationDataModel {
         val recommendation = singleRecommendationUseCase.getData(GetRecommendationRequestParam(
                         pageNumber = page,
                         productIds = productIds,
@@ -275,7 +275,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 collectRecommendationId(recommendation.recommendationItemList), recommendation.title)
     }
 
-    private fun collectRecommendationId(data: List<RecommendationItem>): List<Long> {
+    fun collectRecommendationId(data: List<RecommendationItem>): List<Long> {
         val arrayListRecommId = arrayListOf<Long>()
         for (item in data) {
             arrayListRecommId.add(item.productId)
@@ -283,7 +283,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         return arrayListRecommId
     }
 
-    private fun convertRecommendationIntoProductDataModel(data: List<RecommendationItem>): List<ProductCardModel> {
+    fun convertRecommendationIntoProductDataModel(data: List<RecommendationItem>): List<ProductCardModel> {
         return data.map { element ->
             ProductCardModel(
                     slashedPrice = element.slashedPrice,
@@ -298,7 +298,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     isWishlistVisible = true,
                     isWishlisted = element.isWishlist,
                     shopBadgeList = element.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                        ProductCardModel.ShopBadge(imageUrl = it)
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = element.isFreeOngkirActive,
