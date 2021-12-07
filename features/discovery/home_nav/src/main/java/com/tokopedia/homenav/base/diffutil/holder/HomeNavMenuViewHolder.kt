@@ -31,7 +31,7 @@ class HomeNavMenuViewHolder(
     }
 
     /*
-        This function used for hardcode all category icon to using unify icon
+        This function used for hardcode all category icon to using unify icon by element id
     */
     private fun setAllCategoryIconToUnify(element: HomeNavMenuDataModel) {
         when(element.id) {
@@ -51,6 +51,22 @@ class HomeNavMenuViewHolder(
         binding?.menuImage?.setImage(newIconId = element.srcIconId)
     }
 
+    private fun setImageByImageSource(element: HomeNavMenuDataModel) {
+        binding?.menuImage?.gone()
+        binding?.menuImageUnify?.visible()
+
+        binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.homenav.R.drawable.grey_button_rounded)
+    }
+
+    private fun setImageByMappingToIconUnify(element: HomeNavMenuDataModel) {
+        setAllCategoryIconToUnify(element)
+        if (element.srcIconId != null) {
+            setImageByIconUnify(element)
+        } else {
+            setImageByImageSource(element)
+        }
+    }
+
     override fun bind(element: HomeNavMenuDataModel) {
         binding?.menuTitle?.text = element.itemTitle
         binding?.menuTitle?.tag = element.id
@@ -58,15 +74,7 @@ class HomeNavMenuViewHolder(
         if (element.srcIconId != null) {
             setImageByIconUnify(element)
         } else {
-            setAllCategoryIconToUnify(element)
-            if (element.srcIconId != null) {
-                setImageByIconUnify(element)
-            } else {
-                binding?.menuImage?.gone()
-                binding?.menuImageUnify?.visible()
-
-                binding?.menuImageUnify?.loadImage(element.srcImage, com.tokopedia.homenav.R.drawable.grey_button_rounded)
-            }
+            setImageByMappingToIconUnify(element)
         }
 
         itemView.setOnClickListener {
