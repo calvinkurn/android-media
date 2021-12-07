@@ -7,6 +7,23 @@ object GqlQueryParser {
 
     val QUERY_PATTERN = Regex("""(\w+)\s*(\(.+\))""")
 
+    /**
+     * A helper function to parse query from graphql request(s). Support multiple request and
+     * returns list of String accordingly
+     *
+     * Example in Fake GraphqlRepository class (single request):
+     * return when(GqlQueryParser.parse(requests).first()) {
+     *      "queryA" -> GqlMockUtil.createSuccessResponse(mockJson)
+     *      "queryB" -> ....
+     *      ...
+     * }
+     *
+     * Example in Fake GraphqlRepository class (multiple requests):
+     * return when(GqlQueryParser.parse(requests).joinToString(",")) {
+     *      "queryA,queryB" -> mockedGraphqlResponse
+     *      ...
+     * }
+     * */
     fun parse(list: List<GraphqlRequest>): List<String> {
         val result = mutableListOf<String>()
         list.forEach {
