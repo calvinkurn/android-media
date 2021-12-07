@@ -165,7 +165,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 view?.let {
                     val coroutineScope = CoroutineScope(Dispatchers.Main)
                     coroutineScope.launch {
-                        delay(1000L)
                         if (activity != null && isAdded) {
                             if (toBeDeleted)
                                 presenter.deleteComment(id, adapterPosition)

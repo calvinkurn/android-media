@@ -1499,21 +1499,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                     override fun onFinish() {
                                         videoPlayer?.pause()
                                         isPaused = true
-                                        var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
-                                        if (time < HOUR_IN_HOUR) {
-                                            vod_timer_view.text =
-                                                    String.format(
-                                                            "%02d:%02d",
-                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                            time % MINUTE_IN_HOUR)
-                                        } else {
-                                            vod_timer_view.text =
-                                                    String.format(
-                                                            "%02d:%02d:%02d",
-                                                            (time / HOUR_IN_HOUR) % HOUR_IN_HOUR,
-                                                            (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
-                                                            time % MINUTE_IN_HOUR)
-                                        }
+
                                         vod_lanjut_menonton_btn?.visible()
                                         vod_frozen_view?.visible()
                                         vod_full_screen_icon?.gone()
@@ -1552,10 +1538,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                        if(!isPaused) {
                            vod_timer_view.visible()
-                           var time = (videoPlayer?.getExoPlayer()?.duration ?: 0L) / TIME_SECOND
+                           var time = (videoPlayer?.getExoPlayer()?.duration
+                                   ?: 0L) / TIME_SECOND + 1
                            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                                override fun onTick(millisUntilFinished: Long) {
-                                   time -= 1
                                    if (time < HOUR_IN_HOUR) {
                                        vod_timer_view.text =
                                                String.format(
@@ -1570,6 +1556,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                                        (time / MINUTE_IN_HOUR) % MINUTE_IN_HOUR,
                                                        time % MINUTE_IN_HOUR)
                                    }
+                                   time -= 1
                                }
 
                                override fun onFinish() {
