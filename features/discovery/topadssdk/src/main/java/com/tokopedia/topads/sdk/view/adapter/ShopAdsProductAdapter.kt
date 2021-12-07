@@ -64,7 +64,7 @@ class ShopAdsProductAdapter(private val shopAdsProductListener: ShopAdsProductLi
 
             } else {
                 reviewCount.hide()
-                shopProductReviews.hide()
+                shopProductReviews.invisible()
             }
         }
 

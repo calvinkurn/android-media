@@ -80,6 +80,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
@@ -612,8 +613,8 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel) { _, cpmDataView ->
-            processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
+        processHeadlineAds(searchProductModel) { _, cpmDataView, layoutType ->
+            processHeadlineAdsAtPosition(list, productList.size, cpmDataView, layoutType)
         }
     }
 
@@ -1141,17 +1142,17 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel) { index, cpmDataView ->
+        processHeadlineAds(searchProductModel) { index, cpmDataView, layoutType ->
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
-                processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
+                processHeadlineAdsAtPosition(list, productList.size, cpmDataView, layoutType)
         }
     }
 
     private fun processHeadlineAds(
             searchProductModel: SearchProductModel,
-            process: (Int, CpmDataView) -> Unit,
+            process: (Int, CpmDataView, Int) -> Unit,
     ) {
         if (!isHeadlineAdsAllowed()) return
 
@@ -1166,19 +1167,19 @@ class ProductListPresenter @Inject constructor(
                     listLayoutSix.add(cpmData)
                     if (cpmModel.data.size - 1 != index) return@forEachIndexed
                     val cpmDataView = createCpmDataView(cpmModel, listLayoutSix)
-                    process(index, cpmDataView)
+                    process(index, cpmDataView, LAYOUT_6)
                 }
                 LAYOUT_5 -> {
                     listLayoutFive.add(cpmData)
                     if (cpmModel.data.size - 1 != index) return@forEachIndexed
                     val cpmDataView = createCpmDataView(cpmModel, listLayoutFive)
-                    process(index, cpmDataView)
+                    process(index, cpmDataView, LAYOUT_5)
                 }
                 else -> {
                     val list = arrayListOf<CpmData>()
                     list.add(cpmData)
                     val cpmDataView = createCpmDataView(cpmModel, list)
-                    process(index, cpmDataView)
+                    process(index, cpmDataView, 0)
                 }
             }
         }
@@ -1229,15 +1230,20 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processHeadlineAdsAtPosition(
-        visitableList: MutableList<Visitable<*>>,
-        position: Int,
-        cpmDataView: CpmDataView,
+            visitableList: MutableList<Visitable<*>>,
+            position: Int,
+            cpmDataView: CpmDataView,
+            layoutType: Int,
     ) {
-        val headlineAdsVisitableList = listOf(
-                SeparatorDataView(),
-                cpmDataView,
-                SeparatorDataView(),
-        )
+        val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
+        if (layoutType == 0) {
+            headlineAdsVisitableList.add(SeparatorDataView())
+            headlineAdsVisitableList.add(cpmDataView)
+            headlineAdsVisitableList.add(SeparatorDataView())
+        } else {
+            headlineAdsVisitableList.add(cpmDataView)
+        }
+
 
         val product = productList[position - 1]
         val headlineAdsIndex = visitableList.indexOf(product) + 1
