@@ -240,6 +240,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     fun navigateToActivity(goToIntent: Intent) {
+        reloadUrl = scroogeWebView?.url.orEmpty()
+        startActivityForResult(goToIntent, REQUEST_CODE_GOPAY_TOP_UP)
+    }
+
+    fun navigateToActivityAndFinish(goToIntent: Intent) {
         startActivity(goToIntent)
         setResult(Activity.RESULT_OK)
         finish()
@@ -445,6 +450,10 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             } else {
                 hideFullLoading()
             }
+        } else if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_GOPAY_TOP_UP &&
+            reloadUrl.contains(getBaseUrlDomainPayment())) {
+            // refresh page
+            reloadPayment()
         }
     }
 
@@ -585,7 +594,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     val intent = RouteManager.getIntent(this@TopPayActivity, url).apply {
                         data = Uri.parse(url)
                     }
-                    navigateToActivity(intent)
+                    if (isGoPayTopUpLink(url)) {
+                        navigateToActivity(intent)
+                    } else {
+                        navigateToActivityAndFinish(intent)
+                    }
                     return true
                 }
                 //applink for link aja...
@@ -791,6 +804,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         return url.contains(LINK_AJA_APP_LINK)
     }
 
+    private fun isGoPayTopUpLink(url: String) = url.contains(GOPAY_TOP_UP)
+
     private fun redirectToLinkAjaApp(url: String) {
         val uri = Uri.parse(url)
         val linkAjaIntent = Intent(Intent.ACTION_VIEW, uri)
@@ -821,12 +836,14 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
         private const val INSUFFICIENT_STOCK_URL = "https://www.tokopedia.com/cart/insufficient_booking_stock"
+        private val GOPAY_TOP_UP = "${TokopediaUrl.getInstance().WEB}gopay/top-up"
 
         private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
         private const val CUST_OVERLAY_URL = "imgurl"
         private const val CUST_HEADER = "header_text"
 
         private const val REQUEST_CODE_LINK_ACCOUNT = 101
+        private const val REQUEST_CODE_GOPAY_TOP_UP = 102
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {
