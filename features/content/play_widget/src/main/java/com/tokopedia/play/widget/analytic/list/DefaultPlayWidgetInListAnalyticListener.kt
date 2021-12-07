@@ -32,7 +32,7 @@ class DefaultPlayWidgetInListAnalyticListener (
     }
 
     override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
-        analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition, recommendationType)
     }
 
     override fun onClickBannerCard(view: PlayWidgetSmallView) {
@@ -40,7 +40,7 @@ class DefaultPlayWidgetInListAnalyticListener (
     }
 
     override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
-        analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
+        analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition, recommendationType)
     }
 
     override fun onImpressOverlayCard(view: PlayWidgetMediumView, item: PlayWidgetMediumOverlayUiModel, channelPositionInList: Int) {

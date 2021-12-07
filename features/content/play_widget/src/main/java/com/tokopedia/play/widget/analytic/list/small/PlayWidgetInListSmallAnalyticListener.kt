@@ -21,6 +21,7 @@ interface PlayWidgetInListSmallAnalyticListener {
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
+            recommendationType: String,
     ) {}
 
     fun onClickBannerCard(
@@ -36,5 +37,6 @@ interface PlayWidgetInListSmallAnalyticListener {
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
             businessWidgetPosition: Int,
+            recommendationType: String,
     ) {}
 }

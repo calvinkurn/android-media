@@ -70,13 +70,14 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
-            businessWidgetPosition: Int
+            businessWidgetPosition: Int,
+            recommendationType: String
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = "promoClick",
                 eventCategory = "feed updates - cmp",
                 eventAction = "click",
-                eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay",
+                eventLabel = "click channel - ${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay - $recommendationType",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = item.channelId,
@@ -117,13 +118,14 @@ class FeedPlayWidgetAnalyticListener @Inject constructor(
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
-            businessWidgetPosition: Int
+            businessWidgetPosition: Int,
+            recommendationType: String
     ) {
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
                 event = "promoView",
                 eventCategory = "feed updates - cmp",
                 eventAction = "impression on play sgc channel",
-                eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay",
+                eventLabel = "${item.channelType.toTrackingType()} - ${item.channelId} - $channelPositionInList - $verticalWidgetPosition - is autoplay $isAutoPlay - $recommendationType",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = item.channelId,
