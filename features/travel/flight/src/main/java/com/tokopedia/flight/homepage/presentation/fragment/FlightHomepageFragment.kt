@@ -89,6 +89,11 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         remoteConfig = FirebaseRemoteConfigImpl(context)
         performanceMonitoring = PerformanceMonitoring.start(FLIGHT_HOMEPAGE_TRACE)
 
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_SHOW_SIZE).toInt()
+        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.banner_offset)
+
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightHomepageViewModel = viewModelProvider.get(FlightHomepageViewModel::class.java)
@@ -114,12 +119,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
         }
-
-
-        val displayMetrics = DisplayMetrics()
-        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
-        bannerWidthInPixels = (displayMetrics.widthPixels / BANNER_WIDTH_DIVIDER).toInt()
-        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.flight_dp_12)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -370,7 +369,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                     slideToShow = 1.0f
                     setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
                 } else {
-                    slideToShow = SLIDE_TO_SHOW
+                    slideToShow = BANNER_SHOW_SIZE
                     timerFlight.scheduleAtFixedRate(object : TimerTask() {
                         override fun run() {
                             Handler(Looper.getMainLooper()).post {
@@ -392,7 +391,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
                     val image = view.findViewById<ImageUnify>(R.id.flightHomepagePromoImageCarousel)
                     if (bannerWidthInPixels > 0) {
-                        image.layoutParams.height = (BANNER_HEIGHT_RATIO * bannerWidthInPixels).toInt()
+                        image.layoutParams.height = measureBannerHeightBasedOnRatio()
                         image.layoutParams.width = bannerWidthInPixels
                     } else {
                         image.layoutParams.height = resources.getDimensionPixelSize(R.dimen.banner_height)
@@ -591,6 +590,9 @@ class FlightHomepageFragment : BaseDaggerFragment(),
                 REQUEST_CODE_SEARCH)
     }
 
+    private fun measureBannerHeightBasedOnRatio(): Int =
+        (bannerWidthInPixels * BANNER_HEIGHT_RATIO / BANNER_WIDTH_RATIO).toInt()
+
     override fun onDestroy() {
         timerFlight.cancel()
         super.onDestroy()
@@ -598,12 +600,9 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
     companion object {
         // Banner Ratio = 414 : 139
-//        private const val BANNER_WIDTH_RATIO = 414f
-//        private const val BANNER_HEIGHT_RATIO = 139f
-        const val BANNER_HEIGHT_RATIO = 0.336f
-        const val BANNER_WIDTH_DIVIDER = 1.1
-
-        const val SLIDE_TO_SHOW = 1.1f
+        private const val BANNER_WIDTH_RATIO = 414f
+        private const val BANNER_HEIGHT_RATIO = 139f
+        private const val BANNER_SHOW_SIZE = 1.1f
 
         private const val TAG_DEPARTURE_CALENDAR = "flightCalendarDeparture"
         private const val TAG_RETURN_CALENDAR = "flightCalendarReturn"
