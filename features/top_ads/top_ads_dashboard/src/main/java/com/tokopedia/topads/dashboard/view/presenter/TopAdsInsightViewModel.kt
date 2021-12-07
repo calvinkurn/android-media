@@ -23,18 +23,20 @@ class TopAdsInsightViewModel @Inject constructor(
     val recommendedKeyword: LiveData<RecommendedKeywordData> = _recommendedKeyword
 
     private val _applyKeyword = MutableLiveData<Int>()
-    val applyKeyword : LiveData<Int> = _applyKeyword
+    val applyKeyword: LiveData<Int> = _applyKeyword
 
     private val _error = MutableLiveData<String>()
-    val error : LiveData<String> = _error
+    val error: LiveData<String> = _error
 
     fun getShopKeywords(shopID: String, groupIds: Array<String>) {
         launchCatchError(block = {
-            val gqlResponse = shopKeywordSuggestionUseCase.getKeywordRecommendation(shopKeywordSuggestionUseCase.getParams(shopID, groupIds))
+            val gqlResponse = shopKeywordSuggestionUseCase
+                .getKeywordRecommendation(shopKeywordSuggestionUseCase.getParams(shopID, groupIds))
             val keyword = gqlResponse.getData(TopAdsShopHeadlineKeyword::class.java) as? TopAdsShopHeadlineKeyword
 
+            _recommendedKeyword.postValue(getShopAdsKeywordRecommendation().suggestion!!.recommendedKeywordData)
             keyword?.suggestion?.recommendedKeywordData?.let {
-                _recommendedKeyword.postValue(it)
+                //_recommendedKeyword.postValue(it)
             }
             keyword?.suggestion?.errors?.let {
                 _error.postValue(it[0]?.detail)
@@ -53,7 +55,7 @@ class TopAdsInsightViewModel @Inject constructor(
                 if (response.topadsManageHeadlineAd.success.id.isNotEmpty()) {
                     _applyKeyword.postValue(input.operation.group.keywordOperations.size)
                 }
-                if(response.topadsManageHeadlineAd.errors.isNotEmpty()) {
+                if (response.topadsManageHeadlineAd.errors.isNotEmpty()) {
                     _error.postValue(response.topadsManageHeadlineAd.errors[0].detail)
                 }
             },

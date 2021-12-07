@@ -28,14 +28,12 @@ import javax.inject.Inject
 
 class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
-    private lateinit var newKeywordRecommView : TopAdsInsightShopKeywordRecommendationView
-    private val typeToPosiMap = mutableMapOf<Int, Int>()
-
+    private var expandedPosi = 0
     @Inject
     lateinit var viewModel: TopAdsInsightViewModel
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,29 +46,32 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
     private fun observeViewModel() {
         viewModel.applyKeyword.observe(viewLifecycleOwner, {
-            Toaster.build(requireView(), String.format(resources.getString(R.string.toast_message),newKeywordRecommView.selectedItemsCount()), actionText = "Oke").show()
+            showToast()
             (parentFragment as TopAdsRecommendationFragment).loadShopData()
             (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(false)
         })
     }
 
     private fun getDataFromArgument() {
-        val recommendedKeywordData = arguments?.getParcelable<RecommendedKeywordData>(BUNDLE_NEW_KEYWORD)
-        if(recommendedKeywordData == null || recommendedKeywordData.recommendedKeywordCount == 0) {
+        val data = arguments?.getParcelable<RecommendedKeywordData>(BUNDLE_NEW_KEYWORD)
+        if (data == null || data.recommendedKeywordCount == 0) {
             empty_view.show()
         } else {
-            addNewKeywordAccordion(recommendedKeywordData)
+            addAccordion(data)
         }
     }
 
     private fun accordionUnifyItemClick(position: Int, isExpanded: Boolean) {
+        expandedPosi = position
         (activity as? TopAdsDashboardActivity)?.toggleMultiActionButton(isExpanded)
-        val type = getTypeOfPosi(position)
-        if (isExpanded) onKeywordSelected(type, getCountOfType(type))
+        if (isExpanded) onKeywordSelected(
+            getExpandedView(position).type,
+            getExpandedView(position).selectedItemsCount()
+        )
     }
 
-    private fun addNewKeywordAccordion(recommendedKeywordData: RecommendedKeywordData) {
-        newKeywordRecommView = TopAdsInsightShopKeywordRecommendationView.createInstance(
+    private fun addAccordion(recommendedKeywordData: RecommendedKeywordData) {
+        val instance = TopAdsInsightShopKeywordRecommendationView.createInstance(
             requireContext(),
             NEW_KEYWORD,
             recommendedKeywordData,
@@ -79,50 +80,30 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
 
         accordionUnify.addGroup(
             AccordionDataUnify(
-                title = getAccordionTitle(NEW_KEYWORD, recommendedKeywordData.recommendedKeywordCount),
-                expandableView = newKeywordRecommView,
+                title = getAccordionTitle(
+                    NEW_KEYWORD,
+                    recommendedKeywordData.recommendedKeywordCount
+                ),
+                expandableView = instance,
                 isExpanded = false
             )
         )
-        typeToPosiMap[accordionUnify.accordionData.size - 1] = NEW_KEYWORD
     }
 
     private fun onKeywordSelected(type: Int, count: Int) {
         (activity as? TopAdsDashboardActivity)?.updateMultiActionButton(type, count)
     }
 
-    private fun getTypeOfPosi(position: Int): Int {
-        return typeToPosiMap[position] ?: throw IllegalStateException("not a position")
-    }
-
-    private fun getCountOfType(type: Int): Int {
-        return when(type) {
-            NEW_KEYWORD -> newKeywordRecommView.selectedItemsCount()
-            else -> 0
-        }
-    }
-
-    private fun getAccordionTitle(type: Int, count: Int): String {
-        return String.format(resources.getString(
-            when (type) {
-                BID_KEYWORD -> R.string.topads_insight_title_bid_keyword
-                NEW_KEYWORD -> R.string.topads_insight_title_new_keyword
-                NEGATIVE_KEYWORD -> R.string.topads_insight_title_negative_keyword
-                else -> throw Exception("Wrong type")
-            }
-        ), count)
-    }
-
     fun applyKeywords() {
-        val groupMap = newKeywordRecommView.getKeywords() ?: return
-        for((key,value) in groupMap) {
+        val groupMap = getExpandedView(expandedPosi).getKeywords() ?: return
+        for ((key, value) in groupMap) {
             val input = TopAdsManageHeadlineInput2(
                 source = "android.insight_center_headline_keyword_recom",
                 operation = TopAdsManageHeadlineInput2.Operation(
                     action = ACTION_EDIT,
                     group = TopAdsManageHeadlineInput2.Operation.Group(
                         id = key.first.toString(),
-                        name= key.second,
+                        name = key.second,
                         shopID = userSession.shopId,
                         keywordOperations = value,
                         status = "published"
@@ -133,10 +114,40 @@ class TopAdsInsightShopKeywordRecommendationFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getExpandedView(posi: Int) =
+        accordionUnify.accordionData[posi].expandableView as TopAdsInsightShopKeywordRecommendationView
+
     private fun initView() {
-        empty_view.findViewById<Typography>(R.id.text_title).text = resources.getString(R.string.empty_view_title)
-        empty_view.findViewById<Typography>(R.id.text_desc).text = resources.getString(R.string.empty_view_desc)
-        empty_view.findViewById<ImageUnify>(R.id.image_empty).setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+        empty_view.findViewById<Typography>(R.id.text_title).text =
+            resources.getString(R.string.empty_view_title)
+        empty_view.findViewById<Typography>(R.id.text_desc).text =
+            resources.getString(R.string.empty_view_desc)
+        empty_view.findViewById<ImageUnify>(R.id.image_empty)
+            .setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_success))
+    }
+
+    private fun getAccordionTitle(type: Int, count: Int): String {
+        return String.format(
+            resources.getString(
+                when (type) {
+                    BID_KEYWORD -> R.string.topads_insight_title_bid_keyword
+                    NEW_KEYWORD -> R.string.topads_insight_title_new_keyword
+                    NEGATIVE_KEYWORD -> R.string.topads_insight_title_negative_keyword
+                    else -> throw Exception("Wrong type")
+                }
+            ), count
+        )
+    }
+
+    private fun showToast() {
+        Toaster.build(
+            requireView(),
+            String.format(
+                resources.getString(R.string.toast_message),
+                getExpandedView(expandedPosi).selectedItemsCount()
+            ),
+            actionText = resources.getString(R.string.topads_headline_oke_button)
+        ).show()
     }
 
     override fun onCreateView(

@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.topads_insight_keywords_layout.view.*
 
 class TopAdsInsightShopKeywordRecommendationView(
     context: Context,
-    private val type: Int,
+    val type: Int,
     private val recommendedKeywordData: RecommendedKeywordData,
     private val lstnr: (Int, Int) -> Unit
 ) : ConstraintLayout(context) {
@@ -34,9 +34,40 @@ class TopAdsInsightShopKeywordRecommendationView(
         with(recyclerViewKeyword) {
             adapter = mAdapter
             layoutManager = LinearLayoutManager(context)
-            addItemDecoration(DividerItemDecoration( context, DividerItemDecoration.VERTICAL))
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
     }
+
+    private fun onCheckBoxSelected(checked: Boolean) {
+        if (checked) {
+            checkBox.setIndeterminate(false)
+            mAdapter.selectedItemsCount = recommendedKeywordData.recommendedKeywordCount
+            mAdapter.checkAllItems()
+        } else {
+            mAdapter.selectedItemsCount = 0
+            mAdapter.unCheckAllItems()
+        }
+        lstnr.invoke(type, mAdapter.selectedItemsCount)
+    }
+
+    private fun onKeywordSelected(selectedItems: Int) {
+        when (selectedItems) {
+            0 -> checkBox.isChecked = false
+            mAdapter.itemCount -> {
+                checkBox.isChecked = true
+                checkBox.setIndeterminate(false)
+            }
+            else -> {
+                checkBox.isChecked = true
+                checkBox.setIndeterminate(true)
+            }
+        }
+        lstnr.invoke(type, selectedItems)
+    }
+
+    fun selectedItemsCount() = mAdapter.selectedItemsCount
+    fun getKeywords() = mAdapter.getSelectedKeywords()
+
 
     private fun initView() {
         when (type) {
@@ -80,42 +111,12 @@ class TopAdsInsightShopKeywordRecommendationView(
         }
     }
 
-    private fun onCheckBoxSelected(checked: Boolean) {
-        if (checked) {
-            mAdapter.selectedItemsCount = recommendedKeywordData.recommendedKeywordCount
-            mAdapter.checkAllItems()
-        } else {
-            mAdapter.selectedItemsCount = 0
-            mAdapter.unCheckAllItems()
-        }
-        lstnr.invoke(type,mAdapter.selectedItemsCount)
-    }
-
-    private fun onKeywordSelected(selectedItems: Int) {
-        when (selectedItems) {
-            mAdapter.itemCount -> {
-                checkBox.setIndeterminate(false)
-                checkBox.isChecked = true
-            }
-            0 -> checkBox.isChecked = false
-            else -> {
-                checkBox.isChecked = true
-                checkBox.setIndeterminate(true)
-            }
-        }
-
-        lstnr.invoke(type, selectedItems)
-    }
-
-    fun selectedItemsCount() = mAdapter.selectedItemsCount
-    fun getKeywords() = mAdapter.getSelectedKeywords()
-
     companion object {
         private val layout = R.layout.topads_insight_keywords_layout
         fun createInstance(
-                context: Context, type: Int,
-                recommendedKeywordData: RecommendedKeywordData,
-                lstnr: (Int, Int) -> Unit
+            context: Context, type: Int,
+            recommendedKeywordData: RecommendedKeywordData,
+            lstnr: (Int, Int) -> Unit
         ) = TopAdsInsightShopKeywordRecommendationView(context, type, recommendedKeywordData, lstnr)
     }
 

@@ -129,10 +129,6 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             countKey = it.recommendedKeywordDetails?.size ?: 0
             checkAllData()
         })
-
-        viewModel.error.observe(viewLifecycleOwner, {
-
-        })
     }
 
     private fun initListener() {
@@ -142,7 +138,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
     }
 
     fun loadShopData() {
-        loderRecom?.visibility = View.VISIBLE
+        loderRecom.visibility = View.VISIBLE
         viewModel.getShopKeywords(userSession.shopId, arrayOf())
     }
 
@@ -313,10 +309,12 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
             bundle.putParcelable(BUDGET_RECOM, dailyBudgetRecommendData)
             list.add(FragmentTabItem("", TopAdsInsightBaseBidFragment.createInstance(bundle)))
         }
-        if(isAdTypeProdukSelected) {
-            if(countKey != 0)list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
+        if (isAdTypeProdukSelected) {
+            if (countKey != 0)
+                list.add(FragmentTabItem("", TopadsInsightBaseKeywordFragment.createInstance()))
         } else {
-            val instance = TopAdsInsightShopKeywordRecommendationFragment.createInstance(recommendedKeywordData)
+            val instance =
+                TopAdsInsightShopKeywordRecommendationFragment.createInstance(recommendedKeywordData)
             list.add(FragmentTabItem("", instance))
         }
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(childFragmentManager, 0)
@@ -353,7 +351,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
 
     //methods for choosing ad type
     private fun setupSelectAdsTypeView(item: InsightAdObj) {
-            txtSelectedAdType.text = item.adName
+        txtSelectedAdType.text = item.adName
         if (isAdTypeProdukSelected) loadProductData() else loadShopData()
     }
 

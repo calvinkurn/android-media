@@ -26,7 +26,7 @@ class TopAdsShopKeywordRecommendationAdapter(
 
     override fun onBindViewHolder(holder: TopAdsInsightShopKeywordViewHolder, position: Int) {
         val item = list[holder.adapterPosition]
-        if(item.priceBid == 0) item.priceBid = item.recommendedBid.toInt()
+        if (item.priceBid == 0) item.priceBid = item.recommendedBid.toInt()
         holder.initView(type, item)
 
         holder.bindData(type)
@@ -51,10 +51,11 @@ class TopAdsShopKeywordRecommendationAdapter(
     }
 
     fun getSelectedKeywords(): MutableMap<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>? {
-        val groupMap = mutableMapOf<Pair<Int,String>,MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>()
+        val groupMap =
+            mutableMapOf<Pair<Int, String>, MutableList<TopAdsManageHeadlineInput2.Operation.Group.KeywordOperation>>()
         list.forEachIndexed { index, it ->
             if (it.isChecked) {
-                if(it.priceBid < it.minBid || it.priceBid % 50  != 0) {
+                if (it.priceBid < it.minBid || it.priceBid % 50 != 0) {
                     onCheckBoxClicked(it, index)
                     return null
                 }
