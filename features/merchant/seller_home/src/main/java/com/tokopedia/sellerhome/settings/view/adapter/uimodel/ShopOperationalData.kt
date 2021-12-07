@@ -6,6 +6,8 @@ import androidx.annotation.StringRes
 data class ShopOperationalData(
     val isShopOpen: Boolean,
     val isShopClosed: Boolean,
+    val isWeeklyOperationalClosed: Boolean,
+    val isShopActive: Boolean,
     val operationalIconType: Int,
     @ColorRes val operationalIconColorRes: Int,
     @StringRes val timeDescriptionRes: Int? = null,

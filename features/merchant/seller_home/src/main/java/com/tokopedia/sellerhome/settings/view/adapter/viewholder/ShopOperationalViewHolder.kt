@@ -73,8 +73,9 @@ class ShopOperationalViewHolder(
     private fun setOperationalHourTitle(shopOperational: ShopOperationalData) {
         val titleText =
             when {
-                shopOperational.isShopOpen -> getString(R.string.sah_new_other_operational_shop_open)
-                shopOperational.isShopClosed -> getString(R.string.sah_new_other_operational_shop_off_hour)
+                shopOperational.isShopOpen && !shopOperational.isWeeklyOperationalClosed -> getString(R.string.sah_new_other_operational_shop_open)
+                shopOperational.isWeeklyOperationalClosed -> getString(R.string.sah_new_other_operational_shop_weekly_closed)
+                shopOperational.isShopClosed -> getString(R.string.sah_new_other_operational_shop_closed)
                 else -> getString(R.string.sah_new_other_operational_shop_closed)
             }
         titleTextView?.text = titleText

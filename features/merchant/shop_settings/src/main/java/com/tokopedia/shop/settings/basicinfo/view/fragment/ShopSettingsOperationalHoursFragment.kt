@@ -348,7 +348,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
     private fun setBackgroundColor() {
         activity?.run {
             window.decorView.setBackgroundColor(
-                    androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             )
         }
     }

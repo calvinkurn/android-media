@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         app:descriptionText="@string/shop_operational_hour_ticker_description_auto_chat"
         app:closeButtonVisibility="visible"
-        app:tickerType="information"
+        app:tickerType="error"
         app:tickerShapeType="full"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_shop_operational_hours"

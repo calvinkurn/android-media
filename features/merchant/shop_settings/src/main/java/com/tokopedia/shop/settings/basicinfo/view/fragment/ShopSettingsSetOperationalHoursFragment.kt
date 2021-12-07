@@ -206,7 +206,6 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     }
             )
         } else {
-            activity?.onBackPressed()
             activity?.finish()
         }
     }
@@ -215,7 +214,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         window.decorView.setBackgroundColor(
                 androidx.core.content.ContextCompat.getColor(
                         this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
+                        com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
         )
     }
