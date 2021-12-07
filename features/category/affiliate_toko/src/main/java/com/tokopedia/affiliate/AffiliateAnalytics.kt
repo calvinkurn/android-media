@@ -1,5 +1,8 @@
 package com.tokopedia.affiliate
 
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.EVENT_PROMO_CLICK
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.KEY_PROMOTIONS
+import com.tokopedia.affiliate.AffiliateAnalytics.EventKeys.Companion.PROMO_CLICK
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -28,7 +31,7 @@ object AffiliateAnalytics {
         HashMap<String,Any>().apply {
             put(EventKeys.KEY_EVENT,event)
             put(EventKeys.SCREEN_NAME,screenName)
-            put(EventKeys.IS_LOGGED_IN,isLoggedIn)
+            put(EventKeys.IS_LOGGED_IN,isLoggedIn.toString())
             put(EventKeys.KEY_USER_ID,userId)
             put(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
             put(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
@@ -54,10 +57,11 @@ object AffiliateAnalytics {
         productMap[EventKeys.KEY_CREATIVE_SLOT] = (position + 1).toString()
         productMap[EventKeys.KEY_ITEM_NAME] = itemName
         list.add(productMap)
-        val eCommerce = mapOf(
-            EventKeys.KEY_IMPRESSIONS to list)
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+                EVENT_PROMO_CLICK to mapOf(
+                        KEY_PROMOTIONS to list))
         val map = HashMap<String,Any>()
-        map[EventKeys.KEY_EVENT] = EventKeys.PRODUCT_VIEW
+        map[EventKeys.KEY_EVENT] = PROMO_CLICK
         map[EventKeys.KEY_EVENT_CATEGORY] = category
         map[EventKeys.KEY_EVENT_ACTION] = action
         map[EventKeys.KEY_EVENT_LABEL] = productId
@@ -94,12 +98,12 @@ object AffiliateAnalytics {
             const val KEY_ITEM_ID = "item_id"
             const val KEY_ITEM_NAME = "item_name"
 
-            const val KEY_PROMOTION = "promotions"
+            const val KEY_PROMOTIONS = "promotions"
             const val SELECT_CONTENT = "selectContent"
-            const val PRODUCT_VIEW = "productview"
+            const val PROMO_CLICK = "promoclick"
 
-            const val KEY_IMPRESSIONS = "impressions"
             const val KEY_ECOMMERCE = "ecommerce"
+            const val EVENT_PROMO_CLICK = "promoClick"
         }
     }
 

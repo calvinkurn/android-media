@@ -118,11 +118,11 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     fun showAffiliatePortal() {
-        pushOpenScreenEvent()
         clearBackStack()
         findViewById<ImageUnify>(R.id.affiliate_background_image)?.show()
         affiliateBottomNavigation?.showBottomNav()
         affiliateBottomNavigation?.populateBottomNavigationView()
+        pushOpenScreenEvent()
     }
 
     private fun pushOpenScreenEvent() {
