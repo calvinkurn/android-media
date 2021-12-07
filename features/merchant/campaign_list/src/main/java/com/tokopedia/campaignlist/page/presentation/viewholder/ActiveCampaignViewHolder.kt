@@ -64,7 +64,7 @@ class ActiveCampaignViewHolder(
         context?.let {
             val campaignStartTime = it.getString(R.string.campaign_time_template, activeCampaign.startTime)
             binding.tpgCampaignStartTime.text = campaignStartTime
-            val campaignEndTime = it.getString(R.string.campaign_time_template, activeCampaign.endDate)
+            val campaignEndTime = it.getString(R.string.campaign_time_template, activeCampaign.endTime)
             binding.tpgCampaignEndTime.text = campaignEndTime
         }
         addImpressionListener(activeCampaign, onImpressed)
