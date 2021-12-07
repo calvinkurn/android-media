@@ -10,9 +10,7 @@
         android:allowBackup="true"
         android:supportsRtl="true">
         <activity
-            android:name=".statsnerd.ui.activity.StatsNerdActivity"
-            android:label="@string/live_broadcaster_label"
-            android:theme="@style/Theme.White"
+            android:name=".log.ui.activity.NetworkLogActivity"
             android:screenOrientation="portrait"
             android:exported="false">
             <intent-filter>
