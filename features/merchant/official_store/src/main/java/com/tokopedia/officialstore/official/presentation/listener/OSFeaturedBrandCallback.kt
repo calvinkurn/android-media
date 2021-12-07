@@ -16,17 +16,18 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
     }
 
     override fun onLegoItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
-        tracking?.eventImpressionFeatureBrand(
+        tracking?.eventImpressionFeatureBrandOS(
                 categoryName = dcEventHandler.getOSCategory()?.title ?: "",
                 shopPosition = (position + 1),
                 shopName = channelGrid.shop.shopName,
                 url = channelGrid.shop.shopProfileUrl,
                 additionalInformation = "",
                 featuredBrandId = "",
-                isLogin = dcEventHandler.isLogin(),
                 shopId = channelGrid.shopId,
                 isFromDC = true,
-                attribute = channelGrid.attribution
+                attribute = channelGrid.attribution,
+                userId = dcEventHandler.getUserId(),
+                headerName = channelModel.channelHeader.name
         )
     }
 

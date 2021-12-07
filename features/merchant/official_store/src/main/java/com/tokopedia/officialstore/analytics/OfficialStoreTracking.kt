@@ -41,6 +41,8 @@ class OfficialStoreTracking(context: Context) {
     private val EVENT_ACTION = "eventAction"
     private val EVENT_LABEL = "eventLabel"
     private val EVENT_ATTRIBUTION = "attribution"
+    private val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
+    private val IMPRESSION_BANNER = "impression banner - %s"
 
     private val ATTRIBUTION = "attribution"
     private val AFFINITY_LABEL = "affinityLabel"
@@ -64,6 +66,9 @@ class OfficialStoreTracking(context: Context) {
 
     private val OS_MICROSITE = "os microsite - "
     private val OS_MICROSITE_SINGLE = "os microsite"
+
+    private val ALL_BRANDS = "all brands -"
+    private val VIEW_ALL = "view all -"
 
     private val FIELD_PRODUCTS = "products"
     private val FIELD_PRODUCT_NAME = "name"
@@ -106,6 +111,8 @@ class OfficialStoreTracking(context: Context) {
     private val SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY = "/official-store/"
     private val SKEL_APPLINK = "{&data}"
     private val SKEL_APPLINK_DATA = "&data"
+
+    private val POPULAR_BRANDS = "popular brands"
 
     fun sendScreen(categoryName: String) {
         val screenName = "/official-store/$categoryName"
@@ -234,12 +241,16 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickAllFeaturedBrand(categoryName: String) {
-        tracker.sendGeneralEvent(
-                TrackAppUtils
-                        .gtmData(CLICK_OS_MICROSITE,
-                                "$OS_MICROSITE$categoryName",
-                                "all brands - $CLICK",
-                                "$CLICK view all"))
+        val trackerClickAllFeaturedBrand = TrackAppUtils
+            .gtmData(
+                CLICK_OS_MICROSITE,
+                OS_MICROSITE_SINGLE,
+                "$ALL_BRANDS $CLICK",
+                "$CLICK $VIEW_ALL $categoryName"
+            )
+        trackerClickAllFeaturedBrand[FIELD_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_DEFAULT
+        trackerClickAllFeaturedBrand[FIELD_CURRENT_SITE] = VALUE_CURRENT_SITE_DEFAULT
+        tracker.sendGeneralEvent(trackerClickAllFeaturedBrand)
     }
 
     fun eventClickFeaturedBrand(
@@ -292,7 +303,7 @@ class OfficialStoreTracking(context: Context) {
             isLogin: Boolean,
             shopId: String,
             isFromDC: Boolean = false,
-            attribute: String = "",
+            attribute: String = ""
     ) {
         val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val statusLogin = if (isLogin) "login" else "nonlogin"
@@ -316,6 +327,44 @@ class OfficialStoreTracking(context: Context) {
                     )
                 )
             )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun eventImpressionFeatureBrandOS(
+        categoryName: String,
+        shopPosition: Int,
+        shopName: String,
+        url: String,
+        additionalInformation: String,
+        featuredBrandId: String,
+        shopId: String,
+        isFromDC: Boolean = false,
+        attribute: String = "",
+        userId: String,
+        headerName: String
+    ) {
+        val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
+        val data = DataLayer.mapOf(
+            EVENT, PROMO_VIEW,
+            EVENT_CATEGORY, OS_MICROSITE_SINGLE,
+            EVENT_ACTION, IMPRESSION_BANNER.format(POPULAR_BRANDS),
+            EVENT_LABEL, EVENT_LABEL_POPULAR_BRANDS.format(POPULAR_BRANDS, shopId, categoryName),
+            USER_ID, userId,
+            ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                    "promotions", DataLayer.listOf(
+                        DataLayer.mapOf(
+                            "id", featuredBrandId,
+                            "name", "/official-store/$categoryName - popular brands - $headerName",
+                            "position", "$shopPosition",
+                            "creative", creativeName
+                        )
+                    )
+                )
+            ),
+            FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+            FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT
         )
         trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
