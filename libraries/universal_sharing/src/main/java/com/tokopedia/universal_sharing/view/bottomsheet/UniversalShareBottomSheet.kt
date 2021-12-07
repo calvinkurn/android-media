@@ -55,6 +55,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.Exception
 import kotlin.collections.ArrayList
 
 /**
@@ -224,6 +225,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var bottomSheetTitleRemoteConfKey = ""
     private var bottomSheetTitleStr = ""
     private var thumbNailImageUrl = ""
+    private var thumbNailImageUrlFallback = ""
     private var previewImageUrl = ""
     private var imageOptionsList: ArrayList<String>? = ArrayList()
     private var takeViewSS : ((View, ((String)->Unit)) -> Unit)? = null
@@ -263,15 +265,19 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager?, fragment: Fragment, screenshotDetector: ScreenshotDetector? = null) {
-        screenshotDetector?.detectScreenshots(fragment,
-            {fragmentManager?.let {
-                show(it, TAG)
-                setFragmentLifecycleObserverUniversalSharing(fragment)
-            }}, true, fragment.requireView())
-            ?: fragmentManager?.let {
-                show(it, TAG)
-                setFragmentLifecycleObserverUniversalSharing(fragment)
-            }
+        try{
+            screenshotDetector?.detectScreenshots(fragment,
+                {fragmentManager?.let {
+                    show(it, TAG)
+                    setFragmentLifecycleObserverUniversalSharing(fragment)
+                }}, true, fragment.requireView())
+                ?: fragmentManager?.let {
+                    show(it, TAG)
+                    setFragmentLifecycleObserverUniversalSharing(fragment)
+                }
+        }catch (ex: Exception){
+            logExceptionToRemote(ex)
+        }
     }
 
     //call this method before show method if the request data is awaited
@@ -653,6 +659,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             previewImageUrl = screenShotImagePath
             savedImagePath = screenShotImagePath
             thumbNailImageUrl = screenShotImagePath
+            thumbNailImageUrlFallback = tnImage
             thumbNailTitle = SCREENSHOT_TITLE
             imageOptionsList = null
         }
@@ -699,11 +706,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private fun setUserVisualData(){
         thumbNailTitleTxTv?.text = thumbNailTitle
         if(isImageOnlySharing){
-            context?.let { thumbNailImage?.let { imgView ->
-                Glide.with(it).load(thumbNailImageUrl).override(THUMBNAIL_IMG_SCREENSHOT_WIDTH, THUMBNAIL_IMG_SCREENSHOT_HEIGHT).into(
-                    imgView
-                )
-            } }
+            try{
+                context?.let { thumbNailImage?.let { imgView ->
+                    Glide.with(it).load(thumbNailImageUrl).override(THUMBNAIL_IMG_SCREENSHOT_WIDTH, THUMBNAIL_IMG_SCREENSHOT_HEIGHT).into(
+                        imgView
+                    )
+                } }
+            }catch (ex: Exception){
+                thumbNailImage?.setImageUrl(thumbNailImageUrlFallback)
+                logExceptionToRemote(ex)
+            }
         }
         else{
             thumbNailImage?.setImageUrl(thumbNailImageUrl)
@@ -714,11 +726,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         else {
             previewImage?.visibility = View.VISIBLE
             if(isImageOnlySharing){
-                context?.let { previewImage?.let { imgView ->
-                    Glide.with(it).load(previewImageUrl).override(PREVIEW_IMG_SCREENSHOT_WIDTH, PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
-                        imgView
-                    )
-                } }
+                try{
+                    context?.let { previewImage?.let { imgView ->
+                        Glide.with(it).load(previewImageUrl).override(PREVIEW_IMG_SCREENSHOT_WIDTH, PREVIEW_IMG_SCREENSHOT_HEIGHT).into(
+                            imgView
+                        )
+                    } }
+                }catch (ex: Exception){
+                    previewImage?.visibility = View.GONE
+                    logExceptionToRemote(ex)
+                }
             }
             else{
                 previewImage?.setImageURI(Uri.parse(File(previewImageUrl).toString()))
@@ -821,15 +838,30 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     override fun dismiss() {
-        clearData()
-        removeLifecycleObserverAndSavedImage()
-        super.dismiss()
+        try {
+            clearData()
+            removeLifecycleObserverAndSavedImage()
+            super.dismiss()
+        }catch (ex:Exception){
+            logExceptionToRemote(ex)
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        clearData()
-        removeLifecycleObserverAndSavedImage()
-        super.onDismiss(dialog)
+        try {
+            clearData()
+            removeLifecycleObserverAndSavedImage()
+            super.onDismiss(dialog)
+        }catch (ex: Exception){
+            logExceptionToRemote(ex)
+        }
+    }
+
+    private fun logExceptionToRemote(ex: Exception){
+        if(ex.localizedMessage != null) {
+            val errorMap = mapOf("type" to "crashLog", "reason" to (ex.localizedMessage))
+            SharingUtil.logError(errorMap)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
