@@ -19,7 +19,7 @@ class ChatAttachmentUseCaseStub @Inject constructor(
 
     var response: ChatAttachmentResponse = ChatAttachmentResponse()
         set(value) {
-            repository.createMapResult(ChatAttachmentResponse::class.java, value)
+            repository.createMapResult(response::class.java, value)
             field = value
         }
 

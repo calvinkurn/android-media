@@ -168,24 +168,6 @@ class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideChatBackgroundUseCase(
-        stub: ChatBackgroundUseCaseStub
-    ): ChatBackgroundUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideChatBackgroundUseCaseStub(
-        gqlUseCase: GraphqlUseCaseStub<ChatBackgroundResponse>,
-        cacheManager: TopchatCacheManager,
-        dispatchers: CoroutineDispatchers
-    ): ChatBackgroundUseCaseStub {
-        return ChatBackgroundUseCaseStub(gqlUseCase, cacheManager, dispatchers)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
     fun provideChatTokoNowWarehouseUseCase(
         stub: ChatTokoNowWarehouseUseCaseStub
     ): ChatTokoNowWarehouseUseCase = stub
@@ -425,5 +407,23 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): ChatAttachmentUseCaseStub {
         return ChatAttachmentUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatBackgroundUseCase(
+        stub: ChatBackgroundUseCaseStub
+    ): ChatBackgroundUseCaseNew = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatBackgroundUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        cacheManager: TopchatCacheManager,
+        dispatchers: CoroutineDispatchers
+    ): ChatBackgroundUseCaseStub {
+        return ChatBackgroundUseCaseStub(repository, cacheManager, dispatchers)
     }
 }
