@@ -16,6 +16,7 @@ class CampaignStatusBottomSheet : BottomSheetUnify() {
 
     interface OnApplyButtonClickListener {
         fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection)
+        fun onNoCampaignStatusSelected()
     }
 
     companion object {
@@ -70,8 +71,14 @@ class CampaignStatusBottomSheet : BottomSheetUnify() {
             it.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
         binding?.tpgApplyButton?.setOnClickListener {
-            val selectedCampaignStatus = adapter?.getSelectedCampaignStatus() ?: CampaignStatusSelection()
-            clickListener?.onApplyCampaignStatusFilter(selectedCampaignStatus)
+            val campaignStatus = adapter?.getCampaignStatusSelection() ?: return@setOnClickListener
+            val selectedCampaigns = campaignStatus.filter { it.isSelected }
+            if (selectedCampaigns.isEmpty()) {
+                clickListener?.onNoCampaignStatusSelected()
+            } else {
+                val selectedCampaign = campaignStatus.find { it.isSelected }
+                clickListener?.onApplyCampaignStatusFilter(selectedCampaign ?: CampaignStatusSelection())
+            }
             dismiss()
         }
     }

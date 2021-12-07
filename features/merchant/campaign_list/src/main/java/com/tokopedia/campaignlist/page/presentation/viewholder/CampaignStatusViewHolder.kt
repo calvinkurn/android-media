@@ -8,8 +8,8 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 
 class CampaignStatusViewHolder(
-        private val binding: CampaignStatusItemLayoutBinding,
-        private val clickListener: OnListItemClickListener
+    private val binding: CampaignStatusItemLayoutBinding,
+    private val clickListener: OnListItemClickListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     interface OnListItemClickListener {
@@ -23,8 +23,8 @@ class CampaignStatusViewHolder(
                 binding.ivGreenCheck.hide()
             } else {
                 binding.ivGreenCheck.show()
-                clickListener.onListItemClicked(adapterPosition)
             }
+            clickListener.onListItemClicked(adapterPosition)
         }
     }
 

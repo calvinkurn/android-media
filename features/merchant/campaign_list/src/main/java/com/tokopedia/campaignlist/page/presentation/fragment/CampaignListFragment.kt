@@ -1,6 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.fragment
 
 import android.os.Bundle
+import android.text.TextWatcher
 import android.view.KeyEvent.*
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,8 @@ import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.data.model.response.ShopData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
+import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
+import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBottomSheet
@@ -78,6 +81,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         @JvmStatic
         fun createInstance() = CampaignListFragment()
         private const val SHARE = "Share"
+        private const val EMPTY_SEARCH_KEYWORD = ""
     }
 
     override fun getScreenName(): String {
@@ -145,12 +149,28 @@ class CampaignListFragment : BaseDaggerFragment(),
         tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
     }
 
+    override fun onNoCampaignStatusSelected() {
+        binding?.sfCampaignList?.resetAllFilters()
+        viewModel.getCampaignList(
+            EMPTY_SEARCH_KEYWORD,
+            viewModel.getCampaignTypeId(),
+            GetCampaignListUseCase.NPL_LIST_TYPE,
+            GetCampaignListUseCase.statusId
+        )
+    }
+
     private fun setupView(binding: FragmentCampaignListBinding?) {
         setupSearchBar(binding)
         setupActiveCampaignListView(binding)
     }
 
     private fun setupSearchBar(binding: FragmentCampaignListBinding?) {
+        binding?.sbuCampaignList?.clearListener = { getCampaignListWithCurrentlySelectedFilter() }
+        binding?.sbuCampaignList?.searchBarTextField?.onTextChanged { searchKeyword ->
+            if (searchKeyword.isEmpty()) {
+                getCampaignListWithCurrentlySelectedFilter()
+            }
+        }
         binding?.sbuCampaignList?.searchBarTextField?.setOnEditorActionListener { textView, actionId, event ->
             if (actionId == IME_ACTION_SEARCH || event.keyCode == KEYCODE_ENTER) {
                 val query = textView.text.toString()
@@ -175,6 +195,7 @@ class CampaignListFragment : BaseDaggerFragment(),
                 campaignStatusBottomSheet?.show(childFragmentManager)
                 tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
             }
+
             // setup campaign type filter
             val campaignTypeFilterTitle = viewModel.getSelectedCampaignTypeSelection()?.campaignTypeName ?: ""
             campaignTypeFilter = SortFilterItem(campaignTypeFilterTitle)
@@ -371,5 +392,14 @@ class CampaignListFragment : BaseDaggerFragment(),
                 duration = Toaster.LENGTH_LONG,
                 type = Toaster.TYPE_ERROR
         ).show()
+    }
+
+    private fun getCampaignListWithCurrentlySelectedFilter() {
+        viewModel.getCampaignList(
+            EMPTY_SEARCH_KEYWORD,
+            viewModel.getCampaignTypeId(),
+            GetCampaignListUseCase.NPL_LIST_TYPE,
+            viewModel.getCampaignStatusId()
+        )
     }
 }
