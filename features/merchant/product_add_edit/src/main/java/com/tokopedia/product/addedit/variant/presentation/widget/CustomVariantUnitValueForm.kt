@@ -32,9 +32,16 @@ class CustomVariantUnitValueForm : LinearLayout {
         View.inflate(context, R.layout.add_edit_product_variant_custom_input_layout, this)
     }
 
-    fun setupVariantCustomInputLayout(selectedVariantUnit: Unit, selectedVariantUnitValues: MutableList<UnitValue>) {
-        setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues, selectedVariantUnitValues)
+    fun setupVariantCustomInputLayout(
+        selectedVariantUnit: Unit,
+        selectedVariantUnitValues: MutableList<UnitValue>,
+        variantDataName: String
+    ) {
+        setupButtonSaveClickListener(layoutPosition, selectedVariantUnit, variantUnitValues,
+            selectedVariantUnitValues)
 
+        val hint = (context.getString(R.string.label_variant_custom_input_title, variantDataName))
+        textFieldUnifyCustomValue.textFieldWrapper.hint = hint
         textFieldUnifyCustomValue.textFieldInput.afterTextChanged {
             buttonSave.isEnabled = it.isNotBlank()
         }
@@ -48,7 +55,7 @@ class CustomVariantUnitValueForm : LinearLayout {
         buttonSave.setOnClickListener {
             val customVariantUnitValueName = textFieldUnifyCustomValue.getText().trim()
             val isVariantUnitValueExist = variantUnitValues.any { variantUnitValue ->
-                variantUnitValue.value.toLowerCase() == customVariantUnitValueName.toLowerCase()
+                variantUnitValue.value.equals(customVariantUnitValueName, ignoreCase = true)
             }
             if (isVariantUnitValueExist) {
                 val errorMessage = context.getString(R.string.error_variant_exist)

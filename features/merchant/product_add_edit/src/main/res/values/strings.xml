@@ -317,6 +317,7 @@
     <string name="label_variant_sizechart">Panduan Ukuran</string>
     <string name="label_variant_sizechart_description">Tambah panduan ukuran produk dalam format JPG atau PNG.</string>
     <string name="label_variant_choose">Pilih</string>
+    <string name="label_variant_custom_input_title">Nama %s</string>
     <string name="label_variant_custom_input_message">Tulis nama varian yang kamu inginkan.</string>
     <string name="label_variant_sizechart_edit_description">Klik gambar jika ingin ubah panduan.</string>
     <string name="label_manage_at_once">Atur Sekaligus</string>
