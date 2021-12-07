@@ -2064,7 +2064,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollowed: Boolean,
         playChannelId: String
     ) {
-        if (type == TYPE_FEED_X_CARD_PLAY)
+        if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW)
             feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.productName, postTagItem.price.toString(), 1,shopId,postTagItem.authorName, type, isFollowed)
         else
         feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)

@@ -113,6 +113,7 @@ private const val MARGIN_ZERO = 0
  *Do not manipulate this value unless Lihat Produk text change
  **/
 private const val LIHAT_PRODUK_EXPANDED_WIDTH_INDP = 100
+private const val LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP = 90
 private const val LIHAT_PRODUK_CONTRACTED_WIDTH_INDP = 24
 
 class PostDynamicViewNew @JvmOverloads constructor(
@@ -991,7 +992,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                                             }
                                         }
                                         if (tagProducts.isNotEmpty()) {
-                                            if (layoutLihatProdukParent.width.toDp() == LIHAT_PRODUK_CONTRACTED_WIDTH_INDP && !productTagBubbleShowing  ) {
+                                            if (layoutLihatProdukParent.width.toDp() < LIHAT_PRODUK_EXPANDED_WIDTH_MIN_INDP && !productTagBubbleShowing  ) {
                                                 showViewWithAnimation(layoutLihatProdukParent, context)
                                             } else if (!productTagBubbleShowing && layoutLihatProdukParent.width.toDp() >= LIHAT_PRODUK_CONTRACTED_WIDTH_INDP) {
                                                 hideViewWithoutAnimation(layoutLihatProdukParent, context)
