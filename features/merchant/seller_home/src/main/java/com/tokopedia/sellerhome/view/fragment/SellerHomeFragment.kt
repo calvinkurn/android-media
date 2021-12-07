@@ -106,7 +106,7 @@ import kotlin.coroutines.CoroutineContext
  * Created By @ilhamsuaib on 2020-01-14
  */
 
-open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
+class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
     WidgetListener, CoroutineScope, SellerHomeFragmentListener, FragmentChangeCallback {
 
     companion object {
@@ -191,7 +191,7 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
     private var shopImageFilePath: String = ""
     private var binding by autoClearedNullable<FragmentSahBinding>()
 
-    protected val recyclerView: RecyclerView?
+    private val recyclerView: RecyclerView?
         get() = try {
             super.getRecyclerView(view)
         } catch (ex: Exception) {
