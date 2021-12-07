@@ -39,10 +39,10 @@ import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
-import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -63,7 +63,6 @@ class TopChatViewModel @Inject constructor(
     private val chatAttachmentUseCase: ChatAttachmentUseCaseNew,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
-    private val cacheManager: TopchatCacheManager,
     private val mapper: ChatAttachmentMapper
 ) : BaseViewModel(dispatcher.main) {
 
@@ -122,8 +121,7 @@ class TopChatViewModel @Inject constructor(
 
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
-    var attachProductWarehouseId = "0"
-        private set
+    private var attachProductWarehouseId = "0"
 
     fun initUserLocation(userLocation: LocalCacheModel?) {
         userLocation ?: return
@@ -380,14 +378,8 @@ class TopChatViewModel @Inject constructor(
 
     fun getBackground() {
         launchCatchError(block = {
-            val cacheUrl = getCacheUrl(CHAT_BACKGROUND_CACHE_KEY)?.also {
+            chatBackgroundUseCase(Unit).collect {
                 _chatBackground.value = Success(it)
-            }
-            val result = chatBackgroundUseCase(Unit)
-            val responseImageUrl = result.chatBackground.urlImage
-            if (responseImageUrl != cacheUrl) {
-                _chatBackground.value = Success(responseImageUrl)
-                cacheManager.saveCache(CHAT_BACKGROUND_CACHE_KEY, responseImageUrl)
             }
         }, onError = {
             _chatBackground.value = Fail(it)
@@ -430,19 +422,6 @@ class TopChatViewModel @Inject constructor(
             postalCode = postalCode,
             latlon = latlon
         )
-    }
-
-    private fun getCacheUrl(cacheKey: String): String? {
-        try {
-            return cacheManager.loadCache(cacheKey, String::class.java)
-        } catch (e: Throwable) {
-            e.printStackTrace()
-        }
-        return null
-    }
-
-    companion object {
-        private const val CHAT_BACKGROUND_CACHE_KEY = "cache_key_chat_background_url"
     }
 
 }

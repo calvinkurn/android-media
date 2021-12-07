@@ -86,7 +86,7 @@ abstract class BaseTopChatViewModelTest {
     protected val testMessageId = "123123"
 
     @Before
-    fun before() {
+    open fun before() {
         MockKAnnotations.init(this)
         viewModel = TopChatViewModel(
             getExistingMessageIdUseCase,
@@ -105,7 +105,6 @@ abstract class BaseTopChatViewModelTest {
             chatAttachmentUseCase,
             dispatchers,
             remoteConfig,
-            cacheManager,
             mapper
         )
     }

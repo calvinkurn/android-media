@@ -267,61 +267,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         }
     }
 
-//    @Test
-//    fun `on success loadAttachmentData`() {
-//        // Given
-//        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
-//        val mapSuccessAttachment = ArrayMap<String, Attachment>().apply {
-//            put("test_attachment", Attachment())
-//        }
-//        every {
-//            chatAttachmentUseCase.getAttachments(
-//                exMessageId.toLongOrZero(), roomModel.replyIDs,
-//                any(), captureLambda(), any()
-//            )
-//        } answers {
-//            val onSuccess = lambda<(ArrayMap<String, Attachment>) -> Unit>()
-//            onSuccess.invoke(mapSuccessAttachment)
-//        }
-//
-//        // When
-//        presenter.initUserLocation(null)
-//        presenter.initUserLocation(LocalCacheModel())
-//        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
-//
-//        // Then
-//        val attachments = presenter.attachments
-//        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
-//        assertTrue(presenter.attachments.size == 1)
-//    }
-
-//    @Test
-//    fun `on error loadAttachmentData`() {
-//        // Given
-//        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
-//        val mapErrorAttachment = ArrayMap<String, Attachment>().apply {
-//            put("test_error_attachment", Attachment())
-//        }
-//        val throwable = Throwable()
-//        every {
-//            chatAttachmentUseCase.getAttachments(
-//                exMessageId.toLongOrZero(), roomModel.replyIDs, any(),
-//                any(), captureLambda()
-//            )
-//        } answers {
-//            val onError = lambda<(Throwable, ArrayMap<String, Attachment>) -> Unit>()
-//            onError.invoke(throwable, mapErrorAttachment)
-//        }
-//
-//        // When
-//        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
-//
-//        // Then
-//        val attachments = presenter.attachments
-//        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
-//        assertTrue(presenter.attachments.size == 1)
-//    }
-
     @Test
     fun `check setBeforeReplyTime`() {
         //Given

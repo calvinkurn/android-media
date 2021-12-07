@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatroom.viewmodel
 
-import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.viewmodel.base.BaseTopChatViewModelTest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import kotlinx.coroutines.flow.flow
 import org.junit.Assert
 import org.junit.Test
 
@@ -17,15 +17,14 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_response_when_success_get_background() {
         //Given
-        val expectedResult = ChatBackgroundResponse().apply {
-            this.chatBackground.urlImage = differentBackgroundTest
-        }
         coEvery {
             cacheManager.loadCache<String>(any(), any())
         } returns emptyCacheTest
         coEvery {
             chatBackgroundUseCase(Unit)
-        } returns expectedResult
+        } returns flow {
+            emit(differentBackgroundTest)
+        }
 
         //When
         viewModel.getBackground()
@@ -40,15 +39,14 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_background_from_cache_when_available() {
         //Given
-        val expectedResult = ChatBackgroundResponse().apply {
-            this.chatBackground.urlImage = valueCacheTest
-        }
         coEvery {
             cacheManager.loadCache<String>(any(), any())
         } returns valueCacheTest
         coEvery {
             chatBackgroundUseCase(Unit)
-        } returns expectedResult
+        } returns flow {
+            emit(valueCacheTest)
+        }
 
         //When
         viewModel.getBackground()
@@ -63,15 +61,14 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_background_from_cache_when_available_but_different_image() {
         //Given
-        val expectedResult = ChatBackgroundResponse().apply {
-            this.chatBackground.urlImage = differentBackgroundTest
-        }
         coEvery {
             cacheManager.loadCache<String>(any(), any())
         } returns valueCacheTest
         coEvery {
             chatBackgroundUseCase(Unit)
-        } returns expectedResult
+        } returns flow {
+            emit(differentBackgroundTest)
+        }
 
         //When
         viewModel.getBackground()
@@ -86,15 +83,14 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
     @Test
     fun should_get_response_when_success_get_background_and_error_from_cache() {
         //Given
-        val expectedResult = ChatBackgroundResponse().apply {
-            this.chatBackground.urlImage = differentBackgroundTest
-        }
         coEvery {
             cacheManager.loadCache<String>(any(), any())
         } throws expectedThrowable
         coEvery {
             chatBackgroundUseCase(Unit)
-        } returns expectedResult
+        } returns flow {
+            emit(differentBackgroundTest)
+        }
 
         //When
         viewModel.getBackground()
