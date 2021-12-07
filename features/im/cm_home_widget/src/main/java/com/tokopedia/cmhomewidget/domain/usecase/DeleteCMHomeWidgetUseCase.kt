@@ -11,7 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import javax.inject.Inject
 
 @GqlQuery("DeleteCMHomeWidgetData", GQL_QUERY_DISMISS_CM_HOME_WIDGET)
-class DismissCMHomeWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
+class DeleteCMHomeWidgetUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
     GraphqlUseCase<DeleteCMHomeWidgetDataGqlResponse>(graphqlRepository) {
 
     fun deleteCMHomeWidgetData(

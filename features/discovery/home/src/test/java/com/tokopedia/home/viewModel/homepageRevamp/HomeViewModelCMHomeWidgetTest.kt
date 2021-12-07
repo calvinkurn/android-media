@@ -2,7 +2,8 @@ package com.tokopedia.home.viewModel.homepageRevamp
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
-import com.tokopedia.cmhomewidget.domain.usecase.DismissCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataResponse
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeRevampUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
@@ -21,7 +22,7 @@ class HomeViewModelCMHomeWidgetTest {
 
     private val getHomeUseCase = mockk<HomeRevampUseCase>(relaxed = true)
     private val getCMHomeWidgetDataUseCase = mockk<GetCMHomeWidgetDataUseCase>(relaxed = true)
-    private val dismissCMHomeWidgetUseCase = mockk<DismissCMHomeWidgetUseCase>(relaxed = true)
+    private val deleteCMHomeWidgetUseCase = mockk<DeleteCMHomeWidgetUseCase>(relaxed = true)
 
     private val errorMessage = "Failed"
     private val errorMockThrowable = Throwable(message = errorMessage)
@@ -37,7 +38,7 @@ class HomeViewModelCMHomeWidgetTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        // tells that CMHomeWidget is visible
+        // CMHomeWidget must be visible
         assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } != null)
     }
 
@@ -49,12 +50,12 @@ class HomeViewModelCMHomeWidgetTest {
             )
         )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
-        // tells that CMHomeWidget is not visible
+        // CMHomeWidget must not be visible
         assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } == null)
     }
 
     @Test
-    fun `CMHomeWidget is visible and getCMHomeWidgetData Api result is successful then data should be shown`() {
+    fun `CMHomeWidget must be visible with data when getCMHomeWidgetData Api result is successful`() {
         val cmHomeWidgetDataModel = CMHomeWidgetDataModel(cmHomeWidgetData = null)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDataModel(
@@ -73,21 +74,21 @@ class HomeViewModelCMHomeWidgetTest {
             getCMHomeWidgetDataUseCase = getCMHomeWidgetDataUseCase
         )
 
-        //initial data should be null -> Widget is showing without data
+        //initial cmHomeWidgetData should be null -> Widget is showing without data
         homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
             assert((it as CMHomeWidgetDataModel).cmHomeWidgetData == null)
         }
 
         homeViewModel.getCMHomeWidgetData()
 
-        //API called -> Success -> Widget is showing with data
+        // getCMHomeWidgetData API called -> Success -> Widget is showing with data
         homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
             assert((it as CMHomeWidgetDataModel).cmHomeWidgetData != null)
         }
     }
 
     @Test
-    fun `CMHomeWidget is visible and getCMHomeWidgetData Api result is failed then widget should be deleted`() {
+    fun `CMHomeWidget must be deleted when getCMHomeWidgetData Api result is failed`() {
         val cmHomeWidgetDataModel = CMHomeWidgetDataModel(cmHomeWidgetData = null)
         getHomeUseCase.givenGetHomeDataReturn(
             HomeDataModel(
@@ -105,14 +106,77 @@ class HomeViewModelCMHomeWidgetTest {
             getCMHomeWidgetDataUseCase = getCMHomeWidgetDataUseCase
         )
 
-        //initial data should be null -> widget is showing without data
+        // initial cmHomeWidgetData must be null -> Widget must be showing but without data
         homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
             assert((it as CMHomeWidgetDataModel).cmHomeWidgetData == null)
         }
 
         homeViewModel.getCMHomeWidgetData()
 
-        //API called -> Failed -> Widget Deleted
+        // getCMHomeWidgetData API called -> Failed -> Widget must be deleted
         assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } == null)
+    }
+
+    @Test
+    fun `CMHomeWidget must be deleted when deleteCMHomeWidgetData Api result is successful`() {
+        val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDataModel(
+                list = listOf(cmHomeWidgetDataModel)
+            )
+        )
+
+        val result = mockk<DeleteCMHomeWidgetDataResponse>(relaxed = true)
+        coEvery { deleteCMHomeWidgetUseCase.deleteCMHomeWidgetData(any(), any(), any(), any()) }
+            .coAnswers {
+                firstArg<(DeleteCMHomeWidgetDataResponse) -> Unit>().invoke(result)
+            }
+
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            deleteCMHomeWidgetUseCase = deleteCMHomeWidgetUseCase
+        )
+
+        //Widget must be showing with data
+        assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } != null)
+        homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
+            assert((it as CMHomeWidgetDataModel).cmHomeWidgetData != null)
+        }
+
+        homeViewModel.deleteCMHomeWidget()
+
+        // deleteCMHomeWidgetData API called -> Success -> Widget must be deleted
+        assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } == null)
+    }
+
+    @Test
+    fun `CMHomeWidget must not be deleted when deleteCMHomeWidgetData Api result is failed`() {
+        val cmHomeWidgetDataModel = mockk<CMHomeWidgetDataModel>(relaxed = true)
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDataModel(
+                list = listOf(cmHomeWidgetDataModel)
+            )
+        )
+
+        coEvery { deleteCMHomeWidgetUseCase.deleteCMHomeWidgetData(any(), any(), any(), any()) }
+            .coAnswers {
+                secondArg<(Throwable) -> Unit>().invoke(errorMockThrowable)
+            }
+
+        homeViewModel = createHomeViewModel(
+            getHomeUseCase = getHomeUseCase,
+            deleteCMHomeWidgetUseCase = deleteCMHomeWidgetUseCase
+        )
+
+        //Widget must be showing with data
+        assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } != null)
+        homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel }?.let {
+            assert((it as CMHomeWidgetDataModel).cmHomeWidgetData != null)
+        }
+
+        homeViewModel.deleteCMHomeWidget()
+
+        // deleteCMHomeWidgetData API called -> Success -> Widget must be deleted
+        assert(homeViewModel.homeLiveData.value?.list?.find { it is CMHomeWidgetDataModel } != null)
     }
 }

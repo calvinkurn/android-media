@@ -7,7 +7,7 @@ import com.tokopedia.cmhomewidget.di.qualifier.CoroutineMainDispatcher
 import com.tokopedia.cmhomewidget.di.scope.DummyTestCMHomeWidgetActivityScope
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
 import com.tokopedia.cmhomewidget.domain.data.DeleteCMHomeWidgetDataResponse
-import com.tokopedia.cmhomewidget.domain.usecase.DismissCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,7 +20,7 @@ import javax.inject.Inject
 @DummyTestCMHomeWidgetActivityScope
 class DummyTestCMHomeWidgetViewModel @Inject constructor(
     private val getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase,
-    private val dismissCMHomeWidgetUseCase: DismissCMHomeWidgetUseCase,
+    private val deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase,
     @CoroutineMainDispatcher val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -50,7 +50,7 @@ class DummyTestCMHomeWidgetViewModel @Inject constructor(
     }
 
     fun deleteCMHomeWidgetData(productId: Long, campaignId: Long) {
-        dismissCMHomeWidgetUseCase.deleteCMHomeWidgetData(
+        deleteCMHomeWidgetUseCase.deleteCMHomeWidgetData(
             ::onDeleteCMHomeWidgetSuccessData,
             ::onDeleteCMHomeWidgetFailData,
             productId,

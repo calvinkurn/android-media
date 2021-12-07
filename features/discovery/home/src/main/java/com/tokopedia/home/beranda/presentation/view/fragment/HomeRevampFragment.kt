@@ -101,10 +101,6 @@ import com.tokopedia.home.constant.ConstantKey
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.IS_SUCCESS_RESET
 import com.tokopedia.home.constant.ConstantKey.ResetPassword.KEY_MANAGE_PASSWORD
 import com.tokopedia.home.constant.HomePerformanceConstant
-import com.tokopedia.home.databinding.FragmentHomeRevampBinding
-import com.tokopedia.home.databinding.HomeHeaderOvoBinding
-import com.tokopedia.home.databinding.LayoutItemWidgetBalanceWidgetBinding
-import com.tokopedia.home.databinding.ViewOnboardingNavigationBinding
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout
 import com.tokopedia.home_component.HomeComponentRollenceController
 import com.tokopedia.home_component.model.ChannelGrid
@@ -170,7 +166,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -3223,6 +3218,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onCMHomeWidgetDismissClick() {
-        getHomeViewModel().dismissCMHomeWidget()
+        getHomeViewModel().deleteCMHomeWidget()
     }
 }

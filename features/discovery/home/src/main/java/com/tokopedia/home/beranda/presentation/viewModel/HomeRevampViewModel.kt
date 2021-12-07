@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.cmhomewidget.domain.usecase.DismissCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.common_wallet.pendingcashback.view.PendingCashback
@@ -126,7 +126,7 @@ open class HomeRevampViewModel @Inject constructor(
     private val getWalletAppBalanceUseCase: Lazy<GetWalletAppBalanceUseCase>,
     private val getWalletEligibilityUseCase: Lazy<GetWalletEligibilityUseCase>,
     private val getCMHomeWidgetDataUseCase: Lazy<GetCMHomeWidgetDataUseCase>,
-    private val dismissCMHomeWidgetUseCase: Lazy<DismissCMHomeWidgetUseCase>
+    private val deleteCMHomeWidgetUseCase: Lazy<DeleteCMHomeWidgetUseCase>
 ) : BaseCoRoutineScope(homeDispatcher.get().io) {
 
     companion object {
@@ -267,7 +267,7 @@ open class HomeRevampViewModel @Inject constructor(
     private var getTabRecommendationJob: Job? = null
     private var getHeaderDataJob: Job? = null
     private var getCMHomeWidgetDataJob: Job? = null
-    private var dismissCMHomeWidgetJob: Job? = null
+    private var deleteCMHomeWidgetJob: Job? = null
 
     init {
         _isViewModelInitialized.value = Event(true)
@@ -1696,12 +1696,12 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun dismissCMHomeWidget() {
-        if (dismissCMHomeWidgetJob?.isActive == true) return
+    fun deleteCMHomeWidget() {
+        if (deleteCMHomeWidgetJob?.isActive == true) return
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
-            dismissCMHomeWidgetJob = launchCatchError(coroutineContext, {
+            deleteCMHomeWidgetJob = launchCatchError(coroutineContext, {
                 cmHomeWidgetDataModel.cmHomeWidgetData?.let { it ->
-                    dismissCMHomeWidgetUseCase.get().deleteCMHomeWidgetData(
+                    deleteCMHomeWidgetUseCase.get().deleteCMHomeWidgetData(
                         {
                             deleteWidget(cmHomeWidgetDataModel, index)
                         }, {

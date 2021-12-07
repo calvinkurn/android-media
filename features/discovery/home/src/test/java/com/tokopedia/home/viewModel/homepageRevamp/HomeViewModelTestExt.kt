@@ -4,7 +4,7 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
-import com.tokopedia.cmhomewidget.domain.usecase.DismissCMHomeWidgetUseCase
+import com.tokopedia.cmhomewidget.domain.usecase.DeleteCMHomeWidgetUseCase
 import com.tokopedia.cmhomewidget.domain.usecase.GetCMHomeWidgetDataUseCase
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
@@ -45,38 +45,38 @@ import java.util.concurrent.TimeoutException
  */
 
 fun createHomeViewModel(
-        getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase = mockk(relaxed = true),
-        getBusinessWidgetTab: GetBusinessWidgetTab = mockk(relaxed = true),
-        getHomeUseCase: HomeRevampUseCase = mockk(relaxed = true),
-        userSessionInterface: UserSessionInterface = mockk(relaxed = true),
-        dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true),
-        getAtcUseCase: AddToCartOccMultiUseCase = mockk(relaxed = true),
-        getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase = mockk(relaxed = true),
-        getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
-        getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),
-        getHomeTokopointsListDataUseCase: GetHomeTokopointsListDataUseCase = mockk(relaxed = true),
-        getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
-        getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
-        getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
-        getPopularKeywordUseCase: GetPopularKeywordUseCase = mockk(relaxed = true),
-        getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true),
-        getRecommendationFilterChips: GetRecommendationFilterChips = mockk(relaxed = true),
-        closeChannelUseCase: CloseChannelUseCase = mockk(relaxed = true),
-        injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
-        getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase = mockk(relaxed = true),
-        getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
-        declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
-        getRechargeBUWidgetUseCase: GetRechargeBUWidgetUseCase = mockk{ mockk(relaxed = true)},
-        declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
-        topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
-        getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
-        playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
-        bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
-        dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
-        getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true),
-        getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true),
-        getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
-        dismissCMHomeWidgetUseCase: DismissCMHomeWidgetUseCase = mockk(relaxed = true)
+    getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase = mockk(relaxed = true),
+    getBusinessWidgetTab: GetBusinessWidgetTab = mockk(relaxed = true),
+    getHomeUseCase: HomeRevampUseCase = mockk(relaxed = true),
+    userSessionInterface: UserSessionInterface = mockk(relaxed = true),
+    dismissHomeReviewUseCase: DismissHomeReviewUseCase = mockk(relaxed = true),
+    getAtcUseCase: AddToCartOccMultiUseCase = mockk(relaxed = true),
+    getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase = mockk(relaxed = true),
+    getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
+    getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),
+    getHomeTokopointsListDataUseCase: GetHomeTokopointsListDataUseCase = mockk(relaxed = true),
+    getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
+    getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
+    getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
+    getPopularKeywordUseCase: GetPopularKeywordUseCase = mockk(relaxed = true),
+    getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true),
+    getRecommendationFilterChips: GetRecommendationFilterChips = mockk(relaxed = true),
+    closeChannelUseCase: CloseChannelUseCase = mockk(relaxed = true),
+    injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
+    getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase = mockk(relaxed = true),
+    getSalamWidgetUseCase: GetSalamWidgetUseCase = mockk(relaxed = true),
+    declineSalamWidgetUseCase: DeclineSalamWIdgetUseCase = mockk{ mockk(relaxed = true)},
+    getRechargeBUWidgetUseCase: GetRechargeBUWidgetUseCase = mockk{ mockk(relaxed = true)},
+    declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase = mockk(relaxed = true),
+    topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
+    getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
+    playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
+    bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
+    dispatchers: CoroutineDispatchers = CoroutineTestDispatchersProvider,
+    getWalletAppBalanceUseCase: GetWalletAppBalanceUseCase = mockk(relaxed = true),
+    getWalletEligibilityUseCase: GetWalletEligibilityUseCase = mockk(relaxed = true),
+    getCMHomeWidgetDataUseCase: GetCMHomeWidgetDataUseCase = mockk(relaxed = true),
+    deleteCMHomeWidgetUseCase: DeleteCMHomeWidgetUseCase = mockk(relaxed = true)
 ): HomeRevampViewModel{
     val context: Activity = mockk(relaxed = true)
     return HomeRevampViewModel(
@@ -111,7 +111,7 @@ fun createHomeViewModel(
             getWalletAppBalanceUseCase = Lazy { getWalletAppBalanceUseCase },
             getWalletEligibilityUseCase = Lazy { getWalletEligibilityUseCase },
             getCMHomeWidgetDataUseCase = Lazy { getCMHomeWidgetDataUseCase },
-            dismissCMHomeWidgetUseCase = Lazy { dismissCMHomeWidgetUseCase }
+            deleteCMHomeWidgetUseCase = Lazy { deleteCMHomeWidgetUseCase }
     )
 }
 
