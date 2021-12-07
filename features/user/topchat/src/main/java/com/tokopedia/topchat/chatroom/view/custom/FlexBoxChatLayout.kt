@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAt
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
+import kotlin.math.abs
 
 
 class FlexBoxChatLayout : ViewGroup {
@@ -270,9 +271,8 @@ class FlexBoxChatLayout : ViewGroup {
 
         val widthSpecSize = MeasureSpec.getSize(widthMeasureSpec)
         val maxAvailableWidth = widthSpecSize - paddingLeft - paddingRight
-        var widthFilled = 0
-        var totalWidth = paddingLeft + paddingRight
-        var totalHeight = paddingTop + paddingBottom
+        var totalWidth = 0
+        var totalHeight = 0
 
         /**
          * get measurement and layout params of direct child
@@ -322,16 +322,14 @@ class FlexBoxChatLayout : ViewGroup {
         if (header!!.isVisible) {
             totalWidth += headerWidth
             totalHeight += headerHeight
-            widthFilled = headerWidth
         }
 
         /**
          * Measure message dimension
          */
-        val msgAndHeaderWidthDiff = messageWidth - widthFilled
-        if (msgAndHeaderWidthDiff > 0) {
-            totalWidth += msgAndHeaderWidthDiff
-            widthFilled = messageWidth
+        val msgWidthDiff = totalWidth - messageWidth
+        if (msgWidthDiff < 0) {
+            totalWidth += abs(msgWidthDiff)
         }
         totalHeight += messageHeight
 
@@ -339,10 +337,9 @@ class FlexBoxChatLayout : ViewGroup {
          * Measure info layout
          */
         if (info!!.isVisible) {
-            val infoAndMsgWidthDiff = infoWidth - widthFilled
-            if (infoAndMsgWidthDiff > 0) {
-                totalWidth += infoAndMsgWidthDiff
-                widthFilled = infoWidth
+            val infoWidthDiff = totalWidth - infoWidth
+            if (infoWidthDiff < 0) {
+                totalWidth += abs(infoWidthDiff)
             }
             totalHeight += infoHeight
 
@@ -361,10 +358,9 @@ class FlexBoxChatLayout : ViewGroup {
          */
         if (info!!.isVisible) {
             val footerWidth = infoWidth + statusWidth
-            val footerAndMessageWidthDiff = footerWidth - widthFilled
-            if (footerAndMessageWidthDiff > 0) {
-                totalWidth += footerAndMessageWidthDiff
-                widthFilled = footerWidth
+            val footerWidthDiff = totalWidth - footerWidth
+            if (footerWidthDiff < 0) {
+                totalWidth += abs(footerWidthDiff)
             }
             val statusAndInfoHeightDiff = statusHeight - infoHeight
             if (statusAndInfoHeightDiff > 0) {
@@ -385,6 +381,9 @@ class FlexBoxChatLayout : ViewGroup {
                 totalHeight += statusHeight
             }
         }
+
+        totalWidth += (paddingLeft + paddingRight)
+        totalHeight += (paddingTop + paddingBottom)
 
         setMeasuredDimension(
             resolveSize(totalWidth, widthMeasureSpec),
