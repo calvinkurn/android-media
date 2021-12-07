@@ -38,16 +38,14 @@ class ReviewPendingCredibilityCarouselViewHolder(
 
     private fun CarouselUnify.setupConfig(itemCount: Int) {
         freeMode = false
+        infinite = false
         centerMode = false
         slideToScroll = SLIDE_TO_SCROLL
         indicatorPosition = CarouselUnify.INDICATOR_HIDDEN
-        infinite = false
-        if (itemCount == 1) {
-            autoplay = false
-            slideToShow = SLIDE_TO_SHOW_SINGLE
+        slideToShow = if (itemCount == 1) {
+            SLIDE_TO_SHOW_SINGLE
         } else {
-            autoplay = true
-            slideToShow = SLIDE_TO_SHOW_MULTIPLE
+            SLIDE_TO_SHOW_MULTIPLE
         }
     }
 
