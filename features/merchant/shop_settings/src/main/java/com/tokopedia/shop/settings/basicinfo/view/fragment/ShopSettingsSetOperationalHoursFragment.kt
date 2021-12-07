@@ -171,7 +171,9 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         description = getString(R.string.shop_operational_hour_holiday_warning_dialog_desc),
                         primaryCtaText = getString(R.string.shop_operational_hour_label_set_holiday_sch),
                         secondaryCtaText = getString(R.string.label_back),
+                        imageUrl = getString(R.string.shop_operational_hour_ops_hour_holiday_illustration),
                         dialogAction = DialogUnify.VERTICAL_ACTION,
+                        imageType = DialogUnify.WITH_ILLUSTRATION,
                         primaryCtaClickListener = {
                             activity?.setResult(Activity.RESULT_CANCELED)
                             activity?.finish()
@@ -758,6 +760,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
             description: String,
             primaryCtaText: String,
             secondaryCtaText: String,
+            imageUrl: String = "",
             dialogAction: Int = DialogUnify.HORIZONTAL_ACTION,
             imageType: Int = DialogUnify.NO_IMAGE,
             primaryCtaClickListener: () -> Unit
@@ -772,6 +775,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     primaryCtaClickListener.invoke()
                     dismiss()
                 }
+                setImageUrl(imageUrl)
                 setSecondaryCTAClickListener { dismiss() }
                 show()
             }
