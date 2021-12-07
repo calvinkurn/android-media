@@ -222,6 +222,7 @@ yang ditemukan</string>
     <string name="title_topchat_delete">Hapus</string>
     <string name="title_topchat_reply">Balas</string>
     <string name="title_topchat_copy">Salin</string>
+    <string name="title_topchat_delete_msg">Hapus Pesan</string>
     <string name="title_topchat_new">BARU</string>
 
     <string name="title_topchat_bubble_long_click_menu">Pengaturan pesan</string>

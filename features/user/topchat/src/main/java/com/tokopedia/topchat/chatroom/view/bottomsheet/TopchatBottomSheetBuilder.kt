@@ -73,6 +73,11 @@ object TopchatBottomSheetBuilder {
                     icon = com.tokopedia.iconunify.R.drawable.iconunify_copy,
                     id = MENU_ID_COPY_TO_CLIPBOARD
                 )
+                MENU_ID_DELETE_BUBBLE -> TopchatItemMenu(
+                    title = ctx?.getString(R.string.title_topchat_delete_msg) ?: "",
+                    icon = com.tokopedia.iconunify.R.drawable.iconunify_delete,
+                    id = MENU_ID_DELETE_BUBBLE
+                )
                 else -> null
             }
             menu?.let {
@@ -84,4 +89,5 @@ object TopchatBottomSheetBuilder {
 
     const val MENU_ID_REPLY = 1
     const val MENU_ID_COPY_TO_CLIPBOARD = 2
+    const val MENU_ID_DELETE_BUBBLE = 3
 }
