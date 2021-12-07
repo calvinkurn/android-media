@@ -36,31 +36,38 @@ class HomeQuestTitleViewHolder(
     }
 
     private fun hideShimmering() {
+        binding?.container?.setBackgroundResource(R.drawable.tokopedianow_bg_quest_title)
         binding?.questTitleWidgetShimmering?.root?.hide()
     }
 
     private fun showShimmering() {
-        binding?.questTitleWidgetShimmering?.root?.show()
-        binding?.questTitleWidgetErrorState?.root?.hide()
-        binding?.questTitleWidget?.hide()
+        binding?.apply {
+            binding?.container?.setBackgroundColor(ContextCompat.getColor(itemView.context,com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            questTitleWidgetShimmering.root.show()
+            questTitleWidgetErrorState.root.hide()
+            questTitleWidget.hide()
+        }
     }
 
     private fun setLoadState(element: HomeQuestTitleUiModel) {
-        binding?.questTitleWidgetErrorState?.root?.hide()
-        binding?.questTitleWidget?.show()
-        binding?.iuGift?.setImage(newIconId = IconUnify.GIFT)
-        binding?.tpCounter?.text = String.format("${element.currentQuestFinished}/${element.totalQuestTarget}")
+        binding?.apply {
+            questTitleWidgetErrorState.root.hide()
+            questTitleWidget.show()
+            iuGift.setImage(newIconId = IconUnify.GIFT)
+            iuGift.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White), BlendModeCompat.SRC_ATOP)
+            tpCounter.text = String.format("${element.currentQuestFinished}/${element.totalQuestTarget}")
+        }
     }
 
     private fun setErrorState() {
-        binding?.questTitleWidget?.hide()
-        binding?.questTitleWidgetErrorState?.apply {
-            root.show()
-            val unifyColor = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN500)
-            sivRefresh.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
-            sivRefresh.setOnClickListener {
-                listener?.onClickRefreshQuestWidget()
-                showShimmering()
+        binding?.apply {
+            questTitleWidget.hide()
+            questTitleWidgetErrorState.let {
+                it.root.show()
+                it.sivRefresh.setOnClickListener {
+                    listener?.onClickRefreshQuestWidget()
+                    showShimmering()
+                }
             }
         }
     }

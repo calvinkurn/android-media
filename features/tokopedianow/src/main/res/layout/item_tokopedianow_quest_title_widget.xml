@@ -11,7 +11,8 @@
     app:cardElevation="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="118dp"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +34,7 @@
                 android:layout_marginTop="4dp"
                 android:ellipsize="end"
                 android:maxLines="2"
+                android:textColor="@color/Unify_Static_White"
                 android:text="@string/tokopedianow_quest_shop_again_and_get_gift"
                 app:layout_constraintBottom_toTopOf="@+id/iu_gift"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
+                android:textColor="@color/Unify_Static_White"
                 app:layout_constraintBottom_toBottomOf="@+id/iu_gift"
                 app:layout_constraintStart_toEndOf="@+id/iu_gift"
                 app:layout_constraintTop_toTopOf="@+id/iu_gift"

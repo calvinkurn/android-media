@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -13,16 +12,14 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/siv_refresh"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:elevation="3dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginStart="3dp"
-        android:background="@color/Unify_Static_White"
-        app:srcCompat="@drawable/iconunify_reload"
-        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
+        app:srcCompat="@drawable/tokopedianow_ic_reload_btn" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tp_title"
@@ -30,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/tokopedianow_quest_title_widget_error_title"
+        android:textColor="@color/Unify_Static_White"
         app:typographyType="small"
         app:typographyWeight="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,10 +37,13 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
         android:text="@string/tokopedianow_quest_title_widget_error_desc"
-        app:typographyType="small"
+        android:textColor="@color/Unify_Static_White"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tp_title" />
+        app:layout_constraintTop_toBottomOf="@+id/tp_title"
+        app:typographyType="small" />
 </androidx.constraintlayout.widget.ConstraintLayout>
