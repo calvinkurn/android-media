@@ -33,6 +33,47 @@ object SendChatbotWebsocketParam {
         return json
     }
 
+    fun generateParamInvoiceSendByArticle(messageId: String, invoiceLinkPojo: InvoiceLinkPojo,
+                                          startTime: String, toUid: String,usedBy: String): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val data = JsonObject()
+
+
+        data.addProperty("message_id", Integer.parseInt(messageId))
+
+        data.addProperty("message", "Invoice")
+        data.addProperty(
+            "attachment_type", Integer.parseInt(
+                AttachmentType
+                    .Companion.TYPE_INVOICE_SEND
+            )
+        )
+
+
+        val payload = JsonObject()
+        val attributeSelected = JsonObject()
+
+        attributeSelected.addProperty("code", invoiceLinkPojo.attributes.code)
+        attributeSelected.addProperty("create_time", invoiceLinkPojo.attributes.createTime)
+        attributeSelected.addProperty("id", invoiceLinkPojo.attributes.id)
+        attributeSelected.addProperty("image_url", invoiceLinkPojo.attributes.imageUrl)
+        attributeSelected.addProperty("status", invoiceLinkPojo.attributes.status)
+        attributeSelected.addProperty("title", invoiceLinkPojo.attributes.title)
+        attributeSelected.addProperty("total_amount", invoiceLinkPojo.attributes.totalAmount)
+        attributeSelected.addProperty("used_by", usedBy)
+
+        payload.addProperty("type", "Undefined")
+        data.addProperty("start_time", startTime)
+
+        payload.add("attributes", attributeSelected)
+        data.add("payload", payload)
+
+        json.add("data", data)
+        return json
+    }
+
     fun generateParamSendQuickReply(messageId: String,
                                     quickReplyViewModel: QuickReplyViewModel,
                                     startTime: String, toUid: String): JsonObject {
@@ -59,6 +100,50 @@ object SendChatbotWebsocketParam {
         quickReplies.addProperty("action", quickReplyViewModel.action)
 
         selectedOption.add("quick_replies", quickReplies)
+
+        payload.add("selected_option", selectedOption)
+
+        data.add("payload", payload)
+
+        json.add("data", data)
+        return json
+    }
+
+
+    fun generateParamSendQuickReplyEventArticle(
+        messageId: String,
+        quickReplyViewModel: QuickReplyViewModel,
+        startTime: String, toUid: String, event: String, usedBy: String
+    ): JsonObject {
+
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val data = JsonObject()
+        data.addProperty("message_id", Integer.parseInt(messageId))
+        data.addProperty("message", quickReplyViewModel.value)
+        data.addProperty("start_time", startTime)
+
+        data.addProperty(
+            "attachment_type", Integer.parseInt(
+                AttachmentType
+                    .Companion.TYPE_QUICK_REPLY_SEND
+            )
+        )
+
+        val payload = JsonObject()
+
+        val selectedOption = JsonObject()
+
+        val buttonActions = JsonObject()
+        buttonActions.addProperty("text", quickReplyViewModel.text)
+        buttonActions.addProperty("value", quickReplyViewModel.value)
+        buttonActions.addProperty("action", quickReplyViewModel.action)
+
+        selectedOption.add("button_actions", buttonActions)
+
+        selectedOption.addProperty("used_by", usedBy)
+        selectedOption.addProperty("event", event)
 
         payload.add("selected_option", selectedOption)
 

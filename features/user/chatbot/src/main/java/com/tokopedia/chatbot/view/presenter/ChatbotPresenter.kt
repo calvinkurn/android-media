@@ -166,7 +166,7 @@ class ChatbotPresenter @Inject constructor(
                 }
                 sendReadEventWebSocket(messageId)
                 view.showErrorWebSocket(false)
-
+                view.sendInvoiceForArticle()
             }
 
             override fun onMessage(text: String) {
@@ -394,9 +394,23 @@ class ChatbotPresenter @Inject constructor(
     override fun sendInvoiceAttachment(messageId: String,
                                        invoiceLinkPojo: InvoiceLinkPojo,
                                        startTime: String,
-                                       opponentId: String) {
-        RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendInvoice(messageId,
-                invoiceLinkPojo, startTime, opponentId), listInterceptor)
+                                       opponentId: String,isArticleEntry: Boolean,usedBy: String) {
+
+        if (!isArticleEntry) {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendInvoice(
+                    messageId,
+                    invoiceLinkPojo, startTime, opponentId
+                ), listInterceptor
+            )
+        } else {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamInvoiceSendByArticle(
+                    messageId,
+                    invoiceLinkPojo, startTime, opponentId, usedBy
+                ), listInterceptor
+            )
+        }
     }
 
     override fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel,
@@ -404,6 +418,17 @@ class ChatbotPresenter @Inject constructor(
                                 opponentId: String) {
         RxWebSocket.send(SendChatbotWebsocketParam.generateParamSendQuickReply(messageId,
                 quickReply, startTime, opponentId), listInterceptor)
+    }
+
+    override fun sendQuickReplyInvoice(messageId: String, quickReply: QuickReplyViewModel,
+                                startTime: String,
+                                opponentId: String,event : String, usedBy: String) {
+        RxWebSocket.send(
+            SendChatbotWebsocketParam.generateParamSendQuickReplyEventArticle(
+                messageId,
+                quickReply, startTime, opponentId, event, usedBy
+            ), listInterceptor
+        )
     }
 
     override fun sendMessageWithApi(messageId: String, sendMessage: String, startTime: String) {
