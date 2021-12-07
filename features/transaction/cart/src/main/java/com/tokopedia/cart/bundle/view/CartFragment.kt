@@ -1989,7 +1989,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        if (!snippetMode) {
+        if (!snippetMode && localizationChooseAddress.state == LocalizationChooseAddress.STATE_ADDRESS_ID_NOT_MATCH) {
             ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                     context = activity,
                     addressId = localizationChooseAddress.addressId,

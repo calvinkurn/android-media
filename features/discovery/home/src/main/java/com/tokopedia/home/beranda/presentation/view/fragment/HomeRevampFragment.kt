@@ -108,6 +108,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.util.toDpInt
+import com.tokopedia.home_component.visitable.QuestWidgetModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -128,6 +129,8 @@ import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
+import com.tokopedia.quest_widget.constants.QuestUrls.QUEST_URL
+import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
 import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -160,6 +163,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.Toaster.build
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -169,10 +173,6 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
-import kotlinx.android.synthetic.main.fragment_home_revamp.*
-import kotlinx.android.synthetic.main.home_header_ovo.view.*
-import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
-import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -188,19 +188,20 @@ import kotlin.collections.ArrayList
  */
 @SuppressLint("SyntheticAccessor")
 open class HomeRevampFragment : BaseDaggerFragment(),
-        OnRefreshListener,
-        HomeCategoryListener,
-        AllNotificationListener,
-        FragmentListener,
-        HomeEggListener,
-        HomeTabFeedListener,
-        HomeFeedsListener,
-        HomeReviewListener,
-        PopularKeywordListener,
-        FramePerformanceIndexInterface,
-        HomeAutoRefreshListener,
-        PlayWidgetListener,
-        RecommendationWidgetListener {
+    OnRefreshListener,
+    HomeCategoryListener,
+    AllNotificationListener,
+    FragmentListener,
+    HomeEggListener,
+    HomeTabFeedListener,
+    HomeFeedsListener,
+    HomeReviewListener,
+    PopularKeywordListener,
+    FramePerformanceIndexInterface,
+    HomeAutoRefreshListener,
+    PlayWidgetListener,
+    RecommendationWidgetListener,
+    QuestWidgetCallbacks {
 
     companion object {
         private const val className = "com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment"
@@ -209,6 +210,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val DEFAULT_WALLET_APPLINK_REQUEST_CODE = 111
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_LOGIN = 131
+        private const val REQUEST_CODE_LOGIN_QUEST_WIDGET = 132
         private const val REQUEST_CODE_REVIEW = 999
         private const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
         private const val REVIEW_CLICK_AT = "rating"
@@ -273,6 +275,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private var counterBypassFirstNetworkHomeData = 0
         private var eligibleBeautyFest = false
         private const val isNavRevamp = true
+        private const val isPageRefresh = true
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -284,6 +287,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private var questWidgetPosition = -1
     private var isGopayActivated: Boolean = false
     private var isNeedToRotateTokopoints: Boolean = true
     private var errorToaster: Snackbar? = null
@@ -678,7 +682,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             if (!bottomSheetIsShowing) {
                 val bottomSheet = BottomSheetUnify()
                 val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
-                onboardingView.onboarding_button.setOnClickListener {
+                onboardingView.findViewById<UnifyButton>(R.id.onboarding_button).setOnClickListener {
                     bottomSheet.dismiss()
                     adapter?.currentList?.let {
                         saveFirstViewNavigationFalse()
@@ -1015,8 +1019,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getTokopointsNewBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetTokopointsNewView = getBalanceWidgetViewTokoPointsNewOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && balanceWidgetTokopointsNewView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val balanceWidgetTokopointsNewView = getBalanceWidgetViewTokoPointsNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && balanceWidgetTokopointsNewView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return balanceWidgetTokopointsNewView
         }
         return null
@@ -1025,8 +1029,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
         return null
@@ -1035,8 +1039,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayNewBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayNewOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val gopayView = getBalanceWidgetViewGopayNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
         return null
@@ -1045,8 +1049,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayNewActivateBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayActivateNewOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val gopayView = getBalanceWidgetViewGopayActivateNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
         return null
@@ -1236,6 +1240,17 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getHomeViewModel().isFirstLoad = false
         }
         manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
+
+        refreshQuestWidget()
+
+    }
+
+    private fun refreshQuestWidget() {
+
+        if(questWidgetPosition != -1 && adapter?.currentList?.any { it is QuestWidgetModel} == true) {
+            adapter?.notifyItemChanged(questWidgetPosition)
+        }
+
     }
 
     private fun startTokopointRotation(rotateNow: Boolean = false) {
@@ -1806,11 +1821,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return instance.isNotEmpty()
     }
 
-    private fun loadEggData() {
+    private fun loadEggData(isPageRefresh: Boolean = false) {
         val floatingEggButtonFragment = floatingEggButtonFragment
         if (floatingEggButtonFragment != null) {
             updateEggBottomMargin(floatingEggButtonFragment)
-            floatingEggButtonFragment.loadEggData()
+            floatingEggButtonFragment.loadEggData(isPageRefresh)
         }
     }
 
@@ -1910,7 +1925,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             bannerCarouselCallback,
             DynamicIconComponentCallback(context, this),
             Lego6AutoBannerComponentCallback(context, this),
-            CampaignWidgetComponentCallback(context, this)
+            CampaignWidgetComponentCallback(context, this),
+            this
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
@@ -2150,6 +2166,21 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     it.finish()
                 }
             }
+            REQUEST_CODE_LOGIN_QUEST_WIDGET -> {
+                activity?.let {
+                    val intentQuestWidget = RouteManager.getIntent(
+                        context,
+                        QUEST_URL
+                    )
+
+                    val intentHome = RouteManager.getIntent(activity, ApplinkConst.HOME)
+                    intentHome.flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+
+                    it.startActivities(arrayOf(intentHome, intentQuestWidget))
+                    it.finish()
+                }
+            }
             REQUEST_CODE_LOGIN_STICKY_LOGIN -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val isSuccessRegister = data.getBooleanExtra(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, false)
@@ -2162,6 +2193,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onRefresh() {
+        refreshQuestWidget()
         coachmark?.dismissCoachMark()
         bannerCarouselCallback?.resetImpression()
         resetFeedState()
@@ -2174,7 +2206,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         stickyLoginView?.loadContent()
-        loadEggData()
+        loadEggData(isPageRefresh)
     }
 
     override fun onChooseAddressUpdated() {
@@ -3214,5 +3246,18 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             it.startActivities(arrayOf(intentHome, intentNewUser))
             it.finish()
         }
+    }
+
+    override fun questLogin() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN_QUEST_WIDGET)
+    }
+
+    override fun deleteQuestWidget() {
+        viewModel.get().deleteQuestWidget()
+    }
+
+    override fun updateQuestWidget(position: Int) {
+        this.questWidgetPosition = position
     }
 }
