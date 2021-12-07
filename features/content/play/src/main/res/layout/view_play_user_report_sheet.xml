@@ -27,15 +27,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_header">
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_user_report_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:ellipsize="end"
+                android:maxLines="2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="body_1"
+                app:typographyWeight="bold"
+                tools:text="Pilih kategori pelanggaran yang terjadi pada video ini" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_user_report_header" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_user_report_footer"
@@ -44,10 +63,11 @@
                 tools:text="Pelajari Selengkapnya tipe-tipe pelanggaran di Tokopedia. "
                 app:typographyType="body_3"
                 android:ellipsize="end"
-                app:layout_constraintEnd_toEndOf="@+id/rv_voucher_list"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:layout_constraintEnd_toEndOf="@+id/rv_category"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/rv_voucher_list"
-                app:layout_constraintTop_toBottomOf="@+id/rv_voucher_list" />
+                app:layout_constraintStart_toStartOf="@+id/rv_category"
+                app:layout_constraintTop_toBottomOf="@+id/rv_category" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btn_container"
@@ -90,7 +110,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_header"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
