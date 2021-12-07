@@ -72,12 +72,12 @@ class CampaignStatusBottomSheet : BottomSheetUnify() {
         }
         binding?.tpgApplyButton?.setOnClickListener {
             val campaignStatus = adapter?.getCampaignStatusSelection() ?: return@setOnClickListener
-            val selectedCampaignStatus = campaignStatus.filter { it.isSelected }
-            if (selectedCampaignStatus.isEmpty()) {
+            val selectedCampaigns = campaignStatus.filter { it.isSelected }
+            if (selectedCampaigns.isEmpty()) {
                 clickListener?.onNoCampaignStatusSelected()
             } else {
-                val status = campaignStatus.find { it.isSelected }
-                clickListener?.onApplyCampaignStatusFilter(status ?: CampaignStatusSelection())
+                val selectedCampaign = campaignStatus.find { it.isSelected }
+                clickListener?.onApplyCampaignStatusFilter(selectedCampaign ?: CampaignStatusSelection())
             }
             dismiss()
         }
