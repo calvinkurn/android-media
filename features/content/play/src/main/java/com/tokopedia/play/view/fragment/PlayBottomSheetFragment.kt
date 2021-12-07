@@ -316,7 +316,7 @@ class PlayBottomSheetFragment @Inject constructor(
             actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         when (bottomSheetType) {
-            BottomInsetsType.ProductSheet ->
+            BottomInsetsType.ProductSheet, BottomInsetsType.CouponSheet ->
                 Toaster.build(
                         view = requireView(),
                         text = message,
@@ -331,14 +331,6 @@ class PlayBottomSheetFragment @Inject constructor(
                         actionText = actionText,
                         actionListener = actionClickListener
                 )
-            BottomInsetsType.CouponSheet ->
-                Toaster.build(
-                    view = requireView(),
-                    text = message,
-                    type = toasterType,
-                    actionText = actionText,
-                    clickListener = actionClickListener
-                ).show()
             else -> {
                 // nothing
             }
