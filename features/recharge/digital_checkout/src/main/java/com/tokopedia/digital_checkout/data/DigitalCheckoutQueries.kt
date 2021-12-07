@@ -65,25 +65,6 @@ object DigitalCheckoutQueries {
               message_success
             }
             default_promo
-            cross_selling_type
-            cross_selling_config {
-              can_be_skipped
-              is_checked
-              wording {
-                header_title
-                body_title
-                body_content_before
-                body_content_after
-                cta_button_text
-              }
-              wording_is_subscribed {
-                header_title
-                body_title
-                body_content_before
-                body_content_after
-                cta_button_text
-              }
-            }
             pop_up {
               title
               content
@@ -105,6 +86,7 @@ object DigitalCheckoutQueries {
               info {
                 title
                 subtitle
+                checked_subtitle
                 link_text
                 link_url
                 tooltip_text

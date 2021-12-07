@@ -1,5 +1,6 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -52,6 +53,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
@@ -60,6 +62,7 @@ import com.tokopedia.sellerhome.di.component.HomeDashboardComponent
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.newrelic.SellerHomeNewRelic
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
@@ -104,7 +107,7 @@ import kotlin.coroutines.CoroutineContext
  */
 
 open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFactoryImpl>(),
-    WidgetListener, CoroutineScope, SellerHomeFragmentListener {
+    WidgetListener, CoroutineScope, SellerHomeFragmentListener, FragmentChangeCallback {
 
     companion object {
         @JvmStatic
@@ -216,6 +219,7 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
             null
         }
         sellerHomeViewModel.getWidgetLayout(deviceHeight)
+        (activity as? SellerHomeActivity)?.attachSellerHomeFragmentChangeCallback(this)
     }
 
     override fun onCreateView(
@@ -323,6 +327,14 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
 
     }
 
+    override fun setCurrentFragmentType(fragmentType: Int) {
+        if (fragmentType != FragmentType.HOME) {
+            if (coachMark?.isDismissed == false) {
+                coachMark?.dismissCoachMark()
+            }
+        }
+    }
+
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
         val tooltipBottomSheet =
@@ -423,11 +435,21 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
 
     override fun showRecommendationWidgetCoachMark(view: View) {
         recommendationWidgetView = view
-        val coachMarkItems by getCoachMarkItems()
+        showCoachMarkShopScore()
+    }
 
-        if (coachMarkItems.isNotEmpty()) {
-            pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
-            coachMark?.showCoachMark(coachMarkItems)
+    private fun showCoachMarkShopScore() {
+        val coachMarkItems by getCoachMarkItems()
+        val isEligibleShowRecommendationCoachMark =
+            !pmShopScoreInterruptHelper.getRecommendationCoachMarkStatus()
+        if (isEligibleShowRecommendationCoachMark) {
+            if (coachMarkItems.isNotEmpty()) {
+                coachMark?.onFinishListener = {
+                    pmShopScoreInterruptHelper.saveRecommendationCoachMarkFlag()
+                }
+                coachMark?.isDismissed = false
+                coachMark?.showCoachMark(coachMarkItems)
+            }
         }
     }
 
@@ -1108,7 +1130,7 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
             }
         }
 
-        recyclerView?.post {
+        notifyWidgetWithSdkChecking {
             updateWidgets(newWidgets as List<BaseWidgetUiModel<BaseDataUiModel>>)
         }
 
@@ -1454,7 +1476,9 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
                 }
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         binding?.root?.addOneTimeGlobalLayoutListener {
             recyclerView?.post {
                 checkLoadingWidgets()
@@ -1532,7 +1556,9 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
             extras = widgetErrorExtraMap
         )
 
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         showErrorToaster()
         view?.addOneTimeGlobalLayoutListener {
             requestVisibleWidgetsData()
@@ -1549,7 +1575,9 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
                 it
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         checkLoadingWidgets()
     }
 
@@ -1646,7 +1674,9 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
                 else -> widget
             }
         }
-        updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        notifyWidgetWithSdkChecking {
+            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+        }
         checkLoadingWidgets()
     }
 
@@ -1660,6 +1690,21 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
         diffUtilResult.dispatchUpdatesTo(adapter)
+    }
+
+    @SuppressLint("AnnotateVersionCheck")
+    private fun notifyWidgetWithSdkChecking(callback: () -> Unit) {
+        try {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
+                callback()
+            } else {
+                Handler(Looper.getMainLooper()).post {
+                    callback()
+                }
+            }
+        } catch (e: Exception) {
+            SellerHomeErrorHandler.logException(e, SellerHomeErrorHandler.UPDATE_WIDGET_ERROR)
+        }
     }
 
     private fun checkLoadingWidgets() {
@@ -1735,11 +1780,7 @@ open class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAda
                 if ((lastVisibleIndex != RecyclerView.NO_POSITION && lastVisibleIndex == firstRecommendationWidget)
                     || firstVisibleIndex >= firstRecommendationWidget
                 ) {
-                    val coachMarkItems by getCoachMarkItems()
-                    if (coachMarkItems.isNotEmpty()) {
-                        coachMark?.isDismissed = false
-                        coachMark?.showCoachMark(coachMarkItems)
-                    }
+                    showCoachMarkShopScore()
                 }
             } else {
                 val firstRecommendationWidget =
