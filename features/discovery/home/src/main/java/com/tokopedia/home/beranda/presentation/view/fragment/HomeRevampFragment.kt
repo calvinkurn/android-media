@@ -275,6 +275,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private var counterBypassFirstNetworkHomeData = 0
         private var eligibleBeautyFest = false
         private const val isNavRevamp = true
+        private const val isPageRefresh = true
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -1808,11 +1809,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         return instance.isNotEmpty()
     }
 
-    private fun loadEggData() {
+    private fun loadEggData(isPageRefresh: Boolean = false) {
         val floatingEggButtonFragment = floatingEggButtonFragment
         if (floatingEggButtonFragment != null) {
             updateEggBottomMargin(floatingEggButtonFragment)
-            floatingEggButtonFragment.loadEggData()
+            floatingEggButtonFragment.loadEggData(isPageRefresh)
         }
     }
 
@@ -2176,7 +2177,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         stickyLoginView?.loadContent()
-        loadEggData()
+        loadEggData(isPageRefresh)
     }
 
     override fun onChooseAddressUpdated() {

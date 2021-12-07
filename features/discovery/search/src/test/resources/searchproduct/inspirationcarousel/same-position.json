@@ -964,11 +964,13 @@
         "type": "category",
         "position": 4,
         "layout": "info",
+        "tracking_option": "3",
         "options": [
           {
             "title": "Android OS",
             "url": "tokopedia://search?q=samsung",
             "applink": "tokopedia://search?q=samsung",
+            "component_id": "03.02.01.00",
             "product": [
               {
                 "id": "12345",
@@ -979,7 +981,8 @@
                 "rating": 4,
                 "count_review": 100,
                 "url": "",
-                "applink": "tokopedia://product/12345"
+                "applink": "tokopedia://product/12345",
+                "component_id": "03.02.01.01"
               }
             ]
           },

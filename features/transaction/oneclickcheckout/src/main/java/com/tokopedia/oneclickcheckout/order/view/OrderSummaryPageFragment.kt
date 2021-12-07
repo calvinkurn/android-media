@@ -299,7 +299,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun initViews() {
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
         }
         adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderShopCardListener(), getOrderProductCardListener(), getOrderPreferenceCardListener(),
                 getOrderInsuranceCardListener(), getOrderPromoCardListener(), getOrderTotalPaymentCardListener())
@@ -673,9 +673,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 showLayoutNoAddress()
             }
             else -> {
-                if (addressState.address.addressId > 0) {
-                    updateLocalCacheAddressData(addressState.address)
-                }
+                updateLocalCacheAddressData(addressState.address)
             }
         }
     }
@@ -713,18 +711,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun updateLocalCacheAddressData(addressModel: OrderProfileAddress) {
-        activity?.let {
-            ChooseAddressUtils.updateLocalizingAddressDataFromOther(
-                    context = it,
-                    addressId = addressModel.addressId.toString(),
-                    cityId = addressModel.cityId.toString(),
-                    districtId = addressModel.districtId.toString(),
-                    lat = addressModel.latitude,
-                    long = addressModel.longitude,
-                    label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
-                    postalCode = addressModel.postalCode,
-                    shopId = addressModel.tokoNowShopId,
-                    warehouseId = addressModel.tokoNowWarehouseId)
+        if (addressModel.addressId > 0) {
+            activity?.let {
+                val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
+                if (addressModel.state == OrderProfileAddress.STATE_OCC_ADDRESS_ID_NOT_MATCH
+                        || localCache?.address_id.isNullOrEmpty() || localCache?.address_id == "0") {
+                    ChooseAddressUtils.updateLocalizingAddressDataFromOther(
+                            context = it,
+                            addressId = addressModel.addressId.toString(),
+                            cityId = addressModel.cityId.toString(),
+                            districtId = addressModel.districtId.toString(),
+                            lat = addressModel.latitude,
+                            long = addressModel.longitude,
+                            label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
+                            postalCode = addressModel.postalCode,
+                            shopId = addressModel.tokoNowShopId,
+                            warehouseId = addressModel.tokoNowWarehouseId)
+                }
+            }
         }
     }
 
