@@ -85,6 +85,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         private const val APPLINK_FORMAT_ALLOW_OVERRIDE = "%s?allow_override=%b&url=%s"
         private const val TAB_PM_PARAM = "tab"
 
+        private const val SHOW_FULL_SCREEN_BOTTOM_SHEET = "FullScreenBottomSheet"
         private const val TOKOPEDIA_SUFFIX = "| Tokopedia"
         private const val DELIMITER = " - "
 
@@ -123,7 +124,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private val kreditTopadsClickedBundle by lazy {
         Bundle().also {
-            it.putBoolean(OtherMenuFragment.SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
+            it.putBoolean(SHOW_FULL_SCREEN_BOTTOM_SHEET, true)
         }
     }
 
