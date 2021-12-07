@@ -124,4 +124,5 @@
 
     <dimen name="play_count_background_radius">16dp</dimen>
     <dimen name="play_product_item_image_size">104dp</dimen>
+    <dimen name="play_line_spacing_4">4sp</dimen>
 </resources>

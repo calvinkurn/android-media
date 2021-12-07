@@ -50,7 +50,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:ellipsize="end"
-        android:lineSpacingExtra="4sp"
+        android:lineSpacingExtra="@dimen/play_line_spacing_4"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
         app:layout_goneMarginTop="@dimen/layout_lvl1"
