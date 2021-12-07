@@ -13,7 +13,7 @@ class AndroidExportedDetector: XmlScanner, Detector() {
             id = "AndroidExported",
             briefDescription = "android:exported value should be false",
             explanation = "android:exported value should be false",
-            category = Category.CORRECTNESS,
+            category = Category.SECURITY,
             priority = 5,
             severity = Severity.FATAL,
             implementation = Implementation(
@@ -28,7 +28,7 @@ class AndroidExportedDetector: XmlScanner, Detector() {
         const val TAG_CATEGORY_ATTR_NAME_LAUNCHER = "android.intent.category.LAUNCHER"
 
         /* attr value */
-        const val VALUE_EXPORTED_FALSE = "false"
+        val VALUE_EXPORTED_FALSE = "false"
     }
 
     override fun getApplicableElements(): Collection<String>? {
@@ -79,7 +79,6 @@ class AndroidExportedDetector: XmlScanner, Detector() {
         if (node != null && node.value != VALUE_EXPORTED_FALSE) {
             val lintFix = LintFix.create()
                 .set()
-                .attribute(node.name)
                 .value(VALUE_EXPORTED_FALSE)
                 .build()
 
