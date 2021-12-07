@@ -19,6 +19,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
+import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
@@ -116,6 +117,7 @@ class ProductSheetViewComponent(
             layoutManager = layoutManagerProductList
             adapter = productLineAdapter
             addOnScrollListener(StopFlingScrollListener())
+            addItemDecoration(ProductLineItemDecoration(context))
         }
 
         rvVoucherList.apply {
