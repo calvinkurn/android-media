@@ -886,7 +886,8 @@ class AddEditProductVariantFragment :
             viewModel.setSelectedVariantDetails(selectedVariantDetails)
             // get all variant details
             val categoryId = productInputModel.detailInputModel.categoryId.toIntOrNull()
-            val selections = productInputModel.variantInputModel.selections
+            val selections = productInputModel.variantInputModel.selections.filter {
+                it.variantId != Int.ZERO.toString()}
             categoryId?.run { viewModel.getVariantCategoryCombination(this, selections) }
         })
     }
@@ -1013,7 +1014,7 @@ class AddEditProductVariantFragment :
         customVariantValueInputForm?.overlayClickDismiss = false
         customVariantValueInputForm?.isKeyboardOverlap = false
         val customVariantValueInputLayout = CustomVariantUnitValueForm(requireContext(), layoutPosition, variantUnitValues, this)
-        customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues)
+        customVariantValueInputLayout.setupVariantCustomInputLayout(selectedVariantUnit, selectedVariantUnitValues, variantData.name)
         customVariantValueInputForm?.setChild(customVariantValueInputLayout)
         customVariantValueInputForm?.show(this@AddEditProductVariantFragment.childFragmentManager, TAG_CUSTOM_VARIANT_UNIT_VALUE_INPUT_FORM)
     }
