@@ -222,12 +222,6 @@ class HomeFragmentUiTest {
      */
     private fun assertHomeCoachmarkDisplayed() {
         assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_inbox_title,
-            descRes = R.string.onboarding_coachmark_inbox_description,
-            isSingleCoachmark = true
-        )
-
-        assertCoachmarkAndNext(
             titleRes = R.string.home_gopay_new_coachmark_title,
             descRes = R.string.home_gopay_new_coachmark_description,
             isSingleCoachmark = true

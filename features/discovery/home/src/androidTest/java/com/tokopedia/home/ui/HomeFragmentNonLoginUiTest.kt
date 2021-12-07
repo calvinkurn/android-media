@@ -75,8 +75,6 @@ class HomeFragmentNonLoginUiTest {
 
     @Test
     fun testFirstTimeNonLoggedInUser() {
-        assertHomeCoachmarkDisplayed()
-
         /**
          * Home skeleton content for non login
          * - Toolbar
@@ -185,16 +183,6 @@ class HomeFragmentNonLoginUiTest {
 
         onView(withId(R.id.tab_layout_home_feeds)).check(matches(isDisplayed()))
         onView(withId(R.id.view_pager_home_feeds)).check(matches(isDisplayed()))
-    }
-
-    /**
-     * Assert coachmark text and proceed
-     */
-    private fun assertHomeCoachmarkDisplayed() {
-        assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_inbox_title,
-            descRes = R.string.onboarding_coachmark_inbox_description
-        )
     }
 
     private fun assertCoachmarkAndNext(

@@ -662,19 +662,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun ArrayList<CoachMark2Item>.buildHomeCoachmark(skipBalanceWidget: Boolean) {
         context?.let { currentContext ->
-            //inbox
-            if (!isInboxCoachmarkShown(currentContext)) {
-                val inboxIcon = navToolbar?.getInboxIconView()
-                inboxIcon?.let {
-                    this.add(
-                        CoachMark2Item(
-                            inboxIcon,
-                            getString(R.string.onboarding_coachmark_inbox_title),
-                            getString(R.string.onboarding_coachmark_inbox_description)
-                        )
-                    )
-                }
-            }
 
             //add balance widget
             //uncomment this to activate balance widget coachmark
@@ -823,17 +810,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         containsNewGopayAndTokopoints: Boolean,
         tokopointsBalanceCoachmark: BalanceCoachmark?
     ) {
-        if (isP1HomeCoachmarkDone(
-                context = ctx,
-                isUseInboxRollence = useNewInbox
-            )) {
-            if (!isNewWalletAppCoachmarkShown(ctx)) {
-                showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
-                showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
-                showTokonowCoachmark()
-            }
+        if (!isNewWalletAppCoachmarkShown(ctx)) {
+            showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+        } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
+            showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+        } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
+            showTokonowCoachmark()
         }
     }
 
@@ -932,9 +914,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             when {
                 this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
                     setChooseAddressCoachmarkShown(currentContext)
-                }
-                this.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
-                    setInboxCoachmarkShown(currentContext)
                 }
                 this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
                     setBalanceWidgetCoachmarkShown(currentContext)

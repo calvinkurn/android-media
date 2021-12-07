@@ -9,7 +9,6 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
  */
 
 const val PREF_KEY_HOME_COACHMARK = "PREF_KEY_HOME_COACHMARK"
-const val PREF_KEY_HOME_COACHMARK_NAV = "PREF_KEY_HOME_COACHMARK_NAV"
 const val PREF_KEY_HOME_COACHMARK_INBOX = "PREF_KEY_HOME_COACHMARK_INBOX"
 const val PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS = "PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS"
 const val PREF_KEY_HOME_COACHMARK_BALANCE = "PREF_KEY_HOME_COACHMARK_BALANCE"
@@ -117,17 +116,5 @@ fun isHomeTokonowCoachmarkShown(context: Context): Boolean {
     val sharedPrefs: SharedPreferences = context.getSharedPreferences(
             PREF_KEY_HOME_TOKONOW_COACHMARK, Context.MODE_PRIVATE)
     return sharedPrefs.getBoolean(PREF_KEY_HOME_TOKONOW_COACHMARK, false)
-}
-
-fun isP1HomeCoachmarkDone(
-    context: Context,
-    isUseInboxRollence: Boolean
-): Boolean {
-    var isDone = true
-    if (
-        (isUseInboxRollence && !isInboxCoachmarkShown(context))){
-        isDone = false
-    }
-    return isDone
 }
 
