@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -11,21 +12,26 @@ import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
+import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.BlockType
+import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ToggleBlockChatParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
@@ -36,6 +42,7 @@ import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -52,8 +59,11 @@ class TopChatViewModel @Inject constructor(
     private var addToCartOccUseCase: AddToCartOccMultiUseCase,
     private val chatToggleBlockChat: ChatToggleBlockChatUseCaseNew,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
+    private val chatBackgroundUseCase: ChatBackgroundUseCaseNew,
+    private val chatAttachmentUseCase: ChatAttachmentUseCase,
     private val dispatcher: CoroutineDispatchers,
-    private val remoteConfig: RemoteConfig
+    private val remoteConfig: RemoteConfig,
+    private val mapper: ChatAttachmentMapper
 ) : BaseViewModel(dispatcher.main) {
 
     private val _messageId = MutableLiveData<Result<String>>()
@@ -100,6 +110,24 @@ class TopChatViewModel @Inject constructor(
     private val _chatDeleteStatus = MutableLiveData<Result<ChatDeleteStatus>>()
     val chatDeleteStatus: LiveData<Result<ChatDeleteStatus>>
         get() = _chatDeleteStatus
+
+    private val _chatBackground = MutableLiveData<Result<String>>()
+    val chatBackground: MutableLiveData<Result<String>>
+        get() = _chatBackground
+
+    private val _chatAttachments = MutableLiveData<ArrayMap<String, Attachment>>()
+    val chatAttachments: MutableLiveData<ArrayMap<String, Attachment>>
+        get() = _chatAttachments
+
+    val attachments: ArrayMap<String, Attachment> = ArrayMap()
+    private var userLocationInfo = LocalCacheModel()
+    private var attachProductWarehouseId = "0"
+
+    fun initUserLocation(userLocation: LocalCacheModel?) {
+        userLocation ?: return
+        this.userLocationInfo = userLocation
+        this.attachProductWarehouseId = userLocation.warehouse_id
+    }
 
     fun getMessageId(
         toUserId: String,
@@ -347,4 +375,53 @@ class TopChatViewModel @Inject constructor(
             _chatDeleteStatus.value = Fail(it)
         })
     }
+
+    fun getBackground() {
+        launchCatchError(block = {
+            chatBackgroundUseCase(Unit).collect {
+                _chatBackground.value = Success(it)
+            }
+        }, onError = {
+            _chatBackground.value = Fail(it)
+        })
+    }
+
+    fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel) {
+        launchCatchError(block = {
+            if (chatRoom.hasAttachment() && msgId != 0L) {
+                val params = generateAttachmentParams(msgId, chatRoom.replyIDs)
+                val result = chatAttachmentUseCase(params)
+                val mapAttachment = mapper.map(result)
+                attachments.putAll(mapAttachment.toMap())
+                _chatAttachments.value = attachments
+            }
+        }, onError = {
+            val mapErrorAttachment = mapper.mapError(chatRoom.replyIDs)
+            attachments.putAll(mapErrorAttachment.toMap())
+            _chatAttachments.value = attachments
+        })
+    }
+
+    private fun generateAttachmentParams(
+        msgId: Long,
+        replyIDs: String
+    ): ChatAttachmentParam {
+        val addressId = userLocationInfo.address_id.toLongOrZero()
+        val districtId = userLocationInfo.district_id.toLongOrZero()
+        val postalCode = userLocationInfo.postal_code
+        val latlon = if (userLocationInfo.lat.isEmpty() || userLocationInfo.long.isEmpty()) {
+            ""
+        } else {
+            "${userLocationInfo.lat},${userLocationInfo.long}"
+        }
+        return ChatAttachmentParam(
+            msgId = msgId,
+            replyIDs = replyIDs,
+            addressId = addressId,
+            districtId = districtId,
+            postalCode = postalCode,
+            latlon = latlon
+        )
+    }
+
 }

@@ -1,14 +1,10 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
-import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
@@ -21,7 +17,6 @@ import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTes
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exResultProduct
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSendMessage
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exSticker
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUrl
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUserId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleInvoicePreview
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleProductPreview
@@ -108,7 +103,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
             getTemplateChatRoomUseCase.unsubscribe()
             replyChatUseCase.unsubscribe()
             groupStickerUseCase.safeCancel()
-            chatAttachmentUseCase.safeCancel()
         }
     }
 
@@ -274,61 +268,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
     }
 
     @Test
-    fun `on success loadAttachmentData`() {
-        // Given
-        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
-        val mapSuccessAttachment = ArrayMap<String, Attachment>().apply {
-            put("test_attachment", Attachment())
-        }
-        every {
-            chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.replyIDs,
-                any(), captureLambda(), any()
-            )
-        } answers {
-            val onSuccess = lambda<(ArrayMap<String, Attachment>) -> Unit>()
-            onSuccess.invoke(mapSuccessAttachment)
-        }
-
-        // When
-        presenter.initUserLocation(null)
-        presenter.initUserLocation(LocalCacheModel())
-        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
-
-        // Then
-        val attachments = presenter.attachments
-        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
-        assertTrue(presenter.attachments.size == 1)
-    }
-
-    @Test
-    fun `on error loadAttachmentData`() {
-        // Given
-        val roomModel = ChatroomViewModel(replyIDs = "3213, 3123")
-        val mapErrorAttachment = ArrayMap<String, Attachment>().apply {
-            put("test_error_attachment", Attachment())
-        }
-        val throwable = Throwable()
-        every {
-            chatAttachmentUseCase.getAttachments(
-                exMessageId.toLongOrZero(), roomModel.replyIDs, any(),
-                any(), captureLambda()
-            )
-        } answers {
-            val onError = lambda<(Throwable, ArrayMap<String, Attachment>) -> Unit>()
-            onError.invoke(throwable, mapErrorAttachment)
-        }
-
-        // When
-        presenter.loadAttachmentData(exMessageId.toLongOrZero(), roomModel)
-
-        // Then
-        val attachments = presenter.attachments
-        verify(exactly = 1) { view.updateAttachmentsView(attachments) }
-        assertTrue(presenter.attachments.size == 1)
-    }
-
-    @Test
     fun `check setBeforeReplyTime`() {
         //Given
         val exCreateTime = "1234532"
@@ -356,48 +295,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 
         // Then
         assertTrue(presenter.newUnreadMessage == 0)
-    }
-
-    @Test
-    fun `on load background from cache`() {
-        // Given
-        every {
-            chatBackgroundUseCase.getBackground(
-                captureLambda(), any(), any()
-            )
-        } answers {
-            val onCache = lambda<(String) -> Unit>()
-            onCache.invoke(exUrl)
-        }
-
-        // When
-        presenter.getBackground()
-
-        // Then
-        verify(exactly = 1) {
-            view.renderBackground(exUrl)
-        }
-    }
-
-    @Test
-    fun `on load background from success response and need to update`() {
-        // Given
-        every {
-            chatBackgroundUseCase.getBackground(
-                any(), captureLambda(), any()
-            )
-        } answers {
-            val onSuccess = lambda<(String, Boolean) -> Unit>()
-            onSuccess.invoke(exUrl, true)
-        }
-
-        // When
-        presenter.getBackground()
-
-        // Then
-        verify(exactly = 1) {
-            view.renderBackground(exUrl)
-        }
     }
 
     @Test

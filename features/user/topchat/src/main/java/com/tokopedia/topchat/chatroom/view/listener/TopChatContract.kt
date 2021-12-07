@@ -148,8 +148,6 @@ interface TopChatContract {
 
         fun getStickerGroupList(chatRoom: ChatroomViewModel)
 
-        fun loadAttachmentData(msgId: Long, chatRoom: ChatroomViewModel)
-
         fun setBeforeReplyTime(createTime: String)
 
         fun isInTheMiddleOfThePage(): Boolean
@@ -157,8 +155,6 @@ interface TopChatContract {
         fun resetChatUseCase()
 
         fun resetUnreadMessage()
-
-        fun getBackground()
 
         fun addAttachmentPreview(sendablePreview: SendablePreview)
 
