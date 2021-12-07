@@ -1,6 +1,7 @@
 package com.tokopedia.shop.settings.basicinfo.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
 import android.text.InputType
@@ -71,6 +72,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
         @IdRes
         val CHOOSE_TIME_OPTION_ID = R.id.option_choose
 
+        const val EXTRA_IS_NEED_TO_OPEN_CALENDAR_KEY = "open_calendar"
         private const val DEFAULT_FIRST_INDEX = 0
         private const val MIN_OPEN_HOUR = 0
         private const val MIN_OPEN_MINUTE = 0
@@ -175,7 +177,7 @@ class ShopSettingsSetOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                         dialogAction = DialogUnify.VERTICAL_ACTION,
                         imageType = DialogUnify.WITH_ILLUSTRATION,
                         primaryCtaClickListener = {
-                            activity?.setResult(Activity.RESULT_CANCELED)
+                            activity?.setResult(Activity.RESULT_CANCELED, Intent().putExtra(EXTRA_IS_NEED_TO_OPEN_CALENDAR_KEY, true))
                             activity?.finish()
                         }
                 )

@@ -159,10 +159,14 @@ class NewShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasCompone
                     getInitialData()
                 }
                 Activity.RESULT_CANCELED -> {
-                    isActionEdit = false
-                    resetSelectedDates(isActionEdit)
-                    setupHolidayCalendarPickerBottomSheet()
-                    showHolidayBottomSheet()
+                    data?.let {
+                        if (it.getBooleanExtra(ShopSettingsSetOperationalHoursFragment.EXTRA_IS_NEED_TO_OPEN_CALENDAR_KEY, false)) {
+                            isActionEdit = false
+                            resetSelectedDates(isActionEdit)
+                            setupHolidayCalendarPickerBottomSheet()
+                            showHolidayBottomSheet()
+                        }
+                    }
                 }
             }
         }
