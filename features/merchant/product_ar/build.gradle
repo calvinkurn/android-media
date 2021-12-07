@@ -37,17 +37,12 @@ android {
     buildFeatures {
         viewBinding true
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
     implementation rootProject.ext.miscDependencies.modifaceMakeUpKit
+    implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 
 project.ext {
