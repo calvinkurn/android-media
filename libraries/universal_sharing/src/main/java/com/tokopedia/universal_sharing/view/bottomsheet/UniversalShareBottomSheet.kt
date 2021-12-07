@@ -29,14 +29,17 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.linker.LinkerManager
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -51,6 +54,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
@@ -244,6 +248,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var parentFragmentContainer: Fragment? = null
     //parent fragment lifecycle observer
     private lateinit var parentFragmentLifecycleObserver: DefaultLifecycleObserver
+
+    //Image generator page source ID
+    private lateinit var sourceId: String
+    //Array to contain image generator API data
+    private var imageGeneratorDataArray : ArrayList<ImageGeneratorRequestData>? = null
+    private var gqlJob: Job? = null
+    //Flag to control Image generator option
+    private var getImageFromMedia = false
+    private lateinit var imageGeneratorUseCase: ImageGeneratorUseCase
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -481,6 +494,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             feature = channelStr
             campaign = campaignStr
             channel =  SharingUtil.labelWhatsapp
+            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.WHATSAPP
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
             socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_whatsapp) }
@@ -491,6 +505,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             feature = channelStr
             campaign = campaignStr
             channel = SharingUtil.labelFbfeed
+            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_FEED
             shareOnlyLink = isImageOnlySharing
             if(isImageOnlySharing){
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -512,6 +527,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelFbstory
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_STORY
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_icon_fbstories3) }
@@ -522,6 +538,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelIgfeed
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
@@ -532,6 +549,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelIgstory
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_STORY
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_igstory) }
@@ -543,6 +561,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 feature = channelStr
                 campaign = campaignStr
                 channel = SharingUtil.labelIgMessage
+                platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_FEED
                 shareOnlyLink = false
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
                 socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram_dm) }
@@ -554,6 +573,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             feature = channelStr
             campaign = campaignStr
             channel = SharingUtil.labelLine
+            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.LINE
             shareOnlyLink = isImageOnlySharing
             if(isImageOnlySharing){
                 appIntent = getAppIntent(MimeType.IMAGE, packageName)
@@ -569,6 +589,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             feature = channelStr
             campaign = campaignStr
             channel = SharingUtil.labelTwitter
+            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TWITTER
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
             socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_twitter) }
@@ -579,6 +600,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             feature = channelStr
             campaign = campaignStr
             channel = SharingUtil.labelTelegram
+            platform = ImageGeneratorConstants.ImageGeneratorPlatforms.TELEGRAM
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
             socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_telegram) }
@@ -773,6 +795,23 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     fun executeShareOptionClick(shareModel: ShareModel){
+        if(getImageFromMedia){
+            addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
+            addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
+            imageGeneratorDataArray?.let { executeImageGeneratorUseCase(sourceId, it, shareModel) }
+        }else{
+            executeSharingFlow(shareModel)
+        }
+    }
+
+    private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String){
+        preserveImage = true
+        shareModel.ogImgUrl = mediaImageUrl
+        shareModel.savedImageFilePath = savedImagePath
+        bottomSheetListener?.onShareOptionClicked(shareModel)
+    }
+
+    private fun executeSharingFlow(shareModel:ShareModel){
         preserveImage = true
         shareModel.ogImgUrl = ogImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -823,13 +862,50 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun dismiss() {
         clearData()
         removeLifecycleObserverAndSavedImage()
+        gqlJob?.cancel()
         super.dismiss()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
         clearData()
         removeLifecycleObserverAndSavedImage()
+        gqlJob?.cancel()
         super.onDismiss(dialog)
+    }
+
+    fun addImageGeneratorData(key: String, value: String){
+        if(imageGeneratorDataArray == null) {
+            imageGeneratorDataArray = ArrayList()
+        }
+        imageGeneratorDataArray?.add(ImageGeneratorRequestData(key, value))
+    }
+
+
+    private fun executeImageGeneratorUseCase(sourceId: String, args: ArrayList<ImageGeneratorRequestData>,
+                                             shareModel: ShareModel){
+        gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+                imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
+                val mediaImageUrl = imageGeneratorUseCase.apply {
+                    params = ImageGeneratorUseCase.createParam(sourceId, args)
+                }.executeOnBackground()
+                SharingUtil.saveImageFromURLToStorage(context, mediaImageUrl){
+                    imageSaved(it)
+                    executeMediaImageSharingFlow(shareModel, mediaImageUrl)
+                }
+            }
+        }, onError = {
+            it.printStackTrace()
+            executeSharingFlow(shareModel)
+        })
+    }
+
+    fun getImageFromMedia(getImageFromMediaFlag: Boolean){
+        getImageFromMedia = getImageFromMediaFlag
+    }
+
+    fun setMediaPageSourceId(pageSourceId: String){
+        sourceId = pageSourceId
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
