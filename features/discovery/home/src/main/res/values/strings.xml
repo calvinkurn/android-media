@@ -66,10 +66,6 @@
 
     <string name="home_page_retry_dynamic_channel">Coba Lagi</string>
 
-    <string name="onboarding_navigation_title">Wow, ada yang baru di Toped!</string>
-    <string name="onboarding_navigation_description">Ayo kenalan dengan tampilan &#38; navigasi baru untuk menjelajahi aplikasi Tokopedia!</string>
-    <string name="onboarding_navigation_button">Yuk, Kenalan!</string>
-
     <string name="onboarding_coachmark_inbox_title">Temukan Inbox &amp; Notifikasi di sini!</string>
     <string name="onboarding_coachmark_inbox_description">Sekarang kamu bisa cek chat, diskusi &amp; notifikasi dengan lebih mudah di halaman ini.</string>
 

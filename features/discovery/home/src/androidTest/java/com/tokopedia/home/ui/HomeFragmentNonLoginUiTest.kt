@@ -75,10 +75,6 @@ class HomeFragmentNonLoginUiTest {
 
     @Test
     fun testFirstTimeNonLoggedInUser() {
-        /**
-         * Onboarding and coachmark for new user
-         */
-        assertNavigationBottomSheetDisplayed()
         assertHomeCoachmarkDisplayed()
 
         /**
@@ -189,16 +185,6 @@ class HomeFragmentNonLoginUiTest {
 
         onView(withId(R.id.tab_layout_home_feeds)).check(matches(isDisplayed()))
         onView(withId(R.id.view_pager_home_feeds)).check(matches(isDisplayed()))
-    }
-
-    /**
-     * Assert bottomsheet text and proceed
-     */
-    private fun assertNavigationBottomSheetDisplayed() {
-        onView(withText(R.string.onboarding_navigation_title)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_description)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_button)).check(matches(isDisplayed()))
-            .perform(click())
     }
 
     /**
