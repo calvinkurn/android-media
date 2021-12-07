@@ -149,6 +149,15 @@ class CampaignListFragment : BaseDaggerFragment(),
         tracker.sendSelectCampaignStatusClickEvent(selectedCampaignStatus.statusId, userSession.shopId)
     }
 
+    override fun onNoCampaignStatusSelected() {
+        viewModel.getCampaignList(
+            EMPTY_SEARCH_KEYWORD,
+            viewModel.getCampaignTypeId(),
+            GetCampaignListUseCase.NPL_LIST_TYPE,
+            GetCampaignListUseCase.statusId
+        )
+    }
+
     private fun setupView(binding: FragmentCampaignListBinding?) {
         setupSearchBar(binding)
         setupActiveCampaignListView(binding)
@@ -185,6 +194,7 @@ class CampaignListFragment : BaseDaggerFragment(),
                 campaignStatusBottomSheet?.show(childFragmentManager)
                 tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
             }
+
             // setup campaign type filter
             val campaignTypeFilterTitle = viewModel.getSelectedCampaignTypeSelection()?.campaignTypeName ?: ""
             campaignTypeFilter = SortFilterItem(campaignTypeFilterTitle)

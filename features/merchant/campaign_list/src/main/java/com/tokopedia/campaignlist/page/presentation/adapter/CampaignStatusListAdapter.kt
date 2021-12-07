@@ -10,8 +10,8 @@ import com.tokopedia.campaignlist.page.presentation.viewholder.CampaignStatusVie
 
 @SuppressLint("NotifyDataSetChanged")
 class CampaignStatusListAdapter :
-        RecyclerView.Adapter<CampaignStatusViewHolder>(),
-        CampaignStatusViewHolder.OnListItemClickListener {
+    RecyclerView.Adapter<CampaignStatusViewHolder>(),
+    CampaignStatusViewHolder.OnListItemClickListener {
 
     private var campaignStatusSelections: List<CampaignStatusSelection> = listOf()
 
@@ -30,10 +30,12 @@ class CampaignStatusListAdapter :
 
     override fun onListItemClicked(position: Int) {
         val selectedCampaignStatus = campaignStatusSelections[position]
-        campaignStatusSelections.filter { campaignStatusSelection ->
-            campaignStatusSelection.statusId != selectedCampaignStatus.statusId
-        }.forEach { selection -> selection.isSelected = false }
-        campaignStatusSelections[position].isSelected = true
+        campaignStatusSelections.forEach {
+            if (it.statusId != selectedCampaignStatus.statusId) {
+                it.isSelected = false
+            }
+        }
+        campaignStatusSelections[position].isSelected = !selectedCampaignStatus.isSelected
         notifyDataSetChanged()
     }
 
@@ -42,10 +44,7 @@ class CampaignStatusListAdapter :
         notifyDataSetChanged()
     }
 
-    fun getSelectedCampaignStatus(): CampaignStatusSelection? {
-        val selectedCampaignStatus = campaignStatusSelections.find { campaignStatusSelection ->
-            campaignStatusSelection.isSelected
-        }
-        return selectedCampaignStatus
+    fun getCampaignStatusSelection(): List<CampaignStatusSelection> {
+        return campaignStatusSelections
     }
 }
