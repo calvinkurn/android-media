@@ -7,6 +7,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -14,16 +15,16 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.recharge_component.R
-import com.tokopedia.recharge_component.databinding.ItemDigitalUnificationCardBinding
+import com.tokopedia.recharge_component.databinding.ItemDigitalUnifyCardBinding
 import com.tokopedia.recharge_component.digital_card.presentation.model.*
 import com.tokopedia.unifycomponents.ProgressBarUnify
 
-class DigitalUnificationViewHolder(
-    private val binding: ItemDigitalUnificationCardBinding,
+class DigitalUnifyCardViewHolder(
+    private val binding: ItemDigitalUnifyCardBinding,
     private val listener: DigitalUnificationCardListener?
-) : AbstractViewHolder<DigitalUnificationModel>(binding.root) {
+) : AbstractViewHolder<DigitalUnifyModel>(binding.root) {
 
-    override fun bind(element: DigitalUnificationModel) {
+    override fun bind(element: DigitalUnifyModel) {
         listener?.onItemBinding(element)
 
         // render media
@@ -57,7 +58,7 @@ class DigitalUnificationViewHolder(
         renderActionButton(element)
     }
 
-    private fun renderMedia(element: DigitalUnificationModel) {
+    private fun renderMedia(element: DigitalUnifyModel) {
         // render media image
         renderMediaImage(element.mediaUrl, element.mediaType)
 
@@ -71,7 +72,7 @@ class DigitalUnificationViewHolder(
         renderIconBackground(element.iconBackgroundColor)
     }
 
-    private fun renderCampaign(element: DigitalUnificationModel) {
+    private fun renderCampaign(element: DigitalUnifyModel) {
         // render campaign background
         renderCampaignBackground(element.campaign.backgroundUrl)
 
@@ -79,7 +80,7 @@ class DigitalUnificationViewHolder(
         renderCampaignText(element.campaign.text, element.campaign.textColor)
     }
 
-    private fun renderProductInfo(element: DigitalUnificationModel) {
+    private fun renderProductInfo(element: DigitalUnifyModel) {
         // setup left product info
         val leftProductInfoText: Spannable = SpannableString(element.productInfoLeft.text)
         val leftProductInfoColor = try {
@@ -125,7 +126,7 @@ class DigitalUnificationViewHolder(
         }
     }
 
-    private fun renderTitle(element: DigitalUnificationModel) {
+    private fun renderTitle(element: DigitalUnifyModel) {
         with(binding) {
             if (element.title.isNotEmpty()) {
                 dguTitleLabel.text = element.title
@@ -136,7 +137,7 @@ class DigitalUnificationViewHolder(
         }
     }
 
-    private fun renderRating(element: DigitalUnificationModel) {
+    private fun renderRating(element: DigitalUnifyModel) {
         if (element.rating.ratingType != null) {
             when (element.rating.ratingType) {
                 RatingType.SQUARE -> {
@@ -151,7 +152,7 @@ class DigitalUnificationViewHolder(
         }
     }
 
-    private fun renderSpecialInfo(element: DigitalUnificationModel) {
+    private fun renderSpecialInfo(element: DigitalUnifyModel) {
         with(binding) {
             if (element.specialInfo.text.isNotEmpty()) {
                 try {
@@ -170,7 +171,7 @@ class DigitalUnificationViewHolder(
         }
     }
 
-    private fun renderPriceAndDiscount(element: DigitalUnificationModel) {
+    private fun renderPriceAndDiscount(element: DigitalUnifyModel) {
         // render price
         renderPrice(element.priceData.price)
 
@@ -181,7 +182,7 @@ class DigitalUnificationViewHolder(
         renderSlashedPrice(element.priceData.slashedPrice)
     }
 
-    private fun renderSubtitle(element: DigitalUnificationModel) {
+    private fun renderSubtitle(element: DigitalUnifyModel) {
         with(binding) {
             if (element.subtitle.isNotEmpty()) {
                 dguSubtitle.text = element.subtitle
@@ -192,7 +193,7 @@ class DigitalUnificationViewHolder(
         }
     }
 
-    private fun renderSoldPercentage(element: DigitalUnificationModel) {
+    private fun renderSoldPercentage(element: DigitalUnifyModel) {
         // render progress bar
         renderSoldProgressBar(element.soldPercentage)
 
@@ -200,7 +201,7 @@ class DigitalUnificationViewHolder(
         renderSoldLabel(element.soldPercentage)
     }
 
-    private fun renderActionButton(element: DigitalUnificationModel) {
+    private fun renderActionButton(element: DigitalUnifyModel) {
         with(binding.dguActionButton) {
             if (element.actionButton.text.isNotEmpty()) {
                 text = element.actionButton.text
@@ -218,6 +219,9 @@ class DigitalUnificationViewHolder(
     private fun renderMediaImage(mediaUrl: String, mediaType: MediaType) {
         with(binding) {
             if (mediaUrl.isNotEmpty()) {
+                val layoutParams = dguMediaImage.layoutParams as ConstraintLayout.LayoutParams
+                layoutParams.dimensionRatio = mediaType.ratio
+                dguMediaImage.layoutParams = layoutParams
                 dguMediaImage.loadImage(mediaUrl)
                 dguMediaImage.show()
             } else {
@@ -433,13 +437,13 @@ class DigitalUnificationViewHolder(
     }
 
     interface DigitalUnificationCardListener {
-        fun onItemBinding(item: DigitalUnificationModel)
-        fun onItemClicked(item: DigitalUnificationModel)
+        fun onItemBinding(item: DigitalUnifyModel)
+        fun onItemClicked(item: DigitalUnifyModel)
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_digital_unification_card
+        val LAYOUT = R.layout.item_digital_unify_card
 
         private const val MIN_PROGRESS_TO_SHOW_FIRE = 76
 

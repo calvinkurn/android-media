@@ -3,12 +3,12 @@ package com.tokopedia.recharge_component.digital_card.presentation.model
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnificationCardTypeFactory
-import com.tokopedia.unifycomponents.Label
+import com.tokopedia.recharge_component.digital_card.presentation.adapter.DigitalUnifyCardTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class DigitalUnificationModel(
+data class DigitalUnifyModel(
+    val id: String,
     val mediaUrl: String,
     val mediaType: MediaType,
     val mediaTitle: String,
@@ -24,9 +24,19 @@ data class DigitalUnificationModel(
     val subtitle: String,
     val soldPercentage: DigitalCardSoldPercentageModel,
     val actionButton: DigitalCardActionModel
-) : Parcelable, Visitable<DigitalUnificationCardTypeFactory> {
-    override fun type(typeFactory: DigitalUnificationCardTypeFactory?): Int =
+) : Parcelable, Visitable<DigitalUnifyCardTypeFactory> {
+
+    override fun type(typeFactory: DigitalUnifyCardTypeFactory?): Int =
         typeFactory?.type(this).orZero()
+
+    companion object {
+        fun getMediaType(mediaType: String): MediaType =
+            when (mediaType) {
+                MediaType.SQUARE.value -> MediaType.SQUARE
+                MediaType.RECTANGLE.value -> MediaType.RECTANGLE
+                else -> MediaType.SQUARE
+            }
+    }
 }
 
 @Parcelize

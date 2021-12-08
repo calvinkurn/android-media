@@ -1,8 +1,8 @@
 package com.tokopedia.recharge_component.digital_card.presentation.model
 
-enum class MediaType(val value: String) {
-    FULL("full"),
-    FRAME("frame")
+enum class MediaType(val value: String, val ratio: String) {
+    SQUARE("square", "H,1:1"),
+    RECTANGLE("rectangle", "H,2:1")
 }
 
 enum class RatingType(val value: String) {
