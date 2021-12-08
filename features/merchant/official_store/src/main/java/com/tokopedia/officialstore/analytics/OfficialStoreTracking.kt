@@ -42,7 +42,11 @@ class OfficialStoreTracking(context: Context) {
     private val EVENT_LABEL = "eventLabel"
     private val EVENT_ATTRIBUTION = "attribution"
     private val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
-    private val IMPRESSION_BANNER = "impression banner - %s"
+    private val IMPRESSION_BANNER = "impression banner"
+    private val EVENT_ACTION_POPULAR_BRANDS = "%s - %s"
+    private val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
+    private val PROMOTIONS = "promotions"
+    private val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
 
     private val ATTRIBUTION = "attribution"
     private val AFFINITY_LABEL = "affinityLabel"
@@ -86,6 +90,7 @@ class OfficialStoreTracking(context: Context) {
     private val FIELD_SHOP_TYPE = "shop_type"
     private val FIELD_SHOP_NAME = "shop_name"
     private val FIELD_DIMENSION_38 = "dimension38"
+    private val FIELD_PRODUCT_CREATIVE = "creative"
 
     private val VALUE_NONE_OTHER = "none / other"
     private val VALUE_NONE = "none"
@@ -335,30 +340,34 @@ class OfficialStoreTracking(context: Context) {
         categoryName: String,
         shopPosition: Int,
         shopName: String,
-        url: String,
         additionalInformation: String,
-        featuredBrandId: String,
         shopId: String,
         isFromDC: Boolean = false,
         attribute: String = "",
         userId: String,
-        headerName: String
+        headerName: String,
+        bannerId: String
     ) {
         val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val data = DataLayer.mapOf(
             EVENT, PROMO_VIEW,
             EVENT_CATEGORY, OS_MICROSITE_SINGLE,
-            EVENT_ACTION, IMPRESSION_BANNER.format(POPULAR_BRANDS),
+            EVENT_ACTION, EVENT_ACTION_POPULAR_BRANDS.format(IMPRESSION_BANNER, POPULAR_BRANDS),
             EVENT_LABEL, EVENT_LABEL_POPULAR_BRANDS.format(POPULAR_BRANDS, shopId, categoryName),
             USER_ID, userId,
             ECOMMERCE, DataLayer.mapOf(
                 PROMO_VIEW, DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
+                    PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                            "id", featuredBrandId,
-                            "name", "/official-store/$categoryName - popular brands - $headerName",
-                            "position", "$shopPosition",
-                            "creative", creativeName
+                            FIELD_PRODUCT_ID, PROMOTIONS_ID_POPULAR_BRANDS.format(bannerId, shopId),
+                            FIELD_PRODUCT_NAME, PROMOTIONS_NAME_POPULAR_BRANDS.format(
+                                SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY,
+                                categoryName,
+                                POPULAR_BRANDS,
+                                headerName
+                            ),
+                            FIELD_PRODUCT_POSITION, "$shopPosition",
+                            FIELD_PRODUCT_CREATIVE, creativeName
                         )
                     )
                 )
