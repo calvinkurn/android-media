@@ -339,16 +339,12 @@ class OfficialStoreTracking(context: Context) {
     fun eventImpressionFeatureBrandOS(
         categoryName: String,
         shopPosition: Int,
-        shopName: String,
-        additionalInformation: String,
         shopId: String,
-        isFromDC: Boolean = false,
-        attribute: String = "",
+        creativeName: String,
         userId: String,
         headerName: String,
         bannerId: String
     ) {
-        val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val data = DataLayer.mapOf(
             EVENT, PROMO_VIEW,
             EVENT_CATEGORY, OS_MICROSITE_SINGLE,

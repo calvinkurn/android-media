@@ -22,11 +22,8 @@ class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHa
         tracking?.eventImpressionFeatureBrandOS(
             categoryName = dcEventHandler.getOSCategory()?.title ?: "",
             shopPosition = (position + 1),
-            shopName = channelGrid.shop.shopName,
-            additionalInformation = "",
             shopId = shopId,
-            isFromDC = true,
-            attribute = channelGrid.attribution,
+            creativeName = channelGrid.attribution,
             userId = dcEventHandler.getUserId(),
             headerName = channelModel.channelHeader.name,
             bannerId =  bannerId
