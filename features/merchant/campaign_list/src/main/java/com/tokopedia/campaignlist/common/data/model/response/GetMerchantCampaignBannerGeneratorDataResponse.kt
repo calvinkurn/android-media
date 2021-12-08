@@ -71,6 +71,10 @@ data class ShopData(
         @Expose val logo: String = "",
         @SerializedName("City")
         @Expose val city: String = "",
+        @SerializedName("Domain")
+        @Expose val domain: String = "",
+        @SerializedName("UserID")
+        @Expose val userId: String = "",
         @SerializedName("Badge")
         @Expose val badge: Badge = Badge()
 

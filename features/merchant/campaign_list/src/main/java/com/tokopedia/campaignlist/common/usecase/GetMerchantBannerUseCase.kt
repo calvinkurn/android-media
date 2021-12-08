@@ -80,6 +80,8 @@ class GetMerchantBannerUseCase @Inject constructor(
                       IsOfficial
                       Logo
                       City
+                      Domain
+                      UserID
                       Badge {
                         Title
                         ImageURL
