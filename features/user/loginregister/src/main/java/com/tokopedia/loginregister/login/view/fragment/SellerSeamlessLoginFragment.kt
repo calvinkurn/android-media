@@ -177,16 +177,15 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_seller_seamless_login, container, false)
-
-        context?.run {
-            binding?.include?.seamlessFragmentShopName?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
-            binding?.sellerSeamlessTitle?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
-        }
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.run {
+            binding?.include?.seamlessFragmentShopName?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
+            binding?.sellerSeamlessTitle?.typeface = com.tokopedia.unifyprinciples.getTypeface(this, "NunitoSansExtraBold.ttf")
+        }
         if(GlobalConfig.isSellerApp()){
             connectService()
         }
