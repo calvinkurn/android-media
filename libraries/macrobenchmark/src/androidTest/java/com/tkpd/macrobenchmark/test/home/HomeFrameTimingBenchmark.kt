@@ -28,8 +28,7 @@ class HomeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicRecyclerviewInteraction(
                 MacroIntent.TKPD_PACKAGE_NAME,
-                MacroIntent.Home.RV_RESOURCE_ID,
-                currentIteration
+                MacroIntent.Home.RV_RESOURCE_ID
         )
     }
 

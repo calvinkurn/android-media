@@ -27,5 +27,9 @@ class TokoNowHomeStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmar
                 MacroIntent.TokopediaNow.PACKAGE_NAME,
                 MacroIntent.TokopediaNow.RV_RESOURCE_ID,
         )
+        MacroInteration.waitForRecyclerViewContent(
+                MacroIntent.TokopediaNow.PACKAGE_NAME,
+                MacroIntent.TokopediaNow.RV_RESOURCE_ID,
+        )
     }
 }

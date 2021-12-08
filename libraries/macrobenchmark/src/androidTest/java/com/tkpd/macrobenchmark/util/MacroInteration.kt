@@ -4,12 +4,16 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.*
 
 object MacroInteration {
-    fun basicRecyclerviewInteraction(packageName: String, rvResourceId: String, currentIteration: Int, delayBeforeTest: Long = 4000L) {
+    private val DEFAULT_TIMEOUT = 60000L
+    private val IDLE_DURATION = 2000L
+
+    fun basicRecyclerviewInteraction(packageName: String, rvResourceId: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
+        waitUntilRecyclerViewExist(packageName, rvResourceId)
+        waitForRecyclerViewContent(packageName, rvResourceId)
         val recycler = device.findObject(By.res(packageName, rvResourceId))
-        recycler.wait(Until.scrollable(true), 60000L)
 
         // Set gesture margin to avoid triggering gesture navigation
         // with input events from automation.
@@ -20,13 +24,20 @@ object MacroInteration {
         }
     }
 
+    fun waitUntilRecyclerViewExist(packageName: String, rvResourceId: String) {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instrumentation)
+        device.wait(Until.findObject(By.res(packageName, rvResourceId)), DEFAULT_TIMEOUT)
+        device.waitForIdle(IDLE_DURATION)
+    }
+
     fun waitForRecyclerViewContent(packageName: String, rvResourceId: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
         val recycler = device.findObject(By.res(packageName, rvResourceId))
 
-        recycler.wait(Until.scrollable(true), 60000L)
-        device.waitForIdle(2000)
+        recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
+        device.waitForIdle(IDLE_DURATION)
     }
 }
