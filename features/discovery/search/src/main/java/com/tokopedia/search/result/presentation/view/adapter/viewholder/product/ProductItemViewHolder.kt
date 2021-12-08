@@ -46,7 +46,7 @@ abstract class ProductItemViewHolder(
 
     private fun Int.toRatingCount(isTopAds: Boolean): Int {
         return if (isTopAds)
-            (this / 20f).roundToInt()
+            (this / RATING_COUNT_CONVERTER_DIVISOR).roundToInt()
         else
             this
     }
@@ -73,5 +73,9 @@ abstract class ProductItemViewHolder(
                 productListener.onProductImpressed(productItemData, adapterPosition)
             }
         }
+    }
+
+    companion object{
+        private const val RATING_COUNT_CONVERTER_DIVISOR = 20f
     }
 }
