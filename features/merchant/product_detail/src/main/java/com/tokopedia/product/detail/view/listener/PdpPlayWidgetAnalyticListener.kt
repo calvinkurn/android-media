@@ -16,7 +16,8 @@ class PdpPlayWidgetAnalyticListener(
         view: PlayWidgetMediumView,
         item: PlayWidgetMediumChannelUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
+        isAutoPlay: Boolean,
+        recommendationType: String
     ) {
         componentTrackDataModel?.let { listener.onImpressChannelCard(it, item) }
     }
@@ -25,7 +26,8 @@ class PdpPlayWidgetAnalyticListener(
         view: PlayWidgetMediumView,
         item: PlayWidgetMediumChannelUiModel,
         channelPositionInList: Int,
-        isAutoPlay: Boolean
+        isAutoPlay: Boolean,
+        recommendationType: String
     ) {
         componentTrackDataModel?.let { listener.onClickChannelCard(it, item) }
     }
