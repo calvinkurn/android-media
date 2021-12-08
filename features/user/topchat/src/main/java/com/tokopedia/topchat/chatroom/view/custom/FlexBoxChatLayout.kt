@@ -15,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,7 +26,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageA
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import kotlin.math.abs
-import kotlin.math.max
 
 
 class FlexBoxChatLayout : ViewGroup {
@@ -46,6 +46,8 @@ class FlexBoxChatLayout : ViewGroup {
     var info: TextView? = null
         private set
     var header: LinearLayout? = null
+        private set
+    var icon: IconUnify? = null
         private set
 
     /**
@@ -131,6 +133,7 @@ class FlexBoxChatLayout : ViewGroup {
             hourTime = it.findViewById(R.id.tvTime)
             info = it.findViewById(R.id.txt_info)
             header = it.findViewById(R.id.ll_msg_header)
+            icon = it.findViewById(R.id.iu_msg_icon)
             headerTitle = it.findViewById(R.id.tp_header_title)
             headerCta = it.findViewById(R.id.tp_header_cta)
             headerDivider = it.findViewById(R.id.v_header_divider)
@@ -290,13 +293,16 @@ class FlexBoxChatLayout : ViewGroup {
         measureChildWithMargins(
             header, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
+        measureChildWithMargins(
+            icon, widthMeasureSpec, 0, heightMeasureSpec, 0
+        )
 
         /**
          * calculate each direct child width & height
          */
         // Message
         val messageWidth = getTotalVisibleWidth(message)
-        val messageHeight = getTotalVisibleHeight(message)
+        var messageHeight = getTotalVisibleHeight(message)
         // Info
         val infoWidth = getTotalVisibleWidth(info)
         var infoHeight = getTotalVisibleHeight(info)
@@ -306,6 +312,9 @@ class FlexBoxChatLayout : ViewGroup {
         // Header
         val headerWidth = getTotalVisibleWidth(header)
         val headerHeight = getTotalVisibleHeight(header)
+        // msg icon
+        val iconWidth = getTotalVisibleWidth(icon)
+        val iconHeight = getTotalVisibleHeight(icon)
 
         /**
          * Measure first row dimension
@@ -316,17 +325,25 @@ class FlexBoxChatLayout : ViewGroup {
         /**
          * Measure second row dimension
          */
-        val secondRowWidth = messageWidth + statusWidth
+        val secondRowWidth = iconWidth + messageWidth + statusWidth
         val secondRowWidthDiff = totalWidth - secondRowWidth
         if (secondRowWidthDiff < 0) {
             totalWidth += abs(secondRowWidthDiff)
         }
-        val secondRowHeight = max(messageHeight, statusHeight)
+        val secondRowHeight = maxOf(messageHeight, statusHeight, iconHeight)
         totalHeight += secondRowHeight
-
-        /**
-         * Measure msg last line dimension
-         */
+        // check if icon and message is overlap
+        val messageMaxWidth = maxAvailableWidth - iconWidth
+        if (messageWidth > messageMaxWidth) {
+            totalHeight -= messageHeight
+            val messageWidthSpec = MeasureSpec.makeMeasureSpec(
+                messageMaxWidth, MeasureSpec.EXACTLY
+            )
+            message!!.measure(messageWidthSpec, heightMeasureSpec)
+            messageHeight = getTotalVisibleHeight(message)
+            totalHeight += messageHeight
+        }
+        // Measure msg last line dimension
         var isOverlapped = false
         val msgLineCount = message!!.lineCount
         val msgLastLineWidth: Float = if (msgLineCount > 0) {
@@ -335,7 +352,7 @@ class FlexBoxChatLayout : ViewGroup {
             0f
         }
         val offset = 5
-        val lastLineWidth = msgLastLineWidth + statusWidth - offset
+        val lastLineWidth = msgLastLineWidth + iconWidth + statusWidth - offset
         if (lastLineWidth > maxAvailableWidth) {
             totalHeight += statusHeight
             isOverlapped = true
@@ -397,19 +414,33 @@ class FlexBoxChatLayout : ViewGroup {
         }
 
         /**
+         * Layout icon
+         */
+        val leftIcon = paddingStart
+        val topIcon = topOffset
+        val rightIcon = leftIcon + getVisibleMeasuredWidth(icon)
+        val bottomIcon = topIcon + getVisibleMeasuredHeight(icon)
+        icon?.layout(
+            leftIcon,
+            topIcon,
+            rightIcon,
+            bottomIcon
+        )
+
+        /**
          * Layout msg
          */
-        val leftMsg = paddingStart
+        val leftMsg = rightIcon + getVisibleEndMargin(icon)
         val topMsg = topOffset
-        val rightMsg = paddingStart + message!!.measuredWidth
-        val bottomMsg = topMsg + message!!.measuredHeight
+        val rightMsg = leftMsg + getVisibleMeasuredWidth(message)
+        val bottomMsg = topMsg + getVisibleMeasuredHeight(message)
         message?.layout(
             leftMsg,
             topMsg,
             rightMsg,
             bottomMsg
         )
-        topOffset = bottomMsg
+        topOffset = maxOf(bottomIcon, bottomMsg)
 
         /**
          * Layout info
@@ -450,10 +481,32 @@ class FlexBoxChatLayout : ViewGroup {
         return view.measuredWidth + viewLp.leftMargin + viewLp.rightMargin
     }
 
+    private fun getVisibleMeasuredWidth(view: View?): Int {
+        if (view?.isVisible == false) return 0
+        return view?.measuredWidth ?: 0
+    }
+
     private fun getTotalVisibleHeight(view: View?): Int {
         val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
         if (!view.isVisible) return 0
         return view.measuredHeight + viewLp.topMargin + viewLp.bottomMargin
+    }
+
+    private fun getVisibleMeasuredHeight(view: View?): Int {
+        if (view?.isVisible == false) return 0
+        return view?.measuredHeight ?: 0
+    }
+
+    private fun getVisibleEndMargin(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return viewLp.rightMargin
+    }
+
+    private fun getVisibleStartMargin(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return viewLp.leftMargin
     }
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
