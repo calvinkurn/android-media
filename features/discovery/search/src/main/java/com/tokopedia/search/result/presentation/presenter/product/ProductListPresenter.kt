@@ -41,7 +41,6 @@ import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -136,7 +135,6 @@ class ProductListPresenter @Inject constructor(
         private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
         private val topAdsUrlHitter: TopAdsUrlHitter,
         private val schedulersProvider: SchedulersProvider,
-        remoteConfig: Lazy<RemoteConfig>,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
         ProductListSectionContract.Presenter {
 
