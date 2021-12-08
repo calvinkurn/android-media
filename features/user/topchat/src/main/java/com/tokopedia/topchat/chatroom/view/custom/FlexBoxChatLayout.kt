@@ -280,6 +280,15 @@ class FlexBoxChatLayout : ViewGroup {
         }
     }
 
+    fun bindTextColor(msg: MessageUiModel) {
+        val textColor = if (msg.isDeleted()) {
+            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+        } else {
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+        }
+        message?.setTextColor(MethodChecker.getColor(context, textColor))
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         if (message == null || status == null || info == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
