@@ -2,6 +2,8 @@ package com.tokopedia.wishlist.util
 
 import android.os.Bundle
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -19,6 +21,7 @@ object WishlistV2Analytics {
     private const val VIEW_ITEM_LIST = "view_item_list"
     private const val SCREEN_NAME = "screenName"
     private const val PRODUCT_VIEW = "productView"
+    private const val PRODUCT_CLICK = "productClick"
     private const val PROMO_VIEW = "promoView"
     private const val PROMO_CLICK = "promoClick"
     private const val ITEM_LIST = "item_list"
@@ -55,7 +58,17 @@ object WishlistV2Analytics {
     private const val PURCHASE_PLATFORM = "purchase platform"
     private const val CURRENT_SITE = "currentSite"
     private const val BUSINESS_UNIT = "businessUnit"
+    private const val FIELD_ACTION_FIELD = "actionField"
     private const val EVENT_WISHLIST_PAGE = "wishlist page"
+    private const val FIELD_PRODUCT_NAME = "name"
+    private const val FIELD_PRODUCT_ID = "id"
+    private const val FIELD_PRODUCT_PRICE = "price"
+    private const val FIELD_PRODUCT_BRAND = "brand"
+    private const val FIELD_PRODUCT_VARIANT = "variant"
+    private const val FIELD_PRODUCT_CATEGORY = "category"
+    private const val FIELD_PRODUCT_LIST = "list"
+    private const val FIELD_PRODUCTS = "products"
+    private const val FIELD_PRODUCT_POSITION = "position"
     private const val SUBMIT_SEARCH_FROM_CARI_PRODUK = "submit search from cari produk"
     private const val VIEW_PRODUCT_CARD_ON_WISHLIST_PAGE = "view product card on wishlist page"
     private const val CLICK_URUTKAN_FILTER_CHIPS = "click urutkan filter chips"
@@ -86,8 +99,17 @@ object WishlistV2Analytics {
     private const val FIELD_PROMOTION_CREATIVE = "creative"
     private const val FIELD_PROMOTION_CREATIVE_URL = "creative_url"
     private const val FIELD_PROMOTION_POSITION = "position"
+    private const val FIELD_DIMENSION_83 = "dimension83"
     private const val IMPRESSION_TOPADS_LIST = "/wishlist - p%s - banner ads"
     private const val EVENT_ACTION_CLICK_BANNER_ADS = "click - banner ads"
+    private const val EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN = "impression on product recommendation"
+    private const val VALUE_NONE_OTHER = "none / other"
+    private const val VALUE_BEBAS_ONGKIR = "bebas ongkir"
+    private const val VALUE_BEBAS_ONGKIR_EXTRA = "bebas ongkir extra"
+    private const val IMPRESSION_EMPTY_LIST_TOPADS = "/wishlist - rekomendasi untuk anda - empty_wishlist - %s - product topads"
+    private const val IMPRESSION_EMPTY_LIST = "/wishlist - rekomendasi untuk anda - empty_wishlist - %s"
+    private const val EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION = "click on product recommendation"
+    private const val IMPRESSION_LIST_RECOMMENDATION = "/wishlist - rekomendasi untuk anda - %s%s"
 
     fun submitSearchFromCariProduk(keyword: String) {
         val event = TrackAppUtils.gtmData(
@@ -450,6 +472,131 @@ object WishlistV2Analytics {
                 FIELD_PROMOTION_CREATIVE, item.imageUrl,
                 FIELD_PROMOTION_CREATIVE_URL, item.imageUrl,
                 FIELD_PROMOTION_POSITION, "1"
+        )
+    }
+
+    fun impressionEmptyWishlistRecommendation(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int){
+        val map = DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(
+                    CURRENCY_CODE, IDR,
+                    IMPRESSIONS, DataLayer.listOf(
+                        convertRecommendationItemToDataImpressionObject(
+                                item = item,
+                                list = String.format(if(item.isTopAds) IMPRESSION_EMPTY_LIST_TOPADS else IMPRESSION_EMPTY_LIST, item.recommendationType),
+                                position = position
+                        )
+                    )
+                )
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    fun clickRecommendationItem(item: RecommendationItem, position: Int){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, PRODUCT_CLICK,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
+                        EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(
+                            CLICK, DataLayer.listOf(
+                                convertRecommendationItemToDataClickObject(
+                                        item = item,
+                                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
+                                        position = position
+                                )
+                            )
+                        )
+                )
+        )
+    }
+
+    private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
+                                                                list: String,
+                                                                position: Int): Any {
+        return DataLayer.mapOf(
+                FIELD_PRODUCT_NAME, item.name,
+                FIELD_PRODUCT_ID, item.productId.toString(),
+                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
+                FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                FIELD_PRODUCT_LIST, list,
+                FIELD_PRODUCT_POSITION, position,
+                FIELD_DIMENSION_83, getBebasOngkirValue(item)
+        )
+    }
+
+    private fun getBebasOngkirValue(item: RecommendationItem): String{
+        val hasFulfillment = item.labelGroupList.hasLabelGroupFulfillment()
+        return if(item.isFreeOngkirActive && hasFulfillment) VALUE_BEBAS_ONGKIR_EXTRA
+        else if(item.isFreeOngkirActive && !hasFulfillment) VALUE_BEBAS_ONGKIR
+        else VALUE_NONE_OTHER
+    }
+
+    private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
+                                                           list: String,
+                                                           position: Int): Any {
+        return DataLayer.mapOf(
+                FIELD_ACTION_FIELD, DataLayer.mapOf(
+                FIELD_PRODUCT_LIST, list
+        ),
+                FIELD_PRODUCTS, DataLayer.listOf(
+                DataLayer.mapOf(
+                        FIELD_PRODUCT_NAME, item.name,
+                        FIELD_PRODUCT_ID, item.productId.toString(),
+                        FIELD_PRODUCT_PRICE, item.priceInt.toString(),
+                        FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
+                        FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
+                        FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
+                        FIELD_PRODUCT_POSITION, position,
+                        FIELD_DIMENSION_83, if (item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                )
+        )
+        )
+    }
+
+    fun impressionCarouselRecommendationItem(trackingQueue: TrackingQueue, item: RecommendationItem, position: Int){
+        val map = DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_LOGIN,
+                EVENT_LABEL, "",
+                ECOMMERCE, DataLayer.mapOf(
+                    CURRENCY_CODE, IDR,
+                    IMPRESSIONS, DataLayer.listOf(
+                        convertRecommendationItemToDataImpressionObject(
+                                item = item,
+                                list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
+                                position = position
+                        )
+                    )
+                )
+        )
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    fun clickCarouselRecommendationItem(item: RecommendationItem, position: Int){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT, PRODUCT_CLICK,
+                        EVENT_CATEGORY, EVENT_WISHLIST_PAGE,
+                        EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION,
+                        EVENT_LABEL, "",
+                        ECOMMERCE, DataLayer.mapOf(
+                            CLICK, DataLayer.listOf(
+                                convertRecommendationItemToDataClickObject(
+                                        item = item,
+                                        list = String.format(IMPRESSION_LIST_RECOMMENDATION, item.recommendationType, if(item.isTopAds) " - product topads" else ""),
+                                        position = position
+                                )
+                            )
+                        )
+                )
         )
     }
 }

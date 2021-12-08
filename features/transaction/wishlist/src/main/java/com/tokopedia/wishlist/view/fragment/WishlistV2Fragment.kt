@@ -32,6 +32,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
 import com.tokopedia.searchbar.data.HintData
@@ -853,6 +854,62 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         )
         WishlistV2Analytics.clickTopAdsBanner(topAdsImageViewModel, userSession.userId, position)
         RouteManager.route(context, topAdsImageViewModel.applink)
+    }
+
+    override fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int) {
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                    this::class.java.simpleName,
+                    recommendationItem.trackerImageUrl,
+                    recommendationItem.productId.toString(),
+                    recommendationItem.name,
+                    recommendationItem.imageUrl
+            )
+        }
+        WishlistV2Analytics.impressionEmptyWishlistRecommendation(trackingQueue, recommendationItem, position)
+    }
+
+    override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
+        WishlistV2Analytics.clickRecommendationItem(recommendationItem, position)
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitClickUrl(
+                    this::class.java.simpleName,
+                    recommendationItem.clickUrl,
+                    recommendationItem.productId.toString(),
+                    recommendationItem.name,
+                    recommendationItem.imageUrl
+            )
+        }
+    }
+
+    override fun onRecommendationCarouselItemImpression(recommendationItem: RecommendationItem, position: Int) {
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitImpressionUrl(
+                    this::class.java.simpleName,
+                    recommendationItem.trackerImageUrl,
+                    recommendationItem.productId.toString(),
+                    recommendationItem.name,
+                    recommendationItem.imageUrl
+            )
+        }
+        WishlistV2Analytics.impressionCarouselRecommendationItem(trackingQueue, recommendationItem, position)
+    }
+
+    override fun onRecommendationCarouselItemClick(recommendationItem: RecommendationItem, position: Int) {
+        WishlistV2Analytics.clickCarouselRecommendationItem(recommendationItem, position)
+        if(recommendationItem.isTopAds) {
+            TopAdsUrlHitter(context).hitClickUrl(
+                    this::class.java.simpleName,
+                    recommendationItem.clickUrl,
+                    recommendationItem.productId.toString(),
+                    recommendationItem.name,
+                    recommendationItem.imageUrl
+            )
+        }
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, recommendationItem.productId.toString())
+            startActivity(intent)
+        }
     }
 
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
