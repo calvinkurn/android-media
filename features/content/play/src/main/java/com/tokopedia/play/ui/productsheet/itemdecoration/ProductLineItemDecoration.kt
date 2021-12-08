@@ -12,7 +12,7 @@ import com.tokopedia.play.R
  */
 class ProductLineItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    private val defaultOffset = context.resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl3)
+    private val defaultOffset = context.resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl1)
     private val startAndEndOffset = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

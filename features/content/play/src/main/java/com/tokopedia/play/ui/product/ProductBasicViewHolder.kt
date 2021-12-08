@@ -6,6 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -13,7 +14,6 @@ import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play_common.view.loadImage
 
 /**
  * Created by jegul on 23/02/21
@@ -29,12 +29,14 @@ open class ProductBasicViewHolder(
     private val tvCurrentPrice: TextView = itemView.findViewById(R.id.tv_current_price)
     private val tvOutOfStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
 
+    private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
+
     init {
         tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     open fun bind(item: PlayProductUiModel.Product) {
-        ivProductImage.loadImage(item.imageUrl)
+        ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         tvProductTitle.text = item.title
 
         when (item.stock) {

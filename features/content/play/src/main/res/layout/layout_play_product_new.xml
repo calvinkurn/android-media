@@ -33,13 +33,13 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:maxLines="1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_R500"
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@+id/fl_product_image"
         app:layout_constraintTop_toTopOf="@+id/fl_product_image"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:text="Stok : 5"
+        tools:text="Stok 5"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography

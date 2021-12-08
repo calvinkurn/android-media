@@ -53,10 +53,9 @@ class VariantSheetViewComponent(
     private val tvProductDiscount: TextView = findViewById(R.id.tv_product_discount)
     private val tvOriginalPrice: TextView = findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = findViewById(R.id.tv_current_price)
-    private val tvProductStock: TextView = findViewById(R.id.iv_free_shipping)
+    private val tvProductStock: TextView = findViewById(R.id.tv_product_stock)
     private val labelVariant1: Label = findViewById(R.id.label_variant1)
     private val labelVariant2: Label = findViewById(R.id.label_variant2)
-    private val labelCashback: Label = findViewById(R.id.label_cashback)
 
     private val globalErrorContainer: ScrollView = findViewById(R.id.global_error_variant_container)
     private val globalError: GlobalError = findViewById(R.id.global_error_variant)
