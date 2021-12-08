@@ -294,7 +294,7 @@ class DFInstallerFragment : Fragment(), CoroutineScope {
         progressTextPercent = view?.findViewById(R.id.progress_text_percent)
         progressBar = view?.findViewById(R.id.progress_bar)
         progressGroup = view?.findViewById(R.id.progress_group)
-        progressBar?.progressDrawable?.setColorFilter(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500), android.graphics.PorterDuff.Mode.MULTIPLY)
+        progressBar?.progressDrawable?.setColorFilter(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.MULTIPLY)
     }
 
     /** Display a loading state to the user. */

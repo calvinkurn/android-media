@@ -158,7 +158,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope, DFInstaller.DF
         imageView = findViewById(R.id.image)
         buttonDownload = findViewById(R.id.button_download)
         progressGroup = findViewById(R.id.progress_group)
-        progressBar.progressDrawable.setColorFilter(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500), android.graphics.PorterDuff.Mode.MULTIPLY)
+        progressBar.progressDrawable.setColorFilter(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_GN500), android.graphics.PorterDuff.Mode.MULTIPLY)
     }
 
     private fun loadAndLaunchModule(moduleName: String) {
