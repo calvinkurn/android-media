@@ -249,6 +249,8 @@ class CampaignListFragment : BaseDaggerFragment(),
         binding?.sfCampaignList?.parentListener = {
 
         }
+
+        binding?.sfCampaignList?.dismissListener = { viewModel.getCampaignList() }
     }
 
     private fun setupActiveCampaignListView(binding: FragmentCampaignListBinding?) {
