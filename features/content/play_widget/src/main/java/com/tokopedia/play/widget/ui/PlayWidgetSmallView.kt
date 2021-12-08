@@ -50,24 +50,45 @@ class PlayWidgetSmallView : ConstraintLayout, IPlayWidgetView {
     private val channelCardListener = object : PlayWidgetCardSmallChannelViewHolder.Listener {
 
         override fun onChannelImpressed(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
-            mAnalyticListener?.onImpressChannelCard(
+            if(item.recommendationType.isEmpty()) {
+                mAnalyticListener?.onImpressChannelCard(
+                    view = this@PlayWidgetSmallView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
+                )
+            }
+            else {
+                mAnalyticListener?.onImpressChannelCard(
                     view = this@PlayWidgetSmallView,
                     item = item,
                     channelPositionInList = position,
                     isAutoPlay = mIsAutoPlay,
                     recommendationType = item.recommendationType,
-            )
+                )
+            }
+
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetSmallChannelUiModel, position: Int) {
             mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
-            mAnalyticListener?.onClickChannelCard(
+            if(item.recommendationType.isEmpty()) {
+                mAnalyticListener?.onClickChannelCard(
+                    view = this@PlayWidgetSmallView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
+                )
+            }
+            else {
+                mAnalyticListener?.onClickChannelCard(
                     view = this@PlayWidgetSmallView,
                     item = item,
                     channelPositionInList = position,
                     isAutoPlay = mIsAutoPlay,
                     recommendationType = item.recommendationType,
-            )
+                )
+            }
         }
     }
 

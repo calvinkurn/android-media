@@ -87,23 +87,45 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
     private val channelCardListener = object : PlayWidgetCardMediumChannelViewHolder.Listener {
 
         override fun onChannelImpressed(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
-            mAnalyticListener?.onImpressChannelCard(
+            if(item.recommendationType.isEmpty()) {
+                mAnalyticListener?.onImpressChannelCard(
+                    view = this@PlayWidgetMediumView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
+                )    
+            }
+            else {
+                mAnalyticListener?.onImpressChannelCard(
                     view = this@PlayWidgetMediumView,
                     item = item,
                     channelPositionInList = position,
                     isAutoPlay = mIsAutoPlay,
                     recommendationType = item.recommendationType,
-            )
+                )
+            }
+
         }
 
         override fun onChannelClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
-            mAnalyticListener?.onClickChannelCard(
+            if(item.recommendationType.isEmpty()) {
+                mAnalyticListener?.onClickChannelCard(
+                    view = this@PlayWidgetMediumView,
+                    item = item,
+                    channelPositionInList = position,
+                    isAutoPlay = mIsAutoPlay
+                )
+            }
+            else {
+                mAnalyticListener?.onClickChannelCard(
                     view = this@PlayWidgetMediumView,
                     item = item,
                     channelPositionInList = position,
                     isAutoPlay = mIsAutoPlay,
                     recommendationType = item.recommendationType,
-            )
+                )
+            }
+
             if (mWidgetListener != null
                     && (item.channelType == PlayWidgetChannelType.Live
                             || item.channelType == PlayWidgetChannelType.Vod

@@ -16,8 +16,15 @@ interface PlayWidgetSmallAnalyticListener {
             view: PlayWidgetSmallView,
             item: PlayWidgetSmallChannelUiModel,
             channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            recommendationType: String,
+            isAutoPlay: Boolean
+    ) {}
+
+    fun onClickChannelCard(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetSmallChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        recommendationType: String,
     ) {}
 
     fun onClickBannerCard(
@@ -28,7 +35,14 @@ interface PlayWidgetSmallAnalyticListener {
             view: PlayWidgetSmallView,
             item: PlayWidgetSmallChannelUiModel,
             channelPositionInList: Int,
-            isAutoPlay: Boolean,
-            recommendationType: String,
+            isAutoPlay: Boolean
+    ) {}
+
+    fun onImpressChannelCard(
+        view: PlayWidgetSmallView,
+        item: PlayWidgetSmallChannelUiModel,
+        channelPositionInList: Int,
+        isAutoPlay: Boolean,
+        recommendationType: String,
     ) {}
 }

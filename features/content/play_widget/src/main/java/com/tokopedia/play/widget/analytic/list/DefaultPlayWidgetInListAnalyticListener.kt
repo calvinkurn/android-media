@@ -31,12 +31,20 @@ class DefaultPlayWidgetInListAnalyticListener (
         analytic.onClickViewAll(view, verticalWidgetPosition, businessWidgetPosition)
     }
 
+    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+        analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
+    }
+
     override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
         analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition, recommendationType)
     }
 
     override fun onClickBannerCard(view: PlayWidgetSmallView) {
         analytic.onClickBannerCard(view, verticalWidgetPosition, businessWidgetPosition)
+    }
+
+    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
+        analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
     }
 
     override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
@@ -51,7 +59,7 @@ class DefaultPlayWidgetInListAnalyticListener (
         analytic.onClickOverlayCard(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
     }
 
-    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
+    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         analytic.onClickChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
     }
 
@@ -67,7 +75,7 @@ class DefaultPlayWidgetInListAnalyticListener (
         analytic.onClickDeleteChannel(view, item, channelPositionInList, verticalWidgetPosition, businessWidgetPosition)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
+    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, verticalWidgetPosition, businessWidgetPosition)
     }
 
