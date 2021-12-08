@@ -27,6 +27,9 @@ android {
     defaultConfig {
         multiDexEnabled true
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
