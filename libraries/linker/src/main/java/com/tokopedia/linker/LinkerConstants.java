@@ -34,6 +34,8 @@ public interface LinkerConstants {
     String KEY_URI_REDIRECT_MODE = "$uri_redirect_mode";
     String VALUE_URI_REDIRECT_MODE = "2";
     String REGEX_APP_LINK = "\\{.*?\\} ?";
+    String TOKOPEDIA_SCHEME = "tokopedia://";
+    String QUERY_PARAM_SEPARATOR = "\\?";
 
     String ID = "id";
     String PRICE = "price";
@@ -135,6 +137,7 @@ public interface LinkerConstants {
     String UTM_TERM = "utm_term";
     String SCREEN_NAME_KEY = "screenName";
     String SCREEN_NAME_VALUE = "Deeplink Page";
+    String DEEPLINK_VALUE = "Deeplink - ";
 
     String CONTENT = "content";
     String CONTENT_TYPE = "content_type";
@@ -152,5 +155,7 @@ public interface LinkerConstants {
     String FIREBASE_KEY_FDL_ENABLE = "app_firebase_dynamic_link_activated";
     String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
     String IOS_BUNDLE_ID="com.tokopedia.Tokopedia";
+
+    String DISCOVERY_PATH = "discovery/";
 
 }
