@@ -9,6 +9,7 @@ object ApplinkConsInternalNavigation {
     const val SOURCE_ACCOUNT = "account"
     const val SOURCE_HOME_UOH = "home_uoh"
     const val SOURCE_HOME_WISHLIST = "home_wishlist"
+    const val SOURCE_HOME_WISHLIST_V2 = "home_wishlist_v2"
 
     const val HOST_NAVIGATION = "navigation"
 

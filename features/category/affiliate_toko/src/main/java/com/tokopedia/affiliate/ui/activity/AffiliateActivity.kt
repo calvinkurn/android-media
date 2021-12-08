@@ -14,9 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentSelected
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver.onFragmentUnSelected
-import com.tokopedia.affiliate.AFFILIATE_HELP_URL
-import com.tokopedia.affiliate.AFFILIATE_SPLASH_TIME
-import com.tokopedia.affiliate.PAGE_SEGMENT_HELP
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateActivityInterface
@@ -62,6 +60,12 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private var userActionRequiredForRegister = false
 
     private var isUserBlackListed = false
+
+    private val affiliateRemoteConfigUtils by lazy { AffiliateRemoteConfigUtils(applicationContext) }
+
+    private val isAffiliateWalletEnabled : Boolean
+        get() = affiliateRemoteConfigUtils.getBooleanRemoteConfig(AFFILIATE_WALLET_TRANSACTION_ENABLE, false)
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,8 +138,15 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     private fun initBottomNavigationView() {
         affiliateBottomNavigation = AffiliateBottomNavbar(
             findViewById(R.id.bottom_navbar),
-            this, this
+            this, this, isAffiliateWalletEnabled
         )
+        if(isAffiliateWalletEnabled){
+            INCOME_MENU = 2
+            HELP_MENU = 3
+        }else {
+            INCOME_MENU = 3
+            HELP_MENU = 2
+        }
     }
 
     override fun menuClicked(position: Int, id: Int): Boolean {
@@ -232,10 +243,10 @@ class AffiliateActivity : BaseViewModelActivity<AffiliateViewModel>(), IBottomCl
     }
 
     companion object MenuItems {
-        const val HOME_MENU = 0
-        const val PROMO_MENU = 1
-        const val INCOME_MENU = 2
-        const val HELP_MENU = 3
+        var HOME_MENU = 0
+        var PROMO_MENU = 1
+        var INCOME_MENU = 2
+        var HELP_MENU = 3
     }
 
     override fun selectItem(position: Int, id: Int) {
