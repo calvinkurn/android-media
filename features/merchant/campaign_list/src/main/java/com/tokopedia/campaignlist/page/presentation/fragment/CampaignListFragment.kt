@@ -3,7 +3,6 @@ package com.tokopedia.campaignlist.page.presentation.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.KeyEvent.*
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +19,6 @@ import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.data.model.response.ShopData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
-import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBottomSheet
@@ -39,7 +37,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -255,6 +252,9 @@ class CampaignListFragment : BaseDaggerFragment(),
             campaignTypeFilter?.refChipUnify?.setChevronClickListener {
                 campaignTypeFilter?.listener?.invoke()
             }
+        }
+        binding?.sfCampaignList?.parentListener = {
+
         }
     }
 
