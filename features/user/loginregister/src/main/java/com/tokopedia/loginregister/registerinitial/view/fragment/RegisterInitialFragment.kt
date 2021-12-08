@@ -62,6 +62,7 @@ import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.databinding.FragmentInitialRegisterBinding
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
@@ -107,7 +108,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import kotlinx.android.synthetic.main.fragment_initial_register.*
+import com.tokopedia.utils.view.binding.viewBinding
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -180,6 +181,8 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
     private var isRegisterOvo = false
+
+    private val binding: FragmentInitialRegisterBinding? by viewBinding()
 
     override fun onStart() {
         super.onStart()
@@ -317,7 +320,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
-        partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
+        partialRegisterInputView.setEmailExtension(binding?.emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
         if (!GlobalConfig.isSellerApp()) {
@@ -1028,7 +1031,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
                     socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
                 }
-                emailExtension?.hide()
+                binding?.emailExtension?.hide()
             }
         }
     }
