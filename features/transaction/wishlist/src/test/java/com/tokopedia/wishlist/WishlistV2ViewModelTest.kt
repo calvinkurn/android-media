@@ -61,7 +61,6 @@ class WishlistV2ViewModelTest {
     private var recommendationWidget = RecommendationWidget()
     private var wishlistRecommendation = WishlistV2RecommendationDataModel()
     private var listProductCardModel = listOf<ProductCardModel>()
-    private var listRecommId = listOf<Long>()
     private var listRecommendationItem = listOf<RecommendationItem>()
     private var topAdsImageViewModel = TopAdsImageViewModel()
 
@@ -122,12 +121,11 @@ class WishlistV2ViewModelTest {
         val recommItem3 = RecommendationItem(name = "recomm3")
         listRecommendationItem = listOf(recommItem1, recommItem2, recommItem3)
 
-        listRecommId = listOf(1, 2, 3)
         wishlistV2Response = WishlistV2Response(WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(items = wishlistItemList)))
         recommendationWidget = RecommendationWidget(tid = "123", recommendationItemList = listRecommendationItem,
                 recommendationFilterChips = listOf(RecommendationFilterChipsEntity.RecommendationFilterChip()), title = "TestRecomm")
 
-        wishlistRecommendation = WishlistV2RecommendationDataModel(listProductCardModel, listRecommId, "TitleRecommendation")
+        wishlistRecommendation = WishlistV2RecommendationDataModel(listProductCardModel, listRecommendationItem, "TitleRecommendation")
 
         topAdsImageViewModel = TopAdsImageViewModel(bannerName = "testBanner")
     }
@@ -345,18 +343,6 @@ class WishlistV2ViewModelTest {
         wishlistV2ViewModel.convertRecommendationIntoProductDataModel(listOf())
 
         Assert.assertEquals("product1", listProductCardModel[0].productName)
-    }
-
-    // collectRecommendationId
-    @Test
-    fun collectRecommendationId_returnsNotEmpty() {
-        val listRecommId = arrayListOf<Long>()
-        listRecommId.add(1)
-        every { wishlistV2ViewModel.collectRecommendationId(listRecommendationItem) } returns listRecommId
-
-        wishlistV2ViewModel.collectRecommendationId(listOf())
-
-        Assert.assertEquals(1, listRecommId[0])
     }
 
     // mapToProductCardList
