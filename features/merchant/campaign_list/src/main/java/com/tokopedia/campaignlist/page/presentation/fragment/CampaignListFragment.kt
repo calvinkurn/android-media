@@ -1,5 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextWatcher
 import android.view.KeyEvent.*
@@ -37,6 +39,8 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -76,12 +80,15 @@ class CampaignListFragment : BaseDaggerFragment(),
     private var binding: FragmentCampaignListBinding? = null
     private var campaignTypeFilter: SortFilterItem? = null
     private var campaignStatusFilter: SortFilterItem? = null
+    private var sharedPreferences: SharedPreferences? = null
 
     companion object {
         @JvmStatic
         fun createInstance() = CampaignListFragment()
         private const val SHARE = "Share"
         private const val EMPTY_SEARCH_KEYWORD = ""
+        const val TICKER_STATE_PREFERENCE = "TICKER_STATE_PREFERENCE"
+        const val IS_DISMISS_TICKER = "IS_DISMISS_TICKER"
     }
 
     override fun getScreenName(): String {
@@ -109,6 +116,7 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedPreferences = activity?.getSharedPreferences(TICKER_STATE_PREFERENCE, Context.MODE_PRIVATE)
         setupView(binding)
         observeLiveData()
         viewModel.getSellerMetaData()
@@ -162,6 +170,35 @@ class CampaignListFragment : BaseDaggerFragment(),
     private fun setupView(binding: FragmentCampaignListBinding?) {
         setupSearchBar(binding)
         setupActiveCampaignListView(binding)
+        setupTicker(binding)
+    }
+
+    private fun setupTicker(binding: FragmentCampaignListBinding?) {
+        val isHideTicker = isDismissTicker()?: false
+        if (!isHideTicker) {
+            binding?.tickerCampaignTypeWording?.visibility = View.VISIBLE
+            binding?.tickerCampaignTypeWording?.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onDismiss() {
+                    saveDismissTickerState()
+                }
+            })
+        } else {
+            binding?.tickerCampaignTypeWording?.visibility = View.GONE
+        }
+    }
+
+    private fun isDismissTicker(): Boolean? {
+        return sharedPreferences?.getBoolean(IS_DISMISS_TICKER, false)
+    }
+
+    private fun saveDismissTickerState() {
+        sharedPreferences?.edit()?.run {
+            putBoolean(IS_DISMISS_TICKER, true)
+        }?.apply()
     }
 
     private fun setupSearchBar(binding: FragmentCampaignListBinding?) {
