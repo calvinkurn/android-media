@@ -47,6 +47,7 @@ class OfficialStoreTracking(context: Context) {
     private val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
     private val PROMOTIONS = "promotions"
     private val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
+    private val CLICK_BANNER = "click banner"
 
     private val ATTRIBUTION = "attribution"
     private val AFFINITY_LABEL = "affinityLabel"
@@ -294,6 +295,44 @@ class OfficialStoreTracking(context: Context) {
                     )
                 )
             )
+        )
+        tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
+    }
+
+    fun eventClickFeaturedBrandOS(
+        categoryName: String,
+        shopPosition: Int,
+        shopId: String,
+        creativeName: String,
+        headerName: String,
+        bannerId: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            EVENT, PROMO_CLICK,
+            EVENT_CATEGORY, OS_MICROSITE_SINGLE,
+            EVENT_ACTION, EVENT_ACTION_POPULAR_BRANDS.format(CLICK_BANNER, POPULAR_BRANDS),
+            EVENT_LABEL, EVENT_LABEL_POPULAR_BRANDS.format(POPULAR_BRANDS, shopId, categoryName),
+            ECOMMERCE, DataLayer.mapOf(
+                PROMO_CLICK, DataLayer.mapOf(
+                    PROMOTIONS, DataLayer.listOf(
+                        DataLayer.mapOf(
+                            FIELD_PRODUCT_ID, PROMOTIONS_ID_POPULAR_BRANDS.format(bannerId, shopId),
+                            FIELD_PRODUCT_NAME, PROMOTIONS_NAME_POPULAR_BRANDS.format(
+                                SLASH_OFFICIAL_STORE_WITHOUT_CATEGORY,
+                                categoryName,
+                                POPULAR_BRANDS,
+                                headerName
+                            ),
+                            FIELD_PRODUCT_POSITION, "$shopPosition",
+                            FIELD_PRODUCT_CREATIVE, "$creativeName reference: row 18"
+                        )
+                    )
+                )
+            ),
+            FIELD_BUSINESS_UNIT, VALUE_BUSINESS_UNIT_DEFAULT,
+            FIELD_CURRENT_SITE, VALUE_CURRENT_SITE_DEFAULT,
+            USER_ID, userId
         )
         tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
