@@ -89,7 +89,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var homepageViewModel: HotelHomepageViewModel
-    private var binding by autoClearedNullable<FragmentHotelHomepageBinding>()
+    private var mbinding: FragmentHotelHomepageBinding? = null
+    private val binding get() = mbinding
 
 
     @Inject
@@ -101,7 +102,6 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
     private lateinit var remoteConfig: RemoteConfig
     private var bannerWidthInPixels = 0
-    private var timerHotel = Timer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,7 +155,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentHotelHomepageBinding.inflate(inflater, container, false)
+        mbinding = FragmentHotelHomepageBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -644,14 +644,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 setMargin(left = 12.toPx(), top = 8.toPx(), bottom = 0, right = 12.toPx())
             } else {
                 slideToShow = SLIDE_TO_SHOW
-                timerHotel.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        Handler(Looper.getMainLooper()).post {
-                            nextSlide()
-                        }
-                    }
-                }, autoplayDuration, autoplayDuration)
-                autoplay = false
+                autoplay = true
                 infinite = true
             }
 
@@ -761,9 +754,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
         binding?.hotelContainerLastSearch?.visibility = View.GONE
     }
 
-    override fun onDestroy() {
-        timerHotel.cancel()
-        super.onDestroy()
+    override fun onDestroyView() {
+        binding?.bannerHotelHomepagePromo?.timer?.cancel()
+        super.onDestroyView()
+        mbinding = null
     }
 
     companion object {
