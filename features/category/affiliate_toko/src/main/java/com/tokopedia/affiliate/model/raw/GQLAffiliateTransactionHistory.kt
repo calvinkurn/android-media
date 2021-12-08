@@ -37,6 +37,7 @@ val GQL_Affiliate_Transaction_History: String = """query getAffiliateTransaction
             CreatedAtFormatted
             UpdatedAt
             UpdatedAtFormatted
+            HasDetail
         }
     }
 }

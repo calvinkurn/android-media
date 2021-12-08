@@ -76,7 +76,9 @@ data class AffiliateTransactionHistoryData(
                     @SerializedName("UpdatedAtFormatted")
                     var updatedAtFormatted: String,
                     @SerializedName("WithdrawalID")
-                    var withdrawalID: String
+                    var withdrawalID: String,
+                    @SerializedName("HasDetail")
+                    var hasDetail: Boolean? = false
             ) {
                 data class Label(
                         @SerializedName("LabelText")
