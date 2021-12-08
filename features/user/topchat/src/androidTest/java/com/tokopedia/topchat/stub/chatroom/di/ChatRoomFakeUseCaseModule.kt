@@ -18,7 +18,6 @@ import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.background.ChatBackgroundResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
@@ -414,8 +413,8 @@ class ChatRoomFakeUseCaseModule {
     @Provides
     @ChatScope
     fun provideChatBackgroundUseCase(
-        stub: ChatBackgroundUseCaseStub
-    ): ChatBackgroundUseCaseNew = stub
+        stub: GetChatBackgroundUseCaseStub
+    ): GetChatBackgroundUseCase = stub
 
     @Provides
     @ChatScope
@@ -423,7 +422,7 @@ class ChatRoomFakeUseCaseModule {
         repository: GraphqlRepositoryStub,
         cacheManager: TopchatCacheManager,
         dispatchers: CoroutineDispatchers
-    ): ChatBackgroundUseCaseStub {
-        return ChatBackgroundUseCaseStub(repository, cacheManager, dispatchers)
+    ): GetChatBackgroundUseCaseStub {
+        return GetChatBackgroundUseCaseStub(repository, cacheManager, dispatchers)
     }
 }

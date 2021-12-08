@@ -81,9 +81,6 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var uploadImageUseCase: TopchatUploadImageUseCase
 
     @RelaxedMockK
-    protected lateinit var groupStickerUseCase: ChatListGroupStickerUseCase
-
-    @RelaxedMockK
     protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCase
 
     @RelaxedMockK
@@ -238,7 +235,6 @@ abstract class BaseTopChatRoomPresenterTest {
                 addWishListUseCase,
                 removeWishListUseCase,
                 uploadImageUseCase,
-                groupStickerUseCase,
                 chatSrwUseCase,
                 tokoNowWHUsecase,
                 sharedPref,

@@ -14,7 +14,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.anyIntent
@@ -71,7 +70,6 @@ import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Matcher
@@ -133,7 +131,7 @@ abstract class TopchatRoomTest {
     protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
 
     @Inject
-    protected lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseStub
+    protected lateinit var chatBackgroundUseCase: GetChatBackgroundUseCaseStub
 
     @Inject
     protected lateinit var websocket: RxWebSocketUtilStub

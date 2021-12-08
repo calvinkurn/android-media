@@ -54,16 +54,19 @@ abstract class BaseTopChatViewModelTest {
     lateinit var addToCartOccMultiUseCase: AddToCartOccMultiUseCase
 
     @RelaxedMockK
-    lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCaseNew
+    lateinit var chatToggleBlockChatUseCase: ChatToggleBlockChatUseCase
 
     @RelaxedMockK
     lateinit var mutationMoveChatToTrashUseCase: MutationMoveChatToTrashUseCase
 
     @RelaxedMockK
-    lateinit var chatBackgroundUseCase: ChatBackgroundUseCaseNew
+    lateinit var getChatBackgroundUseCase: GetChatBackgroundUseCase
 
     @RelaxedMockK
     lateinit var chatAttachmentUseCase: ChatAttachmentUseCase
+
+    @RelaxedMockK
+    lateinit var getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase
 
     //Misc
     @RelaxedMockK
@@ -101,8 +104,9 @@ abstract class BaseTopChatViewModelTest {
             addToCartOccMultiUseCase,
             chatToggleBlockChatUseCase,
             mutationMoveChatToTrashUseCase,
-            chatBackgroundUseCase,
+            getChatBackgroundUseCase,
             chatAttachmentUseCase,
+            getChatListGroupStickerUseCase,
             dispatchers,
             remoteConfig,
             mapper

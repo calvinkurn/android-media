@@ -36,6 +36,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ToggleBlockChatParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.topchat.common.Constant
@@ -58,10 +60,11 @@ class TopChatViewModel @Inject constructor(
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
     private var addToCartOccUseCase: AddToCartOccMultiUseCase,
-    private val chatToggleBlockChat: ChatToggleBlockChatUseCaseNew,
+    private val chatToggleBlockChat: ChatToggleBlockChatUseCase,
     private val moveChatToTrashUseCase: MutationMoveChatToTrashUseCase,
-    private val chatBackgroundUseCase: ChatBackgroundUseCaseNew,
+    private val getChatBackgroundUseCase: GetChatBackgroundUseCase,
     private val chatAttachmentUseCase: ChatAttachmentUseCase,
+    private val getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
     private val mapper: ChatAttachmentMapper
@@ -119,6 +122,10 @@ class TopChatViewModel @Inject constructor(
     private val _chatAttachments = MutableLiveData<ArrayMap<String, Attachment>>()
     val chatAttachments: MutableLiveData<ArrayMap<String, Attachment>>
         get() = _chatAttachments
+
+    private val _chatListGroupSticker = MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>()
+    val chatListGroupSticker: MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>
+        get() = _chatListGroupSticker
 
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
@@ -379,7 +386,7 @@ class TopChatViewModel @Inject constructor(
 
     fun getBackground() {
         launchCatchError(block = {
-            chatBackgroundUseCase(Unit).collect {
+            getChatBackgroundUseCase(Unit).collect {
                 _chatBackground.value = Success(it)
             }
         }, onError = {
@@ -423,6 +430,16 @@ class TopChatViewModel @Inject constructor(
             postalCode = postalCode,
             latlon = latlon
         )
+    }
+
+    fun getStickerGroupList(isSeller: Boolean) {
+        launchCatchError(block = {
+            getChatListGroupStickerUseCase(isSeller).collect {
+                _chatListGroupSticker.value = Success(it)
+            }
+        }, onError = {
+            _chatListGroupSticker.value = Fail(it)
+        })
     }
 
 }

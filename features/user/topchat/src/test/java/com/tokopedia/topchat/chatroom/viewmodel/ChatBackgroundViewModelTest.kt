@@ -21,7 +21,7 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
             cacheManager.loadCache<String>(any(), any())
         } returns emptyCacheTest
         coEvery {
-            chatBackgroundUseCase(Unit)
+            getChatBackgroundUseCase(Unit)
         } returns flow {
             emit(differentBackgroundTest)
         }
@@ -43,7 +43,7 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
             cacheManager.loadCache<String>(any(), any())
         } returns valueCacheTest
         coEvery {
-            chatBackgroundUseCase(Unit)
+            getChatBackgroundUseCase(Unit)
         } returns flow {
             emit(valueCacheTest)
         }
@@ -65,7 +65,7 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
             cacheManager.loadCache<String>(any(), any())
         } returns valueCacheTest
         coEvery {
-            chatBackgroundUseCase(Unit)
+            getChatBackgroundUseCase(Unit)
         } returns flow {
             emit(differentBackgroundTest)
         }
@@ -87,7 +87,7 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
             cacheManager.loadCache<String>(any(), any())
         } throws expectedThrowable
         coEvery {
-            chatBackgroundUseCase(Unit)
+            getChatBackgroundUseCase(Unit)
         } returns flow {
             emit(differentBackgroundTest)
         }
@@ -109,7 +109,7 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
             cacheManager.loadCache<String>(any(), any())
         } returns emptyCacheTest
         coEvery {
-            chatBackgroundUseCase(Unit)
+            getChatBackgroundUseCase(Unit)
         } throws expectedThrowable
 
         //When
@@ -129,7 +129,7 @@ class ChatBackgroundViewModelTest: BaseTopChatViewModelTest() {
             cacheManager.loadCache<String>(any(), any())
         } throws expectedThrowable
         coEvery {
-            chatBackgroundUseCase(Unit)
+            getChatBackgroundUseCase(Unit)
         } throws expectedThrowable
 
         //When

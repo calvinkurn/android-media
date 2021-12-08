@@ -740,7 +740,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         )
         topchatViewState?.onSetCustomMessage(customMessage)
         presenter.getTemplate(chatRoom.isSeller())
-        presenter.getStickerGroupList(chatRoom)
+        viewModel.getStickerGroupList(chatRoom.isSeller())
         replyCompose?.setReplyListener(this)
         if (isSeller()) {
             setupFirstTimeForSeller()
@@ -2514,6 +2514,19 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
         viewModel.chatAttachments.observe(viewLifecycleOwner, {
             updateAttachmentsView(it)
+        })
+
+        viewModel.chatListGroupSticker.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    val listGroupSticker = it.data.first.chatListGroupSticker.list
+                    val listUpdate = it.data.second
+                    getChatMenuView()?.stickerMenu?.updateStickers(listGroupSticker, listUpdate)
+                }
+                is Fail -> {
+                    //Do nothing
+                }
+            }
         })
     }
 

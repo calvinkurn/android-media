@@ -146,8 +146,6 @@ interface TopChatContract {
             wishListActionListener: WishListActionListener
         )
 
-        fun getStickerGroupList(chatRoom: ChatroomViewModel)
-
         fun setBeforeReplyTime(createTime: String)
 
         fun isInTheMiddleOfThePage(): Boolean

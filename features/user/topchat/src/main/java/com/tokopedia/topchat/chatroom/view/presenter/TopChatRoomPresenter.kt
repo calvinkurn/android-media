@@ -43,8 +43,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAt
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -96,7 +94,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private val groupStickerUseCase: ChatListGroupStickerUseCase, //
     private val chatSrwUseCase: SmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
     private val sharedPref: SharedPreferences,
@@ -714,7 +711,6 @@ open class TopChatRoomPresenter @Inject constructor(
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
         compressImageSubscription.unsubscribe()
-        groupStickerUseCase.safeCancel()
         super.detachView()
     }
 
@@ -790,12 +786,6 @@ open class TopChatRoomPresenter @Inject constructor(
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
-    override fun getStickerGroupList(chatRoom: ChatroomViewModel) {
-        groupStickerUseCase.getStickerGroup(
-            chatRoom.isSeller(), ::onLoadingStickerGroup, ::onSuccessGetStickerGroup,
-        ) {}
-    }
-
     override fun setBeforeReplyTime(createTime: String) {
         getChatUseCase.minReplyTime = createTime
     }
@@ -839,32 +829,6 @@ open class TopChatRoomPresenter @Inject constructor(
                 _srw.postValue(Resource.error(it, null))
             }
         )
-    }
-
-    private fun onSuccessGetAttachments(attachments: ArrayMap<String, Attachment>) {
-        this.attachments.putAll(attachments.toMap())
-        view?.updateAttachmentsView(this.attachments)
-    }
-
-    private fun onErrorGetAttachments(
-        throwable: Throwable, errorAttachment: ArrayMap<String, Attachment>
-    ) {
-        this.attachments.putAll(errorAttachment.toMap())
-        view?.updateAttachmentsView(this.attachments)
-        throwable.printStackTrace()
-    }
-
-    private fun onLoadingStickerGroup(response: ChatListGroupStickerResponse) {
-        view?.getChatMenuView()?.stickerMenu
-            ?.updateStickers(response.chatListGroupSticker.list)
-    }
-
-    private fun onSuccessGetStickerGroup(
-        response: ChatListGroupStickerResponse,
-        needToUpdate: List<StickerGroup>
-    ) {
-        view?.getChatMenuView()?.stickerMenu
-            ?.updateStickers(response.chatListGroupSticker.list, needToUpdate)
     }
 
     protected open fun isEnableUploadImageService(): Boolean {
