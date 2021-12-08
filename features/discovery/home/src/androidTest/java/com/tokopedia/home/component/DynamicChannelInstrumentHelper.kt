@@ -23,7 +23,6 @@ import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
 import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
-import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.test.application.espresso_component.CommonActions.clickOnEachItemRecyclerView
 import com.tokopedia.test.application.espresso_component.CommonMatcher
 import org.hamcrest.BaseMatcher
@@ -63,10 +62,8 @@ private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
 
 fun disableCoachMark(context: Context){
     disableHomeAnimation()
-    disableOnboarding(context)
     disableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
-    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, true)
@@ -77,10 +74,8 @@ fun disableCoachMark(context: Context){
 
 fun enableCoachMark(context: Context){
     disableHomeAnimation()
-    enableOnboarding(context)
     enableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, false)
-    setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_NAV, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_CHOOSEADDRESS, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_BALANCE, false)
@@ -117,18 +112,6 @@ fun enableChooseAddressCoachmark(context: Context) {
     val sharedPrefs = context.getSharedPreferences(CHOOSE_ADDRESS_PREFERENCE_NAME, Context.MODE_PRIVATE)
     sharedPrefs.edit().putBoolean(
         CHOOSE_ADDRESS_EXTRA_IS_COACHMARK, true).apply()
-}
-
-fun disableOnboarding(context: Context) {
-    val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-    sharedPrefs.edit().putBoolean(
-            NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false).apply()
-}
-
-fun enableOnboarding(context: Context) {
-    val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-    sharedPrefs.edit().putBoolean(
-        NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true).apply()
 }
 
 fun waitForData() {
