@@ -27,4 +27,8 @@
         layout="@layout/view_play_user_report_sheet"
         />
 
+    <include
+        layout="@layout/view_user_report_submission"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

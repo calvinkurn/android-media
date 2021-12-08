@@ -9,23 +9,24 @@ import com.tokopedia.play.R
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
- * @author by astidhiyaa on 07/12/21
+ * @author by astidhiyaa on 08/12/21
  */
-class PlayUserReportSheetViewComponent(
+class PlayUserReportSubmissionViewComponent(
     container: ViewGroup,
     listener: Listener
-) : ViewComponent(container,  R.id.cl_user_report_sheet) {
+) : ViewComponent(container, R.id.cl_user_report_submission_sheet) {
+
+    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     init {
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
             .setOnClickListener {
-                listener.onCloseButtonClicked(this@PlayUserReportSheetViewComponent)
+                listener.onCloseButtonClicked(this@PlayUserReportSubmissionViewComponent)
             }
 
         findViewById<TextView>(com.tokopedia.play_common.R.id.tv_sheet_title).text = getString(R.string.play_kebab_report_title)
     }
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
@@ -44,8 +45,7 @@ class PlayUserReportSheetViewComponent(
         show()
     }
 
-    interface Listener{
-        fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent)
-        fun onItemReportClick(view: PlayUserReportSheetViewComponent)
+    interface Listener {
+        fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent)
     }
 }

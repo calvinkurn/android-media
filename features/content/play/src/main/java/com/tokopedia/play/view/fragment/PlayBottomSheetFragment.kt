@@ -40,6 +40,7 @@ import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -67,7 +68,8 @@ class PlayBottomSheetFragment @Inject constructor(
         VariantSheetViewComponent.Listener,
         PlayInteractiveLeaderboardViewComponent.Listener,
         KebabMenuSheetViewComponent.Listener,
-        PlayUserReportSheetViewComponent.Listener
+        PlayUserReportSheetViewComponent.Listener,
+        PlayUserReportSubmissionViewComponent.Listener
 {
 
     companion object {
@@ -81,6 +83,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
     private val kebabMenuSheetView by viewComponent { KebabMenuSheetViewComponent(it, this) }
     private val userReportSheetView by viewComponent { PlayUserReportSheetViewComponent(it, this) }
+    private val userReportSubmissionSheetView by viewComponent { PlayUserReportSubmissionViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -247,6 +250,14 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     /**
+     * UserReportSubmissionSheet View Component Listener
+     */
+
+    override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
+        playViewModel.hideUserReportSubmissionSheet()
+    }
+
+    /**
      * Private methods
      */
     private fun setupView(view: View) {
@@ -255,6 +266,7 @@ class PlayBottomSheetFragment @Inject constructor(
         leaderboardSheetView.hide()
         kebabMenuSheetView.hide()
         userReportSheetView.hide()
+        userReportSubmissionSheetView.hide()
     }
 
     private fun setupObserve() {
@@ -496,6 +508,11 @@ class PlayBottomSheetFragment @Inject constructor(
             it[BottomInsetsType.UserReportSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) userReportSheetView.showWithHeight(state.estimatedInsetsHeight)
                 else userReportSheetView.hide()
+            }
+
+            it[BottomInsetsType.UserReportSubmissionSheet]?.let { state ->
+                if (state is BottomInsetsState.Shown) userReportSubmissionSheetView.showWithHeight(state.estimatedInsetsHeight)
+                else userReportSubmissionSheetView.hide()
             }
         })
     }

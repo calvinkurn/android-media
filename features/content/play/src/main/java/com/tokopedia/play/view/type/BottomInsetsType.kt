@@ -10,5 +10,6 @@ enum class BottomInsetsType {
     VariantSheet,
     LeaderboardSheet,
     KebabMenuSheet,
-    UserReportSheet
+    UserReportSheet,
+    UserReportSubmissionSheet
 }

@@ -1401,7 +1401,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false) {
+                bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.UserReportSubmissionSheet]?.isShown == false) {
             sendChatView?.show()
         } else sendChatView?.invisible()
 
@@ -1417,6 +1418,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.UserReportSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.UserReportSubmissionSheet]?.isShown == false &&
                 bottomInsets[BottomInsetsType.Keyboard]?.isShown == true) {
             quickReplyView?.showIfNotEmpty()
         } else quickReplyView?.hide()

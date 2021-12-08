@@ -683,6 +683,29 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    fun onShowUserReportSubmissionSheet(estimatedSheetHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+            BottomInsetsState.Shown(
+                estimatedInsetsHeight = estimatedSheetHeight,
+                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isShown == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun hideUserReportSubmissionSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.UserReportSubmissionSheet] =
+            BottomInsetsState.Hidden(
+                isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSubmissionSheet]?.isHidden == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
     fun hideInsets(isKeyboardHandled: Boolean) {
         val defaultBottomInsets = getDefaultBottomInsetsMapState()
         _observableBottomInsetsState.value = if (isKeyboardHandled) {
