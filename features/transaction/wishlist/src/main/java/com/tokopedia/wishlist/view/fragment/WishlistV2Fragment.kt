@@ -40,6 +40,8 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -85,12 +87,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private var searchQuery = ""
     private var activityWishlistV2 = ""
     private var isBulkDeleteShow = false
-    private var listBulkDelete: ArrayList<String> = arrayListOf()
+    private var listBulkDelete = arrayListOf<String>()
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private lateinit var firebaseRemoteConfig : FirebaseRemoteConfigImpl
     private lateinit var trackingQueue: TrackingQueue
     private var wishlistItemOnAtc = WishlistV2Response.Data.WishlistV2.Item()
     private var indexOnAtc = 0
+    private val listTitleCheckboxIdSelected = arrayListOf<String>()
 
     private val wishlistViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[WishlistV2ViewModel::class.java]
@@ -215,6 +218,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                         if (wishlistV2.totalData == 0) {
                             isFetchRecommendation = true
                             hideTotalLabel()
+                            hideSortFilter(wishlistV2.sortFilters)
                         } else {
                             updateTotalLabel(wishlistV2.totalData)
                         }
@@ -502,6 +506,18 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
+    private fun hideSortFilter(sortFilters: List<WishlistV2Response.Data.WishlistV2.SortFiltersItem>) {
+        var isFilterActive = false
+        sortFilters.forEach { filterItem ->
+            if (filterItem.isActive) isFilterActive = true
+        }
+        if (!isFilterActive) {
+            binding?.run {
+                clWishlistHeader.gone()
+            }
+        }
+    }
+
     private fun showLoader() {
         wishlistV2Adapter.showLoader()
         binding?.run {
@@ -584,19 +600,13 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     filterBottomSheetAdapter.notifyDataSetChanged()
                     filterBottomSheet.showButtonSave()
                     listOptionIdSelected.clear()
+                    listTitleCheckboxIdSelected.clear()
                 }
             } else {
                 filterBottomSheet.setAction(CTA_RESET) {
                     filterBottomSheet.dismiss()
                     removeFilter(filterItem)
                 }
-            }
-        }
-
-        paramWishlistV2.sortFilters.forEach { sortFilterParam ->
-            if (sortFilterParam.name == FILTER_OFFERS) {
-                listOptionIdSelected = sortFilterParam.selected
-                nameSelected = FILTER_OFFERS
             }
         }
 
@@ -610,14 +620,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 hitAnalyticsFilterOptionSelected(name, label)
             }
 
-            override fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean) {
+            override fun onCheckboxSelected(name: String, optionId: String, isChecked: Boolean, titleCheckbox: String) {
+                paramWishlistV2.sortFilters.forEach { sortFilterParam ->
+                    if (sortFilterParam.name == FILTER_OFFERS) {
+                        listOptionIdSelected = sortFilterParam.selected
+                        nameSelected = FILTER_OFFERS
+                    }
+                }
                 if (isChecked) {
                     nameSelected = name
                     if (!listOptionIdSelected.contains(optionId)) {
                         listOptionIdSelected.add(optionId)
                     }
+                    if (!listTitleCheckboxIdSelected.contains(titleCheckbox)) {
+                        listTitleCheckboxIdSelected.add(titleCheckbox)
+                    }
                 } else {
                     listOptionIdSelected.remove(optionId)
+                    listTitleCheckboxIdSelected.remove(titleCheckbox)
                 }
 
                 filterBottomSheet.showButtonSave()
@@ -627,6 +647,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                     filterBottomSheet.bottomSheetAction.visible()
                     filterBottomSheet.bottomSheetAction.setOnClickListener {
                         listOptionIdSelected.clear()
+                        listTitleCheckboxIdSelected.clear()
                         filterBottomSheetAdapter.isResetCheckbox = true
                         filterBottomSheetAdapter.notifyDataSetChanged()
                     }
@@ -635,15 +656,15 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
 
             override fun onSaveCheckboxSelection() {
-                paramWishlistV2.sortFilters.clear()
                 if (listOptionIdSelected.isNotEmpty()) {
+                    paramWishlistV2.sortFilters.removeAll { it.name == nameSelected }
                     paramWishlistV2.sortFilters.add(WishlistV2Params.WishlistSortFilterParam(
                             name = nameSelected, selected = listOptionIdSelected as ArrayList<String>))
                 }
 
                 filterBottomSheet.dismiss()
                 doRefresh()
-                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(listOptionIdSelected.toString())
+                WishlistV2Analytics.clickSimpanOnPenawaranFilterChips(listTitleCheckboxIdSelected.toString().replace("[", "").replace("]", ""))
             }
         })
         filterBottomSheet.show(childFragmentManager)
@@ -811,6 +832,29 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         }
     }
 
+    override fun onBannerTopAdsImpression(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
+        TopAdsUrlHitter(context).hitImpressionUrl(
+                this::class.java.simpleName,
+                topAdsImageViewModel.adViewUrl,
+                "",
+                "",
+                topAdsImageViewModel.imageUrl
+        )
+        WishlistV2Analytics.impressTopAdsBanner(userSession.userId, topAdsImageViewModel, position)
+    }
+
+    override fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
+        TopAdsUrlHitter(context).hitClickUrl(
+                this::class.java.simpleName,
+                topAdsImageViewModel.adClickUrl,
+                "",
+                "",
+                topAdsImageViewModel.imageUrl
+        )
+        WishlistV2Analytics.clickTopAdsBanner(topAdsImageViewModel, userSession.userId, position)
+        RouteManager.route(context, topAdsImageViewModel.applink)
+    }
+
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2Response.Data.WishlistV2.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
         WishlistV2Analytics.clickThreeDotsOnProductCard()
@@ -829,16 +873,10 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 containerDelete.visible()
                 deleteButton.apply {
                     isEnabled = true
-                    if (listBulkDelete.size > 1) {
+                    if (listBulkDelete.isNotEmpty()) {
                         text = getString(R.string.wishlist_v2_delete_text_counter, listBulkDelete.size)
                         setOnClickListener {
                             showPopupBulkDeleteConfirmation(listBulkDelete)
-                        }
-                    } else if (listBulkDelete.size == 1) {
-                        text = getString(R.string.wishlist_v2_delete_text)
-
-                        setOnClickListener {
-                            wishlistViewModel.deleteWishlistV2(listBulkDelete[0], userSession.userId)
                         }
                     }
                 }
