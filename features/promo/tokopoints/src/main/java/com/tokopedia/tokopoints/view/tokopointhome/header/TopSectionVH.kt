@@ -22,6 +22,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieComposition
@@ -30,10 +31,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.text.RangeInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recommendation_widget_common.viewutil.getActivityFromContext
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.customview.DigitTextView
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
@@ -41,6 +42,8 @@ import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.KUPON
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOKOMEMBER
 import com.tokopedia.tokopoints.view.customview.DynamicItemActionView.Companion.TOPQUEST
+import com.tokopedia.tokopoints.view.customview.RewardCommonBottomSheet
+import com.tokopedia.tokopoints.view.model.BottomSheetModel
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
@@ -62,7 +65,8 @@ import com.tokopedia.webview.KEY_TITLEBAR
 class TopSectionVH(
     itemView: View,
     private val cardRuntimeHeightListener: CardRuntimeHeightListener,
-    private val toolbarItemList: Any?
+    private val toolbarItemList: Any?,
+    private val fragmentManager: FragmentManager
 ) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var cardTierInfo: ConstraintLayout
@@ -141,7 +145,7 @@ class TopSectionVH(
                     this.postDelayed( {
                         this.setValue(0)
                         this.setValue(10, true)
-                    },1000L)
+                    },2000L)
                 }
             }
             setValue(100,true)
@@ -184,7 +188,17 @@ class TopSectionVH(
     }
 
     private fun showBottomSheetMembership(context: Context){
-        Toast.makeText(context,"sdvvv",Toast.LENGTH_SHORT).show()
+        val bs = RewardCommonBottomSheet()
+        val bottomSheetModel = BottomSheetModel(
+            contentTitle = "Selamat, kini kamu jadi \n" +
+                    "Member Silver!",
+            contentDescription = "Yuk, mulai belanja & nikmati keuntungannya! ",
+            bottomSheetTitle = "Member Silver",
+            remoteImage = "phone_verification.png",
+            buttonText = "Lihat Membership"
+        )
+        bs.setBottomSheet(bottomSheetModel)
+        bs.show(fragmentManager,"")
     }
 
     private fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {

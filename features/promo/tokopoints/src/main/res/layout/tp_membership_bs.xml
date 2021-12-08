@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+        android:id="@+id/iv_bs_membership"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="@dimen/spacing_lvl8"
+        android:layout_marginStart="@dimen/spacing_lvl8"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/unify_space_16"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_membership"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:lines="2"
+        app:typographyWeight="reguler"
+        android:typeface="normal"
+        app:typographyType="heading_2"
+        android:textColor="@color/Unify_N700"
+        android:layout_marginEnd="@dimen/spacing_lvl8"
+        android:layout_marginStart="@dimen/spacing_lvl8"
+        app:layout_constraintTop_toBottomOf="@id/iv_bs_membership"
+        tools:text="Selamat, kini kamu jadi Member!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_desc_membership"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:lines="2"
+        app:typographyType="body_3"
+        android:textColor="@color/Unify_N700"
+        android:layout_marginEnd="@dimen/spacing_lvl8"
+        android:layout_marginStart="@dimen/spacing_lvl8"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_membership"
+        tools:text="Yuk, mulai belanja  nikmati keuntungannya! !" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/button_membership"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Lihat Membership"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:layout_marginStart="@dimen/unify_space_16"
+        app:layout_constraintTop_toBottomOf="@+id/tv_desc_membership"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

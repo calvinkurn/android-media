@@ -168,3 +168,61 @@ const val TP_STATUS_MATCHING_QUERY = """
 }
 
 """
+
+const val TP_REWARD_TOPSECTION = """
+query  tokopediaRewardTopSection(${'$'}apiVersion: String!) {
+    tokopediaRewardTopSection(apiVersion: ${'$'}apiVersion) {
+    title
+    profilePicture
+    introductionText
+    tier {
+      id
+      nameDesc
+    }
+    target {
+      text
+      textColor
+      backgroundColor
+    }
+    dynamicActionList {
+      id
+      cta {
+        icon
+        text
+        url
+        appLink
+      }
+      counter {
+        isShowCounter
+        counter
+        counterStr
+      }
+      counterTotal {
+        isShowCounter
+        counter
+        counterStr
+      }
+      iconImageURL
+      iconImageURLScrolled
+    }
+    backgroundImageURLMobileV2
+    isShowIntroPage
+    isShowSavingPage
+    progressInfoList {
+      currentAmount
+      iconImageURL
+      tierID
+      tierLevel
+    }
+    lastVisitBackgroundImageURL
+    lastVisitBackgroundImageURLMobile
+    lastVisitBackgroundImageURLMobileV2
+    targetV2 {
+      text
+      textColor
+      backgroundColor
+    }
+  }
+  }
+
+"""

@@ -146,7 +146,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun getAppContext(): Context {
-        return context!!
+        return requireContext()
     }
 
     override fun refreshTab() {
@@ -167,13 +167,13 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         if (banners == null || banners.isEmpty()) {
             return
         }
-        val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
+        val pager: ViewPager = requireView().findViewById(R.id.view_pager_banner)
         pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
         val pageIndicator: PageControl? = view?.findViewById(R.id.page_indicator)
         pageIndicator?.setCurrentIndicator(0)
         pageIndicator?.setIndicator(banners.size)
-        view!!.findViewById<View>(R.id.container_pager).visibility = View.VISIBLE
+        requireView().findViewById<View>(R.id.container_pager).visibility = View.VISIBLE
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
     }
 
@@ -262,7 +262,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun gotoMyCoupons() {
-        startActivity(getCallingIntent(context!!))
+        startActivity(getCallingIntent(requireContext()))
         AnalyticsTrackerUtil.sendEvent(activityContext,
                 AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
@@ -271,7 +271,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun getActivityContext(): Context {
-        return activity!!
+        return requireActivity()
     }
 
     override fun onAttach(context: Context) {
@@ -293,13 +293,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         } else if (source.id == R.id.text_failed_action) {
             requestHomePageData()
             mViewModel!!.getPointData()
-        } else if (source.id == R.id.bottom_view_membership) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.MEMBERSHIP, getString(R.string.tp_label_membership))
-            AnalyticsTrackerUtil.sendEvent(source.context,
-                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
-                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT,
-                    AnalyticsTrackerUtil.ActionKeys.CLICK_MEM_BOTTOM,
-                    "")
         }
     }
 
@@ -318,12 +311,10 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         mPagerSortType = view.findViewById(R.id.view_pager_sort_type)
         mTabSortType = view.findViewById(R.id.tabs_sort_type)
         mTextPoints = view.findViewById(R.id.text_point_value)
-        bottomViewMembership = view.findViewById(R.id.bottom_view_membership)
         mContainerPointDetail = view.findViewById(R.id.container_point_detail)
-        mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom)
         mAppBarHeader = view.findViewById(R.id.app_bar_header)
         appBarCollapseListener!!.hideToolbarElevation()
-        if (arguments != null && arguments!!.getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
+        if (arguments != null && requireArguments().getInt(CommonConstant.EXTRA_COUPON_COUNT) <= 0) {
             view.findViewById<View>(R.id.text_my_coupon).visibility = View.GONE
         }
     }
@@ -344,14 +335,13 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         if (view == null) {
             return
         }
-        view!!.findViewById<View>(R.id.text_my_coupon).setOnClickListener(this)
-        view!!.findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        bottomViewMembership!!.setOnClickListener(this)
-        mTextPointsBottom!!.setOnClickListener(this)
+        requireView().findViewById<View>(R.id.text_my_coupon).setOnClickListener(this)
+        requireView().findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
+        bottomViewMembership?.setOnClickListener(this)
     }
 
     override fun openWebView(url: String) {
-        if (context != null) context!!.startActivity(RouteManager.getIntent(activityContext, url))
+        if (context != null) requireContext().startActivity(RouteManager.getIntent(activityContext, url))
     }
 
     private fun updateToolbarTitle(title: String?) {
@@ -362,7 +352,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private val isSeeAllPage: Boolean
         get() = (arguments == null
-                || (arguments!!.getString(CommonConstant.ARGS_SLUG_CATEGORY)).isNullOrEmpty())
+                || (requireArguments().getString(CommonConstant.ARGS_SLUG_CATEGORY)).isNullOrEmpty())
 
     private fun getSelectedCategoryIndex(data: List<CatalogSubCategory>): Int {
         var counter = 0

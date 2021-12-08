@@ -329,7 +329,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         addDynamicToolbar(topSectionData?.tokopediaRewardTopSection?.dynamicActionList)
 
         if (adapter == null) {
-            val topSectionViewBinder = TopSectionViewBinder(topSectionData, this, toolbarItemList)
+            val topSectionViewBinder = TopSectionViewBinder(topSectionData, this, toolbarItemList, childFragmentManager)
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
                     CommonConstant.SectionLayoutType.TOPHEADER,
