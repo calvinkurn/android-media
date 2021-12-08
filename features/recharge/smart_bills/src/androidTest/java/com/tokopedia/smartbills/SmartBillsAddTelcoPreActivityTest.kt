@@ -121,7 +121,7 @@ class SmartBillsAddTelcoPreActivityTest {
 
     private fun chooseProduct(){
         Thread.sleep(2000)
-        onView(ViewMatchers.withText("Rp16.500")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(ViewMatchers.withText("Rp16.700")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
     }
 

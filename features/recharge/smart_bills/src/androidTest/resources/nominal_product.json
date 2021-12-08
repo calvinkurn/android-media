@@ -23,6 +23,7 @@
                       "attributes": {
                         "price": "Rp16.500",
                         "detail": "Masa berlaku 20 hari.",
+                        "desc": "Rp16.700",
                         "info": "Rp 16.500",
                         "product_labels": [],
                         "promo": null,
@@ -35,6 +36,7 @@
                         "price": "Rp26.500",
                         "detail": "Masa berlaku 30 hari",
                         "info": "Rp 26.500",
+                        "desc": "Rp 26.500",
                         "product_labels": [],
                         "promo": null,
                         "operator_id": 12
@@ -46,6 +48,7 @@
                         "price": "Rp31.500",
                         "detail": "Masa berlaku 30 hari.",
                         "info": "Rp 31.500",
+                        "desc": "Rp 31.500",
                         "product_labels": [],
                         "promo": null,
                         "operator_id": 12

@@ -93,7 +93,7 @@ class SmartBillsAddBillsSuccessActivityTest {
     }
 
     @Test
-    fun validateSmartBills() {
+    fun validateAddSmartBillsSuccess() {
         Thread.sleep(3000)
         click_add_bills()
         click_input_field()
@@ -128,7 +128,7 @@ class SmartBillsAddBillsSuccessActivityTest {
 
     private fun choose_product(){
         Thread.sleep(6000)
-        Espresso.onView(ViewMatchers.withText("Rp16.500")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withText("Rp16.700")).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
     }
 
