@@ -94,8 +94,8 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getNominalTelco()
         observeNominal()
+        getNominalTelco()
     }
 
     override fun onAttach(context: Context) {
