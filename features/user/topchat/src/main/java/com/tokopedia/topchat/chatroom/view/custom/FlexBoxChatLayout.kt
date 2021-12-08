@@ -25,6 +25,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageA
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.topchat.chatroom.view.adapter.util.MessageOnTouchListener
 import kotlin.math.abs
+import kotlin.math.max
 
 
 class FlexBoxChatLayout : ViewGroup {
@@ -289,97 +290,81 @@ class FlexBoxChatLayout : ViewGroup {
         measureChildWithMargins(
             header, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
-        val messageLp = message?.layoutParams as MarginLayoutParams
-        val infoLp = info?.layoutParams as MarginLayoutParams
-        val statusLp = status?.layoutParams as MarginLayoutParams
-        val headerLp = header?.layoutParams as MarginLayoutParams
 
         /**
          * calculate each direct child width & height
          */
         // Message
-        val messageWidth = message!!.measuredWidth + messageLp.leftMargin +
-                messageLp.rightMargin
-        val messageHeight = message!!.measuredHeight + messageLp.topMargin +
-                messageLp.bottomMargin
+        val messageWidth = getTotalVisibleWidth(message)
+        val messageHeight = getTotalVisibleHeight(message)
         // Info
-        val infoWidth = info!!.measuredWidth + infoLp.leftMargin + infoLp.rightMargin
-        val infoHeight = info!!.measuredHeight + infoLp.topMargin + infoLp.bottomMargin
+        val infoWidth = getTotalVisibleWidth(info)
+        var infoHeight = getTotalVisibleHeight(info)
         // Status
-        val statusWidth = status!!.measuredWidth + statusLp.leftMargin +
-                statusLp.rightMargin
-        val statusHeight = status!!.measuredHeight + statusLp.topMargin +
-                statusLp.bottomMargin
+        val statusWidth = getTotalVisibleWidth(status)
+        val statusHeight = getTotalVisibleHeight(status)
         // Header
-        val headerWidth = header!!.measuredWidth + headerLp.leftMargin +
-                headerLp.rightMargin
-        val headerHeight = header!!.measuredHeight + headerLp.topMargin +
-                headerLp.bottomMargin
+        val headerWidth = getTotalVisibleWidth(header)
+        val headerHeight = getTotalVisibleHeight(header)
 
         /**
-         * Measure header dimension
+         * Measure first row dimension
          */
-        if (header!!.isVisible) {
-            totalWidth += headerWidth
-            totalHeight += headerHeight
+        totalWidth += headerWidth
+        totalHeight += headerHeight
+
+        /**
+         * Measure second row dimension
+         */
+        val secondRowWidth = messageWidth + statusWidth
+        val secondRowWidthDiff = totalWidth - secondRowWidth
+        if (secondRowWidthDiff < 0) {
+            totalWidth += abs(secondRowWidthDiff)
         }
+        val secondRowHeight = max(messageHeight, statusHeight)
+        totalHeight += secondRowHeight
 
         /**
-         * Measure message dimension
+         * Measure msg last line dimension
          */
-        val msgWidthDiff = totalWidth - messageWidth
-        if (msgWidthDiff < 0) {
-            totalWidth += abs(msgWidthDiff)
-        }
-        totalHeight += messageHeight
-
-        /**
-         * Measure info layout
-         */
-        if (info!!.isVisible) {
-            val infoWidthDiff = totalWidth - infoWidth
-            if (infoWidthDiff < 0) {
-                totalWidth += abs(infoWidthDiff)
-            }
-            totalHeight += infoHeight
-
-            // Set info width if overlap with [status] layout
-            val infoMaxWidth = maxAvailableWidth - statusWidth
-            if (infoWidth > infoMaxWidth) {
-                val infoWidthSpec = MeasureSpec.makeMeasureSpec(
-                    infoMaxWidth, MeasureSpec.EXACTLY
-                )
-                info!!.measure(infoWidthSpec, heightMeasureSpec)
-            }
-        }
-
-        /**
-         * measure status dimension
-         */
-        if (info!!.isVisible) {
-            val footerWidth = infoWidth + statusWidth
-            val footerWidthDiff = totalWidth - footerWidth
-            if (footerWidthDiff < 0) {
-                totalWidth += abs(footerWidthDiff)
-            }
-            val statusAndInfoHeightDiff = statusHeight - infoHeight
-            if (statusAndInfoHeightDiff > 0) {
-                totalHeight += statusAndInfoHeightDiff
-            }
+        var isOverlapped = false
+        val msgLineCount = message!!.lineCount
+        val msgLastLineWidth: Float = if (msgLineCount > 0) {
+            message!!.layout.getLineWidth(msgLineCount - 1)
         } else {
-            val msgLineCount = message!!.lineCount
-            val msgLastLineWidth: Float = if (msgLineCount > 0) {
-                message!!.layout.getLineWidth(msgLineCount - 1)
-            } else {
-                0f
-            }
-            val lastLineAndStatusWidth = msgLastLineWidth + statusWidth
-            val offset = 5
-            if (lastLineAndStatusWidth < maxAvailableWidth + offset) {
-                totalWidth += statusWidth
-            } else {
-                totalHeight += statusHeight
-            }
+            0f
+        }
+        val offset = 5
+        val lastLineWidth = msgLastLineWidth + statusWidth - offset
+        if (lastLineWidth > maxAvailableWidth) {
+            totalHeight += statusHeight
+            isOverlapped = true
+        }
+
+        /**
+         * Measure third row dimension
+         */
+        val thirdRowWidth = infoWidth + statusWidth
+        val thirdRowWidthDiff = totalWidth - thirdRowWidth
+        if (thirdRowWidthDiff < 0) {
+            totalWidth += abs(thirdRowWidthDiff)
+        }
+        val thirdRowHeight = if (isOverlapped && info!!.isVisible) {
+            abs(infoHeight - statusHeight)
+        } else {
+            infoHeight
+        }
+        totalHeight += thirdRowHeight
+        // Set info width if overlap with [status] layout
+        val infoMaxWidth = maxAvailableWidth - statusWidth
+        if (infoWidth > infoMaxWidth) {
+            totalHeight -= infoHeight
+            val infoWidthSpec = MeasureSpec.makeMeasureSpec(
+                infoMaxWidth, MeasureSpec.EXACTLY
+            )
+            info!!.measure(infoWidthSpec, heightMeasureSpec)
+            infoHeight = getTotalVisibleHeight(info)
+            totalHeight += infoHeight
         }
 
         totalWidth += (paddingLeft + paddingRight)
@@ -457,6 +442,18 @@ class FlexBoxChatLayout : ViewGroup {
             bottomStatus
         )
 
+    }
+
+    private fun getTotalVisibleWidth(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return view.measuredWidth + viewLp.leftMargin + viewLp.rightMargin
+    }
+
+    private fun getTotalVisibleHeight(view: View?): Int {
+        val viewLp = view?.layoutParams as? MarginLayoutParams ?: return 0
+        if (!view.isVisible) return 0
+        return view.measuredHeight + viewLp.topMargin + viewLp.bottomMargin
     }
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?): Boolean {
