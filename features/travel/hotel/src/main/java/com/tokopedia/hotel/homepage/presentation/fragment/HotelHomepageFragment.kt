@@ -3,8 +3,6 @@ package com.tokopedia.hotel.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.InputType
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -72,7 +70,6 @@ import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
