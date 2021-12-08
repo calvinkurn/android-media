@@ -89,4 +89,7 @@
     <!--Pinned Product-->
     <string name="play_zero">0</string>
 
+    <!--Kebab Menu-->
+    <string name="play_kebab_report_title">Laporkan Video</string>
+
 </resources>

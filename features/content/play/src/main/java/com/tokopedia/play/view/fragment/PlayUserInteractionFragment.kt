@@ -124,7 +124,8 @@ class PlayUserInteractionFragment @Inject constructor(
         InteractiveWinnerBadgeViewComponent.Listener,
         RealTimeNotificationViewComponent.Listener,
         CastViewComponent.Listener,
-        ProductSeeMoreViewComponent.Listener
+        ProductSeeMoreViewComponent.Listener,
+        KebabMenuViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -152,6 +153,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
         it, R.id.view_like_bubble, viewLifecycleOwner.lifecycleScope, multipleLikesIconCacheStorage) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
+    private val kebabMenuView by viewComponentOrNull(isEagerInit = true) { KebabMenuViewComponent(it, R.id.view_kebab_menu, this) }
 
     /**
      * Interactive
@@ -1397,7 +1399,8 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (channelType.isLive &&
                 bottomInsets[BottomInsetsType.ProductSheet]?.isShown == false &&
-                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false) {
+                bottomInsets[BottomInsetsType.VariantSheet]?.isShown == false &&
+                bottomInsets[BottomInsetsType.KebabMenuSheet]?.isShown == false) {
             sendChatView?.show()
         } else sendChatView?.invisible()
 
@@ -1627,6 +1630,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun getInteractiveWinningDialog(): InteractiveWinningDialogFragment {
         val existing = InteractiveWinningDialogFragment.get(childFragmentManager)
         return existing ?: childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, InteractiveWinningDialogFragment::class.java.name) as InteractiveWinningDialogFragment
+    }
+
+    override fun onKebabMenuClick(view: KebabMenuViewComponent) {
+        playViewModel.onShowKebabMenuSheet(bottomSheetMaxHeight)
     }
 
     companion object {

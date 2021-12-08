@@ -637,6 +637,29 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    fun onShowKebabMenuSheet(estimatedSheetHeight: Int) {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.KebabMenuSheet] =
+            BottomInsetsState.Shown(
+                estimatedInsetsHeight = estimatedSheetHeight,
+                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isShown == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
+    fun hideKebabMenuSheet() {
+        val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
+
+        insetsMap[BottomInsetsType.KebabMenuSheet] =
+            BottomInsetsState.Hidden(
+                isPreviousStateSame = insetsMap[BottomInsetsType.KebabMenuSheet]?.isHidden == true
+            )
+
+        _observableBottomInsetsState.value = insetsMap
+    }
+
     fun hideInsets(isKeyboardHandled: Boolean) {
         val defaultBottomInsets = getDefaultBottomInsetsMapState()
         _observableBottomInsetsState.value = if (isKeyboardHandled) {

@@ -36,6 +36,7 @@ import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
+import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -63,7 +64,8 @@ class PlayBottomSheetFragment @Inject constructor(
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
-        PlayInteractiveLeaderboardViewComponent.Listener
+        PlayInteractiveLeaderboardViewComponent.Listener,
+        KebabMenuSheetViewComponent.Listener
 {
 
     companion object {
@@ -75,6 +77,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
+    private val kebabMenuSheetView by viewComponent { KebabMenuSheetViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -217,6 +220,14 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(RefreshLeaderboard)
     }
 
+    override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
+        playViewModel.hideKebabMenuSheet()
+    }
+
+    override fun onReportClick(view: KebabMenuSheetViewComponent) {
+        TODO("Not yet implemented")
+    }
+
     /**
      * Private methods
      */
@@ -224,6 +235,7 @@ class PlayBottomSheetFragment @Inject constructor(
         productSheetView.hide()
         variantSheetView.hide()
         leaderboardSheetView.hide()
+        kebabMenuSheetView.hide()
     }
 
     private fun setupObserve() {
@@ -455,6 +467,11 @@ class PlayBottomSheetFragment @Inject constructor(
                     playViewModel.submitAction(RefreshLeaderboard)
                 }
                 else leaderboardSheetView.hide()
+            }
+
+            it[BottomInsetsType.KebabMenuSheet]?.let { state ->
+                if (state is BottomInsetsState.Shown) kebabMenuSheetView.showWithHeight(state.estimatedInsetsHeight)
+                else kebabMenuSheetView.hide()
             }
         })
     }
