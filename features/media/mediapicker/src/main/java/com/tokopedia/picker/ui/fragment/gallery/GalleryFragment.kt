@@ -1,4 +1,4 @@
-package com.tokopedia.picker.ui.fragment.camera
+package com.tokopedia.picker.ui.fragment.gallery
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.picker.R
 
-class CameraFragment : BaseDaggerFragment() {
+class GalleryFragment : BaseDaggerFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -15,7 +15,7 @@ class CameraFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.fragment_camera,
+            R.layout.fragment_gallery,
             container,
             false
         )
