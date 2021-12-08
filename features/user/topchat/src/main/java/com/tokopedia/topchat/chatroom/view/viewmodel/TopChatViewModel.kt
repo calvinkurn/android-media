@@ -24,12 +24,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressRes
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
 import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
-import com.tokopedia.topchat.chatroom.domain.usecase.GetChatRoomSettingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.CloseReminderTicker
-import com.tokopedia.topchat.chatroom.domain.usecase.GetExistingMessageIdUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetShopFollowingUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.OrderProgressUseCase
-import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase
+import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -48,6 +43,7 @@ class TopChatViewModel @Inject constructor(
     private var reminderTickerUseCase: GetReminderTickerUseCase,
     private var closeReminderTicker: CloseReminderTicker,
     private var addToCartOccUseCase: AddToCartOccMultiUseCase,
+    private var unsendReplyUseCase: UnsendReplyUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
 ) : BaseViewModel(dispatcher.main) {
@@ -270,7 +266,15 @@ class TopChatViewModel @Inject constructor(
         )
     }
 
-    fun deleteMsg(replyTimeNano: String) {
+    fun deleteMsg(msgId: String, replyTimeNano: String) {
+        launchCatchError(block = {
+            val existingMessageIdParam = UnsendReplyUseCase.Param(
+                msgID = msgId,
+                replyTimes = listOf(replyTimeNano)
+            )
+            val response = unsendReplyUseCase(existingMessageIdParam)
+        }, onError = {
 
+        })
     }
 }

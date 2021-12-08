@@ -2582,7 +2582,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun deleteBubble(msg: BaseChatUiModel) {
         val replyTimeNano = msg.replyTime ?: return
-        viewModel.deleteMsg(replyTimeNano)
+        viewModel.deleteMsg(presenter.roomMetaData.msgId, replyTimeNano)
         adapter.deleteMsg(replyTimeNano)
     }
 
