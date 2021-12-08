@@ -12,6 +12,7 @@ import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -22,11 +23,13 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
     private val ivProductAtc: UnifyButton = itemView.findViewById(R.id.iv_product_atc)
     private val tvProductStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
+    private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
 
     override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
         when (item.stock) {
             OutOfStock -> {
+                lblOutOfStock.show()
                 tvProductStock.gone()
                 ivProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
@@ -36,6 +39,7 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             }
 
             is StockAvailable -> {
+                lblOutOfStock.gone()
                 tvProductStock.show()
                 tvProductStock.text = getString(R.string.play_product_item_stock, item.stock.stock)
                 btnProductBuy.isEnabled = true
