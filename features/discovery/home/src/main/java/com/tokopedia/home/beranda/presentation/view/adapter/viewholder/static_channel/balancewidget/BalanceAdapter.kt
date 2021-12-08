@@ -151,10 +151,11 @@ class BalanceAdapter(
              */
             if (!disableAnimation) {
                 home_iv_logo_shimmering?.show()
+                home_progress_bar_balance_layout?.show()
             } else {
                 home_iv_logo_shimmering?.gone()
+                home_progress_bar_balance_layout?.gone()
             }
-            home_progress_bar_balance_layout?.show()
             home_tv_btn_action_balance?.show()
 
             animationJob?.cancel()
