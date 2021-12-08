@@ -34,9 +34,10 @@ class GetMerchantBannerUseCase @Inject constructor(
                       review_end_date
                       status_text
                       discount_percentage_text
+                      total_product
+                      total_product_overload
                       highlight_products {
                         wording
-                        total_product
                         total_product_wording
                         Products {
                           ID

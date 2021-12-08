@@ -46,6 +46,10 @@ data class Campaign(
         @Expose val reviewEndDate: String = "",
         @SerializedName("status_text")
         @Expose val statusText: String = "",
+        @SerializedName("total_product")
+        @Expose val totalProduct: String = "",
+        @SerializedName("total_product_overload")
+        @Expose val totalProductOverload: String = "",
         @SerializedName("discount_percentage_text")
         @Expose val discountPercentageText: String = "",
         @SerializedName("highlight_products")
@@ -83,8 +87,6 @@ data class ShopData(
 data class HighlightProducts(
         @SerializedName("wording")
         @Expose val wording: String = "",
-        @SerializedName("total_product")
-        @Expose val totalProduct: String = "",
         @SerializedName("total_product_wording")
         @Expose val totalProductWording: String = "",
         @SerializedName("Products")
