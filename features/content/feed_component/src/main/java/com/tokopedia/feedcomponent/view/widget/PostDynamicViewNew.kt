@@ -1539,7 +1539,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                        if(!isPaused) {
                            vod_timer_view.visible()
                            var time = (videoPlayer?.getExoPlayer()?.duration
-                                   ?: 0L) / TIME_SECOND + 1
+                                   ?: 0L) / TIME_SECOND
                            object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
                                override fun onTick(millisUntilFinished: Long) {
                                    if (time < HOUR_IN_HOUR) {
