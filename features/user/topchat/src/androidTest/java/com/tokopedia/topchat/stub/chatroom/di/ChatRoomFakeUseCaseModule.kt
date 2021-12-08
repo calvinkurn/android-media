@@ -57,24 +57,6 @@ class ChatRoomFakeUseCaseModule {
 
     @Provides
     @ChatScope
-    fun provideStickerGroupUseCase(
-        stub: ChatListGroupStickerUseCaseStub
-    ): ChatListGroupStickerUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideStickerGroupUseCaseStub(
-        gqlUseCase: GraphqlUseCaseStub<ChatListGroupStickerResponse>,
-        cacheManager: TopchatCacheManager,
-        dispatchers: CoroutineDispatchers
-    ): ChatListGroupStickerUseCaseStub {
-        return ChatListGroupStickerUseCaseStub(gqlUseCase, cacheManager, dispatchers)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
     fun provideStickerListUseCase(
         stub: ChatListStickerUseCaseStub
     ): ChatListStickerUseCase = stub
@@ -424,5 +406,23 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetChatBackgroundUseCaseStub {
         return GetChatBackgroundUseCaseStub(repository, cacheManager, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideStickerGroupUseCase(
+        stub: ChatListGroupStickerUseCaseStub
+    ): GetChatListGroupStickerUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideStickerGroupUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        cacheManager: TopchatCacheManager,
+        dispatchers: CoroutineDispatchers
+    ): ChatListGroupStickerUseCaseStub {
+        return ChatListGroupStickerUseCaseStub(repository, cacheManager, dispatchers)
     }
 }

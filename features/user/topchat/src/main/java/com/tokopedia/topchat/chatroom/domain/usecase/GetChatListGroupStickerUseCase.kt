@@ -12,13 +12,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetChatListGroupStickerUseCase @Inject constructor(
+open class GetChatListGroupStickerUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val cacheManager: TopchatCacheManager,
     dispatcher: CoroutineDispatchers,
 ): FlowUseCase<Boolean, Pair<ChatListGroupStickerResponse, List<StickerGroup>>>(dispatcher.io) {
 
-    private val cacheKey = ChatListGroupStickerUseCase::class.java.simpleName
+    private val cacheKey = GetChatListGroupStickerUseCase::class.java.simpleName
 
     override fun graphqlQuery(): String = """
         query chatListGroupSticker($$PARAM_STICKER_TYPE: Int!){
