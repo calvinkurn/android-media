@@ -18,7 +18,6 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(element: DigitalRecommendationItemModel) {
-        setupProductNameMaxLine(element)
         renderCategoryName(element)
         renderProductName(element)
         renderImage(element)
@@ -32,15 +31,6 @@ class DigitalRecommendationViewHolder(private val binding: ItemDigitalRecommenda
         }
 
         actionListener.onItemBinding(element, adapterPosition)
-    }
-
-    private fun setupProductNameMaxLine(element: DigitalRecommendationItemModel) {
-        if (element.discountTag.isNotEmpty() || element.beforePrice.isNotEmpty() || element.price.isNotEmpty()) {
-            binding.tgProductDigitalRecommendation.maxLines = 2
-        } else {
-            binding.tgProductDigitalRecommendation.maxLines = 3
-        }
-        binding.tgProductDigitalRecommendation.requestLayout()
     }
 
     private fun renderCategoryName(element: DigitalRecommendationItemModel) {
