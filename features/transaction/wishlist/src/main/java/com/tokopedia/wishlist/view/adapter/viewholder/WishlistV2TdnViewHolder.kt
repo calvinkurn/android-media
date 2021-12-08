@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2TdnItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
@@ -22,7 +23,13 @@ class WishlistV2TdnViewHolder(private val binding: WishlistV2TdnItemBinding, pri
                 })
 
                 loadImage(item.dataObject)
-                actionListener?.onBannerTopAdsImpression(item.dataObject, adapterPosition)
+
+                setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+                    override fun onTopAdsImageViewImpression(viewUrl: String) {
+                        actionListener?.onBannerTopAdsImpression(item.dataObject, adapterPosition)
+                    }
+
+                })
             }
         }
     }
