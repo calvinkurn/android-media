@@ -1,7 +1,6 @@
 package com.tokopedia.play.ui.productsheet.viewholder
 
 import android.view.View
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -22,7 +21,6 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
 
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
     private val ivProductAtc: UnifyButton = itemView.findViewById(R.id.iv_product_atc)
-    private val tvProductStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
     private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
     private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
 
@@ -32,7 +30,6 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             OutOfStock -> {
                 shadowOutOfStock.show()
                 lblOutOfStock.show()
-                tvProductStock.gone()
                 ivProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
                 )
@@ -43,8 +40,6 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             is StockAvailable -> {
                 shadowOutOfStock.gone()
                 lblOutOfStock.gone()
-                tvProductStock.show()
-                tvProductStock.text = getString(R.string.play_product_item_stock, item.stock.stock)
                 btnProductBuy.isEnabled = true
                 ivProductAtc.isEnabled = true
                 ivProductAtc.setDrawable(

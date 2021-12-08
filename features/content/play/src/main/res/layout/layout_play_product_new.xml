@@ -35,7 +35,7 @@
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="Stok 5"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <View
         android:id="@+id/shadow_out_of_stock"
@@ -68,7 +68,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_product_out_of_stock"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_out_of_stock"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_goneMarginTop="@dimen/layout_lvl1"
+        app:layout_goneMarginTop="@dimen/layout_lvl0"
         app:layout_goneMarginStart="@dimen/layout_lvl1"
         app:typographyType="body_2"
         tools:text="Alyssa Suede Flats Alyssa Suede Flats  Alyssa Suede Flats " />
