@@ -55,10 +55,12 @@ class AddSmartBillsInquiryBottomSheet (private val getInquiryCallback: AddSmartB
 
     fun addSBMInquiry(attribute: TopupBillsEnquiryAttribute){
         val listInquiry = attribute.mainInfoList.toMutableList()
-        attribute.additionalMainInfo.firstOrNull()?.detail?.let {
-            listInquiry.addAll(it.map {
-                TopupBillsEnquiryMainInfo(it.label, it.value)
-            })
+        if (!attribute.additionalMainInfo.isNullOrEmpty()){
+            attribute.additionalMainInfo.forEach {
+                listInquiry.addAll(it.detail.map {
+                    TopupBillsEnquiryMainInfo(it.label, it.value)
+                })
+            }
         }
         smartBillsInquiryAdapter.listInquiry = listInquiry
     }
