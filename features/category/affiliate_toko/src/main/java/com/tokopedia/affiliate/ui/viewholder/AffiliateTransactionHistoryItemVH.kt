@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 
 class AffiliateTransactionHistoryItemVH(itemView: View)
     : AbstractViewHolder<AffiliateTransactionHistoryItemModel>(itemView) {
@@ -34,9 +36,21 @@ class AffiliateTransactionHistoryItemVH(itemView: View)
         itemView.findViewById<ConstraintLayout>(R.id.transaction_history_parent_view).setOnClickListener {
             when(element?.transaction?.transactionType){
                 TRANSACTION_TYPE_DEPOSIT -> {
+                    AffiliateAnalytics.sendEvent(
+                            AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+                            AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
+                            AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
+                            "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.INCOMING}",
+                            UserSession(itemView.context).userId)
                     itemView.context.startActivity(AffiliateTransactionDetailActivity.createIntent(itemView.context, element?.transaction?.transactionID))
                 }
                 TRANSACTION_TYPE_WITHDRAWAL -> {
+                    AffiliateAnalytics.sendEvent(
+                            AffiliateAnalytics.EventKeys.EVENT_VALUE_CLICK,
+                            AffiliateAnalytics.CategoryKeys.PENDAPATAN_PAGE,
+                            AffiliateAnalytics.ActionKeys.CLICK_TRANSACTION_CARD,
+                            "${element.transaction.transactionID} ${AffiliateAnalytics.LabelKeys.OUTGOING}",
+                            UserSession(itemView.context).userId)
                     itemView.context.startActivity(AffiliateSaldoWithdrawalDetailActivity.newInstance(itemView.context, element.transaction.transactionID))
                 }
             }

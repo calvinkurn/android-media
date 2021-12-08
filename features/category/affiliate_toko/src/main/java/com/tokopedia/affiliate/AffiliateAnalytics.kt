@@ -49,6 +49,7 @@ object AffiliateAnalytics {
             const val HOME_PORTAL_B_S = "home portal - bottom sheet"
             const val PROMOSIKAN_SRP = "promosikan srp"
             const val HOME_PORTAL = "home portal"
+            const val PENDAPATAN_PAGE = "pendapatan page"
         }
     }
 
@@ -65,6 +66,15 @@ object AffiliateAnalytics {
             const val IMPRESSION_HOME_PORTAL = "impression - home portal"
             const val IMPRESSION_HOME_PORTAL_B_S = "impression - home portal - bottom sheet"
             const val CLICK_SEARCH = "click - search"
+            const val CLICK_TRANSACTION_CARD = "click - transaction card"
         }
     }
+
+    interface LabelKeys {
+        companion object {
+            const val INCOMING = "incoming"
+            const val OUTGOING = "outgoing"
+        }
+    }
+
 }
