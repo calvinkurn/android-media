@@ -9,7 +9,6 @@
         android:id="@+id/iv_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +38,6 @@
         android:id="@+id/tv_coupon_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:ellipsize="end"
         android:maxLines="1"
@@ -65,7 +63,7 @@
         app:layout_constraintStart_toStartOf="@+id/tv_min_tranx"
         app:layout_constraintTop_toBottomOf="@+id/tv_min_tranx"
         app:typographyType="body_3"
-        tools:text="Berakhir dalam 10 hari •"
+        tools:text="Berakhir dalam 10 hari"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -84,7 +82,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_expired_date"
         app:typographyType="body_3"
         tools:text="Sisa 20 kupon"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_min_tranx"
@@ -107,7 +105,7 @@
         android:id="@+id/iv_copy_voucher"
         android:layout_width="@dimen/spacing_lvl5"
         android:layout_height="@dimen/spacing_lvl5"
-        android:layout_marginEnd="@dimen/spacing_lvl5"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         app:icon_name="COPY"
         app:layout_constraintBottom_toBottomOf="@+id/tv_coupon_stock"
         app:layout_constraintEnd_toEndOf="parent" />

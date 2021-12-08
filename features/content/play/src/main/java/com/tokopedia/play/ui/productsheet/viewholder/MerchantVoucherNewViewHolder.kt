@@ -4,9 +4,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.utils.date.DateUtil
@@ -21,20 +19,12 @@ class MerchantVoucherNewViewHolder(
 
     private val tvVoucherTitle: TextView = itemView.findViewById(R.id.tv_coupon_title)
     private val tvVoucherDescription: TextView = itemView.findViewById(R.id.tv_min_tranx)
-    private val tvVoucherStock: TextView = itemView.findViewById(R.id.tv_coupon_stock)
     private val tvVoucherExpiredDate: TextView = itemView.findViewById(R.id.tv_expired_date)
     private val ivCopyVoucher: IconUnify = itemView.findViewById(R.id.iv_copy_voucher)
 
     fun bind(item: MerchantVoucherUiModel) {
         tvVoucherTitle.text = item.title
         tvVoucherDescription.text = item.description
-
-        if (item.voucherStock > 0){
-            tvVoucherStock.show()
-            tvVoucherStock.text = getString(R.string.play_voucher_sheet_coupon_stock, item.voucherStock.toString())
-        }else{
-            tvVoucherStock.hide()
-        }
 
         tvVoucherExpiredDate.shouldShowWithAction(item.expiredDate.isNotEmpty()){
             tvVoucherExpiredDate.text = getString(R.string.play_voucher_sheet_coupon_expired, countDays(item.expiredDate).toString())
