@@ -1,0 +1,9 @@
+package com.tokopedia.picker.ui.fragment
+
+import androidx.fragment.app.Fragment
+
+interface PickerFragmentFactory {
+    fun permissionBoardingFragment(): Fragment
+    fun cameraFragment(): Fragment
+    fun pickerFragment(): Fragment
+}
