@@ -149,7 +149,7 @@ class BalanceAdapter(
             /**
              * Initial state
              */
-            home_iv_logo_shimmering?.show()
+            if (!disableAnimation) home_iv_logo_shimmering?.show()
             home_progress_bar_balance_layout?.show()
             home_tv_btn_action_balance?.show()
 
@@ -162,8 +162,10 @@ class BalanceAdapter(
                     home_tv_balance?.invisible()
                     home_tv_btn_action_balance?.invisible()
 
-                    home_iv_logo_shimmering?.show()
-                    home_progress_bar_balance_layout?.show()
+                    if (!disableAnimation) {
+                        home_iv_logo_shimmering?.show()
+                        home_progress_bar_balance_layout?.show()
+                    }
                 }
                 BalanceDrawerItemModel.STATE_SUCCESS -> {
                     home_progress_bar_balance_layout?.gone()
@@ -412,7 +414,7 @@ class BalanceAdapter(
                         home_iv_logo_balance?.setImageDrawable(itemView.context.getDrawable(it))
                     } else {
                         home_iv_logo_balance?.invisible()
-                        home_iv_logo_shimmering?.visible()
+                        if (!disableAnimation) home_iv_logo_shimmering?.visible()
                     }
                 }
                 element?.iconImageUrl?.let {
