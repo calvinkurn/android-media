@@ -51,8 +51,8 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
                 product_name.text = MethodChecker.fromHtmlPreserveLineBreak(relatedProductItem.name)
                 product_price.text = relatedProductItem.price
                 product_price.setTextColor(ContextCompat.getColor(
-                        context, if (relatedProductItem.type == TYPE_AFFILIATE) com.tokopedia.affiliatecommon.R.color.af_commission_blue
-                        else R.color.cp_Yellow_Y500))
+                        context, if (relatedProductItem.type == TYPE_AFFILIATE) com.tokopedia.unifyprinciples.R.color.Unify_B500
+                        else com.tokopedia.unifyprinciples.R.color.Unify_Y500))
                 product_rating.gone()
 
                 delete.setOnClickListener { removeProduct(adapterPosition) }

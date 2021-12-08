@@ -77,8 +77,8 @@ class ProductSuggestionAdapter(
                 bymeLogo.visible()
                 title.text = context.getString(R.string.cp_get_commission)
                 title.setWeight(Typography.REGULAR)
-                title.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_ae31353b))
-                price.setTextColor(MethodChecker.getColor(context, com.tokopedia.affiliatecommon.R.color.af_commission_blue))
+                title.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+                price.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
             }
         }
 
@@ -86,8 +86,8 @@ class ProductSuggestionAdapter(
             with(itemView) {
                 bymeLogo.gone()
                 title.setWeight(Typography.BOLD)
-                title.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.clr_f531353b))
-                price.setTextColor(MethodChecker.getColor(context, R.color.cp_Yellow_Y500))
+                title.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+                price.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
             }
 
         }

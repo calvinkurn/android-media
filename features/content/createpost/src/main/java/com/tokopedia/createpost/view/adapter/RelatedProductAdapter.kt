@@ -66,8 +66,8 @@ class RelatedProductAdapter(val listener: RelatedProductListener? = null, val ty
         holder.itemView.price.text = element.price
         holder.itemView.price.setTextColor(MethodChecker.getColor(
                 holder.itemView.context,
-                if (element.type == TYPE_AFFILIATE) com.tokopedia.affiliatecommon.R.color.af_commission_blue
-                else com.tokopedia.design.R.color.orange_red)
+                if (element.type == TYPE_AFFILIATE) com.tokopedia.unifyprinciples.R.color.Unify_B500
+                else com.tokopedia.unifyprinciples.R.color.Unify_Y500)
         )
         holder.itemView.delete.setOnClickListener {
             listener?.onItemDeleted(holder.adapterPosition)
