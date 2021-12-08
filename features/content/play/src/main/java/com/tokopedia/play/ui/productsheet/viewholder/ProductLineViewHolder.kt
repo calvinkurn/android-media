@@ -24,11 +24,13 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
     private val ivProductAtc: UnifyButton = itemView.findViewById(R.id.iv_product_atc)
     private val tvProductStock: TextView = itemView.findViewById(R.id.tv_product_out_of_stock)
     private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
+    private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
 
     override fun bind(item: PlayProductUiModel.Product) {
         super.bind(item)
         when (item.stock) {
             OutOfStock -> {
+                shadowOutOfStock.show()
                 lblOutOfStock.show()
                 tvProductStock.gone()
                 ivProductAtc.setDrawable(
@@ -39,6 +41,7 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             }
 
             is StockAvailable -> {
+                shadowOutOfStock.gone()
                 lblOutOfStock.gone()
                 tvProductStock.show()
                 tvProductStock.text = getString(R.string.play_product_item_stock, item.stock.stock)
