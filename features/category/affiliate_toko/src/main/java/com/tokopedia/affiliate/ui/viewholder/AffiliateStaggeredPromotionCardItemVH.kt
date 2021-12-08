@@ -33,7 +33,7 @@ class AffiliateStaggeredPromotionCardItemVH(itemView: View, private val promotio
             text = context.getString(R.string.affiliate_promo)
             setOnClickListener {
                 promotionClickInterface?.onPromotionClick( element?.product?.productID ?: "",
-                        "",
+                        element?.product?.shopID ?: "",
                         element?.product?.title ?: "",
                         element?.product?.image?.androidURL ?:"",
                         element?.product?.cardUrl?.desktopURL ?: "",
