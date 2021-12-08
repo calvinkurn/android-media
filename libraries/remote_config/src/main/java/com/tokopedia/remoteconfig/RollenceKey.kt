@@ -67,6 +67,7 @@ object RollenceKey {
 
     //Search
     const val SEARCH_CAROUSEL_CONTENT_TRACKER_UNIFICATION = "ContentTrackerUni"
+    const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
     const val WISHLIST_V2_REVAMP = "Wishlist_revamp_apps"

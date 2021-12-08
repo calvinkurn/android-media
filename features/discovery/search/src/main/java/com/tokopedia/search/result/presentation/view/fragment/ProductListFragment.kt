@@ -30,7 +30,6 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_FILTER_PAGE
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -1610,10 +1609,12 @@ class ProductListFragment: BaseDaggerFragment(),
         broadMatchItem.add(broadMatchItemDataView.asClickObjectDataLayer())
 
         SearchTracking.trackEventClickBroadMatchItem(
-                queryKey,
-                broadMatchItemDataView.alternativeKeyword,
-                getUserId(),
-                broadMatchItem,
+            queryKey,
+            broadMatchItemDataView.alternativeKeyword,
+            getUserId(),
+            broadMatchItemDataView.isOrganicAds,
+            broadMatchItemDataView.componentId,
+            broadMatchItem,
         )
     }
 
@@ -1641,7 +1642,7 @@ class ProductListFragment: BaseDaggerFragment(),
         return productCardOptionsModel
     }
 
-    override fun trackBroadMatchImpression(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView) {
         val trackingQueue = trackingQueue ?: return
         val broadMatchItemAsObjectDataLayer: MutableList<Any> = ArrayList()
         broadMatchItemAsObjectDataLayer.add(broadMatchItemDataView.asImpressionObjectDataLayer())
@@ -2008,8 +2009,20 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    override fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView) {
+        SearchTracking.trackEventImpressionBroadMatch(
+            iris,
+            broadMatchDataView,
+        )
+    }
+
     override fun trackEventClickSeeMoreBroadMatch(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.trackEventClickBroadMatchSeeMore(queryKey, broadMatchDataView.keyword, broadMatchDataView.dimension90)
+        SearchTracking.trackEventClickBroadMatchSeeMore(
+            broadMatchDataView,
+            queryKey,
+            broadMatchDataView.keyword,
+            broadMatchDataView.dimension90,
+        )
     }
 
     override fun trackEventClickSeeMoreDynamicProductCarousel(
