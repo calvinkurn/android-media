@@ -19,6 +19,7 @@ import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
 import com.tokopedia.campaignlist.common.data.model.response.ShopData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
+import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.campaignlist.databinding.FragmentCampaignListBinding
 import com.tokopedia.campaignlist.page.presentation.adapter.ActiveCampaignListAdapter
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBottomSheet
@@ -148,6 +149,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
+        campaignStatusFilter?.type = ChipsUnify.TYPE_SELECTED
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
         viewModel.setCampaignStatusId(listOf(selectedCampaignStatus.statusId))
         viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
@@ -155,7 +157,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onNoCampaignStatusSelected() {
-        binding?.sfCampaignList?.resetAllFilters()
+        campaignStatusFilter?.type = ChipsUnify.TYPE_NORMAL
         viewModel.getCampaignList(
             EMPTY_SEARCH_KEYWORD,
             viewModel.getCampaignTypeId(),
@@ -221,11 +223,6 @@ class CampaignListFragment : BaseDaggerFragment(),
             val campaignStatusFilterTitle = getString(R.string.campaign_list_label_status)
             campaignStatusFilter = SortFilterItem(campaignStatusFilterTitle)
             campaignStatusFilter?.listener = {
-                campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
-                    ChipsUnify.TYPE_SELECTED
-                } else {
-                    ChipsUnify.TYPE_NORMAL
-                }
                 campaignStatusBottomSheet?.show(childFragmentManager)
                 tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
             }
