@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
-        android:background="@color/clr_ae31353b">
+        android:background="@color/Unify_N700_68">
 
         <ImageView
             android:id="@+id/icon_media_error"
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/kol_failed_load_video"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:gravity="center_horizontal"
             android:layout_marginTop="24dp"
             app:typographyWeight="bold"
@@ -75,7 +75,7 @@
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:paddingRight="12dp"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:gravity="center_horizontal"
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_kol_round_stroke_white"
