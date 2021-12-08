@@ -51,6 +51,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
@@ -239,6 +240,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var affiliateQueryData : AffiliatePDPInput? = null
     private var showLoader: Boolean = false
     private var handler: Handler? = null
+    private var gqlCallJob: Job? = null
 
     //observer flag
     private var preserveImage: Boolean = false
@@ -325,7 +327,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun executeAffiliateEligibilityUseCase(){
         removeHandlerTimeout()
-         val job  = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+         gqlCallJob  = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 val affiliateUseCase = AffiliateEligibilityCheckUseCase(GraphqlInteractor.getInstance().graphqlRepository)
                 val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUseCase.apply {
@@ -343,8 +345,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         handler = Handler(Looper.getMainLooper())
         handler?.postDelayed({
             clearLoader()
-            if(job.isActive) {
-                job.cancel()
+            if(gqlCallJob?.isActive == true) {
+                gqlCallJob?.cancel()
             }
             if(affiliateCommissionTextView?.visibility != View.VISIBLE) {
                 affiliateQueryData = null
@@ -841,6 +843,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         try {
             clearData()
             removeLifecycleObserverAndSavedImage()
+            if(gqlCallJob?.isActive == true) {
+                gqlCallJob?.cancel()
+            }
             super.dismiss()
         }catch (ex:Exception){
             logExceptionToRemote(ex)
@@ -851,6 +856,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         try {
             clearData()
             removeLifecycleObserverAndSavedImage()
+            if(gqlCallJob?.isActive == true) {
+                gqlCallJob?.cancel()
+            }
             super.onDismiss(dialog)
         }catch (ex: Exception){
             logExceptionToRemote(ex)
