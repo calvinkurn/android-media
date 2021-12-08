@@ -257,16 +257,16 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     }
 
-    override fun onPromotionClick(productId: String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int) {
-        pushPromosikanEvent(productId,productImage,position)
-        var origin = if(identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
+    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int) {
+        pushPromosikanEvent(productId, shopId,productImage,position)
+        val origin = if(identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null,null,
                 productId, productName, productImage, productUrl,
                 productIdentifier,origin).show(childFragmentManager, "")
     }
 
-    private fun pushPromosikanEvent(productId: String, productImage: String, position: Int) {
+    private fun pushPromosikanEvent(productId: String , shopId : String, productImage: String, position: Int) {
         var itemName = ""
         var actionName = ""
         if(identifier == BOUGHT_IDENTIFIER) {
@@ -283,6 +283,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
             AffiliateAnalytics.CategoryKeys.PROMOSIKAN_PAGE,
             userSessionInterface.userId,
             productId,
+            shopId,
             productImage,
             position,
             itemName

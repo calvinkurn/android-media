@@ -46,6 +46,7 @@ object AffiliateAnalytics {
         category: String,
         userId: String,
         productId: String,
+        shopId : String,
         productImage: String,
         position: Int,
         itemName: String
@@ -64,7 +65,7 @@ object AffiliateAnalytics {
         map[EventKeys.KEY_EVENT] = PROMO_CLICK
         map[EventKeys.KEY_EVENT_CATEGORY] = category
         map[EventKeys.KEY_EVENT_ACTION] = action
-        map[EventKeys.KEY_EVENT_LABEL] = productId
+        map[EventKeys.KEY_EVENT_LABEL] = "$shopId - $productId"
         map[EventKeys.KEY_BUSINESS_UNIT] = EventKeys.BUSINESS_UNIT_VALUE
         map[EventKeys.KEY_CURRENT_SITE] = EventKeys.CURRENT_SITE_VALUE
         map[EventKeys.KEY_ECOMMERCE] = eCommerce
