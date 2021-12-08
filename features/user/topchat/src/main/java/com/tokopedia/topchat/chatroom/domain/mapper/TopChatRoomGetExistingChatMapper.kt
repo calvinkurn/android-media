@@ -9,6 +9,7 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_REVIEW_REMINDER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageAnnouncementUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
@@ -99,9 +100,12 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     override fun convertToMessageViewModel(chatItemPojoByDateByTime: Reply): Visitable<*> {
-        return MessageUiModel.Builder()
+        val msg = MessageUiModel.Builder()
             .withResponseFromGQL(chatItemPojoByDateByTime)
-            .build()
+        if (chatItemPojoByDateByTime.status == BaseChatUiModel.STATUS_DELETED) {
+            msg.withMarkAsDeleted()
+        }
+        return msg.build()
     }
 
     private fun createBroadCastUiModel(
