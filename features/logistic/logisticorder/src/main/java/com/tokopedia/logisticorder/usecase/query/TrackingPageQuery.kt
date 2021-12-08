@@ -44,6 +44,7 @@ object TrackingPageQuery {
                   proof {
                     image_id
                   }
+                  partner_name
                 }
                 change
                 status
