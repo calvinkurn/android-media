@@ -185,7 +185,6 @@ abstract class TopchatRoomTest {
     protected var orderProgressResponse = OrderProgressResponse()
     protected var chatBackgroundResponse = ChatBackgroundResponse()
     protected var chatRoomSettingResponse = RoomSettingResponse()
-    protected var existingMessageIdResponse = GetExistingMessageIdPojo()
 
     object ProductPreviewAttribute {
         const val productName = "Testing Attach Product 1"
@@ -271,7 +270,6 @@ abstract class TopchatRoomTest {
         chatSrwUseCase.response = chatSrwResponse
         getShopFollowingUseCaseStub.response = getShopFollowingStatus
         getTemplateChatRoomUseCase.response = generateTemplateResponse(true)
-        getExistingMessageIdUseCaseNewStub.response = existingMessageIdResponse
         toggleFavouriteShopUseCaseStub.response = true
     }
 
@@ -488,50 +486,6 @@ abstract class TopchatRoomTest {
         onView(withId(R.id.rv_srw_partial)).check(matches(withTotalItem(totalQuestion)))
     }
 
-    protected fun assertSrwPreviewErrorVisibility(
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            allOf(
-                withId(R.id.ll_srw_partial),
-                isDescendantOfA(withId(R.id.cl_attachment_preview))
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertSrwBubbleErrorVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.ll_srw_partial
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertSrwPreviewLoadingVisibility(
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            allOf(
-                withId(R.id.lu_srw_partial),
-                isDescendantOfA(withId(R.id.cl_attachment_preview))
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
-    protected fun assertSrwBubbleLoadingVisibility(
-        position: Int,
-        visibilityMatcher: Matcher<in View>
-    ) {
-        onView(
-            withRecyclerView(R.id.recycler_view_chatroom).atPositionOnView(
-                position, R.id.lu_srw_partial
-            )
-        ).check(matches(visibilityMatcher))
-    }
-
     /**
      * assert unify snackbar/toaster
      */
@@ -542,8 +496,6 @@ abstract class TopchatRoomTest {
     protected fun assertSrwPreviewContentIsVisible() {
         assertSrwPreviewContentContainerVisibility(isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwPreviewErrorVisibility(not(isDisplayed()))
-        assertSrwPreviewLoadingVisibility(not(isDisplayed()))
     }
 
     protected fun assertSrwBubbleDoesNotExist() {
@@ -555,28 +507,20 @@ abstract class TopchatRoomTest {
     ) {
         assertSrwBubbleContentContainerVisibility(position, isDisplayed())
         assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwBubbleErrorVisibility(position, not(isDisplayed()))
-        assertSrwBubbleLoadingVisibility(position, not(isDisplayed()))
     }
 
     protected fun assertSrwPreviewContentIsLoading() {
-        assertSrwPreviewLoadingVisibility(isDisplayed())
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
         assertTemplateChatVisibility(not(isDisplayed()))
-        assertSrwPreviewErrorVisibility(not(isDisplayed()))
     }
 
     protected fun assertSrwPreviewContentIsError() {
-        assertSrwPreviewErrorVisibility(isDisplayed())
-        assertSrwPreviewLoadingVisibility(not(isDisplayed()))
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
         assertTemplateChatVisibility(not(isDisplayed()))
     }
 
     protected fun assertSrwPreviewContentIsHidden() {
         assertSrwPreviewContentContainerVisibility(not(isDisplayed()))
-        assertSrwPreviewErrorVisibility(not(isDisplayed()))
-        assertSrwPreviewLoadingVisibility(not(isDisplayed()))
     }
 
     protected fun assertHeaderRightMsgBubbleVisibility(

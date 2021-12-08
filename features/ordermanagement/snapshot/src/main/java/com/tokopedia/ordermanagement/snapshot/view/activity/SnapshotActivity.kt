@@ -19,7 +19,7 @@ class SnapshotActivity : BaseSimpleActivity() {
 
     private fun setupBackground() {
         window?.run {
-            val backgroundColor = MethodChecker.getColor(this@SnapshotActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            val backgroundColor = MethodChecker.getColor(this@SnapshotActivity, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             decorView.setBackgroundColor(backgroundColor)
             statusBarColor = backgroundColor
         }

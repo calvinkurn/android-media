@@ -78,10 +78,6 @@ class HomeFragmentUiTest {
 
     @Test
     fun testFirstTimeLoggedInUser() {
-        /**
-         * Onboarding and coachmark for new user
-         */
-        assertNavigationBottomSheetDisplayed()
         assertHomeCoachmarkDisplayed()
 
         /**
@@ -222,29 +218,9 @@ class HomeFragmentUiTest {
     }
 
     /**
-     * Assert bottomsheet text and proceed
-     */
-    private fun assertNavigationBottomSheetDisplayed() {
-        onView(withText(R.string.onboarding_navigation_title)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_description)).check(matches(isDisplayed()))
-        onView(withText(R.string.onboarding_navigation_button)).check(matches(isDisplayed()))
-            .perform(click())
-    }
-
-    /**
      * Assert coachmark text and proceed
      */
     private fun assertHomeCoachmarkDisplayed() {
-        assertCoachmarkAndNext(
-            titleRes = R.string.onboarding_coachmark_inbox_title,
-            descRes = R.string.onboarding_coachmark_inbox_description
-        )
-
-        assertCoachmarkAndNext(
-                titleRes = R.string.onboarding_coachmark_title,
-                descRes = R.string.onboarding_coachmark_description
-        )
-
         assertCoachmarkAndNext(
             titleRes = R.string.home_gopay_new_coachmark_title,
             descRes = R.string.home_gopay_new_coachmark_description,
