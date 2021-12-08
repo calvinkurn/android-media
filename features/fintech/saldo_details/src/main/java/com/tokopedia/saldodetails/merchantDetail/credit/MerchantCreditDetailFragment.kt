@@ -85,7 +85,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         populateData()
-        mclParentLayout?.setBackgroundResource(R.drawable.saldo_merchant_credit_background)
+        mclParentLayout?.setBackgroundResource(R.drawable.saldo_merchant_credit_card_background)
     }
 
     private fun populateData() {
