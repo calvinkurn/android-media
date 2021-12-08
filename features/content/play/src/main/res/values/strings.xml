@@ -92,4 +92,8 @@
     <!--Kebab Menu-->
     <string name="play_kebab_report_title">Laporkan Video</string>
 
+    <!--User Report-->
+    <string name="play_user_report_footer">Pelajari Selengkapnya tipe-tipe pelanggaran di Tokopedia.</string>
+    <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada video ini</string>
+
 </resources>

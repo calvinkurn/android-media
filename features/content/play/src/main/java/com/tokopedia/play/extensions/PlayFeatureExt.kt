@@ -20,7 +20,8 @@ val Map<BottomInsetsType, BottomInsetsState>.isAnyBottomSheetsShown: Boolean
     get() = this[BottomInsetsType.VariantSheet]?.isShown == true ||
             this[BottomInsetsType.ProductSheet]?.isShown == true ||
             this[BottomInsetsType.LeaderboardSheet]?.isShown == true ||
-            this[BottomInsetsType.KebabMenuSheet]?.isShown == true
+            this[BottomInsetsType.KebabMenuSheet]?.isShown == true ||
+            this[BottomInsetsType.UserReportSheet]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isProductSheetsShown: Boolean
     get() = this[BottomInsetsType.ProductSheet]?.isShown == true
@@ -29,7 +30,10 @@ val Map<BottomInsetsType, BottomInsetsState>.isLeaderboardSheetShown: Boolean
     get() = this[BottomInsetsType.LeaderboardSheet]?.isShown == true
 
 val Map<BottomInsetsType, BottomInsetsState>.isKebabMenuSheetShown: Boolean
-    get() = this[BottomInsetsType.KebabMenuSheet]?.isShown == true
+    get() = this[BottomInsetsType.UserReportSheet]?.isShown == true
+
+val Map<BottomInsetsType, BottomInsetsState>.isUserReportSheetShown: Boolean
+    get() = this[BottomInsetsType.UserReportSheet]?.isShown == true
 
 val View.isFullAlpha: Boolean
     get() = alpha == 0.0f

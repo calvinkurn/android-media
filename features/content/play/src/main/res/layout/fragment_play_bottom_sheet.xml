@@ -23,4 +23,8 @@
         layout="@layout/view_kebab_menu_sheet"
         />
 
+    <include
+        layout="@layout/view_play_user_report_sheet"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
