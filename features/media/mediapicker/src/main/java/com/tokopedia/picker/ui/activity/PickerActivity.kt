@@ -1,6 +1,8 @@
 package com.tokopedia.picker.ui.activity
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -8,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst.MediaPicker.*
 import com.tokopedia.picker.R
 import com.tokopedia.picker.ui.common.PickerFragmentType
 import com.tokopedia.picker.ui.common.PickerModeType
+import com.tokopedia.picker.ui.common.PickerPageType
 import com.tokopedia.picker.ui.common.PickerSelectionType
 import com.tokopedia.picker.ui.fragment.PickerFragmentFactory
 import com.tokopedia.picker.ui.fragment.PickerFragmentFactoryImpl
@@ -68,7 +71,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
     }
 
     override fun granted() {
-        navigator?.onPageSelected(PickerUiConfig.activePage)
+        navigator?.onPageSelected(PickerFragmentType.PICKER)
     }
 
     override fun onDestroy() {
@@ -94,12 +97,12 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private fun setupQueryPage(data: Uri) {
         val page = when(data.getQueryParameter(PARAM_PAGE)) {
-            VALUE_PAGE_CAMERA -> PickerFragmentType.CAMERA
-            VALUE_PAGE_GALLERY -> PickerFragmentType.GALLERY
-            else -> PickerFragmentType.PICKER
+            VALUE_PAGE_CAMERA -> PickerPageType.CAMERA
+            VALUE_PAGE_GALLERY -> PickerPageType.GALLERY
+            else -> PickerPageType.COMMON
         }
 
-        PickerUiConfig.activePage = page
+        PickerUiConfig.paramPage = page
     }
 
     private fun setupQueryMode(data: Uri) {
@@ -129,7 +132,7 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
         val hasPermissionCamera = hasPermission(this, Manifest.permission.CAMERA)
         navigator?.start(
             if (hasPermissionStorage || hasPermissionCamera) {
-                PickerUiConfig.activePage
+                PickerFragmentType.PICKER
             } else {
                 PickerFragmentType.PERMISSION
             }
@@ -138,6 +141,12 @@ class PickerActivity : BaseActivity(), PermissionFragment.Listener {
 
     private fun createFragmentFactory(): PickerFragmentFactory {
         return PickerFragmentFactoryImpl()
+    }
+
+    companion object {
+        fun start(context: Context) {
+            context.startActivity(Intent(context, PickerActivity::class.java))
+        }
     }
 
 }

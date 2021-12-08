@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.picker.R
 import com.tokopedia.picker.databinding.FragmentPermissionBinding
-import com.tokopedia.picker.ui.common.PickerFragmentType
+import com.tokopedia.picker.ui.common.PickerPageType
 import com.tokopedia.picker.ui.fragment.PickerUiConfig
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
@@ -46,21 +46,21 @@ class PermissionFragment : BaseDaggerFragment() {
     }
 
     private fun setPermission() {
-        when (PickerUiConfig.activePage) {
-            PickerFragmentType.PICKER -> {
+        when (PickerUiConfig.paramPage) {
+            PickerPageType.COMMON -> {
                 _permissions.addAll(listOf(
                     Manifest.permission.CAMERA,
                     Manifest.permission.RECORD_AUDIO,
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ))
             }
-            PickerFragmentType.CAMERA -> {
+            PickerPageType.CAMERA -> {
                 _permissions.addAll(listOf(
                     Manifest.permission.CAMERA,
                     Manifest.permission.RECORD_AUDIO
                 ))
             }
-            PickerFragmentType.GALLERY -> {
+            PickerPageType.GALLERY -> {
                 _permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
         }

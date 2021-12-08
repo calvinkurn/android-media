@@ -1,13 +1,13 @@
 package com.tokopedia.picker.ui.fragment
 
-import com.tokopedia.picker.ui.common.PickerFragmentType
 import com.tokopedia.picker.ui.common.PickerModeType
+import com.tokopedia.picker.ui.common.PickerPageType
 import com.tokopedia.picker.ui.common.PickerSelectionType
 
 object PickerUiConfig {
 
-    @PickerFragmentType
-    var activePage = PickerFragmentType.PICKER
+    @PickerPageType
+    var paramPage = PickerPageType.COMMON
 
     @PickerModeType
     var paramMode = PickerModeType.COMMON
