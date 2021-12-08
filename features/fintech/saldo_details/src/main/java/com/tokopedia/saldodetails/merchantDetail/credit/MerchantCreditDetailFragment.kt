@@ -55,7 +55,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details_temp, container, false)
+        val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false)
         val bundle = arguments
         val saveInstanceCachemanagerId = bundle?.getString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID)
                 ?: ""
@@ -79,7 +79,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
         mclBoxDescTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_box_Desc)
         mclBlockedStatusTV = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_blocked_status)
         mclParentCardView = view.findViewById(com.tokopedia.saldodetails.R.id.mcl_card_view)
-        mclParentLayout = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_detail_rl)
+        mclParentLayout = view.findViewById(com.tokopedia.saldodetails.R.id.merchant_detail_cl)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
