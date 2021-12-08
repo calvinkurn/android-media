@@ -58,7 +58,7 @@ class TopAdsCarouselAdapter(private val topAdsCarouselListener: TopAdsCarouselLi
             val isImageShopBadgeVisible = getIsImageShopBadgeVisible(topAdsCarouselItem)
             brandBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
-                    topAdsCarouselItem.isOfficial -> brandBadge.loadImage(com.tokopedia.shopwidget.R.drawable.shopwidget_ic_official_store)
+                    topAdsCarouselItem.isOfficial -> brandBadge.loadImage(R.drawable.ic_official_store)
                     topAdsCarouselItem.isPMPro -> brandBadge.loadImage(com.tokopedia.shopwidget.R.drawable.shopwidget_ic_pm_pro)
                     topAdsCarouselItem.isGoldShop -> brandBadge.loadImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
                 }
