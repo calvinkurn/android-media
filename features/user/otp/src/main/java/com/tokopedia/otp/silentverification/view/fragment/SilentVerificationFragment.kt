@@ -40,8 +40,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
-import okhttp3.*
-import java.io.IOException
 import java.net.URLDecoder
 import java.util.*
 import javax.inject.Inject
@@ -434,10 +432,6 @@ class SilentVerificationFragment: BaseDaggerFragment() {
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     fun verify(url: String) {
-        // for testing purpose only, please use later merhod
-//        verifyWithoutSwitching(url)
-
-        // Main method to switch between wifi & cellular data
         context?.run {
             networkClientHelper.makeNetworkRequest(this, object: NetworkRequestListener {
                 override fun onSuccess(network: Network) {
@@ -450,41 +444,9 @@ class SilentVerificationFragment: BaseDaggerFragment() {
         }
     }
 
-    // to be deleted, for testing purpose only
-    private fun verifyWithoutSwitching(url: String) {
-        try {
-            val okHttpClient =
-                OkHttpClient.Builder().build()
-            val request: Request = Request.Builder()
-                .url(url)
-                .build()
-            okHttpClient.newCall(request).enqueue(object: Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val result = response.body()?.string()
-                    println("verify:onResponse:$result")
-                    activity?.runOnUiThread {
-                        handleBokuResult(result ?: "")
-                    }
-                }
-
-                override fun onFailure(call: Call, e: IOException) {
-                    println("verify:onResponse:${e.message}")
-                    e.printStackTrace()
-                    activity?.runOnUiThread {
-                        onValidateFailed(e)
-                    }
-                }
-            })
-        } catch (ex: Exception) {
-            onValidateFailed(ex)
-            ex.printStackTrace()
-        }
-    }
-
     companion object {
         private const val KEY_ERROR_CODE = "ErrorCode"
         private const val KEY_ERROR_DESC = "ErrorDescription"
-        private const val KEY_CARRIER = "Carrier"
 
         private const val VALUE_SUCCESS = "Success"
         private const val ERROR_CODE_ZERO = "0"
