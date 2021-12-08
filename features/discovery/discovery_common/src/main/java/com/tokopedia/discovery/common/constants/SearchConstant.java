@@ -102,6 +102,7 @@ public interface SearchConstant {
         int HEADLINE_PRODUCT_COUNT = 3;
         String INFINITESEARCH = "infinitesearch";
         String SEEN_ADS = "seen_ads";
+        int LAYOUT_2 = 2;
         int LAYOUT_5 = 5;
         int LAYOUT_6 = 6;
     }

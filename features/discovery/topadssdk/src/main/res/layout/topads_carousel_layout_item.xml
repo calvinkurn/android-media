@@ -49,8 +49,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/brandBadge"
-            android:layout_width="@dimen/layout_lvl1"
-            android:layout_height="@dimen/layout_lvl1"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
             android:layout_marginStart="@dimen/unify_space_8"
             app:layout_constraintBottom_toBottomOf="@+id/brandIcon"
             app:layout_constraintStart_toEndOf="@id/brandIcon"
@@ -61,6 +61,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_8"
             android:ellipsize="end"
             android:maxLines="1"
             app:layout_constraintBottom_toBottomOf="@+id/brandBadge"

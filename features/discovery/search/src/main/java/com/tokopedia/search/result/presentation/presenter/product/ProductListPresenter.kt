@@ -8,6 +8,7 @@ import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
+import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_2
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_5
 import com.tokopedia.discovery.common.constants.SearchConstant.HeadlineAds.LAYOUT_6
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_INSPIRATION_CAROUSEL_KEYWORD
@@ -1142,7 +1143,7 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        processHeadlineAds(searchProductModel) { index, cpmDataView, layoutType ->
+        processHeadlineAds(searchProductModel, 1) { index, cpmDataView, layoutType ->
             if (index == 0)
                 processHeadlineAdsAtTop(list, cpmDataView)
             else
@@ -1152,6 +1153,7 @@ class ProductListPresenter @Inject constructor(
 
     private fun processHeadlineAds(
             searchProductModel: SearchProductModel,
+            pageNumber: Int = 2,
             process: (Int, CpmDataView, Int) -> Unit,
     ) {
         if (!isHeadlineAdsAllowed()) return
@@ -1159,27 +1161,37 @@ class ProductListPresenter @Inject constructor(
         val cpmModel = searchProductModel.cpmModel
         val listLayoutFive = arrayListOf<CpmData>()
         val listLayoutSix = arrayListOf<CpmData>()
-        cpmModel.data?.forEachIndexed { index, cpmData ->
-            if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
+        run breaker@ {
+            cpmModel.data?.forEachIndexed { index, cpmData ->
+                if (pageNumber == 2 && index >= 1) return
+                if (!shouldShowCpmShop(cpmData)) return@forEachIndexed
 
-            when (cpmData.cpm.layout) {
-                LAYOUT_6 -> {
-                    listLayoutSix.add(cpmData)
-                    if (cpmModel.data.size - 1 != index) return@forEachIndexed
-                    val cpmDataView = createCpmDataView(cpmModel, listLayoutSix)
-                    process(index, cpmDataView, LAYOUT_6)
-                }
-                LAYOUT_5 -> {
-                    listLayoutFive.add(cpmData)
-                    if (cpmModel.data.size - 1 != index) return@forEachIndexed
-                    val cpmDataView = createCpmDataView(cpmModel, listLayoutFive)
-                    process(index, cpmDataView, LAYOUT_5)
-                }
-                else -> {
-                    val list = arrayListOf<CpmData>()
-                    list.add(cpmData)
-                    val cpmDataView = createCpmDataView(cpmModel, list)
-                    process(index, cpmDataView, 0)
+                when (cpmData.cpm.layout) {
+                    LAYOUT_6 -> {
+                        listLayoutSix.add(cpmData)
+                        if (cpmModel.data.size - 1 != index) return@forEachIndexed
+                        val cpmDataView = createCpmDataView(cpmModel, listLayoutSix)
+                        process(index, cpmDataView, LAYOUT_6)
+                    }
+                    LAYOUT_5 -> {
+                        listLayoutFive.add(cpmData)
+                        if (cpmModel.data.size - 1 != index) return@forEachIndexed
+                        val cpmDataView = createCpmDataView(cpmModel, listLayoutFive)
+                        process(index, cpmDataView, LAYOUT_5)
+                    }
+                    LAYOUT_2 -> {
+                        val list = arrayListOf<CpmData>()
+                        list.add(cpmData)
+                        val cpmDataView = createCpmDataView(cpmModel, list)
+                        process(index, cpmDataView, 0)
+                        return@breaker
+                    }
+                    else -> {
+                        val list = arrayListOf<CpmData>()
+                        list.add(cpmData)
+                        val cpmDataView = createCpmDataView(cpmModel, list)
+                        process(index, cpmDataView, 0)
+                    }
                 }
             }
         }
