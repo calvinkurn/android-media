@@ -79,6 +79,7 @@ class ChatMessageUnifyViewHolder(
         bindMargin(msg)
         bindClick()
         bindLongClick(msg)
+        bindIcon(msg)
         if (msg.isSender) {
             // Right msg
             bindMsgGravity(Gravity.END)
@@ -98,6 +99,10 @@ class ChatMessageUnifyViewHolder(
             hide(fxChat?.checkMark)
             hide(header)
         }
+    }
+
+    private fun bindIcon(msg: MessageUiModel) {
+        fxChat?.bindIcon(msg)
     }
 
     private fun bindLongClick(msg: MessageUiModel) {

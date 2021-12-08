@@ -15,11 +15,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaMessageAttachment
@@ -265,6 +264,20 @@ class FlexBoxChatLayout : ViewGroup {
             listener?.changeAddress(attachment)
         }
         headerCta?.isEnabled = attachment.ctaButton.isClickable()
+    }
+
+    fun bindIcon(msg: MessageUiModel) {
+        icon?.shouldShowWithAction(msg.isDeleted()) {
+            val unifyIcon = getIconUnifyDrawable(
+                    context,
+                    IconUnify.BLOCK,
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    )
+                )
+            icon?.setImageDrawable(unifyIcon)
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

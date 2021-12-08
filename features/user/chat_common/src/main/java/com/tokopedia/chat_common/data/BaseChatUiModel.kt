@@ -68,6 +68,10 @@ open class BaseChatUiModel constructor(
         return parentReply != null
     }
 
+    fun isDeleted(): Boolean {
+        return bubbleStatus == STATUS_DELETED
+    }
+
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
         const val SOURCE_AUTO_REPLY = "auto_reply"
