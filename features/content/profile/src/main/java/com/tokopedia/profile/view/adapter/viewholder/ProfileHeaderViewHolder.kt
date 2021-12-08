@@ -124,7 +124,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.setUnderlineText(false)
-                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
+                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
             }
         }
 
@@ -136,7 +136,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.setUnderlineText(false)
-                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
+                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
             }
         }
         if (spannableString.indexOf(followers) != -1) {
