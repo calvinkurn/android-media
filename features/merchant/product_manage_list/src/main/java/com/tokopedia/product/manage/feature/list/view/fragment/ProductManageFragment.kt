@@ -858,10 +858,18 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         checkBoxSelectAll?.setOnClickListener {
             val isChecked = checkBoxSelectAll?.isChecked == true
             recyclerView?.post {
-                adapter.data.forEachIndexed { index, _ ->
-                    onClickProductCheckBox(isChecked, index)
+                if (isChecked) {
+                    productManageListAdapter.checkAllProducts(itemsChecked) {
+                        itemsChecked = it
+                    }
+                } else {
+                    productManageListAdapter.unCheckMultipleProducts(null, itemsChecked) {
+                        itemsChecked = it
+                    }
                 }
-                productManageListAdapter.notifyDataSetChanged()
+
+                renderSelectAllCheckBox()
+                renderCheckedView()
             }
         }
     }
@@ -1000,8 +1008,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 if (isLoadingInitialData) {
                     productManageListAdapter.updateProduct(list)
                 } else {
-                    removeEmptyStateWhenLazyLoad()
-                    productManageListAdapter.updateProduct(productManageListAdapter.data.plus(list))
+                    productManageListAdapter.removeEmptyAndUpdateLayout(list)
                 }
             }
         }
@@ -1030,18 +1037,6 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
         }
         if (sellerMigrationFeatureName == SellerMigrationFeatureName.FEATURE_BROADCAST_CHAT) {
             goToCreateBroadcastFromSellerMigration(productStock, isProductActive, isProductVariant, productId)
-        }
-    }
-
-    private fun removeEmptyStateWhenLazyLoad() {
-        val lastIndex = adapter.data.size - 1
-        adapter.data.getOrNull(lastIndex)?.let { item ->
-            if (item is EmptyModel) {
-                recyclerView?.post {
-                    adapter.data.removeAt(lastIndex)
-                    adapter.notifyItemRemoved(lastIndex)
-                }
-            }
         }
     }
 
@@ -1402,13 +1397,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private fun unCheckMultipleProducts(productIds: List<String>) {
         recyclerView?.post {
-            productIds.forEach { productId ->
-                val index = adapter.data.filterIsInstance<ProductUiModel>().indexOfFirst { it.id == productId }
-                if (index >= 0) {
-                    onClickProductCheckBox(false, index)
-                }
+            productManageListAdapter.unCheckMultipleProducts(productIds, itemsChecked) {
+                itemsChecked = it
             }
-            productManageListAdapter.notifyDataSetChanged()
+
+            renderSelectAllCheckBox()
+            renderCheckedView()
         }
     }
 
