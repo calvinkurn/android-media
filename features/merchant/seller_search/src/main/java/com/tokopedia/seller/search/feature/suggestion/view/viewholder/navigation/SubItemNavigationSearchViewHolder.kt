@@ -15,9 +15,8 @@ class SubItemNavigationSearchViewHolder(
 
     fun bind(model: NavigationSellerSearchSubItemUiModel) {
         with(binding) {
-            chipSearchSubItem.chipText = model.title
-            //chipSearchSubItem.chip_right_icon =
-            chipSearchSubItem.setOnClickListener {
+            tvChipSearchSubItem.text = model.title
+            chipSearchSubItemContainer.setOnClickListener {
                 RouteManager.route(root.context, model.appLink)
             }
         }
