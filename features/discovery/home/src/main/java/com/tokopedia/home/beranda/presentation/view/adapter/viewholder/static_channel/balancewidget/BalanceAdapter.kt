@@ -66,6 +66,10 @@ class BalanceAdapter(
     var attachedRecyclerView: RecyclerView? = null
     private var itemMap: HomeBalanceModel = HomeBalanceModel()
 
+    companion object {
+        var disableAnimation: Boolean = false
+    }
+
     @Suppress("TooGenericExceptionCaught")
     fun setItemMap(itemMap: HomeBalanceModel) {
         this.itemMap = itemMap
@@ -366,7 +370,9 @@ class BalanceAdapter(
                     element?.alternateBalanceDrawerItem?.let {
                         this.element = element
                         this.alternateDrawerItem = it
-                        setDrawerItemWithAnimation()
+                        if (!disableAnimation) {
+                            setDrawerItemWithAnimation()
+                        }
                     }
                 }
                 BalanceDrawerItemModel.STATE_ERROR -> {
