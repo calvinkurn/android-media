@@ -65,6 +65,25 @@ object RechargeHomepageQueries {
                         label_3
                         server_date
                         due_date
+                        attributes {
+                            title_color
+                            sub_title_color
+                            media_url_title
+                            media_url_type
+                            icon_url
+                            sold_value
+                            sold_percentage_value
+                            sold_percentage_label
+                            show_sold_percentage
+                            campaign_label_text
+                            campaign_label_text_color
+                            campaign_label_background_url
+                            rating_type
+                            rating
+                            review
+                            special_info_text
+                            special_info_color
+                        }
                       }
                     }
                   }

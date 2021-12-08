@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -21,12 +22,10 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 
 class DigitalUnifyCardViewHolder(
     private val binding: ItemDigitalUnifyCardBinding,
-    private val listener: DigitalUnificationCardListener?
+    private val listener: DigitalUnifyCardListener?
 ) : AbstractViewHolder<DigitalUnifyModel>(binding.root) {
 
     override fun bind(element: DigitalUnifyModel) {
-        listener?.onItemBinding(element)
-
         // render media
         renderMedia(element)
 
@@ -56,6 +55,10 @@ class DigitalUnifyCardViewHolder(
 
         // render action button
         renderActionButton(element)
+
+        binding.root.addOnImpressionListener(element) {
+            listener?.onItemBinding(element)
+        }
     }
 
     private fun renderMedia(element: DigitalUnifyModel) {
@@ -206,7 +209,7 @@ class DigitalUnifyCardViewHolder(
             if (element.actionButton.text.isNotEmpty()) {
                 text = element.actionButton.text
                 setOnClickListener {
-                    listener?.onItemClicked(element)
+                    listener?.onItemClicked(element, adapterPosition)
                     RouteManager.route(context, element.actionButton.applink)
                 }
                 show()
@@ -436,9 +439,9 @@ class DigitalUnifyCardViewHolder(
         }
     }
 
-    interface DigitalUnificationCardListener {
+    interface DigitalUnifyCardListener {
         fun onItemBinding(item: DigitalUnifyModel)
-        fun onItemClicked(item: DigitalUnifyModel)
+        fun onItemClicked(item: DigitalUnifyModel, index: Int)
     }
 
     companion object {

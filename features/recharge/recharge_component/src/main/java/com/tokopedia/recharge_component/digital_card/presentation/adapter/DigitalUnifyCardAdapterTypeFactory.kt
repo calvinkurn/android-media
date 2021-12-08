@@ -11,7 +11,7 @@ import com.tokopedia.recharge_component.digital_card.presentation.adapter.viewho
 import com.tokopedia.recharge_component.digital_card.presentation.model.DigitalUnifyModel
 
 class DigitalUnifyCardAdapterTypeFactory(
-    private val digitalUnifyCardCardListener: DigitalUnifyCardViewHolder.DigitalUnificationCardListener
+    private val digitalUnifyCardCardListener: DigitalUnifyCardViewHolder.DigitalUnifyCardListener
 ) : BaseAdapterTypeFactory(), DigitalUnifyCardTypeFactory {
 
     override fun type(digitalUnifyModel: DigitalUnifyModel): Int =
