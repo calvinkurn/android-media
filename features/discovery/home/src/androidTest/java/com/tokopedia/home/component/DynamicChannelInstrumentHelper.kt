@@ -320,23 +320,17 @@ private fun clickBUWidgetTab() {
 }
 
 private fun clickTickerItem(view: View) {
-    val childView = view
-    val textApplink = childView.findViewById<View>(R.id.ticker_description)
-    val closeButton = childView.findViewById<View>(R.id.ticker_close_icon)
-    if (textApplink.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+    try {
+        Espresso.onView(firstView(AllOf.allOf(ViewMatchers.withId(R.id.ticker_description), ViewMatchers.isDisplayed()))).perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
     }
-    if (closeButton.visibility == View.VISIBLE) {
-        try {
-            Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
-                    .perform(ViewActions.click())
-        } catch (e: PerformException) {
-            e.printStackTrace()
-        }
+
+    try {
+        Espresso.onView(firstView(ViewMatchers.withId(R.id.ticker_close_icon)))
+                .perform(ViewActions.click())
+    } catch (e: PerformException) {
+        e.printStackTrace()
     }
 }
 
