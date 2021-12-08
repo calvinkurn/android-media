@@ -149,7 +149,11 @@ class BalanceAdapter(
             /**
              * Initial state
              */
-            if (!disableAnimation) home_iv_logo_shimmering?.show()
+            if (!disableAnimation) {
+                home_iv_logo_shimmering?.show()
+            } else {
+                home_iv_logo_shimmering?.gone()
+            }
             home_progress_bar_balance_layout?.show()
             home_tv_btn_action_balance?.show()
 
@@ -414,7 +418,11 @@ class BalanceAdapter(
                         home_iv_logo_balance?.setImageDrawable(itemView.context.getDrawable(it))
                     } else {
                         home_iv_logo_balance?.invisible()
-                        if (!disableAnimation) home_iv_logo_shimmering?.visible()
+                        if (!disableAnimation) {
+                            home_iv_logo_shimmering?.visible()
+                        } else {
+                            home_iv_logo_shimmering?.gone()
+                        }
                     }
                 }
                 element?.iconImageUrl?.let {
