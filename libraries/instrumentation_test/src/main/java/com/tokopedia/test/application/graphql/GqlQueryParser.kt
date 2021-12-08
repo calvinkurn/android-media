@@ -8,7 +8,7 @@ object GqlQueryParser {
     val QUERY_PATTERN = Regex("""(\w+)\s*(\(.+\))""")
 
     /**
-     * A helper function to parse query from graphql request(s). Support multiple request and
+     * A utils method to parse query from graphql request(s). Support multiple request and
      * returns list of String accordingly
      *
      * Example in Fake GraphqlRepository class (single request):

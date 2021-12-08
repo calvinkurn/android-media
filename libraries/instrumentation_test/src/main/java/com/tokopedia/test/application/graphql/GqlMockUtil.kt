@@ -8,7 +8,7 @@ object GqlMockUtil {
 
     /**
      * Convenient utils method to create success response when mocking GraphqlResponse (typically
-     * creating Test Double for GraphqlRepository)
+     * when creating Test Double for GraphqlRepository)
      *
      * Example single request:
      * val example = ExampleResponse(1, "Lorem")
