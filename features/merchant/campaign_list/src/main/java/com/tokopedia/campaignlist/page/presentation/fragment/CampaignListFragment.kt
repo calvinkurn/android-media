@@ -137,6 +137,7 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
         campaignTypeFilter?.title = selectedCampaignType.campaignTypeName
+        campaignTypeFilter?.type = ChipsUnify.TYPE_SELECTED
         var campaignTypeId = 0
         try {
             campaignTypeId = selectedCampaignType.campaignTypeId.toInt()
@@ -232,11 +233,6 @@ class CampaignListFragment : BaseDaggerFragment(),
             campaignTypeFilter = SortFilterItem(campaignTypeFilterTitle)
             campaignTypeFilter?.type = ChipsUnify.TYPE_SELECTED
             campaignTypeFilter?.listener = {
-                campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
-                    ChipsUnify.TYPE_SELECTED
-                } else {
-                    ChipsUnify.TYPE_NORMAL
-                }
                 campaignTypeBottomSheet?.show(childFragmentManager)
             }
             val sortFilterItemList = ArrayList<SortFilterItem>()
