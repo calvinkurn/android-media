@@ -247,9 +247,9 @@ class CampaignListFragment : BaseDaggerFragment(),
             }
         }
         binding?.sfCampaignList?.parentListener = {
-
+            /* No op. We need to specify this block, otherwise the clear filter chip will do nothing
+               when clicked */
         }
-
         binding?.sfCampaignList?.dismissListener = { viewModel.getCampaignList() }
     }
 
