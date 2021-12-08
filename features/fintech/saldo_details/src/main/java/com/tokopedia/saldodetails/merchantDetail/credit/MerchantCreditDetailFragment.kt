@@ -13,13 +13,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.saldodetails.R
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsAnalytics
 import com.tokopedia.saldodetails.commom.design.SaldoWebViewActivity
 import com.tokopedia.saldodetails.commom.di.component.SaldoDetailsComponentInstance
@@ -42,7 +42,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     private var mclDescTV: TextView? = null
     private var mclInfoListLL: LinearLayout? = null
     private var mclBoxLayout: RelativeLayout? = null
-    private var mclParentLayout: RelativeLayout? = null
+    private var mclParentLayout: ConstraintLayout? = null
     private var mclboxTitleTV: TextView? = null
     private var mclBoxDescTV: TextView? = null
     private var mclParentCardView: CardUnify? = null
@@ -55,7 +55,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details, container, false)
+        val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_merchant_credit_details_temp, container, false)
         val bundle = arguments
         val saveInstanceCachemanagerId = bundle?.getString(BUNDLE_PARAM_MERCHANT_CREDIT_DETAILS_ID)
                 ?: ""
@@ -85,7 +85,6 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         populateData()
-        mclParentLayout?.setBackgroundResource(R.drawable.saldo_merchant_credit_card_background)
     }
 
     private fun populateData() {

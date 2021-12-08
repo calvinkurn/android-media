@@ -92,7 +92,7 @@
                 android:orientation="vertical"
                 android:scrollbars="vertical"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/mcl_box_layout"
@@ -103,6 +103,7 @@
                 android:layout_marginBottom="@dimen/unify_space_8"
                 android:background="@drawable/bg_saldo_round_corner_solid_grey"
                 android:padding="@dimen/unify_space_8"
+                tools:visibility="gone"
                 android:visibility="visible">
 
                 <com.tokopedia.unifyprinciples.Typography
