@@ -563,11 +563,7 @@ class PlayUserInteractionFragment @Inject constructor(
         if (playViewModel.isPiPAllowed) pipView?.show()
         else pipView?.hide()
 
-        view.doOnLayout {
-            productFeaturedView?.setFadingEndBounds(
-                (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
-            )
-        }
+        setupFeaturedProductsFadingEdge(view)
     }
 
     private fun setupInsets(view: View) {
@@ -960,6 +956,14 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
+
+    private fun setupFeaturedProductsFadingEdge(view: View) {
+        view.doOnLayout {
+            productFeaturedView?.setFadingEndBounds(
+                (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
+            )
+        }
+    }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
         when {
