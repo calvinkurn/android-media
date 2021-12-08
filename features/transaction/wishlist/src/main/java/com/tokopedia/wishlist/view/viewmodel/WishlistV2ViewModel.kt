@@ -85,7 +85,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         launch {
             try {
                 val recommItems = getRecommendationWishlistV2(page, listOf(), EMPTY_WISHLIST_PAGE_NAME)
-                recommItems.recommendationData.forEach { item ->
+                recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(WishlistV2TypeLayoutData(item, TYPE_RECOMMENDATION_LIST))
                 }
                 _wishlistV2Data.value = Success(listData)
@@ -168,10 +168,10 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                     mapToTopads(recommPosition, listData)
                 } else {
                     if (wishlistV2Response.items.size >= recommPosition && wishlistV2Response.page % 2 == 0) {
-                        mapToRecommendation(recommPosition, listData)
+                        mapToRecommendation(recommPositionNextPage, listData)
 
                     } else {
-                        mapToRecommendation(0, listData)
+                        mapToTopads(recommPositionNextPage, listData)
                     }
                 }
             }
@@ -192,7 +192,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
         val recommItems = getRecommendationWishlistV2(1, listOf(), EMPTY_WISHLIST_PAGE_NAME)
         listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
-        recommItems.recommendationData.forEachIndexed { index, productCardModel ->
+        recommItems.recommendationProductCardModelData.forEachIndexed { index, productCardModel ->
             listData.add(WishlistV2TypeLayoutData(productCardModel, TYPE_RECOMMENDATION_LIST, recommId = recommItems.listRecommendationId.get(index).toString()))
         }
         return listData
@@ -202,7 +202,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         val recommItems = getRecommendationWishlistV2(1, listOf(), WISHLIST_PAGE_NAME)
 
         if (index > 0) {
-            listData.add(index, WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
+            listData.add(index, WishlistV2TypeLayoutData(WishlistV2Consts.RECOMMENDED_FOR_YOU, TYPE_RECOMMENDATION_TITLE))
             listData.add(index+1, WishlistV2TypeLayoutData(recommItems, TYPE_RECOMMENDATION_CAROUSEL))
         } else {
             listData.add(WishlistV2TypeLayoutData(recommItems.title, TYPE_RECOMMENDATION_TITLE))
@@ -272,6 +272,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                         productIds = productIds,
                         pageName = pageName))
         return WishlistV2RecommendationDataModel(convertRecommendationIntoProductDataModel(recommendation.recommendationItemList),
+                recommendation.recommendationItemList,
                 collectRecommendationId(recommendation.recommendationItemList), recommendation.title)
     }
 
@@ -323,6 +324,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
 
     companion object {
         private const val recommPosition = 4
+        private const val recommPositionNextPage = 6
         private const val WISHLIST_TOPADS_SOURCE = "6"
         private const val WISHLIST_TOPADS_ADS_COUNT = 1
         private const val WISHLIST_TOPADS_DIMENS = 3
