@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <FrameLayout
-        android:id="@+id/fl_product_image"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/layout_lvl0"
-        android:padding="@dimen/layout_lvl1"
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_product_image"
+        android:layout_width="@dimen/play_product_item_image_size"
+        android:layout_height="@dimen/play_product_item_image_size"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/iv_product_image"
-            android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            android:layout_width="@dimen/play_product_item_image_size"
-            android:layout_height="@dimen/play_product_item_image_size"
-            app:unify_image_corner_radius="0"
-            tools:src="@tools:sample/avatars" />
-    </FrameLayout>
+        app:layout_constraintVertical_bias="1.0"
+        tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_out_of_stock"
@@ -31,12 +26,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl0"
         android:maxLines="1"
         android:textColor="@color/Unify_R500"
         android:visibility="gone"
-        app:layout_constraintStart_toEndOf="@+id/fl_product_image"
-        app:layout_constraintTop_toTopOf="@+id/fl_product_image"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image"
+        app:layout_constraintTop_toTopOf="@+id/iv_product_image"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="Stok 5"
@@ -46,19 +41,18 @@
         android:id="@+id/tv_product_title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/play_line_spacing_4"
         android:maxLines="2"
         android:textColor="@color/Unify_N700_96"
-        app:layout_goneMarginTop="@dimen/layout_lvl1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/fl_product_image"
+        app:layout_constraintStart_toStartOf="@+id/tv_product_out_of_stock"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_out_of_stock"
         app:layout_constraintVertical_chainStyle="packed"
+        app:layout_goneMarginTop="@dimen/layout_lvl1"
         app:typographyType="body_2"
         tools:text="Alyssa Suede Flats Alyssa Suede Flats  Alyssa Suede Flats " />
 
@@ -118,13 +112,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl1"
         android:orientation="horizontal"
         android:weightSum="10"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tv_product_title"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/fl_product_image"
+        app:layout_constraintStart_toEndOf="@+id/iv_product_image"
         app:layout_constraintTop_toBottomOf="@+id/ll_product_discount">
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -132,12 +125,12 @@
             android:layout_width="@dimen/layout_lvl8"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_weight="5"
+            android:text="@string/play_product_atc"
             app:layout_constraintStart_toEndOf="@+id/iv_product_image"
             app:layout_constraintTop_toBottomOf="@+id/ll_product_discount"
             app:unifyButtonSize="micro"
             app:unifyButtonVariant="ghost"
-            tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck"
-            android:text="@string/play_product_atc"/>
+            tools:ignore="TextContrastCheck,TextContrastCheck,TextContrastCheck" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_product_buy"
@@ -145,12 +138,12 @@
             android:layout_height="@dimen/layout_lvl3"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_weight="5"
+            android:text="@string/play_product_buy"
             app:layout_constraintStart_toEndOf="@+id/iv_product_atc"
             app:layout_constraintTop_toTopOf="@+id/iv_product_atc"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
-            tools:ignore="TextContrastCheck"
-            android:text="@string/play_product_buy" />
+            tools:ignore="TextContrastCheck" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
