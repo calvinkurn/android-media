@@ -3,7 +3,6 @@ package com.tokopedia.campaignlist.page.presentation.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.KeyEvent.*
 import android.view.LayoutInflater
 import android.view.View
@@ -39,7 +38,6 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -139,6 +137,7 @@ class CampaignListFragment : BaseDaggerFragment(),
 
     override fun onApplyCampaignTypeFilter(selectedCampaignType: CampaignTypeSelection) {
         campaignTypeFilter?.title = selectedCampaignType.campaignTypeName
+        campaignTypeFilter?.type = ChipsUnify.TYPE_SELECTED
         var campaignTypeId = 0
         try {
             campaignTypeId = selectedCampaignType.campaignTypeId.toInt()
@@ -151,6 +150,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onApplyCampaignStatusFilter(selectedCampaignStatus: CampaignStatusSelection) {
+        campaignStatusFilter?.type = ChipsUnify.TYPE_SELECTED
         campaignStatusFilter?.title = selectedCampaignStatus.statusText
         viewModel.setCampaignStatusId(listOf(selectedCampaignStatus.statusId))
         viewModel.getCampaignList(statusId = listOf(selectedCampaignStatus.statusId))
@@ -158,7 +158,7 @@ class CampaignListFragment : BaseDaggerFragment(),
     }
 
     override fun onNoCampaignStatusSelected() {
-        binding?.sfCampaignList?.resetAllFilters()
+        campaignStatusFilter?.type = ChipsUnify.TYPE_NORMAL
         viewModel.getCampaignList(
             EMPTY_SEARCH_KEYWORD,
             viewModel.getCampaignTypeId(),
@@ -224,11 +224,6 @@ class CampaignListFragment : BaseDaggerFragment(),
             val campaignStatusFilterTitle = getString(R.string.campaign_list_label_status)
             campaignStatusFilter = SortFilterItem(campaignStatusFilterTitle)
             campaignStatusFilter?.listener = {
-                campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
-                    ChipsUnify.TYPE_SELECTED
-                } else {
-                    ChipsUnify.TYPE_NORMAL
-                }
                 campaignStatusBottomSheet?.show(childFragmentManager)
                 tracker.sendOpenCampaignStatusFilterClickEvent(userSession.shopId)
             }
@@ -238,11 +233,6 @@ class CampaignListFragment : BaseDaggerFragment(),
             campaignTypeFilter = SortFilterItem(campaignTypeFilterTitle)
             campaignTypeFilter?.type = ChipsUnify.TYPE_SELECTED
             campaignTypeFilter?.listener = {
-                campaignStatusFilter?.type = if (campaignStatusFilter?.type == ChipsUnify.TYPE_NORMAL) {
-                    ChipsUnify.TYPE_SELECTED
-                } else {
-                    ChipsUnify.TYPE_NORMAL
-                }
                 campaignTypeBottomSheet?.show(childFragmentManager)
             }
             val sortFilterItemList = ArrayList<SortFilterItem>()
@@ -256,6 +246,11 @@ class CampaignListFragment : BaseDaggerFragment(),
                 campaignTypeFilter?.listener?.invoke()
             }
         }
+        binding?.sfCampaignList?.parentListener = {
+            /* No op. We need to specify this block, otherwise the clear filter chip will do nothing
+               when clicked */
+        }
+        binding?.sfCampaignList?.dismissListener = { viewModel.getCampaignList() }
     }
 
     private fun setupActiveCampaignListView(binding: FragmentCampaignListBinding?) {
