@@ -309,7 +309,6 @@ class CampaignListFragment : BaseDaggerFragment(),
                 }
             }
         })
-//        ticker_campaign_type_wording
 
         viewModel.getMerchantBannerResult.observe(viewLifecycleOwner, { result ->
             when (result) {
