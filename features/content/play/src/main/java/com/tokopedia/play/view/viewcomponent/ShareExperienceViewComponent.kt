@@ -32,17 +32,16 @@ class ShareExperienceViewComponent(
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(object: ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
-
+                    listener.onShareOptionClick(this@ShareExperienceViewComponent, shareModel)
                 }
 
                 override fun onCloseOptionClicked() {
-
+                    listener.onShareOptionClosed(this@ShareExperienceViewComponent)
                 }
             })
         }
 
         ivShareLink.setOnClickListener {
-            universalShareBottomSheet?.show(fragmentManager, fragment)
             listener.onShareIconClick(this)
         }
     }
@@ -58,7 +57,13 @@ class ShareExperienceViewComponent(
         )
     }
 
+    fun showSharingOptions() {
+        universalShareBottomSheet?.show(fragmentManager, fragment)
+    }
+
     interface Listener {
         fun onShareIconClick(view: ShareExperienceViewComponent)
+        fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel)
+        fun onShareOptionClosed(view: ShareExperienceViewComponent)
     }
 }

@@ -52,6 +52,11 @@ sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
 }
 data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEvent()
 
+/**
+ * Sharing Experience
+ */
+object OpenSharingExperienceEvent : PlayViewerNewUiEvent()
+
 //---------------------
 
 sealed class UiString {

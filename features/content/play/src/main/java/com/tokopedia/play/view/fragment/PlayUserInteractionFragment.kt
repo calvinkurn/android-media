@@ -85,6 +85,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -310,9 +311,17 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onShareIconClick(view: ShareExperienceViewComponent) {
-//        playViewModel.submitAction(ClickShareAction)
-//
+        playViewModel.submitAction(ClickShareAction)
+
 //        analytic.clickCopyLink()
+    }
+
+    override fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel) {
+
+    }
+
+    override fun onShareOptionClosed(view: ShareExperienceViewComponent) {
+
     }
 
     override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
@@ -942,6 +951,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
+                    OpenSharingExperienceEvent -> shareExperienceView?.showSharingOptions()
                 }
             }
         }

@@ -1807,19 +1807,22 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleClickShare() {
-        val shareInfo = _channelDetail.value.shareInfo
-
         viewModelScope.launch {
-            _uiEvent.emit(
-                CopyToClipboardEvent(shareInfo.content)
-            )
-
-            _uiEvent.emit(
-                ShowInfoEvent(
-                    UiString.Resource(R.string.play_link_copied)
-                )
-            )
+            _uiEvent.emit(OpenSharingExperienceEvent)
         }
+//        val shareInfo = _channelDetail.value.shareInfo
+//
+//        viewModelScope.launch {
+//            _uiEvent.emit(
+//                CopyToClipboardEvent(shareInfo.content)
+//            )
+//
+//            _uiEvent.emit(
+//                ShowInfoEvent(
+//                    UiString.Resource(R.string.play_link_copied)
+//                )
+//            )
+//        }
     }
 
     private fun handleRefreshLeaderboard() {
