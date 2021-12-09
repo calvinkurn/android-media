@@ -15,7 +15,6 @@ open class UnsendReplyUseCase @Inject constructor(
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<UnsendReplyUseCase.Param, UnsendReplyResponse>(dispatcher.io) {
 
-
     override suspend fun execute(params: Param): UnsendReplyResponse {
         val param = generateParam(params)
         return repository.request(graphqlQuery(), param)

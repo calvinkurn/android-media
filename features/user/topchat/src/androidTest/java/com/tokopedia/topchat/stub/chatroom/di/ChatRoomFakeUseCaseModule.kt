@@ -410,4 +410,23 @@ class ChatRoomFakeUseCaseModule {
             chosenAddressAddToCartRequestHelper
         )
     }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideUnsendReplyUseCase(
+        stub: UnsendReplyUseCaseStub
+    ): UnsendReplyUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideUnsendReplyUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): UnsendReplyUseCaseStub {
+        return UnsendReplyUseCaseStub(
+            repository, dispatchers
+        )
+    }
 }

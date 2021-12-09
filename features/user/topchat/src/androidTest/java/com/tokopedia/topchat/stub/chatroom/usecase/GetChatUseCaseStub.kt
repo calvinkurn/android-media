@@ -40,6 +40,8 @@ class GetChatUseCaseStub @Inject constructor(
         "seller/chat_replies_shipping_location.json"
     private val upcomingCampaignPath =
         "buyer/chat_replies_upcoming_campaign.json"
+    private val deleteImageResponsePath =
+        "buyer/chat_replies_delete_image.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -73,14 +75,25 @@ class GetChatUseCaseStub @Inject constructor(
     }
 
     /**
-     * <!--- Start Start OOS label --->
+     * <!--- Start OOS label --->
      */
 
     val upComingCampaignProduct: GetExistingChatPojo
         get() = alterResponseOf(upcomingCampaignPath) { response -> }
 
     /**
-     * <!--- End Start OOS label --->
+     * <!--- End OOS label --->
+     */
+
+    /**
+     * <!--- Start Delete Image --->
+     */
+
+    val deleteImageResponse: GetExistingChatPojo
+        get() = alterResponseOf(deleteImageResponsePath) { }
+
+    /**
+     * <!--- End Delete Image --->
      */
 
     /**
