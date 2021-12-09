@@ -22,7 +22,7 @@ class PlayWidgetSampleAnalytic(
         Toast.makeText(context, object{}.javaClass.enclosingMethod!!.name, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
+    override fun onClickChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         Toast.makeText(context, "${object{}.javaClass.enclosingMethod!!.name}, position: $channelPositionInList, widgetPos: $widgetPosition", Toast.LENGTH_SHORT).show()
     }
 
@@ -30,7 +30,7 @@ class PlayWidgetSampleAnalytic(
         Toast.makeText(context, object{}.javaClass.enclosingMethod!!.name, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
+    override fun onImpressChannelCard(view: PlayWidgetSmallView, item: PlayWidgetSmallChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         Toast.makeText(context, "${object{}.javaClass.enclosingMethod!!.name}, position: $channelPositionInList, widgetPos: $widgetPosition", Toast.LENGTH_SHORT).show()
     }
 

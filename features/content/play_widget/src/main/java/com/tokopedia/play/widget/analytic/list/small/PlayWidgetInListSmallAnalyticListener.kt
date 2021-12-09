@@ -20,7 +20,7 @@ interface PlayWidgetInListSmallAnalyticListener {
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
-            businessWidgetPosition: Int
+            businessWidgetPosition: Int,
     ) {}
 
     fun onClickBannerCard(
@@ -35,6 +35,6 @@ interface PlayWidgetInListSmallAnalyticListener {
             channelPositionInList: Int,
             isAutoPlay: Boolean,
             verticalWidgetPosition: Int,
-            businessWidgetPosition: Int
+            businessWidgetPosition: Int,
     ) {}
 }
