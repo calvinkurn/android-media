@@ -90,10 +90,12 @@ class TopchatImageUploadViewHolder(
 
     private fun bindLongClick(element: ImageUploadUiModel) {
         attachmentUnify?.setOnLongClickListener {
-            val menus = LongClickMenuItemGenerator.createLongClickMenuUploadImageBubble()
-            commonListener.showMsgMenu(
-                element, "", menus
-            )
+            if (element.isSender) {
+                val menus = LongClickMenuItemGenerator.createLongClickMenuUploadImageBubble()
+                commonListener.showMsgMenu(
+                    element, "", menus
+                )
+            }
             true
         }
     }
