@@ -21,7 +21,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.util.*
+import org.junit.jupiter.api.Assertions.assertFalse
 
 @ExperimentalCoroutinesApi
 class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFixture() {
@@ -191,21 +191,10 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
     }
 
     @Test
-    fun `When selectedUnitValuesLevel Expect change correct isInputValid validity`() {
-        val selectedUnitValuesLevel1 = mutableListOf(
-                variantDetailTest1.units[0].unitValues[2],
-                variantDetailTest1.units[0].unitValues[3]
-        )
-        val selectedUnitValuesLevel2 = mutableListOf(
-                variantDetailTest1.units[1].unitValues[2],
-                variantDetailTest1.units[1].unitValues[3]
-        )
-
+    fun `When selectedUnitValuesLevel2 null Expect change correct isInputValid validity`() {
         viewModel.isSingleVariantTypeIsSelected = false
-        viewModel.updateSelectedVariantUnitValuesLevel1(selectedUnitValuesLevel1)
-        viewModel.updateSelectedVariantUnitValuesLevel2(selectedUnitValuesLevel2)
-
-        assert(viewModel.isInputValid.getOrAwaitValue())
+        viewModel.updateSelectedVariantUnitValuesLevel2(mutableListOf())
+        assertFalse(viewModel.isInputValid.getOrAwaitValue())
     }
 
     @Test
@@ -758,5 +747,11 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
 
         val result2 = viewModel.callPrivateFunc("mapVariantPhoto", VariantPhoto("", "")) as List<*>
         assert(result2.isEmpty())
+    }
+
+    @Test
+    fun `isEditMode should return false if productId is invalid`() {
+        viewModel.productInputModel.value = ProductInputModel(productId = -1)
+        assertFalse(viewModel.isEditMode.getOrAwaitValue())
     }
 }

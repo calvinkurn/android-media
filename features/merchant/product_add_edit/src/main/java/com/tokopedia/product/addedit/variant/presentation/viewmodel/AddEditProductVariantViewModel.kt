@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.product.addedit.common.constant.ProductStatus.STATUS_ACTIVE_STRING
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.data.model.GetVariantCategoryCombinationResponse
@@ -506,20 +507,20 @@ class AddEditProductVariantViewModel @Inject constructor(
         val selectedVariantDetails = mutableListOf<VariantDetail>()
         selectedVariantInputModels.forEach { inputModel ->
             // selected variant types
-            val id = inputModel.variantId.toIntOrNull() ?: 0
+            val id = inputModel.variantId.toIntSafely()
             val identifier = inputModel.identifier
             val name = inputModel.variantName
             // selected variant unit values
             val unitValues = mutableListOf<UnitValue>()
             val optionInputModels = inputModel.options
             optionInputModels.forEach {
-                val unitValueId = it.unitValueID.toIntOrNull() ?: 0
+                val unitValueId = it.unitValueID.toIntSafely()
                 val unitValueName = it.value
                 val unitValue = UnitValue(variantUnitValueID = unitValueId, value = unitValueName)
                 unitValues.add(unitValue)
             }
             // selected variant unit
-            val unitId = inputModel.unitID.toIntOrNull() ?: 0
+            val unitId = inputModel.unitID.toIntSafely()
             val unitName = inputModel.unitName
             val unit = Unit(variantUnitID = unitId, unitName = unitName, unitValues = unitValues)
             // selected variant detail
