@@ -5,6 +5,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
@@ -156,7 +157,9 @@ object IncentiveOvoThankYouBottomSheetBuilder {
         hasPendingIncentive: Boolean,
     ) {
         val incentiveOvoLater: UnifyButton? = findViewById(R.id.incentiveOvoLater)
-        val button = postSubmitBottomSheetData.buttonList?.lastOrNull()
+        val button = if (postSubmitBottomSheetData.buttonList?.size.orZero() > 1) {
+            postSubmitBottomSheetData.buttonList?.lastOrNull()
+        } else null
         button?.let { button ->
             val buttonText = button.text.orEmpty()
             val buttonType = button.type
