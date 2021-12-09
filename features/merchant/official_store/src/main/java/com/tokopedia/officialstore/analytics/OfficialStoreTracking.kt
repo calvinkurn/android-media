@@ -246,7 +246,7 @@ class OfficialStoreTracking(context: Context) {
                                 "$CLICK view all"))
     }
 
-    fun eventClickAllFeaturedBrand(categoryName: String) {
+    fun eventClickAllShop(categoryName: String) {
         tracker.sendGeneralEvent(
             TrackAppUtils
                 .gtmData(CLICK_OS_MICROSITE,
@@ -255,20 +255,7 @@ class OfficialStoreTracking(context: Context) {
                     "$CLICK view all"))
     }
 
-    fun eventClickAllFeaturedBrandOS(categoryName: String) {
-        val trackerClickAllFeaturedBrand = TrackAppUtils
-            .gtmData(
-                CLICK_OS_MICROSITE,
-                OS_MICROSITE_SINGLE,
-                "$ALL_BRANDS $CLICK",
-                "$CLICK $VIEW_ALL $categoryName"
-            )
-        trackerClickAllFeaturedBrand[FIELD_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_DEFAULT
-        trackerClickAllFeaturedBrand[FIELD_CURRENT_SITE] = VALUE_CURRENT_SITE_DEFAULT
-        tracker.sendGeneralEvent(trackerClickAllFeaturedBrand)
-    }
-
-    fun eventClickFeaturedBrand(
+    fun eventClickShop(
             categoryName: String,
             shopPosition: Int,
             shopName: String,
@@ -308,6 +295,57 @@ class OfficialStoreTracking(context: Context) {
         tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
     }
 
+    fun eventImpressionShop(
+            categoryName: String,
+            shopPosition: Int,
+            shopName: String,
+            url: String,
+            additionalInformation: String,
+            featuredBrandId: String,
+            isLogin: Boolean,
+            shopId: String,
+            isFromDC: Boolean = false,
+            attribute: String = ""
+    ) {
+        val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
+        val statusLogin = if (isLogin) "login" else "nonlogin"
+        val data = DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, "all brands - $IMPRESSION - $statusLogin",
+                EVENT_LABEL, shopId,
+                ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                "promotions",DataLayer.listOf(
+                DataLayer.mapOf(
+                        "id", featuredBrandId,
+                        "name", "/official-store/$categoryName - popular brands",
+                        "position", "$shopPosition",
+                        "creative", creativeName,
+                        "creative_url", url,
+                        "promo_id", VALUE_NONE_OTHER,
+                        "promo_code", VALUE_NONE_OTHER
+                        )
+                    )
+                )
+            )
+        )
+        trackingQueue.putEETracking(data as HashMap<String, Any>)
+    }
+
+    fun eventClickAllFeaturedBrandOS(categoryName: String) {
+        val trackerClickAllFeaturedBrand = TrackAppUtils
+            .gtmData(
+                CLICK_OS_MICROSITE,
+                OS_MICROSITE_SINGLE,
+                "$ALL_BRANDS $CLICK",
+                "$CLICK $VIEW_ALL $categoryName"
+            )
+        trackerClickAllFeaturedBrand[FIELD_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_DEFAULT
+        trackerClickAllFeaturedBrand[FIELD_CURRENT_SITE] = VALUE_CURRENT_SITE_DEFAULT
+        tracker.sendGeneralEvent(trackerClickAllFeaturedBrand)
+    }
+
     fun eventClickFeaturedBrandOS(
         categoryName: String,
         shopPosition: Int,
@@ -344,44 +382,6 @@ class OfficialStoreTracking(context: Context) {
             USER_ID, userId
         )
         tracker.sendEnhanceEcommerceEvent(data as HashMap<String, Any>)
-    }
-
-    fun eventImpressionFeatureBrand(
-            categoryName: String,
-            shopPosition: Int,
-            shopName: String,
-            url: String,
-            additionalInformation: String,
-            featuredBrandId: String,
-            isLogin: Boolean,
-            shopId: String,
-            isFromDC: Boolean = false,
-            attribute: String = ""
-    ) {
-        val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
-        val statusLogin = if (isLogin) "login" else "nonlogin"
-        val data = DataLayer.mapOf(
-                EVENT, PROMO_VIEW,
-                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
-                EVENT_ACTION, "all brands - $IMPRESSION - $statusLogin",
-                EVENT_LABEL, shopId,
-                ECOMMERCE, DataLayer.mapOf(
-                PROMO_VIEW, DataLayer.mapOf(
-                "promotions",DataLayer.listOf(
-                DataLayer.mapOf(
-                        "id", featuredBrandId,
-                        "name", "/official-store/$categoryName - popular brands",
-                        "position", "$shopPosition",
-                        "creative", creativeName,
-                        "creative_url", url,
-                        "promo_id", VALUE_NONE_OTHER,
-                        "promo_code", VALUE_NONE_OTHER
-                        )
-                    )
-                )
-            )
-        )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun eventImpressionFeatureBrandOS(
