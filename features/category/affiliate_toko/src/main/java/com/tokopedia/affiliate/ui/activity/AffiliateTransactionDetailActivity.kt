@@ -13,7 +13,9 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -30,7 +32,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransactionDetailViewModel>() {
+class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransactionDetailViewModel>(),AffiliateInfoClickInterfaces {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -75,7 +77,7 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
         }
     }
 
-    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory())
+    private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(affiliateInfoClickInterfaces = this))
     lateinit var detailsRV : RecyclerView
     private fun initRv() {
         detailsRV = findViewById(R.id.details_rv)
@@ -148,11 +150,6 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
         findViewById<Typography>(R.id.product_status).text = commissionData?.data?.cardDetail?.cardPriceFormatted
         findViewById<Typography>(R.id.shop_name).text = commissionData?.data?.cardDetail?.shopName
         findViewById<Typography>(R.id.transaction_date).text = commissionData?.data?.createdAtFormatted
-        setCommissionDetails(commissionData?.data?.detail)
-
-    }
-
-    private fun setCommissionDetails(detail: List<AffiliateCommissionDetailsData.GetAffiliateCommissionDetail.Data.Detail?>?) {
 
     }
 
@@ -181,6 +178,10 @@ class AffiliateTransactionDetailActivity : BaseViewModelActivity<AffiliateTransa
 
     override fun getNewFragment(): Fragment? {
         return null
+    }
+
+    override fun onInfoClick(title: String?, desc: String?) {
+        AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PERFORMA_INFO,title,desc).show(supportFragmentManager, "")
     }
 
 }

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.bodyTypoMap
 import com.tokopedia.affiliate.headerTypoMap
+import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
@@ -13,7 +14,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
-class AffiliateCommissionDetailsItemVH(itemView: View) :
+class AffiliateCommissionDetailsItemVH(
+    itemView: View,
+    private val affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces?
+) :
     AbstractViewHolder<AffiliateCommissionItemModel>(itemView) {
 
     companion object {
@@ -85,6 +89,9 @@ class AffiliateCommissionDetailsItemVH(itemView: View) :
             else {
                 infoIcon.show()
             }
+        }
+        infoIcon.setOnClickListener {
+            affiliateInfoClickInterfaces?.onInfoClick(element?.data?.detailTitle,element?.data?.detailTooltip)
         }
     }
 
