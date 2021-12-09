@@ -25,6 +25,7 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.ALL_MODE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.ALL_VARIANT_SEARCH_CATEGORY_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.COLOUR_VARIANT_TYPE_ID
+import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_CHAR_VARIANT_TYPE_NAME
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.VARIANT_IDENTIFIER_HAS_SIZECHART
@@ -181,8 +182,9 @@ class AddEditProductVariantViewModel @Inject constructor(
     }
 
     fun validateVariantTitle(
-            productName: String,
-            selectedVariantDetails: List<VariantDetail>
+        productName: String,
+        selectedVariantDetails: List<VariantDetail>,
+        customVariantDetails: List<VariantDetail>
     ) {
         when {
             productName.length < MIN_CHAR_VARIANT_TYPE_NAME -> {
@@ -192,6 +194,10 @@ class AddEditProductVariantViewModel @Inject constructor(
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.SYMBOL_ERROR
             }
             selectedVariantDetails.any { it.name.equals(productName, ignoreCase = true) } -> {
+                mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
+            }
+            customVariantDetails.any { it.variantID == CUSTOM_VARIANT_TYPE_ID &&
+                    it.name.equals(productName, ignoreCase = true) } -> {
                 mVariantTitleValidationStatus.value = VariantTitleValidationStatus.USED_NAME
             }
             else -> validateIllegalVariantTitle(productName)

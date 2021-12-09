@@ -31,7 +31,8 @@ import javax.inject.Inject
 
 class CustomVariantInputBottomSheet (
     private val variantTypeName: String = "",
-    private val selectedVariantDetails: List<VariantDetail> = emptyList()
+    private val selectedVariantDetails: List<VariantDetail> = emptyList(),
+    private val customVariantDetails: List<VariantDetail> = emptyList()
 ) : BottomSheetUnify() {
 
     @Inject
@@ -104,7 +105,7 @@ class CustomVariantInputBottomSheet (
         }
         binding?.buttonSave?.setOnClickListener {
             val inputText = binding?.textFieldVariantTypeInput?.getTrimmedText().orEmpty()
-            viewModel.validateVariantTitle(inputText, selectedVariantDetails)
+            viewModel.validateVariantTitle(inputText, selectedVariantDetails, customVariantDetails)
         }
     }
 

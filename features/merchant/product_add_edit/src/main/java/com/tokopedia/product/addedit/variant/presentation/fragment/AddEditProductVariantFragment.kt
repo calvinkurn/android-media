@@ -725,7 +725,9 @@ class AddEditProductVariantFragment :
         }
         buttonAddVariantType.setOnClickListener {
             val bottomSheet = CustomVariantInputBottomSheet(
-                selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty())
+                selectedVariantDetails = variantTypeAdapter?.getSelectedItems().orEmpty(),
+                customVariantDetails = variantTypeAdapter?.getCustomVariantTypeItems().orEmpty()
+            )
 
             bottomSheet.setOnCustomVariantTypeSubmitted {
                 addCustomVariantType(it)
