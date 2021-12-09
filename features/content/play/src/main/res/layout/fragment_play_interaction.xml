@@ -51,7 +51,7 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/view_size"
-        app:layout_constraintEnd_toStartOf="@id/view_share_link"
+        app:layout_constraintEnd_toStartOf="@id/view_share_experience"
         app:layout_constraintStart_toEndOf="@id/view_product_see_more"
         tools:visibility="visible"
         />
@@ -78,8 +78,8 @@
         />
 
     <include
-        android:id="@+id/view_share_link"
-        layout="@layout/view_share_link"
+        android:id="@+id/view_share_experience"
+        layout="@layout/view_share_experience"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
@@ -96,7 +96,7 @@
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/view_share_link"
+        app:layout_constraintBottom_toBottomOf="@id/view_share_experience"
         app:layout_constraintEnd_toEndOf="@id/view_size"
         tools:visibility="visible"
         />
@@ -135,7 +135,7 @@
         android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/view_pinned_voucher"
-        app:layout_constraintEnd_toStartOf="@id/view_share_link"
+        app:layout_constraintEnd_toStartOf="@id/view_share_experience"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="@id/view_size"
         app:layout_constraintWidth_default="wrap"
@@ -202,7 +202,7 @@
         app:controller_layout_id="@layout/layout_play_player_control"
         app:layout_constraintBottom_toBottomOf="@id/view_send_chat"
         app:layout_constraintTop_toTopOf="@id/view_send_chat"
-        app:layout_constraintEnd_toStartOf="@id/view_share_link"
+        app:layout_constraintEnd_toStartOf="@id/view_share_experience"
         app:layout_constraintStart_toEndOf="@id/view_product_see_more"
         app:show_timeout="-1"
         tools:visibility="visible"
@@ -214,7 +214,7 @@
         android:layout_width="wrap_content"
         layout="@layout/view_product_see_more"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        app:layout_constraintBottom_toBottomOf="@id/view_share_link"
+        app:layout_constraintBottom_toBottomOf="@id/view_share_experience"
         app:layout_constraintStart_toStartOf="@id/view_size"
         />
 

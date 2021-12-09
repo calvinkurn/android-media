@@ -1,0 +1,64 @@
+package com.tokopedia.play.view.viewcomponent
+
+import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.R
+import com.tokopedia.play_common.viewcomponent.ViewComponent
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
+
+/**
+ * Created By : Jonathan Darwin on November 01, 2021
+ */
+class ShareExperienceViewComponent(
+    container: ViewGroup,
+    @IdRes idRes: Int,
+    private val fragmentManager: FragmentManager,
+    private val fragment: Fragment,
+    private val listener: Listener
+) : ViewComponent(container, idRes) {
+
+    private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
+
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
+
+    init {
+        universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(object: ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+
+                }
+
+                override fun onCloseOptionClicked() {
+
+                }
+            })
+        }
+
+        ivShareLink.setOnClickListener {
+            universalShareBottomSheet?.show(fragmentManager, fragment)
+            listener.onShareIconClick(this)
+        }
+    }
+
+    fun setIsShareable(isShow: Boolean) {
+        if (isShow) ivShareLink.show() else ivShareLink.hide()
+    }
+
+    fun setupPlayShareBottomSheet(title: String, coverUrl: String) {
+        universalShareBottomSheet?.setMetaData(
+            tnTitle = title,
+            tnImage = coverUrl,
+        )
+    }
+
+    interface Listener {
+        fun onShareIconClick(view: ShareExperienceViewComponent)
+    }
+}

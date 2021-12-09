@@ -20,6 +20,7 @@ data class PlayViewerNewUiState(
     val rtn: PlayRtnUiState,
     val title: PlayTitleUiState,
     val viewAllProduct: PlayViewAllProductUiState,
+    val sharingExperience: PlaySharingExperienceUiState,
 )
 
 data class PlayInteractiveViewUiState(
@@ -96,6 +97,11 @@ data class PlayTitleUiState(
 
 data class PlayViewAllProductUiState(
     val shouldShow: Boolean
+)
+
+data class PlaySharingExperienceUiState(
+    val title: String,
+    val coverUrl: String,
 )
 
 enum class ViewVisibility {

@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -86,9 +85,6 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -113,7 +109,7 @@ class PlayUserInteractionFragment @Inject constructor(
         PartnerInfoViewComponent.Listener,
         VideoControlViewComponent.Listener,
         LikeViewComponent.Listener,
-        ShareLinkViewComponent.Listener,
+        ShareExperienceViewComponent.Listener,
         SendChatViewComponent.Listener,
         QuickReplyViewComponent.Listener,
         PinnedViewComponent.Listener,
@@ -137,7 +133,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
     private val likeView by viewComponent { LikeViewComponent(it, this) }
     private val likeCountView by viewComponent { LikeCountViewComponent(it) }
-    private val shareLinkView by viewComponentOrNull { ShareLinkViewComponent(it, R.id.view_share_link, this) }
+    private val shareExperienceView by viewComponentOrNull { ShareExperienceViewComponent(it, R.id.view_share_experience, childFragmentManager, this, this) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
     private val chatListView by viewComponentOrNull { ChatListViewComponent(it, R.id.view_chat_list) }
@@ -313,26 +309,10 @@ class PlayUserInteractionFragment @Inject constructor(
         doLeaveRoom()
     }
 
-    override fun onShareIconClick(view: ShareLinkViewComponent) {
-        playViewModel.submitAction(ClickShareAction)
-
-        analytic.clickCopyLink()
-
-        val shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            setMetaData(
-                tnTitle  = "Title",
-                tnImage = "Title"
-            )
-            init(object: ShareBottomsheetListener {
-                override fun onShareOptionClicked(shareModel: ShareModel) {
-
-                }
-
-                override fun onCloseOptionClicked() {
-
-                }
-            })
-        }.show(childFragmentManager, this)
+    override fun onShareIconClick(view: ShareExperienceViewComponent) {
+//        playViewModel.submitAction(ClickShareAction)
+//
+//        analytic.clickCopyLink()
     }
 
     override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
@@ -826,7 +806,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 pinnedView?.hide()
                 immersiveBoxView.hide()
                 playButtonView.hide()
-                shareLinkView?.setIsShareable(false)
+                shareExperienceView?.setIsShareable(false)
 
                 videoControlViewOnStateChanged(isFreezeOrBanned = true)
 
@@ -885,6 +865,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.viewAllProduct)
+                renderSharingExperienceView(state.sharingExperience)
             }
         }
     }
@@ -1533,7 +1514,7 @@ class PlayUserInteractionFragment @Inject constructor(
         share: PlayShareUiState
     ) {
         toolbarView.setTitle(title.title)
-        shareLinkView?.setIsShareable(share.shouldShow)
+        shareExperienceView?.setIsShareable(share.shouldShow)
     }
 
     private fun renderPartnerInfoView(prevState: PlayPartnerUiState?, state: PlayPartnerUiState) {
@@ -1583,6 +1564,13 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderViewAllProductView(viewAllProduct: PlayViewAllProductUiState) {
         if(viewAllProduct.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
+    }
+
+    private fun renderSharingExperienceView(sharingExperience: PlaySharingExperienceUiState) {
+        shareExperienceView?.setupPlayShareBottomSheet(
+            sharingExperience.title,
+            sharingExperience.coverUrl
+        )
     }
 
     private fun castViewOnStateChanged(

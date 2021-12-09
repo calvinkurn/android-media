@@ -7,7 +7,7 @@
     tools:background="@color/play_dms_N700">
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/ic_play_share_link"
+        android:id="@+id/ic_play_share_experience"
         android:layout_width="@dimen/layout_lvl3"
         android:layout_height="@dimen/layout_lvl3"
         app:icon_color_light_enable="@color/Unify_Static_White"
