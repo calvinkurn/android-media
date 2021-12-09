@@ -111,7 +111,7 @@ class ChatMessageUnifyViewHolder(
     }
 
     private fun bindLongClick(msg: MessageUiModel) {
-        if (!msg.isBanned()) {
+        if (!msg.isBanned() && !msg.isDeleted()) {
             fxChat?.setOnLongClickListener {
                 val menus = createLongClickMenuMsgBubble()
                 commonListener.showMsgMenu(
