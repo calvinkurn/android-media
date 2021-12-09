@@ -291,7 +291,7 @@ class CampaignListFragment : BaseDaggerFragment(),
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CampaignListFragment)
             getImageFromMedia(getImageFromMediaFlag = true)
-            setMediaPageSourceId(pageSourceId = CAMPAIGN_LIST_PAGE_SOURCE_ID)
+            setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.RILISAN_SPESIAL)
 
             setMetaData(
                     tnTitle = viewModel.getShareBottomSheetTitle(shopData.name),
