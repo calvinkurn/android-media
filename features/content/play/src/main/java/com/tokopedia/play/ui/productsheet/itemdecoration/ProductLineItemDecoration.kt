@@ -13,13 +13,13 @@ import com.tokopedia.play.R
 class ProductLineItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     private val defaultOffset = context.resources.getDimensionPixelOffset(com.tokopedia.unifycomponents.R.dimen.spacing_lvl1)
-    private val startAndEndOffset = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
+    private val topBottomOffset = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
         val itemCount = parent.adapter?.itemCount.orZero()
 
-        outRect.top =  if (position == 0) startAndEndOffset else defaultOffset
-        if(position == itemCount - 1) outRect.bottom = startAndEndOffset
+        outRect.top =  if (position == 0) topBottomOffset else defaultOffset
+        if(position == itemCount - 1) outRect.bottom = topBottomOffset
     }
 }

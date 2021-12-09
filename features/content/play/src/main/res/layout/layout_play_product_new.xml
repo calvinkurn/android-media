@@ -25,8 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/layout_lvl0"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginTop="0dp"
         android:maxLines="1"
         android:textColor="@color/Unify_R500"
         android:visibility="gone"
@@ -55,10 +55,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_title"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:ellipsize="end"
         android:lineSpacingExtra="@dimen/play_line_spacing_4"
         android:maxLines="2"
@@ -68,8 +68,8 @@
         app:layout_constraintStart_toStartOf="@+id/tv_product_out_of_stock"
         app:layout_constraintTop_toBottomOf="@+id/tv_product_out_of_stock"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_goneMarginTop="@dimen/layout_lvl0"
-        app:layout_goneMarginStart="@dimen/layout_lvl1"
+        app:layout_goneMarginTop="0dp"
+        app:layout_goneMarginStart="@dimen/spacing_lvl3"
         app:typographyType="body_2"
         tools:text="Alyssa Suede Flats Alyssa Suede Flats  Alyssa Suede Flats " />
 
@@ -89,7 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl1"
-            android:paddingStart="@dimen/layout_lvl0"
+            android:paddingStart="0dp"
             android:paddingEnd="@dimen/spacing_lvl2"
             android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
@@ -125,9 +125,9 @@
 
     <LinearLayout
         android:id="@+id/layout_product_button"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:orientation="horizontal"
         android:weightSum="10"
@@ -139,7 +139,7 @@
         app:layout_constraintVertical_bias="0.0">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/iv_product_atc"
+            android:id="@+id/btn_product_atc"
             android:layout_width="@dimen/layout_lvl8"
             android:layout_height="@dimen/layout_lvl3"
             android:layout_weight="5"
@@ -154,11 +154,11 @@
             android:id="@+id/btn_product_buy"
             android:layout_width="@dimen/layout_lvl8"
             android:layout_height="@dimen/layout_lvl3"
-            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_weight="5"
             android:text="@string/play_product_buy"
-            app:layout_constraintStart_toEndOf="@+id/iv_product_atc"
-            app:layout_constraintTop_toTopOf="@+id/iv_product_atc"
+            app:layout_constraintStart_toEndOf="@+id/btn_product_atc"
+            app:layout_constraintTop_toTopOf="@+id/btn_product_atc"
             app:unifyButtonSize="micro"
             app:unifyButtonType="main"
             tools:ignore="TextContrastCheck" />

@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 class ProductLineViewHolder(itemView: View, private val listener: Listener) : ProductBasicViewHolder(itemView, listener) {
 
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
-    private val ivProductAtc: UnifyButton = itemView.findViewById(R.id.iv_product_atc)
+    private val btnProductAtc: UnifyButton = itemView.findViewById(R.id.btn_product_atc)
     private val lblOutOfStock: Label = itemView.findViewById(R.id.label_out_of_stock)
     private val shadowOutOfStock: View = itemView.findViewById(R.id.shadow_out_of_stock)
 
@@ -30,19 +30,19 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             OutOfStock -> {
                 shadowOutOfStock.show()
                 lblOutOfStock.show()
-                ivProductAtc.setDrawable(
+                btnProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100))
                 )
                 btnProductBuy.isEnabled = false
-                ivProductAtc.isEnabled = false
+                btnProductAtc.isEnabled = false
             }
 
             is StockAvailable -> {
                 shadowOutOfStock.gone()
                 lblOutOfStock.gone()
                 btnProductBuy.isEnabled = true
-                ivProductAtc.isEnabled = true
-                ivProductAtc.setDrawable(
+                btnProductAtc.isEnabled = true
+                btnProductAtc.setDrawable(
                     getIconUnifyDrawable(itemView.context, IconUnify.ADD, ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 )
             }
@@ -52,7 +52,7 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Pr
             listener.onBuyProduct(item)
         }
 
-        ivProductAtc.setOnClickListener {
+        btnProductAtc.setOnClickListener {
             listener.onAtcProduct(item)
         }
     }
