@@ -12,12 +12,15 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/ivSearchResultNav"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_marginTop="@dimen/spacing_lvl2"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_topads" />
+        tools:srcCompat="@drawable/ic_topads" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTitleSearchResultNav"
@@ -63,6 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tvDescSearchResultNav"
         app:layout_constraintTop_toBottomOf="@+id/tvDescSearchResultNav"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_sub_search_result_navigation"
         tools:orientation="horizontal" />
 
