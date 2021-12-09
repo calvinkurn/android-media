@@ -351,6 +351,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         btn_sbm_add_telco.apply {
             show()
             isDisableButton()
+            text = if (isPostPaid()) resources.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_add_telco_post)
+            else resources.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_product_button_inquiry)
             setOnClickListener {
                 hideKeyBoard()
                 commonTopUpBillsAnalytic.clickTambahTagihanTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
