@@ -273,8 +273,8 @@ class TopChatViewModel @Inject constructor(
     fun deleteMsg(msgId: String, replyTimeNano: String) {
         launchCatchError(block = {
             val existingMessageIdParam = UnsendReplyUseCase.Param(
-                msgID = msgId,
-                replyTimes = listOf(replyTimeNano)
+                msgID = msgId.toLongOrZero(),
+                replyTimes = replyTimeNano
             )
             val response = unsendReplyUseCase(existingMessageIdParam)
             if (response.unsendReply.isSuccess) {
