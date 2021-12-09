@@ -20,6 +20,7 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.attachcommon.preview.ProductPreview
+import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_DELETE_MSG
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
@@ -266,6 +267,9 @@ open class TopChatRoomPresenter @Inject constructor(
                         view?.showUnreadMessage(newUnreadMessage)
                     }
                 }
+            }
+            EVENT_DELETE_MSG -> {
+                view?.onReceiveWsEventDeleteMsg(pojo.replyTime)
             }
         }
     }

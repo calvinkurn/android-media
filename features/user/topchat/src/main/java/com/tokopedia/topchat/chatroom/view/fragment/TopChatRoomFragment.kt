@@ -143,7 +143,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashSet
 import kotlin.math.abs
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel.Companion.SHOP_TYPE_TOKONOW
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
@@ -2583,6 +2582,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun deleteBubble(msg: BaseChatUiModel) {
         val replyTimeNano = msg.replyTime ?: return
         viewModel.deleteMsg(presenter.roomMetaData.msgId, replyTimeNano)
+        adapter.deleteMsg(replyTimeNano)
+    }
+
+    override fun onReceiveWsEventDeleteMsg(replyTimeNano: String) {
         adapter.deleteMsg(replyTimeNano)
     }
 
