@@ -898,9 +898,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     ?.alpha((if (isLoading) 1 else 0).toFloat())
                     ?.setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            if (binding?.progressBarLoginWithPhone != null) {
-                                binding?.progressBarLoginWithPhone?.visibility = if (isLoading) View.VISIBLE else View.GONE
-                            }
+                            binding?.progressBarLoginWithPhone?.visibility = if (isLoading) View.VISIBLE else View.GONE
                         }
                     })
 
@@ -908,9 +906,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     ?.alpha((if (isLoading) 0 else 1).toFloat())
                     ?.setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            if (binding?.container != null) {
-                                binding?.container?.visibility = if (isLoading) View.GONE else View.VISIBLE
-                            }
+                            binding?.container?.visibility = if (isLoading) View.GONE else View.VISIBLE
                         }
                     })
         }
