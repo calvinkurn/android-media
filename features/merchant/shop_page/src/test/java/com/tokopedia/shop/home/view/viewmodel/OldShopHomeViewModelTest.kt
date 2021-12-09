@@ -1030,6 +1030,7 @@ class OldShopHomeViewModelTest {
                                 PlayWidgetVideoUiModel("", false, "", ""),
                                 PlayWidgetChannelType.Upcoming,
                                 false,
+                                "",
                                 ""
                         )
                 )
@@ -1115,6 +1116,7 @@ class OldShopHomeViewModelTest {
                                 PlayWidgetShareUiModel("", false),
                                 "",
                                 false,
+                                "",
                                 ""
                         )
                 )
@@ -1179,6 +1181,7 @@ class OldShopHomeViewModelTest {
                                 PlayWidgetShareUiModel("", false),
                                 "",
                                 false,
+                                "",
                                 ""
                         )
                 )
