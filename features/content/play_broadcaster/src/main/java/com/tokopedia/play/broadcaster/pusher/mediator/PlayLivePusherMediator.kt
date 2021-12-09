@@ -17,7 +17,7 @@ import com.tokopedia.play.broadcaster.util.error.isNetworkTrouble
 class PlayLivePusherMediator(
     private val livePusher: PlayLivePusher,
     private val cacheHandler: LocalCacheHandler,
-    private val mTimer: PlayLivePusherTimer
+    private val mTimer: PlayLivePusherTimer,
 ): PlayLivePusher by livePusher, PusherMediator {
 
     override val remainingDurationInMillis: Long
@@ -110,7 +110,7 @@ class PlayLivePusherMediator(
 
     override fun startLiveStreaming(ingestUrl: String, withTimer: Boolean) {
         livePusher.start(ingestUrl)
-        if (withTimer) startLiveCountDownTimer()
+        if (withTimer) startLiveTimer()
     }
 
     override fun stopLiveStreaming() {
@@ -118,11 +118,11 @@ class PlayLivePusherMediator(
         livePusher.stop()
     }
 
-    override fun startLiveCountDownTimer() {
+    override fun startLiveTimer() {
         mTimer.start()
     }
 
-    override fun restartLiveCountDownTimer(duration: Long, maxDuration: Long) {
+    override fun restartLiveTimer(duration: Long, maxDuration: Long) {
         mTimer.restart(duration, maxDuration)
     }
 

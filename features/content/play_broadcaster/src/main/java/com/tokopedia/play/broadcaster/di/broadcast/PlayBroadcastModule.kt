@@ -54,11 +54,11 @@ class PlayBroadcastModule(private val mContext: Context) {
     }
 
     @Provides
-    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler): PusherMediator {
+    fun providePlayLivePusherMediator(localCacheHandler: LocalCacheHandler, playLivePusherTimer: PlayLivePusherTimer): PusherMediator {
         return if (AbTestBroadcaster.isUseBroadcasterSdk()) {
-            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler)
+            LiveBroadcasterMediator(LiveBroadcasterManager(), localCacheHandler, playLivePusherTimer)
         } else {
-            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler)
+            PlayLivePusherMediator(PlayLivePusherImpl(), localCacheHandler, playLivePusherTimer)
         }
     }
 
