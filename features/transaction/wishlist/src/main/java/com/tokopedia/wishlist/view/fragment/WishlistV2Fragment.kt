@@ -457,6 +457,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
+                            listBulkDelete.clear()
                             doRefresh()
 
                         } else {
@@ -1072,7 +1073,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun doRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
-            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
         }
         onLoadMore = false
         isFetchRecommendation = false
