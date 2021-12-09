@@ -22,6 +22,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics
 import com.tokopedia.loginregister.common.analytics.ShopCreationAnalytics.Companion.SCREEN_OPEN_SHOP_CREATION
+import com.tokopedia.loginregister.databinding.FragmentNameShopCreationBinding
 import com.tokopedia.loginregister.shopcreation.common.IOnBackPressed
 import com.tokopedia.loginregister.shopcreation.di.ShopCreationComponent
 import com.tokopedia.loginregister.shopcreation.viewmodel.ShopCreationViewModel
@@ -33,6 +34,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
 /**
@@ -57,6 +59,8 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private val binding: FragmentNameShopCreationBinding? by viewBinding()
+
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -69,12 +73,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     override fun initInjector() = getComponent(ShopCreationComponent::class.java).inject(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_name_shop_creation, container, false)
-        toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
-        this.container = view.findViewById(R.id.container)
-        buttonContinue = view.findViewById(R.id.btn_continue)
-        textFieldName = view.findViewById(R.id.text_field_name)
-        return view
+        return inflater.inflate(R.layout.fragment_name_shop_creation, container, false)
     }
 
     override fun onStart() {
@@ -98,6 +97,7 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setViewBinding()
         initVar()
         initView()
         initObserver()
@@ -119,6 +119,15 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         val phone = arguments?.getString(ApplinkConstInternalGlobal.PARAM_PHONE, "")
         if (phone != null)
             this.phone = phone
+    }
+
+    private fun setViewBinding() {
+        binding?.let {
+            toolbarShopCreation = it.toolbarShopCreation
+            container = it.container
+            buttonContinue = it.btnContinue
+            textFieldName = it.textFieldName
+        }
     }
 
     private fun initView() {

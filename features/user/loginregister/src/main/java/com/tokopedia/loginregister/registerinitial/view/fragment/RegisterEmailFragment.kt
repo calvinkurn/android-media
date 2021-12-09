@@ -34,6 +34,7 @@ import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics.Compa
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.utils.RegisterUtil
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
+import com.tokopedia.loginregister.databinding.FragmentRegisterWithEmailBinding
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
@@ -54,6 +55,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -90,6 +92,8 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
     lateinit var viewModelProvider: ViewModelProvider
     lateinit var registerInitialViewModel: RegisterInitialViewModel
 
+    private val binding: FragmentRegisterWithEmailBinding? by viewBinding()
+
     //** see fragment_register_email
     private val REGISTER_BUTTON_IME = 123321
     override fun onStart() {
@@ -115,20 +119,25 @@ open class RegisterEmailFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_register_with_email, parent, false)
-        redirectView = view.findViewById(R.id.redirect_reset_password)
-        registerButton = view.findViewById(R.id.register_button)
-        wrapperName = view.findViewById(R.id.wrapper_name)
-        wrapperEmail = view.findViewById(R.id.wrapper_email)
-        wrapperPassword = view.findViewById(R.id.wrapper_password)
-        progressBar = view.findViewById(R.id.progress_bar)
-        registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p)
-        prepareView()
-        setViewListener()
-        return view
+        return inflater.inflate(R.layout.fragment_register_with_email, parent, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {}
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setViewBinding()
+        prepareView()
+        setViewListener()
+    }
+
+    private fun setViewBinding() {
+        redirectView = binding?.redirectResetPassword
+        registerButton = binding?.registerButton
+        wrapperName = binding?.wrapperName
+        wrapperEmail = binding?.wrapperEmail
+        wrapperPassword = binding?.wrapperPassword
+        progressBar = binding?.progressBar
+        registerNextTAndC = binding?.registerNextDetailTAndP
+    }
+
     private fun prepareView() {
         arguments?.run {
             wrapperEmail?.textFieldInput?.setText(arguments?.getString(ApplinkConstInternalGlobal.PARAM_EMAIL, ""))

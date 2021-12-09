@@ -74,11 +74,6 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_phone_shop_creation, container, false)
-        toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
-        buttonContinue = view.findViewById(R.id.btn_continue)
-        textFieldPhone = view.findViewById(R.id.text_field_phone)
-        errorMessage = view.findViewById(R.id.error_message)
-        this.container = view.findViewById(R.id.container)
         return view
     }
 

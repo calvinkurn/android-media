@@ -303,19 +303,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        val view = inflater.inflate(R.layout.fragment_login_with_phone, container, false)
-        partialRegisterInputView = view.findViewById(R.id.login_input_view)
-        emailPhoneEditText = partialRegisterInputView?.findViewById(R.id.input_email_phone)
-        partialActionButton = partialRegisterInputView?.findViewById(R.id.register_btn)
-        tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
-        bannerLogin = view.findViewById(R.id.banner_login)
-        callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
-        socmedButton = view.findViewById(R.id.socmed_btn)
-        return view
+        return inflater.inflate(R.layout.fragment_login_with_phone, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setViewBinding()
         fetchRemoteConfig()
         clearData()
         initObserver()
@@ -339,6 +332,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         autoFillWithDataFromLatestLoggedIn()
 
         setupToolbar()
+    }
+
+    private fun setViewBinding() {
+        partialRegisterInputView = binding?.loginInputView
+        emailPhoneEditText = partialRegisterInputView?.etInputEmailPhone
+        partialActionButton = partialRegisterInputView?.btnAction
+        tickerAnnouncement = binding?.tickerAnnouncement
+        bannerLogin = binding?.bannerLogin
+        callTokopediaCare = binding?.toTokopediaCare
+        socmedButton = binding?.socmedBtn
     }
 
     private fun prepareArgData() {
@@ -548,7 +551,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun onLoginEmailClick() {
         val email = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_EMAIL, "") ?: ""
         val pw = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_PASS, "") ?: ""
-        partialRegisterInputView?.showLoginEmailView(email)
+        binding?.loginInputView?.showLoginEmailView(email)
         emailPhoneEditText?.setText(email)
         binding?.loginInputView?.wrapperPassword?.textFieldInput?.setText(pw)
         loginEmail(email, pw)
@@ -642,7 +645,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         partialRegisterInputView?.setButtonValidator(true)
-        partialRegisterInputView?.findViewById<Typography>(R.id.change_button)?.setOnClickListener {
+        partialRegisterInputView?.btnChange?.setOnClickListener {
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText?.setText(email)
@@ -656,7 +659,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 goToRegisterInitial(source)
             }
 
-            val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+            val forgotPassword = partialRegisterInputView?.btnForgotPassword
             forgotPassword?.setOnClickListener {
                 analytics.trackClickForgotPassword()
                 goToForgotPassword()
@@ -1562,7 +1565,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onBackPressed() {
         analytics.trackOnBackPressed()
-        if (partialRegisterInputView?.findViewById<Typography>(R.id.change_button)?.visibility == View.VISIBLE) {
+        if (partialRegisterInputView?.btnChange?.visibility == View.VISIBLE) {
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText?.let {

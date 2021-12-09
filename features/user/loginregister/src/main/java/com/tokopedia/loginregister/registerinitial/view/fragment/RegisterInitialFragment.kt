@@ -249,19 +249,22 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        val view = inflater.inflate(R.layout.fragment_initial_register, parent, false)
-        optionTitle = view.findViewById(R.id.register_option_title)
-        separator = view.findViewById(R.id.separator)
-        partialRegisterInputView = view.findViewById(R.id.register_input_view)
-        emailPhoneEditText = partialRegisterInputView.findViewById(R.id.input_email_phone)
-        registerButton = view.findViewById(R.id.register)
-        socmedButton = view.findViewById(R.id.socmed_btn)
-        textTermAndCondition = view.findViewById(R.id.text_term_privacy)
-        container = view.findViewById(R.id.container)
-        progressBar = view.findViewById(R.id.progress_bar)
-        tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
-        bannerRegister = view.findViewById(R.id.banner_register)
+        return inflater.inflate(R.layout.fragment_initial_register, parent, false)
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setViewBinding()
         prepareView()
+        setSmartLogin()
+        fetchRemoteConfig()
+        initObserver()
+        initData()
+        setupToolbar()
+    }
+
+    private fun setSmartLogin() {
         if (isSmartLogin) {
             showProgressBar()
             activity?.let {
@@ -274,16 +277,22 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
                 }
             }
         }
-        return view
     }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        fetchRemoteConfig()
-        initObserver()
-        initData()
-        setupToolbar()
+    private fun setViewBinding() {
+        binding?.let {
+            optionTitle = it.registerOptionTitle
+            separator =it.separator
+            partialRegisterInputView = it.registerInputView
+            emailPhoneEditText = partialRegisterInputView.etInputEmailPhone!!
+            registerButton = it.register
+            socmedButton = it.socmedBtn
+            textTermAndCondition = it.textTermPrivacy
+            container = it.container
+            progressBar = it.progressBar
+            tickerAnnouncement = it.tickerAnnouncement
+            bannerRegister = it.bannerRegister
+        }
     }
 
     private fun setupToolbar() {
