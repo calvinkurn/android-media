@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
 import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentRobot
+import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleResult
 import org.junit.Test
@@ -26,7 +27,20 @@ class UnsendImageTest: TopchatRoomTest() {
         MsgBubbleResult.assertMsgIsDeletedAt(0)
     }
 
-    // TODO: Should not show bottomsheet on long click opposite image bubble
+    @Test
+    fun should_not_show_bottomsheet_on_long_click_opposite_image_bubble(){
+        // Given
+        getChatUseCase.response = getChatUseCase.deleteImageResponse
+        unsendReplyUseCase.response = unsendReplyUseCase.successDeleteResponse
+        launchChatRoomActivity()
+
+        // When
+        ImageAttachmentRobot.longClickImageAt(1)
+
+        // Then
+        LongClickBubbleMenuResult.assertNoBottomSheet()
+    }
+
     // TODO: Should render deleted type bubble when status equal to 5 (deleted) from GQL
     // TODO: Should replace bubble to deleted type bubble when receive 104 event ws
     // TODO: Should prevent long click when msg bubble is deleted
