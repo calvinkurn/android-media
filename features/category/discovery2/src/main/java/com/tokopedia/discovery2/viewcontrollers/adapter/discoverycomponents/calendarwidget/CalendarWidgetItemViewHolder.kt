@@ -313,6 +313,11 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
                 calendarWidgetItemViewModel.getUserId())
     }
     private fun setOnClick(subscribed: Boolean) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+            .trackEventClickCalendarWidget(
+                calendarWidgetItemViewModel.components,
+                calendarWidgetItemViewModel.getUserId()
+            )
         if (subscribed)
             calendarWidgetItemViewModel.unSubscribeUserForPushNotification(mNotifyCampaignId)
         else
