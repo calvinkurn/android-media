@@ -86,6 +86,9 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -314,6 +317,22 @@ class PlayUserInteractionFragment @Inject constructor(
         playViewModel.submitAction(ClickShareAction)
 
         analytic.clickCopyLink()
+
+        val shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setMetaData(
+                tnTitle  = "Title",
+                tnImage = "Title"
+            )
+            init(object: ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+
+                }
+
+                override fun onCloseOptionClicked() {
+
+                }
+            })
+        }.show(childFragmentManager, this)
     }
 
     override fun onPartnerNameClicked(view: PartnerInfoViewComponent) {
