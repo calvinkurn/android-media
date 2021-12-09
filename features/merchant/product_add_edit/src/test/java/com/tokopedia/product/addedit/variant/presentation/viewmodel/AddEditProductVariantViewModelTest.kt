@@ -79,9 +79,14 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
                 VariantPhoto(variantDetailTest2.units[0].unitValues[3].value, "/url/to/file2.jpg")
         )
 
+        val colorVariantDetailTest1 = variantDetailsTest[0]
+        val colorVariantDetailTest2 = variantDetailsTest[1].apply { variantID = 1 }
+        val colorVariantDetailsTest = listOf(colorVariantDetailTest1, colorVariantDetailTest2)
+
         spiedViewModel.updateSelectedVariantUnitValuesMap(0, selectedUnitValuesLevel1)
         spiedViewModel.updateSelectedVariantUnitValuesMap(1, selectedUnitValuesLevel2)
-        spiedViewModel.setSelectedVariantDetails(variantDetailsTest)
+        spiedViewModel.updateSelectedVariantUnitMap(0, Unit(variantUnitID=62, unitName="Volume"))
+        spiedViewModel.setSelectedVariantDetails(colorVariantDetailsTest)
         spiedViewModel.isOldVariantData = true
         spiedViewModel.updateVariantInputModel(variantPhotos)
 
@@ -303,12 +308,6 @@ class AddEditProductVariantViewModelTest : AddEditProductVariantViewModelTestFix
         viewModel.removeVariantValueLayoutMapEntry(0)
         assert(viewModel.isVariantUnitValuesLayoutEmpty())
         assert(viewModel.getRenderedLayoutAdapterPosition() == 0)
-    }
-
-    @Test
-    fun `When updateSelectedVariantUnitMap Expect correct changes`() {
-        viewModel.updateSelectedVariantUnitMap(0, Unit(variantUnitID=62, unitName="Volume"))
-        assert(viewModel.getSelectedVariantUnit(0).variantUnitID == 62)
     }
 
     @Test
