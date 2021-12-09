@@ -177,12 +177,12 @@ class SmartBillsNominalBottomSheet(private val getNominalCallback: SmartBillsGet
         listProduct?.let {
             hideLoader()
             val adapterNominal = SmartBillsNominalAdapter(this@SmartBillsNominalBottomSheet)
+            adapterNominal.listRechargeProduct = listProduct
             recyclerView?.let {
                 it.adapter = adapterNominal
                 it.layoutManager = LinearLayoutManager(context)
                 it.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             }
-            adapterNominal.setDataListRechargeProduct(it)
         }
     }
 
