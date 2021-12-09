@@ -32,7 +32,6 @@ open class DefaultQuestTrackerImpl : QuestTrackerImpl {
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.HOME_PAGE}_$id"
             }
             QuestSource.REWARDS ->{
-                Tracker.fillCommonItems(map, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.REWARDS_PAGE}_$id"
             }
             QuestSource.DISCO ->{
@@ -40,6 +39,7 @@ open class DefaultQuestTrackerImpl : QuestTrackerImpl {
             }
         }
 
+        Tracker.fillCommonItems(map, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
@@ -53,7 +53,6 @@ open class DefaultQuestTrackerImpl : QuestTrackerImpl {
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.HOME_PAGE}_$id"
             }
             QuestSource.REWARDS ->{
-                Tracker.fillCommonItems(map, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.REWARDS_PAGE}_$id"
             }
             QuestSource.DISCO ->{
@@ -61,6 +60,7 @@ open class DefaultQuestTrackerImpl : QuestTrackerImpl {
             }
         }
 
+        Tracker.fillCommonItems(map, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
@@ -74,7 +74,6 @@ open class DefaultQuestTrackerImpl : QuestTrackerImpl {
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.HOME_PAGE}_$direction"
             }
             QuestSource.REWARDS ->{
-                Tracker.fillCommonItems(map, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
                 map[Tracker.Constants.EVENT_LABEL] = "${Tracker.Label.REWARDS_PAGE}_$direction"
             }
             QuestSource.DISCO ->{
@@ -82,6 +81,7 @@ open class DefaultQuestTrackerImpl : QuestTrackerImpl {
             }
         }
 
+        Tracker.fillCommonItems(map, Tracker.Constants.PHYSICALGOODS_BUSINESSUNIT)
         Tracker.getTracker().sendGeneralEvent(map)
 
     }
