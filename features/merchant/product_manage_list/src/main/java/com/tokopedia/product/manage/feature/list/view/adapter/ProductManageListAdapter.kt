@@ -33,7 +33,8 @@ class ProductManageListAdapter(
                          onSetItemsChecked: (MutableList<ProductUiModel>) -> Unit) {
         val items = data.filterIsInstance<ProductUiModel>().toMutableList()
         val newItems = items.map { product ->
-            if (itemsChecked.firstOrNull { it.id == product.id } == null) {
+            val checkedProduct = itemsChecked.firstOrNull { it.id == product.id }
+            if (checkedProduct == null) {
                 itemsChecked.add(product)
             }
             product.copy(isChecked = true)
@@ -52,8 +53,8 @@ class ProductManageListAdapter(
             }
         val newItems = items.map { product ->
             if (productIdList.contains(product.id)) {
-                if (itemsChecked.firstOrNull { it.id == product.id } != null) {
-                    itemsChecked.remove(product)
+                itemsChecked.firstOrNull { it.id == product.id }?.let { checkedProduct ->
+                    itemsChecked.remove(checkedProduct)
                 }
                 product.copy(isChecked = false)
             } else {
