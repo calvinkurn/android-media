@@ -164,14 +164,12 @@ interface TopChatContract {
             parentMetaData: SingleProductAttachmentContainer.ParentViewHolderMetaData?
         )
 
-        fun getSmartReplyWidget(msgId: String, productIds: String)
         fun initUserLocation(userLocation: LocalCacheModel?)
         fun getProductIdPreview(): List<String>
         fun getAttachmentsPreview(): List<SendablePreview>
         fun sendSrwBubble(
             question: QuestionUiModel, products: List<SendablePreview>
         )
-        fun adjustInterlocutorWarehouseId(msgId: String)
         fun sendSrwFrom(attachment: HeaderCtaButtonAttachment)
     }
 }

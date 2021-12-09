@@ -44,8 +44,6 @@ class ChatRoomFakePresenterModule {
             addWishListUseCase: AddWishListUseCase,
             removeWishListUseCase: RemoveWishListUseCase,
             uploadImageUseCase: TopchatUploadImageUseCase,
-            chatSrwUseCase: SmartReplyQuestionUseCase,
-            tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
             sharedPref: SharedPreferences,
             dispatchers: CoroutineDispatchers,
             remoteConfig: RemoteConfig
@@ -63,8 +61,6 @@ class ChatRoomFakePresenterModule {
                         addWishListUseCase,
                         removeWishListUseCase,
                         uploadImageUseCase,
-                        chatSrwUseCase,
-                        tokoNowWHUsecase,
                         sharedPref,
                         dispatchers,
                         remoteConfig

@@ -101,12 +101,6 @@ abstract class BaseTopChatRoomPresenterTest {
     protected lateinit var sendAbleProductPreview: SendablePreview
 
     @RelaxedMockK
-    protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCase
-
-    @RelaxedMockK
-    protected lateinit var tokoNowWHUsecase: ChatTokoNowWarehouseUseCase
-
-    @RelaxedMockK
     protected lateinit var remoteConfig: RemoteConfig
 
     @SpyK
@@ -235,8 +229,6 @@ abstract class BaseTopChatRoomPresenterTest {
                 addWishListUseCase,
                 removeWishListUseCase,
                 uploadImageUseCase,
-                chatSrwUseCase,
-                tokoNowWHUsecase,
                 sharedPref,
                 dispatchers,
                 remoteConfig

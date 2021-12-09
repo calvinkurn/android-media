@@ -301,10 +301,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun initObserver() {
-        presenter.srw.observe(viewLifecycleOwner) {
-            rvSrw?.updateStatus(it)
-            updateSrwPreviewState()
-        }
         adapter.srwUiModel.observe(viewLifecycleOwner) {
             if (it == null) {
                 showTemplateChatIfReady()
@@ -749,7 +745,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     private fun setupFirstTimeForSeller() {
-        presenter.adjustInterlocutorWarehouseId(messageId)
+        viewModel.adjustInterlocutorWarehouseId(messageId)
         if (!presenter.isInTheMiddleOfThePage()) {
             viewModel.getTickerReminder()
         }
@@ -761,7 +757,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         ) {
             val productIdCommaSeparated = presenter.getProductIdPreview()
                 .joinToString(separator = ",")
-            presenter.getSmartReplyWidget(messageId, productIdCommaSeparated)
+            viewModel.getSmartReplyWidget(messageId, productIdCommaSeparated)
         }
     }
 
@@ -2527,6 +2523,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     //Do nothing
                 }
             }
+        })
+
+        viewModel.srw.observe(viewLifecycleOwner, {
+            rvSrw?.updateStatus(it)
+            updateSrwPreviewState()
         })
     }
 

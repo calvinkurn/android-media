@@ -30,7 +30,6 @@ import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.device.info.DeviceInfo
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -53,7 +52,6 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.topchat.common.data.Resource
-import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
 import com.tokopedia.topchat.common.util.AddressUtil
 import com.tokopedia.topchat.common.util.ImageUtil
@@ -68,8 +66,6 @@ import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
 import okhttp3.Interceptor
 import okhttp3.WebSocket
 import rx.Subscriber
@@ -94,8 +90,6 @@ open class TopChatRoomPresenter @Inject constructor(
     private var addWishListUseCase: AddWishListUseCase,
     private var removeWishListUseCase: RemoveWishListUseCase,
     private var uploadImageUseCase: TopchatUploadImageUseCase,
-    private val chatSrwUseCase: SmartReplyQuestionUseCase,
-    private val tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
     private val sharedPref: SharedPreferences,
     private val dispatchers: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig
@@ -200,26 +194,6 @@ open class TopChatRoomPresenter @Inject constructor(
 
     override fun getAttachmentsPreview(): List<SendablePreview> {
         return attachmentsPreview
-    }
-
-    override fun adjustInterlocutorWarehouseId(msgId: String) {
-        attachProductWarehouseId = "0"
-        launchCatchError(
-            block = {
-                tokoNowWHUsecase.getWarehouseId(msgId)
-                    .flowOn(dispatchers.io)
-                    .collect {
-                        if (it.status == Status.SUCCESS) {
-                            attachProductWarehouseId = it.data
-                                ?.chatTokoNowWarehouse
-                                ?.warehouseId ?: "0"
-                        }
-                    }
-            },
-            onError = {
-                it.printStackTrace()
-            }
-        )
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -809,26 +783,6 @@ open class TopChatRoomPresenter @Inject constructor(
     ) {
         val result = UpdateProductStockResult(product, adapterPosition, parentMetaData)
         onGoingStockUpdate[productId] = result
-    }
-
-    override fun getSmartReplyWidget(msgId: String, productIds: String) {
-        launchCatchError(dispatchers.io,
-            {
-                chatSrwUseCase.getSrwList(
-                    msgId = msgId,
-                    productIds = productIds,
-                    addressId = userLocationInfo.address_id,
-                    districtId = userLocationInfo.district_id,
-                    postalCode = userLocationInfo.postal_code,
-                    latLon = userLocationInfo.latLong
-                ).collect {
-                    _srw.postValue(it)
-                }
-            },
-            {
-                _srw.postValue(Resource.error(it, null))
-            }
-        )
     }
 
     protected open fun isEnableUploadImageService(): Boolean {

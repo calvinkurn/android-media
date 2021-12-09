@@ -128,7 +128,7 @@ abstract class TopchatRoomTest {
     protected lateinit var replyChatGQLUseCase: ReplyChatGQLUseCaseStub
 
     @Inject
-    protected lateinit var chatSrwUseCase: SmartReplyQuestionUseCaseStub
+    protected lateinit var chatSrwUseCase: GetSmartReplyQuestionUseCaseStub
 
     @Inject
     protected lateinit var chatBackgroundUseCase: GetChatBackgroundUseCaseStub

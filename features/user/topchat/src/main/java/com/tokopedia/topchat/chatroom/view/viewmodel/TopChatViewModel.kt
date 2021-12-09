@@ -30,17 +30,15 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
-import com.tokopedia.topchat.chatroom.domain.pojo.param.BlockType
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ChatAttachmentParam
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ExistingMessageIdParam
-import com.tokopedia.topchat.chatroom.domain.pojo.param.ToggleBlockChatParam
+import com.tokopedia.topchat.chatroom.domain.pojo.param.*
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
+import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
 import com.tokopedia.topchat.common.Constant
+import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -65,6 +63,8 @@ class TopChatViewModel @Inject constructor(
     private val getChatBackgroundUseCase: GetChatBackgroundUseCase,
     private val chatAttachmentUseCase: ChatAttachmentUseCase,
     private val getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase,
+    private val chatSrwUseCase: GetSmartReplyQuestionUseCase,
+    private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val remoteConfig: RemoteConfig,
     private val mapper: ChatAttachmentMapper
@@ -127,9 +127,13 @@ class TopChatViewModel @Inject constructor(
     val chatListGroupSticker: MutableLiveData<Result<Pair<ChatListGroupStickerResponse, List<StickerGroup>>>>
         get() = _chatListGroupSticker
 
+    private val _srw = MutableLiveData<Resource<ChatSmartReplyQuestionResponse>>()
+    val srw: LiveData<Resource<ChatSmartReplyQuestionResponse>>
+        get() = _srw
+
+    var attachProductWarehouseId = "0"
     val attachments: ArrayMap<String, Attachment> = ArrayMap()
     private var userLocationInfo = LocalCacheModel()
-    private var attachProductWarehouseId = "0"
 
     fun initUserLocation(userLocation: LocalCacheModel?) {
         userLocation ?: return
@@ -440,6 +444,36 @@ class TopChatViewModel @Inject constructor(
         }, onError = {
             _chatListGroupSticker.value = Fail(it)
         })
+    }
+
+    fun getSmartReplyWidget(msgId: String, productIds: String) {
+        launchCatchError(block = {
+            val param = SmartReplyQuestionParam(
+                msgId = msgId,
+                productIds = productIds,
+                addressId = userLocationInfo.address_id.toLongOrZero(),
+                districtId = userLocationInfo.district_id.toLongOrZero(),
+                postalCode = userLocationInfo.postal_code,
+                latLon = userLocationInfo.latLong
+            )
+            chatSrwUseCase(param).collect {
+                _srw.postValue(it)
+            }
+        }, onError = {
+            _srw.postValue(Resource.error(it, null))
+        })
+    }
+
+    fun adjustInterlocutorWarehouseId(msgId: String) {
+        attachProductWarehouseId = "0"
+        launchCatchError(block = {
+                tokoNowWHUsecase(msgId).collect {
+                    attachProductWarehouseId = it.chatTokoNowWarehouse.warehouseId
+                }
+            },
+            onError = {
+                it.printStackTrace()
+            })
     }
 
 }

@@ -1,16 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
-import androidx.lifecycle.Observer
 import com.google.gson.JsonObject
-import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentUiModel
 import com.tokopedia.common.network.util.CommonUtil
-import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.QuestionUiModel
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
-import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouse
-import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.TopChatWebSocketParam
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exMessageId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exProductId
@@ -20,13 +13,10 @@ import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTes
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.exUserId
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleInvoicePreview
 import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.generateSendAbleProductPreview
-import com.tokopedia.topchat.chatroom.view.presenter.BaseTopChatRoomPresenterTest.Dummy.successGetChatListGroupSticker
-import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import io.mockk.*
 import junit.framework.Assert.assertTrue
-import kotlinx.coroutines.flow.flow
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.hasItem
 import org.hamcrest.MatcherAssert.assertThat
@@ -236,36 +226,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         }
     }
 
-//    @Test
-//    fun `on success get sticker group list`() {
-//        // Given
-//        val roomModel = ChatroomViewModel()
-//        val needTopUpdateCache = emptyList<StickerGroup>()
-//        val onLoadingSlot = slot<(ChatListGroupStickerResponse) -> Unit>()
-//        val onSuccessSlot = slot<(ChatListGroupStickerResponse, List<StickerGroup>) -> Unit>()
-//        every {
-//            groupStickerUseCase.getStickerGroup(
-//                roomModel.isSeller(),
-//                capture(onLoadingSlot),
-//                capture(onSuccessSlot),
-//                any()
-//            )
-//        } answers {
-//            val onLoading = onLoadingSlot.captured
-//            onLoading.invoke(successGetChatListGroupSticker)
-//            val onSuccess = onSuccessSlot.captured
-//            onSuccess.invoke(successGetChatListGroupSticker, needTopUpdateCache)
-//        }
-//
-//        // When
-//        presenter.getStickerGroupList(roomModel)
-//
-//        // Then
-//        verify(exactly = 2) {
-//            view.getChatMenuView()
-//        }
-//    }
-
     @Test
     fun `check setBeforeReplyTime`() {
         //Given
@@ -294,50 +254,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
 
         // Then
         assertTrue(presenter.newUnreadMessage == 0)
-    }
-
-    @Test
-    fun `success load srw`() {
-        // Given
-        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
-        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.success(
-            ChatSmartReplyQuestionResponse()
-        )
-        val successFlow = flow { emit(expectedValue) }
-        every {
-            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
-        } returns successFlow
-
-        // When
-        presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId, "1")
-
-        // Then
-        verify(exactly = 1) {
-            observer.onChanged(expectedValue)
-        }
-    }
-
-    @Test
-    fun `error load srw`() {
-        // Given
-        val observer: Observer<Resource<ChatSmartReplyQuestionResponse>> = mockk()
-        val throwable = IllegalStateException()
-        val expectedValue: Resource<ChatSmartReplyQuestionResponse> = Resource.error(
-            throwable, null
-        )
-        every {
-            chatSrwUseCase.getSrwList(exMessageId, any(), any(), any(), any(), any())
-        } throws throwable
-
-        // When
-        presenter.srw.observeForever(observer)
-        presenter.getSmartReplyWidget(exMessageId, "1")
-
-        // Then
-        verify(exactly = 1) {
-            observer.onChanged(expectedValue)
-        }
     }
 
     @Test
@@ -370,26 +286,6 @@ class TopChatRoomPresenterTest : BaseTopChatRoomPresenterTest() {
         assertThat(productIds.size, `is`(1))
         assertThat(attachmentPreviews.size, `is`(2))
         assertThat(productIds, hasItem("12398764"))
-    }
-
-    @Test
-    fun `get interlocutor warehouse id`() {
-        // Given
-        val warehouseId = "123"
-        val response = ChatTokoNowWarehouseResponse(
-            ChatTokoNowWarehouse(warehouseId = warehouseId)
-        )
-        val expectedValue = Resource.success(response)
-        val successFlow = flow { emit(expectedValue) }
-        every {
-            tokoNowWHUsecase.getWarehouseId(exMessageId)
-        } returns successFlow
-
-        // When
-        presenter.adjustInterlocutorWarehouseId(exMessageId)
-
-        // Then
-        assertThat(presenter.attachProductWarehouseId, `is`(warehouseId))
     }
 
 }

@@ -68,6 +68,12 @@ abstract class BaseTopChatViewModelTest {
     @RelaxedMockK
     lateinit var getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase
 
+    @RelaxedMockK
+    lateinit var getSmartReplyQuestionUseCase: GetSmartReplyQuestionUseCase
+
+    @RelaxedMockK
+    lateinit var getChatTokoNowWarehouseUseCase: GetChatTokoNowWarehouseUseCase
+
     //Misc
     @RelaxedMockK
     lateinit var remoteConfig: RemoteConfig
@@ -107,6 +113,8 @@ abstract class BaseTopChatViewModelTest {
             getChatBackgroundUseCase,
             chatAttachmentUseCase,
             getChatListGroupStickerUseCase,
+            getSmartReplyQuestionUseCase,
+            getChatTokoNowWarehouseUseCase,
             dispatchers,
             remoteConfig,
             mapper

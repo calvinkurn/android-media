@@ -18,9 +18,6 @@ import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
-import com.tokopedia.topchat.chatroom.domain.pojo.tokonow.ChatTokoNowWarehouseResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
@@ -127,38 +124,6 @@ class ChatRoomFakeUseCaseModule {
         gqlUseCase: GraphqlUseCaseStub<ChatReplyPojo>
     ): ReplyChatGQLUseCaseStub {
         return ReplyChatGQLUseCaseStub(gqlUseCase)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideSmartReplyQuestionUseCase(
-        stub: SmartReplyQuestionUseCaseStub
-    ): SmartReplyQuestionUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideSmartReplyQuestionUseCaseStub(
-        gqlUseCase: GraphqlUseCaseStub<ChatSmartReplyQuestionResponse>
-    ): SmartReplyQuestionUseCaseStub {
-        return SmartReplyQuestionUseCaseStub(gqlUseCase)
-    }
-
-    // -- separator -- //
-
-    @Provides
-    @ChatScope
-    fun provideChatTokoNowWarehouseUseCase(
-        stub: ChatTokoNowWarehouseUseCaseStub
-    ): ChatTokoNowWarehouseUseCase = stub
-
-    @Provides
-    @ChatScope
-    fun provideChatTokoNowWarehouseUseCaseStub(
-        gqlUseCase: GraphqlUseCaseStub<ChatTokoNowWarehouseResponse>
-    ): ChatTokoNowWarehouseUseCaseStub {
-        return ChatTokoNowWarehouseUseCaseStub(gqlUseCase)
     }
 
     // -- separator -- //
@@ -424,5 +389,39 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): ChatListGroupStickerUseCaseStub {
         return ChatListGroupStickerUseCaseStub(repository, cacheManager, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideChatTokoNowWarehouseUseCase(
+        stub: GetChatTokoNowWarehouseUseCaseStub
+    ): GetChatTokoNowWarehouseUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideChatTokoNowWarehouseUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetChatTokoNowWarehouseUseCaseStub {
+        return GetChatTokoNowWarehouseUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideSmartReplyQuestionUseCase(
+        stub: GetSmartReplyQuestionUseCaseStub
+    ): GetSmartReplyQuestionUseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideSmartReplyQuestionUseCaseStub(
+        repository: GraphqlRepositoryStub,
+        dispatchers: CoroutineDispatchers
+    ): GetSmartReplyQuestionUseCaseStub {
+        return GetSmartReplyQuestionUseCaseStub(repository, dispatchers)
     }
 }

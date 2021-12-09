@@ -32,8 +32,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     addWishListUseCase: AddWishListUseCase,
     removeWishListUseCase: RemoveWishListUseCase,
     uploadImageUseCase: TopchatUploadImageUseCase,
-    chatSrwUseCase: SmartReplyQuestionUseCase,
-    tokoNowWHUsecase: ChatTokoNowWarehouseUseCase,
     sharedPref: SharedPreferences,
     dispatchers: CoroutineDispatchers,
     remoteConfig: RemoteConfig
@@ -50,8 +48,6 @@ class TopChatRoomPresenterStub @Inject constructor(
     addWishListUseCase,
     removeWishListUseCase,
     uploadImageUseCase,
-    chatSrwUseCase,
-    tokoNowWHUsecase,
     sharedPref,
     dispatchers,
     remoteConfig
