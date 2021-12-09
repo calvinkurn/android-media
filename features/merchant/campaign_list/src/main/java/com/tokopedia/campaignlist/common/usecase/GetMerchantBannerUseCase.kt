@@ -33,6 +33,7 @@ class GetMerchantBannerUseCase @Inject constructor(
                       end_date
                       review_end_date
                       status_text
+                      status_id
                       discount_percentage_text
                       total_product
                       total_product_overload
@@ -68,7 +69,15 @@ class GetMerchantBannerUseCase @Inject constructor(
                           parentId
                           eggCrackingValidation
                           min_order
-                        }                        
+                          campaign {
+                            CampaignID
+                            DiscountPercentage
+                            DiscountedPrice
+                            OriginalPrice
+                            DiscountedPriceFmt
+                            OriginalPriceFmt
+                          }
+                        }
                       }
                     }
                     shop_data {

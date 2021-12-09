@@ -3,7 +3,6 @@ package com.tokopedia.campaignlist.page.presentation.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.KeyEvent.*
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.common.analytics.CampaignListTracker
-import com.tokopedia.campaignlist.common.data.model.response.ShopData
+import com.tokopedia.campaignlist.common.constant.CampaignStatusIdTypeDef
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorData
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.common.util.onTextChanged
@@ -39,8 +39,8 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -89,6 +89,12 @@ class CampaignListFragment : BaseDaggerFragment(),
         private const val EMPTY_SEARCH_KEYWORD = ""
         const val TICKER_STATE_PREFERENCE = "TICKER_STATE_PREFERENCE"
         const val IS_DISMISS_TICKER = "IS_DISMISS_TICKER"
+        const val CAMPAIGN_LIST_PAGE_SOURCE_ID = "CAMPAIGN_LIST"
+        const val INDEX_ZERO = 0
+        const val INDEX_ONE = 1
+        const val INDEX_TWO = 2
+        const val INDEX_THREE = 3
+        const val INDEX_FOUR = 4
     }
 
     override fun getScreenName(): String {
@@ -277,9 +283,16 @@ class CampaignListFragment : BaseDaggerFragment(),
         campaignStatusBottomSheet = CampaignStatusBottomSheet.createInstance(campaignStatusSelections, this)
     }
 
-    private fun setupUniversalShareBottomSheet(shopData: ShopData) {
+    private fun setupUniversalShareBottomSheet(merchantBannerData: GetMerchantCampaignBannerGeneratorData) {
+        val campaignData = merchantBannerData.campaign
+        val productData = campaignData.highlightProducts.Products
+        val shopData = merchantBannerData.shopData
+
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@CampaignListFragment)
+            getImageFromMedia(getImageFromMediaFlag = true)
+            setMediaPageSourceId(pageSourceId = CAMPAIGN_LIST_PAGE_SOURCE_ID)
+
             setMetaData(
                     tnTitle = viewModel.getShareBottomSheetTitle(shopData.name),
                     tnImage = NPL_ICON_URL
@@ -290,6 +303,71 @@ class CampaignListFragment : BaseDaggerFragment(),
                     pageId = userSession.shopId,
                     feature = SHARE
             )
+            val _totalProducts = productData.size
+            val _isOngoing = if (campaignData.statusId == CampaignStatusIdTypeDef.BERLANGSUNG) 1 else 0
+
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_NAME , value = campaignData.name)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.CAMPAIGN_INFO , value = campaignData.discountPercentageText)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO , value = shopData.logo)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_NAME , value = shopData.name)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.BADGE , value = shopData.badge.Title)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.DATE , value = campaignData.startDate)
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.ONGOING , value = _isOngoing.toString())
+            addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_COUNT , value = _totalProducts.toString())
+
+            if (_totalProducts > INDEX_FOUR) {
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCTS_OVERLOAD , value = _totalProducts.toString())
+            }
+
+            if (_totalProducts >= INDEX_ONE) {
+                val _imgUrl = productData.get(INDEX_ZERO).imageUrl
+                val _originalPrice = productData.get(INDEX_ZERO).productCampaign.originalPrice
+                val _discountedPrice = productData.get(INDEX_ZERO).productCampaign.discountedPrice
+                val _discount = productData.get(INDEX_ZERO).productCampaign.discountPercentage.toString()
+
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1 , value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_BEFORE , value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_PRICE_AFTER , value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1_DISCOUNT , value = _discount)
+            }
+
+            if (_totalProducts >= INDEX_TWO) {
+                val _imgUrl = productData.get(INDEX_ONE).imageUrl
+                val _originalPrice = productData.get(INDEX_ONE).productCampaign.originalPrice
+                val _discountedPrice = productData.get(INDEX_ONE).productCampaign.discountedPrice
+                val _discount = productData.get(INDEX_ONE).productCampaign.discountPercentage.toString()
+
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2 , value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_BEFORE , value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_PRICE_AFTER , value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2_DISCOUNT , value = _discount)
+            }
+
+            if (_totalProducts >= INDEX_THREE) {
+                val _imgUrl = productData.get(INDEX_TWO).imageUrl
+                val _originalPrice = productData.get(INDEX_TWO).productCampaign.originalPrice
+                val _discountedPrice = productData.get(INDEX_TWO).productCampaign.discountedPrice
+                val _discount = productData.get(INDEX_TWO).productCampaign.discountPercentage.toString()
+
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3 , value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_BEFORE , value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_PRICE_AFTER , value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3_DISCOUNT , value = _discount)
+            }
+
+            if (_totalProducts >= INDEX_FOUR) {
+                val _imgUrl = productData.get(INDEX_THREE).imageUrl
+                val _originalPrice = productData.get(INDEX_THREE).productCampaign.originalPrice
+                val _discountedPrice = productData.get(INDEX_THREE).productCampaign.discountedPrice
+                val _discount = productData.get(INDEX_THREE).productCampaign.discountPercentage.toString()
+
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4 , value = _imgUrl)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_BEFORE , value = _originalPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_AFTER , value = _discountedPrice)
+                addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_DISCOUNT , value = _discount)
+            }
+
+        // setOgImageUrl()
         }
     }
 
@@ -317,8 +395,8 @@ class CampaignListFragment : BaseDaggerFragment(),
                         // show share bottom sheet
                         val merchantBannerData = result.data.getMerchantCampaignBannerGeneratorData
                         viewModel.setMerchantBannerData(merchantBannerData)
-                        val shopData = merchantBannerData.shopData
-                        setupUniversalShareBottomSheet(shopData)
+                        // val shopData = merchantBannerData.shopData
+                        setupUniversalShareBottomSheet(merchantBannerData)
                         universalShareBottomSheet?.show(childFragmentManager, this)
                         val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
                         selectedActiveCampaign?.run {

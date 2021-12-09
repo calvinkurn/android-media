@@ -46,6 +46,9 @@ data class Campaign(
         @Expose val reviewEndDate: String = "",
         @SerializedName("status_text")
         @Expose val statusText: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("status_id")
+        @Expose val statusId: Int = 0,
         @SerializedName("total_product")
         @Expose val totalProduct: String = "",
         @SerializedName("total_product_overload")
@@ -157,6 +160,23 @@ data class Products(
         @SerializedName("eggCrackingValidation")
         @Expose val eggCrackingValidation: Boolean = false,
         @SerializedName("min_order")
-        @Expose val minOrder: Int = 0
+        @Expose val minOrder: Int = 0,
+        @SerializedName("campaign")
+        @Expose val productCampaign: ProductCampaignData = ProductCampaignData()
+)
+
+data class ProductCampaignData(
+        @SerializedName("CampaignID")
+        @Expose val campaignId: String = "",
+        @SerializedName("DiscountPercentage")
+        @Expose val discountPercentage: Int = 0,
+        @SerializedName("DiscountedPrice")
+        @Expose val discountedPrice: String = "",
+        @SerializedName("OriginalPrice")
+        @Expose val originalPrice: String = "",
+        @SerializedName("DiscountedPriceFmt")
+        @Expose val discountedPriceFmt: String = "",
+        @SerializedName("OriginalPriceFmt")
+        @Expose val originalPriceFmt: String = ""
 )
 
