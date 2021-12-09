@@ -1,6 +1,5 @@
 package com.tokopedia.notifications.inApp.usecase
 
-import android.app.Application
 import android.content.Context
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
@@ -35,20 +34,35 @@ class SaveInAppUseCase(
     }
 
     private fun canSaveInApp(cmInApp: CMInApp): Boolean {
-        return if (testForTestCampaign(cmInApp)) {
-            true
-        } else if (testInteractionForPerstOff(cmInApp)) {
-            if (testScreenWithParentId(cmInApp)) {
-                testSameParentId(cmInApp)
-            } else {
+        return when {
+            isTestCampaign(cmInApp) -> {
+                //Test campaign will always be saved
+                true
+            }
+            isAlreadyInteractedWithCampaign(cmInApp.parentId) ->{
+                //old campaign present with same parent id and user already interacted with
+                //so dropping... ### There is no event to track this drop
                 false
             }
-        } else {
-            false
+            else -> {
+                //Delete old campaign if new campaign is having same id (aka notification ID)
+                deleteOldInAppIfAlreadyExists(cmInApp.id)
+                //check for old campaign with same parent id and same screen name
+                return if(isCampaignScreenAlreadyPresent(cmInApp)){
+                    //campaign already present with same screen name and parent id so dropping...
+                    sendCancelledIrisEvent(cmInApp)
+                    false
+                }else{
+                    //update frequency of new campaign as old campaign with same parent id
+                    updateFrequencyAsOldCampaign(cmInApp)
+                    //All above checks passed and we can save notification
+                    true
+                }
+            }
         }
     }
 
-    private fun testForTestCampaign(cmInApp: CMInApp): Boolean {
+    private fun isTestCampaign(cmInApp: CMInApp): Boolean {
         return if (cmInApp.isTest) {
             cmInApp.isPersistentToggle = true
             true
@@ -57,42 +71,33 @@ class SaveInAppUseCase(
         }
     }
 
-    private fun testInteractionForPerstOff(cmInApp: CMInApp): Boolean {
-        val dataFromParentIDPerstOff: List<CMInApp>? =
-            inAppDataDao.getDataFromParentIdForPerstOff(cmInApp.parentId)
-        return dataFromParentIDPerstOff.isNullOrEmpty()
-    }
-
-    private fun testScreenWithParentId(cmInApp: CMInApp): Boolean {
-        deleteInAppIfAlreadyExists(cmInApp.id)
-
-        val newScreenData = cmInApp.screen
-        val dataForParentIdAndScreen: CMInApp? =
-            inAppDataDao.getDataForParentIdAndScreen(cmInApp.parentId, newScreenData)
-        dataForParentIdAndScreen?.let {
-            val existingScreenData = dataForParentIdAndScreen.screen
-            // if both new inApp and existing inApp have multiple screen names then check
-            // if they have any common screen if yes then ignore the new popup
-            if (newScreenData.contains(",") && existingScreenData.contains(",")) {
-                val newScreenDataList = newScreenData.split(",")
-                val existingScreenDataList = existingScreenData.split(",")
-                for (screen in existingScreenDataList) {
-                    if (newScreenDataList.contains(screen)) {
-                        //send event
-                        sendIrisEvent(IrisAnalyticsEvents.INAPP_CANCELLED, cmInApp)
-                        return false
-                    }
+    private fun isCampaignScreenAlreadyPresent(cmInApp: CMInApp) : Boolean{
+        val newCampaignTargetScreens = cmInApp.screen
+        val existingCampaignWithSameParentId : CMInApp = inAppDataDao
+            .getDataForParentIdAndScreen(cmInApp.parentId, newCampaignTargetScreens) ?: return false
+        val existingCampaignTargetScreens = existingCampaignWithSameParentId.screen
+        if(existingCampaignTargetScreens.contains(",")
+            && newCampaignTargetScreens.contains(",")){
+            val newTargetScreenList = newCampaignTargetScreens.split(",")
+            val existingScreenList = existingCampaignTargetScreens.split(",")
+            for (screen in existingScreenList) {
+                if (newTargetScreenList.contains(screen)) {
+                    return true
                 }
-                return true
-            } else {
-                //send event
-                sendIrisEvent(IrisAnalyticsEvents.INAPP_CANCELLED, cmInApp)
-                return false
             }
-        } ?: return true
+            return false
+        }else {
+            return true
+        }
     }
 
-    private fun testSameParentId(cmInApp: CMInApp): Boolean {
+    private fun isAlreadyInteractedWithCampaign(parentId: String) : Boolean{
+        val data: List<CMInApp>? =
+            inAppDataDao.getDataFromParentIdForPerstOff(parentId)
+        return data?.isNotEmpty() ?: false
+    }
+
+    private fun updateFrequencyAsOldCampaign(cmInApp: CMInApp): Boolean {
         val cmInAppWithSameParentId: CMInApp? = inAppDataDao.getDataForParentId(cmInApp.parentId)
         cmInAppWithSameParentId?.let {
             return if (cmInAppWithSameParentId.freq != 0) {
@@ -105,19 +110,19 @@ class SaveInAppUseCase(
         } ?: return true
     }
 
-    private fun deleteInAppIfAlreadyExists(newCmInAppId: Long) {
+    private fun deleteOldInAppIfAlreadyExists(newCmInAppId: Long) {
         val oldCMInApp: CMInApp? = inAppDataDao.getInAppData(newCmInAppId)
         oldCMInApp?.let {
-            //send event and delete this inApp
-            sendIrisEvent(IrisAnalyticsEvents.INAPP_CANCELLED, it)
+            //send event and delete old inApp campaign
+            sendCancelledIrisEvent(it)
             inAppDataDao.deleteRecord(it.id)
         }
     }
 
-    private fun sendIrisEvent(event: String, cmInApp: CMInApp) {
+    private fun sendCancelledIrisEvent(cmInApp: CMInApp) {
         IrisAnalyticsEvents.sendInAppEvent(
             applicationContext,
-            event,
+            IrisAnalyticsEvents.INAPP_CANCELLED,
             cmInApp
         )
     }
