@@ -675,7 +675,7 @@ class PlayViewModel @Inject constructor(
     fun hideUserReportSheet() {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
-        insetsMap[BottomInsetsType.KebabMenuSheet] =
+        insetsMap[BottomInsetsType.UserReportSheet] =
             BottomInsetsState.Hidden(
                 isPreviousStateSame = insetsMap[BottomInsetsType.UserReportSheet]?.isHidden == true
             )
