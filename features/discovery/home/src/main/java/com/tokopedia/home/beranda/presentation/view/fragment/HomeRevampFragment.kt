@@ -107,6 +107,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.DateHelper
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
@@ -134,13 +135,10 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.Reco
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.remoteconfig.*
 import com.tokopedia.remoteconfig.RollenceKey.HOME_BEAUTY_FEST
-import com.tokopedia.remoteconfig.RollenceKey.HOME_WALLETAPP
 import com.tokopedia.remoteconfig.RollenceKey.HOME_PAYMENT_ABC
+import com.tokopedia.remoteconfig.RollenceKey.HOME_WALLETAPP
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.searchbar.navigation_component.NavConstant
-import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
-import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -168,10 +166,6 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
-import kotlinx.android.synthetic.main.fragment_home_revamp.*
-import kotlinx.android.synthetic.main.home_header_ovo.view.*
-import kotlinx.android.synthetic.main.layout_item_widget_balance_widget.view.*
-import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
@@ -242,7 +236,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private const val MONTH_DAY_COUNT = 30
         private const val TIME_MILLIS_MINUTE = 60000
         private const val PAGE_NAME_FPI_HOME = "home"
-        private const val ONBOARDING_NAVIGATION_TAG = "onboarding navigation"
         private const val COACHMARK_FIRST_INDEX = 0
         private const val HOME_HEADER_POSITION = 0
         private const val TOKOPOINTS_ITEM_POSITION = 1
@@ -271,7 +264,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         private var beautyFestEvent = BEAUTY_FEST_NOT_SET
         private var counterBypassFirstNetworkHomeData = 0
         private var eligibleBeautyFest = false
-        private const val isNavRevamp = true
+        private const val isPageRefresh = true
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeRevampFragment {
@@ -456,7 +449,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         beautyFestEvent = BEAUTY_FEST_NOT_SET
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_revamp_searchbar_transition_range)
-        startToTransitionOffset = resources.getDimensionPixelOffset(R.dimen.dp_1)
+        startToTransitionOffset = 1f.toDpInt()
         registerBroadcastReceiverTokoCash()
         getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_CREATE_HOME)
     }
@@ -565,11 +558,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val sharedPrefs = context.getSharedPreferences(PREF_KEY_HOME_COACHMARK, Context.MODE_PRIVATE)
         sharedPrefs.edit().putBoolean(key, value).apply()
     }
-    fun enableOnboarding(context: Context) {
-        val sharedPrefs = context.getSharedPreferences(NavConstant.KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-        sharedPrefs.edit().putBoolean(
-            NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true).apply()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         BenchmarkHelper.beginSystraceSection(TRACE_INFLATE_HOME_FRAGMENT)
@@ -672,53 +660,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showNavigationOnboarding() {
-        activity?.let {
-            if (!bottomSheetIsShowing) {
-                val bottomSheet = BottomSheetUnify()
-                val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
-                onboardingView.onboarding_button.setOnClickListener {
-                    bottomSheet.dismiss()
-                    adapter?.currentList?.let {
-                        saveFirstViewNavigationFalse()
-                        showCoachmarkWithDataValidation(it)
-                    }
-                }
-
-                bottomSheet.setOnDismissListener {
-                    bottomSheetIsShowing = false
-                }
-
-                bottomSheet.setTitle("")
-                bottomSheet.setChild(onboardingView)
-                bottomSheet.clearAction()
-                bottomSheet.setCloseClickListener {
-                    bottomSheet.dismiss()
-                    saveFirstViewNavigationFalse()
-                }
-                childFragmentManager.run {
-                    bottomSheet.show(this, ONBOARDING_NAVIGATION_TAG)
-                    bottomSheetIsShowing = true
-                }
-            }
-        }
-    }
-
     private fun ArrayList<CoachMark2Item>.buildHomeCoachmark(skipBalanceWidget: Boolean) {
         context?.let { currentContext ->
-            //inbox
-            if (!isInboxCoachmarkShown(currentContext)) {
-                val inboxIcon = navToolbar?.getInboxIconView()
-                inboxIcon?.let {
-                    this.add(
-                        CoachMark2Item(
-                            inboxIcon,
-                            getString(R.string.onboarding_coachmark_inbox_title),
-                            getString(R.string.onboarding_coachmark_inbox_description)
-                        )
-                    )
-                }
-            }
 
             //add balance widget
             //uncomment this to activate balance widget coachmark
@@ -747,20 +690,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                             )
                         )
                     }
-                }
-            }
-
-            //add navigation
-            if (!isNavigationCoachmarkShown(currentContext)) {
-                val globalNavIcon = navToolbar?.getGlobalNavIconView()
-                globalNavIcon?.let {
-                    this.add(
-                        CoachMark2Item(
-                            globalNavIcon,
-                            getString(R.string.onboarding_coachmark_title),
-                            getString(R.string.onboarding_coachmark_description)
-                        )
-                    )
                 }
             }
         }
@@ -832,7 +761,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         containsNewGopayAndTokopoints: Boolean = false,
         tokopointsBalanceCoachmark: BalanceCoachmark? = null
     ) {
-        if (coachmark == null && checkNavigationOnboardingFinished() && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
+        if (coachmark == null && !(coachmarkGopay?.isShowing == true || coachmarkTokopoint?.isShowing == true)) {
             context?.let { ctx ->
                 val coachMarkItem = ArrayList<CoachMark2Item>()
                 coachMarkItem.buildHomeCoachmark(skipBalanceWidget)
@@ -881,18 +810,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         containsNewGopayAndTokopoints: Boolean,
         tokopointsBalanceCoachmark: BalanceCoachmark?
     ) {
-        if (isP1HomeCoachmarkDone(
-                context = ctx,
-                isUseInboxRollence = useNewInbox,
-                isUseNavigationRollence = isNavRevamp
-            )) {
-            if (!isNewWalletAppCoachmarkShown(ctx)) {
-                showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
-                showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
-            } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
-                showTokonowCoachmark()
-            }
+        if (!isNewWalletAppCoachmarkShown(ctx)) {
+            showGopayEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+        } else if (isNewWalletAppCoachmarkShown(ctx) && !isNewTokopointCoachmarkShown(ctx) && tokopointsBalanceCoachmark != null) {
+            showTokopointsEligibleCoachmark(containsNewGopayAndTokopoints, tokopointsBalanceCoachmark)
+        } else if (isNewWalletAppCoachmarkShown(ctx) && (isNewTokopointCoachmarkShown(ctx) || tokopointsBalanceCoachmark == null)) {
+            showTokonowCoachmark()
         }
     }
 
@@ -992,12 +915,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 this.title.toString().equals(getString(com.tokopedia.localizationchooseaddress.R.string.coachmark_title), ignoreCase = true) -> {
                     setChooseAddressCoachmarkShown(currentContext)
                 }
-                this.title.toString().equals(getString(R.string.onboarding_coachmark_title), ignoreCase = true) -> {
-                    setNavigationCoachmarkShown(currentContext)
-                }
-                this.title.toString().equals(getString(R.string.onboarding_coachmark_inbox_title), ignoreCase = true) -> {
-                    setInboxCoachmarkShown(currentContext)
-                }
                 this.title.toString().equals(getString(R.string.onboarding_coachmark_wallet_title), ignoreCase = true) -> {
                     setBalanceWidgetCoachmarkShown(currentContext)
                 }
@@ -1014,8 +931,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getTokopointsNewBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val balanceWidgetTokopointsNewView = getBalanceWidgetViewTokoPointsNewOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && balanceWidgetTokopointsNewView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val balanceWidgetTokopointsNewView = getBalanceWidgetViewTokoPointsNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && balanceWidgetTokopointsNewView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return balanceWidgetTokopointsNewView
         }
         return null
@@ -1024,8 +941,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val gopayView = getBalanceWidgetViewGopayOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
         return null
@@ -1034,8 +951,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayNewBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayNewOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val gopayView = getBalanceWidgetViewGopayNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
         return null
@@ -1044,8 +961,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private fun getGopayNewActivateBalanceWidgetView(): View? {
         val view = homeRecyclerView?.findViewHolderForAdapterPosition(HOME_HEADER_POSITION)
         (view as? HomeHeaderOvoViewHolder)?.let {
-            val gopayView = getBalanceWidgetViewGopayActivateNewOnly(it.itemView.view_balance_widget)
-            if (it.itemView.view_balance_widget.isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
+            val gopayView = getBalanceWidgetViewGopayActivateNewOnly(it.itemView.findViewById(R.id.view_balance_widget))
+            if (it.itemView.findViewById<BalanceWidgetView>(R.id.view_balance_widget).isShown && gopayView?.y?:VIEW_DEFAULT_HEIGHT > VIEW_DEFAULT_HEIGHT)
                 return gopayView
         }
         return null
@@ -1792,24 +1709,16 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun checkNavigationOnboardingFinished(): Boolean {
-        return if (remoteConfigIsShowOnboarding()) {
-            !isFirstViewNavigation()
-        } else {
-            true
-        }
-    }
-
     private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
         val instance = list.filterIsInstance(type)
         return instance.isNotEmpty()
     }
 
-    private fun loadEggData() {
+    private fun loadEggData(isPageRefresh: Boolean = false) {
         val floatingEggButtonFragment = floatingEggButtonFragment
         if (floatingEggButtonFragment != null) {
             updateEggBottomMargin(floatingEggButtonFragment)
-            floatingEggButtonFragment.loadEggData()
+            floatingEggButtonFragment.loadEggData(isPageRefresh)
         }
     }
 
@@ -2173,7 +2082,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             (activity as RefreshNotificationListener?)?.onRefreshNotification()
         }
         stickyLoginView?.loadContent()
-        loadEggData()
+        loadEggData(isPageRefresh)
     }
 
     override fun onChooseAddressUpdated() {
@@ -2260,13 +2169,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     private fun onPageLoadTimeEnd() {
         stickyLoginView?.loadContent()
-        if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         observeHomeNotif()
+        adapter?.currentList?.let {
+            showCoachmarkWithDataValidation(it)
+        }
         pageLoadTimeCallback?.invalidate()
-    }
-
-    private fun remoteConfigIsShowOnboarding(): Boolean {
-        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
     }
 
     private fun remoteConfigIsNewBalanceWidget(): Boolean {
@@ -2305,28 +2212,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, latitude.toString())
         editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, longitude.toString())
         editor.apply()
-    }
-
-    private fun saveFirstViewNavigationFalse() {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-            sharedPrefs.run {
-                edit()
-                        .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, false)
-                        .apply()
-            }
-        }
-    }
-
-    private fun isFirstViewNavigation(): Boolean {
-        context?.let {
-            sharedPrefs = it.getSharedPreferences(
-                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
-            return sharedPrefs.getBoolean(
-                    KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true)
-        }
-        return true
     }
 
     private fun saveFirstInstallTime() {
@@ -2834,7 +2719,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                 navToolbar?.let {
                     height = navToolbar?.height
                         ?: resources.getDimensionPixelSize(R.dimen.default_toolbar_status_height)
-                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                    height += 8f.toDpInt()
                 }
             }
             return height
@@ -2993,7 +2878,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             errorToaster = null
         }
         if (errorToaster == null || errorToaster?.isShown == false) {
-            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+            Toaster.toasterCustomBottomHeight = 56f.toDpInt()
             errorToaster = build(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener)
             errorToaster?.show()
         }
@@ -3165,7 +3050,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showSuccessResetPasswordDialog() {
-        Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_56)
+        Toaster.toasterCustomBottomHeight = 56f.toDpInt()
         Toaster.build(root,
                 getString(R.string.text_dialog_success_reset_password),
                 DELAY_TOASTER_RESET_PASSWORD,

@@ -3,46 +3,44 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.tkpd">
 
-    <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
+    <uses-sdk tools:overrideLibrary="com.tokopedia.core" />
 
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
-        tools:selector="com.google.firebase"/>
+        tools:selector="com.google.firebase" />
     <uses-permission
         android:name="android.permission.WRITE_CALL_LOG"
-        tools:node="remove"/>
+        tools:node="remove" />
     <uses-permission
         android:name="android.permission.READ_CALL_LOG"
-        tools:node="merge"/>
+        tools:node="merge" />
     <uses-permission
         android:name="android.permission.WRITE_CONTACTS"
-        tools:node="remove"/>
+        tools:node="remove" />
+
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false"
         tools:replace="required" />
-
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <queries>
         <package android:name="com.tokopedia.sellerapp" />
         <package android:name="com.telkom.mwallet" />
         <package android:name="com.gojek.app" />
         <package android:name="com.android.chrome" />
-
         <package android:name="abc.myloan.help.pinjol" />
         <package android:name="abc.zakusiap.zspinjol.nusantara" />
         <package android:name="air.GoTunai" />
@@ -649,7 +647,6 @@
         <package android:name="xyz.rupiah.sigap.pinjol" />
         <package android:name="zone.bytesreverser.xposeddeviceidmaskerpro" />
     </queries>
-
     <application
         android:name=".ConsumerMainApplication"
         android:allowBackup="false"
@@ -664,45 +661,41 @@
         android:theme="@style/Theme.Tokopedia3"
         android:requestLegacyExternalStorage="true"
         tools:replace="name,android:label,android:hasCode,android:fullBackupContent,android:allowBackup,android:resizeableActivity">
-        <meta-data android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
-           android:value="false"/>
-        <meta-data android:name="com.facebook.sdk.AutoInitEnabled"
-           android:value="false"/>
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="true"/>
+            android:value="true" />
         <meta-data
             android:name="APP_ID"
             android:value="@string/moengage_key_ma"
-            tools:replace="android:value"/>
+            tools:replace="android:value" />
         <meta-data
             android:name="SENDER_ID"
             android:value="@string/key_sender_id"
-            tools:replace="android:value"/>
+            tools:replace="android:value" />
         <meta-data
             android:name="SKIP_GCM_REGISTRATION"
             android:value="true"
-            tools:replace="android:value"/>
+            tools:replace="android:value" />
         <meta-data
             android:name="AF_PRE_INSTALL_PATH"
-            android:value="/data/local/tmp/pre_install.appsflyer"/>
+            android:value="/data/local/tmp/pre_install.appsflyer" />
         <meta-data
             android:name="firebase_performance_logcat_enabled"
-            android:value="${firebasePerformanceLogEnabled}"/>
+            android:value="${firebasePerformanceLogEnabled}" />
         <meta-data
             android:name="NOTIFICATION_ICON"
             android:value="@drawable/ic_stat_notify_white"
-            tools:replace="android:value"/>
+            tools:replace="android:value" />
         <meta-data
             android:name="NOTIFICATION_LARGE_ICON"
             android:value="@mipmap/ic_launcher_customerapp"
-            tools:replace="android:value"/>
+            tools:replace="android:value" />
         <meta-data
             android:name="HANSEL_APP_ID"
-            android:value="@string/hansel_app_id_ma"/>
+            android:value="@string/hansel_app_id_ma" />
         <meta-data
             android:name="HANSEL_APP_KEY"
-            android:value="@string/hansel_app_key_ma"/>
+            android:value="@string/hansel_app_key_ma" />
         <meta-data
             tools:replace="android:value"
             android:name="io.branch.sdk.BranchKey"
@@ -710,39 +703,25 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_goe_api_key_ma" />
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_id_ma" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
         <meta-data
             android:name="GTM_RESOURCE"
-            android:resource="@raw/gtm_consumer"/>
+            android:resource="@raw/gtm_consumer" />
         <meta-data
             android:name="GTM_ID"
-            android:value="@string/gtm_id_ma"/>
+            android:value="@string/gtm_id_ma" />
         <meta-data
             android:name="GA_ID"
-            android:value="@string/ga_id_ma"/>
+            android:value="@string/ga_id_ma" />
         <meta-data
             android:name="APPSFLYER_KEY"
-            android:value="@string/appsflyer_key_ma"/>
-
-        <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
-
-        <provider
-            android:name="com.facebook.internal.FacebookInitProvider"
-            android:authorities="${applicationId}.FacebookInitProvider"
-            android:exported="false"
-            tools:node="remove" />
-
-        <provider
-            android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProviderOQcSB25ec2f92263c41b5a3d10152ace7888e"
-            android:exported="true"/>
-
+            android:value="@string/appsflyer_key_ma" />
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -756,18 +735,17 @@
                 android:resource="@xml/filepaths" />
         </provider>
 
-        <!--  Add preview activity. -->
         <activity
             android:name="com.google.android.gms.tagmanager.PreviewActivity"
-            android:noHistory="true">  <!-- optional, removes the previewActivity from the activity stack. -->
+            android:noHistory="true"
+            android:exported="false">
             <intent-filter>
                 <data android:scheme="com.tokopedia.tkpd" />
                 <action android:name="com.tokopedia.internal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
-      
     </application>
-
 </manifest>

@@ -64,6 +64,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.layanan)
     implementation projectOrAar(rootProject.ext.features.withdraw)
 
+    //Media
+    implementation projectOrAar(rootProject.ext.features.liveBroadcaster)
+
     //Content
     implementation projectOrAar(rootProject.ext.features.playBroadcaster)
 
@@ -109,7 +112,7 @@ dependencies {
 
 //    Merchant
     implementation projectOrAar(rootProject.ext.features.shopPage)
-    implementation projectOrAar(rootProject.ext.features.reviewShop)
+    implementation projectOrAar(rootProject.ext.features.shopPageWidget)
     implementation projectOrAar(rootProject.ext.features.statistic)
     implementation projectOrAar(rootProject.ext.features.sellerMenu)
     implementation projectOrAar(rootProject.ext.features.sellerAction)

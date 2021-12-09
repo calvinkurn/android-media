@@ -197,7 +197,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                                 null
                         )
                     }
-                    shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) "Tersedia ${logisticPromo.title}" else null,
+                    shipping = shipping.copy(logisticPromoTickerMessage = if (shipping.serviceErrorMessage.isNullOrEmpty()) logisticPromo.tickerAvailableFreeShippingCourierTitle else null,
                             logisticPromoShipping = null, isApplyLogisticPromo = false)
                 } else if (logisticPromo != null && profileShipment.isDisableChangeCourier) {
                     shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null, isApplyLogisticPromo = false)
@@ -601,7 +601,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             if (newShipping.serviceErrorMessage.isNullOrEmpty()) {
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
-                    newShipping = newShipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                    newShipping = newShipping.copy(logisticPromoTickerMessage = logisticPromo.tickerAvailableFreeShippingCourierTitle, logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
                 }
             }
             return newShipping
@@ -656,7 +656,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     shippingRecommendationData = shippingRecommendationData,
                     isApplyLogisticPromo = false,
                     logisticPromoShipping = null,
-                    logisticPromoTickerMessage = "Tersedia ${logisticPromoViewModel.title}")
+                    logisticPromoTickerMessage = logisticPromoViewModel.tickerAvailableFreeShippingCourierTitle)
         }
         return orderShipment
     }

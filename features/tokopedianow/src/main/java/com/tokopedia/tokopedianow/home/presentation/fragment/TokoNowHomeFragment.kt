@@ -481,12 +481,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onPromoAllClick(channelModel: ChannelModel) {}
 
     override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        isFirstImpressionOnBanner = if (!isFirstImpressionOnBanner) {
-            true
-        } else {
-            analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
-            false
-        }
+        analytics.onImpressBannerPromo(userSession.userId, channelModel, localCacheModel?.warehouse_id.toLongOrZero().toString())
     }
 
     override fun onShareBtnSharingEducationClicked() {

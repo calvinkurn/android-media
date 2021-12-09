@@ -1,15 +1,17 @@
 package com.tokopedia.home_account.domain.usecase
 
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.home_account.AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME
 import com.tokopedia.home_account.AccountErrorHandler
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.network.exception.MessageErrorException
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**
@@ -18,20 +20,16 @@ import javax.inject.Inject
  */
 
 open class HomeAccountUserUsecase @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
-        private val rawQueries: Map<String, String>
-): GraphqlUseCase<UserAccountDataModel>(graphqlRepository) {
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    dispatcher: CoroutineDispatcher,
+    private val rawQueries: Map<String, String>
+): CoroutineUseCase<Unit, UserAccountDataModel>(dispatcher) {
 
-    fun executeUseCase(onSuccess: (UserAccountDataModel) -> Unit, onError: (Throwable) -> Unit){
-        rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME]?.let { query ->
-            setTypeClass(UserAccountDataModel::class.java)
-            setGraphqlQuery(query)
-            execute({
-                onSuccess(it)
-            }, onError)
-        }
+    override fun graphqlQuery(): String {
+        return rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME] ?: ""
     }
-    override suspend fun executeOnBackground(): UserAccountDataModel {
+
+    override suspend fun execute(params: Unit): UserAccountDataModel {
         val rawQuery = rawQueries[NEW_QUERY_BUYER_ACCOUNT_HOME]
         val gqlRequest = GraphqlRequest(rawQuery,
                 UserAccountDataModel::class.java, mapOf<String, Any>())

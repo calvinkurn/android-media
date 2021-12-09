@@ -194,6 +194,7 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
     public static final String ENABLE_ASYNC_HANSEL_INIT = "android_async_hansel_init";
+    public static final String ENABLE_ASYNC_GRATIFICATION_INIT = "android_async_gratification_init";
 
     public static final String EXECUTE_GQL_CONNECTION_WARM_UP = "android_gql_connection_warm_up";
 
@@ -260,4 +261,5 @@ public class RemoteConfigKey {
     public static final String ENABLE_CART_CHECKOUT_BUNDLING = "android_enable_cart_checkout_bundling";
     public static final String ENABLE_NEW_CONTENT_CREATION_FLOW = "app_android_feed_cc_feature_flag";
 
+    public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
 }

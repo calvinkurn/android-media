@@ -10,6 +10,10 @@ data class TopAdsRequestParams(
     var title: String,
     @SerializedName("desc")
     var description: String,
+    @SerializedName("section_title")
+    var sectionTitle: String,
+    @SerializedName("section_desc")
+    var sectionDescription: String?,
     @SerializedName("ep")
     var adsType: String,
     @SerializedName("inventory_id")

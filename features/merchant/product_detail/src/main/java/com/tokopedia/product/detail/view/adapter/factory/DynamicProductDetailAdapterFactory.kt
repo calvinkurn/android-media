@@ -2,7 +2,35 @@ package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PageErrorDataModel
+import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMerchantVoucherSummaryDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniShopWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMiniSocialProofStockDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulReviewDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
+import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
 
 interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductMostHelpfulReviewDataModel): Int
@@ -33,5 +61,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: ProductCategoryCarouselDataModel): Int
     fun type(data: TopadsHeadlineUiModel): Int
     fun type(data: ProductBundlingDataModel): Int
+    fun type(data: ContentWidgetDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
