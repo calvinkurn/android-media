@@ -1,7 +1,6 @@
 package com.tokopedia.data_explorer.presentation.content
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +16,12 @@ import com.tokopedia.data_explorer.extensions.setupGrid
 import com.tokopedia.data_explorer.presentation.Constants
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.data_explorer_fragment_content_layout.*
+import kotlinx.android.synthetic.main.data_explorer_pager_layout.*
 import javax.inject.Inject
 
-class ContentFragment: BaseDaggerFragment() {
+class ContentFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -30,7 +31,7 @@ class ContentFragment: BaseDaggerFragment() {
         val viewModelProvider = ViewModelProviders.of(requireActivity(), viewModelFactory.get())
         viewModelProvider.get(ContentViewModel::class.java)
     }
-    private val databaseName: String by lazy(LazyThreadSafetyMode.NONE){
+    private val databaseName: String by lazy(LazyThreadSafetyMode.NONE) {
         arguments?.getString(Constants.Keys.DATABASE_NAME).orEmpty()
     }
     private val databasePath: String by lazy(LazyThreadSafetyMode.NONE) {
@@ -57,9 +58,31 @@ class ContentFragment: BaseDaggerFragment() {
             viewModel.getTableInfo(databasePath, schemaName)
         else showDatabaseError(GlobalError.PAGE_NOT_FOUND)
         observeViewModels()
+        initListeners()
         contentAdapter.onClick = { cell ->
-            cell.text?.let { cellText -> ContentPreviewBottomSheet.show(cellText, childFragmentManager) }
+            cell.text?.let { cellText ->
+                ContentPreviewBottomSheet.show(
+                    cellText,
+                    childFragmentManager
+                )
+            }
         }
+    }
+
+    private fun initListeners() {
+        arrowForward.setOnClickListener { queryContent(viewModel.currentPage + 1) }
+        arrowBack.setOnClickListener { queryContent(viewModel.currentPage - 1) }
+        routeToPage.setOnClickListener { queryContent(getPageNumberFromEditText()) }
+        arrowGo.setOnClickListener { queryContent(getPageNumberFromEditText()) }
+    }
+
+    private fun getPageNumberFromEditText(): Int {
+        val page = pageNumberEditText.textAreaInput.text?.toString().orEmpty()
+        return page.toIntOrNull() ?: 1
+    }
+
+    private fun queryContent(page: Int? = 1) {
+        viewModel.getTableContent(databasePath, schemaName, page)
     }
 
     private fun showDatabaseError(errorType: Int) {
@@ -77,16 +100,27 @@ class ContentFragment: BaseDaggerFragment() {
                 RecyclerView.VERTICAL,
                 false
             )
-            viewModel.getTableContent(databasePath, schemaName)
-            Log.d("DATAEXPLORER 1", cells.map { it.text }.joinToString())
+            viewModel.getTableRowsCount(databasePath, schemaName)
+        })
+        viewModel.resultRowLiveData.observe(viewLifecycleOwner, {
+            if (it) queryContent() else showDatabaseError(GlobalError.MAINTENANCE)
         })
         viewModel.contentLiveData.observe(viewLifecycleOwner, { cells ->
             rvContent.adapter = contentAdapter
             contentAdapter.submitList(cells)
-            Log.d("DATAEXPLORER 2", cells.map { it.text }.joinToString())
+            currentPageNumber.text = viewModel.currentPage.toString()
         })
         viewModel.errorLiveData.observe(viewLifecycleOwner, {
-            showDatabaseError(GlobalError.MAINTENANCE)
+            when (it) {
+                is IllegalStateException -> Toaster.build(
+                    rvContent,
+                    "Incorrect Request",
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR
+                ).show()
+                else -> showDatabaseError(GlobalError.MAINTENANCE)
+
+            }
         })
     }
 
@@ -95,7 +129,11 @@ class ContentFragment: BaseDaggerFragment() {
     override fun initInjector() = getComponent(DataExplorerComponent::class.java).inject(this)
 
     companion object {
-        fun newInstance(schemaName: String, databaseName: String, databasePath: String) : ContentFragment {
+        fun newInstance(
+            schemaName: String,
+            databaseName: String,
+            databasePath: String
+        ): ContentFragment {
             val fragment = ContentFragment()
             val bundle = Bundle().apply {
                 putString(Constants.Keys.DATABASE_NAME, databaseName)
