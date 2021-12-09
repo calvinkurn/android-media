@@ -33,6 +33,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
@@ -234,6 +235,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onReportClick(view: KebabMenuSheetViewComponent) {
+        viewModel.getReport(requireContext())
         playViewModel.onShowUserReportSheet(variantSheetMaxHeight)
     }
 
@@ -241,8 +243,9 @@ class PlayBottomSheetFragment @Inject constructor(
      * UserReportSheet View Component Listener
      */
 
-    override fun onItemReportClick(view: PlayUserReportSheetViewComponent) {
-        TODO("Not yet implemented")
+    override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
+        playViewModel.onShowUserReportSubmissionSheet(variantSheetMaxHeight)
+        userReportSubmissionSheetView.setView(item)
     }
 
     override fun onCloseButtonClicked(view: PlayUserReportSheetViewComponent) {
@@ -255,6 +258,10 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onCloseButtonClicked(view: PlayUserReportSubmissionViewComponent) {
         playViewModel.hideUserReportSubmissionSheet()
+    }
+
+    override fun onSubmitUserReport(view: PlayUserReportSubmissionViewComponent) {
+        TODO("Not yet implemented")
     }
 
     /**
@@ -277,6 +284,7 @@ class PlayBottomSheetFragment @Inject constructor(
         observeBottomInsetsState()
         observeBuyEvent()
         observeStatusInfo()
+        observeUserReport()
 
         observeUiState()
     }
@@ -461,6 +469,16 @@ class PlayBottomSheetFragment @Inject constructor(
                         isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
                         onError = it.onRetry
                 )
+            }
+        })
+    }
+
+    private fun observeUserReport(){
+        viewModel.observableUserReportReasoning.observe(viewLifecycleOwner, DistinctObserver {
+            when (it) {
+                is PlayResult.Loading -> ""
+                is PlayResult.Success -> userReportSheetView.setReportSheet(it.data)
+                is PlayResult.Failure ->  ""
             }
         })
     }

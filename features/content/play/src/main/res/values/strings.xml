@@ -95,5 +95,6 @@
     <!--User Report-->
     <string name="play_user_report_footer">Pelajari Selengkapnya tipe-tipe pelanggaran di Tokopedia.</string>
     <string name="play_user_report_header">Pilih kategori pelanggaran yang terjadi pada video ini</string>
+    <string name="play_user_report_submission_button">Laporkan</string>
 
 </resources>

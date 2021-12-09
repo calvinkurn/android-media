@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:lineSpacingExtra="4sp"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,7 +25,7 @@
         android:id="@+id/iv_cr"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         app:icon_name="CHEVRON_RIGHT"
         app:layout_constraintBottom_toBottomOf="@+id/tv_title"
         app:layout_constraintEnd_toEndOf="parent" />

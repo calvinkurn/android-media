@@ -15,6 +15,11 @@ data class UserReportOptions(
     @SerializedName("additional_fields")
     val additionalField: List<OptionAdditionalField> = listOf(),
 ){
+    data class Response(
+        @SerializedName("options")
+        val data: List<UserReportOptions> = emptyList()
+    )
+
     data class OptionAdditionalField(
         @SerializedName("key")
         val key: String = "",

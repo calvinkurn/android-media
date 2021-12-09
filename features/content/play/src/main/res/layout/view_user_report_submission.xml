@@ -84,6 +84,7 @@
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_action"
+                android:text="@string/play_user_report_submission_button"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl5"
                 android:layout_marginTop="@dimen/play_offset_12"
