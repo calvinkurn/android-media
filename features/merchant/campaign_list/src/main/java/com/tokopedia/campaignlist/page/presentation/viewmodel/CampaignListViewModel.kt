@@ -157,7 +157,7 @@ class CampaignListViewModel @Inject constructor(
                     campaignStatusId = campaignListV2.statusId,
                     campaignPictureUrl = campaignListV2.coverImg,
                     campaignName = campaignListV2.campaignName,
-                    productQty = campaignListV2.sellerCampaignInfo.AcceptedProduct.toString(),
+                    productQty = campaignListV2.sellerCampaignInfo.TotalItem.toString(),
                     startDate = startDate,
                     endDate = endDate,
                     startTime = startTime,
