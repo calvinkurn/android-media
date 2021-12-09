@@ -5,17 +5,27 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
+import android.util.Base64;
+import android.util.Log;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.R;
+import com.tokopedia.imagepicker.editor.converter.BitmapConverter;
+import com.tokopedia.imagepicker.editor.domain.SetRemoveBackgroundUseCase;
 import com.tokopedia.imagepicker.editor.watermark.WatermarkBuilder;
 import com.tokopedia.utils.image.ImageProcessingUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
+import okhttp3.ResponseBody;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
@@ -35,6 +45,9 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
 
     private PublishSubject<Float> brightnessSubject;
     private PublishSubject<Float> contrastSubject;
+
+    private SetRemoveBackgroundUseCase removeBackgroundUseCase;
+    private Subscription requestRemoveBackground;
 
     public interface ImageEditPreviewView extends CustomerView {
         Context getContext();
@@ -60,6 +73,19 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
         void onSuccessSaveWatermarkImage(String filePath);
 
         void onErrorWatermarkImage(Throwable e);
+
+        void onSuccessSaveRemoveBackground(String filePath);
+
+        void onErrorSaveRemoveBackground(Throwable e);
+
+        void onSuccessGetRemoveBackground(String filePath);
+
+        void onErrorGetRemoveBackground(Throwable e);
+    }
+
+    @Inject
+    public ImageEditPreviewPresenter(SetRemoveBackgroundUseCase removeBackgroundUseCase) {
+        this.removeBackgroundUseCase = removeBackgroundUseCase;
     }
 
     public ImageEditPreviewPresenter() {
@@ -319,6 +345,119 @@ public class ImageEditPreviewPresenter extends BaseDaggerPresenter<ImageEditPrev
                 .subscribe(bitmaps -> getView().onSuccessGetWatermarkImage(bitmaps));
 
         addToComposite(subscription);
+    }
+
+    public void saveRemoveBackground(View view, final Bitmap.CompressFormat compressFormat, int backgroundColor) {
+        if (view == null) return;
+
+        Subscription subscription = Observable.just(view)
+                .flatMap(new Func1<View, Observable<Bitmap>>() {
+                    @Override
+                    public Observable<Bitmap> call(View view) {
+                        return Observable.just(
+                                BitmapConverter.toBitmapWithBackgroundColor(view, backgroundColor)
+                        );
+                    }
+                })
+                .flatMap(new Func1<Bitmap, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Bitmap bitmap) {
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat);
+                        return Observable.just(file.getAbsolutePath());
+                    }
+                }).subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() { }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (isViewAttached()) {
+                            getView().onErrorSaveRemoveBackground(e);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(String filePath) {
+                        if (isViewAttached()) {
+                            if (filePath != null) {
+                                getView().onSuccessSaveRemoveBackground(filePath);
+                            } else {
+                                getView().onErrorSaveRemoveBackground(null);
+                            }
+                        }
+                    }
+                });
+        addToComposite(subscription);
+    }
+
+    public void setRemoveBackground(Bitmap bitmap, final Bitmap.CompressFormat compressFormat) {
+        if (bitmap == null || bitmap.isRecycled()) return;
+
+        requestRemoveBackground =
+                Observable.just(bitmap).flatMap(new Func1<Bitmap, Observable<File>>() {
+
+                    // first, convert image to base64
+                    // remove.bg service didn't work if we trying to upload with blob,
+                    // still figure out the root cause of that
+                    @Override
+                    public Observable<File> call(Bitmap bitmap) {
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat);
+                        return Observable.just(file);
+                    }
+                }).flatMap(new Func1<File, Observable<ResponseBody>>() {
+
+                    // storing base64 image into remove.bg service
+                    @Override
+                    public Observable<ResponseBody> call(File base64) {
+                        return removeBackgroundUseCase.invoke(base64);
+                    }
+                }).flatMap(new Func1<ResponseBody, Observable<String>>() {
+
+                    // convert byteStream into file
+                    @Override
+                    public Observable<String> call(ResponseBody result) {
+                        File file = ImageProcessingUtil.writeImageToTkpdPath(result.byteStream(), compressFormat);
+                        return Observable.just(file.getAbsolutePath());
+                    }
+                })
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<String>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (isViewAttached()) {
+                                    getView().onErrorGetRemoveBackground(e);
+                                }
+                            }
+
+                            @Override
+                            public void onNext(String filePath) {
+                                if (isViewAttached()) {
+                                    if (filePath != null) {
+                                        getView().onSuccessGetRemoveBackground(filePath);
+                                    } else {
+                                        getView().onErrorGetRemoveBackground(null);
+                                    }
+                                }
+                            }
+                        });
+
+        addToComposite(requestRemoveBackground);
+    }
+
+    public void cancelRequestRemoveBackground() {
+        if (requestRemoveBackground == null) return;
+
+        if (!requestRemoveBackground.isUnsubscribed()) {
+            requestRemoveBackground.unsubscribe();
+        }
     }
 
     public void getDebounceBrightnessMatrix(float brightnessValue) {

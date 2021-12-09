@@ -6,32 +6,37 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageEditActionType;
 import com.tokopedia.imagepicker.common.ImageEditorBuilder;
 import com.tokopedia.imagepicker.common.ImagePickerGlobalSettings;
-import com.tokopedia.imagepicker.common.ImagePickerRouterKt;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
+import com.tokopedia.imagepicker.editor.di.DaggerImageEditorComponent;
+import com.tokopedia.imagepicker.editor.di.ImageEditorComponent;
+import com.tokopedia.imagepicker.editor.di.module.ImageEditorModule;
 import com.tokopedia.imagepicker.editor.main.Constant;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
-import com.tokopedia.imagepicker.editor.data.ItemSelection;
+import com.tokopedia.imagepicker.editor.data.entity.ItemSelection;
 import com.tokopedia.imagepicker.editor.widget.ItemSelectionWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
@@ -63,6 +68,8 @@ import static com.tokopedia.imagepicker.editor.main.Constant.HALF_BRIGHTNESS_RAN
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_CONTRAST_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.HALF_ROTATE_RANGE;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
+import static com.tokopedia.imagepicker.editor.main.Constant.TYPE_REMOVE_BG_BLACK;
+import static com.tokopedia.imagepicker.editor.main.Constant.TYPE_REMOVE_BG_NORMAL;
 
 /**
  * Created by Hendry on 9/25/2017.
@@ -150,8 +157,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     //save state if watermark is rendered
     private boolean isSetWatermark = false;
     private int watermarkType = Constant.TYPE_WATERMARK_TOPED;
-    private int removeBackgroundType = Constant.TYPE_REMOVE_BG_NORMAL;
     private String pageSource = ImageEditorTracking.UNKNOWN_PAGE;
+
+    private String tempTransparentImageFilePath = "";
+    private int tempTransparentBackgroundColor = -1;
+
+    private Bitmap normalStateOfBitmap = null;
+
+    private int lastRemoveBackgroundState = -1;
 
     public static Intent getIntent(Context context, ImageEditorBuilder imageEditorBuilder) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
@@ -174,7 +187,6 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     @SuppressWarnings("unchecked")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         Intent intent = getIntent();
         if (!intent.hasExtra(EXTRA_IMAGE_EDITOR_BUILDER)) {
             finish();
@@ -344,6 +356,9 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                 case ACTION_CONTRAST:
                     fragment.cancelContrast();
                     break;
+                case ACTION_REMOVE_BACKGROUND:
+                    fragment.cancelRemoveBackground();
+                    break;
             }
 
         }
@@ -399,6 +414,11 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     if (fragment != null) {
                         fragment.saveContrastImage();
                         trackClickSave(ImageEditorTrackingConstant.LABEL_CONTRAST);
+                    }
+                    break;
+                case ACTION_REMOVE_BACKGROUND:
+                    if (fragment != null) {
+                        fragment.saveRemoveBackground();
                     }
                     break;
             }
@@ -583,6 +603,12 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
                     setupRemoveBackgroundWidget();
                     layoutRemoveBackground.setVisibility(View.VISIBLE);
                     tvActionTitle.setText(getString(R.string.remove_background));
+                    if (fragment != null) {
+                        fragment.setRemoveBackground(
+                                tempTransparentImageFilePath,
+                                tempTransparentBackgroundColor
+                        );
+                    }
                     break;
                 case ACTION_CROP_ROTATE:
                     //currently not supported.
@@ -636,12 +662,14 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
     }
 
     private void setupRemoveBackgroundWidget() {
-        ImageEditPreviewFragment imageEditPreviewFragment = getCurrentFragment();
+        ImageEditPreviewFragment fragment = getCurrentFragment();
         List<ItemSelection> items = new ArrayList<>();
 
-        if (imageEditPreviewFragment == null) return;
+        if (fragment == null) return;
 
-        String preview = edittedImagePaths.get(currentImageIndex).get(getCurrentStepForCurrentImage());
+        String preview = edittedImagePaths
+                .get(currentImageIndex)
+                .get(getCurrentStepForCurrentImage());
 
         items.add(ItemSelection.createWithPlaceholderResourceId(
                 "Normal",
@@ -672,10 +700,56 @@ public final class ImageEditorActivity extends BaseSimpleActivity implements Ima
 
         removeBgItemSelection.setData(
                 items, (bitmap, type) -> {
-                    imageEditPreviewFragment.setRemoveBackground(bitmap);
-                    removeBackgroundType = type;
+                    if (type == TYPE_REMOVE_BG_NORMAL) {
+                        lastRemoveBackgroundState = 0;
+                    } else if (type == Constant.TYPE_REMOVE_BG_WHITE) {
+                        lastRemoveBackgroundState = 1;
+                    } else if (type == Constant.TYPE_REMOVE_BG_BLACK) {
+                        lastRemoveBackgroundState = 2;
+                    }
+
+                    setRemoveBackgroundColor();
                 }
         );
+
+        removeBgItemSelection.setActiveItem(lastRemoveBackgroundState);
+
+        if (lastRemoveBackgroundState != -1) {
+            setRemoveBackgroundColor();
+        }
+    }
+
+    private void setRemoveBackgroundColor() {
+        ImageEditPreviewFragment fragment = getCurrentFragment();
+
+        if (lastRemoveBackgroundState == 0) {
+            fragment.normalModeOfRemoveBackground(normalStateOfBitmap);
+        } else if (lastRemoveBackgroundState == 1) {
+            fragment.setRemoveBackground(
+                    tempTransparentImageFilePath,
+                    Color.WHITE
+            );
+        } else if (lastRemoveBackgroundState == 2) {
+            fragment.setRemoveBackground(
+                    tempTransparentImageFilePath,
+                    Color.BLACK
+            );
+        }
+    }
+
+    @Override
+    public void transparentImageFilePath(String filePath, int lastBackgroundColor) {
+        tempTransparentImageFilePath = filePath;
+        tempTransparentBackgroundColor = lastBackgroundColor;
+    }
+
+    @Override
+    public void normalStateOfBitmap(Bitmap bitmap) {
+        ImageEditPreviewFragment fragment = getCurrentFragment();
+        if (fragment == null) return;
+
+        normalStateOfBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        fragment.normalModeOfRemoveBackground(normalStateOfBitmap);
     }
 
     private void setupBrightnessWidget() {

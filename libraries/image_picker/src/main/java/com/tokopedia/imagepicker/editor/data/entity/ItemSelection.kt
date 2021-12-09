@@ -1,4 +1,4 @@
-package com.tokopedia.imagepicker.editor.data
+package com.tokopedia.imagepicker.editor.data.entity
 
 import android.graphics.Bitmap
 

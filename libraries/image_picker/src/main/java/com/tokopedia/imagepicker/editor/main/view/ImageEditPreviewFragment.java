@@ -15,12 +15,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.ImageRatioType;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTracking;
 import com.tokopedia.imagepicker.editor.analytics.ImageEditorTrackingConstant;
+import com.tokopedia.imagepicker.editor.converter.BitmapConverter;
+import com.tokopedia.imagepicker.editor.di.DaggerImageEditorComponent;
+import com.tokopedia.imagepicker.editor.di.module.ImageEditorModule;
 import com.tokopedia.imagepicker.editor.presenter.ImageEditPreviewPresenter;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.utils.image.ImageProcessingUtil;
@@ -43,6 +51,8 @@ import kotlin.Pair;
 import static com.tokopedia.imagepicker.editor.main.Constant.BRIGHTNESS_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.CONTRAST_PRECISION;
 import static com.tokopedia.imagepicker.editor.main.Constant.INITIAL_CONTRAST_VALUE;
+
+import javax.inject.Inject;
 
 /**
  * Created by hendry on 25/04/18.
@@ -74,13 +84,18 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
     private ImageView ivUndo;
     private ImageView ivRedo;
 
-    private ImageEditPreviewPresenter imageEditPreviewPresenter;
+    @Inject ImageEditPreviewPresenter imageEditPreviewPresenter;
+
     private int imageIndex;
     private int[] widthHeight;
 
     private UserSessionInterface userSession;
 
     private Bitmap lastStateImage;
+
+    private int color = -1;
+    private boolean isTransparent = false;
+    private Bitmap tempRevertRemoveBackground = null;
 
     public interface OnImageEditPreviewFragmentListener {
         boolean isInEditCropMode();
@@ -106,6 +121,10 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         ImageRatioType getCurrentRatio();
 
         void itemSelectionWidgetPreview(Bitmap[] bitmap);
+
+        void transparentImageFilePath(String filePath, int lastBackgroundColor);
+
+        void normalStateOfBitmap(Bitmap bitmap);
     }
 
     public static ImageEditPreviewFragment newInstance(
@@ -132,7 +151,7 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         contrast = INITIAL_CONTRAST_VALUE;
 
         super.onCreate(savedInstanceState);
-        imageEditPreviewPresenter = new ImageEditPreviewPresenter();
+        initInjector();
         imageEditPreviewPresenter.attachView(this);
     }
 
@@ -282,6 +301,78 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         }
 
         imageEditPreviewPresenter.setTokopediaWatermark(userInfo, bitmap);
+    }
+
+    public void setRemoveBackground(String tempTransparentCacheFilePath, int tempTransparentBackgroundColor) {
+        if (!isTransparent && tempTransparentCacheFilePath.isEmpty()) {
+            showLoadingAndHidePreview();
+            Bitmap bitmap = gestureCropImageView.getViewBitmap();
+            Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
+
+            // save state first
+            try {
+                tempRevertRemoveBackground = gestureCropImageView
+                        .getViewBitmap()
+                        .copy(Bitmap.Config.ARGB_8888, true);
+
+                onImageEditPreviewFragmentListener.normalStateOfBitmap(tempRevertRemoveBackground);
+            } catch (Exception ignored) {}
+
+            imageEditPreviewPresenter.setRemoveBackground(bitmap, compressFormat);
+        } else if (!tempTransparentCacheFilePath.isEmpty()){
+            gestureCropImageView.setBackgroundColor(tempTransparentBackgroundColor);
+
+            Glide.with(requireContext())
+                    .asBitmap()
+                    .load(tempTransparentCacheFilePath)
+                    .into(gestureCropImageView);
+        }
+    }
+
+    public void saveRemoveBackground() {
+        Bitmap.CompressFormat compressFormat = ImageProcessingUtil.getCompressFormat(edittedImagePath);
+        imageEditPreviewPresenter.saveRemoveBackground(gestureCropImageView, compressFormat, color);
+    }
+
+    public void cancelRemoveBackground() {
+        isTransparent = false;
+        hideLoadingAndShowPreview();
+        imageEditPreviewPresenter.cancelRequestRemoveBackground();
+        gestureCropImageView.setImageBitmap(tempRevertRemoveBackground);
+        onImageEditPreviewFragmentListener.transparentImageFilePath("", -1);
+    }
+
+    public void normalModeOfRemoveBackground(Bitmap bitmap) {
+        if (tempRevertRemoveBackground == null) {
+            gestureCropImageView.setImageBitmap(bitmap);
+        } else {
+            gestureCropImageView.setImageBitmap(tempRevertRemoveBackground);
+        }
+    }
+
+    @Override
+    public void onSuccessSaveRemoveBackground(String filePath) {
+        onImageEditPreviewFragmentListener.onSuccessSaveEditImage(filePath);
+    }
+
+    @Override
+    public void onErrorSaveRemoveBackground(Throwable e) {
+        NetworkErrorHelper.showRedCloseSnackbar(
+                getActivity(),
+                ErrorHandler.getErrorMessage(getContext(), e)
+        );
+    }
+
+    @Override
+    public void onSuccessGetRemoveBackground(String filePath) {
+        isTransparent = true;
+        hideLoadingAndShowPreview();
+        onImageEditPreviewFragmentListener.transparentImageFilePath(filePath, color);
+    }
+
+    @Override
+    public void onErrorGetRemoveBackground(Throwable e) {
+        onImageEditPreviewFragmentListener.onErrorSaveEditImage(e);
     }
 
     public int getImageIndex() {
@@ -607,6 +698,14 @@ public class ImageEditPreviewFragment extends Fragment implements ImageEditPrevi
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             onAttachActivity(activity);
         }
+    }
+
+    private void initInjector() {
+        DaggerImageEditorComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                .imageEditorModule(new ImageEditorModule())
+                .build()
+                .inject(this);
     }
 
     protected void onAttachActivity(Context context) {
