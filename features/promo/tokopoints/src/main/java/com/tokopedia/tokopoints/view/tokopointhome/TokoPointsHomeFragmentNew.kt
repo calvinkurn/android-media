@@ -395,7 +395,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                         sectionList.add(sectionContent)
                     }
 
-                    if (sectionContent.layoutQuestWidgetAttr != null && sectionContent.layoutQuestWidgetAttr.jsonQuestWidgetDisplayParam != null) {
+                    if (sectionContent.layoutQuestWidgetAttr != null && !sectionContent.layoutQuestWidgetAttr.jsonQuestWidgetDisplayParam.isNullOrEmpty()) {
                         // add Quest View binder here
                         val sectionTopQuestViewBinder = SectionTopQuestViewBinder(this)
                         @Suppress("UNCHECKED_CAST")

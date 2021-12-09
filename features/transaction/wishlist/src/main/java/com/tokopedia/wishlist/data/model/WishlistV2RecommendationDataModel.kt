@@ -6,6 +6,4 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 data class WishlistV2RecommendationDataModel(
         val recommendationProductCardModelData: List<ProductCardModel> = listOf(),
         val listRecommendationItem: List<RecommendationItem> = listOf(),
-        val listRecommendationId: List<Long> = listOf(),
-        val title: String = ""
-)
+        val title: String = "")

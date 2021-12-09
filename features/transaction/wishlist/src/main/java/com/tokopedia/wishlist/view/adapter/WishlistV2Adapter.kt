@@ -149,7 +149,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is WishlistV2RecommendationItemViewHolder -> {
-                holder.bind(element)
+                holder.bind(element, holder.adapterPosition)
             }
             is WishlistV2TdnViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
