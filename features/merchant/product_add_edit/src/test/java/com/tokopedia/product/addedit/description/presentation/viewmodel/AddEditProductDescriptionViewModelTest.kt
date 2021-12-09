@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.YOUTU_BE_URL
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.model.ValidateProductDescriptionResponse
@@ -237,7 +238,23 @@ class AddEditProductDescriptionViewModelTest {
         } returns null
 
         usedYoutubeVideoUrl = unknownYoutubeUrl
+        viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
+        val result = viewModel.videoYoutube.getOrAwaitValue()
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `When the url lastPathSegment is null expect failed get youtube video data`()= coroutineTestRule.runBlockingTest {
+        mockUriParsing()
+        every {
+            videoUri.host
+        } returns YOUTU_BE_URL
+        every {
+            videoUri.lastPathSegment
+        } returns null
+
+        usedYoutubeVideoUrl = unknownYoutubeUrl
         viewModel.urlYoutubeChanged(usedYoutubeVideoUrl)
 
         val result = viewModel.videoYoutube.getOrAwaitValue()
