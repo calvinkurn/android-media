@@ -266,6 +266,13 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             calendarWidgetItemViewModel.getPushBannerSubscriptionData().observe(fragment.viewLifecycleOwner, {
                 updateButton(it)
             })
+            calendarWidgetItemViewModel.getShowErrorToastData().observe(fragment.viewLifecycleOwner, {
+                Toaster.build(
+                    itemView, it, Toast.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR,
+                    itemView.context.getString(R.string.discovery_calendar_push_action)
+                ).show()
+            })
             calendarWidgetItemViewModel.getPushBannerStatusData().observe(fragment.viewLifecycleOwner, {
                 updateButton(it.first)
                 if (it.second.isNotEmpty()) {
