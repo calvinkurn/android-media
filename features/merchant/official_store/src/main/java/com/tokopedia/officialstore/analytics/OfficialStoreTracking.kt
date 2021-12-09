@@ -251,9 +251,9 @@ class OfficialStoreTracking(context: Context) {
         tracker.sendGeneralEvent(
                 TrackAppUtils
                         .gtmData(CLICK_OS_MICROSITE,
-                            "$OS_MICROSITE$categoryName",
-                            "all brands - $CLICK",
-                            "$CLICK view all"))
+                                "$OS_MICROSITE$categoryName",
+                                "all brands - $CLICK",
+                                "$CLICK view all"))
     }
 
     fun eventClickShop(
@@ -306,7 +306,7 @@ class OfficialStoreTracking(context: Context) {
             isLogin: Boolean,
             shopId: String,
             isFromDC: Boolean = false,
-            attribute: String = ""
+            attribute: String = "",
     ) {
         val creativeName = if (isFromDC) attribute else "$shopName - $additionalInformation"
         val statusLogin = if (isLogin) "login" else "nonlogin"
