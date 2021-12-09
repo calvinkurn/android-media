@@ -51,7 +51,19 @@ class UnsendImageTest: TopchatRoomTest() {
         MsgBubbleResult.assertMsgIsDeletedAt(0)
     }
 
-    // TODO: Should replace bubble to deleted type bubble when receive 104 event ws
+    @Test
+    fun should_replace_bubble_to_deleted_type_bubble_when_receive_104_event_ws(){
+        // Given
+        getChatUseCase.response = getChatUseCase.deleteImageResponse
+        launchChatRoomActivity()
+
+        // When
+        websocket.simulateResponse(websocket.deleteImageResponse)
+
+        // Then
+        MsgBubbleResult.assertMsgIsDeletedAt(0)
+    }
+
     // TODO: Should prevent long click when msg bubble is deleted
     // TODO: Should show success toaster when success delete message
     // TODO: Should show failed toaster when error delete message
