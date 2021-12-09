@@ -118,7 +118,7 @@ class PlayEtalasePickerViewModel @Inject constructor(
         viewModelScope.launch {
             val result = setupDataStore.uploadSelectedProducts(channelId).map { Event(Unit) }
             _observableUploadProductEvent.value =
-                    if (result is NetworkResult.Fail) NetworkResult.Fail(EventException(result.error))
+                    if (result is NetworkResult.Fail) NetworkResult.Fail(error = result.error)
                     else result
         }
     }
