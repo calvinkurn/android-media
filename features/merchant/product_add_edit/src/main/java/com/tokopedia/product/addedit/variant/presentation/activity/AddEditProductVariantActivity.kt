@@ -21,9 +21,9 @@ class AddEditProductVariantActivity: BaseSimpleActivity(), HasComponent<AddEditP
                         .putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
     }
 
-    override fun getLayoutRes() = com.tokopedia.product.addedit.R.layout.activity_add_edit_product_variant
+    override fun getLayoutRes() = R.layout.activity_add_edit_product_variant
 
-    override fun getParentViewResourceID(): Int = com.tokopedia.product.addedit.R.id.parent_view
+    override fun getParentViewResourceID(): Int = R.id.parent_view
 
     override fun getNewFragment(): Fragment {
         val cacheManagerId = intent?.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID).orEmpty()

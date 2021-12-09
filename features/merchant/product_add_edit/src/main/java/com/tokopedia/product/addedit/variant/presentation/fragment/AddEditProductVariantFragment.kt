@@ -81,12 +81,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
-import kotlinx.android.synthetic.main.add_edit_product_variant_photo_layout.view.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_sizechart_layout.view.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_type_layout.view.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_value_level1_layout.view.*
-import kotlinx.android.synthetic.main.add_edit_product_variant_value_level2_layout.view.*
-import kotlinx.android.synthetic.main.fragment_add_edit_product_variant.view.*
 import javax.inject.Inject
 
 class AddEditProductVariantFragment :
@@ -147,15 +141,15 @@ class AddEditProductVariantFragment :
     private val recyclerViewVariantValueLevel2 by lazy { binding.variantValueLevel2Layout.recyclerViewVariantValueLevel2 }
     private val variantPhotoLayout by lazy { binding.variantPhotoLayout.root }
     private val recyclerViewVariantPhoto by lazy { binding.variantPhotoLayout.recyclerViewVariantPhoto }
-    private val titleLayoutVariantType by lazy { binding.scrollViewContent.titleLayoutVariantType }
-    private val buttonAddVariantType by lazy { binding.scrollViewContent.buttonAddVariantType }
-    private val recyclerViewVariantType by lazy { binding.scrollViewContent.recyclerViewVariantType }
-    private val layoutSizechart by lazy { binding.scrollViewContent.layoutSizechart }
-    private val cardSizechart by lazy { binding.scrollViewContent.cardSizechart }
-    private val ivSizechartAddSign by lazy { binding.scrollViewContent.ivSizechartAddSign }
-    private val ivSizechartEditSign by lazy { binding.scrollViewContent.ivSizechartEditSign }
-    private val ivSizechart by lazy { binding.scrollViewContent.ivSizechart }
-    private val typographySizechartDescription by lazy { binding.scrollViewContent.typographySizechartDescription }
+    private val titleLayoutVariantType by lazy { binding.layoutVariantType.titleLayoutVariantType }
+    private val buttonAddVariantType by lazy { binding.layoutVariantType.buttonAddVariantType }
+    private val recyclerViewVariantType by lazy { binding.layoutVariantType.recyclerViewVariantType }
+    private val layoutSizechart by lazy { binding.layoutSizechart }
+    private val cardSizechart by lazy { layoutSizechart.cardSizechart }
+    private val ivSizechartAddSign by lazy { layoutSizechart.ivSizechartAddSign }
+    private val ivSizechartEditSign by lazy { layoutSizechart.ivSizechartEditSign }
+    private val ivSizechart by lazy { layoutSizechart.ivSizechart }
+    private val typographySizechartDescription by lazy { layoutSizechart.typographySizechartDescription }
     private val buttonSave by lazy { binding.buttonSave }
 
     // start PLT monitoring
@@ -939,7 +933,7 @@ class AddEditProductVariantFragment :
 
     private fun observeSizechartVisibility() {
         viewModel.isVariantSizechartVisible.observe(viewLifecycleOwner, Observer {
-            layoutSizechart.visibility = if (it) View.VISIBLE else View.GONE
+            layoutSizechart.root.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 
@@ -1296,7 +1290,7 @@ class AddEditProductVariantFragment :
         variantValueLevel1Layout.hide()
         variantValueLevel2Layout.hide()
         removeSizechart()
-        layoutSizechart.hide()
+        layoutSizechart.root.hide()
         buttonAddVariantType.isEnabled = true
         titleLayoutVariantType.isActionButtonVisible = false
     }

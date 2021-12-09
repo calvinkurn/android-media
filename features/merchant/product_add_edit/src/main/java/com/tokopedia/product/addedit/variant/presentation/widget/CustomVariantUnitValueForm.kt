@@ -11,7 +11,6 @@ import com.tokopedia.product.addedit.variant.data.model.Unit
 import com.tokopedia.product.addedit.variant.data.model.UnitValue
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.add_edit_product_variant_custom_input_layout.view.*
 
 class CustomVariantUnitValueForm : LinearLayout {
 

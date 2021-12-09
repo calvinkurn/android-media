@@ -19,6 +19,7 @@
             android:orientation="vertical">
 
             <include
+                android:id="@+id/layoutVariantType"
                 layout="@layout/add_edit_product_variant_type_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -50,7 +51,9 @@
                 layout="@layout/add_edit_product_variant_photo_layout"
                 android:visibility="gone" />
 
-            <include layout="@layout/add_edit_product_variant_sizechart_layout" />
+            <include
+                android:id="@+id/layoutSizechart"
+                layout="@layout/add_edit_product_variant_sizechart_layout" />
 
         </LinearLayout>
 
