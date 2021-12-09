@@ -49,7 +49,7 @@ class RecentSearchAdapter(val listener: RecentSearchListener) : RecyclerView.Ada
             textView.setItemName(data.property.value)
             textView.setOnDeleteListener(object : HotelDeletableItemView.OnDeleteListener {
                 override fun onDelete() {
-                    if(position < itemCount) {
+                    if(position in 0 until itemCount) {
                         recentSearchList.removeAt(position)
                         notifyItemRemoved(position)
                         notifyItemRangeChanged(position, itemCount)
