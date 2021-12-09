@@ -335,7 +335,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputModel.price = priceInput
         if (priceInput.isEmpty()) {
             inputModel.isPriceError = true
-            inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage() ?: ""
+            inputModel.priceFieldErrorMessage = provider.getEmptyProductPriceErrorMessage()
             updateInputPriceErrorStatusMap(adapterPosition, true)
 
             return inputModel
@@ -343,7 +343,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         val productPrice: BigInteger = priceInput.toBigIntegerOrNull().orZero()
         if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
             inputModel.isPriceError = true
-            inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage() ?: ""
+            inputModel.priceFieldErrorMessage = provider.getMinLimitProductPriceErrorMessage()
             updateInputPriceErrorStatusMap(adapterPosition, true)
             return inputModel
         }
@@ -365,14 +365,14 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         inputModel.stock = stockInput
         if (stockInput.isEmpty()) {
             inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage() ?: ""
+            inputModel.stockFieldErrorMessage = provider.getEmptyProductStockErrorMessage()
             updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
         val productStock: BigInteger = stockInput.toBigIntegerOrNull().orZero()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             inputModel.isStockError = true
-            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT) ?: ""
+            inputModel.stockFieldErrorMessage = provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
             updateInputStockErrorStatusMap(adapterPosition, true)
             return inputModel
         }
@@ -391,7 +391,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateVariantPriceInput(priceInput: BigInteger): String {
         return when {
             priceInput < MIN_PRODUCT_PRICE_LIMIT.toBigInteger() -> {
-                provider.getMinLimitProductPriceErrorMessage().orEmpty()
+                provider.getMinLimitProductPriceErrorMessage()
             }
             else -> ""
         }
@@ -400,7 +400,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
     fun validateProductVariantStockInput(stockInput: BigInteger): String {
         return when {
             stockInput < MIN_PRODUCT_STOCK_LIMIT.toBigInteger() -> {
-                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT).orEmpty()
+                provider.getMinLimitProductStockErrorMessage(MIN_PRODUCT_STOCK_LIMIT)
             }
             else -> ""
         }
