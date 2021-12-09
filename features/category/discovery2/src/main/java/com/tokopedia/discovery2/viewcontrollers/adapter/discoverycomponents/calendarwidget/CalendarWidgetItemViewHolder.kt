@@ -17,6 +17,7 @@ import com.tokopedia.discovery2.Constant.Calendar
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.analytics.CALENDAR_WIDGET_CLICK
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.Properties
 import com.tokopedia.discovery2.di.getSubComponent
@@ -314,7 +315,7 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     }
     private fun setOnClick(subscribed: Boolean) {
         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
-            .trackEventClickCalendarWidget(
+            .trackEventClickCalendarCTA(
                 calendarWidgetItemViewModel.components,
                 calendarWidgetItemViewModel.getUserId()
             )
