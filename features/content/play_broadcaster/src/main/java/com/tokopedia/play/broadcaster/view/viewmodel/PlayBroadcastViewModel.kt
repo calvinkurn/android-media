@@ -476,7 +476,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 } else {
                     sendLivePusherState(
                         PlayLiveViewState.Error(
-                            PlayLivePusherException("connection failure: Failed to get channel details")
+                            PlayLivePusherException("network: Failed to get channel details")
                         )
                     )
                     reconnectJob()
