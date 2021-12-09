@@ -231,7 +231,7 @@ class WishlistV2ViewModelTest {
         } returns wishlistRecommendation
 
         coEvery {
-            wishlistV2ViewModel.getTopAdsData(any())
+            wishlistV2ViewModel.getTopAdsData()
         } returns topAdsImageViewModel
 
         coEvery {
@@ -456,8 +456,6 @@ class WishlistV2ViewModelTest {
     // mapToProductCardList
     @Test
     fun mapToProductCardList_returnWithAppropriateButton() {
-        every { wishlistV2ViewModel.mapToProductCardList(wishlistThreeItemList, any()) } returns listWishlistV2TypeLayoutData
-
         wishlistV2ViewModel.mapToProductCardList(wishlistThreeItemList, "")
 
         val data1HasAddToCartButton = (listWishlistV2TypeLayoutData[0].dataObject as ProductCardModel).hasAddToCartButton
@@ -479,8 +477,7 @@ class WishlistV2ViewModelTest {
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
         every { wishlistV2ViewModel.mapToProductCardList(wishlistThreeItemList, any()) } returns listWishlistV2TypeLayoutData
-        coEvery { wishlistV2ViewModel.getTopAdsData(any()) } returns topAdsImageViewModel
-        coEvery { wishlistV2ViewModel.mapToTopads(0, listWishlistV2TypeLayoutData) } returns listTopadsLayout
+        coEvery { wishlistV2ViewModel.getTopAdsData() } returns topAdsImageViewModel
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
@@ -496,8 +493,7 @@ class WishlistV2ViewModelTest {
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
         every { wishlistV2ViewModel.mapToProductCardList(wishlistEmptyItem, any()) } returns emptyListWishlistV2TypeLayoutData
-        coEvery { wishlistV2ViewModel.getTopAdsData(any()) } returns topAdsImageViewModel
-        coEvery { wishlistV2ViewModel.mapToTopads(0, emptyListWishlistV2TypeLayoutData) } returns listTopadsLayout
+        coEvery { wishlistV2ViewModel.getTopAdsData() } returns topAdsImageViewModel
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
@@ -515,7 +511,6 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
         every { wishlistV2ViewModel.mapToProductCardList(wishlistEmptyItem, any()) } returns emptyListWishlistV2TypeLayoutData
         coEvery { wishlistV2ViewModel.getRecommendationWishlistV2(any(), any(), any()) } returns wishlistRecommendation
-        coEvery { wishlistV2ViewModel.mapToRecommendation(0, emptyListWishlistV2TypeLayoutData) } returns listRecommendationLayout
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
@@ -535,7 +530,6 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns listItemWishlist
         every { wishlistV2ViewModel.mapToProductCardList(wishlistOneItemList, any()) } returns listWishlistV2OneItemLayoutData
         coEvery { wishlistV2ViewModel.getRecommendationWishlistV2(any(), any(), any()) } returns wishlistRecommendation
-        coEvery { wishlistV2ViewModel.mapToRecommendation(1, listWishlistV2OneItemLayoutData) } returns listRecommendationLayout
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
@@ -549,9 +543,9 @@ class WishlistV2ViewModelTest {
         val emptyList = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(query = "test", items = emptyWishlistItem))
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
-        coEvery { wishlistV2ViewModel.mapToEmptyState(any(), any(), any()) } returns emptyWishlistNotFoundV2TypeLayoutData
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+
         Assert.assertTrue(emptyWishlistNotFoundV2TypeLayoutData[0].typeLayout.equals(TYPE_EMPTY_NOT_FOUND))
     }
 
@@ -561,9 +555,9 @@ class WishlistV2ViewModelTest {
         val emptyList = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(query = "", items = emptyWishlistItem, sortFilters = sortFilterList))
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
-        coEvery { wishlistV2ViewModel.mapToEmptyState(any(), any(), any()) } returns emptyWishlistEmptyStateV2TypeLayoutData
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+
         Assert.assertTrue(emptyWishlistEmptyStateV2TypeLayoutData[0].typeLayout.equals(TYPE_EMPTY_STATE))
     }
 
@@ -573,9 +567,9 @@ class WishlistV2ViewModelTest {
         val emptyList = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(query = "test", items = emptyWishlistItem, sortFilters = sortFilterList))
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
-        coEvery { wishlistV2ViewModel.mapToEmptyState(any(), any(), any()) } returns emptyWishlistCarouselV2TypeLayoutData
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+
         Assert.assertTrue(emptyWishlistCarouselV2TypeLayoutData[0].typeLayout.equals(TYPE_EMPTY_STATE_CAROUSEL))
     }
 
@@ -584,7 +578,6 @@ class WishlistV2ViewModelTest {
         val emptyList = WishlistV2Response.Data(WishlistV2Response.Data.WishlistV2(query = "test", items = emptyWishlistItem))
 
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns emptyList
-        coEvery { wishlistV2ViewModel.mapToEmptyState(any(), any(), any()) } returns emptyWishlistRecommendationTypeLayoutData
 
         wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
@@ -612,6 +605,8 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2ViewModel.mapToProductCardList(wishlistTwoItemList, TYPE_LIST) } returns listWishlistV2TwoItemLayoutData
         coEvery { wishlistV2ViewModel.mapToRecommendation(any(), any()) } returns listWishlistV2WithRecommendationTypeLayoutData
 
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+
         Assert.assertTrue(listWishlistV2WithRecommendationTypeLayoutData[0].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2WithRecommendationTypeLayoutData[1].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2WithRecommendationTypeLayoutData[2].typeLayout.equals(TYPE_RECOMMENDATION_TITLE))
@@ -625,6 +620,8 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns wishlistV2ResponseData
         coEvery { wishlistV2ViewModel.mapToProductCardList(wishlistFourItemList, TYPE_LIST) } returns listWishlistV2FourItemsOnly
         coEvery { wishlistV2ViewModel.mapToRecommendation(any(), any()) } returns listWishlistV2FourItemsTypeLayoutData
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
         Assert.assertTrue(listWishlistV2FourItemsTypeLayoutData[0].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FourItemsTypeLayoutData[1].typeLayout.equals(TYPE_LIST))
@@ -642,6 +639,8 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns wishlistV2ResponseData
         coEvery { wishlistV2ViewModel.mapToProductCardList(wishlistFiveItemList, TYPE_LIST) } returns listWishlistV2FiveItemsOnly
         coEvery { wishlistV2ViewModel.mapToRecommendation(any(), any()) } returns listWishlistV2FiveItemsTypeLayoutData
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
         Assert.assertTrue(listWishlistV2FiveItemsTypeLayoutData[0].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FiveItemsTypeLayoutData[1].typeLayout.equals(TYPE_LIST))
@@ -661,6 +660,8 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2ViewModel.mapToProductCardList(wishlistFiveItemList, TYPE_LIST) } returns listWishlistV2FiveItemsOnly
         coEvery { wishlistV2ViewModel.mapToRecommendation(any(), any()) } returns listWishlistV2FiveItemsHasNextPageTypeLayoutData
 
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageTypeLayoutData[0].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageTypeLayoutData[1].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageTypeLayoutData[2].typeLayout.equals(TYPE_LIST))
@@ -677,6 +678,8 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2ViewModel.mapToProductCardList(wishlistFiveItemList, TYPE_LIST) } returns listWishlistV2FiveItemsOnly
         coEvery { wishlistV2ViewModel.mapToRecommendation(any(), any()) } returns listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData
 
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
+
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[0].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[1].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageSecondPageTypeLayoutData[2].typeLayout.equals(TYPE_LIST))
@@ -692,6 +695,8 @@ class WishlistV2ViewModelTest {
         coEvery { wishlistV2UseCase.executeSuspend(any()) } returns wishlistV2ResponseData
         coEvery { wishlistV2ViewModel.mapToProductCardList(wishlistFiveItemList, TYPE_LIST) } returns listWishlistV2FiveItemsOnly
         coEvery { wishlistV2ViewModel.mapToRecommendation(any(), any()) } returns listWishlistV2FiveItemsHasNextPageThirdPageTypeLayoutData
+
+        wishlistV2ViewModel.loadWishlistV2(WishlistV2Params(), "")
 
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageThirdPageTypeLayoutData[0].typeLayout.equals(TYPE_LIST))
         Assert.assertTrue(listWishlistV2FiveItemsHasNextPageThirdPageTypeLayoutData[1].typeLayout.equals(TYPE_LIST))

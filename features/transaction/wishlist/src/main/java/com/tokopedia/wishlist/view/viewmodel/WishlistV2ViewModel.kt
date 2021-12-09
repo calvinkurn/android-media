@@ -215,7 +215,7 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     suspend fun mapToTopads(index: Int, listData: ArrayList<WishlistV2TypeLayoutData>): ArrayList<WishlistV2TypeLayoutData> {
-        val topadsData = getTopAdsData("")
+        val topadsData = getTopAdsData()
         if (topadsData != null) {
             if (index > 0) {
                 listData.add(index, WishlistV2TypeLayoutData(topadsData, TYPE_TOPADS))
@@ -310,9 +310,9 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
         }
     }
 
-    suspend fun getTopAdsData(pageToken: String = ""): TopAdsImageViewModel?  {
+    suspend fun getTopAdsData(): TopAdsImageViewModel?  {
         return topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap("",
-                WISHLIST_TOPADS_SOURCE, pageToken, WISHLIST_TOPADS_ADS_COUNT, WISHLIST_TOPADS_DIMENS, "")).firstOrNull()
+                WISHLIST_TOPADS_SOURCE, "", WISHLIST_TOPADS_ADS_COUNT, WISHLIST_TOPADS_DIMENS, "")).firstOrNull()
     }
 
     companion object {
