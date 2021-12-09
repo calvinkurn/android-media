@@ -7,11 +7,13 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents.intending
 import androidx.test.espresso.intent.matcher.IntentMatchers.isInternal
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
@@ -20,6 +22,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
 import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.home.util.ViewVisibilityIdlingResource
 import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.MixLeftDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
@@ -28,6 +31,8 @@ import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.hamcrest.MatcherAssert
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -52,7 +57,7 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
+    private var visibilityIdlingResource: ViewVisibilityIdlingResource? = null
     @Before
     fun resetAll() {
         disableCoachMark(context)
@@ -62,6 +67,13 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
                 null
             )
         )
+    }
+
+    @After
+    fun tearDown() {
+        visibilityIdlingResource?.let {
+            IdlingRegistry.getInstance().unregister(visibilityIdlingResource)
+        }
     }
 
     @Test
@@ -208,15 +220,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
 
     @Test
     fun testTicker() {
-        HomeDCCassavaTest {
-            initTest()
-            doActivityTestByModelClass(dataModelClass = TickerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
-                clickOnTickerSection(viewHolder)
-            }
-        } validateAnalytics {
-            addDebugEnd()
-            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER)
+        visibilityIdlingResource = ViewVisibilityIdlingResource(
+                activity = activityRule.activity,
+                viewId = R.id.ticker_description,
+                expectedVisibility = View.VISIBLE
+        )
+        IdlingRegistry.getInstance().register(visibilityIdlingResource)
+
+        initTest()
+        doActivityTestByModelClass(dataModelClass = TickerDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+            clickOnTickerSection(viewHolder)
         }
+
+        MatcherAssert.assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_QUERY_FILE_NAME_TICKER), hasAllSuccess())
     }
 
     @Test
