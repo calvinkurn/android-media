@@ -73,7 +73,7 @@ class OfficialStoreTracking(context: Context) {
     private val OS_MICROSITE = "os microsite - "
     private val OS_MICROSITE_SINGLE = "os microsite"
 
-    private val ALL_BRANDS = "all brands -"
+    private val ALL_BRANDS = "all brands"
     private val VIEW_ALL = "view all"
 
     private val FIELD_PRODUCTS = "products"
@@ -335,7 +335,7 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickAllFeaturedBrandOS(categoryName: String) {
-        val eventAction = "$ALL_BRANDS $CLICK"
+        val eventAction = EVENT_POPULAR_BRANDS.format(ALL_BRANDS, CLICK)
         val eventLabelFirstFormat = "$CLICK $VIEW_ALL"
         val trackerClickAllFeaturedBrand = TrackAppUtils
             .gtmData(
