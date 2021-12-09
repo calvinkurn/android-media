@@ -394,6 +394,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                     isShopOnScheduledHoliday = false
                     renderHolidaySection(isHolidayBySchedule = false)
                 }
+                autoChatTicker?.showWithCondition(isShopClosed || isShopOnScheduledHoliday)
 
                 // update UI for operational hours list section
                 val opsHourList = opsHourListUiModel.operationalHourList
