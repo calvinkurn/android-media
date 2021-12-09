@@ -34,7 +34,7 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun bindData(data: LogisticPromoUiModel, listener: ShippingDurationAdapterListener?) {
-        val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingChosenCourierTitle).spannedString
+        val formattedTitle = HtmlLinkHelper(itemView.context, data.freeShippingItemTitle).spannedString
         if (data.isBebasOngkirExtra) {
             tvTitleExtra.text = formattedTitle
             tvTitleExtra.visibility = View.VISIBLE
