@@ -85,6 +85,10 @@ class TopChatViewModel @Inject constructor(
     val occProduct: LiveData<Result<ProductAttachmentUiModel>>
         get() = _occProduct
 
+    private val _deleteBubble = MutableLiveData<Result<String>>()
+    val deleteBubble: LiveData<Result<String>>
+        get() = _deleteBubble
+
     fun getMessageId(
         toUserId: String,
         toShopId: String,
@@ -273,8 +277,11 @@ class TopChatViewModel @Inject constructor(
                 replyTimes = listOf(replyTimeNano)
             )
             val response = unsendReplyUseCase(existingMessageIdParam)
+            if (response.unsendReply.isSuccess) {
+                _deleteBubble.value = Success(replyTimeNano)
+            }
         }, onError = {
-
+            _deleteBubble.value = Fail(it)
         })
     }
 }

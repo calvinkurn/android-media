@@ -2103,9 +2103,29 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         showToasterError(errorMessage)
     }
 
+    private fun showToasterMsg(@StringRes messageRes: Int) {
+        view?.let {
+            val msg = it.context.getString(messageRes)
+            showToasterMsg(msg)
+        }
+    }
+
     private fun showToasterMsg(message: String) {
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    private fun showToasterError(@StringRes messageRes: Int) {
+        view?.let {
+            val msg = it.context.getString(messageRes)
+            showToasterError(msg)
+        }
+    }
+
+    private fun showToasterError(message: String) {
+        view?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -2113,12 +2133,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "Oke")
                 .show()
-        }
-    }
-
-    private fun showToasterError(message: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -2490,21 +2504,32 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         })
 
         viewModel.srwTickerReminder.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetTickerReminder(it.data)
             }
         })
 
         viewModel.occProduct.observe(viewLifecycleOwner, {
-            when(it) {
+            when (it) {
                 is Success -> {
                     topchatViewState?.chatRoomViewModel?.let { chatData ->
                         TopChatAnalyticsKt.eventClickOCCButton(
-                            it.data, chatData, getUserSession().userId)
+                            it.data, chatData, getUserSession().userId
+                        )
                     }
                     goToOCC()
                 }
                 is Fail -> onError(it.throwable)
+            }
+        })
+
+        viewModel.deleteBubble.observe(viewLifecycleOwner, {
+            when (it) {
+                is Success -> {
+                    adapter.deleteMsg(it.data)
+                    showToasterMsg(R.string.topchat_success_delete_msg_bubble)
+                }
+                is Fail -> showToasterError(R.string.topchat_error_delete_msg_bubble)
             }
         })
     }
@@ -2582,7 +2607,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private fun deleteBubble(msg: BaseChatUiModel) {
         val replyTimeNano = msg.replyTime ?: return
         viewModel.deleteMsg(presenter.roomMetaData.msgId, replyTimeNano)
-        adapter.deleteMsg(replyTimeNano)
     }
 
     override fun onReceiveWsEventDeleteMsg(replyTimeNano: String) {
