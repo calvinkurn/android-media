@@ -55,6 +55,11 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
                     val chatDateTime = chatItemPojoByDate.replies[replyIndex]
                     val nextItem = chatItemPojoByDate.replies.getOrNull(replyIndex + 1)
                     when {
+                        chatDateTime.status == BaseChatUiModel.STATUS_DELETED -> {
+                            val textMessage = convertToMessageViewModel(chatDateTime)
+                            listChat.add(textMessage)
+                            replyIndex++
+                        }
                         // Merge broadcast bubble
                         chatDateTime.isBroadCast() &&
                                 chatDateTime.isAlsoTheSameBroadcast(nextItem) -> {

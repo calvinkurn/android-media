@@ -41,7 +41,16 @@ class UnsendImageTest: TopchatRoomTest() {
         LongClickBubbleMenuResult.assertNoBottomSheet()
     }
 
-    // TODO: Should render deleted type bubble when status equal to 5 (deleted) from GQL
+    @Test
+    fun should_render_deleted_type_bubble_when_status_equal_to_5_deleted_from_GQL(){
+        // Given
+        getChatUseCase.response = getChatUseCase.deleteImageResponseWithStatus5
+        launchChatRoomActivity()
+
+        // Then
+        MsgBubbleResult.assertMsgIsDeletedAt(0)
+    }
+
     // TODO: Should replace bubble to deleted type bubble when receive 104 event ws
     // TODO: Should prevent long click when msg bubble is deleted
     // TODO: Should show success toaster when success delete message
