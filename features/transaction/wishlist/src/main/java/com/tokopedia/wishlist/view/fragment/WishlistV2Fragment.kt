@@ -279,19 +279,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         context?.let {
             activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
+        setSwipeRefreshLayout()
         binding?.run {
-            swipeRefreshLayout.setOnRefreshListener {
-                doRefresh()
-                isBulkDeleteShow = false
-                listBulkDelete.clear()
-                wishlistV2Adapter.hideCheckbox()
-                wishlistV2Adapter.isRefreshing = true
-                binding?.run {
-                    containerDelete.gone()
-                    clWishlistHeader.visible()
-                    wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-                }
-            }
             activityWishlistV2 = arguments?.getString(PARAM_ACTIVITY_WISHLIST_V2, "") as String
 
             viewLifecycleOwner.lifecycle.addObserver(wishlistNavtoolbar)
@@ -332,6 +321,29 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             setActionListener(this@WishlistV2Fragment)
         }
         addEndlessScrollListener()
+    }
+
+    private fun setSwipeRefreshLayout() {
+        binding?.run {
+            swipeRefreshLayout.isEnabled = true
+            swipeRefreshLayout.setOnRefreshListener {
+                doRefresh()
+                isBulkDeleteShow = false
+                listBulkDelete.clear()
+                wishlistV2Adapter.hideCheckbox()
+                binding?.run {
+                    containerDelete.gone()
+                    clWishlistHeader.visible()
+                    wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
+                }
+            }
+        }
+    }
+
+    private fun disableSwipeRefreshLayout() {
+        binding?.run {
+            swipeRefreshLayout.isEnabled = false
+        }
     }
 
     private fun addEndlessScrollListener() {
@@ -447,6 +459,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
+                            listBulkDelete.clear()
                             doRefresh()
 
                         } else {
@@ -995,6 +1008,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         if (!isBulkDeleteShow) {
             isBulkDeleteShow = true
             binding?.run {
+
                 wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_cancel_manage_label)
             }
             onManageClicked(showCheckbox = true)
@@ -1011,6 +1025,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
 
     override fun onManageClicked(showCheckbox: Boolean) {
         if (showCheckbox) {
+            disableSwipeRefreshLayout()
             listBulkDelete.clear()
             wishlistV2Adapter.showCheckbox()
             binding?.run {
@@ -1021,6 +1036,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
 
         } else {
+            setSwipeRefreshLayout()
             wishlistV2Adapter.hideCheckbox()
             binding?.run {
                 containerDelete.gone()
@@ -1062,7 +1078,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     private fun doRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = true
-            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
         }
         onLoadMore = false
         isFetchRecommendation = false
@@ -1070,7 +1085,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         currRecommendationListPage = 1
         loadWishlistV2()
         showSortFilter()
-        wishlistV2Adapter.hideCheckbox()
     }
 
     private fun showSortFilter() {
