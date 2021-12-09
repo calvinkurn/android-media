@@ -24,13 +24,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/autocompleteActionUpButtonBarrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="right"
-            app:constraint_referenced_ids="autocompleteActionUpButton" />
-
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/searchTextView"
             android:layout_width="0dp"
@@ -54,8 +47,8 @@
             android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/autocompleteActionUpButtonBarrier"
-            app:layout_constraintRight_toLeftOf="@id/autocompleteSearchTextViewRightBarrier" />
+            app:layout_constraintLeft_toRightOf="@+id/autocompleteActionUpButton"
+            app:layout_constraintRight_toLeftOf="@+id/actionCancelButton" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/autocompleteSearchIcon"
@@ -84,13 +77,6 @@
             app:layout_constraintTop_toTopOf="@id/searchTextView"
             app:layout_constraintBottom_toBottomOf="@id/searchTextView"
             app:layout_constraintRight_toRightOf="@id/searchTextView"/>
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/autocompleteSearchTextViewRightBarrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="left"
-            app:constraint_referenced_ids="actionCancelButton" />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/autocompleteVoiceButton"

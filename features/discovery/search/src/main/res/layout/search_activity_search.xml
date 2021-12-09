@@ -22,13 +22,6 @@
         app:toolbarContentType="typeSearchbar"
         app:toolbarInitialTheme="light" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/searchBottomToolbarBarrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="searchNavigationToolbar" />
-
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/progressBar"
         android:layout_width="@dimen/dp_50"
@@ -48,7 +41,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         tools:ignore="MotionLayoutInvalidSceneFileReference"
-        app:layout_constraintTop_toBottomOf="@id/searchBottomToolbarBarrier"
+        app:layout_constraintTop_toBottomOf="@+id/searchNavigationToolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
