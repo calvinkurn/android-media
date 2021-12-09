@@ -73,7 +73,9 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     override fun initInjector() = getComponent(ShopCreationComponent::class.java).inject(this)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_name_shop_creation, container, false)
+        val view = inflater.inflate(R.layout.fragment_name_shop_creation, container, false)
+        toolbarShopCreation = view.findViewById(R.id.toolbar_shop_creation)
+        return view
     }
 
     override fun onStart() {
@@ -123,7 +125,6 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun setViewBinding() {
         binding?.let {
-            toolbarShopCreation = it.toolbarShopCreation
             container = it.container
             buttonContinue = it.btnContinue
             textFieldName = it.textFieldName
