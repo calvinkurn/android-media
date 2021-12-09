@@ -569,7 +569,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
                         val endDate = Date(shopBasicData.closeUntil.toLongOrZero() * 1000L)
                         tvShopStatus?.text = getString(
                                 R.string.shop_settings_info_holiday_text,
-                                OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate)
+                                OperationalHoursUtil.toIndonesianDateRangeFormat(startDate, endDate, isShortDateFormat = true)
                         )
                     } else {
                         shopSettingsInfoViewModel.getOperationalHoursList(shopId)

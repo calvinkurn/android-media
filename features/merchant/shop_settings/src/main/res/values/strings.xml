@@ -4,7 +4,7 @@
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
     <string name="shop_settings_info">Informasi Toko</string>
-    <string name="shop_settings_info_operational_hours">Jam operasional %1$s</string>
+    <string name="shop_settings_info_operational_hours">Jam Operasional %1$s</string>
     <string name="shop_settings_info_holiday_text">Libur (%1$s)</string>
     <string name="shop_settings_operational_hours">Jadwal Operasional Toko</string>
     <string name="shop_settings_set_operational_hours">Jam operasional toko</string>

@@ -40,8 +40,8 @@ object OperationalHoursUtil {
     const val HOLIDAY = "Libur rutin"
     const val CAN_ATC_TEXT = "Produkmu bisa dibeli"
     const val CANNOT_ATC_TEXT = "Produkmu tidak bisa dibeli"
-    var HOLIDAY_CAN_ATC = "$HOLIDAY (${CAN_ATC_TEXT.lowercase()})"
-    var HOLIDAY_CANNOT_ATC = "$HOLIDAY (${CANNOT_ATC_TEXT.lowercase()})"
+    var HOLIDAY_CAN_ATC = "$HOLIDAY ($CAN_ATC_TEXT)"
+    var HOLIDAY_CANNOT_ATC = "$HOLIDAY ($CANNOT_ATC_TEXT)"
     private const val DEFAULT_TIMEZONE = "WIB"
     private const val HOUR = "Jam"
 
@@ -159,23 +159,54 @@ object OperationalHoursUtil {
         return shortDateFormatter.format(date)
     }
 
-    fun toIndonesianDateRangeFormat(startDate: Date, endDate: Date): String {
+    fun toIndonesianDateRangeFormat(startDate: Date, endDate: Date, isShortDateFormat: Boolean = false): String {
         val formattedStartDate = toIndonesianDateFormat(startDate)
         val formattedEndDate = toIndonesianDateFormat(endDate)
         val formattedStartDateParts = formattedStartDate.split(" ")
         val formattedEndDateParts = formattedEndDate.split(" ")
-        return if (formattedStartDate == formattedEndDate) {
+        val isSameYear = formattedStartDateParts[YEAR_INDEX] == formattedStartDateParts[YEAR_INDEX]
+        val isSameMonth = formattedStartDateParts[MONTH_INDEX] == formattedStartDateParts[MONTH_INDEX]
+        var formattedDates = if (formattedStartDate == formattedEndDate) {
+            // given start date && end date are same
+            // 15 Oktober 21
             formattedStartDate
-        } else if (formattedStartDateParts[MONTH_INDEX] == formattedEndDateParts[MONTH_INDEX]) {
-            // given date range are on the same month & year
+        } else if (isSameMonth && isSameYear) {
+            // given start date && end date different but same month and year
+            // 24 - 30 Oktober 2021
             "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} - $formattedEndDate"
-        } else if ((formattedStartDateParts[YEAR_INDEX] == formattedEndDateParts[YEAR_INDEX]) &&
-                formattedStartDateParts[MONTH_INDEX] != formattedEndDateParts[MONTH_INDEX]) {
-            // given date range are on the same year but different month
-            "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDateParts[MONTH_INDEX]} - $formattedEndDate"
+        } else if (!isSameMonth && isSameYear) {
+            // given start date && end date different month but same year
+            // 17 Oktober - 20 September 2021
+            "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDateParts[MONTH_INDEX]}  " +
+                    "- $formattedEndDate"
         } else {
             "$formattedStartDate - $formattedEndDate"
         }
+
+        if (isShortDateFormat) {
+            // change month Oktober -> Okt and change year 2021 -> 21
+            formattedStartDateParts[MONTH_INDEX].substring(DEFAULT_FIRST_INDEX, DEFAULT_FIRST_INDEX + 2)
+            formattedStartDateParts[YEAR_INDEX].substring(DEFAULT_FIRST_INDEX + 2)
+
+            formattedDates = if (formattedStartDate == formattedEndDate) {
+                // given start date && end date are same
+                // 15 Okt 21
+                formattedStartDate
+            } else if (isSameMonth && isSameYear) {
+                // given start date && end date different but same month and year
+                // 24 - 30 Okt
+                "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} - ${formattedEndDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDate[MONTH_INDEX]}"
+            } else if (!isSameMonth && isSameYear) {
+                // given start date && end date different month but same year
+                // 24 Feb - 30 Mar
+                "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDateParts[MONTH_INDEX]}  " +
+                        "- ${formattedEndDateParts[DEFAULT_FIRST_INDEX]} ${formattedEndDateParts[MONTH_INDEX]}"
+            } else {
+                "$formattedStartDate - $formattedEndDate"
+            }
+        }
+
+        return formattedDates
     }
 
     fun toIndonesianDateFormat(date: Date, isRequireSimpleFormat: Boolean = false): String {
