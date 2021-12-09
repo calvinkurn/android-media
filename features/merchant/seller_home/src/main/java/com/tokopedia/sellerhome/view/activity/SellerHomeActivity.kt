@@ -43,6 +43,7 @@ import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.view.FragmentChangeCallback
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
@@ -54,6 +55,7 @@ import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -111,6 +113,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private var statusBarCallback: StatusBarCallback? = null
+    private var sellerHomeFragmentChangeCallback: FragmentChangeCallback? = null
+    private var otherMenuFragmentChangeCallback: FragmentChangeCallback? = null
 
     var performanceMonitoringSellerHomeLayoutPlt: HomeLayoutLoadTimeMonitoring? = null
 
@@ -265,6 +269,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         statusBarCallback = callback
     }
 
+    fun attachSellerHomeFragmentChangeCallback(callback: FragmentChangeCallback) {
+        sellerHomeFragmentChangeCallback = callback
+    }
+
+    fun attachOtherMenuFragmentChangeCallback(callback: FragmentChangeCallback) {
+        otherMenuFragmentChangeCallback = callback
+    }
+
     private fun setContentView() {
         binding = ActivitySahSellerHomeBinding.inflate(layoutInflater).apply {
             setContentView(root)
@@ -273,7 +285,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupBackground() {
         window.decorView.setBackgroundColor(
-            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
     }
 
@@ -439,7 +451,8 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
     }
 
     private fun setCurrentFragmentType(@FragmentType pageType: Int) {
-        statusBarCallback?.setCurrentFragmentType(pageType)
+        sellerHomeFragmentChangeCallback?.setCurrentFragmentType(pageType)
+        otherMenuFragmentChangeCallback?.setCurrentFragmentType(pageType)
     }
 
     private fun observeNotificationsLiveData() {
@@ -477,6 +490,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
                         SellerHomeErrorHandler.SHOP_INFO,
                         SellerHomeErrorHandler.SHOP_INFO
                     )
+
+                    navigator?.run {
+                        if (isHomePageSelected()) {
+                            supportActionBar?.title = userSession.shopName
+                        }
+
+                        setHomeTitle(userSession.shopName)
+                    }
                 }
             }
         })
@@ -579,7 +600,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         menu.add(
             BottomMenu(
                 R.id.menu_order,
-                resources.getString(R.string.sah_sale),
+                resources.getString(R.string.sah_order),
                 R.raw.anim_bottom_nav_order,
                 R.raw.anim_bottom_nav_order_to_enabled,
                 R.drawable.ic_sah_bottom_nav_order_active,

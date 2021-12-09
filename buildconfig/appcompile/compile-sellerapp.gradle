@@ -90,7 +90,7 @@ includeIfEnabled("features:merchant:review")
 includeIfEnabled("features:merchant:seller_search")
 includeIfEnabled("features:merchant:shop_common")
 includeIfEnabled("features:merchant:shop_page")
-includeIfEnabled ':features:merchant:review_shop'
+includeIfEnabled("features:merchant:shop_widget")
 //includeIfEnabled("features:merchant:shop_page_no_op")
 includeIfEnabled("features:merchant:shop_score")
 includeIfEnabled("features:merchant:shop_showcase")
@@ -142,7 +142,6 @@ includeIfEnabled("features:ordermanagement:snapshot")
 includeIfEnabled("features:ordermanagement:orderhistory")
 
 includeIfEnabled("features:communication:push-notification-common")
-includeIfEnabled("features:im:moengage_wrapper")
 
 includeIfEnabled("features:user:attachproduct")
 includeIfEnabled("features:user:attachcommon")

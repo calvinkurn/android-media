@@ -48,7 +48,6 @@ class BannerViewHolder(
 
     //set to true if you want to activate auto-scroll
     private var isAutoScroll = true
-    private var interval = 5000
     private var currentPagePosition = 0
 
     private val state_running = 0
@@ -57,7 +56,7 @@ class BannerViewHolder(
 
     private fun autoScrollLauncher() = launch(coroutineContext) {
         while (autoScrollState == state_running) {
-            delay(interval.toLong())
+            delay(interval)
             autoScrollCoroutine()
         }
     }
@@ -225,5 +224,6 @@ class BannerViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_search_category_banner
 
         private const val imageRatio = "H,4:1"
+        private const val interval = 5000L
     }
 }

@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.custom
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
@@ -13,14 +12,13 @@ import android.widget.LinearLayout
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -197,12 +195,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun renderImageThumbnail() {
-        ImageHandler.loadImageRounded2(
-                context,
-                productThumbnail,
-                chatOrder.imageUrl,
-                8f.toPx()
-        )
+        productThumbnail?.loadImageRounded(chatOrder.imageUrl, 8f.toPx())
     }
 
     private fun renderProductName() {
@@ -335,7 +328,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
         companion object {
             val COLOR_NOT_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_G100
-            var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_N0
+            var COLOR_SEEN = com.tokopedia.unifyprinciples.R.color.Unify_Background
 
             const val OPEN = "Tutup"
             const val CLOSE = "Lihat"

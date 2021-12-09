@@ -42,7 +42,6 @@ object LoginConstants {
     object LoginType {
         const val PHONE_TYPE = "phone"
         const val EMAIL_TYPE = "email"
-        const val FACEBOOK_LOGIN_TYPE = "fb"
     }
 
     object SourcePage {
@@ -56,7 +55,6 @@ object LoginConstants {
     }
 
     object DiscoverLoginId {
-        const val FACEBOOK = "facebook"
         const val GPLUS = "gplus"
     }
 

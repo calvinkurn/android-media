@@ -1,10 +1,5 @@
 package com.tokopedia.buyerorderdetail.domain.mapper
 
-import android.graphics.Typeface
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.StyleSpan
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerType
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
@@ -22,8 +17,17 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 orderStatusUiModel = mapOrderStatusUiModel(buyerOrderDetail.orderStatus, buyerOrderDetail.tickerInfo, buyerOrderDetail.preOrder, buyerOrderDetail.invoice, buyerOrderDetail.invoiceUrl, buyerOrderDetail.deadline, buyerOrderDetail.paymentDate, buyerOrderDetail.orderId),
                 paymentInfoUiModel = mapPaymentInfoUiModel(buyerOrderDetail.payment, buyerOrderDetail.cashbackInfo),
                 productListUiModel = mapProductListUiModel(buyerOrderDetail.products, buyerOrderDetail.haveProductBundle, buyerOrderDetail.bundleDetail, buyerOrderDetail.shop, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id),
-                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship)
+                shipmentInfoUiModel = mapShipmentInfoUiModel(buyerOrderDetail.shipment, buyerOrderDetail.meta, buyerOrderDetail.orderId, buyerOrderDetail.orderStatus.id, buyerOrderDetail.dropship, buyerOrderDetail.getDriverTippingInfo()),
+                pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(buyerOrderDetail.adsPageName, buyerOrderDetail.products)
         )
+    }
+
+    private fun mapToRecommendationWidgetUiModel(adsPageName: String, productsList: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Product>): PGRecommendationWidgetUiModel {
+        val productIdList = arrayListOf<String>()
+        productsList.forEach { product ->
+            productIdList.add(product.productId)
+        }
+        return PGRecommendationWidgetUiModel(adsPageName, productIdList)
     }
 
     private fun mapActionButtons(button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button, dotMenu: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.DotMenu>): ActionButtonsUiModel {
@@ -78,10 +82,18 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapShipmentInfoUiModel(shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment, meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta, orderId: String, orderStatusId: String, dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): ShipmentInfoUiModel {
+    private fun mapShipmentInfoUiModel(
+        shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
+        meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
+        orderId: String,
+        orderStatusId: String,
+        dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship,
+        driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
+    ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
                 awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
                 courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
+                driverTippingInfoUiModel = mapDriverTippingInfoUiModel(driverTippingInfo),
                 courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
                 dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship),
                 headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
@@ -316,11 +328,19 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
+    private fun mapDriverTippingInfoUiModel(driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?): ShipmentInfoUiModel.DriverTippingInfoUiModel {
+        return ShipmentInfoUiModel.DriverTippingInfoUiModel(
+            imageUrl = driverTippingInfo?.imageUrl.orEmpty(),
+            title = driverTippingInfo?.title.orEmpty(),
+            description = resourceProvider.composeDriverTippingInfoDescription(driverTippingInfo)
+        )
+    }
+
     private fun mapAwbInfoUiModel(shippingRefNum: String, orderStatusId: String, orderId: String): ShipmentInfoUiModel.AwbInfoUiModel {
         return ShipmentInfoUiModel.AwbInfoUiModel(
                 orderId = orderId,
                 orderStatusId = orderStatusId,
-                copyableText = SpannableString(shippingRefNum),
+                copyableText = shippingRefNum,
                 copyLabel = resourceProvider.getCopyLabelAwb(),
                 copyMessage = resourceProvider.getCopyMessageAwb(),
                 label = resourceProvider.getAwbLabel(),
@@ -328,52 +348,20 @@ class GetBuyerOrderDetailMapper @Inject constructor(
     }
 
     private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): CopyableKeyValueUiModel {
-        val receiverAddress = composeReceiverAddress(receiver.street, receiver.district, receiver.city, receiver.province, receiver.postal)
         return CopyableKeyValueUiModel(
-                copyableText = formatReceiverAddressValue(receiver, receiverAddress),
+                copyableText = formatReceiverAddressValue(receiver),
                 copyLabel = resourceProvider.getCopyLabelReceiverAddress(),
                 copyMessage = resourceProvider.getCopyMessageReceiverAddress(),
                 label = resourceProvider.getReceiverAddressLabel()
         )
     }
 
-    private fun formatReceiverAddressValue(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver, receiverAddress: String): Spannable {
-        return SpannableStringBuilder().apply {
-            if (receiver.name.isNotBlank()) append(createBoldText(receiver.name))
-            if (receiver.phone.isNotBlank()) {
-                if (isNotBlank()) appendLine()
-                append(receiver.phone)
-            }
-            if (receiverAddress.isNotBlank()) {
-                if (isNotBlank()) appendLine()
-                append(receiverAddress)
-            }
-        }
+    private fun formatReceiverAddressValue(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): String {
+        return resourceProvider.composeReceiverAddressValue(receiver)
     }
 
-    private fun formatDropshipperValue(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): Spannable {
-        return SpannableStringBuilder().apply {
-            if (dropship.name.isNotBlank()) append(createBoldText(dropship.name))
-            if (dropship.phoneNumber.isNotBlank()) {
-                if (isNotBlank()) appendLine()
-                append(dropship.phoneNumber)
-            }
-        }
-    }
-
-    private fun composeReceiverAddress(vararg chunks: String): String {
-        return StringBuilder().apply {
-            chunks.forEach {
-                if (isNotBlank()) append(", ")
-                if (it.isNotBlank()) append(it)
-            }
-        }.toString()
-    }
-
-    private fun createBoldText(text: String): Spannable {
-        return SpannableString(text).apply {
-            setSpan(StyleSpan(Typeface.BOLD), 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
+    private fun formatDropshipperValue(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): String {
+        return resourceProvider.composeDropshipperValue(dropship)
     }
 
     private fun composeETA(eta: String): String {

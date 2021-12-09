@@ -13,6 +13,7 @@ import com.tokopedia.common_tradein.model.DeviceDiagInputResponse
 import com.tokopedia.common_tradein.model.DeviceDiagnostics
 import com.tokopedia.common_tradein.model.HomeResult
 import com.tokopedia.common_tradein.usecase.ProcessMessageUseCase
+import com.tokopedia.tradein.view.viewcontrollers.activity.TRADEIN_EXCHANGE
 import com.tokopedia.tradein.viewmodel.liveState.*
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -34,6 +35,7 @@ class TradeInHomeViewModel @Inject constructor(
     var imei: String? = null
     var finalPrice: String = "-"
     var xSessionId: String = "-"
+    var districtId: Int = 0
 
     var tradeInType: Int = 0
 
@@ -57,7 +59,7 @@ class TradeInHomeViewModel @Inject constructor(
         }
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics, tradeInType), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
@@ -137,7 +139,7 @@ class TradeInHomeViewModel @Inject constructor(
             result.deviceDisplayName = devicedisplayname
         }
         progBarVisibility.value = false
-        homeResultData.value = result
+        homeResultData.postValue(result)
     }
 
     override fun onError(jsonObject: JSONObject) {
@@ -167,7 +169,7 @@ class TradeInHomeViewModel @Inject constructor(
     fun getMaxPrice(laku6TradeIn: Laku6TradeIn, tradeinType: Int) {
         progBarVisibility.value = true
         this.tradeInType = tradeinType
-        laku6TradeIn.getMinMaxPrice(this)
+        laku6TradeIn.getMinMaxPrice(districtId, this)
     }
 
     fun initSessionId(laku6TradeIn: Laku6TradeIn) {

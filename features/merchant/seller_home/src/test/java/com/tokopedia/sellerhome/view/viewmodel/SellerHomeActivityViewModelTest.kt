@@ -290,6 +290,110 @@ class SellerHomeActivityViewModelTest {
     }
 
     @Test
+    fun `if user is shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+        val isEligible = true
+        val response = AdminDataResponse(
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isLocationAdmin = false,
+                        isShopOwner = true
+                    )
+                )
+            )
+        )
+        every {
+            userSession.isShopOwner
+        } returns false
+
+        coEvery {
+            sellerAdminUseCase.executeOnBackground()
+        } returns response
+
+        mViewModel.getAdminInfo()
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == isEligible)
+    }
+
+    @Test
+    fun `if user is not shop owner and is not location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+        val isEligible = true
+        val response = AdminDataResponse(
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isLocationAdmin = false,
+                        isShopOwner = false
+                    )
+                )
+            )
+        )
+        every {
+            userSession.isShopOwner
+        } returns false
+
+        coEvery {
+            sellerAdminUseCase.executeOnBackground()
+        } returns response
+
+        mViewModel.getAdminInfo()
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == isEligible)
+    }
+
+    @Test
+    fun `if user is not shop owner and is location admin then mark as user is not eligible`() = coroutineTestRule.runBlockingTest {
+        val isEligible = false
+        val response = AdminDataResponse(
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isLocationAdmin = true,
+                        isShopOwner = false
+                    )
+                )
+            )
+        )
+        every {
+            userSession.isShopOwner
+        } returns false
+
+        coEvery {
+            sellerAdminUseCase.executeOnBackground()
+        } returns response
+
+        mViewModel.getAdminInfo()
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == isEligible)
+    }
+
+    @Test
+    fun `if user is shop owner and is location admin then mark as user is eligible`() = coroutineTestRule.runBlockingTest {
+        val isEligible = true
+        val response = AdminDataResponse(
+            data = AdminData(
+                detail = AdminDetailInformation(
+                    roleType = AdminRoleType(
+                        isLocationAdmin = true,
+                        isShopOwner = true
+                    )
+                )
+            )
+        )
+        every {
+            userSession.isShopOwner
+        } returns false
+
+        coEvery {
+            sellerAdminUseCase.executeOnBackground()
+        } returns response
+
+        mViewModel.getAdminInfo()
+
+        assert((mViewModel.isRoleEligible.value as? Success)?.data == isEligible)
+    }
+
+    @Test
     fun `if user is shop owner, we dont need to check for role permission`() = coroutineTestRule.runBlockingTest {
         coEvery {
             userSession.isShopOwner

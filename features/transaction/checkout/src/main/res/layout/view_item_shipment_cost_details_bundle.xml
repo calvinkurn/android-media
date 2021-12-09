@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="4dp"
-    android:background="@color/Unify_N0">
+    android:background="@color/Unify_Background">
 
     <View
         android:id="@+id/item_divider"
@@ -372,6 +372,13 @@
         tools:visibility="gone"
         app:typographyWeight="reguler"
         tools:text="Rp100.000" />
+
+    <LinearLayout
+        android:id="@+id/ll_cross_sell"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_emas_label"
+        android:orientation="vertical"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_order_prioritas_label"

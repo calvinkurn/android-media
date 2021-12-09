@@ -32,6 +32,8 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instrumentation.test.R;
+import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
+import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -41,6 +43,7 @@ import com.tokopedia.test.application.environment.interceptor.TopAdsDetectorInte
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -86,7 +89,7 @@ public class InstrumentationTestApp extends CoreNetworkApplication
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         TrackApp.getInstance().initializeAllApis();
         NetworkClient.init(this);
-        GraphqlClient.init(this);
+        GraphqlClient.init(this, getAuthenticator());
         RemoteConfigInstance.initAbTestPlatform(this);
 
         super.onCreate();
@@ -95,6 +98,10 @@ public class InstrumentationTestApp extends CoreNetworkApplication
                 .Companion.getManager()
                 .setBaseAndRelativeUrl("http://dummy.dummy", "dummy")
                 .initialize(this, R.raw.dummy_description);
+    }
+
+    private TkpdAuthenticatorGql getAuthenticator() {
+        return new TkpdAuthenticatorGql(this, this, new UserSession(this), new RefreshTokenGql());
     }
 
     private void initAkamaiBotManager() {

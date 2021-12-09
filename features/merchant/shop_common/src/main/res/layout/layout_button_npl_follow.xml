@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="@+id/shop_followers_title"
         app:layout_constraintStart_toStartOf="@+id/shop_followers_title"
         app:layout_constraintTop_toBottomOf="@+id/shop_followers_title"
@@ -47,12 +48,14 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/shop_followers_btn"
-        android:layout_width="@dimen/dp_80"
+        android:layout_width="95dp"
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
         android:drawablePadding="5dp"
+        android:layout_marginTop="2dp"
+        android:maxWidth="95dp"
+        android:maxHeight="40dp"
         android:text="@string/merchant_shop_common_follow_label"
-        app:layout_constraintBottom_toBottomOf="@+id/shop_followers_desc"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/shop_followers_title" />
 

@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/Unify_Background"
     android:id="@+id/scrollView"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
@@ -13,122 +14,82 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_name"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_address_label_name">
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/edit_text_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences"
+            app:text_field_placeholder="@string/shop_address_name_placeholder"
+            app:text_field_label="@string/shop_address_label_name"
+            app:text_field_label_static="true"/>
 
-            <EditText
-                android:id="@+id/edit_text_name"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/shop_address_name_placeholder"
-                android:imeOptions="actionNext"
-                android:inputType="textCapSentences"/>
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/edit_text_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="2"
+            android:gravity="top|start"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences|textMultiLine"
+            app:text_field_placeholder="@string/shop_address_placeholder"
+            app:text_field_label="@string/shop_address_label_address"
+            app:text_field_label_static="true"/>
 
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/edit_text_district"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="textCapSentences|textMultiLine"
+            app:text_field_placeholder="@string/shop_address_district_placeholder"
+            app:text_field_label="@string/shop_address_label_district"
+            app:text_field_label_static="true"
+            android:clickable="true"
+            android:focusable="true" />
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:layout_marginTop="16dp"
-            android:id="@+id/text_input_layout_address"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_address_label_address">
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/postal_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:digits="1234567890"
+            android:maxLength="5"
+            android:completionThreshold="1"
+            app:text_field_input_type="phone"
+            app:text_field_placeholder="@string/shop_address_postal_code_placeholder"
+            app:text_field_label="@string/shop_address_label_postal_code"
+            app:text_field_label_static="true" />
 
-            <EditText
-                android:id="@+id/edit_text_address"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:lines="2"
-                android:gravity="top|start"
-                android:hint="@string/shop_address_placeholder"
-                android:imeOptions="actionNext"
-                android:inputType="textCapSentences|textMultiLine"/>
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/edit_text_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            app:text_field_input_type="phone"
+            app:text_field_placeholder="@string/shop_address_phone_placeholder"
+            app:text_field_label="@string/shop_address_label_phone"
+            app:text_field_label_static="true"/>
 
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/edit_text_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            app:text_field_input_type="textEmailAddress"
+            app:text_field_placeholder="@string/shop_address_email_placeholder"
+            app:text_field_label="@string/shop_address_label_email"
+            app:text_field_label_static="true"/>
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_district"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_address_label_district"
-            android:layout_marginTop="16dp">
-
-            <EditText
-                android:id="@+id/edit_text_district"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/shop_address_district_placeholder"
-                android:imeOptions="actionNext"
-                android:inputType="textCapSentences|textMultiLine"
-                android:clickable="true"
-                android:focusable="false"/>
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_postal_code"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_address_label_postal_code"
-            android:layout_marginTop="16dp">
-
-            <AutoCompleteTextView
-                android:id="@+id/postal_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/shop_address_postal_code_placeholder"
-                android:completionThreshold="1"
-                android:digits="1234567890"
-                android:inputType="phone"
-                android:maxLength="5" />
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_phone"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_address_label_phone"
-            android:layout_marginTop="16dp">
-
-            <EditText
-                android:id="@+id/edit_text_phone"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/shop_address_phone_placeholder"
-                android:imeOptions="actionNext"
-                android:inputType="phone"/>
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_email"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_address_label_email"
-            android:layout_marginTop="16dp">
-
-            <EditText
-                android:id="@+id/edit_text_email"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/shop_address_email_placeholder"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"/>
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
-            android:id="@+id/text_input_layout_fax"
-            style="@style/HintTextInputLayout"
-            android:hint="@string/shop_address_label_fax"
-            android:layout_marginTop="16dp">
-
-            <EditText
-                android:id="@+id/edit_text_fax"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:hint="@string/shop_address_fax_placeholder"
-                android:imeOptions="actionNext"
-                android:inputType="phone"/>
-
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        <com.tokopedia.unifycomponents.TextFieldUnify
+            android:id="@+id/edit_text_fax"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            app:text_field_input_type="phone"
+            app:text_field_placeholder="@string/shop_address_fax_placeholder"
+            app:text_field_label="@string/shop_address_label_fax"
+            app:text_field_label_static="true"/>
 
     </LinearLayout>
 

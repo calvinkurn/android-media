@@ -59,4 +59,15 @@
     <color name="play_dms_multiplelike_green">#00AA5B</color>
     <color name="play_dms_multiplelike_purple">#9342ED</color>
 
+    <!--Pinned Message -->
+    <color name="play_dms_pinned_link">#00AA5B</color>
+    <color name="play_dms_pinned_icon">#FFC400</color>
+
+    <!--Partner Infio-->
+    <color name="play_dms_partner_icon_placeholder">#AD31353B</color>
+
+    <!-- Product Icon See More -->
+    <color name="play_dms_product_count_background">#FFC400</color>
+    <color name="play_dms_product_count_color">#212121</color>
+
 </resources>

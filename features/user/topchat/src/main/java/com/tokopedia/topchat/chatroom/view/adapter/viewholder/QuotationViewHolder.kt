@@ -3,9 +3,9 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 import android.view.Gravity
 import android.view.View
 import android.widget.RelativeLayout
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.getStrokeWidthSenderDimenRes
@@ -25,7 +25,7 @@ class QuotationViewHolder(
 
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
             container,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -37,7 +37,7 @@ class QuotationViewHolder(
     )
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
             container,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            com.tokopedia.unifyprinciples.R.color.Unify_Background,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
             com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
@@ -86,12 +86,7 @@ class QuotationViewHolder(
     }
 
     private fun bindProductImage(message: QuotationUiModel) {
-        ImageHandler.loadImageRounded2(
-                itemView.context,
-                itemView.ivThumbnail,
-                message.thumbnailUrl,
-                8f.toPx()
-        )
+        itemView.ivThumbnail?.loadImageRounded(message.thumbnailUrl, 8f.toPx())
     }
 
     private fun bindProductTitle(message: QuotationUiModel) {

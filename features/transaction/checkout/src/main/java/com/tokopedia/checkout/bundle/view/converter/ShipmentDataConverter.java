@@ -10,6 +10,7 @@ import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.bundle.domain.model.cartshipmentform.Shop;
+import com.tokopedia.checkout.bundle.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.bundle.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -93,6 +94,22 @@ public class ShipmentDataConverter {
             shipmentDonationModel.setDonation(cartShipmentAddressFormData.getDonation());
 
             return shipmentDonationModel;
+        } else {
+            return null;
+        }
+    }
+
+    public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        ArrayList<ShipmentCrossSellModel> listCrossSellModel = new ArrayList<>();
+        if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
+            for (int i = 0; i<cartShipmentAddressFormData.getCrossSell().size(); i++) {
+                ShipmentCrossSellModel shipmentCrossSellModel = new ShipmentCrossSellModel();
+                shipmentCrossSellModel.setChecked(cartShipmentAddressFormData.getCrossSell().get(i).isChecked());
+                shipmentCrossSellModel.setEnabled(!cartShipmentAddressFormData.getCrossSell().get(i).getCheckboxDisabled());
+                shipmentCrossSellModel.setCrossSellModel(cartShipmentAddressFormData.getCrossSell().get(i));
+                listCrossSellModel.add(shipmentCrossSellModel);
+            }
+            return listCrossSellModel;
         } else {
             return null;
         }
@@ -291,6 +308,7 @@ public class ShipmentDataConverter {
 
         cartItemModel.setCartId(product.getCartId());
         cartItemModel.setProductId(product.getProductId());
+        cartItemModel.setProductCatId(product.getProductCatId());
         cartItemModel.setName(product.getProductName());
         cartItemModel.setImageUrl(product.getProductImageSrc200Square());
         cartItemModel.setCurrency(product.getProductPriceCurrency());

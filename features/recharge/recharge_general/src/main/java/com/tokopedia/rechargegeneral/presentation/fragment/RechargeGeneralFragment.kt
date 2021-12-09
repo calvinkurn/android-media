@@ -1306,7 +1306,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         adapter.hideLoading()
     }
 
-    override fun processSeamlessFavoriteNumbers(data: TopupBillsSeamlessFavNumber) {
+    override fun processSeamlessFavoriteNumbers(
+        data: TopupBillsSeamlessFavNumber,
+        shouldRefreshInputNumber: Boolean
+    ) {
         // do nothing
     }
 

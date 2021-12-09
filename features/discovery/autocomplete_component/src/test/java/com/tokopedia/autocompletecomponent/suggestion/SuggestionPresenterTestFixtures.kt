@@ -4,7 +4,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocompletecomponent.complete
 import com.tokopedia.autocompletecomponent.initialstate.TestException
 import com.tokopedia.autocompletecomponent.jsonToObject
+import com.tokopedia.autocompletecomponent.suggestion.chips.SuggestionChipWidgetDataView
 import com.tokopedia.autocompletecomponent.suggestion.domain.model.SuggestionUniverse
+import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineDataDataView
+import com.tokopedia.autocompletecomponent.suggestion.doubleline.SuggestionDoubleLineWithoutImageDataDataView
+import com.tokopedia.autocompletecomponent.suggestion.productline.SuggestionProductLineDataDataView
+import com.tokopedia.autocompletecomponent.suggestion.singleline.SuggestionSingleLineDataDataView
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -22,6 +27,7 @@ internal open class SuggestionPresenterTestFixtures {
     protected lateinit var suggestionPresenter: SuggestionPresenter
 
     protected val slotVisitableList = slot<List<Visitable<*>>>()
+    protected val visitableList by lazy { slotVisitableList.captured }
 
     protected val testException = TestException("Error")
 
@@ -63,15 +69,30 @@ internal open class SuggestionPresenterTestFixtures {
         suggestionPresenter.getSuggestion(searchParameter)
     }
 
-    protected inline fun <reified T> findDataView(): T {
-        val visitableList = slotVisitableList.captured
+    protected fun List<Visitable<*>>.findSingleLine(
+        type: String = "",
+    ): SuggestionSingleLineDataDataView =
+        this.filterIsInstance<SuggestionSingleLineDataDataView>()
+            .find { it.data.type == type }!!
 
-        return visitableList.find { it is T } as T
-    }
+    protected fun List<Visitable<*>>.findDoubleLine(
+        type: String = "",
+    ): SuggestionDoubleLineDataDataView =
+        this.filterIsInstance<SuggestionDoubleLineDataDataView>()
+            .find { it.data.type == type }!!
 
-    protected inline fun <reified T> findDataView(type: String = ""): T {
-        val visitableList = slotVisitableList.captured
+    protected fun List<Visitable<*>>.findDoubleLineWithoutImage(
+        type: String = "",
+    ): SuggestionDoubleLineWithoutImageDataDataView =
+        this.filterIsInstance<SuggestionDoubleLineWithoutImageDataDataView>()
+            .find { it.data.type == type }!!
 
-        return visitableList.find { it is BaseSuggestionDataView && it.type == type} as T
-    }
+    protected fun List<Visitable<*>>.findProductLine(
+        type: String = "",
+    ): SuggestionProductLineDataDataView =
+        this.filterIsInstance<SuggestionProductLineDataDataView>()
+            .find { it.data.type == type }!!
+
+    protected fun List<Visitable<*>>.findChip(): SuggestionChipWidgetDataView =
+        this.filterIsInstance<SuggestionChipWidgetDataView>().first()
 }

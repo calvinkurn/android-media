@@ -6,11 +6,10 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/pdp_shipment_separator"
         android:layout_width="match_parent"
         android:layout_height="8dp"
-        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -5,11 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
+import com.tokopedia.search.databinding.SearchInspirationCarouselOptionGridBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import kotlinx.android.synthetic.main.search_inspiration_carousel_option_grid.view.*
+import com.tokopedia.utils.view.binding.viewBinding
 
 class InspirationCarouselOptionGridViewHolder(
         itemView: View,
@@ -19,17 +20,19 @@ class InspirationCarouselOptionGridViewHolder(
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_grid
     }
+    private var binding: SearchInspirationCarouselOptionGridBinding? by viewBinding()
 
     override fun bind(item: InspirationCarouselDataView.Option.Product) {
+        binding?.optionGridCardView?.let {
+            it.setProductModel(item.toProductCardModel())
+            it.applyCarousel()
 
-        itemView.optionGridCardView?.setProductModel(item.toProductCardModel())
-        itemView.optionGridCardView?.applyCarousel()
+            it.setOnClickListener {
+                inspirationCarouselListener.onInspirationCarouselGridProductClicked(item)
+            }
 
-        itemView.optionGridCardView?.setOnClickListener {
-            inspirationCarouselListener.onInspirationCarouselGridProductClicked(item)
+            it.setImageProductViewHintListener(item, createViewHintListener(item))
         }
-
-        itemView.optionGridCardView?.setImageProductViewHintListener(item, createViewHintListener(item))
     }
 
     private fun InspirationCarouselDataView.Option.Product.toProductCardModel(): ProductCardModel {
@@ -61,7 +64,7 @@ class InspirationCarouselOptionGridViewHolder(
     private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                inspirationCarouselListener.onImpressedInspirationCarouselGridProduct(product)
+                inspirationCarouselListener.onInspirationCarouselGridProductImpressed(product)
             }
         }
     }

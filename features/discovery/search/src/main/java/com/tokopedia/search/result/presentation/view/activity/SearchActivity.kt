@@ -196,7 +196,6 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun initActivityOnCreate() {
-        GraphqlClient.init(this)
         initInjector()
     }
 
@@ -289,8 +288,6 @@ class SearchActivity: BaseActivity(),
     }
 
     private fun onSearchBarClicked() {
-        val pageSource = Dimension90Utils.getDimension90(searchParameter.getSearchParameterMap())
-        SearchTracking.trackEventClickSearchBar(searchParameter.getSearchQuery(), pageSource)
         moveToAutoCompleteActivity()
     }
 

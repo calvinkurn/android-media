@@ -17,6 +17,7 @@ import com.tokopedia.productcard.utils.renderLabelBestSeller
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategoryBottom
 import com.tokopedia.productcard.utils.renderLabelBestSellerCategorySide
 import com.tokopedia.productcard.utils.renderLabelCampaign
+import com.tokopedia.productcard.utils.renderStockBar
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -84,6 +85,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         renderProductCardContent(productCardModel, isWideContent = true)
 
+        renderStockBar(progressBarStock, textViewStockLabel, productCardModel)
+
         renderProductCardFooter(productCardModel, isProductCardList = true)
 
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
@@ -130,6 +133,18 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
         buttonNotify?.setOnClickListener(notifyMeClickListener)
+    }
+
+    fun setThreeDotsWishlistOnClickListener(threeDotsClickListener: (View) -> Unit) {
+        buttonThreeDotsWishlist?.setOnClickListener(threeDotsClickListener)
+    }
+
+    fun setAddToCartWishlistOnClickListener(addToCartWishlistClickListener: (View) -> Unit) {
+        buttonAddToCartWishlist?.setOnClickListener(addToCartWishlistClickListener)
+    }
+
+    fun setSeeSimilarProductWishlistOnClickListener(seeSimilarProductWishlistClickListener: (View) -> Unit) {
+        buttonSeeSimilarProductWishlist?.setOnClickListener(seeSimilarProductWishlistClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f

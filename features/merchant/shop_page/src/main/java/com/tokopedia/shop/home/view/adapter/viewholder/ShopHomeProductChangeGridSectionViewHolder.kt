@@ -5,12 +5,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.util.ShopProductViewGridType
-import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.listener.ShopProductChangeGridSectionListener
 import com.tokopedia.shop.databinding.ItemShopHomeProductChangeGridSectionViewBinding
 import com.tokopedia.shop.home.view.model.ShopHomeProductChangeGridSectionUiModel
@@ -36,19 +34,13 @@ class ShopHomeProductChangeGridSectionViewHolder(
     private val labelTampilan: Typography? = viewBinding?.labelTampilan
 
     private val drawableProductGridList : Int
-        get() = R.drawable.ic_shop_page_product_grid_list.takeIf {
-            ShopUtil.isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_page_product_grid_list_old
+        get() = R.drawable.ic_shop_page_product_grid_list
 
     private val drawableProductGridSmall : Int
-        get() = R.drawable.ic_shop_page_product_grid_small.takeIf {
-            ShopUtil.isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_page_product_grid_small_old
+        get() = R.drawable.ic_shop_page_product_grid_small
 
     private val drawableProductGridBig : Int
-        get() = R.drawable.ic_shop_page_product_grid_big.takeIf {
-            ShopUtil.isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_page_product_grid_big_old
+        get() = R.drawable.ic_shop_page_product_grid_big
 
     override fun bind(model: ShopHomeProductChangeGridSectionUiModel) {
         val productListDataFormatted = model.totalProduct.thousandFormatted()
@@ -60,13 +52,9 @@ class ShopHomeProductChangeGridSectionViewHolder(
         }
         setGridIcon(model.gridType)
         ivGridIcon?.setOnClickListener {
-            listener.onChangeProductGridClicked(switchGridLayout(model.gridType))
+            listener.onChangeProductGridClicked(model.gridType, switchGridLayout(model.gridType))
         }
-        if(ShopUtil.isUsingNewNavigation()){
-            labelTampilan?.hide()
-        }else{
-            labelTampilan?.show()
-        }
+        labelTampilan?.show()
     }
 
     private fun switchGridLayout(gridType: ShopProductViewGridType): ShopProductViewGridType {
