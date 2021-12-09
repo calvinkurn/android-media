@@ -45,11 +45,7 @@ class PromoRecommendationViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoRecommendationUiModel) {
-        try {
-            containerConstraint.setBackgroundResource(R.drawable.promo_checkout_marketplace_module_ic_promo_recommendation)
-        } catch (t: Throwable) {
-            Timber.d(t)
-        }
+//        setBackground()
         if (element.uiState.isButtonSelectEnabled) {
             lottieButtonApplyPromoRecommendation.progress = 0f
             lottieButtonApplyPromoRecommendation.show()
@@ -69,6 +65,14 @@ class PromoRecommendationViewHolder(private val view: View,
         }
         val totalBenefitFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.uiData.promoTotalBenefit, false).removeDecimalSuffix()
         labelPromoRecommendationSubTitle.text = String.format(itemView.context.getString(R.string.promo_checkout_label_recommendation_benefit, totalBenefitFormatted))
+    }
+
+    private fun setBackground() {
+        try {
+            containerConstraint.setBackgroundResource(R.drawable.promo_checkout_marketplace_module_ic_promo_recommendation)
+        } catch (t: Throwable) {
+            Timber.d(t)
+        }
     }
 
     private fun playAnimation() {
