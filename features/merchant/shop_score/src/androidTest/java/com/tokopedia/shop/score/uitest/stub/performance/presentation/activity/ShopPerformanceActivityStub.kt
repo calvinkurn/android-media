@@ -14,7 +14,7 @@ class ShopPerformanceActivityStub: ShopPerformancePageActivity() {
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context) = Intent(context, ShopPerformanceFragmentStub::class.java)
+        fun createIntent(context: Context) = Intent(context, ShopPerformanceActivityStub::class.java)
     }
 
 }

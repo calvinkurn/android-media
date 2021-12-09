@@ -23,10 +23,6 @@ class PeriodDetailPerformanceViewHolder(view: View) :
     override fun bind(element: PeriodDetailPerformanceUiModel?) {
         binding?.run {
             setContainerBackground()
-            tvPerformanceDetailLabel.text =
-                getString(R.string.title_detail_performa, element?.period.orEmpty())
-            tvPerformanceDetailDate.text =
-                getString(R.string.title_update_date, element?.nextUpdate.orEmpty())
 
             if (element?.isNewSeller == true) {
                 tvPerformanceDetailLabel.text =

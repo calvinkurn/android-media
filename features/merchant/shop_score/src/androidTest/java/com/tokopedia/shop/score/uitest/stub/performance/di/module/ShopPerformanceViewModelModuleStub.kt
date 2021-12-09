@@ -15,10 +15,10 @@ import dagger.multibindings.IntoMap
 abstract class ShopPerformanceViewModelModuleStub {
     @ShopPerformanceScope
     @Binds
-    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    internal abstract fun bindViewModelFactoryStub(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(ShopPerformanceViewModel::class)
-    internal abstract fun shopPerformanceStubViewModel(viewModel: ShopPerformanceViewModel): ViewModel
+    internal abstract fun shopPerformanceViewModelStub(viewModel: ShopPerformanceViewModel): ViewModel
 }

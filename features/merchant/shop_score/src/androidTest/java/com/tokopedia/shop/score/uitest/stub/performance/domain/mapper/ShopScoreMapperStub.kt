@@ -8,6 +8,6 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class ShopScoreMapperStub(
     userSessionInterface: UserSessionInterface,
-    @ApplicationContext context: Context,
+    context: Context,
     shopScorePrefManager: ShopScorePrefManager
 ): ShopScoreMapper(userSessionInterface, context, shopScorePrefManager)

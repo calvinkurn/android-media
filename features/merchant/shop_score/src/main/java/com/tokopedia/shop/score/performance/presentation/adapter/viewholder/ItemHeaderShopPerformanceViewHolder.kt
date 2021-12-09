@@ -61,6 +61,7 @@ class ItemHeaderShopPerformanceViewHolder(
                 progressBarNewSeller.hide()
                 progressBarScorePerformance.show()
                 progressBarScorePerformance.setValue(shopScore)
+                progressBarScorePerformance.getValue()
                 setupProgressBarScoreColor(shopScore)
             }
         }

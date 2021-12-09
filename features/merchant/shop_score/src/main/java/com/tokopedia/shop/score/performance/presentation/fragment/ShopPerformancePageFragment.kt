@@ -73,13 +73,13 @@ open class ShopPerformancePageFragment : BaseDaggerFragment(),
         )
     }
 
-    private val shopPerformanceAdapter by lazy {
+    open val shopPerformanceAdapter by lazy {
         ShopPerformanceAdapter(
             shopPerformanceAdapterTypeFactory
         )
     }
 
-    private var binding by autoClearedNullable<FragmentShopPerformanceBinding>()
+    open var binding by autoClearedNullable<FragmentShopPerformanceBinding>()
 
     private var shopScoreWrapperResponse: ShopScoreWrapperResponse? = null
     private var isNewSeller = false

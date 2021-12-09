@@ -9,6 +9,7 @@ import com.tokopedia.shop.score.performance.di.component.ShopPerformanceComponen
 import com.tokopedia.shop.score.performance.di.scope.ShopPerformanceScope
 import com.tokopedia.shop.score.performance.domain.mapper.ShopScoreMapper
 import com.tokopedia.shop.score.performance.domain.usecase.GetShopPerformanceUseCase
+import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
 import com.tokopedia.shop.score.uitest.stub.common.di.component.BaseAppComponentStub
 import com.tokopedia.shop.score.uitest.stub.performance.di.module.ShopPerformanceModuleStub
 import com.tokopedia.shop.score.uitest.stub.performance.domain.usecase.GetShopInfoPeriodUseCaseStub

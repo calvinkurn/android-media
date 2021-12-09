@@ -1,6 +1,6 @@
 package com.tokopedia.shop.score.uitest.stub.common.util
 
-import android.app.Application
+import android.content.Context
 import com.tokopedia.shop.score.uitest.stub.common.di.component.BaseAppComponentStub
 import com.tokopedia.shop.score.uitest.stub.common.di.component.DaggerBaseAppComponentStub
 import com.tokopedia.shop.score.uitest.stub.common.di.module.AppModuleStub
@@ -11,12 +11,12 @@ class BaseAppComponentStubInstance {
         private var baseAppComponentStub: BaseAppComponentStub? = null
 
         fun getBaseAppComponentStub(
-            application: Application
+            context: Context
         ): BaseAppComponentStub {
             return baseAppComponentStub?.run { baseAppComponentStub }
                 ?: DaggerBaseAppComponentStub.builder()
-                    .appModuleStub(AppModuleStub(application))
-                    .build()
+                    .appModuleStub(AppModuleStub(context))
+                    .build().also { baseAppComponentStub = it }
         }
     }
 }

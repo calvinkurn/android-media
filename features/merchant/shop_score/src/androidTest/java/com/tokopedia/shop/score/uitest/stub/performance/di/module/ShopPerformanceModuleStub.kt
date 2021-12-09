@@ -22,8 +22,8 @@ import dagger.Provides
 @Module(includes = [ShopPerformanceViewModelModuleStub::class])
 class ShopPerformanceModuleStub {
 
-    @Provides
     @ShopPerformanceScope
+    @Provides
     fun provideShopInfoPeriodUseCaseStub(
         graphqlRepositoryStub: GraphqlRepositoryStub,
         shopScoreCommonMapper: ShopScoreCommonMapper
@@ -31,8 +31,8 @@ class ShopPerformanceModuleStub {
         return GetShopInfoPeriodUseCaseStub(graphqlRepositoryStub, shopScoreCommonMapper)
     }
 
-    @Provides
     @ShopPerformanceScope
+    @Provides
     fun provideGetShopPerformanceUseCaseStub(graphqlRepositoryStub: GraphqlRepositoryStub): GetShopPerformanceUseCase {
         return GetShopPerformanceUseCaseStub(graphqlRepositoryStub)
     }

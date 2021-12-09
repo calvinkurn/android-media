@@ -1,9 +1,9 @@
-[
+
   {
     "data": {
       "shopScoreLevel": {
         "result": {
-          "shopScore": 55,
+          "shopScore": -1,
           "shopLevel": 1,
           "period": "23 Agu 2021 - 20 Nov 2021",
           "nextUpdate": "29 Nov 2021",
@@ -12,7 +12,7 @@
               "title": "Membuka Tokopedia Seller dalam 90 hari terakhir",
               "identifier": "ct_active_days",
               "value": 15,
-              "rawValue": 72,
+              "rawValue": -1,
               "nextMinValue": 30,
               "colorText": "#03AC0E"
             },
@@ -20,7 +20,7 @@
               "title": "Tingkat kesuksesan pesanan",
               "identifier": "finish_rate",
               "value": 9,
-              "rawValue": 1.00,
+              "rawValue": -1,
               "nextMinValue": 0.94,
               "colorText": "#31353B"
             },
@@ -44,7 +44,7 @@
               "title": "Ulasan produk dengan bintang 4+",
               "identifier": "percent_good_rating",
               "value": 3,
-              "rawValue": 0.54296875,
+              "rawValue": -1,
               "nextMinValue": 0.95,
               "colorText": "#D6001C"
             },
@@ -52,7 +52,7 @@
               "title": "Tingkat membalas chat dan diskusi",
               "identifier": "chat_and_discussion_reply_rate",
               "value": 9,
-              "rawValue": 0.78571427,
+              "rawValue": -1,
               "nextMinValue": 0.9,
               "colorText": "#31353B"
             },
@@ -60,7 +60,7 @@
               "title": "Kecepatan membalas chat dan diskusi",
               "identifier": "chat_and_discussion_reply_speed",
               "value": 12,
-              "rawValue": 18.023333,
+              "rawValue": -1,
               "nextMinValue": 9,
               "colorText": "#03AC0E"
             },
@@ -100,7 +100,7 @@
     "data": {
       "goldGetPMShopInfo": {
         "is_new_seller": false,
-        "shop_age": 775,
+        "shop_age": 10,
         "is_eligible_pm": false,
         "is_eligible_pm_pro": false
       }

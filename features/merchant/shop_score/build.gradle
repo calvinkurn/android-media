@@ -28,6 +28,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     sourceSets {
@@ -37,9 +38,6 @@ android {
         androidTest {
             java.srcDirs += "$projectDir/src/testCommon/java"
         }
-    }
-    testOptions {
-        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 

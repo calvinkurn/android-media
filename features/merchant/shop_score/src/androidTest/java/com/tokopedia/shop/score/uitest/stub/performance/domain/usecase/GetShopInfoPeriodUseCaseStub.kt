@@ -12,7 +12,7 @@ class GetShopInfoPeriodUseCaseStub(
     private val shopScoreCommonMapper: ShopScoreCommonMapper
 ) : GetShopInfoPeriodUseCase(graphqlRepositoryStub, shopScoreCommonMapper) {
 
-    var responseStub = ShopInfoPeriodResponseStub()
+    var responseStub: ShopInfoPeriodResponseStub = ShopInfoPeriodResponseStub()
         set(value) {
             graphqlRepositoryStub.createMapResult(responseStub::class.java, value)
             field = value
