@@ -43,7 +43,6 @@ import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
 import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
@@ -73,8 +72,6 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val hydraConfigStore: HydraConfigStore,
     private val sharedPref: HydraSharedPreferences,
     private val getChannelUseCase: GetChannelUseCase,
-    private val createChannelUseCase: CreateChannelUseCase,
-    private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
     private val dispatcher: CoroutineDispatchers,
@@ -352,13 +349,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     suspend fun getChannelDetail() = getChannelById(channelId)
 
     private suspend fun createChannel() {
-        val channelId = withContext(dispatcher.io) {
-            createChannelUseCase.params = CreateChannelUseCase.createParams(
-                    authorId = userSession.shopId
-            )
-            return@withContext createChannelUseCase.executeOnBackground()
-        }
-        setChannelId(channelId.id)
+        val channelId = repo.createChannel()
+        setChannelId(channelId)
     }
 
     private suspend fun getChannelById(channelId: String): Throwable? {
@@ -403,17 +395,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateChannelStatus(status: PlayChannelStatusType) = withContext(dispatcher.io) {
-            updateChannelUseCase.apply {
-                setQueryParams(
-                    UpdateChannelUseCase.createUpdateStatusRequest(
-                        channelId = channelId,
-                        authorId = userSession.shopId,
-                        status = status
-                    )
-                )
-            }.executeOnBackground()
-        }
+    private suspend fun updateChannelStatus(status: PlayChannelStatusType) {
+        repo.updateChannelStatus(channelId, status)
+    }
 
     @Throws(IllegalAccessException::class)
     fun createStreamer(context: Context, handler: Handler) {
