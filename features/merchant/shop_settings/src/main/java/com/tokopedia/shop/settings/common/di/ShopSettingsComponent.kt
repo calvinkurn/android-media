@@ -39,7 +39,6 @@ interface ShopSettingsComponent {
     fun inject(shopSettingsNotesFragment: ShopSettingsNotesListFragment)
     fun inject(shopSettingsNotesFragment: ShopSettingsNotesReorderFragment)
     fun inject(shopSettingsOperationalHoursFragment: ShopSettingsOperationalHoursFragment)
-    fun inject(newShopSettingsOperationalHoursFragment: NewShopSettingsOperationalHoursFragment)
     fun inject(shopSettingsSetOperationalHoursFragment: ShopSettingsSetOperationalHoursFragment)
 
     fun inject(fragment: ShopSettingsNotesAddEditFragment)
