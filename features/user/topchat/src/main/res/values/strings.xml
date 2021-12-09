@@ -233,4 +233,7 @@ yang ditemukan</string>
     <string name="topchat_product_added_to_wishlist">Cek Wishlist Kamu</string>
     <string name="topchat_success_delete_msg_bubble">Pesan berhasil dihapus.</string>
     <string name="topchat_error_delete_msg_bubble">Pesan gagal dihapus.</string>
+    <string name="topchat_title_delete_msg_bubble_confirmation">Mau hapus pesan ini?</string>
+    <string name="topchat_action_delete_msg_bubble_confirmation">Ya, Hapus</string>
+    <string name="topchat_desc_delete_msg_bubble_confirmation">Pesan yang dihapus tidak akan bisa dilihat lagi oleh kamu dan lawan bicaramu.</string>
 </resources>
