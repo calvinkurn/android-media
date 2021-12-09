@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
 data class BroadMatchDataView(
@@ -16,7 +17,8 @@ data class BroadMatchDataView(
     val componentId: String = "",
     val trackingOption: Int = 0,
     val actualKeyword: String = "",
-) : Visitable<ProductListTypeFactory>,
+) : ImpressHolder(),
+    Visitable<ProductListTypeFactory>,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = actualKeyword,

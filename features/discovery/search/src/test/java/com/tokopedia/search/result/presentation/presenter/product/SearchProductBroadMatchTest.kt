@@ -169,7 +169,6 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
                 otherRelatedProduct,
                 index + 1,
                 otherRelated.keyword,
-                expectedTrackingOption,
             )
         }
     }
@@ -178,7 +177,6 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         otherRelatedProduct: SearchProductModel.OtherRelatedProduct,
         expectedPosition: Int,
         expectedAlternativeKeyword: String,
-        expectedTrackingOption: Int,
     ) {
         id shouldBe otherRelatedProduct.id
         name shouldBe otherRelatedProduct.name

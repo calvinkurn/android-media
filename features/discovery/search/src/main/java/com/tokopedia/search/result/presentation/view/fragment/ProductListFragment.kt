@@ -1618,6 +1618,10 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
+    override fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView) {
+        presenter?.onBroadMatchImpressed(broadMatchDataView)
+    }
+
     override fun onBroadMatchSeeMoreClicked(broadMatchDataView: BroadMatchDataView) {
         presenter?.onBroadMatchSeeMoreClick(broadMatchDataView)
     }
