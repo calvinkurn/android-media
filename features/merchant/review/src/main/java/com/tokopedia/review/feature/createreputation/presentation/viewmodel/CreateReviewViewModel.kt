@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.exception.MessageErrorException
@@ -19,6 +20,7 @@ import com.tokopedia.review.feature.createreputation.domain.usecase.GetBadRating
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetProductReputationForm
 import com.tokopedia.review.feature.createreputation.domain.usecase.GetReviewTemplatesUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevEditReviewUseCase
+import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevGetPostSubmitBottomSheetUseCase
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
 import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
@@ -28,6 +30,7 @@ import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.mapper.CreateReviewImageMapper
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.usecase.GetProductIncentiveOvo
 import com.tokopedia.usecase.coroutines.Result
@@ -49,7 +52,8 @@ class CreateReviewViewModel @Inject constructor(
     private val editReviewUseCase: ProductrevEditReviewUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val getReviewTemplatesUseCase: GetReviewTemplatesUseCase,
-    private val getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase
+    private val getBadRatingCategoryUseCase: GetBadRatingCategoryUseCase,
+    private val getPostSubmitBottomSheetUseCase: ProductrevGetPostSubmitBottomSheetUseCase,
 ) : BaseViewModel(coroutineDispatcherProvider.io) {
 
     companion object {
@@ -96,6 +100,10 @@ class CreateReviewViewModel @Inject constructor(
     private var _badRatingCategories = MutableLiveData<Result<List<BadRatingCategory>>>()
     val badRatingCategories: LiveData<Result<List<BadRatingCategory>>>
         get() = _badRatingCategories
+
+    private var _postSubmitUiState = MutableLiveData<PostSubmitUiState>()
+    val postSubmitUiState: LiveData<PostSubmitUiState>
+        get() = _postSubmitUiState
 
     private val selectedBadRatingCategories = mutableSetOf<String>()
 
@@ -351,6 +359,36 @@ class CreateReviewViewModel @Inject constructor(
         }
     }
 
+    fun getPostSubmitBottomSheetData(reviewText: String, feedbackId: String) {
+        launchCatchError(block = {
+            val hasPendingIncentive = hasPendingIncentive()
+            val data = withContext(coroutineDispatcherProvider.io) {
+                getPostSubmitBottomSheetUseCase.setParams(
+                    feedbackId = feedbackId,
+                    reviewText = reviewText,
+                    imagesTotal = getImageCount(),
+                    isInboxEmpty = hasPendingIncentive.not(),
+                    incentiveAmount = getIncentiveAmount()
+                )
+                getPostSubmitBottomSheetUseCase.executeOnBackground().productrevGetPostSubmitBottomSheetResponse
+            }
+            if (data == null) {
+                _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouToaster(null))
+            } else {
+                if (data.isShowBottomSheet()) {
+                    _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouBottomSheet(
+                        data = data,
+                        hasPendingIncentive = hasPendingIncentive
+                    ))
+                } else {
+                    _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouToaster(data))
+                }
+            }
+        }) {
+            _postSubmitUiState.postValue(PostSubmitUiState.ShowThankYouToaster(null))
+        }
+    }
+
     fun addBadRatingCategory(badRatingCategoryId: String) {
         selectedBadRatingCategories.add(badRatingCategoryId)
         updateProgressBarFromBadRatingCategory()
@@ -564,5 +602,22 @@ class CreateReviewViewModel @Inject constructor(
             filePath = filePath
         )
         return uploaderUseCase(params)
+    }
+
+    private fun getIncentiveAmount(): Int {
+        return incentiveOvo.value?.takeIf {
+            it is CoroutineSuccess
+        }?.let { (it as CoroutineSuccess).data.productrevIncentiveOvo?.amount }.orZero()
+    }
+
+    private suspend fun hasPendingIncentive(): Boolean {
+        return try {
+            val data = withContext(coroutineDispatcherProvider.io) {
+                getProductIncentiveOvo.getIncentiveOvo("", "")
+            }
+            data?.productrevIncentiveOvo != null
+        } catch (_: Exception) {
+            false
+        }
     }
 }

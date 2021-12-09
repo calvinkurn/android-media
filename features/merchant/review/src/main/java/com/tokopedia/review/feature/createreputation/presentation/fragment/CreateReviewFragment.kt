@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
@@ -63,12 +62,14 @@ import com.tokopedia.review.feature.createreputation.analytics.CreateReviewTrack
 import com.tokopedia.review.feature.createreputation.di.DaggerCreateReviewComponent
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.model.Reputation
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.IncentiveOvoThankYouBottomSheetBuilder
 import com.tokopedia.review.feature.createreputation.presentation.listener.ImageClickListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
@@ -159,7 +160,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var isEditMode: Boolean = false
     private var feedbackId: String = ""
     private var utmSource: String = ""
-    private var shouldShowThankYouBottomSheet = false
 
     lateinit var imgAnimationView: LottieAnimationView
     private var textAreaBottomSheet: CreateReviewTextAreaBottomSheet? = null
@@ -167,8 +167,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private var thankYouBottomSheet: BottomSheetUnify? = null
     private var incentiveHelper = ""
     private var isReviewIncomplete = false
-    private var thankYouBottomSheetText = ""
-    private var thankYouBottomSheetImage = ""
 
     private var binding by autoClearedNullable<FragmentCreateReviewBinding>()
 
@@ -301,13 +299,25 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     showLoading()
                 }
                 is Success -> {
-                    onSuccessSubmitReview()
+                    onSuccessSubmitReview(feedbackId)
                 }
                 is Fail -> {
                     onFailEditReview(it.fail)
                 }
             }
         })
+
+        createReviewViewModel.postSubmitUiState.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is PostSubmitUiState.ShowThankYouBottomSheet -> showThankYouBottomSheet(
+                    result.data,
+                    result.hasPendingIncentive
+                )
+                is PostSubmitUiState.ShowThankYouToaster -> showThankYouToaster(
+                    result.data
+                )
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -504,11 +514,14 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     override fun onClickCloseThankYouBottomSheet() {
-        finishIfRoot(true)
-    }
-
-    override fun onClickReviewAnother() {
-        goToReviewPending()
+        finishIfRoot(
+            success = true,
+            message = getString(
+                R.string.review_create_success_toaster,
+                createReviewViewModel.getUserName()
+            ),
+            feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -647,13 +660,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
             updateProductId(productData.productIDStr)
             when {
                 !validToReview -> {
-                    finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
+                    finishIfRoot(
+                        success = false,
+                        message = getString(R.string.review_pending_invalid_to_review),
+                        feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+                    )
                     return
                 }
                 productData.productStatus == 0 -> {
                     finishIfRoot(
-                        false,
-                        getString(R.string.review_pending_deleted_product_error_toaster)
+                        success = false,
+                        message = getString(R.string.review_pending_deleted_product_error_toaster),
+                        feedbackId = if (isEditMode) feedbackId else getFeedbackId()
                     )
                     return
                 }
@@ -694,13 +712,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetIncentiveOvo(data: ProductRevIncentiveOvoDomain?) {
-        if (shouldShowThankYouBottomSheet) {
-            showThankYouBottomSheet(data)
-            return
-        }
         data?.productrevIncentiveOvo?.let {
-            thankYouBottomSheetText = it.bottomSheetText
-            thankYouBottomSheetImage = it.thankYouImage
             it.ticker.let {
                 binding?.ovoPointsTicker?.apply {
                     visibility = View.VISIBLE
@@ -743,22 +755,35 @@ class CreateReviewFragment : BaseDaggerFragment(),
         binding?.ovoPointsTicker?.hide()
     }
 
-    private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
+    private fun showThankYouBottomSheet(
+        data: ProductrevGetPostSubmitBottomSheetResponse,
+        hasPendingIncentive: Boolean
+    ) {
         if (thankYouBottomSheet == null) {
             thankYouBottomSheet = context?.let {
                 IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(
                     it,
                     data,
+                    hasPendingIncentive,
                     this@CreateReviewFragment,
-                    getThankYouFormTrackerData(),
-                    thankYouBottomSheetText,
-                    thankYouBottomSheetImage
+                    getThankYouFormTrackerData()
                 )
             }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
         }
+    }
+
+    private fun showThankYouToaster(data: ProductrevGetPostSubmitBottomSheetResponse?) {
+        finishIfRoot(
+            success = true,
+            message = data?.getToasterText(createReviewViewModel.getUserName()) ?: getString(
+                R.string.review_create_success_toaster,
+                createReviewViewModel.getUserName()
+            ),
+            feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+        )
     }
 
     private fun onSuccessGetReviewDetail(productrevGetReviewDetail: ProductrevGetReviewDetail) {
@@ -800,10 +825,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onFailGetReviewDetail(throwable: Throwable) {
         hideShimmering()
         if (throwable is MessageErrorException) {
-            activity?.let {
-                Toast.makeText(it, R.string.review_error_not_found, Toast.LENGTH_LONG).show()
-                finishIfRoot()
-            }
+            finishIfRoot(
+                success = false,
+                message = getString(R.string.review_error_not_found),
+                feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+            )
         } else {
             binding?.reviewRoot?.let {
                 NetworkErrorHelper.showEmptyState(context, it) {
@@ -929,14 +955,18 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessSubmitReview(feedbackId: String = "") {
-        stopLoading()
-        showLayout()
-        if (isUserEligible() && !isReviewIncomplete) {
-            getIncentiveOvoData()
-            shouldShowThankYouBottomSheet = true
-            return
+        if (isEditMode) {
+            stopLoading()
+            showLayout()
+            finishIfRoot(
+                success = true,
+                message = getString(R.string.review_create_success_toaster),
+                feedbackId = feedbackId
+            )
+        } else {
+            val reviewMessage = binding?.createReviewExpandableTextArea?.getText().orEmpty()
+            createReviewViewModel.getPostSubmitBottomSheetData(reviewMessage, feedbackId)
         }
-        finishIfRoot(success = true, feedbackId = feedbackId)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
@@ -1006,10 +1036,11 @@ class CreateReviewFragment : BaseDaggerFragment(),
     private fun onErrorGetReviewForm(throwable: Throwable) {
         hideShimmering()
         if (throwable is MessageErrorException) {
-            activity?.let {
-                Toast.makeText(it, R.string.review_error_not_found, Toast.LENGTH_LONG).show()
-                finishIfRoot()
-            }
+            finishIfRoot(
+                success = false,
+                message = getString(R.string.review_error_not_found),
+                feedbackId = if (isEditMode) feedbackId else getFeedbackId()
+            )
         } else {
             binding?.reviewRoot?.let {
                 NetworkErrorHelper.showEmptyState(context, it) {
@@ -1022,8 +1053,8 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     private fun finishIfRoot(
         success: Boolean = false,
-        errorMessage: String = "",
-        feedbackId: String = ""
+        message: String,
+        feedbackId: String
     ) {
         activity?.run {
             if (isTaskRoot) {
@@ -1034,6 +1065,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 startActivity(intent)
             } else {
                 val intent = Intent()
+                intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE, message)
                 if (success) {
                     intent.putExtra(ReputationCommonConstants.ARGS_FEEDBACK_ID, feedbackId)
                     intent.putExtra(ReputationCommonConstants.ARGS_RATING, reviewClickAt)
@@ -1045,7 +1077,6 @@ class CreateReviewFragment : BaseDaggerFragment(),
                     )
                     setResult(Activity.RESULT_OK, intent)
                 } else {
-                    intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
                     intent.putExtra(
                         ReputationCommonConstants.ARGS_REVIEW_STATE,
                         ReputationCommonConstants.INVALID_TO_REVIEW

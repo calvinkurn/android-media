@@ -44,6 +44,7 @@ import com.tokopedia.review.feature.createreputation.model.BadRatingCategory
 import com.tokopedia.review.feature.createreputation.model.BaseImageReviewUiModel
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
+import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.presentation.activity.CreateReviewActivity
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ImageReviewAdapter
 import com.tokopedia.review.feature.createreputation.presentation.adapter.ReviewBadRatingCategoriesAdapter
@@ -54,6 +55,7 @@ import com.tokopedia.review.feature.createreputation.presentation.listener.Revie
 import com.tokopedia.review.feature.createreputation.presentation.listener.ReviewTemplateListener
 import com.tokopedia.review.feature.createreputation.presentation.listener.TextAreaListener
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewDialogType
+import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.viewmodel.CreateReviewViewModel
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAddPhoto
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewAnonymousOption
@@ -62,7 +64,6 @@ import com.tokopedia.review.feature.createreputation.presentation.widget.CreateR
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
 import com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextAreaBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.widget.ReviewBadRatingItemDecoration
-import com.tokopedia.review.feature.inbox.pending.presentation.fragment.ReviewPendingFragment
 import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.feature.ovoincentive.data.ThankYouBottomSheetTrackerData
 import com.tokopedia.review.feature.ovoincentive.data.TncBottomSheetTrackerData
@@ -141,9 +142,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private var isReviewIncomplete = false
     private var incentiveHelper = ""
     private var templatesSelectedCount = 0
-    private var shouldShowThankYouBottomSheet = false
-    private var thankYouBottomSheetText = ""
-    private var thankYouBottomSheetImageUrl = ""
 
     private val imageAdapter: ImageReviewAdapter by lazy {
         ImageReviewAdapter(this)
@@ -208,14 +206,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     override fun onClickCloseThankYouBottomSheet() {
-        finishIfRoot(true)
-    }
-
-    override fun onClickReviewAnother() {
-        dismiss()
-        if (utmSource != ReviewPendingFragment.INBOX_SOURCE) {
-            goToReviewPending()
-        }
+        finishIfRoot(
+            success = true,
+            message = getString(
+                R.string.review_create_success_toaster,
+                createReviewViewModel.getUserName()
+            ),
+            feedbackId = getFeedbackId()
+        )
     }
 
     override fun onExpandButtonClicked(text: String) {
@@ -474,7 +472,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         createReviewViewModel.submitReviewResult.observe(this, {
             when (it) {
                 is com.tokopedia.review.common.data.Success -> {
-                    onSuccessSubmitReview()
+                    onSuccessSubmitReview(it.data)
                 }
                 is com.tokopedia.review.common.data.Fail -> {
                     onFailSubmitReview(it.fail)
@@ -511,17 +509,37 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         })
     }
 
+    private fun observePostSubmitBottomSheetData() {
+        createReviewViewModel.postSubmitUiState.observe(this) { result ->
+            stopButtonLoading()
+            when (result) {
+                is PostSubmitUiState.ShowThankYouBottomSheet -> showThankYouBottomSheet(
+                    result.data,
+                    result.hasPendingIncentive
+                )
+                is PostSubmitUiState.ShowThankYouToaster -> showThankYouToaster(
+                    result.data
+                )
+            }
+        }
+    }
+
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
         with(data.productrevGetForm) {
             when {
                 !validToReview -> {
-                    finishIfRoot(false, getString(R.string.review_pending_invalid_to_review))
+                    finishIfRoot(
+                        success = false,
+                        message = getString(R.string.review_pending_invalid_to_review),
+                        feedbackId = ""
+                    )
                     return
                 }
                 productData.productStatus == 0 -> {
                     finishIfRoot(
-                        false,
-                        getString(R.string.review_pending_deleted_product_error_toaster)
+                        success = false,
+                        message = getString(R.string.review_pending_deleted_product_error_toaster),
+                        feedbackId = ""
                     )
                     return
                 }
@@ -534,13 +552,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun onSuccessGetOvoIncentive(ovoDomain: ProductRevIncentiveOvoDomain?) {
-        if (shouldShowThankYouBottomSheet) {
-            showThankYouBottomSheet(ovoDomain)
-            return
-        }
         ovoDomain?.productrevIncentiveOvo?.let {
-            thankYouBottomSheetText = it.bottomSheetText
-            thankYouBottomSheetImageUrl = it.thankYouImage
             hideTemplates()
             incentivesTicker?.apply {
                 setHtmlDescription(it.ticker.subtitle)
@@ -604,14 +616,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         logToCrashlytics(throwable)
     }
 
-    private fun onSuccessSubmitReview() {
-        stopButtonLoading()
-        if (isUserEligible() && !isReviewIncomplete) {
-            shouldShowThankYouBottomSheet = true
-            getIncentiveOvoData()
-            return
-        }
-        finishIfRoot(true)
+    private fun onSuccessSubmitReview(feedbackId: String) {
+        val reviewMessage = textArea?.getText() ?: ""
+        createReviewViewModel.getPostSubmitBottomSheetData(reviewMessage, feedbackId)
     }
 
     private fun onFailSubmitReview(throwable: Throwable) {
@@ -715,9 +722,11 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     private fun onErrorGetReviewForm(throwable: Throwable) {
         logToCrashlytics(throwable)
         finishIfRoot(
-            false,
-            context?.let { ErrorHandler.getErrorMessage(it, throwable) }
-                ?: getString(R.string.review_toaster_page_error))
+            success = false,
+            message = context?.let { ErrorHandler.getErrorMessage(it, throwable) }
+                ?: getString(R.string.review_toaster_page_error),
+            feedbackId = ""
+        )
     }
 
     private fun updateTitleBasedOnSelectedRating(position: Int) {
@@ -1023,9 +1032,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun finishIfRoot(
-        success: Boolean = false,
-        errorMessage: String = "",
-        feedbackId: String = ""
+        success: Boolean,
+        message: String,
+        feedbackId: String
     ) {
         activity?.run {
             if (isTaskRoot) {
@@ -1036,6 +1045,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 startActivity(intent)
             } else {
                 val intent = Intent()
+                intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE, message)
                 if (success) {
                     intent.putExtra(ReputationCommonConstants.ARGS_FEEDBACK_ID, feedbackId)
                     intent.putExtra(ReputationCommonConstants.ARGS_RATING, rating)
@@ -1047,7 +1057,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                     )
                     setResult(Activity.RESULT_OK, intent)
                 } else {
-                    intent.putExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE, errorMessage)
                     intent.putExtra(
                         ReputationCommonConstants.ARGS_REVIEW_STATE,
                         ReputationCommonConstants.INVALID_TO_REVIEW
@@ -1151,6 +1160,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         observeTemplates()
         observeButtonState()
         observeProgressBarState()
+        observePostSubmitBottomSheetData()
         if (shouldShowBadRatingReasons()) observeBadRatingCategories()
     }
 
@@ -1184,23 +1194,35 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         return listOf()
     }
 
-    private fun showThankYouBottomSheet(data: ProductRevIncentiveOvoDomain?) {
+    private fun showThankYouBottomSheet(
+        data: ProductrevGetPostSubmitBottomSheetResponse,
+        hasPendingIncentive: Boolean
+    ) {
         if (thankYouBottomSheet == null) {
             thankYouBottomSheet = context?.let {
                 IncentiveOvoThankYouBottomSheetBuilder.getThankYouBottomSheet(
-                    it,
-                    data,
-                    this,
-                    getThankYouBottomSheetTrackerData(),
-                    thankYouBottomSheetText,
-                    thankYouBottomSheetImageUrl
+                    context = it,
+                    postSubmitBottomSheetData = data,
+                    hasPendingIncentive = hasPendingIncentive,
+                    incentiveOvoListener = this,
+                    trackerData = getThankYouBottomSheetTrackerData(),
                 )
             }
         }
         thankYouBottomSheet?.let { bottomSheet ->
             activity?.supportFragmentManager?.let { bottomSheet.show(it, bottomSheet.tag) }
         }
-        shouldShowThankYouBottomSheet = false
+    }
+
+    private fun showThankYouToaster(data: ProductrevGetPostSubmitBottomSheetResponse?) {
+        finishIfRoot(
+            success = true,
+            message = data?.getToasterText(createReviewViewModel.getUserName()) ?: getString(
+                R.string.review_create_success_toaster,
+                createReviewViewModel.getUserName()
+            ),
+            feedbackId = getFeedbackId()
+        )
     }
 
     private fun goToReviewPending() {

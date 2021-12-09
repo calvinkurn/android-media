@@ -728,4 +728,26 @@ object CreateReviewTracking {
             .build()
             .toString()
     }
+
+    fun eventClickPostSubmitBottomSheetButton(
+        title: String,
+        buttonText: String,
+        hasPendingIncentive: Boolean
+    ) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createEventMap(
+                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
+                CreateReviewTrackingConstants.EVENT_CATEGORY,
+                String.format(
+                    CreateReviewTrackingConstants.EVENT_ACTION_CLICK_THANK_YOU_BOTTOM_SHEET_BUTTON,
+                    buttonText,
+                    title
+                ),
+                String.format(
+                    CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE,
+                    hasPendingIncentive.toString()
+                )
+            )
+        )
+    }
 }

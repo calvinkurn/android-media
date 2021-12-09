@@ -272,10 +272,13 @@ class ReviewPendingFragment :
         if (requestCode == CREATE_REVIEW_REQUEST_CODE) {
             reviewInboxListener?.reloadCounter()
             if (resultCode == Activity.RESULT_OK) {
-                onSuccessCreateReview()
+                onSuccessCreateReview(
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
+                        ?: getString(R.string.review_create_success_toaster, viewModel.getUserName())
+                )
             } else if (resultCode == Activity.RESULT_FIRST_USER) {
                 onFailCreateReview(
-                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_ERROR_MESSAGE)
+                    data?.getStringExtra(ReviewInboxConstants.CREATE_REVIEW_MESSAGE)
                         ?: getString(R.string.review_pending_invalid_to_review)
                 )
             }
@@ -295,10 +298,6 @@ class ReviewPendingFragment :
     }
 
     override fun onClickCloseThankYouBottomSheet() {
-        // No Op
-    }
-
-    override fun onClickReviewAnother() {
         // No Op
     }
 
@@ -527,11 +526,8 @@ class ReviewPendingFragment :
         }
     }
 
-    private fun onSuccessCreateReview() {
-        showToaster(
-            getString(R.string.review_create_success_toaster, viewModel.getUserName()),
-            getString(R.string.review_oke)
-        )
+    private fun onSuccessCreateReview(message: String) {
+        showToaster(message, getString(R.string.review_oke))
     }
 
     private fun onFailCreateReview(errorMessage: String) {
