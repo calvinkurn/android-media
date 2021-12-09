@@ -234,6 +234,7 @@ class CampaignListFragment : BaseDaggerFragment(),
             campaignTypeFilter?.type = ChipsUnify.TYPE_SELECTED
             campaignTypeFilter?.listener = {
                 campaignTypeBottomSheet?.show(childFragmentManager)
+                tracker.sendOpenCampaignTypeFilterClickEvent(userSession.shopId)
             }
             val sortFilterItemList = ArrayList<SortFilterItem>()
             campaignStatusFilter?.run { sortFilterItemList.add(this) }

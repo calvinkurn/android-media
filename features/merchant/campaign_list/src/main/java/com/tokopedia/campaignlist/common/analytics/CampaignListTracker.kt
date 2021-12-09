@@ -51,6 +51,18 @@ class CampaignListTracker @Inject constructor() {
         )
     }
 
+    fun sendOpenCampaignTypeFilterClickEvent(shopId: String) {
+        sendGeneralTracking(
+            event = CampaignListTrackerConstant.Event.CLICK_RELEASE_PAGE,
+            action = CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_TYPE,
+            category = CampaignListTrackerConstant.EventCategory.SPECIAL_RELEASE,
+            label = EMPTY,
+            shopId = shopId,
+            businessUnit = CampaignListTrackerConstant.Values.PHYSICAL_GOODS,
+            currentSite = CampaignListTrackerConstant.Values.TOKOPEDIA_SELLER
+        )
+    }
+
     fun sendSelectCampaignStatusClickEvent(selectedCampaignStatus: Int, shopId: String) {
         val action = when (selectedCampaignStatus) {
             CAMPAIGN_STATUS_AVAILABLE -> CampaignListTrackerConstant.Action.CLICK_CAMPAIGN_STATUS_AVAILABLE
