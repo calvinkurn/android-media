@@ -185,7 +185,7 @@ class CustomVariantManageBottomSheet(
         )
         bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
             val position = getVariantDetailPosition(oldVariantDetail) ?: return@setOnCustomVariantTypeSubmitted
-            val newVariantDetail = oldVariantDetail.apply { name = newVariantName }
+            val newVariantDetail = oldVariantDetail.copy().apply { name = newVariantName }
             onVariantTypeEditedListener?.invoke(position, level, newVariantDetail)
         }
         bottomSheet.setOnPredefinedVariantTypeSubmitted { newVariantDetail ->
