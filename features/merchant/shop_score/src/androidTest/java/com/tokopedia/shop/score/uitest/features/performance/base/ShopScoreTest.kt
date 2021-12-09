@@ -233,10 +233,18 @@ abstract class ShopScoreTest {
             .withTextStr(headerShopPerformanceUiModel.shopScore)
 
         onIdView(R.id.tvHeaderShopService).isViewDisplayed()
-            .withTextStr(headerShopPerformanceUiModel.titleHeaderShopService)
+            .withTextStr(headerShopPerformanceUiModel.titleHeaderShopService?.let {
+                context.getString(
+                    it
+                )
+            })
 
         onIdView(R.id.tvDescShopService).isViewDisplayed()
-            .withTextStr(headerShopPerformanceUiModel.descHeaderShopService)
+            .withTextStr(headerShopPerformanceUiModel.descHeaderShopService?.let {
+                context.getString(
+                    it
+                )
+            })
 
         onIdView(R.id.ivLevelBarShopScore).isViewDisplayed()
 

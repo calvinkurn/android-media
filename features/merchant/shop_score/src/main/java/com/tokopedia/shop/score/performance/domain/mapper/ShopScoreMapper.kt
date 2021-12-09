@@ -429,7 +429,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToHeaderShopPerformance(
+    fun mapToHeaderShopPerformance(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         powerMerchantResponse: GoldGetPMOStatusResponse.GoldGetPMOSStatus.Data?,
         shopAge: Long,
@@ -616,6 +616,65 @@ open class ShopScoreMapper @Inject constructor(
         val shopInfoLevelUiModel = ShopInfoLevelUiModel()
         shopInfoLevelUiModel.cardTooltipLevelList = mapToCardTooltipLevel(shopLevel)
         return shopInfoLevelUiModel
+    }
+
+    private fun mapToItemProtectedParameterTabletUiModel(
+        shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Long
+    ): ProtectedParameterTabletUiModel {
+        val protectedParameterSection = getProtectedParameterSection(
+            shopScoreLevelList, shopAge.toInt()
+        )
+
+        return ProtectedParameterTabletUiModel(
+            itemProtectedParameterList = protectedParameterSection.itemProtectedParameterList,
+            titleParameterRelief = protectedParameterSection.titleParameterRelief,
+            descParameterRelief = protectedParameterSection.descParameterRelief,
+            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet,
+            protectedParameterDaysDate = protectedParameterSection.protectedParameterDaysDate
+        )
+    }
+
+    private fun mapToItemProtectedParameterUiModel(
+        shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Long
+    ): ProtectedParameterSectionUiModel {
+        val protectedParameterSection = getProtectedParameterSection(
+            shopScoreLevelList, shopAge.toInt()
+        )
+
+        return ProtectedParameterSectionUiModel(
+            itemProtectedParameterList = protectedParameterSection.itemProtectedParameterList,
+            titleParameterRelief = protectedParameterSection.titleParameterRelief,
+            descParameterRelief = protectedParameterSection.descParameterRelief,
+            descParameterReliefBottomSheet = protectedParameterSection.descParameterReliefBottomSheet,
+            protectedParameterDaysDate = protectedParameterSection.protectedParameterDaysDate
+        )
+    }
+
+    private fun mapToItemDetailPerformanceTabletUiModel(
+        shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
+        shopAge: Long,
+        shopScore: Long,
+        dateShopCreated: String
+    ): List<ItemDetailPerformanceTabletUiModel> {
+        val basePeriodDetailPerformanceUiModel = mapToBaseDetailPerformanceUiModel(
+            shopScoreLevelList, shopAge, shopScore, dateShopCreated
+        )
+
+        return basePeriodDetailPerformanceUiModel.map {
+            ItemDetailPerformanceTabletUiModel(
+                titleDetailPerformance = it.titleDetailPerformance,
+                valueDetailPerformance = it.valueDetailPerformance,
+                colorValueDetailPerformance = it.colorValueDetailPerformance,
+                targetDetailPerformance = it.targetDetailPerformance,
+                isDividerHide = it.isDividerHide,
+                identifierDetailPerformance = it.identifierDetailPerformance,
+                parameterValueDetailPerformance = it.parameterValueDetailPerformance,
+                shopAge = it.shopAge,
+                shopScore = it.shopScore
+            )
+        }
     }
 
     fun mapToItemDetailPerformanceUiModel(
@@ -823,7 +882,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    fun mapToSectionPeriodDetailPerformanceTabletUiModel(
+    private fun mapToSectionPeriodDetailPerformanceTabletUiModel(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         isNewSeller: Boolean
     ): PeriodDetailTabletUiModel {
@@ -838,7 +897,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToSectionPeriodDetailPerformanceUiModel(
+    fun mapToSectionPeriodDetailPerformanceUiModel(
         shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
         isNewSeller: Boolean
     ): PeriodDetailPerformanceUiModel {
@@ -1098,7 +1157,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    fun getProtectedParameterSection(
+    private fun getProtectedParameterSection(
         shopScoreLevelList:
         List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Int
