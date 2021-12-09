@@ -247,6 +247,15 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickAllFeaturedBrand(categoryName: String) {
+        tracker.sendGeneralEvent(
+            TrackAppUtils
+                .gtmData(CLICK_OS_MICROSITE,
+                    "$OS_MICROSITE$categoryName",
+                    "all brands - $CLICK",
+                    "$CLICK view all"))
+    }
+
+    fun eventClickAllFeaturedBrandOS(categoryName: String) {
         val trackerClickAllFeaturedBrand = TrackAppUtils
             .gtmData(
                 CLICK_OS_MICROSITE,

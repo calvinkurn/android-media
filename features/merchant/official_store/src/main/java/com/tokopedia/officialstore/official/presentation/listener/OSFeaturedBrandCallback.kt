@@ -11,7 +11,7 @@ import com.tokopedia.officialstore.official.presentation.dynamic_channel.Dynamic
  */
 class OSFeaturedBrandCallback (private val dcEventHandler: DynamicChannelEventHandler, private val tracking: OfficialStoreTracking?): FeaturedBrandListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int, applink: String) {
-        tracking?.eventClickAllFeaturedBrand(dcEventHandler.getOSCategory()?.title ?: "")
+        tracking?.eventClickAllFeaturedBrandOS(dcEventHandler.getOSCategory()?.title ?: "")
         dcEventHandler.goToApplink(applink)
     }
 
