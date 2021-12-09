@@ -88,7 +88,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
+    override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         val finalChannelPositionInList = channelPositionInList + 1
         val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionView(
@@ -102,7 +102,7 @@ class HomePlayWidgetAnalyticListener(
                         "$isAutoPlay - " +
                         "${item.poolType} - " +
                         "$promoText - " +
-                        recommendationType,
+                        item.recommendationType,
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
@@ -121,7 +121,7 @@ class HomePlayWidgetAnalyticListener(
         if (trackerMap is HashMap<String, Any>) trackingQueue?.putEETracking(trackerMap)
     }
 
-    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean, recommendationType: String) {
+    override fun onClickChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) {
         val finalChannelPositionInList = channelPositionInList + 1
         val promoText = if (item.promoType.promoText.isNotBlank()) item.promoType.promoText else "no promo"
         val trackerMap = BaseTrackerBuilder().constructBasicPromotionClick(
@@ -136,7 +136,7 @@ class HomePlayWidgetAnalyticListener(
                         "$isAutoPlay - " +
                         "${item.poolType} - " +
                         "$promoText - " +
-                        recommendationType,
+                        item.recommendationType,
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
