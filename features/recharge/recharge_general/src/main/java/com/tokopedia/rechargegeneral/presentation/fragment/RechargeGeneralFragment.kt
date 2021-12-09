@@ -432,7 +432,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             operatorCluster = input
                             // Remove selected operator
                             operator_select.setInputText("", false)
-                            rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryName, operatorCluster)
+                            if (!isAddSBM) {
+                                rechargeGeneralAnalytics.eventChooseOperatorCluster(categoryName, operatorCluster)
+                            }
 
                             val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
                             groups.find { it.name == input }?.let {
@@ -442,7 +444,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     }
 
                     override fun onCustomInputClick() {
-                        rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryName)
+                        if (!isAddSBM) {
+                            rechargeGeneralAnalytics.eventClickOperatorClusterDropdown(categoryName)
+                        }
 
                         val dropdownData = groups.map { TopupBillsInputDropdownData(it.name) }
                         showOperatorSelectDropdown(operator_cluster_select, dropdownData, cluster.text)
@@ -473,7 +477,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             // Save operator id for enquiry
                             resetInputData()
                             operatorId = it.id.toInt()
-                            rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
+                            if (!isAddSBM) {
+                                rechargeGeneralAnalytics.eventChooseOperator(categoryName, operatorName)
+                            }
 
                             adapter.showLoading()
                             getProductList(menuId, it.id)
@@ -482,7 +488,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 }
 
                 override fun onCustomInputClick() {
-                    rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryName)
+                    if (!isAddSBM) {
+                        rechargeGeneralAnalytics.eventClickOperatorListDropdown(categoryName)
+                    }
 
                     val dropdownData = operatorGroup.operators.map {
                         TopupBillsInputDropdownData(it.attributes.name, it.attributes.imageUrl)
@@ -610,7 +618,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     private fun showProductSelectDropdown(field: TopupBillsInputFieldWidget,
                                           data: List<RechargeGeneralProductSelectData>,
                                           title: String = "") {
-        rechargeGeneralAnalytics.eventClickProductListDropdown(categoryName, operatorName)
+        if (!isAddSBM) {
+            rechargeGeneralAnalytics.eventClickProductListDropdown(categoryName, operatorName)
+        }
         context?.let { context ->
             val dropdownBottomSheet = BottomSheetUnify()
             dropdownBottomSheet.setTitle(title)
@@ -631,7 +641,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                             // Show label & store id for enquiry
                             field.setInputText(item.title, false)
                             productId = item.id.toIntOrZero()
-                            rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
+                            if (!isAddSBM) {
+                                rechargeGeneralAnalytics.eventClickProductCard(categoryName, operatorName, item.title.toLowerCase())
+                            }
                             toggleEnquiryButton()
                         }
                     })
@@ -915,7 +927,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean) {
-        if (label.isNotEmpty() && input.isNotEmpty() && isManual) {
+        if (label.isNotEmpty() && input.isNotEmpty() && isManual && !isAddSBM) {
             rechargeGeneralAnalytics.eventInputManualNumber(categoryName, operatorName, position + 1)
         }
 
@@ -1188,8 +1200,10 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-        rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, productName)
-        rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
+        if (!isAddSBM){
+            rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, productName)
+            rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
+        }
 
         processCheckout()
     }
