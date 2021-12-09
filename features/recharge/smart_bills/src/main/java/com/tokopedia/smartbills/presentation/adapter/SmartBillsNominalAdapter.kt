@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.view_smart_bills_item_nominal.view.*
 
 class SmartBillsNominalAdapter(val listener: SmartBillNominalListener) : RecyclerView.Adapter<SmartBillsNominalAdapter.SmartBillsNominalViewHolder>() {
 
-    var listRechargeProduct = emptyList<RechargeProduct>()
+    private var listRechargeProduct = emptyList<RechargeProduct>()
 
     inner class SmartBillsNominalViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
@@ -35,6 +35,11 @@ class SmartBillsNominalAdapter(val listener: SmartBillNominalListener) : Recycle
                 }
             }
         }
+    }
+
+    fun setDataListRechargeProduct(listProduct: List<RechargeProduct>){
+        listRechargeProduct = listProduct
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
