@@ -326,6 +326,9 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             swipeRefreshLayout.isEnabled = true
             swipeRefreshLayout.setOnRefreshListener {
                 doRefresh()
+                isBulkDeleteShow = false
+                listBulkDelete.clear()
+                wishlistV2Adapter.hideCheckbox()
                 binding?.run {
                     containerDelete.gone()
                     clWishlistHeader.visible()
