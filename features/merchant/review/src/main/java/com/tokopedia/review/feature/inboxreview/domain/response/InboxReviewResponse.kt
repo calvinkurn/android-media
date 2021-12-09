@@ -70,7 +70,13 @@ data class InboxReviewResponse(
                 val user: User = User(),
                 @SerializedName("isKejarUlasan")
                 @Expose
-                val isKejarUlasan: Boolean = false
+                val isKejarUlasan: Boolean = false,
+                @SerializedName("badRatingReasonFmt")
+                @Expose
+                val badRatingReasonFmt: String = "",
+                @SerializedName("ratingDisclaimer")
+                @Expose
+                val ratingDisclaimer: String = ""
         ) {
             data class Attachment(
                     @Expose

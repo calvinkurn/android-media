@@ -330,6 +330,7 @@
     <string name="title_buyer_order_list">Daftar Transaksi</string>
     <string name="title_buyer_request_cancel">Ajukan Pembatalan</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
+    <string name="title_wishlist_v2">Wishlist</string>
 
     <!-- Dynamic feature for cart -->
     <string name="checkout_module_title_activity_cart">Keranjang</string>

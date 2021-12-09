@@ -14,9 +14,6 @@ object ApplinkConstInternalMarketplace {
 
     const val INTERNAL_MARKETPLACE = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MARKETPLACE}"
 
-    // StoreSettingActivity
-    const val STORE_SETTING = "$INTERNAL_MARKETPLACE/store-setting"
-
     // QrScannerActivity
     const val QR_SCANNEER = "$INTERNAL_MARKETPLACE/qr-scanner/{need_result}/"
 
@@ -263,4 +260,7 @@ object ApplinkConstInternalMarketplace {
     const val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
 
     const val ARGS_IS_UPGRADE = "is_upgrade"
+
+    const val SHOP_OPERATIONAL_HOUR_BOTTOM_SHEET = "$INTERNAL_MARKETPLACE/shop/widget/operational-hour/{shop_id}/"
+
 }

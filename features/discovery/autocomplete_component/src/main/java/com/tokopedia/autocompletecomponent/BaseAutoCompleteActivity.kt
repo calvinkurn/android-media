@@ -261,22 +261,29 @@ open class BaseAutoCompleteActivity: BaseActivity(),
         val parameter = searchParameter.getSearchParameterMap()
         val pageSource = Dimension90Utils.getDimension90(parameter)
         val isInitialState = query.isEmpty()
+        val fallback = { trackEventManualSearch(parameter, queryOrHint) }
 
-        when {
-            isTokoNow(parameter) ->
-                autoCompleteTracking.eventClickSubmitTokoNow(queryOrHint)
-            isInitialState ->
-                autoCompleteTracking.eventClickSubmitInitialState(
-                    queryOrHint,
-                    pageSource,
-                    searchResultApplink
-                )
-            else ->
-                autoCompleteTracking.eventClickSubmitAutoComplete(
-                    queryOrHint,
-                    pageSource,
-                )
-        }
+        if (isInitialState)
+            autoCompleteTracking.eventClickSubmitInitialState(
+                queryOrHint,
+                pageSource,
+                searchResultApplink,
+                fallback,
+            )
+        else
+            autoCompleteTracking.eventClickSubmitAutoComplete(
+                queryOrHint,
+                pageSource,
+                searchResultApplink,
+                fallback,
+            )
+    }
+
+    private fun trackEventManualSearch(parameter: Map<String, Any>, keyword: String) {
+        if (isTokoNow(parameter))
+            autoCompleteTracking.eventClickSubmitTokoNow(keyword)
+        else
+            autoCompleteTracking.eventClickSubmit(keyword)
     }
 
     private fun clearFocusSearchView() {

@@ -84,7 +84,8 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
     private val shopInfoNoteLoading: View?
         get() = fragmentShopInfoBinding?.layoutPartialShopInfoNote?.loading
     private var fragmentShopInfoBinding: FragmentShopInfoBinding? = null
-
+    private val userId: String
+        get() = shopViewModel?.userId().orEmpty()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentShopInfoBinding = FragmentShopInfoBinding.inflate(inflater, container, false)
         return fragmentShopInfoBinding?.root
@@ -129,10 +130,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     override fun onNoteClicked(position: Long, shopNoteUiModel: ShopNoteUiModel) {
         shopInfo?.run {
-            shopPageTracking?.clickReadNotes(
-                    shopViewModel?.isMyShop(shopId) == true, position.toInt(),
-                    CustomDimensionShopPage.create(shopId, isOfficial == 1,
-                            isGold == 1))
+            val isMyShop = shopViewModel?.isMyShop(shopId) ?: false
+            if(!isMyShop) {
+                shopPageTracking?.clickReadNotes(shopId, userId)
+            }
             startActivity(ShopNoteDetailActivity.createIntent(
                     activity,
                     shopId,
