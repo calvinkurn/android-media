@@ -43,7 +43,7 @@ class OfficialStoreTracking(context: Context) {
     private val EVENT_ATTRIBUTION = "attribution"
     private val EVENT_LABEL_POPULAR_BRANDS = "%s - %s - %s"
     private val IMPRESSION_BANNER = "impression banner"
-    private val EVENT_ACTION_POPULAR_BRANDS = "%s - %s"
+    private val EVENT_POPULAR_BRANDS = "%s - %s"
     private val PROMOTIONS_ID_POPULAR_BRANDS = "%s_%s"
     private val PROMOTIONS = "promotions"
     private val PROMOTIONS_NAME_POPULAR_BRANDS = "%s%s - %s - %s"
@@ -61,6 +61,7 @@ class OfficialStoreTracking(context: Context) {
     private val FIELD_BUSINESS_UNIT = "businessUnit"
     private val FIELD_CURRENT_SITE = "currentSite"
     private val USER_ID = "userId"
+    private val REFERENCE_POPULAR_BRANDS = "reference: row 18"
 
     private val CLICK_OS_MICROSITE = "clickOSMicrosite"
     private val PROMO_CLICK = "promoClick"
@@ -73,7 +74,7 @@ class OfficialStoreTracking(context: Context) {
     private val OS_MICROSITE_SINGLE = "os microsite"
 
     private val ALL_BRANDS = "all brands -"
-    private val VIEW_ALL = "view all -"
+    private val VIEW_ALL = "view all"
 
     private val FIELD_PRODUCTS = "products"
     private val FIELD_PRODUCT_NAME = "name"
@@ -248,11 +249,11 @@ class OfficialStoreTracking(context: Context) {
 
     fun eventClickAllShop(categoryName: String) {
         tracker.sendGeneralEvent(
-            TrackAppUtils
-                .gtmData(CLICK_OS_MICROSITE,
-                    "$OS_MICROSITE$categoryName",
-                    "all brands - $CLICK",
-                    "$CLICK view all"))
+                TrackAppUtils
+                        .gtmData(CLICK_OS_MICROSITE,
+                            "$OS_MICROSITE$categoryName",
+                            "all brands - $CLICK",
+                            "$CLICK view all"))
     }
 
     fun eventClickShop(
@@ -334,12 +335,14 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickAllFeaturedBrandOS(categoryName: String) {
+        val eventAction = "$ALL_BRANDS $CLICK"
+        val eventLabelFirstFormat = "$CLICK $VIEW_ALL"
         val trackerClickAllFeaturedBrand = TrackAppUtils
             .gtmData(
                 CLICK_OS_MICROSITE,
                 OS_MICROSITE_SINGLE,
-                "$ALL_BRANDS $CLICK",
-                "$CLICK $VIEW_ALL $categoryName"
+                eventAction,
+                EVENT_POPULAR_BRANDS.format(eventLabelFirstFormat, categoryName)
             )
         trackerClickAllFeaturedBrand[FIELD_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT_DEFAULT
         trackerClickAllFeaturedBrand[FIELD_CURRENT_SITE] = VALUE_CURRENT_SITE_DEFAULT
@@ -358,7 +361,7 @@ class OfficialStoreTracking(context: Context) {
         val data = DataLayer.mapOf(
             EVENT, PROMO_CLICK,
             EVENT_CATEGORY, OS_MICROSITE_SINGLE,
-            EVENT_ACTION, EVENT_ACTION_POPULAR_BRANDS.format(CLICK_BANNER, POPULAR_BRANDS),
+            EVENT_ACTION, EVENT_POPULAR_BRANDS.format(CLICK_BANNER, POPULAR_BRANDS),
             EVENT_LABEL, EVENT_LABEL_POPULAR_BRANDS.format(POPULAR_BRANDS, shopId, categoryName),
             ECOMMERCE, DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
@@ -372,7 +375,7 @@ class OfficialStoreTracking(context: Context) {
                                 headerName
                             ),
                             FIELD_PRODUCT_POSITION, "$shopPosition",
-                            FIELD_PRODUCT_CREATIVE, "$creativeName reference: row 18"
+                            FIELD_PRODUCT_CREATIVE, "$creativeName $REFERENCE_POPULAR_BRANDS"
                         )
                     )
                 )
@@ -396,7 +399,7 @@ class OfficialStoreTracking(context: Context) {
         val data = DataLayer.mapOf(
             EVENT, PROMO_VIEW,
             EVENT_CATEGORY, OS_MICROSITE_SINGLE,
-            EVENT_ACTION, EVENT_ACTION_POPULAR_BRANDS.format(IMPRESSION_BANNER, POPULAR_BRANDS),
+            EVENT_ACTION, EVENT_POPULAR_BRANDS.format(IMPRESSION_BANNER, POPULAR_BRANDS),
             EVENT_LABEL, EVENT_LABEL_POPULAR_BRANDS.format(POPULAR_BRANDS, shopId, categoryName),
             USER_ID, userId,
             ECOMMERCE, DataLayer.mapOf(
