@@ -325,16 +325,21 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         binding?.run {
             swipeRefreshLayout.isEnabled = true
             swipeRefreshLayout.setOnRefreshListener {
-                doRefresh()
-                isBulkDeleteShow = false
-                listBulkDelete.clear()
-                wishlistV2Adapter.hideCheckbox()
-                binding?.run {
-                    containerDelete.gone()
-                    clWishlistHeader.visible()
-                    wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-                }
+                setRefreshing()
             }
+        }
+    }
+
+    private fun setRefreshing() {
+        doRefresh()
+        isBulkDeleteShow = false
+        listBulkDelete.clear()
+        wishlistV2Adapter.hideCheckbox()
+
+        binding?.run {
+            containerDelete.gone()
+            clWishlistHeader.visible()
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
         }
     }
 
@@ -457,8 +462,8 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                             }
 
                             showToaster(msg, btnText, Toaster.TYPE_NORMAL)
-                            listBulkDelete.clear()
-                            doRefresh()
+                            setRefreshing()
+                            setSwipeRefreshLayout()
 
                         } else {
                             context?.getString(R.string.wishlist_v2_common_error_msg)?.let { errorDefaultMsg -> showToaster(errorDefaultMsg, "", Toaster.TYPE_ERROR) }
@@ -570,6 +575,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 sortFilterPrefix.setOnClickListener {
                     resetAllFilters()
                     paramWishlistV2 = WishlistV2Params()
+                    if (searchQuery.isNotEmpty()) paramWishlistV2.query = searchQuery
                     doRefresh()
                     WishlistV2Analytics.clickXChipsToClearFilter()
                 }

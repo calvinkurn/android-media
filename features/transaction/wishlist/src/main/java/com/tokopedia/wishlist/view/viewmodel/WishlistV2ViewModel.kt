@@ -167,11 +167,14 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
                 if (wishlistV2Response.page == 1) {
                     mapToTopads(recommPosition, listData)
                 } else {
-                    if (wishlistV2Response.items.size >= recommPosition && wishlistV2Response.page % 2 == 0) {
-                        mapToRecommendation(recommPosition, listData)
-
+                    if (wishlistV2Response.items.size >= recommPosition) {
+                        if (wishlistV2Response.page % 2 == 0) {
+                            mapToRecommendation(recommPosition, listData)
+                        } else {
+                            mapToTopads(recommPosition, listData)
+                        }
                     } else {
-                        mapToTopads(recommPosition, listData)
+                        mapToRecommendation(0, listData)
                     }
                 }
             }
