@@ -16,12 +16,11 @@ import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_EDIT
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_REMOVE
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTIVE
+import com.tokopedia.topads.common.data.internal.ParamObject.BID_SETTINGS
 import com.tokopedia.topads.common.data.internal.ParamObject.BID_TYPE
 import com.tokopedia.topads.common.data.internal.ParamObject.BUDGET_LIMITED
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
-import com.tokopedia.topads.common.data.internal.ParamObject.EDIT_PAGE
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
-import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_ID
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUP_NAME
 import com.tokopedia.topads.common.data.internal.ParamObject.INPUT
 import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD_TYPE_NEGATIVE_PHRASE
@@ -110,6 +109,7 @@ class TopAdsCreateUseCase @Inject constructor(val userSession: UserSessionInterf
         }
         group?.status = PUBLISHED
         group?.strategies = strategy
+        group?.suggestionBidSettings = dataKeyword[BID_SETTINGS] as? List<GroupEditInput.Group.TopadsSuggestionBidSetting>?
         if (isBudgetLimited == false) {
             group?.dailyBudget = 0.0
         } else
