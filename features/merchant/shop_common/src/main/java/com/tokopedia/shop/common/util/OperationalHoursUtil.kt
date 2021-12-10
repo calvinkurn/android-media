@@ -28,22 +28,19 @@ object OperationalHoursUtil {
     private const val DEFAULT_FIRST_INDEX = 0
     private const val MONTH_INDEX = 1
     private const val YEAR_INDEX = 2
-    private const val SIMPLE_MONTH_LIMIT_INDEX = 3
-    private const val ZERO_STRING_PREFIX = "0"
-    private const val SINGLE_DIGIT_DATE_LIMIT = 10
     private const val SUBSTRING_HOUR_TIME_INDEX = 2
     private const val SUBSTRING_END_TIME_INDEX = 5
 
     // DateTime format
-    const val ALL_DAY_HOURS = "24 Jam"
+    private const val ALL_DAY_HOURS = "24 Jam"
+    private const val DEFAULT_TIMEZONE = "WIB"
+    private const val HOUR = "Jam"
     const val ALL_DAY = "Buka $ALL_DAY_HOURS"
     const val HOLIDAY = "Libur rutin"
     const val CAN_ATC_TEXT = "Produkmu bisa dibeli"
     const val CANNOT_ATC_TEXT = "Produkmu tidak bisa dibeli"
     var HOLIDAY_CAN_ATC = "$HOLIDAY ($CAN_ATC_TEXT)"
     var HOLIDAY_CANNOT_ATC = "$HOLIDAY ($CANNOT_ATC_TEXT)"
-    private const val DEFAULT_TIMEZONE = "WIB"
-    private const val HOUR = "Jam"
 
     const val CAN_ATC_STATUS = 1
     const val CANNOT_ATC_STATUS = 0
@@ -56,7 +53,8 @@ object OperationalHoursUtil {
     private const val DEFAULT_MINUTE = 59
     private const val DEFAULT_SECONDS = 59
     private val defaultLocale = Locale(INDONESIA_LANGUAGE_ID, INDONESIA_COUNTRY_ID)
-    private val defaultLocalFormatter = SimpleDateFormat("dd MMMM yyyy", defaultLocale)
+    private val defaultLocalFormatter = SimpleDateFormat("d MMMM yyyy", defaultLocale)
+    private val defaultLocalFormatterShort = SimpleDateFormat("d MMM yyyy", defaultLocale)
     private val defaultLocalDayFormatter = SimpleDateFormat("EEE", defaultLocale)
     private val shortDateFormatter = SimpleDateFormat("dd/MM/yyyy", defaultLocale)
 
@@ -160,15 +158,16 @@ object OperationalHoursUtil {
     }
 
     fun toIndonesianDateRangeFormat(startDate: Date, endDate: Date, isShortDateFormat: Boolean = false): String {
-        val formattedStartDate = toIndonesianDateFormat(startDate)
-        val formattedEndDate = toIndonesianDateFormat(endDate)
-        val formattedStartDateParts = formattedStartDate.split(" ")
-        val formattedEndDateParts = formattedEndDate.split(" ")
-        val isSameYear = formattedStartDateParts[YEAR_INDEX] == formattedStartDateParts[YEAR_INDEX]
-        val isSameMonth = formattedStartDateParts[MONTH_INDEX] == formattedStartDateParts[MONTH_INDEX]
+        val formattedStartDate = toIndonesianDateFormat(startDate, isRequireSimpleFormat = isShortDateFormat)
+        val formattedEndDate = toIndonesianDateFormat(endDate, isRequireSimpleFormat = isShortDateFormat)
+        val formattedStartDateParts = formattedStartDate.split(" ").toMutableList()
+        val formattedEndDateParts = formattedEndDate.split(" ").toMutableList()
+        val isSameYear = formattedStartDateParts[YEAR_INDEX] == formattedEndDateParts[YEAR_INDEX]
+        val isSameMonth = formattedStartDateParts[MONTH_INDEX] == formattedEndDateParts[MONTH_INDEX]
+
         var formattedDates = if (formattedStartDate == formattedEndDate) {
             // given start date && end date are same
-            // 15 Oktober 21
+            // 15 Oktober 2021
             formattedStartDate
         } else if (isSameMonth && isSameYear) {
             // given start date && end date different but same month and year
@@ -184,10 +183,8 @@ object OperationalHoursUtil {
         }
 
         if (isShortDateFormat) {
-            // change month Oktober -> Okt and change year 2021 -> 21
-            formattedStartDateParts[MONTH_INDEX].substring(DEFAULT_FIRST_INDEX, DEFAULT_FIRST_INDEX + 2)
-            formattedStartDateParts[YEAR_INDEX].substring(DEFAULT_FIRST_INDEX + 2)
-
+            formattedStartDateParts[YEAR_INDEX] = formattedStartDateParts[YEAR_INDEX].removeRange(DEFAULT_FIRST_INDEX, DEFAULT_FIRST_INDEX+2)
+            formattedEndDateParts[YEAR_INDEX] = formattedEndDateParts[YEAR_INDEX].removeRange(DEFAULT_FIRST_INDEX, DEFAULT_FIRST_INDEX+2)
             formattedDates = if (formattedStartDate == formattedEndDate) {
                 // given start date && end date are same
                 // 15 Okt 21
@@ -195,34 +192,34 @@ object OperationalHoursUtil {
             } else if (isSameMonth && isSameYear) {
                 // given start date && end date different but same month and year
                 // 24 - 30 Okt
-                "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} - ${formattedEndDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDate[MONTH_INDEX]}"
+                "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} - ${formattedEndDateParts[DEFAULT_FIRST_INDEX]} ${formattedEndDateParts[MONTH_INDEX]}"
             } else if (!isSameMonth && isSameYear) {
                 // given start date && end date different month but same year
                 // 24 Feb - 30 Mar
-                "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDateParts[MONTH_INDEX]}  " +
-                        "- ${formattedEndDateParts[DEFAULT_FIRST_INDEX]} ${formattedEndDateParts[MONTH_INDEX]}"
+                "${formattedStartDateParts[DEFAULT_FIRST_INDEX]} ${formattedStartDateParts[MONTH_INDEX]}" +
+                        " - ${formattedEndDateParts[DEFAULT_FIRST_INDEX]} ${formattedEndDateParts[MONTH_INDEX]}"
             } else {
-                "$formattedStartDate - $formattedEndDate"
+                "${formattedStartDateParts.joinToString(" ")} - ${formattedEndDateParts.joinToString(" ")}"
             }
         }
 
         return formattedDates
     }
 
-    fun toIndonesianDateFormat(date: Date, isRequireSimpleFormat: Boolean = false): String {
-        val fullDate = defaultLocalFormatter.format(date)
-        val fullDateParts = fullDate.split(" ")
-        val formattedDate = if (fullDateParts[DEFAULT_FIRST_INDEX].toInt() < SINGLE_DIGIT_DATE_LIMIT) {
-            fullDateParts[DEFAULT_FIRST_INDEX].removePrefix(ZERO_STRING_PREFIX)
+    /**
+     * Format to Indonesian date
+     * if isRequireSimpleFormat, then 15 Okt 2021, otherwise 15 Oktober 2021
+     * @return [String]
+     */
+    fun toIndonesianDateFormat(date: Date, isRequireSimpleFormat: Boolean = false, isShowYear: Boolean = true): String {
+        val fullDate = if (isRequireSimpleFormat) defaultLocalFormatterShort.format(date) else defaultLocalFormatter.format(date)
+        return if (!isShowYear) {
+            val dateWithoutYear = fullDate.split(" ").toMutableList().apply {
+                removeAt(lastIndex)
+            }.joinToString(" ")
+            dateWithoutYear
         } else {
-            fullDateParts[DEFAULT_FIRST_INDEX]
-        }
-        val formattedMonth = fullDateParts[MONTH_INDEX].substring(DEFAULT_FIRST_INDEX, SIMPLE_MONTH_LIMIT_INDEX)
-
-        return if (isRequireSimpleFormat) {
-            "$formattedDate $formattedMonth"
-        } else {
-            defaultLocalFormatter.format(date)
+            fullDate
         }
     }
 

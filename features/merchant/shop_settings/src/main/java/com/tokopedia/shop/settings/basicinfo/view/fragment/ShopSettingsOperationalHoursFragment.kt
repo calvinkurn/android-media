@@ -574,14 +574,14 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
                 startDateTextField?.textFieldInput?.setText(getString(
                         R.string.shop_operational_hour_selected_holiday_date_text,
                         OperationalHoursUtil.toSimpleIndonesianDayFormat(selectedStartDate),
-                        OperationalHoursUtil.toIndonesianDateFormat(selectedStartDate, isRequireSimpleFormat = true)
+                        OperationalHoursUtil.toIndonesianDateFormat(selectedStartDate, isRequireSimpleFormat = true, isShowYear = false)
                 ))
 
                 // set text field for existing end date
                 endDateTextField?.textFieldInput?.setText(getString(
                         R.string.shop_operational_hour_selected_holiday_date_text,
                         OperationalHoursUtil.toSimpleIndonesianDayFormat(selectedEndDate),
-                        OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = true)
+                        OperationalHoursUtil.toIndonesianDateFormat(selectedEndDate, isRequireSimpleFormat = true, isShowYear = false)
                 ))
             }
             holidayBottomSheet = BottomSheetUnify().apply {
@@ -622,7 +622,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         startDateTextField?.textFieldInput?.setText(getString(
                 R.string.shop_operational_hour_selected_holiday_date_text,
                 OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
-                OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true)
+                OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
         ))
         endDateTextField?.textFieldInput?.text?.clear()
     }
@@ -632,7 +632,7 @@ class ShopSettingsOperationalHoursFragment : BaseDaggerFragment(), HasComponent<
         endDateTextField?.textFieldInput?.setText(getString(
                 R.string.shop_operational_hour_selected_holiday_date_text,
                 OperationalHoursUtil.toSimpleIndonesianDayFormat(date),
-                OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true)
+                OperationalHoursUtil.toIndonesianDateFormat(date, isRequireSimpleFormat = true, isShowYear = false)
         ))
     }
 
