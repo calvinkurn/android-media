@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.localizationchooseaddress.common.ChosenAddress
@@ -40,11 +41,11 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
         }
 
         val request = GraphqlRequest(QUERY, CouponListRecommendationResponse::class.java, params)
-//        return graphqlRepository.response(listOf(request)).getSuccessData()
+        return graphqlRepository.response(listOf(request)).getSuccessData()
 
         // Todo : remove dummy
-        val responseText = GraphqlHelper.loadRawString(tmpContext?.resources, R.raw.dummy_promo_list_response)
-        return Gson().fromJson(responseText, CouponListRecommendationResponse::class.java)
+//        val responseText = GraphqlHelper.loadRawString(tmpContext?.resources, R.raw.dummy_promo_list_response)
+//        return Gson().fromJson(responseText, CouponListRecommendationResponse::class.java)
     }
 
     companion object {
@@ -90,11 +91,11 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                             is_enabled
                             is_collapsed
                             tags
-            //                id
-            //                coupon_groups {
-            //                    id
-            //                    count
-            //                }
+                            id
+                            coupon_groups {
+                                id
+                                count
+                            }
                             coupons {
                                 code
                                 title
@@ -118,11 +119,11 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 is_enabled
                                 is_collapsed
                                 tags
-            //                    id
-            //                    coupon_groups {
-            //                        id
-            //                        count
-            //                    }
+                                id
+                                coupon_groups {
+                                    id
+                                    count
+                                }
                                 coupons {
                                     code
                                     title
@@ -150,14 +151,14 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                         title
                                         content
                                     }
-            //                        is_highlighted
-            //                        group_id
-            //                        is_group_header
-            //                        promo_infos {
-            //                             type
-            //                             title
-            //                             icon
-            //                        }
+                                    is_highlighted
+                                    group_id
+                                    is_group_header
+                                    promo_infos {
+                                         type
+                                         title
+                                         icon
+                                    }
                                 }
                             }
                         }
@@ -176,10 +177,10 @@ class GetCouponListRecommendationUseCase @Inject constructor(@ApplicationContext
                                 }
                             }
                         }
-            //            section_tabs {
-            //                id
-            //                title
-            //            }
+                        section_tabs {
+                            id
+                            title
+                        }
                     }
                 }
             }
