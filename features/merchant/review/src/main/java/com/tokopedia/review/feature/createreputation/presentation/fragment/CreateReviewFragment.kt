@@ -453,13 +453,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId)
-        if (incentiveHelper.isBlank()) incentiveHelper =
-            context?.getString(R.string.review_create_text_area_eligible) ?: ""
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(
             this,
             text,
             incentiveHelper,
-            createReviewViewModel.isUserEligible()
+            hasIncentive(),
+            hasOngoingChallenge()
         )
         (textAreaBottomSheet as? BottomSheetUnify)?.setTitle(binding?.createReviewTextAreaTitle?.text.toString())
         fragmentManager?.let { textAreaBottomSheet?.show(it, "") }
@@ -581,7 +580,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
             binding?.createReviewAnonymousCheckbox?.isChecked ?: false,
             isEditMode,
             feedbackId,
-            createReviewViewModel.isUserEligible() && isReviewComplete()
+            hasIncentive() && isReviewComplete()
         )
         if (isEditMode) {
             if (reviewMessage?.isBlank() == true) {
@@ -599,7 +598,7 @@ class CreateReviewFragment : BaseDaggerFragment(),
                 binding?.createReviewAnonymousCheckbox?.isChecked ?: false
             )
         } else {
-            if (!isReviewComplete() && isUserEligible()) {
+            if (!isReviewComplete() && hasIncentive()) {
                 showReviewIncompleteDialog()
                 return
             }
@@ -608,8 +607,12 @@ class CreateReviewFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun isUserEligible(): Boolean {
-        return createReviewViewModel.isUserEligible()
+    private fun hasIncentive(): Boolean {
+        return createReviewViewModel.hasIncentive()
+    }
+
+    private fun hasOngoingChallenge(): Boolean {
+        return createReviewViewModel.hasOngoingChallenge()
     }
 
     private fun submitNewReview() {
@@ -1163,19 +1166,34 @@ class CreateReviewFragment : BaseDaggerFragment(),
     }
 
     private fun setHelperText(textLength: Int) {
-        if (!createReviewViewModel.isUserEligible()) {
-            return
-        }
         binding?.incentiveHelperText?.apply {
             incentiveHelper = when {
                 textLength >= REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                    context?.getString(R.string.review_create_text_area_eligible) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_text_area_eligible_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_text_area_eligible_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
                 textLength < REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                    context?.getString(R.string.review_create_text_area_partial) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_text_area_partial_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_text_area_partial_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
                 else -> {
-                    context?.getString(R.string.review_create_text_area_empty) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_text_area_empty_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_text_area_empty_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
             }
             text = incentiveHelper

@@ -35,7 +35,9 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockkObject
 import org.junit.Assert
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.util.concurrent.CountDownLatch
@@ -156,7 +158,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getProductIncentiveOvo()
 
         verifyOvoIncentiveUseCaseCalled()
-        assertTrue(viewModel.isUserEligible())
+        assertTrue(viewModel.hasIncentive())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
     }
 
@@ -167,7 +169,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getProductIncentiveOvo()
 
         verifyOvoIncentiveUseCaseCalled()
-        assertFalse(viewModel.isUserEligible())
+        assertFalse(viewModel.hasIncentive())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Fail)
     }
 
@@ -609,7 +611,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
         verifyOvoIncentiveUseCaseCalled()
         assertFalse(viewModel.isTemplateAvailable())
-        assertTrue(viewModel.isUserEligible())
+        assertTrue(viewModel.hasIncentive())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
     }
 
@@ -635,7 +637,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         verifyReviewTemplatesSuccess(Success(expectedResponse.productrevGetPersonalizedReviewTemplate.templates))
         verifyOvoIncentiveValueEquals(expectedIncentivesResponse)
         assertTrue(viewModel.isTemplateAvailable())
-        assertFalse(viewModel.isUserEligible())
+        assertFalse(viewModel.hasIncentive())
     }
 
     @Test

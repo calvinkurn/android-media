@@ -337,15 +337,21 @@ class CreateReviewViewModel @Inject constructor(
         return userSessionInterface.userId
     }
 
-    fun isUserEligible(): Boolean {
+    fun hasIncentive(): Boolean {
         return incentiveOvo.value?.let {
             it is CoroutineSuccess && it.data.productrevIncentiveOvo?.amount.orZero() != Int.ZERO
         }.orFalse()
     }
 
+    fun hasOngoingChallenge(): Boolean {
+        return incentiveOvo.value?.let {
+            it is CoroutineSuccess && it.data.productrevIncentiveOvo?.amount == Int.ZERO
+        }.orFalse()
+    }
+
     fun isTemplateAvailable(): Boolean {
         return ((reviewTemplates.value as? com.tokopedia.usecase.coroutines.Success)?.data?.isNotEmpty()
-            ?: false) && !isUserEligible()
+            ?: false) && !hasIncentive()
     }
 
     fun getImageCount(): Int {

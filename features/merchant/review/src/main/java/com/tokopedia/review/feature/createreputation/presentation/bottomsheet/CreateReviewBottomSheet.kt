@@ -217,15 +217,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     override fun onExpandButtonClicked(text: String) {
         CreateReviewTracking.onExpandTextBoxClicked(getOrderId(), productId)
-        if (isUserEligible()) {
-            if (incentiveHelper.isBlank()) incentiveHelper =
-                context?.getString(R.string.review_create_text_area_eligible) ?: ""
-        }
         textAreaBottomSheet = CreateReviewTextAreaBottomSheet.createNewInstance(
             this,
             text,
             incentiveHelper,
-            isUserEligible(),
+            hasIncentive(),
+            hasOngoingChallenge(),
             getTemplatesForTextArea(),
             textArea?.getPlaceHolder() ?: ""
         )
@@ -416,7 +413,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 updateButtonState(isGoodRating, textArea?.isEmpty()?.not() ?: false)
                 createReviewViewModel.updateProgressBarFromRating(isGoodRating)
                 if (isGoodRating) {
-                    if (!isUserEligible()) {
+                    if (!hasIncentive()) {
                         showTemplates()
                     }
                     if (shouldShowBadRatingReasons()) badRatingCategoryRecyclerView?.hide()
@@ -700,14 +697,14 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 getReviewMessageLength(),
                 getNumberOfPictures(),
                 isAnonymous(),
-                isUserEligible(),
+                hasIncentive(),
                 isTemplateAvailable(),
                 templatesSelectedCount,
                 getOrderId(),
                 productId,
                 getUserId()
             )
-            if (!isReviewComplete() && isUserEligible()) {
+            if (!isReviewComplete() && hasIncentive()) {
                 showReviewIncompleteDialog()
             } else {
                 submitNewReview()
@@ -813,7 +810,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
                 getReviewMessageLength(),
                 getNumberOfPictures(),
                 isAnonymous(),
-                isUserEligible(),
+                hasIncentive(),
                 isTemplateAvailable(),
                 templatesSelectedCount,
                 getOrderId(),
@@ -1032,7 +1029,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun handleDismiss() {
-        if (isUserEligible()) {
+        if (hasIncentive()) {
             showIncentivesExitWarningDialog()
             return
         }
@@ -1090,19 +1087,34 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun setHelperText(textLength: Int) {
-        if (!isUserEligible()) {
-            return
-        }
         incentivesHelperText?.apply {
             incentiveHelper = when {
                 textLength >= CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD -> {
-                    context?.getString(R.string.review_create_bottom_sheet_text_area_eligible) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_bottom_sheet_text_area_eligible_for_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
                 textLength < CreateReviewFragment.REVIEW_INCENTIVE_MINIMUM_THRESHOLD && textLength != 0 -> {
-                    context?.getString(R.string.review_create_bottom_sheet_text_area_partial) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_bottom_sheet_text_area_partial_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_bottom_sheet_text_area_partial_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
                 else -> {
-                    context?.getString(R.string.review_create_bottom_sheet_text_area_empty) ?: ""
+                    if (hasIncentive()) {
+                        context?.getString(R.string.review_create_bottom_sheet_text_area_empty_incentive) ?: ""
+                    } else if (hasOngoingChallenge()) {
+                        context?.getString(R.string.review_create_bottom_sheet_text_area_empty_challenge) ?: ""
+                    } else {
+                        ""
+                    }
                 }
             }
             text = incentiveHelper
@@ -1157,8 +1169,12 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         return createReviewViewModel.getImageCount()
     }
 
-    private fun isUserEligible(): Boolean {
-        return createReviewViewModel.isUserEligible()
+    private fun hasIncentive(): Boolean {
+        return createReviewViewModel.hasIncentive()
+    }
+
+    private fun hasOngoingChallenge(): Boolean {
+        return createReviewViewModel.hasOngoingChallenge()
     }
 
     private fun isTemplateAvailable(): Boolean {
@@ -1309,7 +1325,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
     }
 
     private fun setTemplateVisibility() {
-        if (isGoodRating() && !isUserEligible()) {
+        if (isGoodRating() && !hasIncentive()) {
             showTemplates()
         } else {
             hideTemplates()
