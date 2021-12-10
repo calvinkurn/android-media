@@ -4,12 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 data class AffiliateWithdrawalDetailData(
     @SerializedName("getAffiliateWithdrawalDetail")
-    val data: WithdrawalInfoResult
+    val data: WithdrawalInfoResult?
 )
 
 data class WithdrawalInfoResult(
         @SerializedName("Data")
-    val withdrawalData: WithdrawalInfoData,
+    val withdrawalData: WithdrawalInfoData?,
 )
 
 data class WithdrawalInfoData(

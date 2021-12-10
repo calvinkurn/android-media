@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class AffiliateBalance(
         @SerializedName("getAffiliateBalance")
-        var affiliateBalance: AffiliateBalance
+        var affiliateBalance: AffiliateBalance?
 ) {
     data class AffiliateBalance(
             @SerializedName("Data")

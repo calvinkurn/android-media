@@ -23,9 +23,9 @@ class AffiliateWithdrawalDetailsUseCase@Inject constructor(
     }
 
     private fun parseResponse(data: AffiliateWithdrawalDetailData, onSuccess: (WithdrawalInfoData) -> Unit, onError: (Throwable) -> Unit) {
-        if (data.data.withdrawalData.isSuccess == 1) {
+        if (data.data?.withdrawalData?.isSuccess == 1) {
             onSuccess(data.data.withdrawalData)
-        } else onError(NullPointerException(data.data.withdrawalData.error.message))
+        } else onError(NullPointerException(data.data?.withdrawalData?.error?.message))
     }
 
     companion object {

@@ -4,11 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class AffiliateTransactionHistoryData(
         @SerializedName("getAffiliateTransactionHistory")
-        var getAffiliateTransactionHistory: GetAffiliateTransactionHistory
+        var getAffiliateTransactionHistory: GetAffiliateTransactionHistory?
 ) {
     data class GetAffiliateTransactionHistory(
             @SerializedName("Data")
-            var `data`: Data
+            var `data`: Data?
     ) {
         data class Data(
                 @SerializedName("EndDate")

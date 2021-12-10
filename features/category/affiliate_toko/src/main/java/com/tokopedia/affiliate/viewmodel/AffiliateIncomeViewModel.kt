@@ -30,8 +30,9 @@ class AffiliateIncomeViewModel : BaseViewModel(){
 
     fun getAffiliateBalance() {
         launchCatchError(block = {
-            affiliateBalanceData.value =
-                    affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance.data
+                    affiliateBalanceDataUseCase.getAffiliateBalance().affiliateBalance?.data?.let {
+                        affiliateBalanceData.value = it
+                    }
         }, onError = {
             it.printStackTrace()
         })
@@ -40,7 +41,7 @@ class AffiliateIncomeViewModel : BaseViewModel(){
     fun getAffiliateTransactionHistory(page: Int) {
         shimmerVisibility.value = true
         launchCatchError(block = {
-            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt() ?: 0, page).getAffiliateTransactionHistory.data.let {
+            affiliateTransactionHistoryUseCase.getAffiliateTransactionHistory(selectedDateValue.toInt() ?: 0, page).getAffiliateTransactionHistory?.data?.let {
                 hasNext = it.hasNext
                 convertDataToVisitables(it)?.let { visitables ->
                     affiliateDataList.value = visitables
