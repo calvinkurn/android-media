@@ -36,6 +36,9 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoCleared
@@ -152,7 +155,9 @@ class DriverTippingBottomSheet: BottomSheetUnify(), HasComponent<TrackingPageCom
 
 
                 binding.tickerTippingGojek.apply {
-                    setHtmlDescription(String.format(getString(R.string.driver_tipping_ticker_new), logisticDriverModel.prepayment.info.first(), logisticDriverModel.prepayment.info.last()))
+                    val tickerList = logisticDriverModel.prepayment.info.map { TickerData(it, Ticker.TYPE_ANNOUNCEMENT) }
+                    val adapter = TickerPagerAdapter(context, tickerList)
+                    addPagerView(adapter, tickerList)
                 }
 
                 binding.etNominalTip.editText.addTextChangedListener(setWrapperWatcherTipping(binding.etNominalTip.textInputLayout))
