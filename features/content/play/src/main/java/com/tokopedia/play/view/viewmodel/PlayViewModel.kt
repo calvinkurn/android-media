@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -11,6 +12,13 @@ import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayNewAnalytic
@@ -1810,7 +1818,7 @@ class PlayViewModel @Inject constructor(
 
     private fun handleClickShare() {
         viewModelScope.launch {
-            _uiEvent.emit(OpenSharingExperienceEvent)
+            _uiEvent.emit(OpenSharingExperienceOptionEvent)
         }
 //        val shareInfo = _channelDetail.value.shareInfo
 //
@@ -1837,7 +1845,57 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
+        viewModelScope.launchCatchError(dispatchers.computation, block = {
+//            _uiEvent.emit(
+//                OpenSelectedSharingOptionEvent(
+//                    title = "Testing Title",
+//                    description = "Testing Description",
+//                    url = _channelDetail.value.channelInfo.coverUrl
+//                )
+//            )
+            val linkerData = LinkerData().apply {
+                id = channelId
+                name = "Testing Name"
+                description = "Testing Description"
+                imgUri = _channelDetail.value.channelInfo.coverUrl
+                ogUrl = "https://www.tokopedia.com/play/channel/13114"
+                type = "Testing Type"
+                uri = "https://www.tokopedia.com/play/channel/13114"
+                isThrowOnError = true
+                feature = shareModel.feature
+                channel = shareModel.channel
+                campaign = shareModel.campaign
+                uri = "https://www.tokopedia.com/play/channel/13114"
+                ogTitle = "This is OG title"
+                ogDescription = "This is OG description"
+                ogImageUrl = _channelDetail.value.channelInfo.coverUrl
+                isAffiliate = shareModel.isAffiliate
+            }
 
+            val linkerShareData = LinkerShareData()
+            linkerShareData.linkerData = linkerData
+
+
+            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object: ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    Log.d("<LOG>", "LinkerShareData : $linkerShareData")
+                    viewModelScope.launch {
+                        _uiEvent.emit(
+                            OpenShareExperienceEvent(
+                                shareModel, linkerShareData, "Ini testing Share String\nhttps://www.tokopedia.com/play/channel/13114"
+                            )
+                        )
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {
+                    Log.d("<LOG>", "LinkerShareData Error : $linkerError")
+                }
+            }))
+        }) {
+            Log.d("<LOG>", "Catch Error : ${it.message}")
+            Log.d("<LOG>", "Catch Error : ${it.localizedMessage}")
+        }
     }
 
     /**

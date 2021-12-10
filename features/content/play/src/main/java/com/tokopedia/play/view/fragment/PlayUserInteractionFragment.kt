@@ -85,6 +85,7 @@ import com.tokopedia.play_common.view.updateMargins
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -951,7 +952,23 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
-                    OpenSharingExperienceEvent -> shareExperienceView?.showSharingOptions()
+                    OpenSharingExperienceOptionEvent -> shareExperienceView?.showSharingOptions()
+                    is OpenSelectedSharingOptionEvent -> {
+                        val intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            type = "text/plain"
+                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            putExtra(Intent.EXTRA_REFERRER, event.url)
+                            putExtra(Intent.EXTRA_TITLE, event.title)
+                            putExtra(Intent.EXTRA_SUBJECT, event.title)
+                            putExtra(Intent.EXTRA_TEXT, event.description)
+                            putExtra(Intent.EXTRA_HTML_TEXT, event.description)
+                        }
+                        activity?.startActivity(Intent.createChooser(intent, "Bagikan Product Ini"))
+                    }
+                    is OpenShareExperienceEvent -> {
+                        SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
+                    }
                 }
             }
         }

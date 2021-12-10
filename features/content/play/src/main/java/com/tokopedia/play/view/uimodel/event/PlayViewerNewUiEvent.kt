@@ -1,8 +1,10 @@
 package com.tokopedia.play.view.uimodel.event
 
 import androidx.annotation.StringRes
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.play.view.uimodel.RealTimeNotificationUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayLikeBubbleConfig
+import com.tokopedia.universal_sharing.view.model.ShareModel
 
 /**
  * Created by jegul on 29/06/21
@@ -55,7 +57,9 @@ data class PreloadLikeBubbleIconEvent(val urls: Set<String>) : PlayViewerNewUiEv
 /**
  * Sharing Experience
  */
-object OpenSharingExperienceEvent : PlayViewerNewUiEvent()
+object OpenSharingExperienceOptionEvent : PlayViewerNewUiEvent()
+data class OpenSelectedSharingOptionEvent(val title: String, val description: String, val url: String): PlayViewerNewUiEvent()
+data class OpenShareExperienceEvent(val shareModel: ShareModel, val linkerShareResult: LinkerShareResult?, val shareString: String): PlayViewerNewUiEvent()
 
 //---------------------
 
