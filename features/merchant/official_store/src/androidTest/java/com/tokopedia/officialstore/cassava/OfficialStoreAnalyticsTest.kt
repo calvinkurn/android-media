@@ -216,6 +216,7 @@ class OfficialStoreAnalyticsTest {
             is FeaturedBrandViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
                 CommonActions.clickChildViewWithId(R.id.see_all_button)
+                CommonActions.clickChildViewWithId(R.id.see_all_button_unify)
             }
         }
     }
