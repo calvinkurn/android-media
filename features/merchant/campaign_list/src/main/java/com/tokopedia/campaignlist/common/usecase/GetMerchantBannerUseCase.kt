@@ -33,10 +33,12 @@ class GetMerchantBannerUseCase @Inject constructor(
                       end_date
                       review_end_date
                       status_text
+                      status_id
                       discount_percentage_text
+                      total_product
+                      total_product_overload
                       highlight_products {
                         wording
-                        total_product
                         total_product_wording
                         Products {
                           ID
@@ -67,7 +69,15 @@ class GetMerchantBannerUseCase @Inject constructor(
                           parentId
                           eggCrackingValidation
                           min_order
-                        }                        
+                          campaign {
+                            CampaignID
+                            DiscountPercentage
+                            DiscountedPrice
+                            OriginalPrice
+                            DiscountedPriceFmt
+                            OriginalPriceFmt
+                          }
+                        }
                       }
                     }
                     shop_data {
@@ -80,6 +90,8 @@ class GetMerchantBannerUseCase @Inject constructor(
                       IsOfficial
                       Logo
                       City
+                      Domain
+                      UserID
                       Badge {
                         Title
                         ImageURL

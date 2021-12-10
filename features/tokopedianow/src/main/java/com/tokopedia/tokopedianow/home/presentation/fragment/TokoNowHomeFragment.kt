@@ -1318,12 +1318,18 @@ class TokoNowHomeFragment: Fragment(),
     private fun showUniversalShareBottomSheet(shareHomeTokonow: ShareHomeTokonow?) {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             init(this@TokoNowHomeFragment)
-            setUtmCampaignData(PAGE_SHARE_NAME, shareHomeTokonow?.userId ?: "", shareHomeTokonow?.pageId ?: "", SHARE)
+            setUtmCampaignData(
+                    pageName = PAGE_SHARE_NAME,
+                    userId = shareHomeTokonow?.userId ?: "",
+                    pageId = shareHomeTokonow?.pageId ?: "",
+                    feature = SHARE
+            )
             setMetaData(
-                shareHomeTokonow?.thumbNailTitle ?: "", shareHomeTokonow?.thumbNailImage ?: ""
+                    tnTitle = shareHomeTokonow?.thumbNailTitle ?: "",
+                    tnImage = shareHomeTokonow?.thumbNailImage ?: "",
             )
             //set the Image Url of the Image that represents page
-            setOgImageUrl(shareHomeTokonow?.ogImageUrl ?: "")
+            setOgImageUrl(imgUrl = shareHomeTokonow?.ogImageUrl ?: "")
         }
         universalShareBottomSheet?.show(childFragmentManager, this, screenshotDetector)
     }

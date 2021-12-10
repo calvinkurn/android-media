@@ -46,6 +46,13 @@ data class Campaign(
         @Expose val reviewEndDate: String = "",
         @SerializedName("status_text")
         @Expose val statusText: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("status_id")
+        @Expose val statusId: Int = 0,
+        @SerializedName("total_product")
+        @Expose val totalProduct: String = "",
+        @SerializedName("total_product_overload")
+        @Expose val totalProductOverload: String = "",
         @SerializedName("discount_percentage_text")
         @Expose val discountPercentageText: String = "",
         @SerializedName("highlight_products")
@@ -71,6 +78,10 @@ data class ShopData(
         @Expose val logo: String = "",
         @SerializedName("City")
         @Expose val city: String = "",
+        @SerializedName("Domain")
+        @Expose val domain: String = "",
+        @SerializedName("UserID")
+        @Expose val userId: String = "",
         @SerializedName("Badge")
         @Expose val badge: Badge = Badge()
 
@@ -79,8 +90,6 @@ data class ShopData(
 data class HighlightProducts(
         @SerializedName("wording")
         @Expose val wording: String = "",
-        @SerializedName("total_product")
-        @Expose val totalProduct: String = "",
         @SerializedName("total_product_wording")
         @Expose val totalProductWording: String = "",
         @SerializedName("Products")
@@ -151,6 +160,23 @@ data class Products(
         @SerializedName("eggCrackingValidation")
         @Expose val eggCrackingValidation: Boolean = false,
         @SerializedName("min_order")
-        @Expose val minOrder: Int = 0
+        @Expose val minOrder: Int = 0,
+        @SerializedName("campaign")
+        @Expose val productCampaign: ProductCampaignData = ProductCampaignData()
+)
+
+data class ProductCampaignData(
+        @SerializedName("CampaignID")
+        @Expose val campaignId: String = "",
+        @SerializedName("DiscountPercentage")
+        @Expose val discountPercentage: Int = 0,
+        @SerializedName("DiscountedPrice")
+        @Expose val discountedPrice: String = "",
+        @SerializedName("OriginalPrice")
+        @Expose val originalPrice: String = "",
+        @SerializedName("DiscountedPriceFmt")
+        @Expose val discountedPriceFmt: String = "",
+        @SerializedName("OriginalPriceFmt")
+        @Expose val originalPriceFmt: String = ""
 )
 
