@@ -366,8 +366,6 @@ class CampaignListFragment : BaseDaggerFragment(),
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_PRICE_AFTER , value = _discountedPrice)
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4_DISCOUNT , value = _discount)
             }
-
-        // setOgImageUrl()
         }
     }
 
@@ -395,7 +393,6 @@ class CampaignListFragment : BaseDaggerFragment(),
                         // show share bottom sheet
                         val merchantBannerData = result.data.getMerchantCampaignBannerGeneratorData
                         viewModel.setMerchantBannerData(merchantBannerData)
-                        // val shopData = merchantBannerData.shopData
                         setupUniversalShareBottomSheet(merchantBannerData)
                         universalShareBottomSheet?.show(childFragmentManager, this)
                         val selectedActiveCampaign = viewModel.getSelectedActiveCampaign()
