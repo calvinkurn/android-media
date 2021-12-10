@@ -1,16 +1,13 @@
 package com.tokopedia.play.view.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.R
 import com.tokopedia.play.data.CartFeedbackResponseModel
-import com.tokopedia.play.data.UserReportOptions
+import com.tokopedia.play.domain.GetUserReportListUseCase
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -30,15 +27,14 @@ import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
-import java.io.IOException
 import javax.inject.Inject
-import java.io.InputStreamReader as InputStreamReader1
 
 /**
  * Created by mzennis on 2020-03-06.
  */
 class PlayBottomSheetViewModel @Inject constructor(
     private val getProductVariantUseCase: GetProductVariantUseCase,
+    private val getUserReportReasoningUseCase: GetUserReportListUseCase,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
     private val playUiModelMapper: PlayUiModelMapper,
@@ -55,40 +51,6 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableAddToCart: LiveData<PlayResult<Event<CartFeedbackUiModel>>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
     val observableUserReportReasoning : LiveData<PlayResult<PlayUserReportUiModel.Loaded>> = _observableUserReportReasoning
-
-
-    fun readStringFromFile(contex: Context): String {
-        try {
-            val inputStream = contex.resources.openRawResource(R.raw.mock_data)
-            val builder = StringBuilder()
-            val reader = InputStreamReader1(inputStream, "UTF-8")
-            reader.readLines().forEach {
-                builder.append(it)
-            }
-            return builder.toString()
-        } catch (e: IOException) {
-            throw e
-        }
-    }
-
-    fun getReport(contex: Context){
-        _observableUserReportReasoning.value = PlayResult.Loading(true)
-
-        viewModelScope.launchCatchError(block = {
-            val userReportUiModel =
-                Gson().fromJson(
-                    readStringFromFile(contex),
-                    UserReportOptions.Response::class.java
-                )
-            val data = PlayUserReportUiModel.Loaded(
-                reasoningList = playUiModelMapper.mapUserReport(userReportUiModel.data)
-            )
-            _observableUserReportReasoning.value = PlayResult.Success(data = data)
-
-        }){
-            _observableUserReportReasoning.value = PlayResult.Failure(it)
-        }
-    }
 
     fun getProductVariant(product: PlayProductUiModel.Product, action: ProductAction) {
         _observableProductVariant.value = PlayResult.Loading(true)
@@ -153,6 +115,25 @@ class PlayBottomSheetViewModel @Inject constructor(
                             bottomInsetsType = type
                     )
             ))
+        }
+    }
+
+    fun getUserReportList(){
+        _observableUserReportReasoning.value = PlayResult.Loading(true)
+
+        viewModelScope.launchCatchError(block = {
+            val userReportUiModel = withContext(dispatchers.io){
+                getUserReportReasoningUseCase.executeOnBackground()
+            }
+            val data = PlayUserReportUiModel.Loaded(
+                reasoningList = playUiModelMapper.mapUserReport(userReportUiModel.data)
+            )
+            _observableUserReportReasoning.value = PlayResult.Success(data = data)
+
+        }){
+            _observableUserReportReasoning.value = PlayResult.Failure(it){
+                getUserReportList()
+            }
         }
     }
 

@@ -13,15 +13,16 @@ import javax.inject.Inject
  */
 @GqlQuery(GetUserReportListUseCase.QUERY_NAME, GetUserReportListUseCase.QUERY)
 class GetUserReportListUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<UserReportOptions>(graphqlRepository) {
+    GraphqlUseCase<UserReportOptions.Response>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(GetUserReportListUseCase.GQL_QUERY)
+        setRequestParams(createParam())
+        setGraphqlQuery(GetUserReportListUseCaseQuery.GQL_QUERY)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(UserReportOptions::class.java)
+        setTypeClass(UserReportOptions.Response::class.java)
     }
 
-    fun createParam(languageId: String = LANGUAGE_PARAM_ID): HashMap<String, Any> = hashMapOf(
+    private fun createParam(languageId: String = LANGUAGE_PARAM_ID): HashMap<String, Any> = hashMapOf(
         LANGUAGE_PARAM to languageId
     )
 

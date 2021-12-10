@@ -4,11 +4,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.userreport.adapter.UserReportReasoningAdapter
+import com.tokopedia.play.ui.userreport.itemdecoration.ReasoningListItemDecoration
 import com.tokopedia.play.ui.userreport.viewholder.UserReportReasoningViewHolder
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportUiModel
@@ -36,6 +40,11 @@ class PlayUserReportSheetViewComponent(
         }
     }
 
+    private val categoryScrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        }
+    }
+
     init {
         findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
             .setOnClickListener {
@@ -47,6 +56,8 @@ class PlayUserReportSheetViewComponent(
         rvCategory.apply {
             adapter = categoryAdapter
             layoutManager = layoutManagerCategoryList
+            addItemDecoration(ReasoningListItemDecoration(rvCategory.context))
+            addOnScrollListener(categoryScrollListener)
         }
     }
 
@@ -70,7 +81,14 @@ class PlayUserReportSheetViewComponent(
     }
 
     fun setReportSheet(list: PlayUserReportUiModel.Loaded){
-        categoryAdapter.setItemsAndAnimateChanges(list.reasoningList)
+        rvCategory.shouldShowWithAction(list.reasoningList.isNotEmpty()){
+            categoryAdapter.setItemsAndAnimateChanges(list.reasoningList)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        rvCategory.removeOnScrollListener(categoryScrollListener)
     }
 
     interface Listener{

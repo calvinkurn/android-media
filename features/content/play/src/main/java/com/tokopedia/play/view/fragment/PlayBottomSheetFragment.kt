@@ -235,8 +235,8 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onReportClick(view: KebabMenuSheetViewComponent) {
-        viewModel.getReport(requireContext())
         playViewModel.onShowUserReportSheet(variantSheetMaxHeight)
+        viewModel.getUserReportList()
     }
 
     /**
