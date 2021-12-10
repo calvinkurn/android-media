@@ -30,4 +30,8 @@ class UnsendReplyUseCaseStub @Inject constructor(
     val successDeleteResponse = UnsendReplyResponse(
         UnsendReply(isSuccess = true)
     )
+
+    val failDeleteResponse = UnsendReplyResponse(
+        UnsendReply(isSuccess = false)
+    )
 }

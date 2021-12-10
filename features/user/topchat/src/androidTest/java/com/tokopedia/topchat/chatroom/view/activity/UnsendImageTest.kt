@@ -103,4 +103,21 @@ class UnsendImageTest : TopchatRoomTest() {
         ImageAttachmentResult.assertExistAt(0)
         assertSnackbarText(context.getString(R.string.topchat_error_delete_msg_bubble))
     }
+
+    @Test
+    fun should_show_failed_toaster_when_fail_delete_message() {
+        // Given
+        getChatUseCase.response = getChatUseCase.deleteImageResponse
+        unsendReplyUseCase.response = unsendReplyUseCase.failDeleteResponse
+        launchChatRoomActivity()
+
+        // When
+        ImageAttachmentRobot.longClickImageAt(0)
+        LongClickBubbleMenuRobot.clickDeleteMsgMenu()
+        LongClickBubbleMenuRobot.clickConfirmDeleteMsgDialog()
+
+        // Then
+        ImageAttachmentResult.assertExistAt(0)
+        assertSnackbarText(context.getString(R.string.topchat_error_delete_msg_bubble))
+    }
 }
