@@ -184,7 +184,6 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         setOnTouchListenerToHideKeyboard()
         setOnTouchOutsideListener()
         if (shouldShowBadRatingReasons()) setUpBadRatingCategoriesRecyclerView()
-        observeLiveDatas()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -388,6 +387,22 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         loadingView = view?.findViewById(R.id.shimmering_create_review_form)
         badRatingCategoryRecyclerView =
             view?.findViewById(R.id.review_form_bad_rating_categories_rv)
+    }
+
+    private fun setBottomSheetCallback() {
+        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED, BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                        onBottomSheetExpanded()
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // noop
+            }
+        })
     }
 
     private fun setRatingClickListener() {
@@ -995,6 +1010,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
 
     private fun setOnTouchOutsideListener() {
         setShowListener {
+            setBottomSheetCallback()
             CreateReviewTracking.openScreenWithCustomDimens(
                 CreateReviewTrackingConstants.SCREEN_NAME_BOTTOM_SHEET,
                 productId,
@@ -1177,6 +1193,7 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         photosRecyclerView?.setCustomTouchListener()
         incentivesTicker?.setCustomTouchListener()
         textAreaTitle?.setCustomTouchListener()
+        submitButton?.setCustomTouchListener()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1316,5 +1333,9 @@ class CreateReviewBottomSheet : BottomSheetUnify(), IncentiveOvoListener, TextAr
         } catch (t: Throwable) {
             false
         }
+    }
+
+    private fun onBottomSheetExpanded() {
+        observeLiveDatas()
     }
 }
