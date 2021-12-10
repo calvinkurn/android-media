@@ -270,7 +270,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         val unifyColor = if (itemView.context.isDarkMode()) {
             ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         } else {
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
         }
         return unifyColor
     }
