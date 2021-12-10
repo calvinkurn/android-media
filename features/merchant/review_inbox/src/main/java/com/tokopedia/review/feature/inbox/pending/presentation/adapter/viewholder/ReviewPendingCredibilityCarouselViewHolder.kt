@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityCarouselUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingCredibilityUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
+import com.tokopedia.review.feature.ovoincentive.data.ProductRevIncentiveOvoDomain
 import com.tokopedia.review.inbox.R
 import com.tokopedia.review.inbox.databinding.ItemReviewPendingCredibilityCarouselBinding
 import com.tokopedia.utils.view.binding.viewBinding
@@ -17,7 +18,8 @@ import kotlin.math.ceil
 class ReviewPendingCredibilityCarouselViewHolder(
     itemView: View,
     private val reviewPendingItemListener: ReviewPendingItemListener
-) : AbstractViewHolder<ReviewPendingCredibilityCarouselUiModel>(itemView) {
+) : AbstractViewHolder<ReviewPendingCredibilityCarouselUiModel>(itemView),
+    ReviewPendingItemListener {
 
     companion object {
         val LAYOUT = R.layout.item_review_pending_credibility_carousel
@@ -98,8 +100,51 @@ class ReviewPendingCredibilityCarouselViewHolder(
 
     private fun bindItem(view: View, data: Any) {
         if (data is ReviewPendingCredibilityUiModel) {
-            val viewHolder = ReviewPendingCredibilityViewHolder(view, reviewPendingItemListener)
+            val viewHolder = ReviewPendingCredibilityViewHolder(view, this)
             viewHolder.bind(data)
         }
+    }
+
+    override fun trackCardClicked(reputationId: String, productId: String, isEligible: Boolean) {
+        reviewPendingItemListener.trackCardClicked(reputationId, productId, isEligible)
+    }
+
+    override fun trackStarsClicked(
+        reputationId: String,
+        productId: String,
+        rating: Int,
+        isEligible: Boolean
+    ) {
+        reviewPendingItemListener.trackStarsClicked(reputationId, productId, rating, isEligible)
+    }
+
+    override fun onStarsClicked(
+        reputationId: String,
+        productId: String,
+        rating: Int,
+        inboxReviewId: String,
+        seen: Boolean
+    ) {
+        reviewPendingItemListener.onStarsClicked(reputationId, productId, rating, inboxReviewId, seen)
+    }
+
+    override fun onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain: ProductRevIncentiveOvoDomain) {
+        reviewPendingItemListener.onClickOvoIncentiveTickerDescription(productRevIncentiveOvoDomain)
+    }
+
+    override fun onDismissOvoIncentiveTicker(subtitle: String) {
+        reviewPendingItemListener.onDismissOvoIncentiveTicker(subtitle)
+    }
+
+    override fun onReviewCredibilityWidgetClicked(appLink: String) {
+        reviewPendingItemListener.onReviewCredibilityWidgetClicked(appLink)
+    }
+
+    override fun shouldShowCoachMark(): Boolean {
+        return false
+    }
+
+    override fun updateCoachMark() {
+        reviewPendingItemListener.updateCoachMark()
     }
 }
