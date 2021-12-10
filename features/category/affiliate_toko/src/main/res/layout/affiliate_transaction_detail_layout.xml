@@ -144,7 +144,7 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/spacing_lvl3"
-        android:background="@color/divider_color"
+        android:background="@color/affiliate_dms_divider"
         app:layout_constraintTop_toBottomOf="@id/transaction_date_header" />
 
     <androidx.recyclerview.widget.RecyclerView

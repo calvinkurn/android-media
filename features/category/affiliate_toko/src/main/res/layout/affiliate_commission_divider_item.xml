@@ -10,7 +10,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
-        android:background="@color/divider_color"
+        android:background="@color/affiliate_dms_divider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
