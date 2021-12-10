@@ -3,6 +3,7 @@ package com.tokopedia.search.analytics
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
@@ -15,8 +16,8 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
-import java.util.*
-import kotlin.collections.HashMap
+import java.util.ArrayList
+import java.util.Arrays
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -452,6 +453,7 @@ object SearchTracking {
             SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
             SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource,
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
+            SearchComponentTrackingConst.COMPONENT, generalSearchTrackingModel.componentId,
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }
