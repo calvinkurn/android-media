@@ -6,6 +6,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageA
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.msgbubble.MsgBubbleResult
+import com.tokopedia.topchat.chatroom.view.activity.robot.replybubble.ReplyBubbleRobot
 import org.junit.Test
 
 @UiTest
@@ -64,7 +65,19 @@ class UnsendImageTest: TopchatRoomTest() {
         MsgBubbleResult.assertMsgIsDeletedAt(0)
     }
 
-    // TODO: Should prevent long click when msg bubble is deleted
+    @Test
+    fun should_prevent_long_click_when_msg_bubble_is_deleted(){
+        // Given
+        getChatUseCase.response = getChatUseCase.deleteImageResponseWithStatus5
+        launchChatRoomActivity()
+
+        // When
+        ReplyBubbleRobot.longClickBubbleAt(0)
+
+        // Then
+        LongClickBubbleMenuResult.assertNoBottomSheet()
+    }
+
     // TODO: Should show success toaster when success delete message
     // TODO: Should show failed toaster when error delete message
 
