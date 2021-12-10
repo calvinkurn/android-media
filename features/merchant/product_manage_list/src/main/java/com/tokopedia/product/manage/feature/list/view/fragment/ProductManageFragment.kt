@@ -2194,7 +2194,9 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                 is Success -> {
                     initHeaderView()
                     showProductList(it.data)
-                    renderMultiSelectProduct()
+                    recyclerView?.post {
+                        renderMultiSelectProduct()
+                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
