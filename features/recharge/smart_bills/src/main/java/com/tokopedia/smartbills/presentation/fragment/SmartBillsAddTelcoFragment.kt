@@ -208,7 +208,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                     message?.let {
                         commonTopUpBillsAnalytic.clickViewErrorToasterTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId),  message)
                         view?.let {
-                            Toaster.build(it, String.format("%s. Kode Error: (%s)", message, key), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
+                            Toaster.build(it, getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_custom_error_handling, message, key),
+                                Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,
                                 getString(com.tokopedia.resources.common.R.string.general_label_ok)).show()
                         }
                     }
