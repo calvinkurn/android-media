@@ -124,15 +124,12 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.layoutmanager.ProductManageLayoutManager
 import com.tokopedia.product.manage.feature.list.view.listener.ProductManageListListener
+import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.DeleteProductDialogType.*
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabUiModel
 import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuUiModel.*
-import com.tokopedia.product.manage.feature.list.view.model.ProductMoreMenuModel
 import com.tokopedia.product.manage.feature.list.view.model.TopAdsPage.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageAddEditMenuBottomSheet
@@ -565,7 +562,8 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return EmptyModel().apply {
+        val id = System.currentTimeMillis().toString()
+        return ProductManageEmptyModel(id).apply {
             if (showProductEmptyState()) {
                 contentRes = R.string.product_manage_list_empty_product
                 urlRes = ProductManageUrl.PRODUCT_MANAGE_LIST_EMPTY_STATE
@@ -810,6 +808,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     showLoadingProgress()
+                    isLoadingInitialData = true
                     getProductList()
                     clearFocus()
                     true
@@ -1011,12 +1010,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     productManageListAdapter.removeEmptyAndUpdateLayout(list)
                 }
             }
-        }
-        updateScrollListenerState(hasNextPage)
-        if (shouldScrollToTop) {
-            shouldScrollToTop = false
-            recyclerView?.addOneTimeGlobalLayoutListener {
-                recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
+            updateScrollListenerState(hasNextPage)
+            if (shouldScrollToTop) {
+                shouldScrollToTop = false
+                recyclerView?.addOneTimeGlobalLayoutListener {
+                    recyclerView?.smoothScrollToPosition(RV_TOP_POSITION)
+                }
             }
         }
         renderCheckedView()
@@ -2420,7 +2419,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                     val access = it.data
 
                     if (access.productList) {
-                        getProductList()
+                        loadInitialData()
 
                         getTickerData()
                         getFiltersTab()

@@ -67,7 +67,7 @@ class ProductManageListAdapter(
 
     fun updateEmptyState(emptyModel: EmptyModel) {
         if (data.getOrNull(lastIndex) !is EmptyModel) {
-            val list = data
+            val list = data.toMutableList()
             val dataCount = data.filter { it !is EmptyModel }.count().orZero()
             if (dataCount > 0) {
                 list.removeAll { it !is EmptyModel }
