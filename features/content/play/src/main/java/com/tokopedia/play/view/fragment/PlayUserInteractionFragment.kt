@@ -1650,7 +1650,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
-        private const val PERCENT_MENU_BOTTOMSHEET_HEIGHT = 0.25
+        private const val PERCENT_MENU_BOTTOMSHEET_HEIGHT = 0.2
 
         private const val VISIBLE_ALPHA = 1f
 

@@ -1,12 +1,18 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.R
+import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
 /**
@@ -18,6 +24,8 @@ class KebabMenuSheetViewComponent(
 ) : ViewComponent(container, R.id.cl_kebab_menu_sheet) {
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
+    private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
+    private val clContent: ConstraintLayout = findViewById(R.id.cl_user_kebab_menu_sheet_content)
     private val tvReportVideo: TextView = findViewById(R.id.tv_report)
 
     init {
@@ -31,6 +39,17 @@ class KebabMenuSheetViewComponent(
         }
 
         findViewById<ImageView>(com.tokopedia.play_common.R.id.tv_sheet_title).hide()
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+
+            vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
+                height = insets.systemWindowInsetBottom
+            }
+            clContent.setPadding(clContent.paddingLeft, clContent.paddingTop, clContent.paddingRight, insets.systemWindowInsetBottom)
+
+            insets
+        }
+
     }
 
     override fun show() {
@@ -49,6 +68,11 @@ class KebabMenuSheetViewComponent(
         }
 
         show()
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
+        rootView.requestApplyInsetsWhenAttached()
     }
 
     interface Listener {

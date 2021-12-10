@@ -73,7 +73,7 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
-        private const val PERCENT_FULL_SHEET_HEIGHT = 1.0
+        private const val PERCENT_FULL_SHEET_HEIGHT = 0.9
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
