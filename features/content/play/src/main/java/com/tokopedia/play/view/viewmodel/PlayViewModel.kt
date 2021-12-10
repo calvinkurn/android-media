@@ -68,6 +68,7 @@ import com.tokopedia.play_common.websocket.WebSocketAction
 import com.tokopedia.play_common.websocket.WebSocketClosedReason
 import com.tokopedia.play_common.websocket.WebSocketResponse
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
@@ -732,6 +733,7 @@ class PlayViewModel @Inject constructor(
             ClickLikeAction -> handleClickLike(isFromLogin = false)
             ClickShareAction -> handleClickShare()
             RefreshLeaderboard -> handleRefreshLeaderboard()
+            is ClickSharingOption -> handleSharingOption(action.shareModel)
         }
     }
 
@@ -1832,6 +1834,10 @@ class PlayViewModel @Inject constructor(
         }
 
         checkLeaderboard(channelId)
+    }
+
+    private fun handleSharingOption(shareModel: ShareModel) {
+
     }
 
     /**

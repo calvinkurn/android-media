@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.uimodel.action
 
+import com.tokopedia.universal_sharing.view.model.ShareModel
+
 /**
  * Created by jegul on 28/06/21
  */
@@ -42,5 +44,10 @@ object ClickShareAction : PlayViewerNewAction()
  * Swipe
  */
 object SetChannelActiveAction : PlayViewerNewAction()
+
+/**
+ * Sharing Experience
+ */
+data class ClickSharingOption(val shareModel: ShareModel): PlayViewerNewAction()
 
 data class OpenPageResultAction(val isSuccess: Boolean, val requestCode: Int) : PlayViewerNewAction()
