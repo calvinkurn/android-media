@@ -9,6 +9,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -214,6 +215,11 @@ class OfficialStoreAnalyticsTest {
             }
             is FeaturedBrandViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
+                val viewInteraction = onView(withId(R.id.home_component_header_view)).check(
+                    ViewAssertions.matches(ViewMatchers.isDisplayed())
+                )
+                viewInteraction.perform(
+                    CommonActions.clickChildViewWithId(R.id.see_all_button))
             }
         }
     }
