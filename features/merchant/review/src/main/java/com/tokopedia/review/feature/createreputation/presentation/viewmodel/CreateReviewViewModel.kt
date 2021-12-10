@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -336,7 +338,9 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun isUserEligible(): Boolean {
-        return (incentiveOvo.value as? com.tokopedia.usecase.coroutines.Success)?.data?.productrevIncentiveOvo != null
+        return incentiveOvo.value?.let {
+            it is CoroutineSuccess && it.data.productrevIncentiveOvo?.amount.orZero() != Int.ZERO
+        }.orFalse()
     }
 
     fun isTemplateAvailable(): Boolean {
