@@ -19,13 +19,13 @@
   <path
       android:pathData="M87.21,51.23C86.525,51.979 86.085,52.919 85.948,53.925C85.81,54.931 85.982,55.954 86.44,56.86C86.638,57.254 86.89,57.617 87.19,57.94C87.658,58.45 88.227,58.857 88.86,59.136C89.493,59.415 90.178,59.559 90.87,59.56H90.75C89.793,59.543 88.861,59.251 88.064,58.72C87.268,58.189 86.641,57.44 86.257,56.563C85.874,55.686 85.751,54.717 85.902,53.771C86.053,52.826 86.472,51.944 87.11,51.23C91.82,46.07 103.22,37.07 126.64,34.77C103.29,37.09 91.92,46.07 87.21,51.23Z">
     <aapt:attr name="android:fillColor">
-      <gradient 
+      <gradient
           android:gradientRadius="16.9076"
           android:centerX="102.463"
           android:centerY="45.6016"
           android:type="radial">
-        <item android:offset="0" android:color="#FFFDE469"/>
-        <item android:offset="1" android:color="#FFF6A71B"/>
+        <item android:color="#FFFDE469"/>
+        <item android:color="#FFF6A71B"/>
       </gradient>
     </aapt:attr>
   </path>
@@ -159,8 +159,8 @@
           android:centerX="1023.89"
           android:centerY="1041.53"
           android:type="radial">
-        <item android:offset="0" android:color="#FFFDE469"/>
-        <item android:offset="1" android:color="#FFF6A71B"/>
+        <item android:color="#FFFDE469"/>
+        <item android:color="#FFF6A71B"/>
       </gradient>
     </aapt:attr>
   </path>
