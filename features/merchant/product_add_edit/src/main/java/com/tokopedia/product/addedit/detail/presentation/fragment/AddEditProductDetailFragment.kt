@@ -825,6 +825,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             else if (isAdding && !isDrafting) submitInput()
             else submitInputEdit()
         }
+        submitTextView?.show()
+        submitLoadingIndicator?.hide()
     }
 
     private fun updateAddNewWholeSalePriceButtonVisibility() {
@@ -1556,8 +1558,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToProductNameValidationFromNetwork() {
         observe(viewModel.productNameValidationFromNetwork) { isSuccess ->
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
             if (isSuccess) {
                 // set live data to null so it cannot commit observing twice when back from previous page
                 viewModel.setProductNameInputFromNetwork(null)
