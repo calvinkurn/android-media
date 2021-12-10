@@ -8,6 +8,7 @@ import com.tokopedia.topchat.chatroom.view.activity.robot.general.GeneralResult.
 import org.hamcrest.Matcher
 
 object MsgBubbleResult {
+
     fun assertMsgIsDeletedAt(position: Int) {
         assertIconVisibility(position, isDisplayed())
         assertBubbleMsg(position, withText("Pesan ini telah dihapus."))

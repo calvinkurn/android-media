@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.view.activity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.view.activity.base.TopchatRoomTest
+import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.imageattachment.ImageAttachmentRobot
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuResult
 import com.tokopedia.topchat.chatroom.view.activity.robot.longclickbubblemenu.LongClickBubbleMenuRobot
@@ -86,6 +87,20 @@ class UnsendImageTest : TopchatRoomTest() {
         LongClickBubbleMenuResult.assertNoBottomSheet()
     }
 
-    // TODO: Should show failed toaster when error delete message
+    @Test
+    fun should_show_failed_toaster_when_error_delete_message() {
+        // Given
+        getChatUseCase.response = getChatUseCase.deleteImageResponse
+        unsendReplyUseCase.isError = true
+        launchChatRoomActivity()
 
+        // When
+        ImageAttachmentRobot.longClickImageAt(0)
+        LongClickBubbleMenuRobot.clickDeleteMsgMenu()
+        LongClickBubbleMenuRobot.clickConfirmDeleteMsgDialog()
+
+        // Then
+        ImageAttachmentResult.assertExistAt(0)
+        assertSnackbarText(context.getString(R.string.topchat_error_delete_msg_bubble))
+    }
 }

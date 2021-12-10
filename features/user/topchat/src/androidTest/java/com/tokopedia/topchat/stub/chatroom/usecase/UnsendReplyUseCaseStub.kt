@@ -19,6 +19,14 @@ class UnsendReplyUseCaseStub @Inject constructor(
             field = value
         }
 
+    var isError: Boolean = false
+        set(value) {
+            if (value) {
+                repository.createErrorMapResult(UnsendReplyResponse::class.java, "error")
+            }
+            field = value
+        }
+
     val successDeleteResponse = UnsendReplyResponse(
         UnsendReply(isSuccess = true)
     )
