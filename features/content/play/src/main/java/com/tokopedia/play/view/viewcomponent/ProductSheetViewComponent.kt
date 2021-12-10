@@ -2,6 +2,7 @@ package com.tokopedia.play.view.viewcomponent
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -38,7 +39,7 @@ class ProductSheetViewComponent(
 ) : ViewComponent(container, R.id.cl_product_sheet) {
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
-    private val clProductVoucher: ConstraintLayout = findViewById(R.id.cl_product_voucher_info)
+    private val clProductVoucher: FrameLayout = findViewById(R.id.cl_product_voucher_info)
     private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
