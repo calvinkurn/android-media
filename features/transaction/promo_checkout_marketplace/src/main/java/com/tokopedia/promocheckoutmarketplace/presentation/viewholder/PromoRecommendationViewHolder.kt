@@ -45,7 +45,7 @@ class PromoRecommendationViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoRecommendationUiModel) {
-//        setBackground()
+        setBackground()
         if (element.uiState.isButtonSelectEnabled) {
             lottieButtonApplyPromoRecommendation.progress = 0f
             lottieButtonApplyPromoRecommendation.show()
