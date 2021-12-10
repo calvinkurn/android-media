@@ -4,19 +4,13 @@ import android.app.Activity
 import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -26,7 +20,6 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResp
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
 import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.performance.domain.model.GoldGetPMOStatusResponse
 import com.tokopedia.shop.score.performance.domain.model.GoldGetPMShopInfoResponse
@@ -36,7 +29,6 @@ import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerform
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
-import com.tokopedia.shop.score.performance.presentation.model.SectionFaqUiModel
 import com.tokopedia.shop.score.uitest.stub.common.UserSessionStub
 import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
 import com.tokopedia.shop.score.uitest.stub.common.util.AndroidTestUtil
@@ -62,6 +54,7 @@ import com.tokopedia.shop.score.uitest.stub.performance.presentation.activity.Sh
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import org.hamcrest.CoreMatchers.`is`
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.runner.RunWith
@@ -152,6 +145,11 @@ abstract class ShopScoreTest {
             getShopPerformanceComponentStub.shopScoreMapper() as ShopScoreMapperStub
         shopScorePrefManagerStub =
             getShopPerformanceComponentStub.shopScorePrefManager() as ShopScorePrefManagerStub
+    }
+
+    @After
+    fun finish() {
+        graphqlRepositoryStub.clearMocks()
     }
 
     protected fun getShopPerformancePageIntent(): Intent {
@@ -736,7 +734,7 @@ abstract class ShopScoreTest {
         onIdView(com.tokopedia.unifycomponents.R.id.bottom_sheet_close).onClick()
     }
 
-    fun intendingIntent() {
+    protected fun intendingIntent() {
         Intents.intending(IntentMatchers.anyIntent())
             .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }

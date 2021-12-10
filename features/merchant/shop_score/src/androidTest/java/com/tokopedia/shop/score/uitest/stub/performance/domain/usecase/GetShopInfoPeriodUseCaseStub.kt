@@ -4,25 +4,37 @@ import com.tokopedia.gm.common.data.source.cloud.model.ShopInfoPeriodWrapperResp
 import com.tokopedia.gm.common.domain.interactor.GetShopInfoPeriodUseCase
 import com.tokopedia.gm.common.domain.mapper.ShopScoreCommonMapper
 import com.tokopedia.gm.common.presentation.model.ShopInfoPeriodUiModel
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
 import com.tokopedia.shop.score.uitest.stub.performance.domain.response.ShopInfoPeriodResponseStub
+import java.io.IOException
+import java.lang.Exception
+import java.net.UnknownHostException
 
 class GetShopInfoPeriodUseCaseStub(
     private val graphqlRepositoryStub: GraphqlRepositoryStub,
     private val shopScoreCommonMapper: ShopScoreCommonMapper
 ) : GetShopInfoPeriodUseCase(graphqlRepositoryStub, shopScoreCommonMapper) {
 
-    var responseStub: ShopInfoPeriodResponseStub = ShopInfoPeriodResponseStub()
+    var responseStub: Any = ShopInfoPeriodResponseStub()
         set(value) {
             graphqlRepositoryStub.createMapResult(responseStub::class.java, value)
             field = value
         }
 
     override suspend fun executeOnBackground(): ShopInfoPeriodUiModel {
+        if (responseStub is IOException) {
+            throw IOException((responseStub as IOException).message)
+        }
+        if (responseStub is Exception) {
+            throw Exception((responseStub as IOException).message)
+        }
+        val shopInfoPeriodResponseStub = responseStub as ShopInfoPeriodResponseStub
         val shopScoreWrapperResponse = ShopInfoPeriodWrapperResponse(
-            shopInfoByIDResponse = responseStub.shopInfoByIDResponse,
-            goldGetPMSettingInfo = responseStub.goldGetPMSettingInfo
+            shopInfoByIDResponse = shopInfoPeriodResponseStub.shopInfoByIDResponse,
+            goldGetPMSettingInfo = shopInfoPeriodResponseStub.goldGetPMSettingInfo
         )
         return shopScoreCommonMapper.mapToGetShopInfo(shopScoreWrapperResponse)
+
     }
 }

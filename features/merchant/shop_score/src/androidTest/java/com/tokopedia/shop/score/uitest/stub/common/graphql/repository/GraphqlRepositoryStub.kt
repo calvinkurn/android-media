@@ -25,11 +25,8 @@ class GraphqlRepositoryStub @Inject constructor() : GraphqlRepository {
         mapResult[pojo] = resultData
     }
 
-    fun createErrorMapResult(pojo: Type, errorMessage: String) {
-        val gqlError = GraphqlError().apply {
-            this.message = errorMessage
-        }
-        mapGraphqlError[pojo] = listOf(gqlError)
+    fun clearMocks() {
+        mapResult.clear()
+        mapGraphqlError.clear()
     }
-
 }
