@@ -21,8 +21,6 @@ import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.socket.PinnedMessageSocketResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.*
-import com.tokopedia.play.broadcaster.domain.usecase.interactive.GetInteractiveConfigUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.interactive.PostInteractiveCreateSessionUseCase
 import com.tokopedia.play.broadcaster.pusher.*
 import com.tokopedia.play.broadcaster.pusher.mediator.PusherMediator
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
@@ -44,18 +42,11 @@ import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.util.state.PlayLiveChannelStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveTimerStateListener
 import com.tokopedia.play.broadcaster.util.state.PlayLiveViewStateListener
-import com.tokopedia.play.broadcaster.view.state.PlayLiveViewState
-import com.tokopedia.play.broadcaster.view.state.isRecovered
-import com.tokopedia.play.broadcaster.view.state.isStarted
 import com.tokopedia.play.broadcaster.view.state.*
-import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.domain.model.interactive.ChannelInteractive
-import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
 import com.tokopedia.play_common.model.mapper.PlayChannelInteractiveMapper
-import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
@@ -81,20 +72,13 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private val hydraConfigStore: HydraConfigStore,
     private val sharedPref: HydraSharedPreferences,
     private val getChannelUseCase: GetChannelUseCase,
-    private val createChannelUseCase: CreateChannelUseCase,
-    private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val getAddedChannelTagsUseCase: GetAddedChannelTagsUseCase,
     private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
-    private val getInteractiveConfigUseCase: GetInteractiveConfigUseCase,
-    private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
-    private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
-    private val createInteractiveSessionUseCase: PostInteractiveCreateSessionUseCase,
     private val dispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
     private val playBroadcastWebSocket: PlayBroadcastWebSocket,
     private val playBroadcastMapper: PlayBroadcastMapper,
     private val channelInteractiveMapper: PlayChannelInteractiveMapper,
-    private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
     private val repo: PlayBroadcastRepository,
     private val logger: PlayLogger
 ) : ViewModel() {
@@ -365,13 +349,8 @@ internal class PlayBroadcastViewModel @Inject constructor(
     suspend fun getChannelDetail() = getChannelById(channelId)
 
     private suspend fun createChannel() {
-        val channelId = withContext(dispatcher.io) {
-            createChannelUseCase.params = CreateChannelUseCase.createParams(
-                    authorId = userSession.shopId
-            )
-            return@withContext createChannelUseCase.executeOnBackground()
-        }
-        setChannelId(channelId.id)
+        val channelId = repo.createChannel()
+        setChannelId(channelId)
     }
 
     private suspend fun getChannelById(channelId: String): Throwable? {
@@ -416,17 +395,9 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateChannelStatus(status: PlayChannelStatusType) = withContext(dispatcher.io) {
-            updateChannelUseCase.apply {
-                setQueryParams(
-                    UpdateChannelUseCase.createUpdateStatusRequest(
-                        channelId = channelId,
-                        authorId = userSession.shopId,
-                        status = status
-                    )
-                )
-            }.executeOnBackground()
-        }
+    private suspend fun updateChannelStatus(status: PlayChannelStatusType) {
+        repo.updateChannelStatus(channelId, status)
+    }
 
     @Throws(IllegalAccessException::class)
     fun createStreamer(context: Context, handler: Handler) {
@@ -476,7 +447,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
                 } else {
                     sendLivePusherState(
                         PlayLiveViewState.Error(
-                            PlayLivePusherException("connection failure: Failed to get channel details")
+                            PlayLivePusherException("network: Failed to get channel details")
                         )
                     )
                     reconnectJob()
@@ -555,13 +526,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
         }
 
         viewModelScope.launchCatchError(block = {
-            val response = createInteractiveSessionUseCase.execute(
-                userSession.shopId,
-                channelId,
-                title,
-                durationInMs
-            )
-            val interactiveUiModel = playBroadcastMapper.mapInteractiveSession(response, title, durationInMs)
+            val interactiveUiModel = repo.createInteractiveSession(channelId, title, durationInMs)
             setInteractiveId(interactiveUiModel.id)
             setActiveInteractiveTitle(interactiveUiModel.title)
             handleActiveInteractive()
@@ -584,10 +549,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
-            val interactiveResponse = getInteractiveConfigUseCase.apply {
-                setRequestParams(GetInteractiveConfigUseCase.createParams(userSession.shopId))
-            }.executeOnBackground()
-            val interactiveConfig = playBroadcastMapper.mapInteractiveConfig(interactiveResponse)
+            val interactiveConfig = repo.getInteractiveConfig()
             _observableInteractiveConfig.value = interactiveConfig
 
             setInteractiveDurations(interactiveConfig.availableStartTimeInMs)
@@ -609,11 +571,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
 
     private suspend fun handleActiveInteractive() {
         try {
-            val currentInteractiveResponse = getCurrentInteractiveUseCase.apply {
-                setRequestParams(GetCurrentInteractiveUseCase.createParams(channelId))
-            }.executeOnBackground()
-
-            val currentInteractive = channelInteractiveMapper.mapInteractive(currentInteractiveResponse.data.interactive)
+            val currentInteractive = repo.getCurrentInteractive(channelId)
             handleActiveInteractiveFromNetwork(currentInteractive)
         } catch (e: Throwable) {
             _observableInteractiveState.value = getNoPreviousInitInteractiveState()
@@ -664,8 +622,7 @@ internal class PlayBroadcastViewModel @Inject constructor(
     private suspend fun getLeaderboardInfo(): Throwable? {
         _observableLeaderboardInfo.value = NetworkResult.Loading
         return try {
-            val leaderboardResponse = getInteractiveLeaderboardUseCase.execute(channelId)
-            val leaderboard = interactiveLeaderboardMapper.mapLeaderboard(leaderboardResponse) {
+            val leaderboard = repo.getInteractiveLeaderboard(channelId) {
                 livePusherMediator.getLivePusherState().isStopped
             }
             _observableLeaderboardInfo.value = NetworkResult.Success(leaderboard)
