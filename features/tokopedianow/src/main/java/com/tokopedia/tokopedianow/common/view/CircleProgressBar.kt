@@ -85,17 +85,23 @@ class CircularProgressView : View {
         invalidate()
     }
 
-    fun setImageUrl(url: String, isShadowShowed: Boolean) {
+    fun setImageUrl(url: String, isShadowShowed: Boolean, defaultDrawable: Drawable?) {
         Glide.with(this)
             .asBitmap()
             .load(url)
+            .error(defaultDrawable)
             .into(object : CustomTarget<Bitmap>(){
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    imageBitmap = errorDrawable?.toBitmap()
+                    isImageShadowShowed = isShadowShowed
+                    invalidate()
+                }
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     imageBitmap = resource
                     isImageShadowShowed = isShadowShowed
                     invalidate()
                 }
-                override fun onLoadCleared(placeholder: Drawable?) { /* no need to implement */ }
+                override fun onLoadCleared(placeholder: Drawable?) {  }
             })
     }
 

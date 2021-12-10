@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.home.presentation.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -22,8 +23,10 @@ class HomeQuestWidgetViewHolder(
     companion object {
         private const val PROGRESS_WIDTH = 15F
         private const val PERCENT_MULTIPLIER = 100
-        private const val STATUS_IDLE = "Idle"
-        private const val STATUS_ON_PROGRESS = "On Progress"
+
+        const val STATUS_IDLE = "Idle"
+        const val STATUS_ON_PROGRESS = "On Progress"
+        const val STATUS_CLAIMED = "Claimed"
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_quest_widget
@@ -49,7 +52,7 @@ class HomeQuestWidgetViewHolder(
         binding?.circularProgressBar?.apply {
             when(element.status) {
                 STATUS_IDLE -> {
-                    setImageUrl(element.iconUrl, true)
+                    setImageUrl(element.iconUrl, true, AppCompatResources.getDrawable(context, R.drawable.tokopedianow_ic_quest_default))
                     binding?.let {
                         it.container.setCardBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN50))
                         it.title.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
@@ -59,12 +62,12 @@ class HomeQuestWidgetViewHolder(
                 STATUS_ON_PROGRESS -> {
                     val result = (element.currentProgress / element.totalProgress) * PERCENT_MULTIPLIER
                     if (!result.isNaN()) {
-                        setImageUrl(element.iconUrl, false)
+                        setImageUrl(element.iconUrl, false, AppCompatResources.getDrawable(context, R.drawable.tokopedianow_ic_quest_default))
                         setProgress(result)
                         setProgressWidth(PROGRESS_WIDTH)
                         setRounded(true)
-                        setProgressColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                        setProgressBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tokopedianow_circle_progressbar_background_dms_color))
+                        setProgressColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
+                        setProgressBackgroundColor(ContextCompat.getColor(context, R.color.tokopedianow_circle_progressbar_background_dms_color))
                     }
                 }
             }

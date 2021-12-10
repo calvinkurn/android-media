@@ -19,6 +19,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestAllClaimedW
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeQuestWidgetViewHolder.Companion.STATUS_CLAIMED
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeQuestSequenceWidgetViewHolder(
@@ -101,7 +102,7 @@ class HomeQuestSequenceWidgetViewHolder(
                     totalQuestTarget = totalQuestTarget
                 )
             )
-            widgets.addAll(questList)
+            widgets.addAll(questList.filter { it.status !=  STATUS_CLAIMED})
         } else {
             widgets.add(
                 HomeQuestAllClaimedWidgetUiModel(
