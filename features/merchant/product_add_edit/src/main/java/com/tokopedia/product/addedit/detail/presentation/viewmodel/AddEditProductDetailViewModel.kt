@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
+import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.specification.domain.model.AnnotationCategoryData
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
@@ -49,17 +50,18 @@ import javax.inject.Inject
 
 @FlowPreview
 class AddEditProductDetailViewModel @Inject constructor(
-        val provider: ResourceProvider,
-        private val dispatchers: CoroutineDispatchers,
-        private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val validateProductUseCase: ValidateProductUseCase,
-        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
-        private val annotationCategoryUseCase: AnnotationCategoryUseCase,
-        private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
-        private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
-        private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
-        private val userSession: UserSessionInterface
+    val provider: ResourceProvider,
+    private val dispatchers: CoroutineDispatchers,
+    private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
+    private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
+    private val validateProductUseCase: ValidateProductUseCase,
+    private val validateProductNameUseCase: ValidateProductNameUseCase,
+    private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
+    private val annotationCategoryUseCase: AnnotationCategoryUseCase,
+    private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
+    private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
+    private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     var isEditing = false
@@ -128,6 +130,10 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isProductSkuInputError: LiveData<Boolean>
         get() = mIsProductSkuInputError
     var productSkuMessage: String = ""
+
+    private val _productNameValidation = MutableLiveData<Boolean>()
+    val productNameValidation: LiveData<Boolean>
+        get() = _productNameValidation
 
     init {
         launch {
@@ -440,6 +446,23 @@ class AddEditProductDetailViewModel @Inject constructor(
         }, onError = {
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
+    }
+
+    fun validateProductNameInputFromNetwork(productName: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                validateProductNameUseCase.setParamsProductName(productName)
+                validateProductNameUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.validationResults.joinToString("\n")
+            productNameMessage = validationMessage
+            mIsProductNameInputError.value = validationMessage.isNotBlank()
+            _productNameValidation.value = validationMessage.isBlank()
+        }, onError = {
+            productNameMessage = it.message.orEmpty()
+            mIsProductNameInputError.value = it.message?.isNotBlank()
+            _productNameValidation.value = false
         })
     }
 

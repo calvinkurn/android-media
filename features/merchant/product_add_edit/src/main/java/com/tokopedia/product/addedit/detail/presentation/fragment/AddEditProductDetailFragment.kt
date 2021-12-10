@@ -674,19 +674,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitTextView?.hide()
             submitLoadingIndicator?.show()
             validateInput()
-            val isInputValid = viewModel.isInputValid.value
-            isInputValid?.let {
-                if (it) {
-                    val isAdding = viewModel.isAdding
-                    val isDrafting = viewModel.isDrafting
-                    val isFirstMoved = viewModel.isFirstMoved
-                    if (isAdding && isFirstMoved) moveToDescriptionActivity()
-                    else if (isAdding && !isDrafting) submitInput()
-                    else submitInputEdit()
-                }
+            if (viewModel.isInputValid.value == true && viewModel.isAdding) {
+                viewModel.validateProductNameInputFromNetwork(productNameField.getText())
+            } else {
+                submitInputDataIfValid(viewModel.isInputValid.value.orFalse())
             }
-            submitTextView?.show()
-            submitLoadingIndicator?.hide()
         }
 
         setupDefaultFieldMessage()
@@ -711,6 +703,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToSpecificationText()
         subscribeToInputStatus()
         subscribeToPriceRecommendation()
+        subscribeToProductNameValidationFromNetwork()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -820,6 +813,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderDurationInputError.removeObservers(this)
         viewModel.isInputValid.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
+    }
+
+    private fun submitInputDataIfValid(isValid: Boolean) {
+        if (isValid) {
+            val isAdding = viewModel.isAdding
+            val isDrafting = viewModel.isDrafting
+            val isFirstMoved = viewModel.isFirstMoved
+            if (isAdding && isFirstMoved) moveToDescriptionActivity()
+            else if (isAdding && !isDrafting) submitInput()
+            else submitInputEdit()
+        }
     }
 
     private fun updateAddNewWholeSalePriceButtonVisibility() {
@@ -1547,6 +1551,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         }
         viewModel.getProductPriceRecommendation()
+    }
+
+    private fun subscribeToProductNameValidationFromNetwork() {
+        observe(viewModel.productNameValidation) {
+            submitTextView?.show()
+            submitLoadingIndicator?.hide()
+            submitInputDataIfValid(it)
+        }
     }
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
