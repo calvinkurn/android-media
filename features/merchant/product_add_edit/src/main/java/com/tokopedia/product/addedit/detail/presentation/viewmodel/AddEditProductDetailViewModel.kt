@@ -131,9 +131,9 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsProductSkuInputError
     var productSkuMessage: String = ""
 
-    private val _productNameValidation = MutableLiveData<Boolean>()
-    val productNameValidation: LiveData<Boolean>
-        get() = _productNameValidation
+    private var _productNameValidationFromNetwork = MutableLiveData<Boolean>()
+    val productNameValidationFromNetwork : LiveData<Boolean>
+        get() = _productNameValidationFromNetwork
 
     init {
         launch {
@@ -456,14 +456,20 @@ class AddEditProductDetailViewModel @Inject constructor(
                 validateProductNameUseCase.executeOnBackground()
             }
             val validationMessage = response.productValidateV3.data.validationResults.joinToString("\n")
+            val isError = validationMessage.isNotBlank()
             productNameMessage = validationMessage
-            mIsProductNameInputError.value = validationMessage.isNotBlank()
-            _productNameValidation.value = validationMessage.isBlank()
+            mIsProductNameInputError.value = isError
+            _productNameValidationFromNetwork.value = !isError
         }, onError = {
+            val isError = !it.message.isNullOrBlank()
             productNameMessage = it.message.orEmpty()
-            mIsProductNameInputError.value = it.message?.isNotBlank()
-            _productNameValidation.value = false
+            mIsProductNameInputError.value = isError
+            _productNameValidationFromNetwork.value = !isError
         })
+    }
+
+    fun setProductNameInputFromNetwork(value: Boolean?) {
+        _productNameValidationFromNetwork.value = value
     }
 
     fun validatePreOrderDurationInput(timeUnit: Int, preOrderDurationInput: String) {

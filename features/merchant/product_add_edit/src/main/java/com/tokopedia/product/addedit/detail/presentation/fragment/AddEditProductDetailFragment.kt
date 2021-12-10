@@ -675,6 +675,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             submitLoadingIndicator?.show()
             validateInput()
             if (viewModel.isInputValid.value == true && viewModel.isAdding) {
+                // if user in add mode then validate product name before submit data
                 viewModel.validateProductNameInputFromNetwork(productNameField.getText())
             } else {
                 submitInputDataIfValid(viewModel.isInputValid.value.orFalse())
@@ -1554,10 +1555,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun subscribeToProductNameValidationFromNetwork() {
-        observe(viewModel.productNameValidation) {
+        observe(viewModel.productNameValidationFromNetwork) { isSuccess ->
             submitTextView?.show()
             submitLoadingIndicator?.hide()
-            submitInputDataIfValid(it)
+            if (isSuccess) {
+                // set live data to null so it cannot commit observing twice when back from previous page
+                viewModel.setProductNameInputFromNetwork(null)
+            } else {
+                productNameField?.requestFocus()
+            }
+            submitInputDataIfValid(isSuccess)
         }
     }
 
