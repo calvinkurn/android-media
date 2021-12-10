@@ -232,7 +232,9 @@ data class ClashingInfo(
         @SerializedName("code")
         val code: String = "",
         @SerializedName("message")
-        val message: String = ""
+        val message: String = "",
+        @SerializedName("icon")
+        val icon: String = ""
 )
 
 data class PromoCoachmark(

@@ -2,14 +2,11 @@ package com.tokopedia.promocheckoutmarketplace.presentation.viewholder
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckoutmarketplace.R
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
@@ -41,32 +38,35 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         setPromoItemClickListener(viewBinding, element)
     }
 
-    private fun setPromoItemClickListener(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun setPromoItemClickListener(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                          element: PromoListItemUiModel) {
         viewBinding.cardPromoItem.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled && !element.uiState.isDisabled) {
+            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() &&
+                    element.uiState.isParentEnabled && !element.uiState.isDisabled) {
                 listener.onClickPromoListItem(element, adapterPosition)
             }
         }
     }
 
-    private fun renderPromoState(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderPromoState(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                 element: PromoListItemUiModel) {
         if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
             if (element.uiState.isDisabled) {
-                renderPromoDisabled(viewBinding, element)
+                renderPromoDisabled(viewBinding)
             } else {
                 if (element.uiState.isSelected) {
-                    renderPromoSelected(viewBinding, element)
+                    renderPromoSelected(viewBinding)
                 } else {
-                    renderPromoEnabled(viewBinding, element)
+                    renderPromoEnabled(viewBinding)
                 }
             }
         } else {
-            renderPromoDisabled(viewBinding, element)
+            renderPromoDisabled(viewBinding)
         }
     }
 
-    private fun renderPromoSelected(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
-        renderPromoEnabled(viewBinding, element)
+    private fun renderPromoSelected(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
+        renderPromoEnabled(viewBinding)
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_selected)
             containerUserValidity.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN100))
@@ -76,7 +76,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderPromoEnabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderPromoEnabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_enabled)
             textPromoHighlightIdentifier.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
@@ -96,7 +96,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderPromoDisabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderPromoDisabled(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
         with(viewBinding) {
             promoHighlightIdentifier.setImageResource(R.drawable.promo_checkout_marketplace_module_ic_highlighted_identifier_disabled)
             textPromoHighlightIdentifier.setTextColor(colorTextDisabled)
@@ -116,7 +116,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderPromoData(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderPromoData(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                element: PromoListItemUiModel) {
         renderHighlightIdentifier(viewBinding, element)
         renderQuantityIdentifier(viewBinding, element)
         renderBenefit(viewBinding, element)
@@ -127,7 +128,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         renderClashInfo(viewBinding, element)
     }
 
-    private fun renderHighlightIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderHighlightIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                          element: PromoListItemUiModel) {
         with(viewBinding) {
             if (element.uiState.isHighlighted) {
                 val topBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_TOP_BANNER }
@@ -146,7 +148,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderQuantityIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderQuantityIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                         element: PromoListItemUiModel) {
         with(viewBinding) {
             if (element.uiData.remainingPromoCount > 1) {
                 textPromoQuantity.text = "Sisa ${element.uiData.remainingPromoCount}"
@@ -168,7 +171,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderBenefit(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderBenefit(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                              element: PromoListItemUiModel) {
         with(viewBinding) {
             textPromoItemTitle.text = element.uiData.title
             val textPromoItemTitleLayoutParam = textPromoItemTitle.layoutParams as ViewGroup.MarginLayoutParams
@@ -187,7 +191,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderPromoCodeIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderPromoCodeIdentifier(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                          element: PromoListItemUiModel) {
         with(viewBinding) {
             if (element.uiState.isAttempted) {
                 textPromoCode.text = element.uiData.promoCode
@@ -200,18 +205,20 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderPromoInfo(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderPromoInfo(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                element: PromoListItemUiModel) {
         with(viewBinding) {
             if (element.uiData.promoInfos.isNotEmpty()) {
                 containerPromoInfoList.removeAllViews()
                 val promoInfoList = element.uiData.promoInfos.filter { it.type == PromoInfo.TYPE_COUPON_INFO }
                 promoInfoList.forEach {
-                    val promoInfoView = View.inflate(itemView.context, R.layout.promo_checkout_marketplace_module_sub_layout_promo_info, null) as ConstraintLayout
+                    val promoInfoView = View.inflate(itemView.context, R.layout.promo_checkout_marketplace_module_sub_layout_promo_info, null)
+                            as ConstraintLayout
                     val imagePromoInfo = promoInfoView.findViewById<ImageUnify>(R.id.image_promo_info)
                     imagePromoInfo.setImageUrl(it.icon)
                     val textPromoInfo = promoInfoView.findViewById<Typography>(R.id.text_promo_info)
                     textPromoInfo.text = it.title
-                    if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.errorMessage.isNotBlank()) {
+                    if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.clashingInfoMessage.isNotBlank()) {
                         textPromoInfo.setTextColor(colorTextDisabled)
                     } else {
                         textPromoInfo.setTextColor(colorTextEnabledLowEmphasis)
@@ -225,7 +232,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderTimeValidity(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderTimeValidity(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                   element: PromoListItemUiModel) {
         with(viewBinding) {
             val timeValidityInfo = element.uiData.promoInfos.firstOrNull {
                 it.type == PromoInfo.TYPE_PROMO_VALIDITY
@@ -244,7 +252,8 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderUserValidity(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderUserValidity(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                   element: PromoListItemUiModel) {
         with(viewBinding) {
             val bottomBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
             if (bottomBanner != null) {
@@ -257,12 +266,12 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         }
     }
 
-    private fun renderClashInfo(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
+    private fun renderClashInfo(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding,
+                                element: PromoListItemUiModel) {
         with(viewBinding) {
-            if (element.uiData.errorMessage.isNotBlank()) {
-                // Todo : set image
-                imageClashInfo.setImageUrl("https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png")
-                textClashInfo.text = element.uiData.errorMessage
+            if (element.uiData.clashingInfoMessage.isNotBlank()) {
+                imageClashInfo.setImageUrl(element.uiData.clashingInfoIcon)
+                textClashInfo.text = element.uiData.clashingInfoMessage
                 containerClashInfo.show()
             } else {
                 containerClashInfo.gone()

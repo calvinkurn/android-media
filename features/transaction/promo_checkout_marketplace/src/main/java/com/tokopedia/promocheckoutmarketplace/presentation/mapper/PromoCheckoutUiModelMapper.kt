@@ -77,14 +77,14 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoListHeaderUiModel(couponSubSection: SubSection,couponSection: CouponSection, headerIdentifierId: Int, isHeaderEnabled: Boolean): PromoListHeaderUiModel {
+    fun mapPromoListHeaderUiModel(couponSubSection: SubSection, couponSection: CouponSection, headerIdentifierId: Int, isHeaderEnabled: Boolean): PromoListHeaderUiModel {
         return PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = couponSubSection.title
                     subTitle = couponSubSection.subTitle
                     iconUrl = couponSubSection.iconUrl
                     identifierId = headerIdentifierId
-                    tabId = if(isHeaderEnabled) {
+                    tabId = if (isHeaderEnabled) {
                         couponSubSection.id
                     } else {
                         couponSection.id
@@ -123,20 +123,17 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     couponAppLink = couponItem.couponAppLink
                     currencyDetailStr = couponItem.currencyDetailStr
                     coachMark = couponItem.coachMark
-                    val clashingInfoMap = HashMap<String, String>()
-                    if (couponItem.clashingInfos.isNotEmpty()) {
-                        couponItem.clashingInfos.forEach {
-                            clashingInfoMap[it.code] = couponItem.clashingInfos[0].message
-                        }
-                    }
-                    clashingInfo = clashingInfoMap
+                    clashingInfos = couponItem.clashingInfos
                     val tmpCurrentClashingPromoList = ArrayList<String>()
+                    var tmpClashingIconUrl = ""
                     val tmpErrorMessage = StringBuilder()
-                    selectedPromo.forEach {
-                        if (clashingInfo.containsKey(it)) {
-                            tmpCurrentClashingPromoList.add(it)
+                    selectedPromo.forEach { promoCode ->
+                        val clashingInfo = clashingInfos.firstOrNull { clashingInfo -> clashingInfo.code == promoCode }
+                        if (clashingInfo != null) {
+                            tmpCurrentClashingPromoList.add(promoCode)
                             tmpErrorMessage.clear()
-                            tmpErrorMessage.append(clashingInfo[it])
+                            tmpErrorMessage.append(clashingInfo.message)
+                            tmpClashingIconUrl = clashingInfo.icon
                         }
                     }
                     currentClashingPromo = tmpCurrentClashingPromoList
@@ -144,7 +141,8 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     if (tmpErrorMessage.isEmpty()) {
                         tmpErrorMessage.append(couponItem.message)
                     }
-                    errorMessage = if (tmpErrorMessage.isNotBlank()) tmpErrorMessage.toString() else ""
+                    clashingInfoMessage = tmpErrorMessage.toString()
+                    clashingInfoIcon = tmpClashingIconUrl
                     promoInfos = couponItem.promoInfos
                     remainingPromoCount = couponSubSection.couponGroups.filter {
                         it.id == couponItem.groupId

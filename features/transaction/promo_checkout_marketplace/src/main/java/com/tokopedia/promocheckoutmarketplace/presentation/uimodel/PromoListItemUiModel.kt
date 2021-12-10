@@ -1,6 +1,7 @@
 package com.tokopedia.promocheckoutmarketplace.presentation.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.promocheckoutmarketplace.data.response.ClashingInfo
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoCoachmark
 import com.tokopedia.promocheckoutmarketplace.data.response.PromoInfo
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
@@ -22,7 +23,8 @@ data class PromoListItemUiModel(
             var title: String = "",
             var currencyDetailStr: String = "",
 
-            var errorMessage: String = "",
+            var clashingInfoMessage: String = "",
+            var clashingInfoIcon: String = "",
             var imageResourceUrls: List<String> = emptyList(),
             var benefitAmount: Int = 0,
             var promoCode: String = "",
@@ -30,7 +32,7 @@ data class PromoListItemUiModel(
             var coachMark: PromoCoachmark = PromoCoachmark(),
             // Store clashing info data from backend.
             // This should not be changed. Initialize once after get data response
-            var clashingInfo: MutableMap<String, String> = mutableMapOf(),
+            var clashingInfos: List<ClashingInfo> = emptyList(),
             // Store current applied promo causing this promo clash and can't be selected, based on data from #clashingInfo
             var currentClashingPromo: MutableList<String> = mutableListOf(),
             var promoInfos: List<PromoInfo> = emptyList(),
