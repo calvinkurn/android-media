@@ -21,6 +21,7 @@ import timber.log.Timber
 class PaymentActivationWebViewBottomSheet(private val activationUrl: String,
                                           private val callbackUrl: String,
                                           private val title: String,
+                                          private val shouldGenerateLoginUrl: Boolean, // currently only for ovo
                                           private val listener: PaymentActivationWebViewBottomSheetListener) {
 
     private var context: Context? = null
@@ -88,8 +89,11 @@ class PaymentActivationWebViewBottomSheet(private val activationUrl: String,
 
     private fun loadPaymentActivationWebView(userSession: UserSessionInterface) {
         // Load auth only if tokopedia url
-        if (activationUrl.contains(TOKOPEDIA_URL)) {
-            binding?.webView?.loadAuthUrl(generateUrl(userSession), userSession)
+        if (shouldGenerateLoginUrl) {
+            val generateUrl = generateUrl(userSession)
+            binding?.webView?.loadAuthUrl(generateUrl, userSession)
+        } else if (activationUrl.contains(TOKOPEDIA_URL)) {
+            binding?.webView?.loadAuthUrl(activationUrl, userSession)
         } else {
             binding?.webView?.loadUrl(activationUrl)
         }

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -17,14 +18,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_BACK_BUTTON_APPLINK
+import com.tokopedia.common.payment.utils.LINK_ACCOUNT_SOURCE_PAYMENT
+import com.tokopedia.common.payment.utils.LinkStatusMatcher
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
@@ -171,6 +172,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(data)
             REQUEST_CODE_OPEN_ADDRESS_LIST -> onResultFromAddressList(resultCode)
             REQUEST_CODE_ADD_NEW_ADDRESS -> onResultFromAddNewAddress(resultCode, data)
+            REQUEST_CODE_LINK_ACCOUNT -> onResultFromLinkAccount(resultCode, data)
+            REQUEST_CODE_WALLET_ACTIVATION -> refresh()
         }
     }
 
@@ -257,6 +260,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             orderSummaryAnalytics.eventClickSelectedPaymentOption(gateway, userSession.get().userId)
             viewModel.choosePayment(gateway, metadata)
         }
+    }
+
+    private fun onResultFromLinkAccount(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            val status = data?.getStringExtra(ApplinkConstInternalGlobal.PARAM_STATUS) ?: ""
+            if (status.isNotEmpty()) {
+                val message = LinkStatusMatcher.getStatus(status)
+                val v = view
+                if (message.isNotEmpty() && v != null) {
+                    Toaster.build(v, message, Toaster.LENGTH_LONG).show()
+                }
+            }
+        }
+        refresh()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -1287,7 +1304,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         override fun onOvoActivateClicked(callbackUrl: String) {
             PaymentActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl,
-                    getString(R.string.lbl_activate_ovo_now),
+                    getString(R.string.lbl_activate_ovo_now), true,
                     object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
                         override fun onActivationResult(isSuccess: Boolean) {
                             view?.let {
@@ -1307,18 +1324,33 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
 
         override fun onWalletActivateClicked(headerTitle: String, activationUrl: String, callbackUrl: String) {
-            PaymentActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle,
-                    object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
-                        override fun onActivationResult(isSuccess: Boolean) {
-                            view?.let {
-                                it.post {
-                                    source = SOURCE_OTHERS
-                                    shouldShowToaster = true
-                                    refresh()
-                                }
-                            }
+            context?.let { ctx ->
+                if (!URLUtil.isNetworkUrl(activationUrl) && RouteManager.isSupportApplink(ctx, activationUrl)) {
+                    if (activationUrl.startsWith(ApplinkConst.LINK_ACCOUNT)) {
+                        val intent = RouteManager.getIntent(ctx, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+                            putExtra(ApplinkConstInternalGlobal.PARAM_LD, LINK_ACCOUNT_BACK_BUTTON_APPLINK)
+                            putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, LINK_ACCOUNT_SOURCE_PAYMENT)
                         }
-                    }).show(this@OrderSummaryPageFragment, userSession.get())
+                        startActivityForResult(intent, REQUEST_CODE_LINK_ACCOUNT)
+                    } else {
+                        val intent = RouteManager.getIntentNoFallback(ctx, activationUrl) ?: return
+                        startActivityForResult(intent, REQUEST_CODE_WALLET_ACTIVATION)
+                    }
+                } else {
+                    PaymentActivationWebViewBottomSheet(activationUrl, callbackUrl, headerTitle, false,
+                            object : PaymentActivationWebViewBottomSheet.PaymentActivationWebViewBottomSheetListener {
+                                override fun onActivationResult(isSuccess: Boolean) {
+                                    view?.let {
+                                        it.post {
+                                            source = SOURCE_OTHERS
+                                            shouldShowToaster = true
+                                            refresh()
+                                        }
+                                    }
+                                }
+                            }).show(this@OrderSummaryPageFragment, userSession.get())
+                }
+            }
         }
 
         override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
@@ -1419,6 +1451,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         const val REQUEST_CODE_OPEN_ADDRESS_LIST = 20
 
         const val REQUEST_CODE_ADD_NEW_ADDRESS = 21
+
+        const val REQUEST_CODE_LINK_ACCOUNT = 22
+        const val REQUEST_CODE_WALLET_ACTIVATION = 23
 
         const val QUERY_PRODUCT_ID = "product_id"
         const val QUERY_SOURCE = "source"
