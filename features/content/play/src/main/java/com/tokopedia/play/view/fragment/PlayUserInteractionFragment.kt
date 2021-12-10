@@ -86,6 +86,8 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponentOrNull
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -240,6 +242,7 @@ class PlayUserInteractionFragment @Inject constructor(
         setupView(view)
         setupInsets(view)
         setupObserve()
+        setupScreenshotDetector()
 
         invalidateSystemUiVisibility()
     }
@@ -653,6 +656,17 @@ class PlayUserInteractionFragment @Inject constructor(
         observeCastState()
     }
 
+    private fun setupScreenshotDetector() {
+        context?.let {
+            UniversalShareBottomSheet.createAndStartScreenShotDetector(
+                it, object: ScreenShotListener {
+                    override fun screenShotTaken() {
+                        playViewModel.submitAction(ClickShareAction)
+                    }
+                }, this, addFragmentLifecycleObserver = true)
+        }
+    }
+
     private fun invalidateSystemUiVisibility() {
         when {
             playViewModel.isFreezeOrBanned -> playFullscreenManager.onExitFullscreen()
@@ -951,20 +965,17 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
-                    is OpenSharingOptionEvent -> shareExperienceView?.showSharingOptions(event.title, event.coverUrl)
-                    is OpenSelectedSharingOptionEvent -> {
-                        val intent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            type = "text/plain"
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            putExtra(Intent.EXTRA_REFERRER, event.url)
-                            putExtra(Intent.EXTRA_TITLE, event.title)
-                            putExtra(Intent.EXTRA_SUBJECT, event.title)
-                            putExtra(Intent.EXTRA_TEXT, event.description)
-                            putExtra(Intent.EXTRA_HTML_TEXT, event.description)
+                    is OpenSharingOptionEvent -> {
+                        if(UniversalShareBottomSheet.isCustomSharingEnabled(context)) {
+                            shareExperienceView?.showSharingOptions(event.title, event.coverUrl)
                         }
-                        activity?.startActivity(Intent.createChooser(intent, "Bagikan Product Ini"))
-                        shareExperienceView?.dismiss()
+                        else {
+                            // TODO("Provide data for this")
+//                            openNativeShareIntent(event.title, event.description, event.url)
+                        }
+                    }
+                    is OpenSelectedSharingOptionEvent -> {
+                        openNativeShareIntent(event.title, event.description, event.url)
                     }
                     is OpenShareExperienceEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
@@ -983,6 +994,21 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
+
+    private fun openNativeShareIntent(title: String, description: String, url: String) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_REFERRER, url)
+            putExtra(Intent.EXTRA_TITLE, title)
+            putExtra(Intent.EXTRA_SUBJECT, title)
+            putExtra(Intent.EXTRA_TEXT, description)
+            putExtra(Intent.EXTRA_HTML_TEXT, description)
+        }
+        activity?.startActivity(Intent.createChooser(intent, title))
+        shareExperienceView?.dismiss()
+    }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
         when {
