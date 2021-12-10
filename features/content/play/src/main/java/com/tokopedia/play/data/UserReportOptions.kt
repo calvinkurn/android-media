@@ -16,7 +16,7 @@ data class UserReportOptions(
     val additionalField: List<OptionAdditionalField> = listOf(),
 ){
     data class Response(
-        @SerializedName("options")
+        @SerializedName("visionGetReportVideoReason")
         val data: List<UserReportOptions> = emptyList()
     )
 
