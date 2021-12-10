@@ -1837,29 +1837,52 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
+        val (channelInfo, shareInfo) = _channelDetail.let {
+            return@let Pair(it.value.channelInfo, it.value.shareInfo)
+        }
+
+        fun generateShareString(): String {
+            val title = _channelDetail.value.channelInfo.title
+            val description = "Coba nonton video ini ya di Tokopedia Play!"
+            val link = _channelDetail.value.shareInfo.redirectUrl
+            return "$title.\n$description\n$link"
+        }
+
+        fun generateOgTitle(): String {
+            return "Tonton ${_partnerInfo.value.name} di Tokopedia Play"
+        }
+
+        fun generateOgDescription(): String {
+            return "Aku punya obat anti-bosen buatmu. Ayo nonton ${_partnerInfo.value.name} di Tokopedia Play!"
+        }
+
+        fun openDefaultIntent() {
+            viewModelScope.launch {
+                _uiEvent.emit(
+                    OpenSelectedSharingOptionEvent(
+                        title = channelInfo.title,
+                        description = generateShareString(),
+                        url = shareInfo.redirectUrl
+                    )
+                )
+            }
+        }
+
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-//            _uiEvent.emit(
-//                OpenSelectedSharingOptionEvent(
-//                    title = "Testing Title",
-//                    description = "Testing Description",
-//                    url = _channelDetail.value.channelInfo.coverUrl
-//                )
-//            )
             val linkerData = LinkerData().apply {
                 id = channelId
-                name = "Testing Name"
-                description = "Testing Description"
-                imgUri = _channelDetail.value.channelInfo.coverUrl
-                ogUrl = "https://www.tokopedia.com/play/channel/13114"
-                type = "Testing Type"
-                uri = "https://www.tokopedia.com/play/channel/13114"
+                name = channelInfo.title
+                description = generateShareString()
+                imgUri = channelInfo.coverUrl
+                ogUrl = shareInfo.redirectUrl
+                type = ""
+                uri = shareInfo.redirectUrl
                 isThrowOnError = true
                 feature = shareModel.feature
                 channel = shareModel.channel
                 campaign = shareModel.campaign
-                uri = "https://www.tokopedia.com/play/channel/13114"
-                ogTitle = "This is OG title"
-                ogDescription = "This is OG description"
+                ogTitle = generateOgTitle()
+                ogDescription = generateOgDescription()
                 ogImageUrl = _channelDetail.value.channelInfo.coverUrl
                 isAffiliate = shareModel.isAffiliate
             }
@@ -1867,14 +1890,13 @@ class PlayViewModel @Inject constructor(
             val linkerShareData = LinkerShareData()
             linkerShareData.linkerData = linkerData
 
-
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object: ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     Log.d("<LOG>", "LinkerShareData : $linkerShareData")
                     viewModelScope.launch {
                         _uiEvent.emit(
                             OpenShareExperienceEvent(
-                                shareModel, linkerShareData, "Ini testing Share String\nhttps://www.tokopedia.com/play/channel/13114"
+                                shareModel, linkerShareData, generateShareString()
                             )
                         )
                     }
@@ -1882,11 +1904,13 @@ class PlayViewModel @Inject constructor(
 
                 override fun onError(linkerError: LinkerError?) {
                     Log.d("<LOG>", "LinkerShareData Error : $linkerError")
+                    openDefaultIntent()
                 }
             }))
         }) {
             Log.d("<LOG>", "Catch Error : ${it.message}")
             Log.d("<LOG>", "Catch Error : ${it.localizedMessage}")
+            openDefaultIntent()
         }
     }
 

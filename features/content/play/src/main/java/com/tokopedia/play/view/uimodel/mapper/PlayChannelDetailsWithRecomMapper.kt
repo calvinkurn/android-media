@@ -107,7 +107,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
         return PlayShareInfoUiModel(
                 content = htmlTextTransformer.transform(fullShareContent),
                 shouldShow = shareResponse.isShowButton
-                        && shareResponse.redirectUrl.isNotBlank()
+                        && shareResponse.redirectUrl.isNotBlank(),
+                redirectUrl = shareResponse.redirectUrl,
         )
     }
 

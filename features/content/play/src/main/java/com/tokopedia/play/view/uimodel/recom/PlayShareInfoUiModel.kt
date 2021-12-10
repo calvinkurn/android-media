@@ -6,4 +6,5 @@ package com.tokopedia.play.view.uimodel.recom
 data class PlayShareInfoUiModel(
         val content: String = "",
         val shouldShow: Boolean = false,
+        val redirectUrl: String = "",
 )
