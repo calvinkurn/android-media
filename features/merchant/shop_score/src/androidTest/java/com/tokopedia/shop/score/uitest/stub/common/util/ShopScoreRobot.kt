@@ -1,36 +1,31 @@
 package com.tokopedia.shop.score.uitest.stub.common.util
 
-import androidx.recyclerview.widget.LinearSmoothScroller
+import android.content.Context
+import android.graphics.Color
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewAssertion
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.shop.score.R
 import com.tokopedia.shop.score.uitest.stub.performance.presentation.activity.ShopPerformanceActivityStub
 import com.tokopedia.shop.score.uitest.stub.performance.presentation.fragment.ShopPerformanceFragmentStub
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 
-
-fun ViewInteraction.isGone() = getViewAssertion(ViewMatchers.Visibility.GONE)
-
-fun ViewInteraction.isVisible() = getViewAssertion(ViewMatchers.Visibility.VISIBLE)
-
-fun ViewInteraction.isInvisible() = getViewAssertion(ViewMatchers.Visibility.INVISIBLE)
-
-private fun getViewAssertion(visibility: ViewMatchers.Visibility): ViewAssertion? {
-    return ViewAssertions.matches(ViewMatchers.withEffectiveVisibility(visibility))
-}
-
-fun onIdView(id: Int): ViewInteraction = onView(withId(id))
-fun onWithText(text: String?): ViewInteraction = onView(allOf(withText(text)))
+fun onIdView(id: Int): ViewInteraction = onView(allOf(withId(id)))
 
 fun onContentDescPopup(string: String?): ViewInteraction =
     onView(withText(string))
@@ -38,40 +33,48 @@ fun onContentDescPopup(string: String?): ViewInteraction =
 
 
 fun ViewInteraction.isViewDisplayed(): ViewInteraction = check(matches(isDisplayed()))
+fun ViewInteraction.isViewNotDisplayed(): ViewInteraction = check(matches(not(isDisplayed())))
 fun ViewInteraction.onClick(): ViewInteraction = perform(click())
 fun ViewInteraction.withTextStr(text: String?): ViewInteraction = check(matches(withText(text)))
 
 
+fun getTextHtml(context: Context, text: String): CharSequence? {
+    val htmlString = HtmlLinkHelper(context, text)
+    return htmlString.spannedString
+}
+
 inline fun <reified T : Visitable<*>> ShopPerformanceActivityStub.scrollTo(isLastIndex: Boolean = false) {
-    val fragment =
-        this.supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as ShopPerformanceFragmentStub
+    val fragment = getShopPerformanceFragment()
     val positionItem = if (isLastIndex) {
         fragment.shopPerformanceAdapter.list.indexOfLast { it is T }
     } else {
         fragment.shopPerformanceAdapter.list.indexOfFirst { it is T }
     }
 
-    fragment.smoothScroll(positionItem)
-}
-
-inline fun <reified T : Visitable<*>> ShopPerformanceActivityStub.scrollToWithPos(position: Int) {
-    val fragment =
-        this.supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as ShopPerformanceFragmentStub
-    val positionItem =
-            fragment.shopPerformanceAdapter.list.indexOfFirst { it is T } + position
-    fragment.smoothScroll(positionItem)
+    smoothScrollTo(positionItem)
 }
 
 
-fun ShopPerformanceFragmentStub.smoothScroll(positionItem: Int) {
+fun smoothScrollTo(positionItem: Int) {
     if (positionItem != RecyclerView.NO_POSITION) {
-        val smoothScroller: RecyclerView.SmoothScroller =
-            object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
-                }
-            }
-        smoothScroller.targetPosition = positionItem
-        binding?.rvShopPerformance?.layoutManager?.startSmoothScroll(smoothScroller)
+        onIdView(R.id.rvShopPerformance).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                positionItem, scrollTo()
+            )
+        )
     }
+}
+
+fun smoothScrollToFaq(positionItem: Int) {
+    if (positionItem != RecyclerView.NO_POSITION) {
+        onIdView(R.id.rv_faq_shop_score).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                positionItem, scrollTo()
+            )
+        )
+    }
+}
+
+fun ShopPerformanceActivityStub.getShopPerformanceFragment(): ShopPerformanceFragmentStub {
+    return this.supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as ShopPerformanceFragmentStub
 }

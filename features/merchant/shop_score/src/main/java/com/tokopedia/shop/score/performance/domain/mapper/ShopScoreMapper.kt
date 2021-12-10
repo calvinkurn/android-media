@@ -702,7 +702,7 @@ open class ShopScoreMapper @Inject constructor(
         }
     }
 
-    private fun mapToBaseDetailPerformanceUiModel(
+    fun mapToBaseDetailPerformanceUiModel(
         shopScoreLevelList: List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Long,
         shopScore: Long,
@@ -1141,7 +1141,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean, shopScore: Int)
+    fun mapToTimerNewSellerUiModel(shopAge: Long = 0, isEndTenure: Boolean, shopScore: Int)
             : Pair<ItemTimerNewSellerUiModel, Boolean> {
         val nextSellerDays = COUNT_DAYS_NEW_SELLER - shopAge
 
@@ -1157,7 +1157,7 @@ open class ShopScoreMapper @Inject constructor(
         )
     }
 
-    private fun getProtectedParameterSection(
+    fun getProtectedParameterSection(
         shopScoreLevelList:
         List<ShopScoreLevelResponse.ShopScoreLevel.Result.ShopScoreDetail>?,
         shopAge: Int

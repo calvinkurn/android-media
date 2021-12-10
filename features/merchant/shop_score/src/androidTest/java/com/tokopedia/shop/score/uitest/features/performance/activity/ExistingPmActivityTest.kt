@@ -1,6 +1,7 @@
 package com.tokopedia.shop.score.uitest.features.performance.activity
 
 import com.tokopedia.shop.score.R
+import com.tokopedia.shop.score.performance.presentation.model.ItemStatusPMUiModel
 import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.uitest.features.performance.base.ShopScoreTest
 import com.tokopedia.shop.score.uitest.stub.common.util.onClick
@@ -8,48 +9,60 @@ import com.tokopedia.shop.score.uitest.stub.common.util.onIdView
 import com.tokopedia.shop.score.uitest.stub.common.util.scrollTo
 import org.junit.Test
 
-class ShopScoreExistingOSActivityTest: ShopScoreTest() {
+class ExistingPmActivityTest : ShopScoreTest() {
 
     override fun setup() {
         super.setup()
         getShopInfoPeriodUseCaseStub.responseStub = shopInfoPeriodResponse
-        getShopPerformanceUseCaseStub.responseStub = existingSellerOsResponse
+        getShopPerformanceUseCaseStub.responseStub = existingSellerPmResponse
     }
 
     @Test
-    fun show_coachmark_when_existing_official_store() {
+    fun show_coachmark_when_existing_pm() {
         shopScorePrefManagerStub.setFinishCoachMark(false)
         activityRule.launchActivity(getShopPerformancePageIntent())
-        Thread.sleep(3000)
-        showCoachMarkShopScoreOs()
+        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
+        showCoachMarkShopScore()
     }
 
     @Test
-    fun show_header_performance_when_existing_official_store() {
+    fun show_header_performance_when_existing_pm() {
         shopScorePrefManagerStub.setFinishCoachMark(true)
         activityRule.launchActivity(getShopPerformancePageIntent())
-        showHeaderPerformanceExisting(existingSellerOsResponse, shopInfoPeriodResponse)
+        showHeaderPerformanceExistingPm(existingSellerPmResponse, shopInfoPeriodResponse)
     }
 
     @Test
-    fun show_bottom_sheet_tooltip_level_existing() {
+    fun show_bottom_sheet_tooltip_level_existing_pm() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_performance_level_information).onClick()
-        showBottomSheetTooltipLevel(existingSellerOsResponse)
+        showBottomSheetTooltipLevelPm(existingSellerPmResponse)
     }
 
     @Test
-    fun show_bottom_sheet_tooltip_score_existing() {
+    fun show_bottom_sheet_tooltip_score_existing_pm() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         onIdView(R.id.ic_shop_score_performance).onClick()
         showBottomSheetTooltipScoreExisting()
     }
 
     @Test
-    fun show_section_period_detail_existing() {
+    fun show_section_period_detail_existing_pm() {
         activityRule.launchActivity(getShopPerformancePageIntent())
         activityRule.activity.scrollTo<PeriodDetailPerformanceUiModel>()
-        showSectionPeriodDetailExisting(existingSellerOsResponse)
+        showSectionPeriodDetailExisting(existingSellerPmResponse)
     }
 
+    @Test
+    fun show_item_detail_performance_and_show_bottomsheet_pm() {
+        activityRule.launchActivity(getShopPerformancePageIntent())
+        showDetailPerformanceExisting()
+    }
+
+    @Test
+    fun show_power_merchant_section() {
+        activityRule.launchActivity(getShopPerformancePageIntent())
+        activityRule.activity.scrollTo<ItemStatusPMUiModel>()
+        showPowerMerchantSection()
+    }
 }
