@@ -1028,10 +1028,13 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             // if using isAddSBM then we use title from sbm
             (activity as? BaseSimpleActivity)?.updateTitle(
                     if (isAddSBM) getString(R.string.add_bills_title) else label)
-            rechargeAnalytics.eventOpenScreen(
+            if (!isAddSBM) {
+                rechargeAnalytics.eventOpenScreen(
                     userSession.userId,
                     categoryName,
-                    categoryId.toString())
+                    categoryId.toString()
+                )
+            }
         }
         renderTickers(data.tickers)
         // Set recommendation data if available
