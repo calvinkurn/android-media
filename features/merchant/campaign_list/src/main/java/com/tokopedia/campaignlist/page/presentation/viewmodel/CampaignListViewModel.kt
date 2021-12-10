@@ -1,5 +1,6 @@
 package com.tokopedia.campaignlist.page.presentation.viewmodel
 
+import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -226,9 +227,15 @@ class CampaignListViewModel @Inject constructor(
             channel = shareModel.channel
             campaign = shareModel.campaign
             id = shopData.shopId
+            linkerData.type = LinkerData.SHOP_TYPE
             name = getShareOgTitle(campaignData.name, shopData.name)
-            uri = shopData.url
+            uri = "https://www.tokopedia.com/${shopData.domain}"
             description = getShareOgDescription(campaignStatusId, shopData.name)
+            ogTitle = getShareOgTitle(campaignData.name, shopData.name)
+            ogDescription = getShareOgDescription(campaignStatusId, shopData.name)
+            if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
             isThrowOnError = true
         }
         val linkerShareData = LinkerShareData()

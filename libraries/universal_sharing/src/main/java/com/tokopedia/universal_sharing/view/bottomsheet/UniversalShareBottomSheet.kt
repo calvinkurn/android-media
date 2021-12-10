@@ -902,6 +902,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun getImageFromMedia(getImageFromMediaFlag: Boolean){
         getImageFromMedia = getImageFromMediaFlag
+        savedImagePath = "{media_image}"
     }
 
     fun setMediaPageSourceId(pageSourceId: String){
