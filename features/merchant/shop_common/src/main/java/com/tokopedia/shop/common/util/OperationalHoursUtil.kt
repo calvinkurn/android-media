@@ -56,7 +56,6 @@ object OperationalHoursUtil {
     private val defaultLocalFormatter = SimpleDateFormat("d MMMM yyyy", defaultLocale)
     private val defaultLocalFormatterShort = SimpleDateFormat("d MMM yyyy", defaultLocale)
     private val defaultLocalDayFormatter = SimpleDateFormat("EEE", defaultLocale)
-    private val shortDateFormatter = SimpleDateFormat("dd/MM/yyyy", defaultLocale)
 
     /**
      * Day of operational represent as Int: 1 (Monday) - 7 (Sunday)
@@ -151,10 +150,6 @@ object OperationalHoursUtil {
             newSelectedMinutes = "0$selectedMinutes"
         }
         return "$newSelectedHour:$newSelectedMinutes:00"
-    }
-
-    fun toShortDateFormat(date: Date): String {
-        return shortDateFormatter.format(date)
     }
 
     fun toIndonesianDateRangeFormat(startDate: Date, endDate: Date, isShortDateFormat: Boolean = false): String {
