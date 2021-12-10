@@ -78,7 +78,7 @@ class InspirationCarouselOptionListViewHolder(
     private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
         return object: ViewHintListener {
             override fun onViewHint() {
-                inspirationCarouselListener.onImpressedInspirationCarouselListProduct(product)
+                inspirationCarouselListener.onInspirationCarouselListProductImpressed(product)
             }
         }
     }

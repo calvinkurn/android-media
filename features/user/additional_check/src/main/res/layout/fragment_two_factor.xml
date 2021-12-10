@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:padding="16dp"
     android:id="@+id/fingerprint_onboarding_parent_view">
 

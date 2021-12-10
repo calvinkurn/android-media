@@ -15,11 +15,12 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.manageaddress.R
+import com.tokopedia.manageaddress.databinding.FragmentShopAddressAddBinding
 import com.tokopedia.manageaddress.di.ShopLocationComponent
 import com.tokopedia.manageaddress.domain.model.shoplocation.ShopLocationOldUiModel
 import com.tokopedia.manageaddress.ui.shoplocation.shopaddress.listener.ShopSettingAddressAddEditView
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_shop_address_add.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddressAddEditView {
@@ -29,10 +30,8 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private var selectedDistrictId = -1L
     private var selectedCityId = -1L
     private var selectedProvinceId = -1L
-    private val zipCodes: MutableList<String> = mutableListOf()
-    private val zipCodesAdapter: ArrayAdapter<String>  by lazy {
-        ArrayAdapter<String>(requireActivity(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row, com.tokopedia.design.R.id.item, zipCodes)
-    }
+    private var zipCodes: MutableList<String> = ArrayList()
+    private var binding by autoClearedNullable<FragmentShopAddressAddBinding>()
 
     @Inject lateinit var presenter: ShopSettingAddressAddEditPresenter
 
@@ -65,9 +64,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     override fun getScreenName(): String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.fragment_shop_address_add, container, false)
-        v.requestFocus()
-        return v
+        binding = FragmentShopAddressAddBinding.inflate(inflater, container, false)
+        binding?.root?.requestFocus()
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,33 +81,38 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
             isAddNew = it.getBoolean(PARAM_EXTRA_IS_ADD_NEW, true)
         }
 
-        postal_code.setOnTouchListener { _, _ -> if (!postal_code.isPopupShowing) postal_code.showDropDown()
-            false }
-        postal_code.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !postal_code.text.toString()[0].isDigit())
-            postal_code.setText("")}
+        binding?.postalCode?.textFieldInput?.let {
+            it.setOnTouchListener { _, _ -> if (!(it.isPopupShowing)) it.showDropDown()
+                false }
+            it.setOnItemClickListener { _, _, position, _ -> if (position == 0 && !it.text.toString()[0].isDigit())
+                it.setText("")}
+        }
 
-        postal_code.setAdapter(zipCodesAdapter)
-
-        edit_text_district.setOnClickListener { gotoDistrictActivity() }
+        binding?.editTextDistrict?.textFieldInput?.run {
+            isFocusable = false
+            isClickable = true
+            setOnClickListener { gotoDistrictActivity() } }
         if (!isAddNew)
             initializeFillData()
     }
 
     private fun initializeFillData() {
         shopLocationOldUiModel?.let {
-            edit_text_name.setText(it.name)
-            edit_text_address.setText(it.address)
-            val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
-            edit_text_district.setText(district)
-            postal_code.setText(it.postalCode.toString())
-            if (!TextUtils.isEmpty(it.phone)){
-                edit_text_phone.setText(it.phone)
-            }
-            if (!TextUtils.isEmpty(it.email)){
-                edit_text_email.setText(it.email)
-            }
-            if (!TextUtils.isEmpty(it.fax)){
-                edit_text_fax.setText(it.fax)
+            binding?.run {
+                editTextName.textFieldInput.setText(it.name)
+                editTextAddress.textFieldInput.setText(it.address)
+                val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
+                editTextDistrict.textFieldInput.setText(district)
+                postalCode.textFieldInput.setText(it.postalCode.toString())
+                if (!TextUtils.isEmpty(it.phone)){
+                    editTextPhone.textFieldInput.setText(it.phone)
+                }
+                if (!TextUtils.isEmpty(it.email)){
+                    editTextEmail.textFieldInput.setText(it.email)
+                }
+                if (!TextUtils.isEmpty(it.fax)){
+                    editTextFax.textFieldInput.setText(it.fax)
+                }   
             }
         }
 
@@ -116,32 +120,51 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
 
     private fun isDataValidToSave(): Boolean {
         var valid = true
+        binding?.run {
+            editTextName.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_address_name_required))
+                } else if (it.textFieldInput.text.toString().length > 128){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_address_name_max_length_error))
+                }
+            }
 
-        if (TextUtils.isEmpty(edit_text_name.text.toString())){
-            valid = false
-            text_input_layout_name.error = getString(R.string.shop_address_name_required)
-        } else if (edit_text_name.text.toString().length > 128){
-            valid = false
-            text_input_layout_name.error = getString(R.string.shop_address_name_max_length_error)
-        }
+            editTextAddress.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_address_required))
+                }
+            }
 
-        if (TextUtils.isEmpty(edit_text_address.text.toString())){
-            valid = false
-            text_input_layout_address.error = getString(R.string.shop_address_required)
-        }
-        if (TextUtils.isEmpty(edit_text_district.text.toString())){
-            valid = false
-            text_input_layout_district.error = getString(R.string.shop_district_required)
-        }
-        if (TextUtils.isEmpty(postal_code.text.toString())){
-            valid = false
-            text_input_layout_postal_code.error = getString(R.string.shop_postal_code_required)
-        }
-        if (!TextUtils.isEmpty(edit_text_email.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(edit_text_email.text.toString()).matches()){
-            valid = false
-            text_input_layout_email.error = getString(R.string.shop_email_invalid)
-        }
+            editTextDistrict.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_district_required))
+                }
+            }
 
+            postalCode.let {
+                if (TextUtils.isEmpty(it.textFieldInput.text.toString())){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_postal_code_required))
+                }
+            }
+
+            editTextEmail.let {
+                if (!TextUtils.isEmpty(it.textFieldInput.text.toString()) && !Patterns.EMAIL_ADDRESS.matcher(it.textFieldInput.text.toString()).matches()){
+                    valid = false
+                    it.setError(true)
+                    it.setMessage(getString(R.string.shop_email_invalid))
+                }
+            }
+        }
         return valid
     }
 
@@ -164,24 +187,23 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
                 val provinceName = it.getString(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME, "")
 
                 val fullAddress = "$provinceName, $cityName, $districtName"
-                edit_text_district.setText(fullAddress)
+                binding?.editTextDistrict?.textFieldInput?.setText(fullAddress)
 
                 selectedProvinceId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID, -1L)
                 selectedCityId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID, -1L)
                 selectedDistrictId = it.getLong(INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID, -1L)
-                zipCodes.clear()
-                zipCodes.addAll(it.getStringArrayList(
-                    INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES
-                ) ?: listOf())
+                zipCodes = arrayListOf<String>(getString(R.string.header_list_postal_code)).apply {
+                    addAll(it.getStringArrayList(
+                            INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES) ?: arrayListOf())
+                }
                 updateAutoTextZipCodes()
             }
         }
     }
 
     private fun updateAutoTextZipCodes() {
-        val hedader = getString(R.string.header_list_postal_code)
-        if (!zipCodes.contains(hedader)) zipCodes.add(0, hedader)
-        zipCodesAdapter.notifyDataSetChanged()
+        val adapter = ArrayAdapter<String>(requireActivity(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row, com.tokopedia.design.R.id.item, zipCodes)
+        binding?.postalCode?.textFieldInput?.setAdapter(adapter)
     }
 
     fun saveAddEditAddress() {
@@ -193,15 +215,15 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     private fun populateData(): ShopLocationOldUiModel {
         shopLocationOldUiModel = shopLocationOldUiModel ?: ShopLocationOldUiModel()
         return shopLocationOldUiModel!!.apply {
-            name = edit_text_name.text.toString()
-            address = edit_text_address.text.toString()
+            name = binding?.editTextName?.textFieldInput?.text.toString()
+            address = binding?.editTextAddress?.textFieldInput?.text.toString()
             districtId = selectedDistrictId
             cityId = selectedCityId
             stateId = selectedProvinceId
-            postalCode = postal_code.text.toString().toInt()
-            phone = edit_text_phone.text.toString()
-            email = edit_text_email.text.toString()
-            fax = edit_text_fax.text.toString()
+            postalCode = binding?.postalCode?.textFieldInput?.text.toString().toInt()
+            phone = binding?.editTextPhone?.textFieldInput?.text.toString()
+            email = binding?.editTextEmail?.textFieldInput?.text.toString()
+            fax = binding?.editTextFax?.textFieldInput?.text.toString()
 
         }
     }

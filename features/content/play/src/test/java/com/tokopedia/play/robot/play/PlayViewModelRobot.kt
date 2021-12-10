@@ -55,7 +55,6 @@ class PlayViewModelRobot(
         getChannelStatusUseCase: GetChannelStatusUseCase,
         getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getReportSummariesUseCase: GetReportSummariesUseCase,
-        private val getCartCountUseCase: GetCartCountUseCase,
         getProductTagItemsUseCase: GetProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase,
@@ -120,10 +119,6 @@ class PlayViewModelRobot(
         coEvery { repo.getIsLiked(any(), any()) } returns response
     }
 
-    fun setMockCartCountResponse(response: Int) {
-        coEvery { getCartCountUseCase.executeOnBackground() } returns response
-    }
-
     fun setMockUserId(userId: String) {
         every { userSession.userId } returns userId
     }
@@ -145,10 +140,6 @@ class PlayViewModelRobot(
             }
             PiPState.Stop -> viewModel.stopPiP()
         }.exhaustive
-    }
-
-    fun updateCartCountFromNetwork() {
-        viewModel.updateBadgeCart()
     }
 
     fun showKeyboard(keyboardHeight: Int = 50) {
@@ -230,7 +221,6 @@ fun givenPlayViewModelRobot(
         getChannelStatusUseCase: GetChannelStatusUseCase = mockk(relaxed = true),
         getSocketCredentialUseCase: GetSocketCredentialUseCase = mockk(relaxed = true),
         getReportSummariesUseCase: GetReportSummariesUseCase = mockk(relaxed = true),
-        getCartCountUseCase: GetCartCountUseCase = mockk(relaxed = true),
         getProductTagItemsUseCase: GetProductTagItemsUseCase = mockk(relaxed = true),
         trackProductTagBroadcasterUseCase: TrackProductTagBroadcasterUseCase = mockk(relaxed = true),
         trackVisitChannelBroadcasterUseCase: TrackVisitChannelBroadcasterUseCase = mockk(relaxed = true),
@@ -256,7 +246,6 @@ fun givenPlayViewModelRobot(
         getChannelStatusUseCase = getChannelStatusUseCase,
         getSocketCredentialUseCase = getSocketCredentialUseCase,
         getReportSummariesUseCase = getReportSummariesUseCase,
-        getCartCountUseCase = getCartCountUseCase,
         getProductTagItemsUseCase = getProductTagItemsUseCase,
         trackProductTagBroadcasterUseCase = trackProductTagBroadcasterUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,

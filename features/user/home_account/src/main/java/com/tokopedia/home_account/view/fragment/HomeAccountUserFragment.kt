@@ -348,9 +348,8 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
                 homeAccountAnalytic.eventClickAppSettingSafeMode(isActive)
-                if (isActive) {
-                    createAndShowSafeModeAlertDialog(isActive)
-                }
+                switch.isChecked = !isActive
+                createAndShowSafeModeAlertDialog(isActive)
             }
             AccountConstants.SettingCode.SETTING_DARK_MODE -> {
                 setupDarkMode(isActive)
@@ -592,6 +591,10 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             }
         })
 
+        viewModel.safeModeStatus.observe(viewLifecycleOwner, Observer {
+            updateSafeModeSwitch(it)
+        })
+
     }
 
     private fun onSuccessGetCentralizedAssetConfig(centralizedUserAssetConfig: CentralizedUserAssetConfig) {
@@ -809,6 +812,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         viewModel.getBuyerData()
         setupSettingList()
         getFirstRecommendation()
+        viewModel.getSafeModeValue()
     }
 
     private fun onRefresh() {
@@ -936,7 +940,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             getString(R.string.new_home_account_safe_mode_selected_dialog_positive_button)
         val dialogNegativeButton = getString(R.string.new_home_account_label_cancel)
 
-        if (currentValue) {
+        if (!currentValue) {
             dialogTitleMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_title)
             dialogBodyMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_msg)
             dialogPositiveButton =
@@ -951,10 +955,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 setPrimaryCTAText(dialogPositiveButton)
                 setPrimaryCTAClickListener {
                     viewModel.setSafeMode(currentValue)
+                    dismiss()
                 }
                 setSecondaryCTAText(dialogNegativeButton)
                 setSecondaryCTAClickListener { dismiss() }
             }
+            dialog.show()
         }
 
     }
@@ -1056,9 +1062,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
             AccountConstants.SettingCode.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
-            AccountConstants.SettingCode.SETTING_OLD_ACCOUNT -> if (GlobalConfig.isAllowDebuggingTools()) {
-                RouteManager.route(activity, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
-            }
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 homeAccountAnalytic.eventClickLogout()
@@ -1103,7 +1106,6 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     }
 
     private fun showDialogLogout() {
-
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.new_home_account_label_logout))
@@ -1161,6 +1163,13 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked =
             isEnable
         commonAdapter?.notifyDataSetChanged()
+        adapter?.notifyDataSetChanged()
+    }
+
+    private fun updateSafeModeSwitch(isEnable: Boolean) {
+        commonAdapter?.list?.find { it.id == AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID }?.isChecked =
+            isEnable
+        commonAdapter?.notifyItemChanged(2)
         adapter?.notifyDataSetChanged()
     }
 
