@@ -94,8 +94,8 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselDataView.Option.Product) {}
-        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
+        override fun onInspirationCarouselGridProductImpressed(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselChipsProductClicked(product: InspirationCarouselDataView.Option.Product) {}
@@ -133,7 +133,11 @@ internal fun createBannerAdsListener(): BannerAdsListener {
 
 internal fun createSuggestionListener(): SuggestionListener {
     return object : SuggestionListener {
-        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView?) {
+        override fun onSuggestionImpressed(suggestionDataView: SuggestionDataView) {
+
+        }
+
+        override fun onSuggestionClicked(suggestionDataView: SuggestionDataView) {
 
         }
     }

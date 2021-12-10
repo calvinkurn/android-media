@@ -389,7 +389,9 @@ abstract class BaseSearchCategoryViewModel(
         initFilterController(headerDataView)
         createVisitableListFirstPage(headerDataView, contentDataView, isEmptyProductList)
         processEmptyState(isEmptyProductList)
-        sendGeneralSearchTracking(searchProduct)
+        if (getKeywordForGeneralSearchTracking().isNotEmpty()) {
+            sendGeneralSearchTracking(searchProduct)
+        }
         updateViewForFirstPage(isEmptyProductList)
     }
 

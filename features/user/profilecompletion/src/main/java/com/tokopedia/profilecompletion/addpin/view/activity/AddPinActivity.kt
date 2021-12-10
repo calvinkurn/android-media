@@ -81,7 +81,7 @@ open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
             setBackgroundDrawable(
                 ColorDrawable(MethodChecker.getColor(
                     this@AddPinActivity,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background)
                 )
             )
         }
@@ -99,7 +99,7 @@ open class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletion
             setWindowFlag(false)
             window.statusBarColor = ContextCompat.getColor(
                 this,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0
+                com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
         }
 

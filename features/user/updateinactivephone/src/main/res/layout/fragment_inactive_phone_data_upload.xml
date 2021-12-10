@@ -9,7 +9,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
+    android:layout_marginBottom="@dimen/layout_lvl4"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
@@ -20,46 +21,55 @@
       android:layout_height="wrap_content"
       android:paddingBottom="@dimen/layout_lvl4">
       
-      <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txtTitle"
-        android:layout_width="wrap_content"
+      <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutThumbnailDataUpload"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:text="@string/text_form_title"
-        app:typographyType="heading_2"
-        app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"/>
-      
-      <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
-        android:id="@+id/imgIdCard"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:title="@string/text_form_id_card"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitle"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-      
-      <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
-        android:id="@+id/imgSelfie"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:title="@string/text_form_selfie"
-        app:layout_constraintTop_toBottomOf="@+id/imgIdCard"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-      
-      <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
-        android:id="@+id/imgSavingBook"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:title="@string/text_form_saving_book"
-        app:layout_constraintTop_toBottomOf="@+id/imgSelfie"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+          android:id="@+id/text_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/layout_lvl2"
+          android:layout_marginStart="@dimen/layout_lvl2"
+          android:text="@string/text_form_title"
+          app:typographyType="heading_2"
+          app:typographyWeight="bold"
+          app:layout_constraintTop_toTopOf="parent"
+          app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
+          android:id="@+id/imgIdCard"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:title="@string/text_form_id_card"
+          app:layout_constraintTop_toBottomOf="@+id/text_title"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"/>
+
+        <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
+          android:id="@+id/imgSelfie"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="visible"
+          app:title="@string/text_form_selfie"
+          app:layout_constraintTop_toBottomOf="@+id/imgIdCard"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"/>
+
+        <com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
+          android:id="@+id/imgSavingBook"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          app:title="@string/text_form_saving_book"
+          app:layout_constraintTop_toBottomOf="@+id/imgSelfie"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"/>
+
+      </androidx.constraintlayout.widget.ConstraintLayout>
       
       <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtInputPhoneNumber"
@@ -70,7 +80,7 @@
         android:text="@string/text_form_input_phone_number"
         app:typographyType="heading_2"
         app:typographyWeight="bold"
-        app:layout_constraintTop_toBottomOf="@+id/imgSavingBook"
+        app:layout_constraintTop_toBottomOf="@+id/layoutThumbnailDataUpload"
         app:layout_constraintLeft_toLeftOf="parent"/>
       
       <com.tokopedia.unifyprinciples.Typography
@@ -134,7 +144,7 @@
       </LinearLayout>
       
       <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnNext"
+        android:id="@+id/button_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/layout_lvl2"
@@ -151,7 +161,7 @@
     android:id="@+id/loader"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:visibility="gone"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"

@@ -5,12 +5,14 @@ import androidx.annotation.DrawableRes
 import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.databinding.ContentFeaturedShopBigContentBinding
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
 import com.tokopedia.home_component.util.loadImageNoRounded
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import kotlinx.android.synthetic.main.content_featured_shop_big_content.view.*
+import com.tokopedia.utils.view.binding.viewBinding
+
 /**
  * Created by Lukas on 07/09/20.
  */
@@ -20,6 +22,7 @@ class CarouselFeaturedShopViewHolder (
         private val channels: ChannelModel
 ): AbstractViewHolder<CarouselFeaturedShopCardDataModel>(view) {
 
+    private var binding: ContentFeaturedShopBigContentBinding? by viewBinding()
     companion object{
         val LAYOUT = R.layout.content_featured_shop_big_content
     }
@@ -62,33 +65,35 @@ class CarouselFeaturedShopViewHolder (
     }
 
     private fun setImageShop(imageUrl:String){
-        itemView.featured_shop_product_image?.show()
-        itemView.featured_shop_product_image?.loadImageNoRounded(imageUrl, R.drawable.placeholder_grey)
+        binding?.featuredShopProductImage?.show()
+        binding?.featuredShopProductImage?.loadImageNoRounded(imageUrl, R.drawable.placeholder_grey)
     }
 
     private fun setTopAds(isTopAds: Boolean){
-        itemView.featured_shop_product_shop_topads?.shouldShowWithAction(isTopAds){}
+        binding?.featuredShopProductShopTopads?.shouldShowWithAction(isTopAds){}
     }
 
     private fun setShopLogo(imageUrl: String){
-        itemView.featured_shop_product_logo_shop?.shouldShowWithAction(imageUrl.isNotBlank()){
-            Glide.with(itemView)
+        binding?.featuredShopProductLogoShop?.let { 
+            it.shouldShowWithAction(imageUrl.isNotBlank()) {
+                Glide.with(itemView)
                     .load(imageUrl)
                     .circleCrop()
                     .placeholder(R.drawable.placeholder_rounded_grey)
-                    .into(itemView.featured_shop_product_logo_shop)
+                    .into(it)
+            }
         }
     }
 
     private fun setShopBadge(imageUrl: String){
-        itemView.featured_shop_product_shop_badge?.shouldShowWithAction(imageUrl.isNotBlank()){
-            itemView.featured_shop_product_shop_badge?.loadImage(imageUrl, R.drawable.placeholder_rounded_grey)
+        binding?.featuredShopProductShopBadge?.shouldShowWithAction(imageUrl.isNotBlank()){
+            binding?.featuredShopProductShopBadge?.loadImage(imageUrl, R.drawable.placeholder_rounded_grey)
         }
     }
 
     private fun setShopName(shopName: String){
-        itemView.featured_shop_product_shop_name.shouldShowWithAction(shopName.isNotBlank()){
-            itemView.featured_shop_product_shop_name.text = shopName
+        binding?.featuredShopProductShopName?.shouldShowWithAction(shopName.isNotBlank()){
+            binding?.featuredShopProductShopName?.text = shopName
         }
     }
 
@@ -101,24 +106,24 @@ class CarouselFeaturedShopViewHolder (
 
     private fun setRating(rating: Int, reviewCount: String){
         if(rating > 0) {
-            itemView.featured_shop_product_reviews?.show()
-            itemView.featured_shop_product_total_count?.show()
-            itemView.featured_shop_product_location_icon?.hide()
-            itemView.featured_shop_product_location_name?.hide()
-            itemView.featured_shop_product_total_count?.text = "($reviewCount)"
+            binding?.featuredShopProductReviews?.show()
+            binding?.featuredShopProductTotalCount?.show()
+            binding?.featuredShopProductLocationIcon?.hide()
+            binding?.featuredShopProductLocationName?.hide()
+            binding?.featuredShopProductTotalCount?.text = "($reviewCount)"
             setImageRating(rating)
         } else {
-            itemView.featured_shop_product_reviews?.visibility = View.INVISIBLE
-            itemView.featured_shop_product_total_count?.visibility = View.INVISIBLE
+            binding?.featuredShopProductReviews?.visibility = View.INVISIBLE
+            binding?.featuredShopProductTotalCount?.visibility = View.INVISIBLE
         }
     }
 
     private fun setImageRating(rating: Int){
-        itemView.featured_shop_product_reviews_1?.setImageResource(getRatingDrawable(rating >= 1))
-        itemView.featured_shop_product_reviews_2?.setImageResource(getRatingDrawable(rating >= 2))
-        itemView.featured_shop_product_reviews_3?.setImageResource(getRatingDrawable(rating >= 3))
-        itemView.featured_shop_product_reviews_4?.setImageResource(getRatingDrawable(rating >= 4))
-        itemView.featured_shop_product_reviews_5?.setImageResource(getRatingDrawable(rating >= 5))
+        binding?.featuredShopProductReviews1?.setImageResource(getRatingDrawable(rating >= 1))
+        binding?.featuredShopProductReviews2?.setImageResource(getRatingDrawable(rating >= 2))
+        binding?.featuredShopProductReviews3?.setImageResource(getRatingDrawable(rating >= 3))
+        binding?.featuredShopProductReviews4?.setImageResource(getRatingDrawable(rating >= 4))
+        binding?.featuredShopProductReviews5?.setImageResource(getRatingDrawable(rating >= 5))
     }
 
     @DrawableRes
@@ -128,11 +133,11 @@ class CarouselFeaturedShopViewHolder (
     }
 
     private fun setLocation(location: String){
-        itemView.featured_shop_product_reviews?.hide()
-        itemView.featured_shop_product_total_count?.hide()
-        itemView.featured_shop_product_location_name?.shouldShowWithAction(location.isNotBlank()){
-            itemView.featured_shop_product_location_icon?.show()
-            itemView.featured_shop_product_location_name?.text = location
+        binding?.featuredShopProductReviews?.hide()
+        binding?.featuredShopProductTotalCount?.hide()
+        binding?.featuredShopProductLocationName?.shouldShowWithAction(location.isNotBlank()){
+            binding?.featuredShopProductLocationIcon?.show()
+            binding?.featuredShopProductLocationName?.text = location
         }
     }
 }

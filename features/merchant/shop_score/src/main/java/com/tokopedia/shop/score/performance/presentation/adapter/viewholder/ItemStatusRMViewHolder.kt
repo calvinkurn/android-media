@@ -33,8 +33,10 @@ class ItemStatusRMViewHolder(
 
     private fun setItemRegularMerchant(element: ItemStatusRMUiModel) {
         binding?.run {
-            tvTitleEligiblePowerMerchant.text = element.titleRMEligible
-            tvDescEligiblePowerMerchant.text = element.descRMEligible
+            tvTitleEligiblePowerMerchant.text =
+                element.titleRMEligible?.let { getString(it) }.orEmpty()
+            tvDescEligiblePowerMerchant.text =
+                element.descRMEligible?.let { getString(it) }.orEmpty()
 
             tvPmPotentialValue.text =
                 MethodChecker.fromHtml(getString(R.string.desc_pm_potential))

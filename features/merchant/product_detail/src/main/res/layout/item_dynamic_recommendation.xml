@@ -11,11 +11,10 @@
     android:paddingBottom="16dp"
     tools:visibility="visible">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/recom_separator"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:background="@color/Unify_N50" />
+        android:layout_height="8dp"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pdp_recom_header_container"
