@@ -21,7 +21,7 @@ class InactivePhoneCaptureSelfieFragment : BaseInactivePhoneOnboardingFragment()
         viewBinding?.imgHeader?.let {
             ImageUtils.clearImage(it)
             context?.let { ctx ->
-                it.setImageDrawable(ContextCompat.getDrawable(ctx, R.drawable.ic_sample_selfie))
+                it.setImageDrawable(ContextCompat.getDrawable(ctx, com.tokopedia.updateinactivephone.R.drawable.ic_sample_selfie))
             }
         }
     }
