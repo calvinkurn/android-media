@@ -875,7 +875,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderStatsInfoView(state.totalView)
                 renderRealTimeNotificationView(state.rtn)
                 renderViewAllProductView(state.viewAllProduct)
-                renderSharingExperienceView(state.sharingExperience)
             }
         }
     }
@@ -952,7 +951,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     RemindToLikeEvent -> likeView.playReminderAnimation()
                     is PreloadLikeBubbleIconEvent -> likeBubbleView.preloadIcons(event.urls)
-                    OpenSharingExperienceOptionEvent -> shareExperienceView?.showSharingOptions()
+                    is OpenSharingOptionEvent -> shareExperienceView?.showSharingOptions(event.title, event.coverUrl)
                     is OpenSelectedSharingOptionEvent -> {
                         val intent = Intent().apply {
                             action = Intent.ACTION_SEND
@@ -1591,13 +1590,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun renderViewAllProductView(viewAllProduct: PlayViewAllProductUiState) {
         if(viewAllProduct.shouldShow) productSeeMoreView?.show()
         else productSeeMoreView?.hide()
-    }
-
-    private fun renderSharingExperienceView(sharingExperience: PlaySharingExperienceUiState) {
-        shareExperienceView?.setupPlayShareBottomSheet(
-            sharingExperience.title,
-            sharingExperience.coverUrl
-        )
     }
 
     private fun castViewOnStateChanged(

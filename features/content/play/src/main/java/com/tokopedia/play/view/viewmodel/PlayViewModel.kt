@@ -258,15 +258,6 @@ class PlayViewModel @Inject constructor(
         )
     }.flowOn(dispatchers.computation)
 
-    private val _sharingExperienceUiState = combine(
-        _channelDetail, _bottomInsets
-    ) { channelDetail, _ ->
-        PlaySharingExperienceUiState(
-            title = channelDetail.channelInfo.title,
-            coverUrl = channelDetail.channelInfo.coverUrl,
-        )
-    }.flowOn(dispatchers.computation)
-
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -284,8 +275,7 @@ class PlayViewModel @Inject constructor(
         _rtnUiState.distinctUntilChanged(),
         _titleUiState.distinctUntilChanged(),
         _viewAllProductUiState.distinctUntilChanged(),
-        _sharingExperienceUiState.distinctUntilChanged(),
-    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct, sharingExperience ->
+    ) { interactive, partner, winnerBadge, bottomInsets, like, totalView, share, rtn, title, viewAllProduct ->
         PlayViewerNewUiState(
             interactiveView = interactive,
             partner = partner,
@@ -297,7 +287,6 @@ class PlayViewModel @Inject constructor(
             rtn = rtn,
             title = title,
             viewAllProduct = viewAllProduct,
-            sharingExperience = sharingExperience
         )
     }.flowOn(dispatchers.computation)
 
@@ -1818,7 +1807,10 @@ class PlayViewModel @Inject constructor(
 
     private fun handleClickShare() {
         viewModelScope.launch {
-            _uiEvent.emit(OpenSharingExperienceOptionEvent)
+            _uiEvent.emit(OpenSharingOptionEvent(
+                title = _channelDetail.value.channelInfo.title,
+                coverUrl = _channelDetail.value.channelInfo.coverUrl
+            ))
         }
 //        val shareInfo = _channelDetail.value.shareInfo
 //

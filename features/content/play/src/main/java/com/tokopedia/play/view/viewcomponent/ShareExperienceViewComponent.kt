@@ -50,14 +50,11 @@ class ShareExperienceViewComponent(
         if (isShow) ivShareLink.show() else ivShareLink.hide()
     }
 
-    fun setupPlayShareBottomSheet(title: String, coverUrl: String) {
+    fun showSharingOptions(title: String, coverUrl: String) {
         universalShareBottomSheet?.setMetaData(
             tnTitle = title,
             tnImage = coverUrl,
         )
-    }
-
-    fun showSharingOptions() {
         universalShareBottomSheet?.show(fragmentManager, fragment)
     }
 
