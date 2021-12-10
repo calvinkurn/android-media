@@ -12,7 +12,9 @@ class AndroidExportedDetector: XmlScanner, Detector() {
         val ISSUE = Issue.create(
             id = "AndroidExported",
             briefDescription = "android:exported value should be false",
-            explanation = "android:exported value should be false",
+            explanation = "Unsafe intent, android:exported value should be false." +
+                    "You can set this value to true, only if your activity is used by other " +
+                    "3rd party apps",
             category = Category.SECURITY,
             priority = 5,
             severity = Severity.FATAL,
@@ -29,6 +31,10 @@ class AndroidExportedDetector: XmlScanner, Detector() {
 
         /* attr value */
         val VALUE_EXPORTED_FALSE = "false"
+
+        private const val ERROR_MESSAGE = "Unsafe intent, android:exported value should be false." +
+                "You can set this value to true, only if your activity is used by other " +
+                "3rd party apps"
     }
 
     override fun getApplicableElements(): Collection<String>? {
@@ -86,7 +92,7 @@ class AndroidExportedDetector: XmlScanner, Detector() {
                 ISSUE,
                 node,
                 context.getNameLocation(node),
-                "${node.name} value should be false",
+                ERROR_MESSAGE,
                 lintFix
             )
         }
