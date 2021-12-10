@@ -42,6 +42,8 @@ import com.tokopedia.play.util.CastPlayerHelper
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
 import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
 import com.tokopedia.play.util.setValue
+import com.tokopedia.play.util.share.PlayShareExperience
+import com.tokopedia.play.util.share.PlayShareExperienceData
 import com.tokopedia.play.util.timer.TimerFactory
 import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.*
@@ -111,7 +113,8 @@ class PlayViewModel @Inject constructor(
         private val repo: PlayViewerRepository,
         private val playAnalytic: PlayNewAnalytic,
         private val timerFactory: TimerFactory,
-        private val castPlayerHelper: CastPlayerHelper
+        private val castPlayerHelper: CastPlayerHelper,
+        private val playShareExperience: PlayShareExperience,
 ) : ViewModel() {
 
     val observableChannelInfo: LiveData<PlayChannelInfoUiModel> /**Added**/
@@ -1837,80 +1840,52 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
-        val (channelInfo, shareInfo) = _channelDetail.let {
-            return@let Pair(it.value.channelInfo, it.value.shareInfo)
-        }
-
-        fun generateShareString(): String {
-            val title = _channelDetail.value.channelInfo.title
-            val description = "Coba nonton video ini ya di Tokopedia Play!"
-            val link = _channelDetail.value.shareInfo.redirectUrl
-            return "$title.\n$description\n$link"
-        }
-
-        fun generateOgTitle(): String {
-            return "Tonton ${_partnerInfo.value.name} di Tokopedia Play"
-        }
-
-        fun generateOgDescription(): String {
-            return "Aku punya obat anti-bosen buatmu. Ayo nonton ${_partnerInfo.value.name} di Tokopedia Play!"
-        }
-
-        fun openDefaultIntent() {
-            viewModelScope.launch {
-                _uiEvent.emit(
-                    OpenSelectedSharingOptionEvent(
-                        title = channelInfo.title,
-                        description = generateShareString(),
-                        url = shareInfo.redirectUrl
-                    )
-                )
-            }
-        }
-
-        viewModelScope.launchCatchError(dispatchers.computation, block = {
-            val linkerData = LinkerData().apply {
-                id = channelId
-                name = channelInfo.title
-                description = generateShareString()
-                imgUri = channelInfo.coverUrl
-                ogUrl = shareInfo.redirectUrl
-                type = ""
-                uri = shareInfo.redirectUrl
-                isThrowOnError = true
-                feature = shareModel.feature
-                channel = shareModel.channel
-                campaign = shareModel.campaign
-                ogTitle = generateOgTitle()
-                ogDescription = generateOgDescription()
-                ogImageUrl = _channelDetail.value.channelInfo.coverUrl
-                isAffiliate = shareModel.isAffiliate
+        viewModelScope.launch {
+            val (channelInfo, shareInfo) = _channelDetail.let {
+                return@let Pair(it.value.channelInfo, it.value.shareInfo)
             }
 
-            val linkerShareData = LinkerShareData()
-            linkerShareData.linkerData = linkerData
+            val playShareExperienceData = PlayShareExperienceData(
+                id = channelId,
+                title = channelInfo.title,
+                partnerName = _partnerInfo.value.name,
+                coverUrl = channelInfo.coverUrl,
+                redirectUrl = shareInfo.redirectUrl,
+            )
 
-            LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0, linkerShareData, object: ShareCallback {
-                override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    Log.d("<LOG>", "LinkerShareData : $linkerShareData")
-                    viewModelScope.launch {
-                        _uiEvent.emit(
-                            OpenShareExperienceEvent(
-                                shareModel, linkerShareData, generateShareString()
+            playShareExperience
+                .setShareModel(shareModel)
+                .setData(playShareExperienceData)
+                .createUrl(object: PlayShareExperience.Listener {
+                    override fun onUrlCreated(
+                        linkerShareData: LinkerShareResult?,
+                        shareModel: ShareModel,
+                        shareString: String
+                    ) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(
+                                OpenShareExperienceEvent(
+                                    linkerShareData,
+                                    shareModel,
+                                    shareString
+                                )
                             )
-                        )
+                        }
+                    }
+
+                    override fun onError(e: Exception, shareString: String) {
+                        viewModelScope.launch {
+                            _uiEvent.emit(
+                                OpenSelectedSharingOptionEvent(
+                                    title = channelInfo.title,
+                                    description = shareString,
+                                    url = shareInfo.redirectUrl
+                                )
+                            )
+                        }
                     }
                 }
-
-                override fun onError(linkerError: LinkerError?) {
-                    Log.d("<LOG>", "LinkerShareData Error : $linkerError")
-                    openDefaultIntent()
-                }
-            }))
-        }) {
-            Log.d("<LOG>", "Catch Error : ${it.message}")
-            Log.d("<LOG>", "Catch Error : ${it.localizedMessage}")
-            openDefaultIntent()
+            )
         }
     }
 
