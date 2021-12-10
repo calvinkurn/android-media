@@ -58,6 +58,10 @@ class ShareExperienceViewComponent(
         universalShareBottomSheet?.show(fragmentManager, fragment)
     }
 
+    fun dismiss() {
+        universalShareBottomSheet?.dismiss()
+    }
+
     interface Listener {
         fun onShareIconClick(view: ShareExperienceViewComponent)
         fun onShareOptionClick(view: ShareExperienceViewComponent, shareModel: ShareModel)

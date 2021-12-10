@@ -964,9 +964,11 @@ class PlayUserInteractionFragment @Inject constructor(
                             putExtra(Intent.EXTRA_HTML_TEXT, event.description)
                         }
                         activity?.startActivity(Intent.createChooser(intent, "Bagikan Product Ini"))
+                        shareExperienceView?.dismiss()
                     }
                     is OpenShareExperienceEvent -> {
                         SharingUtil.executeShareIntent(event.shareModel, event.linkerShareResult, activity, view, event.shareString)
+                        shareExperienceView?.dismiss()
                     }
                 }
             }
