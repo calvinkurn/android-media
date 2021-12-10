@@ -87,7 +87,6 @@ class PlayUserReportSheetViewComponent(
 
     fun setReportSheet(list: PlayUserReportUiModel.Loaded){
         if (list.reasoningList.isNotEmpty()){
-            clContent.show()
             categoryAdapter.setItemsAndAnimateChanges(list.reasoningList)
         }
     }
@@ -104,6 +103,15 @@ class PlayUserReportSheetViewComponent(
             if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
         )
     }
+
+    fun showPlaceholder(){
+        rvCategory.show()
+        setReportSheet(getPlaceholderModel())
+    }
+
+    private fun getPlaceholderModel() = PlayUserReportUiModel.Loaded(
+        reasoningList = List(5){PlayUserReportReasoningUiModel.Placeholder}
+    )
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {

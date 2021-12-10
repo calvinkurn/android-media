@@ -11,4 +11,6 @@ sealed class PlayUserReportReasoningUiModel {
         val detail: String,
         val submissionData: UserReportOptions.OptionAdditionalField
     ) : PlayUserReportReasoningUiModel()
+
+    object Placeholder: PlayUserReportReasoningUiModel()
 }

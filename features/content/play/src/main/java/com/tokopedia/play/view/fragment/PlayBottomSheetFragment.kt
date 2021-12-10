@@ -476,7 +476,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private fun observeUserReport(){
         viewModel.observableUserReportReasoning.observe(viewLifecycleOwner, DistinctObserver {
             when (it) {
-                is PlayResult.Loading -> ""
+                is PlayResult.Loading -> if(it.showPlaceholder) userReportSheetView.showPlaceholder()
                 is PlayResult.Success -> userReportSheetView.setReportSheet(it.data)
                 is PlayResult.Failure -> userReportSheetView.showError(
                     isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
