@@ -39,9 +39,9 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
         super.initView()
         updateTitle(getString(R.string.text_title_id_card))
 
-        viewBinding?.imgHeader?.let {
-            ImageUtils.clearImage(it)
-            ImageUtils.loadImage(it, IMAGE_ID_CARD_SAMPLE)
+        viewBinding?.imgHeader?.apply {
+            ImageUtils.clearImage(this)
+            setImageUrl(IMAGE_ID_CARD_SAMPLE)
         }
 
         viewBinding?.textDescription?.hide()
@@ -137,9 +137,9 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
     }
 
     companion object {
-        const val DP_4 = 4
-        const val DP_8 = 8
-        const val DP_12 = 12
-        const val IMAGE_ID_CARD_SAMPLE = "https://ecs7.tokopedia.net/android/others/account_verification_ktp_onboarding.png"
+        private const val DP_4 = 4
+        private const val DP_8 = 8
+        private const val DP_12 = 12
+        private const val IMAGE_ID_CARD_SAMPLE = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_ktp.png"
     }
 }

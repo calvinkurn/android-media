@@ -18,11 +18,9 @@ class InactivePhoneCaptureSelfieFragment : BaseInactivePhoneOnboardingFragment()
         updateTitle(getString(R.string.text_title_selfie))
         updateDescription(getString(R.string.text_onboarding_selfie_description))
 
-        viewBinding?.imgHeader?.let {
-            ImageUtils.clearImage(it)
-            context?.let { ctx ->
-                it.setImageDrawable(ContextCompat.getDrawable(ctx, com.tokopedia.updateinactivephone.R.drawable.ic_sample_selfie))
-            }
+        viewBinding?.imgHeader?.apply {
+            ImageUtils.clearImage(this)
+            setImageUrl(IMAGE_SELFIE_SAMPLE)
         }
     }
 
@@ -41,5 +39,9 @@ class InactivePhoneCaptureSelfieFragment : BaseInactivePhoneOnboardingFragment()
                 (it as InactivePhoneRegularActivity).gotoUploadData()
             }
         }
+    }
+
+    companion object {
+        private const val IMAGE_SELFIE_SAMPLE = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_selfie.png"
     }
 }
