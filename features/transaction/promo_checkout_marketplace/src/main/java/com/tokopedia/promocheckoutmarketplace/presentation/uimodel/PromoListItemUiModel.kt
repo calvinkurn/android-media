@@ -22,7 +22,6 @@ data class PromoListItemUiModel(
             var title: String = "",
             var currencyDetailStr: String = "",
 
-            var expiryInfo: String = "",
             var errorMessage: String = "",
             var imageResourceUrls: List<String> = emptyList(),
             var benefitAmount: Int = 0,

@@ -224,6 +224,7 @@ data class PromoInfo(
         const val TYPE_TOP_BANNER = "top_banner"
         const val TYPE_COUPON_INFO = "coupon_info"
         const val TYPE_BOTTOM_BANNER = "bottom_banner"
+        const val TYPE_PROMO_VALIDITY = "promo_validity"
     }
 }
 

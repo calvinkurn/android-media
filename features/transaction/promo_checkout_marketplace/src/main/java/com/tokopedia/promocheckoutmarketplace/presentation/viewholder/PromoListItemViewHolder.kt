@@ -227,11 +227,19 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
 
     private fun renderTimeValidity(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding, element: PromoListItemUiModel) {
         with(viewBinding) {
-            // Todo : set icon
-            imageTimeValidity.setImageUrl("https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png")
-            textTimeValidity.text = element.uiData.expiryInfo
-            buttonPromoDetail.setOnClickListener {
-                listener.onClickPromoItemDetail(element)
+            val timeValidityInfo = element.uiData.promoInfos.firstOrNull {
+                it.type == PromoInfo.TYPE_PROMO_VALIDITY
+            }
+
+            if (timeValidityInfo != null) {
+                imageTimeValidity.setImageUrl(timeValidityInfo.icon)
+                textTimeValidity.text = timeValidityInfo.title
+                buttonPromoDetail.setOnClickListener {
+                    listener.onClickPromoItemDetail(element)
+                }
+                containerTimeValidity.show()
+            } else {
+                containerTimeValidity.gone()
             }
         }
     }

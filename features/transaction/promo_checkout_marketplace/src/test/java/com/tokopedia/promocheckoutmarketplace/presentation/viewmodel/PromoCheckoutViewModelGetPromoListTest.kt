@@ -59,14 +59,15 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
     @Test
     fun `WHEN get promo list and get complete expanded data THEN promoRecommendation ui model should not be null`() {
         //given
-        val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val response = provideGetPromoListResponseSuccessAllExpanded()
 
-        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
 
         //when
-        viewModel.getPromoList("", PromoRequest(), "")
+        viewModel.getPromoList(PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoRecommendationUiModel.value)
@@ -75,14 +76,15 @@ class PromoCheckoutViewModelGetPromoListTest : BasePromoCheckoutViewModelTest() 
     @Test
     fun `WHEN get promo list and get complete expanded data THEN promo input ui model should not be null`() {
         //given
-        val result = HashMap<Type, Any>()
-        result[CouponListRecommendationResponse::class.java] = provideGetPromoListResponseSuccessAllExpanded()
-        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+        val response = provideGetPromoListResponseSuccessAllExpanded()
 
-        coEvery { graphqlRepository.response(any(), any()) } returns gqlResponse
+        coEvery { getCouponListRecommendationUseCase.setParams(any(), any()) } just Runs
+        coEvery { getCouponListRecommendationUseCase.execute(any(), any()) } answers {
+            firstArg<(CouponListRecommendationResponse) -> Unit>().invoke(response)
+        }
 
         //when
-        viewModel.getPromoList("", PromoRequest(), "")
+        viewModel.getPromoList(PromoRequest(), "")
 
         //then
         assertNotNull(viewModel.promoInputUiModel.value)
