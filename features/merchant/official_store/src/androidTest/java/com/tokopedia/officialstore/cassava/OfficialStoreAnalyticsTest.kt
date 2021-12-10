@@ -5,6 +5,7 @@ import android.app.Instrumentation
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
@@ -34,6 +35,7 @@ import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.espresso_component.CommonMatcher
+import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.junit.After
@@ -215,8 +217,8 @@ class OfficialStoreAnalyticsTest {
             }
             is FeaturedBrandViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
-                CommonActions.clickChildViewWithId(R.id.see_all_button)
-                CommonActions.clickChildViewWithId(R.id.see_all_button_unify)
+                onView(firstView(withId(R.id.see_all_button)))
+                    .perform(ViewActions.click())
             }
         }
     }
