@@ -41,6 +41,8 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <include layout="@layout/bottom_sheet_bottom_overlay"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>

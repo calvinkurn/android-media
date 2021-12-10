@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_gravity="center_horizontal"
         android:elevation="@dimen/layout_lvl3">
 
@@ -16,8 +17,8 @@
             android:id="@+id/iv_voucher_intersect"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginStart="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_9"
+            android:layout_marginStart="@dimen/spacing_lvl2"
+            android:layout_marginTop="@dimen/spacing_lvl3"
             android:translationZ="@dimen/dp_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -34,8 +35,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/iv_promo"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:translationZ="@dimen/dp_1"
             app:icon_color_light_enable="@color/Unify_N0"
             app:icon_color_night_enable="@color/Unify_N0"
@@ -79,12 +80,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
+            android:layout_marginBottom="@dimen/play_offset_6"
             android:ellipsize="end"
             android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_voucher_substract"
             app:layout_constraintEnd_toEndOf="@+id/tv_first_voucher_title"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_first_voucher_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_first_voucher_title"
+            app:layout_constraintVertical_bias="0.0"
             app:typographyType="body_3"
             tools:text="Masih ada 6 Kupon Toko lainnya!" />
 
