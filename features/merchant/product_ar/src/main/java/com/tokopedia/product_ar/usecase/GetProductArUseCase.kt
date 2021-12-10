@@ -1,4 +1,4 @@
-package usecase
+package com.tokopedia.product_ar.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -8,8 +8,8 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
-import com.tokopedia.usecase.RequestParams
-import model.ProductArResponse
+import com.tokopedia.product_ar.model.ProductArResponse
+import com.tokopedia.product_ar.model.ProductArUiModel
 import javax.inject.Inject
 
 class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ProductArResponse>(graphqlRepository) {
@@ -50,40 +50,45 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
 
         fun createParams(productId: String,
                          shopId: String,
-                         userLocationRequest: ChosenAddressRequestHelper): RequestParams =
-                RequestParams.create().apply {
-                    putString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
-                    putString(ProductDetailCommonConstant.PARAM_SHOP_ID, shopId)
+                         userLocationRequest: ChosenAddressRequestHelper) = mutableMapOf<String, Any>().apply {
+            put(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
+            put(ProductDetailCommonConstant.PARAM_SHOP_ID, shopId)
 
-                    val localizationChooseAddress = userLocationRequest.getChosenAddress()
-                    putObject(ProductDetailCommonConstant.PARAM_USER_LOCATION, UserLocationRequest(
-                            districtID = localizationChooseAddress?.districtId ?: "",
-                            addressID = localizationChooseAddress?.addressId ?: "",
-                            postalCode = localizationChooseAddress?.postalCode ?: "",
-                            latlon = localizationChooseAddress?.geolocation ?: ""
-                    ))
-                }
+            val localizationChooseAddress = userLocationRequest.getChosenAddress()
+            put(ProductDetailCommonConstant.PARAM_USER_LOCATION, UserLocationRequest(
+                    districtID = localizationChooseAddress?.districtId ?: "",
+                    addressID = localizationChooseAddress?.addressId ?: "",
+                    postalCode = localizationChooseAddress?.postalCode ?: "",
+                    latlon = localizationChooseAddress?.geolocation ?: ""
+            ))
+        }
     }
 
     init {
-        setGraphqlQuery(QUERY)
+        setGraphqlQuery(PdpGetARData())
         setCacheStrategy(GraphqlCacheStrategy
                 .Builder(CacheType.CACHE_FIRST).build())
         setTypeClass(ProductArResponse::class.java)
     }
 
-
-    private var requestParams: RequestParams = RequestParams.EMPTY
-
     @GqlQuery("pdpGetARData", QUERY)
-    override suspend fun executeOnBackground(requestParams: RequestParams): ProductArResponse {
-        this.requestParams = requestParams
-        return ProductArResponse()
+    suspend fun executeOnBackground(requestParams: Map<String, Any>): ProductArUiModel {
+        setRequestParams(requestParams)
+        val data = executeOnBackground()
+        return mapIntoUiModel(data)
     }
 
-    @GqlQuery("pdpGetARData", QUERY)
-    override suspend fun executeOnBackground(): ProductArResponse {
-
-        return ProductArResponse()
+    private fun mapIntoUiModel(response: ProductArResponse): ProductArUiModel {
+        return ProductArUiModel(
+                optionBgImage = response.data.optionBgImage,
+                provider = response.data.provider,
+                options = response.data.productArs.associateBy(
+                        {
+                            it.productID
+                        }, {
+                    it
+                })
+        )
     }
+
 }

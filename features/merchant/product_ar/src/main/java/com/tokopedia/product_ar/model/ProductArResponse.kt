@@ -1,4 +1,4 @@
-package model
+package com.tokopedia.product_ar.model
 
 
 import com.google.gson.annotations.Expose
@@ -16,7 +16,7 @@ data class PdpGetARData(
         val optionBgImage: String = "",
         @SerializedName("options")
         @Expose
-        val options: List<Option> = listOf(),
+        val productArs: List<ProductAr> = listOf(),
         @SerializedName("provider")
         @Expose
         val provider: String = ""

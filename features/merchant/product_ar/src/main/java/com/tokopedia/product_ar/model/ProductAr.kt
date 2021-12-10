@@ -1,4 +1,4 @@
-package model
+package com.tokopedia.product_ar.model
 
 
 import android.annotation.SuppressLint
@@ -6,7 +6,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 
-data class Option(
+data class ProductAr(
         @SerializedName("button")
         @Expose
         val button: ProductArButton = ProductArButton(),
