@@ -251,6 +251,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     private var tickerIsReady = false
     private var shouldScrollToTop = false
+    private var hasTickerClosed = false
 
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
@@ -1866,6 +1867,7 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
 
     override fun onResume() {
         super.onResume()
+        hasTickerClosed = false
         context?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(BROADCAST_ADD_PRODUCT)
@@ -2337,7 +2339,10 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
                             context?.let { RouteManager.route(it, linkUrl.toString()) }
                         }
                     })
-                    onDismissListener = { viewModel.hideTicker() }
+                    onDismissListener = {
+                        viewModel.hideTicker()
+                        hasTickerClosed = true
+                    }
                 }
             }
             ticker?.let { tickerView ->
@@ -2350,10 +2355,12 @@ open class ProductManageFragment : BaseListFragment<Visitable<*>, ProductManageA
             }
         }
         observe(viewModel.showTicker) { shouldShow ->
-            if (shouldShow)                 {
+            if (shouldShow) {
                 tickerIsReady = true
             }
-            animateProductTicker(shouldShow)
+            if (!hasTickerClosed) {
+                animateProductTicker(shouldShow)
+            }
         }
         observe(viewModel.refreshList) { shouldRefresh ->
             if (shouldRefresh) {
