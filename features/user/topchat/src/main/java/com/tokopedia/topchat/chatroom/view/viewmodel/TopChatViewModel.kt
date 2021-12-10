@@ -279,6 +279,8 @@ class TopChatViewModel @Inject constructor(
             val response = unsendReplyUseCase(existingMessageIdParam)
             if (response.unsendReply.isSuccess) {
                 _deleteBubble.value = Success(replyTimeNano)
+            } else {
+                _deleteBubble.value = Fail(IllegalStateException())
             }
         }, onError = {
             _deleteBubble.value = Fail(it)
