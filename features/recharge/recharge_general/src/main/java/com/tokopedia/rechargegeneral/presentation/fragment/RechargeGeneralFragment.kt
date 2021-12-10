@@ -542,6 +542,9 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                     if (productData.isShowingProduct) {
                         val productSelectData = it
                         productSelectData?.apply {
+                            if (productId == 0){
+                                productId = rechargeGeneralProductItemData.dataCollections.firstOrNull()?.products?.firstOrNull()?.id.toIntOrZero()
+                            }
                             rechargeGeneralProductItemData.selectedProductId = productId.toString()
                             dataList.add(rechargeGeneralProductItemData)
                         }
