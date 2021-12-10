@@ -116,8 +116,8 @@ class ProductSheetViewComponent(
         rvProductList.apply {
             layoutManager = layoutManagerProductList
             adapter = productLineAdapter
-            addItemDecoration(ProductLineItemDecoration(rvProductList.context))
             addOnScrollListener(StopFlingScrollListener())
+            addItemDecoration(ProductLineItemDecoration(context))
         }
 
         rvVoucherList.apply {
