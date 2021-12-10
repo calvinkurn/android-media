@@ -174,6 +174,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        mPresenter.attachView(this);
         initView(view);
         initialVar();
         setViewListener();
@@ -262,7 +263,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 .baseAppComponent(appComponent)
                 .addressModule(new AddressModule())
                 .build().inject(this);
-        mPresenter.attachView(this);
     }
 
     @Override
