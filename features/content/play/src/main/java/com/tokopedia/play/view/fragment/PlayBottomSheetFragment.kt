@@ -77,6 +77,7 @@ class PlayBottomSheetFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 191
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
+        private const val PERCENT_FULL_SHEET_HEIGHT = 1.0
     }
 
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
@@ -93,6 +94,9 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private val variantSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_VARIANT_SHEET_HEIGHT).toInt()
+
+    private val userReportSheetHeight: Int
+        get() = (requireView().height * PERCENT_FULL_SHEET_HEIGHT).toInt()
 
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
@@ -235,7 +239,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onReportClick(view: KebabMenuSheetViewComponent) {
-        playViewModel.onShowUserReportSheet(variantSheetMaxHeight)
+        playViewModel.onShowUserReportSheet(userReportSheetHeight)
         viewModel.getUserReportList()
     }
 
@@ -244,7 +248,7 @@ class PlayBottomSheetFragment @Inject constructor(
      */
 
     override fun onItemReportClick(view: PlayUserReportSheetViewComponent, item: PlayUserReportReasoningUiModel.Reasoning) {
-        playViewModel.onShowUserReportSubmissionSheet(variantSheetMaxHeight)
+        playViewModel.onShowUserReportSubmissionSheet(userReportSheetHeight)
         userReportSubmissionSheetView.setView(item)
     }
 

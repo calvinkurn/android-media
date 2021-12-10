@@ -174,6 +174,9 @@ class PlayUserInteractionFragment @Inject constructor(
     private val bottomSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_BOTTOMSHEET_HEIGHT).toInt()
 
+    private val bottomSheetMenuMaxHeight: Int
+        get() = (requireView().height * PERCENT_MENU_BOTTOMSHEET_HEIGHT).toInt()
+
     private val channelId: String
         get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
 
@@ -1638,7 +1641,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onKebabMenuClick(view: KebabMenuViewComponent) {
-        playViewModel.onShowKebabMenuSheet(bottomSheetMaxHeight)
+        playViewModel.onShowKebabMenuSheet(bottomSheetMenuMaxHeight)
     }
 
     companion object {
@@ -1647,6 +1650,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_BOTTOMSHEET_HEIGHT = 0.6
+        private const val PERCENT_MENU_BOTTOMSHEET_HEIGHT = 0.25
 
         private const val VISIBLE_ALPHA = 1f
 

@@ -1,14 +1,14 @@
 package com.tokopedia.play.view.viewcomponent
 
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
-import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.TextAreaUnify2
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -21,13 +21,17 @@ class PlayUserReportSubmissionViewComponent(
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(rootView)
 
+    private val btnBack: IconUnify = findViewById(com.tokopedia.play_common.R.id.iv_sheet_close)
+
     private val tvTitle: TextView = findViewById(R.id.tv_user_report_title)
     private val tvDesc: TextView = findViewById(R.id.tv_user_report_desc)
-    private val etSubmission: TextFieldUnify2 = findViewById(R.id.et_detail_report)
+    private val etSubmission: TextAreaUnify2 = findViewById(R.id.et_detail_report)
     private val btnSubmit: UnifyButton = findViewById(R.id.btn_action)
 
     init {
-        findViewById<ImageView>(com.tokopedia.play_common.R.id.iv_sheet_close)
+        btnBack.setImage(IconUnify.ARROW_BACK)
+
+        btnBack
             .setOnClickListener {
                 listener.onCloseButtonClicked(this@PlayUserReportSubmissionViewComponent)
             }
@@ -56,8 +60,9 @@ class PlayUserReportSubmissionViewComponent(
     fun setView(item: PlayUserReportReasoningUiModel.Reasoning){
         tvTitle.text = item.title
         tvDesc.text = item.detail
-        etSubmission.labelText.text = item.submissionData.label
-        etSubmission.setMessage(item.submissionData.min.toString())
+        etSubmission.setLabel(item.submissionData.label)
+        val charMin = getString(R.string.play_user_report_text_area_min, item.submissionData.min)
+        etSubmission.setMessage(charMin)
 
         btnSubmit.setOnClickListener {
             listener.onSubmitUserReport(this@PlayUserReportSubmissionViewComponent)

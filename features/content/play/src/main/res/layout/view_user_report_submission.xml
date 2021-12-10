@@ -40,7 +40,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:typographyType="heading_4"
+                app:typographyType="body_1"
+                app:typographyWeight="bold"
                 tools:text="Salah Kategori" />
 
 
@@ -58,7 +59,7 @@
                 app:typographyType="body_2"
                 tools:text="Memasukkan produk di kategori yang tidak sesuai. Contoh: Menjual tas dalam kategori Makanan &amp; Minuman." />
 
-            <com.tokopedia.unifycomponents.TextFieldUnify2
+            <com.tokopedia.unifycomponents.TextAreaUnify2
                 android:id="@+id/et_detail_report"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,8 +68,8 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_user_report_desc"
                 app:layout_constraintTop_toBottomOf="@+id/tv_user_report_desc"
                 app:unify_text_field_input_type="text"
-                app:unify_text_field_label="Detail Laporan"
-                app:unify_text_field_message="Min. 30 Karakter" />
+                tools:unify_text_field_label="Detail Laporan"
+                tools:unify_text_field_message="Min. 30 Karakter" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_user_report_footer"
@@ -79,7 +80,7 @@
                 app:layout_constraintStart_toStartOf="@+id/et_detail_report"
                 app:layout_constraintTop_toBottomOf="@+id/et_detail_report"
                 app:typographyType="body_3"
-                tools:text="Pelajari Selengkapnya tipe-tipe pelanggaran di Tokopedia. "
+                android:text="@string/play_user_report_footer"
                 tools:visibility="visible" />
 
             <com.tokopedia.unifycomponents.UnifyButton
