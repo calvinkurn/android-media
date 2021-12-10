@@ -679,7 +679,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 // if user in add mode then validate product name before submit data
                 viewModel.validateProductNameInputFromNetwork(productNameField.getText())
             } else {
-                submitInputDataIfValid(viewModel.isInputValid.value.orFalse())
+                submitInputDataWithCondition(viewModel.isInputValid.value.orFalse())
                 submitTextView?.show()
                 submitLoadingIndicator?.hide()
             }
@@ -819,7 +819,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
     }
 
-    private fun submitInputDataIfValid(isValid: Boolean) {
+    private fun submitInputDataWithCondition(isValid: Boolean) {
         if (isValid) {
             val isAdding = viewModel.isAdding
             val isDrafting = viewModel.isDrafting
@@ -1572,7 +1572,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         // set live data to null so it cannot commit observing twice when back from previous page
                         viewModel.setProductNameInputFromNetwork(null)
                         viewModel.setIsProductNameInputError(false)
-                        submitInputDataIfValid(true)
+                        submitInputDataWithCondition(true)
                     }
                 }
                 is Fail -> {
