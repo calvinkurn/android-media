@@ -15,13 +15,9 @@ class InactivePhoneCaptureSelfieFragment : BaseInactivePhoneOnboardingFragment()
     override fun initView() {
         super.initView()
 
+        updateImageHeader(IMAGE_SELFIE_SAMPLE)
         updateTitle(getString(R.string.text_title_selfie))
         updateDescription(getString(R.string.text_onboarding_selfie_description))
-
-        viewBinding?.imgHeader?.apply {
-            ImageUtils.clearImage(this)
-            setImageUrl(IMAGE_SELFIE_SAMPLE)
-        }
     }
 
     override fun onButtonNextClicked() {

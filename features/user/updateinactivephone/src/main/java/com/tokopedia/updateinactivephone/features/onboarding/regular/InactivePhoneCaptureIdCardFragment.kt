@@ -37,12 +37,9 @@ class InactivePhoneCaptureIdCardFragment : BaseInactivePhoneOnboardingFragment()
 
     override fun initView() {
         super.initView()
-        updateTitle(getString(R.string.text_title_id_card))
 
-        viewBinding?.imgHeader?.apply {
-            ImageUtils.clearImage(this)
-            setImageUrl(IMAGE_ID_CARD_SAMPLE)
-        }
+        updateImageHeader(IMAGE_ID_CARD_SAMPLE)
+        updateTitle(getString(R.string.text_title_id_card))
 
         viewBinding?.textDescription?.hide()
         viewBinding?.layoutDescription?.apply {

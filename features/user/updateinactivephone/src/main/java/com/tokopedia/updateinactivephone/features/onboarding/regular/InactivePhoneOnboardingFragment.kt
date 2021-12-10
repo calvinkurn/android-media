@@ -32,8 +32,4 @@ class InactivePhoneOnboardingFragment : BaseInactivePhoneOnboardingFragment() {
         viewBinding?.loader?.show()
         viewBinding?.buttonNext?.isEnabled = false
     }
-
-    companion object {
-        private const val IMAGE_ONBOARDING = "https://images.tokopedia.net/img/android/user/inactive-phone/inactivephone_onboarding.png"
-    }
 }
