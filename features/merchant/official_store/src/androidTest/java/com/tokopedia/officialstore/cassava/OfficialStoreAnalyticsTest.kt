@@ -5,12 +5,10 @@ import android.app.Instrumentation
 import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
@@ -30,7 +28,6 @@ import com.tokopedia.officialstore.extension.selectTabAtPosition
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 import com.tokopedia.officialstore.util.OSRecyclerViewIdlingResource
-import com.tokopedia.officialstore.util.preloadRecomOnOSPage
 import com.tokopedia.officialstore.util.removeProgressBarOnOsPage
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.espresso_component.CommonActions
@@ -217,14 +214,13 @@ class OfficialStoreAnalyticsTest {
             }
             is FeaturedBrandViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
-                onView(firstView(withId(R.id.see_all_button)))
-                    .perform(ViewActions.click())
+                onView(firstView(withId(R.id.see_all_button))).perform(ViewActions.click())
             }
         }
     }
     @Test
     fun checkOSAnalyticsWithCassava2() {
-        onView(CommonMatcher.firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(firstView(withId(R.id.os_child_recycler_view))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         OSCassavaTest {
             initTest()
