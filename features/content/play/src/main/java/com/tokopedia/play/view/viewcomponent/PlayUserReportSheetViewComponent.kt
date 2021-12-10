@@ -1,10 +1,12 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +33,7 @@ class PlayUserReportSheetViewComponent(
 
     private val clContent: ConstraintLayout = findViewById(R.id.cl_user_report_content)
     private val globalError: GlobalError = findViewById(R.id.global_error_user_report)
+    private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
     private val rvCategory: RecyclerView = findViewById(R.id.rv_category)
 
     private val categoryAdapter = UserReportReasoningAdapter(object : UserReportReasoningViewHolder.Listener {
@@ -63,6 +66,16 @@ class PlayUserReportSheetViewComponent(
             layoutManager = layoutManagerCategoryList
             addItemDecoration(ReasoningListItemDecoration(rvCategory.context))
             addOnScrollListener(categoryScrollListener)
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { v, insets ->
+
+            vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
+                height = insets.systemWindowInsetBottom
+            }
+            clContent.setPadding(clContent.paddingLeft, clContent.paddingTop, clContent.paddingRight, insets.systemWindowInsetBottom)
+
+            insets
         }
     }
 
