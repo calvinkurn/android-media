@@ -215,11 +215,7 @@ class OfficialStoreAnalyticsTest {
             }
             is FeaturedBrandViewHolder -> {
                 CommonActions.clickOnEachItemRecyclerView(viewHolder.itemView, R.id.recycleList,0)
-                val viewInteraction = onView(withId(R.id.home_component_header_view)).check(
-                    ViewAssertions.matches(ViewMatchers.isDisplayed())
-                )
-                viewInteraction.perform(
-                    CommonActions.clickChildViewWithId(R.id.see_all_button))
+                CommonActions.clickChildViewWithId(R.id.see_all_button)
             }
         }
     }
