@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeAdapterTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestAllClaimedWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestSequenceWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestTitleUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeQuestWidgetUiModel
@@ -50,17 +51,34 @@ class HomeQuestSequenceWidgetViewHolder(
     }
 
     override fun bind(element: HomeQuestSequenceWidgetUiModel) {
+        setupUi(element)
+    }
+
+    private fun setupUi(element: HomeQuestSequenceWidgetUiModel) {
         setAdapter()
-        setTitle(element.title)
-        setSeeAll(element.seeAll, element.appLink)
+        setTitle(getString(R.string.tokopedianow_quest_sequence_widget_title))
+
+        val currentQuestFinished = element.questList.filter { it.currentProgress == it.totalProgress }.size
+        val totalQuestTarget = element.questList.size
+        if (currentQuestFinished != totalQuestTarget) {
+            setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all), "tokopedia://now")
+        } else {
+            setSeeAll(getString(R.string.tokopedianow_quest_sequence_widget_see_all))
+        }
+
         when(element.state) {
-            HomeLayoutItemState.LOADED -> questLoaded(element)
+            HomeLayoutItemState.LOADED -> questLoaded(
+                id = element.id,
+                currentQuestFinished = currentQuestFinished,
+                totalQuestTarget = totalQuestTarget,
+                questList = element.questList
+            )
             else -> questNotLoaded()
         }
     }
 
-    private fun questLoaded(element: HomeQuestSequenceWidgetUiModel) {
-        addWidgets(element.questList)
+    private fun questLoaded(id: String, currentQuestFinished: Int, totalQuestTarget: Int, questList: List<HomeQuestWidgetUiModel>) {
+        addWidgets(id, currentQuestFinished, totalQuestTarget, questList)
     }
 
     private fun questNotLoaded() {
@@ -74,15 +92,25 @@ class HomeQuestSequenceWidgetViewHolder(
         }
     }
 
-    private fun addWidgets(questList: List<HomeQuestWidgetUiModel>) {
+    private fun addWidgets(id: String, currentQuestFinished: Int, totalQuestTarget: Int, questList: List<HomeQuestWidgetUiModel>) {
         val widgets = mutableListOf<Visitable<*>>()
-        widgets.add(
-            HomeQuestTitleUiModel(
-                currentQuestFinished = questList.filter { it.currentProgress == it.totalProgress }.size,
-                totalQuestTarget = questList.size
+        if (currentQuestFinished != totalQuestTarget) {
+            widgets.add(
+                HomeQuestTitleUiModel(
+                    currentQuestFinished = currentQuestFinished,
+                    totalQuestTarget = totalQuestTarget
+                )
             )
-        )
-        widgets.addAll(questList)
+            widgets.addAll(questList)
+        } else {
+            widgets.add(
+                HomeQuestAllClaimedWidgetUiModel(
+                    id = id,
+                    currentQuestFinished = currentQuestFinished,
+                    totalQuestTarget = totalQuestTarget
+                )
+            )
+        }
         adapter.submitList(widgets)
     }
 
@@ -105,7 +133,7 @@ class HomeQuestSequenceWidgetViewHolder(
         }
     }
 
-    private fun setSeeAll(seeAll: String, appLink: String) {
+    private fun setSeeAll(seeAll: String, appLink: String = "") {
         binding?.tvSeeAll?.apply {
             if (seeAll.isNotBlank() && appLink.isNotBlank()) {
                 show()
@@ -121,5 +149,6 @@ class HomeQuestSequenceWidgetViewHolder(
 
     interface HomeQuestSequenceWidgetListener {
         fun onClickRefreshQuestWidget()
+        fun onCloseQuestAllClaimedBtnClicked(id: String)
     }
 }

@@ -1,14 +1,13 @@
 package com.tokopedia.tokopedianow.home.domain.query
 
-internal object GetQuestWidgetList {
+internal object GetQuestList {
     val QUERY = """
         query quest_list(){
-          questWidgetList(input: {channel: 0, channelSlug: "", page: "tokopedia-now"}) {
-            questWidgetList {
+          questList(input: {limit: 0, nextQuestID: 0, channel: 0, channelSlug: ""}) {
+            questList {
               id
               title
               description
-              widgetPrizeIconURL
               config
               questUser {
                 id
@@ -25,7 +24,6 @@ internal object GetQuestWidgetList {
               actionButton {
                 shortText
                 cta {
-                  url
                   applink
                 }
               }
@@ -33,15 +31,6 @@ internal object GetQuestWidgetList {
             resultStatus {
               code
               reason
-            }
-            isEligible
-            widgetPageDetail {
-              title
-              cta {
-                text
-                url
-                appLink
-              }
             }
           }
         }

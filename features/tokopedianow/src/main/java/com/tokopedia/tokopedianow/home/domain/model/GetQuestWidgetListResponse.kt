@@ -3,28 +3,22 @@ package com.tokopedia.tokopedianow.home.domain.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class GetQuestWidgetListResponse(
-    @SerializedName("questWidgetList")
+data class GetQuestListResponse(
+    @SerializedName("questList")
     @Expose
-    val questWidgetList: QuestWidgetListResponse
+    val questWidgetList: QuestListResponse
 )
 
-data class QuestWidgetListResponse(
-    @SerializedName("questWidgetList")
+data class QuestListResponse(
+    @SerializedName("questList")
     @Expose
-    val questWidgetList: List<QuestWidgetList>,
-    @SerializedName("widgetPageDetail")
-    @Expose
-    val widgetPageDetail: WidgetPageDetail,
+    val questWidgetList: List<QuestList>,
     @SerializedName("resultStatus")
     @Expose
-    val resultStatus: ResultStatus,
-    @SerializedName("isEligible")
-    @Expose
-    val isEligible: Boolean,
+    val resultStatus: ResultStatus
 )
 
-data class QuestWidgetList(
+data class QuestList(
     @SerializedName("id")
     @Expose
     val id: String,
@@ -34,9 +28,6 @@ data class QuestWidgetList(
     @SerializedName("description")
     @Expose
     val description: String,
-    @SerializedName("widgetPrizeIconURL")
-    @Expose
-    val widgetPrizeIconURL: String,
     @SerializedName("config")
     @Expose
     val config: String,
@@ -94,24 +85,6 @@ data class CtaActionButton(
     @SerializedName("applink")
     @Expose
     val appLink: String,
-)
-
-data class WidgetPageDetail(
-    @SerializedName("title")
-    @Expose
-    val title: String,
-    @SerializedName("cta")
-    @Expose
-    val cta: CtaWidgetPageDetail
-)
-
-data class CtaWidgetPageDetail(
-    @SerializedName("appLink")
-    @Expose
-    val appLink: String,
-    @SerializedName("text")
-    @Expose
-    val text: String
 )
 
 data class ResultStatus(

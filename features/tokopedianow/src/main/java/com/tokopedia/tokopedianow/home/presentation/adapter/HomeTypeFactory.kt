@@ -13,4 +13,5 @@ interface HomeTypeFactory {
     fun type(uiModel: HomeQuestSequenceWidgetUiModel): Int
     fun type(uiModel: HomeQuestWidgetUiModel): Int
     fun type(uiModel: HomeQuestTitleUiModel): Int
+    fun type(uiModel: HomeQuestAllClaimedWidgetUiModel): Int
 }

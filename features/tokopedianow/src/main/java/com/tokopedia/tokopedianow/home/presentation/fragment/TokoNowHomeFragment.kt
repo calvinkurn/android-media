@@ -73,7 +73,9 @@ import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE
@@ -495,7 +497,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onCloseBtnSharingEducationClicked(id: String) {
         SharedPreferencesUtil.setSharingEducationState(activity)
-        viewModelTokoNow.removeSharingEducationWidget(id)
+        viewModelTokoNow.removeWidget(id)
     }
 
     override fun isEducationInformationLottieStopped(): Boolean = SharedPreferencesUtil.isEducationalInformationStopped(activity)
@@ -1121,8 +1123,11 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun getHomeLayout() {
         localCacheModel?.let {
-            val isSharingRemoved = SharedPreferencesUtil.isSharingEducationRemoved(activity)
-            viewModelTokoNow.getHomeLayout(it, isSharingRemoved)
+            val mapAllWidgetRemoved = mutableMapOf(
+                Pair(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
+                Pair(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
+            )
+            viewModelTokoNow.getHomeLayout(it, mapAllWidgetRemoved)
         }
     }
 
@@ -1376,6 +1381,11 @@ class TokoNowHomeFragment: Fragment(),
         if (item is HomeQuestSequenceWidgetUiModel) {
             viewModelTokoNow.getQuestList(item)
         }
+    }
+
+    override fun onCloseQuestAllClaimedBtnClicked(id: String) {
+        SharedPreferencesUtil.setQuestAllClaimedRemoved(activity)
+        viewModelTokoNow.removeWidget(id)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

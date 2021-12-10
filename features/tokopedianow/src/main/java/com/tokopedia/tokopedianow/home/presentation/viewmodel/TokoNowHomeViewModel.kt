@@ -176,7 +176,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    fun getHomeLayout(localCacheModel: LocalCacheModel, hasSharingEducationBeenRemoved: Boolean) {
+    fun getHomeLayout(localCacheModel: LocalCacheModel, mapAllWidgetRemoved: Map<String, Boolean>) {
         getHomeLayoutJob?.cancel()
         launchCatchError(block = {
             homeLayoutItemList.clear()
@@ -190,7 +190,7 @@ class TokoNowHomeViewModel @Inject constructor(
             homeLayoutItemList.mapHomeLayoutList(
                 homeLayoutResponse,
                 hasTickerBeenRemoved,
-                hasSharingEducationBeenRemoved,
+                mapAllWidgetRemoved,
                 miniCartSimplifiedData
             )
 
@@ -371,7 +371,7 @@ class TokoNowHomeViewModel @Inject constructor(
         }) {}
     }
 
-    fun removeSharingEducationWidget(id: String) {
+    fun removeWidget(id: String) {
         launchCatchError(block = {
             homeLayoutItemList.removeItem(id)
 
@@ -500,21 +500,19 @@ class TokoNowHomeViewModel @Inject constructor(
     private suspend fun getQuestListData(item: HomeQuestSequenceWidgetUiModel) {
         val questListResponse = getQuestWidgetListUseCase.execute().questWidgetList
         val questData = QuestMapper.mapQuestData(questListResponse.questWidgetList)
-        if (!questListResponse.isEligible && questListResponse.resultStatus.code == SUCCESS_CODE) {
+        if (questListResponse.questWidgetList.isNullOrEmpty() && questListResponse.resultStatus.code == SUCCESS_CODE) {
             homeLayoutItemList.removeItem(item.id)
         } else if (questListResponse.resultStatus.code != SUCCESS_CODE){
             homeLayoutItemList.mapQuestData(
                 item = item,
                 questList = emptyList(),
-                state = HomeLayoutItemState.NOT_LOADED,
-                widgetPageDetail = questListResponse.widgetPageDetail
+                state = HomeLayoutItemState.NOT_LOADED
             )
         } else {
             homeLayoutItemList.mapQuestData(
                 item = item,
                 questList = questData,
-                state = HomeLayoutItemState.LOADED,
-                widgetPageDetail = questListResponse.widgetPageDetail
+                state = HomeLayoutItemState.LOADED
             )
         }
     }

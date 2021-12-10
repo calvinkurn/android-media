@@ -45,7 +45,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.EducationalInformationMappe
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingEducationMapper.mapSharingEducationUiModel
-import com.tokopedia.tokopedianow.home.domain.model.WidgetPageDetail
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.uimodel.*
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -90,7 +89,7 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
         response: List<HomeLayoutResponse>,
         hasTickerBeenRemoved: Boolean,
-        hasSharingEducationBeenRemoved: Boolean,
+        mapAllWidgetRemoved: Map<String, Boolean>,
         miniCartData: MiniCartSimplifiedData?
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
@@ -99,8 +98,6 @@ object HomeLayoutMapper {
             layout = HomeQuestSequenceWidgetUiModel(
                 MAIN_QUEST,
                 HomeLayoutItemState.LOADED,
-                title = "Testing Aja Woy",
-                seeAll = "Lihat nggak?",
                 questList = emptyList(),
             ),
             state = HomeLayoutItemState.NOT_LOADED
@@ -111,9 +108,9 @@ object HomeLayoutMapper {
             add(HomeLayoutItemUiModel(ticker, HomeLayoutItemState.NOT_LOADED))
         }
 
-        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach {
-            if (!(hasSharingEducationBeenRemoved && it.layout == SHARING_EDUCATION)) {
-                mapToHomeUiModel(it, miniCartData = miniCartData)?.let { item ->
+        response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
+            if (mapAllWidgetRemoved.filter { layoutResponse.layout == it.key && it.value }.isEmpty()) {
+                mapToHomeUiModel(layoutResponse, miniCartData = miniCartData)?.let { item ->
                     add(item)
                 }
             }
@@ -187,17 +184,13 @@ object HomeLayoutMapper {
     fun MutableList<HomeLayoutItemUiModel>.mapQuestData(
         item: HomeQuestSequenceWidgetUiModel,
         questList: List<HomeQuestWidgetUiModel>,
-        state: HomeLayoutItemState,
-        widgetPageDetail: WidgetPageDetail
+        state: HomeLayoutItemState
     ) {
         updateItemById(item.visitableId) {
             val quest = HomeQuestSequenceWidgetUiModel(
                 id = MAIN_QUEST,
                 state = state,
-                questList = questList,
-                title = widgetPageDetail.title,
-                seeAll = widgetPageDetail.cta.text,
-                appLink = widgetPageDetail.cta.appLink
+                questList = questList
             )
             HomeLayoutItemUiModel(quest, HomeLayoutItemState.LOADED)
         }
