@@ -30,6 +30,7 @@ object CampaignListTrackerConstant {
         const val IMPRESSION_CAMPAIGN_LIST = "impression active campaign list"
         const val CLICK_CAMPAIGN_FILTER_TYPE = "click filter campaign type"
         const val CLICK_CAMPAIGN_STATUS = "click filter campaign status"
+        const val CLICK_CAMPAIGN_TYPE = "click filter campaign type"
         const val CLICK_CAMPAIGN_STATUS_AVAILABLE = "click filter campaign status - available"
         const val CLICK_CAMPAIGN_STATUS_UPCOMING = "click filter campaign status - upcoming"
         const val CLICK_CAMPAIGN_STATUS_ONGOING = "click filter campaign status - ongoing"
