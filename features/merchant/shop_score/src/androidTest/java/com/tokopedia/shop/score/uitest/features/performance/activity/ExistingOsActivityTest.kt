@@ -21,7 +21,6 @@ class ExistingOsActivityTest: ShopScoreTest() {
     fun show_coachmark_when_existing_os() {
         shopScorePrefManagerStub.setFinishCoachMark(false)
         activityRule.launchActivity(getShopPerformancePageIntent())
-        Thread.sleep(3000)
         showCoachMarkShopScore()
     }
 

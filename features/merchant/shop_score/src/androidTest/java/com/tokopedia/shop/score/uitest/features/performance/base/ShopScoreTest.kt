@@ -28,7 +28,6 @@ import com.tokopedia.shop.score.performance.presentation.model.HeaderShopPerform
 import com.tokopedia.shop.score.performance.presentation.model.ItemDetailPerformanceUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemFaqUiModel
 import com.tokopedia.shop.score.performance.presentation.model.ItemTimerNewSellerUiModel
-import com.tokopedia.shop.score.performance.presentation.model.PeriodDetailPerformanceUiModel
 import com.tokopedia.shop.score.uitest.stub.common.UserSessionStub
 import com.tokopedia.shop.score.uitest.stub.common.graphql.repository.GraphqlRepositoryStub
 import com.tokopedia.shop.score.uitest.stub.common.util.AndroidTestUtil
@@ -84,7 +83,7 @@ abstract class ShopScoreTest {
         )
     }
 
-    protected val context = InstrumentationRegistry.getInstrumentation().targetContext
+    protected val context: Context = InstrumentationRegistry.getInstrumentation().targetContext
 
     protected val existingSellerOsResponse: ShopScoreResponseStub
         get() = AndroidTestUtil.parse(
@@ -193,15 +192,6 @@ abstract class ShopScoreTest {
             shopScore = shopScoreLevelResponse?.shopScore.orZero(),
             shopAge = goldGetPMShopInfoResponse?.shopAge.orZero(),
             pmData = pmData
-        )
-    }
-
-    protected fun getSectionPeriodDetailPerformanceUiModel(
-        shopScoreLevelResponse: ShopScoreLevelResponse.ShopScoreLevel.Result?,
-        isNewSeller: Boolean
-    ): PeriodDetailPerformanceUiModel {
-        return shopScoreMapperStub.mapToSectionPeriodDetailPerformanceUiModel(
-            shopScoreLevelResponse, isNewSeller
         )
     }
 
