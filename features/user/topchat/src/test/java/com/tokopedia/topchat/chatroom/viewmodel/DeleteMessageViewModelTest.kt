@@ -50,4 +50,19 @@ class DeleteMessageViewModelTest : BaseTopChatViewModelTest() {
         assertThat(result, IsInstanceOf(Fail::class.java))
     }
 
+    @Test
+    fun should_update_live_data_value_if_throw_exception() {
+        // Given
+        coEvery {
+            unsendReplyUseCase.invoke(any())
+        } throws IllegalStateException("error")
+
+        // When
+        viewModel.deleteMsg("0", "0")
+
+        // Then
+        val result: Result<String>? = viewModel.deleteBubble.value
+        assertThat(result, IsInstanceOf(Fail::class.java))
+    }
+
 }
