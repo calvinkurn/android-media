@@ -37,11 +37,7 @@ import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
-import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
-import com.tokopedia.play.view.viewcomponent.PlayUserReportSubmissionViewComponent
+import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -482,7 +478,10 @@ class PlayBottomSheetFragment @Inject constructor(
             when (it) {
                 is PlayResult.Loading -> ""
                 is PlayResult.Success -> userReportSheetView.setReportSheet(it.data)
-                is PlayResult.Failure ->  ""
+                is PlayResult.Failure -> userReportSheetView.showError(
+                    isConnectionError = it.error is ConnectException || it.error is UnknownHostException,
+                    onError = it.onRetry
+                )
             }
         })
     }
