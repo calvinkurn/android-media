@@ -90,15 +90,15 @@
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo <b>AJDYSBJSBJBJD</b> yang sedang dipilih"
                     },
                     {
                       "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo <b>AJDYSBJSBJBJD</b> yang sedang dipilih"
                     },
                     {
                       "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo <b>AJDYSBJSBJBJD</b> yang sedang dipilih"
                     }
                   ],
                   "currency_details_str": "(12.150 GoPay Coins)",
@@ -113,7 +113,7 @@
                   "promo_infos": [
                     {
                       "type": "coupon_info",
-                      "title": "ini kupon info",
+                      "title": "ini kupon info <b>ini kupon info</b>",
                       "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
@@ -122,8 +122,13 @@
                       "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
+                      "type": "promo_validity",
+                      "title": "Berlaku <b>hingga 1 jam lagi</b> yah",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
+                    },
+                    {
                       "type": "bottom_banner",
-                      "title": "Khusus pengguna baru",
+                      "title": "Khusus <b>pengguna baru</b>",
                       "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
                   ]
@@ -149,15 +154,18 @@
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
                   ],
                   "currency_details_str": "(12.150 GoPay Coins)",
@@ -206,15 +214,18 @@
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
                   ],
                   "currency_details_str": "",
@@ -263,15 +274,18 @@
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
                   ],
                   "currency_details_str": "",
@@ -320,15 +334,18 @@
                   "clashing_infos": [
                     {
                       "code": "NPNVTU0Z",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "NMNVTL01",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "LMNVE0Z9",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
                   ],
                   "currency_details_str": "",
@@ -394,19 +411,23 @@
                   "clashing_infos": [
                     {
                       "code": "QQQ17CN6MKC80RDQQRE",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "DD30OSPM2CN6MKQ55AN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "FSLOC17CN6MK0ANWUEF",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     },
                     {
                       "code": "NU8030T8CN6MK3WLNXN",
-                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih"
+                      "message": "Tidak bisa dipakai bersamaan dengan promo yang sedang dipilih",
+                      "icon": "https://toppng.com/uploads/preview/instagram-icon-11609365124lyquzat0xh.png"
                     }
                   ],
                   "currency_details_str": "(30.000 GoPay Coins)",

@@ -14,6 +14,7 @@ import com.tokopedia.promocheckoutmarketplace.databinding.PromoCheckoutMarketpla
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
@@ -217,7 +218,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
                     val imagePromoInfo = promoInfoView.findViewById<ImageUnify>(R.id.image_promo_info)
                     imagePromoInfo.setImageUrl(it.icon)
                     val textPromoInfo = promoInfoView.findViewById<Typography>(R.id.text_promo_info)
-                    textPromoInfo.text = it.title
+                    textPromoInfo.text = HtmlLinkHelper(itemView.context, it.title).spannedString
                     if (!element.uiState.isParentEnabled || element.uiState.isDisabled || element.uiData.clashingInfoMessage.isNotBlank()) {
                         textPromoInfo.setTextColor(colorTextDisabled)
                     } else {
@@ -241,7 +242,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
 
             if (timeValidityInfo != null) {
                 imageTimeValidity.setImageUrl(timeValidityInfo.icon)
-                textTimeValidity.text = timeValidityInfo.title
+                textTimeValidity.text = HtmlLinkHelper(itemView.context, timeValidityInfo.title).spannedString
                 buttonPromoDetail.setOnClickListener {
                     listener.onClickPromoItemDetail(element)
                 }
@@ -258,7 +259,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
             val bottomBanner = element.uiData.promoInfos.firstOrNull { it.type == PromoInfo.TYPE_BOTTOM_BANNER }
             if (bottomBanner != null) {
                 imageUserValidity.setImageUrl(bottomBanner.icon)
-                textUserValidity.text = bottomBanner.title
+                textUserValidity.text = HtmlLinkHelper(itemView.context, bottomBanner.title).spannedString
                 containerUserValidity.show()
             } else {
                 containerUserValidity.gone()
@@ -271,7 +272,7 @@ class PromoListItemViewHolder(private val viewBinding: PromoCheckoutMarketplaceM
         with(viewBinding) {
             if (element.uiData.clashingInfoMessage.isNotBlank()) {
                 imageClashInfo.setImageUrl(element.uiData.clashingInfoIcon)
-                textClashInfo.text = element.uiData.clashingInfoMessage
+                textClashInfo.text = HtmlLinkHelper(itemView.context, element.uiData.clashingInfoMessage).spannedString
                 containerClashInfo.show()
             } else {
                 containerClashInfo.gone()
