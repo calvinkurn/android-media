@@ -705,8 +705,8 @@ class AddEditProductVariantFragment :
                     variantTypeAdapter?.getCustomVariantTypeItems(),
                     variantTypeAdapter?.getItems())
 
-            bottomSheet.setOnVariantTypeEditedListener { editedIndex, editedLevel, variantDetail ->
-                editVariantType(editedIndex, editedLevel, variantDetail)
+            bottomSheet.setOnVariantTypeEditedListener { editedIndex, variantDetail ->
+                editVariantType(editedIndex, variantDetail)
             }
 
             bottomSheet.setOnVariantTypeDeletedListener { deletedIndex, variantDetail ->
@@ -1179,7 +1179,8 @@ class AddEditProductVariantFragment :
                 isSelected = selectedVariantCount < MAX_SELECTED_VARIANT_TYPE)
     }
 
-    private fun editVariantType(editedIndex: Int, editedLevel: Int, variantDetail: VariantDetail) {
+    private fun editVariantType(editedIndex: Int, variantDetail: VariantDetail) {
+        val oldVariantDetail = variantTypeAdapter?.getItem(editedIndex)
         val autoSelectIndex = variantTypeAdapter?.getItems().orEmpty().indexOfFirst {
             it.name == variantDetail.name
         }
@@ -1194,8 +1195,9 @@ class AddEditProductVariantFragment :
             return
         }
 
+        val layoutPosition = viewModel.getVariantValuesLayoutPosition(editedIndex)
         if (variantDetail.variantID == CUSTOM_VARIANT_TYPE_ID) {
-            when (editedLevel) {
+            when (layoutPosition) {
                 VARIANT_VALUE_LEVEL_ONE_POSITION -> {
                     typographyVariantValueLevel1Title.text = variantDetail.name
                 }
@@ -1204,11 +1206,10 @@ class AddEditProductVariantFragment :
                 }
             }
         } else {
-            if (autoSelectIndex.isLessThanZero()) {
+            if (autoSelectIndex.isLessThanZero() && oldVariantDetail != null) {
+                viewModel.isSingleVariantTypeIsSelected = true
+                deselectVariantType(layoutPosition, editedIndex, oldVariantDetail)
                 variantTypeAdapter?.deselectItem(editedIndex)
-                viewModel.isSingleVariantTypeIsSelected =
-                        variantTypeAdapter?.getSelectedCount() == VARIANT_VALUE_LEVEL_ONE_COUNT
-                deselectVariantType(editedLevel, editedIndex, variantDetail)
             } else {
                 deleteVariantType(editedIndex, variantDetail)
                 variantTypeAdapter?.onVariantTypeSelected(autoSelectIndex)

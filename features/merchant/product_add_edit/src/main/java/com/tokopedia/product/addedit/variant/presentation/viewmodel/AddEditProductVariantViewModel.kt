@@ -622,7 +622,7 @@ class AddEditProductVariantViewModel @Inject constructor(
     fun removeSelectedVariantDetails(variantDetail: VariantDetail) {
         isOldVariantData = false
         this.selectedVariantDetails.removeFirst {
-            it.variantID == variantDetail.variantID
+            it.variantID == variantDetail.variantID && it.name == variantDetail.name
         }
 
         // update isRemovingVariant value based on selectedVariantDetails elements

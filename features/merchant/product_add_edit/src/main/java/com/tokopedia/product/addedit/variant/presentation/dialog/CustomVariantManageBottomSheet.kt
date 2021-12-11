@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
@@ -36,7 +35,7 @@ class CustomVariantManageBottomSheet(
     @Inject
     lateinit var userSession: UserSessionInterface
     private var binding by autoClearedNullable<AddEditProductCustomVariantManageBottomSheetContentBinding>()
-    private var onVariantTypeEditedListener: ((editedIndex: Int, editedLevel: Int, variantDetail: VariantDetail) -> Unit)? = null
+    private var onVariantTypeEditedListener: ((editedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
     private var onVariantTypeDeletedListener: ((deletedIndex: Int, variantDetail: VariantDetail) -> Unit)? = null
 
     init {
@@ -92,8 +91,7 @@ class CustomVariantManageBottomSheet(
         }.orEmpty())
         adapter.setOnEditButtonClickedListener { index ->
             customVariantDetails?.getOrNull(index)?.let { variantDetail ->
-                val level = selectedVariantDetails?.indexOfLast { it.name == variantDetail.name }.orZero()
-                showEditVariantBottomSheet(level, variantDetail)
+                showEditVariantBottomSheet(variantDetail)
 
                 CustomVariantTypeTracking.clickEditVariant(userSession.shopId, variantDetail.name)
             }
@@ -177,7 +175,7 @@ class CustomVariantManageBottomSheet(
         }.show()
     }
 
-    private fun showEditVariantBottomSheet(level: Int, oldVariantDetail: VariantDetail) {
+    private fun showEditVariantBottomSheet(oldVariantDetail: VariantDetail) {
         val bottomSheet = CustomVariantInputBottomSheet(
             oldVariantDetail.name,
             selectedVariantDetails.orEmpty(),
@@ -186,12 +184,12 @@ class CustomVariantManageBottomSheet(
         bottomSheet.setOnCustomVariantTypeSubmitted { newVariantName ->
             val position = getVariantDetailPosition(oldVariantDetail) ?: return@setOnCustomVariantTypeSubmitted
             val newVariantDetail = oldVariantDetail.copy().apply { name = newVariantName }
-            onVariantTypeEditedListener?.invoke(position, level, newVariantDetail)
+            onVariantTypeEditedListener?.invoke(position, newVariantDetail)
         }
         bottomSheet.setOnPredefinedVariantTypeSubmitted { newVariantDetail ->
             showEditConfDialog(bottomSheet.requireContext(), oldVariantDetail, newVariantDetail) {
                 getVariantDetailPosition(oldVariantDetail)?.let { position ->
-                    onVariantTypeEditedListener?.invoke(position, level, newVariantDetail)
+                    onVariantTypeEditedListener?.invoke(position, newVariantDetail)
                 }
             }
         }
@@ -199,7 +197,7 @@ class CustomVariantManageBottomSheet(
     }
 
     fun setOnVariantTypeEditedListener(
-        listener: (editedIndex: Int, editedLevel: Int, variantDetail: VariantDetail) -> Unit
+        listener: (editedIndex: Int, variantDetail: VariantDetail) -> Unit
     ) {
         onVariantTypeEditedListener = listener
     }
