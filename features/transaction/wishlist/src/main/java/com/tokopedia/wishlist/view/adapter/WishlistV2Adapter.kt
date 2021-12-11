@@ -146,16 +146,16 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 holder.bind(element)
             }
             is WishlistV2TitleViewHolder -> {
-                holder.bind(element)
+                holder.bind(element, isShowCheckbox)
             }
             is WishlistV2RecommendationItemViewHolder -> {
                 holder.bind(element, holder.adapterPosition)
             }
             is WishlistV2TdnViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element, holder.adapterPosition, isShowCheckbox)
             }
             is WishlistV2RecommendationCarouselViewHolder -> {
-                holder.bind(element, holder.adapterPosition)
+                holder.bind(element, holder.adapterPosition, isShowCheckbox)
             }
         }
     }
@@ -195,10 +195,10 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setCheckbox(position: Int, checked: Boolean) {
         listTypeData[position].isChecked = checked
-        notifyDataSetChanged()
+        notifyItemChanged(position)
     }
 
-    fun clearCheckbox() {
+    private fun clearCheckbox() {
         listTypeData.forEach {
             it.isChecked = false
         }
