@@ -23,6 +23,7 @@
             android:id="@+id/cl_product_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_header"

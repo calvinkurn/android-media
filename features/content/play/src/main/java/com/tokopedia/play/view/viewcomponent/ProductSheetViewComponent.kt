@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -20,6 +21,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
+import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
@@ -40,6 +42,7 @@ class ProductSheetViewComponent(
 
     private val clProductContent: ConstraintLayout = findViewById(R.id.cl_product_content)
     private val clProductVoucher: FrameLayout = findViewById(R.id.cl_product_voucher_info)
+    private val clVoucherContent: ConstraintLayout = findViewById(R.id.cl_product_voucher_content)
     private val tvSheetTitle: TextView = findViewById(com.tokopedia.play_common.R.id.tv_sheet_title)
     private val rvProductList: RecyclerView = findViewById(R.id.rv_product_list)
     private val vBottomOverlay: View = findViewById(R.id.v_bottom_overlay)
@@ -109,6 +112,11 @@ class ProductSheetViewComponent(
             clProductContent.setPadding(clProductContent.paddingLeft, clProductContent.paddingTop, clProductContent.paddingRight, insets.systemWindowInsetBottom)
 
             insets
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            clVoucherContent.outlineProvider = RectangleShadowOutlineProvider()
+            clVoucherContent.clipToOutline = true
         }
     }
 

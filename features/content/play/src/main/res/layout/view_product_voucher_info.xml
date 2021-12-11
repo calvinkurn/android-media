@@ -9,11 +9,13 @@
         android:layout_height="@dimen/layout_lvl7">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_product_voucher_content"
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl6"
             android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginEnd="@dimen/spacing_lvl4">
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:elevation="@dimen/play_offset_6">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_voucher_intersect"
