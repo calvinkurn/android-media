@@ -65,8 +65,6 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private var sizeList = 0
-
     fun loadWishlistV2(params: WishlistV2Params, typeLayout: String?) {
         launch {
             try {
@@ -122,11 +120,6 @@ class WishlistV2ViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     }
 
     suspend fun organizeWishlistV2Data(wishlistV2Response: WishlistV2Response.Data.WishlistV2, typeLayout: String?) : List<WishlistV2TypeLayoutData> {
-        val currSizeList = wishlistV2Response.items.size
-        sizeList += currSizeList
-        val diffArray = arrayListOf<Int>()
-        diffArray.add(sizeList)
-
         var listData = arrayListOf<WishlistV2TypeLayoutData>()
 
         var isFilterActive = false
