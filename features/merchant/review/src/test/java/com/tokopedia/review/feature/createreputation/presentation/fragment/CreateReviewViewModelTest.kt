@@ -158,7 +158,6 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
         viewModel.getProductIncentiveOvo()
 
         verifyOvoIncentiveUseCaseCalled()
-        assertTrue(viewModel.hasIncentive())
         assertTrue(viewModel.incentiveOvo.observeAwaitValue() is Success)
     }
 
@@ -599,7 +598,7 @@ class CreateReviewViewModelTest : CreateReviewViewModelTestFixture() {
             )
         )
         val expectedIncentivesResponse =
-            ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse())
+            ProductRevIncentiveOvoDomain(ProductRevIncentiveOvoResponse(amount = 10))
 
         onGetReviewTemplate_thenReturn(expectedResponse)
         onGetOvoIncentive_thenReturn(expectedIncentivesResponse)
