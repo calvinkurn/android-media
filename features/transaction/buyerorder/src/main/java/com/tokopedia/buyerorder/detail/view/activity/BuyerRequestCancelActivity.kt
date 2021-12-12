@@ -74,7 +74,7 @@ class BuyerRequestCancelActivity : BaseSimpleActivity(), HasComponent<OrderDetai
 
     private fun setupBackground() {
         window?.run {
-            val backgroundColor = MethodChecker.getColor(this@BuyerRequestCancelActivity, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            val backgroundColor = MethodChecker.getColor(this@BuyerRequestCancelActivity, com.tokopedia.unifyprinciples.R.color.Unify_Background)
             decorView.setBackgroundColor(backgroundColor)
             statusBarColor = backgroundColor
         }

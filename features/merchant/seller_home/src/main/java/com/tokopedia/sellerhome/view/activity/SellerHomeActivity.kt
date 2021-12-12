@@ -55,6 +55,7 @@ import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.accelerometer.orientation.AccelerometerOrientationListener
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -284,7 +285,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
 
     private fun setupBackground() {
         window.decorView.setBackgroundColor(
-            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Background)
         )
     }
 

@@ -110,7 +110,7 @@ open class HomeCreditBaseCameraFragment : BaseDaggerFragment() {
     }
 
     private fun setUIFlashCamera(flashEnum: Int) {
-        context.let {
+        context?.let {
             val colorWhite = ContextCompat.getColor(
                 requireContext(),
                 com.tokopedia.unifyprinciples.R.color.Unify_Static_White

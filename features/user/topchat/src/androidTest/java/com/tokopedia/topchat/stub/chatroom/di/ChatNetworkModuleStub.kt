@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.topchat.chatroom.di.ChatScope
 import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.user.session.UserSession
@@ -44,5 +46,11 @@ class ChatNetworkModuleStub {
     @Provides
     fun provideResources(@TopchatContext context: Context): Resources {
         return context.resources
+    }
+
+    @ChatScope
+    @Provides
+    fun provideAbTestPlatform() : AbTestPlatform {
+        return RemoteConfigInstance.getInstance().abTestPlatform
     }
 }

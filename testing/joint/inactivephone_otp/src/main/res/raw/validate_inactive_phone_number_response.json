@@ -1,0 +1,11 @@
+[
+  {
+    "data": {
+      "ValidateInactivePhoneUser": {
+        "isSuccess": true,
+        "errorMessage": "",
+        "status": 2
+      }
+    }
+  }
+]
