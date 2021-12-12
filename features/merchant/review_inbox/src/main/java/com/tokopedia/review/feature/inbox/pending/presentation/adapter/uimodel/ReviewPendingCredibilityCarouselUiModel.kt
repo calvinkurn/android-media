@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPendingTypeFactory
 import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.CredibilityCarouselCoachMarkItemManager
-import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.ReviewPendingCoachMarkItemManager
+import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.CoachMarkItemManager
 
 data class ReviewPendingCredibilityCarouselUiModel(
     val items: List<ReviewPendingCredibilityUiModel>
@@ -13,7 +13,7 @@ data class ReviewPendingCredibilityCarouselUiModel(
         return typeFactory.type(this)
     }
 
-    override fun getCoachMarkItemManager(): ReviewPendingCoachMarkItemManager? {
+    override fun getCoachMarkItemManager(): CoachMarkItemManager? {
         return CredibilityCarouselCoachMarkItemManager(uiModel = this)
     }
 }

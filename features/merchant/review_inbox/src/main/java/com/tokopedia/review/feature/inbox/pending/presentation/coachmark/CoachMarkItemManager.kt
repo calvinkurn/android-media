@@ -8,7 +8,7 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.CoachMarkUiModel
 
-abstract class ReviewPendingCoachMarkItemManager {
+abstract class CoachMarkItemManager {
     abstract var uiModel: CoachMarkUiModel?
     abstract var viewHolderRootView: View?
     abstract var key: String

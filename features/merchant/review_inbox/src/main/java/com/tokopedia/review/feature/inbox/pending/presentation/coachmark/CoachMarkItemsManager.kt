@@ -5,9 +5,9 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.ZERO
 
-class ReviewPendingCoachMarkItemsManager {
+class CoachMarkItemsManager {
     var currentCoachMarkPosition = Int.ZERO
-    var coachMarkItemManagers = arrayListOf<ReviewPendingCoachMarkItemManager>()
+    var coachMarkItemManagers = arrayListOf<CoachMarkItemManager>()
 
     fun getUnifyCoachMarkItems(): ArrayList<CoachMark2Item> {
         val coachMarkAnchorView = coachMarkItemManagers.getOrNull(
@@ -24,7 +24,7 @@ class ReviewPendingCoachMarkItemsManager {
         })
     }
 
-    fun getCurrentCoachMarkItemManager(): ReviewPendingCoachMarkItemManager? {
+    fun getCurrentCoachMarkItemManager(): CoachMarkItemManager? {
         return coachMarkItemManagers.getOrNull(currentCoachMarkPosition)
     }
 
@@ -33,9 +33,9 @@ class ReviewPendingCoachMarkItemsManager {
     }
 
     fun updateHasShownStatus(context: Context) {
-        coachMarkItemManagers.forEachIndexed { index, buyerOrderDetailCoachMarkItemHandler ->
+        coachMarkItemManagers.forEachIndexed { index, coachMarkItemManager ->
             if (index <= currentCoachMarkPosition) {
-                buyerOrderDetailCoachMarkItemHandler.markAsShowed(context)
+                coachMarkItemManager.markAsShowed(context)
             }
         }
     }

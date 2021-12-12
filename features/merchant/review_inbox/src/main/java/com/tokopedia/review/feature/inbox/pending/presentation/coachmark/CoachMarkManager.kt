@@ -10,7 +10,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.ReviewPen
 import com.tokopedia.review.feature.inbox.pending.presentation.scroller.ReviewPendingRecyclerViewScroller
 import com.tokopedia.review.inbox.R
 
-class ReviewPendingCoachMarkManager(
+class CoachMarkManager(
     private val rootView: View,
     private val smoothScroller: ReviewPendingRecyclerViewScroller?
 ) {
@@ -23,15 +23,15 @@ class ReviewPendingCoachMarkManager(
     }
 
     private val coachMarkItemsManager by lazy {
-        ReviewPendingCoachMarkItemsManager()
+        CoachMarkItemsManager()
     }
     private val scrollListener = createScrollListener()
 
-    private val rvBuyerOrderDetail = rootView.findViewById<RecyclerView>(R.id.reviewPendingRecyclerView)
+    private val recyclerView = rootView.findViewById<RecyclerView>(R.id.reviewPendingRecyclerView)
     private val adapter: ReviewPendingAdapter?
-        get() = rvBuyerOrderDetail?.adapter as? ReviewPendingAdapter
+        get() = recyclerView?.adapter as? ReviewPendingAdapter
     private val layoutManager: LinearLayoutManager?
-        get() = rvBuyerOrderDetail?.layoutManager as? LinearLayoutManager
+        get() = recyclerView?.layoutManager as? LinearLayoutManager
 
     init {
         setupCoachMarkManager()
@@ -68,7 +68,7 @@ class ReviewPendingCoachMarkManager(
     }
 
     private fun attachScrollListenerToRecyclerView() {
-        rvBuyerOrderDetail?.addOnScrollListener(scrollListener)
+        recyclerView?.addOnScrollListener(scrollListener)
     }
 
     private fun tryShowCoachMark(): Boolean {

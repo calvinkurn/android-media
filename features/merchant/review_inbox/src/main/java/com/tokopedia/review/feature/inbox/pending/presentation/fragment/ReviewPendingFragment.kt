@@ -51,7 +51,7 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
-import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.ReviewPendingCoachMarkManager
+import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.CoachMarkManager
 import com.tokopedia.review.feature.inbox.pending.presentation.scroller.ReviewPendingRecyclerViewScroller
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
@@ -103,7 +103,7 @@ class ReviewPendingFragment :
         binding?.reviewPendingRecyclerView?.let { ReviewPendingRecyclerViewScroller(it) }
     }
     private val coachMarkManager by lazy(LazyThreadSafetyMode.NONE) {
-        binding?.root?.let { ReviewPendingCoachMarkManager(it, smoothScroller) }
+        binding?.root?.let { CoachMarkManager(it, smoothScroller) }
     }
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {

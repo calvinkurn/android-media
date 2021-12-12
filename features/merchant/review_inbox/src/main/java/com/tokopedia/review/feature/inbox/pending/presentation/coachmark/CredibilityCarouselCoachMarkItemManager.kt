@@ -11,7 +11,7 @@ class CredibilityCarouselCoachMarkItemManager(
     override var key: String = ReviewPendingCoachMarkData.CREDIBILITY_CAROUSEL_COACH_MARK_KEY,
     override var title: Int = R.string.review_pending_credibility_coach_mark_title,
     override var description: Int = R.string.review_pending_credibility_coach_mark_subtitle
-) : ReviewPendingCoachMarkItemManager() {
+) : CoachMarkItemManager() {
     override fun getAnchorView(): View? {
         return viewHolderRootView
     }
