@@ -412,8 +412,6 @@ class AddEditProductVariantViewModel @Inject constructor(
         mIsRemovingVariant.value = true
         val isRemoteDataHasVariant = productInputModel.value?.variantInputModel?.isRemoteDataHasVariant
                 ?: false // keep isRemoteDataHasVariant old data
-        // keep the selections before being cleared
-        val selections = productInputModel.value?.variantInputModel?.selections?: listOf()
         productInputModel.value?.variantInputModel = VariantInputModel(
                 isRemoteDataHasVariant = isRemoteDataHasVariant)
         selectedVariantDetails = mutableListOf()
@@ -426,7 +424,7 @@ class AddEditProductVariantViewModel @Inject constructor(
 
         productInputModel.value?.detailInputModel?.categoryId?.let {
             val categoryId = it.toIntOrNull()
-            categoryId?.run { getVariantCategoryCombination(this, selections) }
+            categoryId?.run { getVariantCategoryCombination(this, emptyList()) }
         }
 
     }
