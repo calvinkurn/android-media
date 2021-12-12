@@ -1627,19 +1627,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 pageControl.hide()
             }
             val mediaList = mutableListOf<FeedXMedia>()
-//            if (products.isNotEmpty()) {
-//                imagePostListener.userCarouselImpression(
-//                        feedXCard.id,
-//                        products[0],
-//                        0,
-//                        feedXCard.typename,
-//                        feedXCard.followers.isFollowed,
-//                        feedXCard.author.id,
-//                        positionInFeed,
-//                        feedXCard.cpmData,
-//                        feedXCard.listProduct
-//                )
-//            }
+
 
             products.forEachIndexed { index, feedXProduct ->
 
@@ -1662,6 +1650,22 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     )
                 }
                 mediaList.add(feedXMedia)
+            }
+            if (products.isNotEmpty()) {
+                imagePostListener.userGridPostImpression(
+                        positionInFeed, feedXCard.id,
+                        feedXCard.typename,
+                        feedXCard.author.id
+                )
+                val list = mutableListOf<FeedXProduct>()
+                list.add(products[0])
+                imagePostListener.userProductImpression(
+                        positionInFeed,
+                        feedXCard.id,
+                        feedXCard.typename,
+                        feedXCard.author.id,
+                        list
+                )
             }
 
             mediaList.forEachIndexed { index, feedXMedia ->
@@ -1755,10 +1759,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                             }
 
                         }
-                        imagePostListener.userImagePostImpression(
-                                positionInFeed,
-                                pageControl.indicatorCurrentPosition
-                        )
 
                         val gd = GestureDetector(
                                 context,
@@ -1866,6 +1866,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.tags = feedXCard.products
             onActiveIndexChangedListener = object : CarouselUnify.OnActiveIndexChangedListener {
                 override fun onActiveIndexChanged(prev: Int, current: Int) {
+                    val list = mutableListOf<FeedXProduct>()
+                    list.add(products[current])
+                    imagePostListener.userProductImpression(
+                            positionInFeed,
+                            feedXCard.id,
+                            feedXCard.typename,
+                            feedXCard.author.id,
+                            list
+                    )
+
                     feedXCard.currentCarouselIndex = current
                     pageControl.setCurrentIndicator(current)
                     bindImage(feedXCard.products, feedXCard.media[current], current)

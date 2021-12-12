@@ -266,6 +266,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val SHOULD_TRACK = "should_track"
         private const val SOURCE_TYPE = "source_type"
         private const val VOD_POST = "VOD_POST"
+        private const val PRODUCT_LIST = "product_list"
+        private const val IS_FOLLOWED = "is_followed"
+        private const val POST_TYPE = "post_type"
 
 
         private val TAG = FeedPlusFragment::class.java.simpleName
@@ -3194,8 +3197,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
             feedAnalytics?.clickSekSekarang(postId, shopId, type, isFollowed)
         } else {
+            feedAnalytics.eventGridMoreProductCLicked(
+                    postId, type, isFollowed, shopId
+            )
             val intent = RouteManager.getIntent(context, feedXCard.appLink)
-            intent.putParcelableArrayListExtra("product_list", ArrayList(feedXCard.products))
+            intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(feedXCard.products))
+            intent.putExtra(IS_FOLLOWED, isFollowed)
+            intent.putExtra(POST_TYPE, type)
             requireActivity().startActivity(intent)
         }
     }
