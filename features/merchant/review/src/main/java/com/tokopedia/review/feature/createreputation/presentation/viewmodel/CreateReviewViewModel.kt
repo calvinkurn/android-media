@@ -6,7 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -338,20 +339,21 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     fun hasIncentive(): Boolean {
-        return incentiveOvo.value?.let {
-            it is CoroutineSuccess && it.data.productrevIncentiveOvo?.amount.orZero() != Int.ZERO
+        return incentiveOvo.getSuccessData()?.let {
+            it.productrevIncentiveOvo?.amount.isMoreThanZero()
         }.orFalse()
     }
 
     fun hasOngoingChallenge(): Boolean {
-        return incentiveOvo.value?.let {
-            it is CoroutineSuccess && it.data.productrevIncentiveOvo?.amount == Int.ZERO
+        return incentiveOvo.getSuccessData()?.let {
+            it.productrevIncentiveOvo?.amount.isZero()
         }.orFalse()
     }
 
     fun isTemplateAvailable(): Boolean {
-        return ((reviewTemplates.value as? com.tokopedia.usecase.coroutines.Success)?.data?.isNotEmpty()
-            ?: false) && !hasIncentive()
+        return reviewTemplates.value.takeIfInstanceOf<CoroutineSuccess<List<String>>>()?.let {
+            it.data.isNotEmpty() && !hasIncentive()
+        }.orFalse()
     }
 
     fun getImageCount(): Int {
@@ -615,19 +617,27 @@ class CreateReviewViewModel @Inject constructor(
     }
 
     private fun getIncentiveAmount(): Int {
-        return incentiveOvo.value?.takeIf {
-            it is CoroutineSuccess
-        }?.let { (it as CoroutineSuccess).data.productrevIncentiveOvo?.amount }.orZero()
+        return incentiveOvo.getSuccessData()?.productrevIncentiveOvo?.amount.orZero()
     }
 
     private suspend fun hasPendingIncentive(): Boolean {
         return try {
-            val data = withContext(coroutineDispatcherProvider.io) {
-                getProductIncentiveOvo.getIncentiveOvo("", "")
+            withContext(coroutineDispatcherProvider.io) {
+                getProductIncentiveOvo.getIncentiveOvo(
+                    productId = "",
+                    reputationId = ""
+                )?.productrevIncentiveOvo?.amount.isMoreThanZero()
             }
-            data?.productrevIncentiveOvo != null
         } catch (_: Exception) {
             false
         }
+    }
+
+    private inline fun <reified T: Any> Any?.takeIfInstanceOf(): T? {
+        return if (this is T) this else null
+    }
+
+    private inline fun <reified T: Any> LiveData<Result<T>?>.getSuccessData(): T? {
+        return value.takeIfInstanceOf<CoroutineSuccess<T>>()?.data
     }
 }
