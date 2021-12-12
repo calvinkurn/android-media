@@ -10,6 +10,7 @@ import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -370,6 +371,24 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 } else {
                     paramWishlistV2.page = currPage
                     loadWishlistV2()
+                }
+            }
+
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                if (dy != 0) {
+                    binding?.run {
+                        wishlistNavtoolbar.clearFocus()
+                        wishlistNavtoolbar.hideKeyboard()
+                        topLayoutShadow.visible()
+                    }
+                }
+
+                val firstVisibleItemPosition = (layoutManager as GridLayoutManager).findFirstVisibleItemPosition()
+                if (firstVisibleItemPosition == 0) {
+                    binding?.run {
+                        topLayoutShadow.gone()
+                    }
                 }
             }
         }
