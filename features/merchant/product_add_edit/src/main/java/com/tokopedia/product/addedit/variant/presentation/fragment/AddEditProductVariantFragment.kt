@@ -341,10 +341,6 @@ class AddEditProductVariantFragment :
         titleLayoutVariantType.isActionButtonVisible = count.isMoreThanZero()
     }
 
-    fun onBackPressed() {
-        showExitConfirmationDialog()
-    }
-
     private fun deselectVariantType(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
         // hide section
         resetVariantValueSection(layoutPosition)
@@ -372,18 +368,6 @@ class AddEditProductVariantFragment :
         }
         viewModel.hideProductVariantPhotos(variantDetail)
         viewModel.updateSizechartFieldVisibility()
-    }
-
-    private fun deselectAllVariantType() {
-        val selectedItems = variantTypeAdapter?.getSelectedItems().orEmpty()
-        val selectedAdapterPositions = variantTypeAdapter?.getSelectedAdapterPosition().orEmpty()
-
-        selectedItems.forEachIndexed { position, variantDetail ->
-            val adapterPosition = selectedAdapterPositions.getOrNull(position)
-                    ?: return@forEachIndexed
-            deselectVariantType(position, adapterPosition, variantDetail)
-            variantTypeAdapter?.deselectItem(adapterPosition)
-        }
     }
 
     private fun setupCancellationDialog(layoutPosition: Int, adapterPosition: Int, variantDetail: VariantDetail) {
@@ -755,13 +739,16 @@ class AddEditProductVariantFragment :
         // set selected variant types
         variantTypeAdapter?.setSelectedItems(selectedVariantDetails)
 
-        // if editing old variant data (given data is reversed) then you should reverse
-        // selectedVariantDetails data first
-        viewModel.updateIsOldVariantData(variantTypeAdapter?.getSelectedItems().orEmpty(), selectedVariantDetails)
-        val displayedVariantDetail = if (viewModel.isOldVariantData) {
-            selectedVariantDetails.reversed()
-        } else {
+        val isCustomVariantType = variantTypeAdapter?.getCustomVariantTypeItems()?.isNotEmpty()
+        val displayedVariantDetail = if (isCustomVariantType == true) {
+            // if there is unordered/ unsorted selected variant details,
+            // then you should reverse the adapter
+            processCustomVariantTypeOrder(selectedVariantDetails)
             selectedVariantDetails
+        } else {
+            // if editing old variant data (given data is reversed, usually created 2019 or older),
+            // then you should reverse selectedVariantDetails data first
+            processOldVariantType(selectedVariantDetails)
         }
 
         // update variant selection state
@@ -875,7 +862,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeProductInputModel() {
-        viewModel.productInputModel.observe(viewLifecycleOwner, Observer { productInputModel ->
+        viewModel.productInputModel.observe(viewLifecycleOwner, { productInputModel ->
             // extract selected variant details
             val selectedVariantDetails = viewModel.extractSelectedVariantDetails(productInputModel)
             // set selected variant details
@@ -889,7 +876,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeSizechartUrl() {
-        viewModel.variantSizechart.observe(viewLifecycleOwner, Observer {
+        viewModel.variantSizechart.observe(viewLifecycleOwner, {
             if (it.urlOriginal.isEmpty()) {
                 ivSizechartAddSign.visible()
                 ivSizechartEditSign.gone()
@@ -908,7 +895,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeInputStatus() {
-        viewModel.isInputValid.observe(viewLifecycleOwner, Observer {
+        viewModel.isInputValid.observe(viewLifecycleOwner, {
             tvDeleteAll?.isEnabled = it
             if (viewModel.isRemovingVariant.value == true) {
                 buttonSave.isEnabled = true // always enable save button if removing variant activated
@@ -919,7 +906,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeIsEditMode() {
-        viewModel.isEditMode.observe(viewLifecycleOwner, Observer { isEditMode ->
+        viewModel.isEditMode.observe(viewLifecycleOwner, { isEditMode ->
             // track the screen
             if (isEditMode) ProductEditVariantTracking.trackScreen(isLoggedin, userId)
             else ProductAddVariantTracking.trackScreen(isLoggedin, userId)
@@ -927,20 +914,20 @@ class AddEditProductVariantFragment :
     }
 
     private fun observeVariantPhotosVisibility() {
-        viewModel.isVariantPhotosVisible.observe(viewLifecycleOwner, Observer { isVisible ->
+        viewModel.isVariantPhotosVisible.observe(viewLifecycleOwner, { isVisible ->
             if (isVisible) variantPhotoLayout.show()
             else variantPhotoLayout.hide()
         })
     }
 
     private fun observeSizechartVisibility() {
-        viewModel.isVariantSizechartVisible.observe(viewLifecycleOwner, Observer {
+        viewModel.isVariantSizechartVisible.observe(viewLifecycleOwner, {
             layoutSizechart.root.visibility = if (it) View.VISIBLE else View.GONE
         })
     }
 
     private fun observeIsRemovingVariant() {
-        viewModel.isRemovingVariant.observe(viewLifecycleOwner, Observer {
+        viewModel.isRemovingVariant.observe(viewLifecycleOwner, {
             buttonSave.text = if (it) {
                 getString(com.tokopedia.product.addedit.R.string.action_variant_save)
             } else {
@@ -1251,6 +1238,26 @@ class AddEditProductVariantFragment :
         }
     }
 
+    private fun processCustomVariantTypeOrder(selectedVariantDetails: List<VariantDetail>) {
+        val adapterSelectedVariantDetails = variantTypeAdapter?.getSelectedItems()
+        val isUnordered = selectedVariantDetails.firstOrNull()?.variantID !=
+                adapterSelectedVariantDetails?.firstOrNull()?.variantID
+        if (isUnordered) {
+            variantTypeAdapter?.swapSelectedItem()
+            viewModel.setSelectedVariantDetails(variantTypeAdapter?.getSelectedItems().orEmpty())
+        }
+    }
+
+    private fun processOldVariantType(selectedVariantDetails: List<VariantDetail>): List<VariantDetail> {
+        viewModel.updateIsOldVariantData(variantTypeAdapter?.getSelectedItems().orEmpty(),
+            selectedVariantDetails)
+        return if (viewModel.isOldVariantData) {
+            selectedVariantDetails.reversed()
+        } else {
+            selectedVariantDetails
+        }
+    }
+
     private fun submitVariantInput() {
         val productInputModel = viewModel.productInputModel.value
         productInputModel?.apply {
@@ -1414,5 +1421,9 @@ class AddEditProductVariantFragment :
             tvDeleteAll?.isEnabled = false
             tvDeleteAll?.visible()
         }
+    }
+
+    fun onBackPressed() {
+        showExitConfirmationDialog()
     }
 }

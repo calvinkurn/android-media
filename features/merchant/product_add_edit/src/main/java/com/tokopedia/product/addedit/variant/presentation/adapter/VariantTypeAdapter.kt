@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.swap
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.data.model.VariantDetail
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantTypeViewHolder
@@ -113,28 +114,36 @@ class VariantTypeAdapter(private val clickListener: OnVariantTypeClickListener)
             selectedItems.getOrNull(position) == ViewHolderState.SELECTED
 
     fun setSelectedItems(selectedVariantDetails: List<VariantDetail>) {
-        // add predefined variant
+        // select predefined variant
         items.forEachIndexed { position, variantDetail ->
             val isVariantIdExist = selectedVariantDetails.any {
                 it.variantID == variantDetail.variantID
             }
             if (isVariantIdExist) {
-                items.getOrNull(position)?.let {
+                selectedItems.getOrNull(position)?.let {
                     selectedItems[position] = ViewHolderState.SELECTED
                 }
             }
         }
         // add custom variant
         selectedVariantDetails.forEach { variantDetail ->
-            val isVariantIdExist = items.any {
-                it.name == variantDetail.name
-            }
+            val isVariantIdExist = items.any { it.name == variantDetail.name }
             if (!isVariantIdExist) {
                 addData(variantDetail.apply { isCustom = true })
             }
         }
         // enable/ disable selection if reached max selection
         manageUnselectedItems(getSelectedCount())
+    }
+
+    fun swapSelectedItem() {
+        val firstIndex = selectedItems.indexOfFirst { it == ViewHolderState.SELECTED }
+        val lastIndex = selectedItems.indexOfLast { it == ViewHolderState.SELECTED }
+
+        items.swap(firstIndex, lastIndex)
+        selectedItems.swap(firstIndex, lastIndex)
+        notifyItemChanged(firstIndex)
+        notifyItemChanged(lastIndex)
     }
 
     fun replaceItem(index: Int, variantDetail: VariantDetail) {
