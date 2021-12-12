@@ -15,14 +15,14 @@ class CoachMarkManager(
     private val smoothScroller: ReviewPendingRecyclerViewScroller?
 ) {
 
-    private val coachMark by lazy {
+    private val coachMark by lazy(LazyThreadSafetyMode.NONE) {
         CoachMark2(rootView.context).apply {
             onDismissListener = ::onDismiss
             setStepListener(createStepHandler())
         }
     }
 
-    private val coachMarkItemsManager by lazy {
+    private val coachMarkItemsManager by lazy(LazyThreadSafetyMode.NONE) {
         CoachMarkItemsManager()
     }
     private val scrollListener = createScrollListener()
