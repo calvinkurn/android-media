@@ -25,8 +25,7 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig
-.RollenceKey
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.ReviewInboxInstance
 import com.tokopedia.review.common.ReviewInboxConstants
@@ -52,6 +51,8 @@ import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.R
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingEmptyUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingOvoIncentiveUiModel
 import com.tokopedia.review.feature.inbox.pending.presentation.adapter.uimodel.ReviewPendingUiModel
+import com.tokopedia.review.feature.inbox.pending.presentation.coachmark.ReviewPendingCoachMarkManager
+import com.tokopedia.review.feature.inbox.pending.presentation.scroller.ReviewPendingRecyclerViewScroller
 import com.tokopedia.review.feature.inbox.pending.presentation.util.ReviewPendingItemListener
 import com.tokopedia.review.feature.inbox.pending.presentation.viewmodel.ReviewPendingViewModel
 import com.tokopedia.review.feature.inbox.pending.util.ReviewPendingPreference
@@ -97,6 +98,13 @@ class ReviewPendingFragment :
     private var reviewPendingPreference: ReviewPendingPreference? = null
 
     private var binding by autoClearedNullable<FragmentReviewPendingBinding>()
+
+    private val smoothScroller by lazy(LazyThreadSafetyMode.NONE) {
+        binding?.reviewPendingRecyclerView?.let { ReviewPendingRecyclerViewScroller(it) }
+    }
+    private val coachMarkManager by lazy(LazyThreadSafetyMode.NONE) {
+        binding?.root?.let { ReviewPendingCoachMarkManager(it, smoothScroller) }
+    }
 
     override fun getAdapterTypeFactory(): ReviewPendingAdapterTypeFactory {
         return ReviewPendingAdapterTypeFactory(this)
@@ -237,6 +245,7 @@ class ReviewPendingFragment :
 
     override fun onDestroy() {
         super.onDestroy()
+        coachMarkManager?.dismissCoachMark()
         removeObservers(viewModel.reviewList)
     }
 
@@ -261,6 +270,7 @@ class ReviewPendingFragment :
         hideLoading()
         adapter.addElement(list)
         updateScrollListenerState(hasNextPage)
+        coachMarkManager?.notifyUpdatedAdapter(!isLoadingInitialData)
         isLoadingInitialData = false
         if (adapter.dataSize < minimumScrollableNumOfItems && isAutoLoadEnabled
             && hasNextPage && endlessRecyclerViewScrollListener != null
@@ -281,7 +291,7 @@ class ReviewPendingFragment :
                         ?: getString(R.string.review_pending_invalid_to_review)
                 )
             }
-            loadInitialData()
+            refresh()
         }
     }
 
@@ -658,5 +668,10 @@ class ReviewPendingFragment :
         } else {
             showEmptyState()
         }
+    }
+
+    private fun refresh() {
+        coachMarkManager?.resetCoachMarkState()
+        loadInitialData()
     }
 }
