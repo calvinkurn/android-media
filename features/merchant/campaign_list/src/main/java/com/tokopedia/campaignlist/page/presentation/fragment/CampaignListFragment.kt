@@ -319,8 +319,8 @@ class CampaignListFragment : BaseDaggerFragment(),
 
             if (_totalProducts >= INDEX_ONE) {
                 val _imgUrl = productData.get(INDEX_ZERO).imageUrl
-                val _originalPrice = productData.get(INDEX_ZERO).productCampaign.originalPrice
-                val _discountedPrice = productData.get(INDEX_ZERO).productCampaign.discountedPrice
+                val _originalPrice = productData.get(INDEX_ZERO).productCampaign.originalPriceFmt
+                val _discountedPrice = productData.get(INDEX_ZERO).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_ZERO).productCampaign.discountPercentage.toString()
 
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_1 , value = _imgUrl)
@@ -331,8 +331,8 @@ class CampaignListFragment : BaseDaggerFragment(),
 
             if (_totalProducts >= INDEX_TWO) {
                 val _imgUrl = productData.get(INDEX_ONE).imageUrl
-                val _originalPrice = productData.get(INDEX_ONE).productCampaign.originalPrice
-                val _discountedPrice = productData.get(INDEX_ONE).productCampaign.discountedPrice
+                val _originalPrice = productData.get(INDEX_ONE).productCampaign.originalPriceFmt
+                val _discountedPrice = productData.get(INDEX_ONE).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_ONE).productCampaign.discountPercentage.toString()
 
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_2 , value = _imgUrl)
@@ -343,8 +343,8 @@ class CampaignListFragment : BaseDaggerFragment(),
 
             if (_totalProducts >= INDEX_THREE) {
                 val _imgUrl = productData.get(INDEX_TWO).imageUrl
-                val _originalPrice = productData.get(INDEX_TWO).productCampaign.originalPrice
-                val _discountedPrice = productData.get(INDEX_TWO).productCampaign.discountedPrice
+                val _originalPrice = productData.get(INDEX_TWO).productCampaign.originalPriceFmt
+                val _discountedPrice = productData.get(INDEX_TWO).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_TWO).productCampaign.discountPercentage.toString()
 
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_3 , value = _imgUrl)
@@ -355,8 +355,8 @@ class CampaignListFragment : BaseDaggerFragment(),
 
             if (_totalProducts >= INDEX_FOUR) {
                 val _imgUrl = productData.get(INDEX_THREE).imageUrl
-                val _originalPrice = productData.get(INDEX_THREE).productCampaign.originalPrice
-                val _discountedPrice = productData.get(INDEX_THREE).productCampaign.discountedPrice
+                val _originalPrice = productData.get(INDEX_THREE).productCampaign.originalPriceFmt
+                val _discountedPrice = productData.get(INDEX_THREE).productCampaign.discountedPriceFmt
                 val _discount = productData.get(INDEX_THREE).productCampaign.discountPercentage.toString()
 
                 addImageGeneratorData(key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_4 , value = _imgUrl)
