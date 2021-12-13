@@ -318,6 +318,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             wishlistV2Fb.circleMainMenu.setOnClickListener {
                 rvWishlist.smoothScrollToPosition(0)
             }
+            wishlistV2Fb.gone()
         }
 
         wishlistV2Adapter = WishlistV2Adapter().apply {
@@ -399,6 +400,7 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
                 if (firstVisibleItemPosition == 0) {
                     binding?.run {
                         topLayoutShadow.gone()
+                        wishlistV2Fb.gone()
                     }
                 }
             }
@@ -1045,13 +1047,16 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             onManageClicked(showCheckbox = true)
             WishlistV2Analytics.clickAturOnWishlist()
         } else {
-            isBulkDeleteShow = false
-            onManageClicked(showCheckbox = false)
-            binding?.run {
-                wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
-            }
+            turnOffBulkDeleteMode()
         }
+    }
 
+    private fun turnOffBulkDeleteMode() {
+        isBulkDeleteShow = false
+        onManageClicked(showCheckbox = false)
+        binding?.run {
+            wishlistV2StickyCountManageLabel.wishlistManageLabel.text = getString(R.string.wishlist_manage_label)
+        }
     }
 
     override fun onManageClicked(showCheckbox: Boolean) {
@@ -1067,18 +1072,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
             }
 
         } else {
-            turnOffBulkDeleteMode()
+            setSwipeRefreshLayout()
+            wishlistV2Adapter.hideCheckbox()
+            binding?.run {
+                containerDelete.gone()
+                clWishlistHeader.visible()
+            }
         }
         WishlistV2Analytics.clickAturOnWishlist()
-    }
-
-    private fun turnOffBulkDeleteMode() {
-        setSwipeRefreshLayout()
-        wishlistV2Adapter.hideCheckbox()
-        binding?.run {
-            containerDelete.gone()
-            clWishlistHeader.visible()
-        }
     }
 
     private fun showPopupBulkDeleteConfirmation(listBulkDelete: ArrayList<String>) {
