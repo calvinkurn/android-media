@@ -12,7 +12,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
@@ -26,6 +25,7 @@ import com.tokopedia.ovop2p.view.viewStates.ThankYouErrSnkBar
 import com.tokopedia.ovop2p.view.viewStates.ThankYouPageState
 import com.tokopedia.ovop2p.view.viewStates.ThankYouSucs
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTxnThankYouOvoUsrVM
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import javax.inject.Inject
 
 class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
@@ -199,7 +199,7 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                                 AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
                     }
                 }
-                com.tokopedia.design.R.id.btn_ok -> {
+               else -> {
                     errorSnackbar.let {
                         if (it.isShownOrQueued) it.dismiss()
                     }

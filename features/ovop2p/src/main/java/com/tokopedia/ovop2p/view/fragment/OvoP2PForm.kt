@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.ovop2p.Constants
 import com.tokopedia.ovop2p.R
 import com.tokopedia.ovop2p.di.OvoP2pTransferComponent
@@ -42,6 +41,7 @@ import com.tokopedia.ovop2p.view.viewStates.*
 import com.tokopedia.ovop2p.viewmodel.GetWalletBalanceViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTransferRequestViewModel
 import com.tokopedia.ovop2p.viewmodel.OvoP2pTrxnConfirmVM
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.util.*
@@ -155,9 +155,10 @@ class OvoP2PForm : BaseDaggerFragment(), View.OnClickListener, SearchView.OnQuer
                                 AnalyticsUtil.EventCategory.OVO_CONF_TRANSFER, "", AnalyticsUtil.EventAction.CLK_TRNSFR)
                     }
                 }
-                com.tokopedia.design.R.id.btn_ok -> {
+              else -> {
                     errorSnackbar.let {
-                        if (it.isShownOrQueued) it.dismiss()
+                        if (it.isShownOrQueued)
+                            it.dismiss()
                     }
                 }
             }
