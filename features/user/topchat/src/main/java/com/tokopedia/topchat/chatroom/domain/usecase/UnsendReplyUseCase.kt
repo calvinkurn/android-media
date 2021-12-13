@@ -29,12 +29,12 @@ open class UnsendReplyUseCase @Inject constructor(
     }
 
     override fun graphqlQuery(): String = """
-        mutation unsendReply(
+        mutation chatUnsendReply(
             $$MSG_ID: Int!,
             $$REPLY_IDS: String,
             $$REPLY_TIMES: String,
         ) {
-            unsendReply(
+            chatUnsendReply(
                 $MSG_ID: $$MSG_ID, 
                 $REPLY_IDS: $$REPLY_IDS, 
                 $REPLY_TIMES: $$REPLY_TIMES
@@ -50,7 +50,7 @@ open class UnsendReplyUseCase @Inject constructor(
         val replyTimes: String = ""
     ) {
         companion object {
-            const val MSG_ID = "msgID"
+            const val MSG_ID = "msgId"
             const val REPLY_IDS = "ReplyIDs"
             const val REPLY_TIMES = "ReplyTimeNanos"
         }
