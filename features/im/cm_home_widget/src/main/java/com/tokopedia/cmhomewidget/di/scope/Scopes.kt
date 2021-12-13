@@ -7,9 +7,3 @@ import javax.inject.Scope
 @Scope
 @Retention
 annotation class CMHomeWidgetScope
-
-// todo delete cm home widget dummy things
-@MustBeDocumented
-@Scope
-@Retention
-annotation class DummyTestCMHomeWidgetActivityScope
