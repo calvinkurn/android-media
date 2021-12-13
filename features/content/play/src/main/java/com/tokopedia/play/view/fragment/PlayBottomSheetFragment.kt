@@ -21,6 +21,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -37,6 +38,7 @@ import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
 import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsUiModel
 import com.tokopedia.play.view.viewcomponent.ProductSheetViewComponent
+import com.tokopedia.play.view.viewcomponent.ShopCouponSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.VariantSheetViewComponent
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -63,7 +65,8 @@ class PlayBottomSheetFragment @Inject constructor(
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
-        PlayInteractiveLeaderboardViewComponent.Listener
+        PlayInteractiveLeaderboardViewComponent.Listener,
+        ShopCouponSheetViewComponent.Listener
 {
 
     companion object {
@@ -75,6 +78,7 @@ class PlayBottomSheetFragment @Inject constructor(
     private val productSheetView by viewComponent { ProductSheetViewComponent(it, this) }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
+    private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -158,27 +162,8 @@ class PlayBottomSheetFragment @Inject constructor(
         openShopPage(partnerId)
     }
 
-    override fun onVoucherScrolled(view: ProductSheetViewComponent, lastPositionViewed: Int) {
-        analytic.scrollMerchantVoucher(lastPositionViewed)
-    }
-
-    override fun onCopyVoucherCodeClicked(view: ProductSheetViewComponent, voucher: MerchantVoucherUiModel) {
-        copyToClipboard(content = voucher.code)
-        doShowToaster(
-                bottomSheetType = BottomInsetsType.ProductSheet,
-                toasterType = Toaster.TYPE_NORMAL,
-                message = getString(R.string.play_voucher_code_copied),
-                actionText = getString(R.string.play_action_ok),
-        )
-        analytic.clickCopyVoucher(voucher)
-    }
-
     override fun onProductsImpressed(view: ProductSheetViewComponent, products: List<Pair<PlayProductUiModel.Product, Int>>) {
         trackImpressedProduct(products)
-    }
-
-    override fun onVouchersImpressed(view: ProductSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
-        trackImpressedVoucher(vouchers)
     }
 
     override fun onProductCountChanged(view: ProductSheetViewComponent) {
@@ -189,6 +174,14 @@ class PlayBottomSheetFragment @Inject constructor(
                 toasterType = Toaster.TYPE_NORMAL,
                 message = getString(R.string.play_product_updated)
         )
+    }
+
+    override fun onInfoVoucherClicked(
+        view: ProductSheetViewComponent,
+        vouchers: List<MerchantVoucherUiModel>
+    ) {
+        playViewModel.showCouponSheet(variantSheetMaxHeight)
+        couponSheetView.setVoucherList(vouchers)
     }
 
     /**
@@ -217,12 +210,40 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(RefreshLeaderboard)
     }
 
+
+    /**
+     * CouponSheet View Component Listener
+     */
+    override fun onCloseButtonClicked(view: ShopCouponSheetViewComponent) {
+        playViewModel.hideCouponSheet()
+    }
+
+    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
+        trackImpressedVoucher(vouchers)
+    }
+
+    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: MerchantVoucherUiModel) {
+        copyToClipboard(content = voucher.code)
+        doShowToaster(
+            bottomSheetType = BottomInsetsType.CouponSheet,
+            toasterType = Toaster.TYPE_NORMAL,
+            message = getString(R.string.play_voucher_code_copied),
+            actionText = getString(R.string.play_action_ok),
+        )
+        analytic.clickCopyVoucher(voucher)
+    }
+
+    override fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int) {
+        analytic.scrollMerchantVoucher(lastPositionViewed)
+    }
+
     /**
      * Private methods
      */
     private fun setupView(view: View) {
         productSheetView.hide()
         variantSheetView.hide()
+        couponSheetView.hide()
         leaderboardSheetView.hide()
     }
 
@@ -295,7 +316,7 @@ class PlayBottomSheetFragment @Inject constructor(
             actionClickListener: View.OnClickListener = View.OnClickListener {}
     ) {
         when (bottomSheetType) {
-            BottomInsetsType.ProductSheet ->
+            BottomInsetsType.ProductSheet, BottomInsetsType.CouponSheet ->
                 Toaster.build(
                         view = requireView(),
                         text = message,
@@ -388,7 +409,6 @@ class PlayBottomSheetFragment @Inject constructor(
                     productSheetView.setProductSheet(it.productTags)
 
                     trackImpressedProduct()
-                    trackImpressedVoucher()
                     return@observe
                 }
             }
@@ -447,6 +467,10 @@ class PlayBottomSheetFragment @Inject constructor(
             it[BottomInsetsType.VariantSheet]?.let { state ->
                 if (state is BottomInsetsState.Shown) variantSheetView.showWithHeight(state.estimatedInsetsHeight)
                 else variantSheetView.hide()
+            }
+            it[BottomInsetsType.CouponSheet]?.let { state ->
+                if (state is BottomInsetsState.Shown) couponSheetView.showWithHeight(state.estimatedInsetsHeight)
+                else couponSheetView.hide()
             }
 
             it[BottomInsetsType.LeaderboardSheet]?.let { state ->
@@ -531,7 +555,7 @@ class PlayBottomSheetFragment @Inject constructor(
         if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedProducts(products)
     }
 
-    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = productSheetView.getVisibleVouchers()) {
-        if (playViewModel.bottomInsets.isProductSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
+    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
+        if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
     }
 }
