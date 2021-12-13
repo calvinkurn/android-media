@@ -242,29 +242,6 @@ class AffiliateIncomeFragment : TkpdBaseV4Fragment(), AffiliateDatePickerRangeCh
         }
     }
 
-//    override fun getVMFactory(): ViewModelProvider.Factory {
-//        return viewModelProvider
-//    }
-//
-//    override fun initInject() {
-//        getComponent().injectIncomeFragment(this)
-//    }
-
-//    private fun getComponent(): AffiliateComponent =
-//            DaggerAffiliateComponent
-//                    .builder()
-//                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-//                    .build()
-//
-//    override fun getViewModelType(): Class<AffiliateIncomeViewModel> {
-//        return AffiliateIncomeViewModel::class.java
-//    }
-//
-//    override fun setViewModel(viewModel: BaseViewModel) {
-//        affiliateIncomeViewModel = viewModel as AffiliateIncomeViewModel
-//    }
-
-
     override fun rangeChanged(range: AffiliateDatePickerData) {
         affiliateIncomeViewModel.onRangeChanged(range)
     }

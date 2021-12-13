@@ -44,7 +44,7 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
     private lateinit var withdrawalDetailViewModel : WithdrawalDetailViewModel
 
     private val transactionId: String by lazy {
-        arguments?.getString(TRANSACTION_ID) ?: run { "0" }
+        arguments?.getString(TRANSACTION_ID) ?: "0"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

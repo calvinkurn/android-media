@@ -61,14 +61,13 @@ class AffiliateSaldoWithdrawalDetailActivity :  BaseViewModelActivity<AffiliateV
     private fun setupToolbar(){
         findViewById<HeaderUnify>(R.id.saldoTransactionHeader).apply {
             isShowBackButton = true
-        }.also {
-            toolbar = it
+            toolbar = this
             setSupportActionBar(toolbar)
             supportActionBar?.let {
                 supportActionBar?.setDisplayHomeAsUpEnabled(true)
                 supportActionBar?.setDisplayShowTitleEnabled(true)
             }
-            it.title = TITLE
+            this.title = TITLE
         }
 
     }
