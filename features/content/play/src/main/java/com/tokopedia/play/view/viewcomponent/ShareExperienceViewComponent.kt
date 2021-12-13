@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.content.Context
+import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
@@ -23,7 +25,8 @@ class ShareExperienceViewComponent(
     @IdRes idRes: Int,
     private val fragmentManager: FragmentManager,
     private val fragment: Fragment,
-    private val listener: Listener
+    private val listener: Listener,
+    private val context: Context,
 ) : ViewComponent(container, idRes) {
 
     private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
@@ -41,8 +44,9 @@ class ShareExperienceViewComponent(
     }
 
     private val screenshotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
-        container.context, object: ScreenShotListener {
+        context, object: ScreenShotListener {
             override fun screenShotTaken() {
+                Log.d("<LOG>", "screenshottaken")
                 listener.onScreenshotTaken(this@ShareExperienceViewComponent)
             }
         }, fragment, addFragmentLifecycleObserver = true
