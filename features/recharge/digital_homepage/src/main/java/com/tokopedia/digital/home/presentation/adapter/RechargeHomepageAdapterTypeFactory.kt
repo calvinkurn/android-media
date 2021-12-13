@@ -140,6 +140,10 @@ class RechargeHomepageAdapterTypeFactory(
         return 0
     }
 
+    override fun type(questWidgetModel: QuestWidgetModel): Int {
+        return -1
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             RechargeHomepageLoadingViewholder.LAYOUT -> RechargeHomepageLoadingViewholder(parent)

@@ -69,29 +69,37 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         })
     }
 
-    private fun startTransitionFromLoadingToShowContentWithStickyButton() {
+    private fun startTransitionFromLoadingToShowContentWithStickyButton(onTransitionEnd: () -> Unit) {
         startTransition(R.id.loading, R.id.show_content_with_sticky_button, onTransitionEnd = {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+            onTransitionEnd()
         })
     }
 
-    private fun startTransitionFromShowContentWithoutStickyButtonToShowContentWithStickyButton() {
+    private fun startTransitionFromShowContentWithoutStickyButtonToShowContentWithStickyButton(
+        onTransitionEnd: () -> Unit
+    ) {
         startTransition(
             R.id.show_content_without_sticky_button,
-            R.id.show_content_with_sticky_button
+            R.id.show_content_with_sticky_button,
+            onTransitionEnd = onTransitionEnd
         )
     }
 
-    private fun startTransitionFromLoadingToShowContentWithoutStickyButton() {
+    private fun startTransitionFromLoadingToShowContentWithoutStickyButton(onTransitionEnd: () -> Unit) {
         startTransition(R.id.loading, R.id.show_content_without_sticky_button, onTransitionEnd = {
-            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
+            findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail).invisible()
+            onTransitionEnd()
         })
     }
 
-    private fun startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton() {
+    private fun startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton(
+        onTransitionEnd: () -> Unit
+    ) {
         startTransition(
             R.id.show_content_with_sticky_button,
-            R.id.show_content_without_sticky_button
+            R.id.show_content_without_sticky_button,
+            onTransitionEnd
         )
     }
 
@@ -149,27 +157,29 @@ class BuyerOrderDetailMotionLayout @JvmOverloads constructor(
         }
     }
 
-    fun transitionToShowContentWithStickyButton() {
+    fun transitionToShowContentWithStickyButton(onTransitionEnd: () -> Unit) {
         when (currentState) {
-            R.id.loading -> startTransitionFromLoadingToShowContentWithStickyButton()
-            R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToShowContentWithStickyButton()
+            R.id.loading -> startTransitionFromLoadingToShowContentWithStickyButton(onTransitionEnd)
+            R.id.show_content_without_sticky_button -> startTransitionFromShowContentWithoutStickyButtonToShowContentWithStickyButton(onTransitionEnd)
+            R.id.show_content_with_sticky_button -> onTransitionEnd()
             else -> {
                 findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
-                onTransitionCompleted = null
+                onTransitionCompleted = onTransitionEnd
                 transitionToState(R.id.show_content_with_sticky_button)
             }
         }
     }
 
-    fun transitionToShowContentWithoutStickyButton() {
+    fun transitionToShowContentWithoutStickyButton(onTransitionEnd: () -> Unit) {
         when (currentState) {
-            R.id.loading -> startTransitionFromLoadingToShowContentWithoutStickyButton()
-            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton()
+            R.id.loading -> startTransitionFromLoadingToShowContentWithoutStickyButton(onTransitionEnd)
+            R.id.show_content_with_sticky_button -> startTransitionFromShowContentWithStickyButtonToShowContentWithoutStickyButton(onTransitionEnd)
+            R.id.show_content_without_sticky_button -> onTransitionEnd()
             else -> {
                 findViewById<LoaderUnify>(R.id.loaderBuyerOrderDetail)?.invisible()
                 onTransitionStarted = null
-                onTransitionCompleted = null
+                onTransitionCompleted = onTransitionEnd
                 transitionToState(R.id.show_content_without_sticky_button)
             }
         }

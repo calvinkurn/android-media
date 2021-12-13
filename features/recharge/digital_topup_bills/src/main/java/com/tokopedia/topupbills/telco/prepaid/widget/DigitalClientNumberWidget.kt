@@ -127,10 +127,10 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
             }
 
             setOnItemClickListener { _, _, position, _ ->
-                listener.onClickAutoComplete()
                 val item = autoCompleteAdapter.getItem(position)
                 if (item is TopupBillsAutoCompleteContactDataView) {
                     setContactName(item.name)
+                    listener.onClickAutoComplete(item.name.isNotEmpty())
                 }
             }
         }
@@ -349,7 +349,7 @@ open class DigitalClientNumberWidget @JvmOverloads constructor(@NotNull context:
         fun onClickClearInput()
         fun onShowFilterChip(isLabeled: Boolean)
         fun onClickFilterChip(isLabeled: Boolean)
-        fun onClickAutoComplete()
+        fun onClickAutoComplete(isFavoriteContact: Boolean)
         fun onUserManualType()
     }
 

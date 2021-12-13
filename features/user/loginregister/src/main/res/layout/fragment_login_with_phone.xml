@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:background="@color/Unify_N0"
+                    android:background="@color/Unify_Background"
                     android:gravity="center"
                     android:padding="@dimen/spacing_lvl4"
                     android:text="@string/or_login_with_space"
@@ -108,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/login_register_52dp"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_Background"
                 android:contentDescription="@string/content_desc_register_button_phone"
                 android:gravity="center"
                 android:padding="@dimen/spacing_lvl5"
@@ -139,6 +139,7 @@
         android:id="@+id/progressBarLoginWithPhone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/Unify_Background"
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify

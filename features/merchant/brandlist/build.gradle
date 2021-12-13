@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: "../../../compile-instrument-test.gradle"
 
 buildscript {
     repositories {
@@ -15,9 +16,11 @@ buildscript {
 
 // For instrumentation test
 android {
+    buildFeatures {
+        viewBinding true
+    }
     defaultConfig {
         multiDexEnabled true
-        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
     kotlinOptions {
@@ -42,6 +45,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.trackingOptimizer)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
+    implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation rootProject.ext.playServicesDependencies.tagManager
 
     implementation rootProject.ext.unifyDependencies.principles

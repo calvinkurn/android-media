@@ -36,6 +36,10 @@ class GetChatUseCaseStub @Inject constructor(
         "success_get_chat_first_page_with_banned_products.json"
     private val sellerSrwPromptPath =
         "seller/success_get_chat_replies_with_srw_reply_prompt.json"
+    private val shippingLocationPath =
+        "seller/chat_replies_shipping_location.json"
+    private val upcomingCampaignPath =
+        "buyer/chat_replies_upcoming_campaign.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -69,8 +73,49 @@ class GetChatUseCaseStub @Inject constructor(
     }
 
     /**
+     * <!--- Start Start OOS label --->
+     */
+
+    val upComingCampaignProduct: GetExistingChatPojo
+        get() = alterResponseOf(upcomingCampaignPath) { response -> }
+
+    /**
+     * <!--- End Start OOS label --->
+     */
+
+    /**
+     * <!--- Start Shipping Location Seller --->
+     */
+
+    val withShippingInfo: GetExistingChatPojo
+        get() = alterResponseOf(shippingLocationPath) { response -> }
+
+    val withShippingInfoBuyer: GetExistingChatPojo
+        get() = alterResponseOf(shippingLocationPath) { response ->
+            swapInterlocutor(response)
+            alterRepliesAttribute(
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
+                altercation = { replies ->
+                    replies.forEach {
+                        it.asJsonObject.addProperty(isOpposite, false)
+                    }
+                }
+            )
+        }
+
+    /**
+     * <!--- End Shipping Location Seller --->
+     */
+
+    /**
      * <!--- Start SRW Prompt --->
      */
+
+    val defaultSrwPrompt: GetExistingChatPojo get() {
+        return alterResponseOf(sellerSrwPromptPath) { response -> }
+    }
 
     val noTriggerTextSrwPrompt: GetExistingChatPojo
         get() = alterResponseOf(sellerSrwPromptPath) { response ->
@@ -198,6 +243,7 @@ class GetChatUseCaseStub @Inject constructor(
             broadcastCampaignLabelPath,
             GetExistingChatPojo::class.java
         )
+
     /**
      * <!--- End Broadcast responses --->
      */
@@ -276,6 +322,7 @@ class GetChatUseCaseStub @Inject constructor(
                 .getAsJsonArray(replies).get(0).asJsonObject
                 .remove(attachment)
         }
+
     /**
      * <!--- End SRW responses --->
      */
@@ -390,5 +437,18 @@ class GetChatUseCaseStub @Inject constructor(
         return CommonUtil.fromJson(
             responseObj.toString(), GetExistingChatPojo::class.java
         )
+    }
+
+    private fun swapInterlocutor(response: JsonObject) {
+        val contacts = response.getAsJsonObject(chatReplies)
+            .getAsJsonArray(contacts)
+        val interLoc = contacts.find { contact ->
+            contact.asJsonObject.get(interlocutor).asBoolean
+        }
+        val notInterLoc = contacts.find { contact ->
+            !contact.asJsonObject.get(interlocutor).asBoolean
+        }
+        interLoc?.asJsonObject?.addProperty(interlocutor, false)
+        notInterLoc?.asJsonObject?.addProperty(interlocutor, true)
     }
 }

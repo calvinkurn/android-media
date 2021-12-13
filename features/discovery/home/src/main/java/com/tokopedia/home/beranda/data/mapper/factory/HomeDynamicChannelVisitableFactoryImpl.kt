@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.quest_widget.data.QuestData
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -185,6 +186,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL_V2 -> {
                     createBannerChannel(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_QUESTWIDGET -> {
+                    createQuestChannel(channel, position , questData = QuestData())
                 }
             }
         }
@@ -478,6 +482,13 @@ class HomeDynamicChannelVisitableFactoryImpl(
         return viewModel
     }
 
+    private fun mappingQuestWidgetComponent(channel: DynamicHomeChannel.Channels,
+                                                 verticalPosition: Int, questData: QuestData): Visitable<*> {
+        return QuestWidgetModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+            questData = null)
+    }
+
     private fun mappingMixLeftComponent(channel: DynamicHomeChannel.Channels,
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
@@ -569,6 +580,22 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 channel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isDataCache = isCache
         ))
+    }
+
+    private fun createQuestChannel(
+        channel: DynamicHomeChannel.Channels,
+        position: Int,
+        questData: QuestData
+    ) {
+        if(!isCache && !visitableList.any { it is QuestWidgetModel }) {
+            visitableList.add(
+                mappingQuestWidgetComponent(
+                    channel,
+                    position,
+                    questData
+                )
+            )
+        }
     }
 
     override fun build(): List<Visitable<*>> = visitableList
