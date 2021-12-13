@@ -3,6 +3,8 @@ package com.tokopedia.campaignlist.page.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.campaignlist.common.data.model.response.GetCampaignListV2Response
+import com.tokopedia.campaignlist.common.data.model.response.GetMerchantCampaignBannerGeneratorDataResponse
+import com.tokopedia.campaignlist.common.data.model.response.GetSellerCampaignSellerAppMetaResponse
 import com.tokopedia.campaignlist.common.usecase.GetCampaignListUseCase
 import com.tokopedia.campaignlist.common.usecase.GetMerchantBannerUseCase
 import com.tokopedia.campaignlist.common.usecase.GetSellerMetaDataUseCase
@@ -20,6 +22,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyInt
 
 class CampaignListViewModelTest {
 
@@ -72,6 +75,46 @@ class CampaignListViewModelTest {
         viewModel.getCampaignList()
 
         assert(viewModel.getCampaignListResult.value is Fail)
+    }
+
+    @Test
+    fun `When get seller banner success, should emit success to observer`() = runBlocking {
+        coEvery { getMerchantBannerUseCase.executeOnBackground() } returns GetMerchantCampaignBannerGeneratorDataResponse()
+
+        viewModel.getSellerBanner(anyInt())
+
+        assert(viewModel.getMerchantBannerResult.value is Success)
+    }
+
+    @Test
+    fun `When get seller banner error, should emit error to observer`() = runBlocking {
+        val error = MessageErrorException("Some error message")
+
+        coEvery { getMerchantBannerUseCase.executeOnBackground() } throws error
+
+        viewModel.getSellerBanner(anyInt())
+
+        assert(viewModel.getMerchantBannerResult.value is Fail)
+    }
+
+    @Test
+    fun `When get seller metadata success, should emit success to observer`() = runBlocking {
+        coEvery { getSellerMetaDataUseCase.executeOnBackground() } returns GetSellerCampaignSellerAppMetaResponse()
+
+        viewModel.getSellerMetaData()
+
+        assert(viewModel.getSellerMetaDataResult.value is Success)
+    }
+
+    @Test
+    fun `When get seller metadata error, should emit error to observer`() = runBlocking {
+        val error = MessageErrorException("Some error message")
+
+        coEvery { getSellerMetaDataUseCase.executeOnBackground() } throws error
+
+        viewModel.getSellerMetaData()
+
+        assert(viewModel.getSellerMetaDataResult.value is Fail)
     }
 
     @After
