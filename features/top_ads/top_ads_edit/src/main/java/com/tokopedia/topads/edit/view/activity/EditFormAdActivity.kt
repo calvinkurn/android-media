@@ -57,7 +57,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Sa
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.topads_base_edit_activity_layout)
-        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEditEvent(VIEW_EDIT_FORM, "")
+        TopAdsCreateAnalytics.topAdsCreateAnalytics.sendViewFormEvent(VIEW_EDIT_FORM, "")
         renderTabAndViewPager()
         setupToolBar()
         backArrow.setImageDrawable(AppCompatResources.getDrawable(this, com.tokopedia.topads.common.R.drawable.toolbar_back_black))
