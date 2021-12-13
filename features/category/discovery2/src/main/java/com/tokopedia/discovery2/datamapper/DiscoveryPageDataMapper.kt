@@ -2,6 +2,9 @@ package com.tokopedia.discovery2.datamapper
 
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
+import com.tokopedia.discovery2.Constant.Calendar.STATIC
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
@@ -128,6 +131,32 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                     }
                 }
             }
+            ComponentNames.CalendarWidgetGrid.componentName,
+            ComponentNames.CalendarWidgetCarousel.componentName -> {
+                listComponents.add(component)
+                if(component.properties?.calendarType.equals(DYNAMIC)
+                    && component.properties?.calendarLayout.equals(GRID))
+                    listComponents.addAll(parseProductVerticalList(component, false))
+                else if(component.properties?.calendarType == STATIC){
+                    if(component.getComponentsItem().isNullOrEmpty()) {
+                        component.setComponentsItem(
+                            DiscoveryDataMapper().mapListToComponentList(
+                                component.data ?: arrayListOf(),
+                                ComponentNames.CalendarWidgetItem.componentName,
+                                component.properties,
+                                component.creativeName,
+                                parentComponentPosition = component.position
+                            )
+                        )
+                    }
+                    if(component.properties?.calendarLayout.equals(GRID)) {
+                        component.getComponentsItem()?.let {
+                            listComponents.addAll(getDiscoveryComponentList(it))
+                        }
+                    }
+                }
+            }
+
             ComponentNames.SingleBanner.componentName, ComponentNames.DoubleBanner.componentName,
             ComponentNames.TripleBanner.name, ComponentNames.QuadrupleBanner.componentName ->
                 listComponents.add(DiscoveryDataMapper.mapBannerComponentData(component))
@@ -319,7 +348,11 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo,
                 component.needPagination = true
                 component.userAddressData = localCacheModel
                 listComponents.addAll(List(SHIMMER_ITEMS_LIST_SIZE) {
-                    ComponentsItem(name = ComponentNames.ShimmerProductCard.componentName).apply {
+                    ComponentsItem(name =
+                    if(component.name == ComponentNames.CalendarWidgetGrid.componentName)
+                        ComponentNames.ShimmerCalendarWidget.componentName
+                    else
+                        ComponentNames.ShimmerProductCard.componentName).apply {
                         properties = component.properties
                         parentComponentName = component.name
                     }

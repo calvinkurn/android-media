@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
+import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.OtpUtils.removeErrorCode
 import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
@@ -169,7 +170,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         return true
     }
 
-    protected fun sendOtp() {
+    open fun sendOtp() {
         if (isCountdownFinished()) {
             if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
@@ -195,7 +196,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
     }
 
-    protected fun validate(code: String) {
+    open fun validate(code: String) {
         when (otpData.otpType) {
             OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
                 analytics.trackClickVerificationRegisterPhoneButton()
@@ -395,7 +396,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         handler?.postDelayed(characterAdder, DELAY_ANIMATE_TEXT.toLong())
     }
 
-    private fun isCountdownFinished(): Boolean {
+    open fun isCountdownFinished(): Boolean {
         return verificationPref.isExpired() || !verificationPref.hasTimer
     }
 
@@ -518,10 +519,11 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
                         sendOtp()
                         viewBound.pin?.value = ""
+                        analytics.trackClickResendOtp(otpData, modeListData)
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -541,7 +543,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -561,7 +563,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
+                        ds.color = MethodChecker.getColor(context, RUnify.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },

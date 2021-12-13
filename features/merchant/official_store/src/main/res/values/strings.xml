@@ -1,13 +1,14 @@
 <resources>
 
-    <string name="react_native_banner_official_title">Official Store</string>
     <string name="os_query_search">Cari di Official Store</string>
     <string name="dc_action_text">Lihat Semua</string>
-    <string name="os_featured_shop_title">Featured Brand</string>
     <string name="os_featured_shop_link">Semua Brand</string>
     <string name="os_product_recommendation_title">Rekomendasi Untukmu</string>
 
-    <string name="os_error_try_again">Coba lagi</string>
     <string name="os_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
     <string name="os_coupon_code_label">Coupon Code</string>
+
+    <string name="content_desc_os_banner_item">Official Store banner item</string>
+
+    <string name="content_desc_os_benefit">Official Store benefit</string>
 </resources>

@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.officialstore.official.presentation.widget.CountDownView
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
@@ -52,7 +53,7 @@ class DynamicChannelThematicViewHolder(
 
     private fun setupHeader(header: Header?) {
         if (header != null && header.name.isNotEmpty()) {
-            mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_20), 0, 0)
+            mainContainer.setMargin(0, 20f.toDpInt(), 0, 0)
             headerContainer.visibility = View.VISIBLE
             headerTitle.text = header.name
             headerCountDown.visibility = View.GONE
@@ -65,7 +66,7 @@ class DynamicChannelThematicViewHolder(
             }
 
         } else {
-            mainContainer.setMargin(0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_6), 0, 0)
+            mainContainer.setMargin(0, 6f.toDpInt(), 0, 0)
             headerContainer.visibility = View.GONE
         }
     }
