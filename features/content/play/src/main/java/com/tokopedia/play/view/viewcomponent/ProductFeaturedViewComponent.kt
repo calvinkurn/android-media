@@ -9,6 +9,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
 import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
+import com.tokopedia.play.view.custom.ProductFeaturedRecyclerView
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 
@@ -20,7 +21,7 @@ class ProductFeaturedViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, R.id.view_product_featured) {
 
-    private val rvProductFeatured: RecyclerView = findViewById(R.id.rv_product_featured)
+    private val rvProductFeatured: ProductFeaturedRecyclerView = findViewById(R.id.rv_product_featured)
     private val featuredProduct = mutableListOf<PlayProductUiModel>()
 
     private val adapter = ProductFeaturedAdapter(
@@ -46,11 +47,13 @@ class ProductFeaturedViewComponent(
 
     private var isProductsInitialized = false
 
+    private val defaultItemDecoration = ProductFeaturedItemDecoration(rvProductFeatured.context)
+
     init {
         rvProductFeatured.itemAnimator = null
         rvProductFeatured.layoutManager = layoutManager
         rvProductFeatured.adapter = adapter
-        rvProductFeatured.addItemDecoration(ProductFeaturedItemDecoration(rvProductFeatured.context))
+        rvProductFeatured.addItemDecoration(defaultItemDecoration)
         rvProductFeatured.addOnScrollListener(scrollListener)
     }
 
@@ -75,6 +78,14 @@ class ProductFeaturedViewComponent(
 
     fun showPlaceholder() {
         setFeaturedProducts(getPlaceholder(), TOTAL_PLACEHOLDER)
+    }
+
+    fun setFadingEndBounds(width: Int) {
+        rvProductFeatured.removeItemDecoration(defaultItemDecoration)
+        rvProductFeatured.addItemDecoration(
+            ProductFeaturedItemDecoration(rvProductFeatured.context, extraEndMargin = width)
+        )
+        rvProductFeatured.setFadingEndBounds(width)
     }
 
     private fun getFinalFeaturedItems(products: List<PlayProductUiModel>, maxProducts: Int): List<PlayProductUiModel> {

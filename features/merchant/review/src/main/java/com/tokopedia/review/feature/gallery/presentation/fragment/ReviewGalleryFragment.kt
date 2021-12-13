@@ -78,6 +78,9 @@ class ReviewGalleryFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+        }
         getProductIdFromArguments()
         ReviewGalleryTracking.trackOpenScreen(viewModel.getProductId())
     }

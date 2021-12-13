@@ -24,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="body_3"
         tools:text="Kunjungi koleksi baru kami di sini"

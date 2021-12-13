@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.ext.cast.CastPlayer
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
@@ -101,7 +100,6 @@ class PlayUserInteractionFragment @Inject constructor(
         private val pipAnalytic: PlayPiPAnalytic,
         private val analytic: PlayAnalytic,
         private val multipleLikesIconCacheStorage: MultipleLikesIconCacheStorage,
-        private val castPlayer: CastPlayer,
         private val castAnalyticHelper: CastAnalyticHelper
 ) :
         TkpdBaseV4Fragment(),
@@ -133,7 +131,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val partnerInfoView by viewComponentOrNull { PartnerInfoViewComponent(it, this) }
     private val statsInfoView by viewComponent { StatsInfoViewComponent(it, R.id.view_stats_info) }
     private val videoControlView by viewComponent { VideoControlViewComponent(it, R.id.pcv_video, this) }
-    private val likeView by viewComponent { LikeViewComponent(it, R.id.view_like, this) }
+    private val likeView by viewComponent { LikeViewComponent(it, this) }
+    private val likeCountView by viewComponent { LikeCountViewComponent(it) }
     private val shareLinkView by viewComponentOrNull { ShareLinkViewComponent(it, R.id.view_share_link, this) }
     private val sendChatView by viewComponentOrNull { SendChatViewComponent(it, R.id.view_send_chat, this) }
     private val quickReplyView by viewComponentOrNull { QuickReplyViewComponent(it, R.id.rv_quick_reply, this) }
@@ -338,7 +337,7 @@ class PlayUserInteractionFragment @Inject constructor(
     /**
      * Like View Component Listener
      */
-    override fun onLikeClicked(view: LikeViewComponent, shouldLike: Boolean) {
+    override fun onLikeClicked(view: LikeViewComponent) {
         playViewModel.submitAction(ClickLikeAction)
     }
 
@@ -563,6 +562,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
         if (playViewModel.isPiPAllowed) pipView?.show()
         else pipView?.hide()
+
+        setupFeaturedProductsFadingEdge(view)
     }
 
     private fun setupInsets(view: View) {
@@ -800,6 +801,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
             if (it.statusType.isFreeze || it.statusType.isBanned) {
                 gradientBackgroundView.hide()
+                likeCountView.hide()
                 likeView.hide()
                 quickReplyView?.hide()
                 chatListView?.hide()
@@ -929,7 +931,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         rtnView?.queueNotification(event.notification)
                     }
                     is AnimateLikeEvent -> {
-                        likeView.playLikeAnimation(event.fromIsLiked)
+                        likeView.playLikeAnimation()
                     }
                     is ShowLikeBubbleEvent -> {
                         if (event is ShowLikeBubbleEvent.Burst) {
@@ -954,6 +956,14 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
     //endregion
+
+    private fun setupFeaturedProductsFadingEdge(view: View) {
+        view.doOnLayout {
+            productFeaturedView?.setFadingEndBounds(
+                (FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER * it.width).toInt()
+            )
+        }
+    }
 
     private fun sendCastAnalytic(cast: PlayCastUiModel) {
         when {
@@ -1531,16 +1541,20 @@ class PlayUserInteractionFragment @Inject constructor(
     ) {
         if (prevState?.canLike != likeState.canLike) likeView.setEnabled(isEnabled = likeState.canLike)
 
-        likeView.setMode(likeState.likeMode)
-
         if (prevState?.isLiked != likeState.isLiked) {
             likeView.setIsLiked(likeState.isLiked)
         }
 
-        likeView.setTotalLikes(likeState.totalLike)
+        likeCountView.setTotalLikes(likeState.totalLike)
 
-        if (likeState.shouldShow) likeView.show()
-        else likeView.hide()
+        if (likeState.shouldShow) {
+            likeView.show()
+            likeCountView.show()
+        }
+        else {
+            likeView.hide()
+            likeCountView.hide()
+        }
     }
 
     private fun renderLikeBubbleView(likeState: PlayLikeUiState) {
@@ -1641,5 +1655,7 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val AUTO_SWIPE_DELAY = 500L
 
         private const val MASK_NO_CUT_HEIGHT = 0f
+
+        private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
     }
 }

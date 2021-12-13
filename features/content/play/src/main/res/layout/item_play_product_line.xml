@@ -1,45 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl4"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    app:card_type="shadow"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
-        layout="@layout/layout_play_product"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/btn_product_buy"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        layout="@layout/layout_play_product_new" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_product_buy"
-        android:layout_width="@dimen/layout_lvl7"
-        android:layout_height="@dimen/layout_lvl3"
-        android:layout_marginTop="@dimen/spacing_lvl1"
-        android:paddingStart="@dimen/play_product_line_buy_padding_start_end"
-        android:paddingEnd="@dimen/play_product_line_buy_padding_start_end"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/fl_product_image"
-        app:unifyButtonSize="small"
-        app:unifyButtonType="main"
-        />
-
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_product_atc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginBottom="@dimen/spacing_lvl1"
-        app:layout_constraintStart_toStartOf="@id/btn_product_buy"
-        app:layout_constraintEnd_toEndOf="@id/btn_product_buy"
-        app:layout_constraintTop_toBottomOf="@id/btn_product_buy"
-        app:layout_constraintBottom_toBottomOf="@id/fl_product_image"
-        app:srcCompat="@drawable/ic_play_cart"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

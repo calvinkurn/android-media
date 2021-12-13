@@ -1,0 +1,15 @@
+[{
+  "data": {
+    "digiPersoSearchSuggestion": {
+      "data": {
+        "id": "suggestion",
+        "name": "SUGGESTION",
+        "tracking": {
+          "userType": "non login",
+          "keyword": "asdf"
+        },
+        "items": []
+      }
+    }
+  }
+}]
