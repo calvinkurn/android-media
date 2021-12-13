@@ -71,6 +71,13 @@ object IncentiveOvoBottomSheetBuilder {
                     }
                     text = productRevIncentiveOvoDomain.productrevIncentiveOvo?.ctaText
                 }
+                tvIncentiveOvoAddRating.text = if (productRevIncentiveOvoDomain.productrevIncentiveOvo?.hasIncentive() == true) {
+                    getString(R.string.review_create_rating_condition_incentive)
+                } else if (productRevIncentiveOvoDomain.productrevIncentiveOvo?.hasOngoingPromo() == true) {
+                    getString(R.string.review_create_rating_condition_challenge)
+                } else {
+                    getString(R.string.review_create_rating_condition_incentive)
+                }
                 incentiveOvoAddRating.loadImage(ADD_RATING_URL)
                 incentiveOvoAddImage.loadImage(ADD_IMAGE_URL)
                 incentiveOvoAddReview.loadImage(ADD_REVIEW_URL)
