@@ -12,6 +12,7 @@ import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import java.lang.Exception
 
 /**
  * Created By : Jonathan Darwin on November 01, 2021
@@ -27,8 +28,6 @@ class ShareExperienceViewComponent(
     private val ivShareLink = findViewById<IconUnify>(R.id.ic_play_share_experience)
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
-
-    private var isShow = false
 
     init {
         universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -58,14 +57,13 @@ class ShareExperienceViewComponent(
             tnImage = coverUrl,
         )
         universalShareBottomSheet?.show(fragmentManager, fragment)
-        isShow = true
     }
 
     fun dismiss() {
-        if(isShow) {
+        try {
             universalShareBottomSheet?.dismiss()
-            isShow = false
         }
+        catch (e: Exception){ }
     }
 
     interface Listener {
