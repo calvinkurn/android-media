@@ -234,48 +234,6 @@ object CreateReviewTracking {
         )
     }
 
-    fun eventClickSendAnother(title: String, hasPendingIncentive: Boolean) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_SEND_ANOTHER, title),
-                String.format(
-                    CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE,
-                    hasPendingIncentive.toString()
-                )
-            )
-        )
-    }
-
-    fun eventClickLater(title: String, hasPendingIncentive: Boolean) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_LATER, title),
-                String.format(
-                    CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE,
-                    hasPendingIncentive.toString()
-                )
-            )
-        )
-    }
-
-    fun eventClickOk(title: String, hasPendingIncentive: Boolean) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            createEventMap(
-                ReviewTrackingConstant.EVENT_CLICK_REVIEW,
-                CreateReviewTrackingConstants.EVENT_CATEGORY,
-                String.format(CreateReviewTrackingConstants.EVENT_ACTION_CLICK_OK, title),
-                String.format(
-                    CreateReviewTrackingConstants.EVENT_LABEL_PENDING_INCENTIVE_QUEUE,
-                    hasPendingIncentive.toString()
-                )
-            )
-        )
-    }
-
     fun eventClickCompleteReviewFirst(dialogTitle: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             createEventMap(
