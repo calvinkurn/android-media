@@ -27,7 +27,7 @@ class GetShopInfoPeriodUseCaseStub(
             throw IOException((responseStub as IOException).message)
         }
         if (responseStub is Exception) {
-            throw Exception((responseStub as IOException).message)
+            throw Exception((responseStub as Exception).message)
         }
         val shopInfoPeriodResponseStub = responseStub as ShopInfoPeriodResponseStub
         val shopScoreWrapperResponse = ShopInfoPeriodWrapperResponse(
