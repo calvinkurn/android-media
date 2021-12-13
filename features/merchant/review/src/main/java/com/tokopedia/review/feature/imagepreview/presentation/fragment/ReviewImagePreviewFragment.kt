@@ -152,7 +152,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_review_image_preview, container, false)
+        return inflater.inflate(com.tokopedia.review.R.layout.fragment_review_image_preview, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -406,6 +406,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                 setLikeButtonImage(likeDislike.isLiked())
                 setVariantName(variantName)
                 setStats(userReviewStats)
+                setBadRatingReason(badRatingReasonFmt)
             }
             setThreeDotsVisibility(isReportable && !areComponentsHidden)
         }
@@ -548,7 +549,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             viewModel.getProductId(),
                             isFromGallery,
                             viewModel.getUserId(),
-                            it.userImage
+                            it.userImage,
+                            it.badRatingReason
                         )
                     )
             }
@@ -570,7 +572,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                             productId,
                             isFromGallery,
                             viewModel.getUserId(),
-                            user.image
+                            user.image,
+                            badRatingReasonFmt
                         )
                     )
             }
@@ -591,6 +594,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             clearContentPadding = true
             isDragable = true
             isHideable = true
+            isFullpage = true
         }
     }
 
@@ -654,6 +658,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
                         setTimeStamp(reviewTime)
                         setReviewMessage(review) { openExpandedReviewBottomSheet() }
                         setStats(userStats)
+                        setBadRatingReason(badRatingReason)
                         setReviewerImage(userImage)
                         setLikeCount(totalLiked.toString())
                         setLikeButtonClickListener {
@@ -792,7 +797,7 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
         userStats: List<UserReviewStats>, userId: String,
         isAnonymous: Boolean = false, isProductReview: Boolean = false, feedbackId: String = "",
         productId: String, isFromGallery: Boolean, currentUserId: String,
-        reviewerImage: String
+        reviewerImage: String, badRatingReason: String
     ): ReviewImagePreviewBottomSheetUiModel {
         return ReviewImagePreviewBottomSheetUiModel(
             rating,
@@ -809,7 +814,8 @@ class ReviewImagePreviewFragment : BaseDaggerFragment(), HasComponent<ReviewImag
             isFromGallery,
             currentUserId,
             reviewerImage,
-            getCredibilitySource()
+            getCredibilitySource(),
+            badRatingReason
         )
     }
 

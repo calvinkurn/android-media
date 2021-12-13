@@ -42,7 +42,7 @@ class AttachInvoiceActivity : BaseSimpleActivity(), HasComponent<AttachInvoiceCo
         }
         supportActionBar?.setTitle(R.string.title_attachinvoice)
         toolbar.setBackgroundColor(MethodChecker.getColor(
-                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+                this, com.tokopedia.unifyprinciples.R.color.Unify_Background
         ))
     }
 

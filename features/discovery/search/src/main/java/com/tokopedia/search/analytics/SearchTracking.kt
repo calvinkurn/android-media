@@ -2,9 +2,7 @@ package com.tokopedia.search.analytics
 
 import android.content.Context
 import android.text.TextUtils
-import com.tokopedia.analytic_constant.Event.Companion.ADDTOCART
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
@@ -12,14 +10,13 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CLICK
-import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.CURRENCY_CODE
-import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.IDR
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -38,6 +35,7 @@ object SearchTracking {
     private const val PROMO_VIEW = "promoView"
     private const val EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget"
     private const val EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product"
+    private const val CAROUSEL_UNIFICATION_LIST_NAME = " /search - carousel %s - component:%s"
 
     @JvmStatic
     fun screenTrackSearchSectionFragment(screen: String?) {
@@ -454,6 +452,7 @@ object SearchTracking {
             SearchTrackingConstant.RELATED_KEYWORD, generalSearchTrackingModel.relatedKeyword,
             SearchTrackingConstant.PAGE_SOURCE, generalSearchTrackingModel.pageSource,
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
+            SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }
@@ -923,5 +922,51 @@ object SearchTracking {
         )
 
         TrackApp.getInstance().gtm.sendGeneralEvent(clickDataLayer)
+    }
+
+    fun getInspirationCarouselUnificationListName(type: String, componentId: String): String =
+        CAROUSEL_UNIFICATION_LIST_NAME.format(type, componentId)
+
+    fun trackEventImpressionInspirationCarouselUnification(
+        trackingQueue: TrackingQueue,
+        eventLabel: String,
+        products: List<Any>,
+    ) {
+        val impressionDataLayer = DataLayer.mapOf(
+            SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_CAROUSEL_PRODUCT,
+            SearchTrackingConstant.EVENT_LABEL, eventLabel,
+            ECOMMERCE, DataLayer.mapOf(
+                "currencyCode", "IDR",
+                "impressions", DataLayer.listOf(*products.toTypedArray())
+            )
+        ) as HashMap<String, Any>
+
+        trackingQueue.putEETracking(impressionDataLayer)
+    }
+
+    fun trackEventClickInspirationCarouselUnification(
+        eventLabel: String,
+        type: String,
+        componentId: String,
+        products: List<Any>,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_CAROUSEL_PRODUCT,
+                SearchTrackingConstant.EVENT_LABEL, eventLabel,
+                ECOMMERCE, DataLayer.mapOf("click",
+                    DataLayer.mapOf(
+                        "actionField", DataLayer.mapOf(
+                            "list", getInspirationCarouselUnificationListName(type, componentId)
+                        ),
+                        "products", DataLayer.listOf(*products.toTypedArray())
+                    )
+                )
+            )
+        )
     }
 }
