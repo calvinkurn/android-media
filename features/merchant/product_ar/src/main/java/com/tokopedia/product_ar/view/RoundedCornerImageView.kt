@@ -54,7 +54,7 @@ class ImageRoundedBorderSelectionView : AppCompatImageView {
         getDeclaredRadius(context, attrs)
         mBorderPaint.isAntiAlias = true
         mBorderPaint.style = Paint.Style.STROKE
-        mBorderPaint.color = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        mBorderPaint.color = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100)
         mBorderPaint.strokeWidth = 10F
 
         textPaint.color = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
@@ -94,9 +94,13 @@ class ImageRoundedBorderSelectionView : AppCompatImageView {
         super.onDraw(canvas)
 
         if (setSelected) {
+            mBorderPaint.color = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             canvas?.drawRoundRect(rect, radius, radius, mBorderPaint)
 
             drawTextMultipleSelected(canvas, padding)
+        } else {
+            mBorderPaint.color = ContextCompat.getColor(this.context, com.tokopedia.unifyprinciples.R.color.Unify_NN100)
+            canvas?.drawRoundRect(rect, radius, radius, mBorderPaint)
         }
     }
 

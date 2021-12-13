@@ -37,7 +37,9 @@ data class ProductAr(
         val stockCopy: String = "",
         @SerializedName("type")
         @Expose
-        val type: String = ""
+        val type: String = "",
+        @Transient
+        val providerDataCompiled: ModifaceProvider? = null
 )
 
 data class ProductArButton(

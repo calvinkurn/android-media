@@ -1,5 +1,6 @@
 package com.tokopedia.product_ar.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -8,11 +9,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
+import com.tokopedia.product_ar.model.ModifaceProvider
 import com.tokopedia.product_ar.model.ProductArResponse
 import com.tokopedia.product_ar.model.ProductArUiModel
 import javax.inject.Inject
 
-class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<ProductArResponse>(graphqlRepository) {
+class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlRepository,
+                                              private val gson: Gson) : GraphqlUseCase<ProductArResponse>(graphqlRepository) {
 
     companion object {
         const val QUERY = """
@@ -86,9 +89,14 @@ class GetProductArUseCase @Inject constructor(graphqlRepository: GraphqlReposito
                         {
                             it.productID
                         }, {
-                    it
+                    it.copy(providerDataCompiled = convertToObject(it.providerData))
                 })
         )
+    }
+
+    private fun convertToObject(modifaceRawJson: String): ModifaceProvider {
+        return gson.fromJson(modifaceRawJson, Array<ModifaceProvider>::class.java).firstOrNull()
+                ?: ModifaceProvider()
     }
 
 }

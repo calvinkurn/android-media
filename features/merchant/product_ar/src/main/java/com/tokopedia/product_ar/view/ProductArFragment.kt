@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -85,10 +84,18 @@ class ProductArFragment : Fragment() {
             when (it) {
                 is Success -> {
                     partialBottomArView?.renderBottomInfo(it.data)
-                    Log.e("datanya", it.data.toString())
                 }
                 is Fail -> {
-                    Log.e("datanya", it.throwable.localizedMessage)
+                }
+            }
+        }
+
+        viewModel?.productArList?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    partialBottomArView?.renderRecyclerView(it.data)
+                }
+                is Fail -> {
                 }
             }
         }

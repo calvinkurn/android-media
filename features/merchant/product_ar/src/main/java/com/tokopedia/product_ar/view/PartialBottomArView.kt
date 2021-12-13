@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product_ar.R
+import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductAr
 import com.tokopedia.product_ar.view.adapter.VariantArAdapter
 import com.tokopedia.unifycomponents.Label
@@ -28,27 +29,15 @@ class PartialBottomArView private constructor(val view: View) {
 
     private val adapter = VariantArAdapter()
 
-    fun renderRecyclerView(data: ProductAr) {
-        renderVariantRv(data)
+    fun renderRecyclerView(data: List<ModifaceUiModel>) {
+        rvVariant.adapter = adapter
+        adapter.setInitialData(data)
     }
 
     fun renderBottomInfo(data: ProductAr) {
         atcButton.text = data.button.text
         txtStock.text = data.stock
         renderCampaign(data)
-        renderVariantRv(ProductAr())
-    }
-
-    private fun renderVariantRv(data: ProductAr) {
-        rvVariant.adapter = adapter
-        adapter.setInitialData(listOf(
-                "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/9/25/3ed61569-fd5e-4570-835c-63a36d6363cd.png",
-                "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/9/25/3ed61569-fd5e-4570-835c-63a36d6363cd.png",
-                "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/9/25/3ed61569-fd5e-4570-835c-63a36d6363cd.png",
-                "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/9/25/3ed61569-fd5e-4570-835c-63a36d6363cd.png",
-                "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/9/25/3ed61569-fd5e-4570-835c-63a36d6363cd.png",
-                "https://images.tokopedia.net/img/cache/900/VqbcmM/2021/9/25/3ed61569-fd5e-4570-835c-63a36d6363cd.png"
-        ))
     }
 
     private fun renderCampaign(data: ProductAr) = with(view) {

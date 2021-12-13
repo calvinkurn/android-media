@@ -8,8 +8,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product_ar.di.PRODUCT_ID_PROVIDED
 import com.tokopedia.product_ar.di.SHOP_ID_PROVIDED
+import com.tokopedia.product_ar.model.ModifaceUiModel
 import com.tokopedia.product_ar.model.ProductAr
+import com.tokopedia.product_ar.model.ProductArUiModel
 import com.tokopedia.product_ar.usecase.GetProductArUseCase
+import com.tokopedia.product_ar.util.ProductArMapper.mapToModifaceUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -29,16 +32,24 @@ class ProductArViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
         getArData()
     }
 
+    private var productArUiModel: ProductArUiModel = ProductArUiModel()
+
     private val _selectedProductArData = MutableLiveData<Result<ProductAr>>()
     val selectedProductArData: LiveData<Result<ProductAr>>
         get() = _selectedProductArData
 
+    private val _productArList = MutableLiveData<Result<List<ModifaceUiModel>>>()
+    val productArList: LiveData<Result<List<ModifaceUiModel>>>
+        get() = _productArList
 
     private fun getArData() {
         viewModelScope.launchCatchError(block = {
             val result = getProductArUseCase.executeOnBackground(
                     GetProductArUseCase.createParams(productId, shopId, chosenAddressRequestHelper)
             )
+            productArUiModel = result
+
+            _productArList.postValue(Success(mapToModifaceUiModel(result)))
             _selectedProductArData.postValue(Success(result.options[productId] ?: ProductAr()))
         }, onError = {
             _selectedProductArData.postValue(Fail(it))
