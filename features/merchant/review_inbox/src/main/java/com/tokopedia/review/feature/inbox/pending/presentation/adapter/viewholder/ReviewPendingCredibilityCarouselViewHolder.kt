@@ -26,7 +26,7 @@ class ReviewPendingCredibilityCarouselViewHolder(
         private const val SLIDE_TO_SHOW_SINGLE = 1f
         private const val SLIDE_TO_SHOW_MULTIPLE = 1.04f
         private const val ITEM_VIEW_WIDTH_SINGLE = 0.9375
-        private const val ITEM_VIEW_WIDTH_MULTIPLE = 0.9
+        private const val ITEM_VIEW_WIDTH_MULTIPLE = 0.905
     }
 
     val binding by viewBinding<ItemReviewPendingCredibilityCarouselBinding>()
