@@ -3144,7 +3144,7 @@ open class DynamicProductDetailFragment : BaseProductDetailFragment<DynamicPdpDa
     }
 
     private fun goToWishlist() {
-        RouteManager.route(context, ApplinkConsInternalHome.HOME_WISHLIST)
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {

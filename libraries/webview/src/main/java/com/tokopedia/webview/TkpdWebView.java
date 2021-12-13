@@ -85,8 +85,6 @@ public class TkpdWebView extends WebView {
             webSettings.setUserAgentString(userAgent);
         }
         SplitCompat.installActivity(context);
-        setBackgroundColor(ContextCompat.getColor(getContext(),
-                com.tokopedia.unifyprinciples.R.color.Unify_Background));
     }
 
     public void setWebViewScrollListener(@Nullable TkpdWebView.WebviewScrollListener scrollListener) {
