@@ -626,7 +626,7 @@ class CreateReviewViewModel @Inject constructor(
                 getProductIncentiveOvo.getIncentiveOvo(
                     productId = "",
                     reputationId = ""
-                )?.productrevIncentiveOvo?.amount.isMoreThanZero()
+                )?.productrevIncentiveOvo != null
             }
         } catch (_: Exception) {
             false
