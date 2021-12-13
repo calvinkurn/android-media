@@ -67,7 +67,9 @@ class PlayShareExperienceImpl @Inject constructor(
                 campaign = shareModel.campaign
                 ogTitle = generateOgTitle()
                 ogDescription = generateOgDescription()
-                ogImageUrl = data.coverUrl
+                if(shareModel.ogImgUrl?.isEmpty() == false) {
+                    ogImageUrl = data.coverUrl
+                }
                 isAffiliate = shareModel.isAffiliate
             }
 
