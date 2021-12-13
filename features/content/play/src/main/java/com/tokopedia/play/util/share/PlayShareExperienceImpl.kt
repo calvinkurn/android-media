@@ -59,7 +59,7 @@ class PlayShareExperienceImpl @Inject constructor(
                 description = generateShareString()
                 imgUri = data.coverUrl
                 ogUrl = data.redirectUrl
-                type = ""
+                type = LinkerData.PLAY_VIEWER
                 uri = data.redirectUrl
                 isThrowOnError = true
                 feature = shareModel.feature
